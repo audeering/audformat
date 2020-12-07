@@ -1,0 +1,17 @@
+__pycache__
+*.egg-info/
+.eggs/
+build/
+dist/
+.idea/
+venv/
+*.dot.svg
+# Tutorial
+.ipynb_checkpoints/
+docs/semaine/
+docs/audio/
+docs/obadiah-0.3.0-SNAPSHOT.zip
+docs/poppy-0.3.0-SNAPSHOT.zip
+docs/prudence-0.3.0-SNAPSHOT.zip
+docs/spike-0.3.0-SNAPSHOT.zip
+docs/examples/output/
