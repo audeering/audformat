@@ -11,6 +11,7 @@ import audiofile
 from audformat.core import define
 from audformat.core.index import index_type
 from audformat.core.index import index as create_index
+from audformat.core.errors import NotConformToUnifiedFormat
 
 
 def concat(
@@ -110,6 +111,56 @@ def map_language(language: str) -> typing.Optional[str]:
         )
 
     return result
+
+
+def read_csv(
+        *args,
+        **kwargs,
+) -> typing.Union[pd.Index, pd.Series, pd.DataFrame]:
+    r"""Read object in Unified Format from CSV file.
+
+    See :meth:`pandas.read_csv` for supported arguments.
+
+    Args:
+        *args: arguments
+        **kwargs: keyword arguments
+
+    Raises:
+        NotConformToUnifiedFormat: if CSV file cannot
+            be converted to the :ref:`Unified Format
+            <data-format:Unified Format>`
+
+    """
+    frame = pd.read_csv(*args, **kwargs)
+
+    drop = [define.IndexField.FILE]
+    if define.IndexField.FILE in frame.columns:
+        files = frame[define.IndexField.FILE].astype(str)
+    else:
+        raise NotConformToUnifiedFormat()
+
+    starts = None
+    if define.IndexField.START in frame.columns:
+        starts = pd.to_timedelta(frame[define.IndexField.START])
+        drop.append(define.IndexField.START)
+
+    ends = None
+    if define.IndexField.END in frame.columns:
+        ends = pd.to_timedelta(frame[define.IndexField.END])
+        drop.append(define.IndexField.END)
+
+    index = create_index(files, starts=starts, ends=ends)
+
+    frame.drop(drop, axis='columns', inplace=True)
+
+    if len(frame.columns) == 0:
+        return index
+
+    frame = frame.set_index(index)
+    if len(frame.columns) == 1:
+        return frame[frame.columns[0]]
+    else:
+        return frame
 
 
 def to_filewise(

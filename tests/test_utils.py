@@ -1,3 +1,4 @@
+from io import StringIO
 import os
 import shutil
 
@@ -81,10 +82,170 @@ def test_concat(objects, axis):
 
 
 @pytest.mark.parametrize(
+    'language, expected',
+    [
+        ('en', 'eng'),
+        ('en', 'eng'),
+        ('english', 'eng'),
+        ('English', 'eng'),
+        pytest.param(
+            'xx', None,
+            marks=pytest.mark.xfail(raises=ValueError)
+        ),
+        pytest.param(
+            'xxx', None,
+            marks=pytest.mark.xfail(raises=ValueError)
+        ),
+        pytest.param(
+            'Bad language', None,
+            marks=pytest.mark.xfail(raises=ValueError)
+        )
+    ]
+)
+def test_map_language(language, expected):
+    assert utils.map_language(language) == expected
+
+
+@pytest.mark.parametrize('csv,result', [
+    (
+        StringIO('''file
+f1
+f2
+f3'''),
+        pd.Index(
+            ['f1', 'f2', 'f3'],
+            name='file',
+        ),
+    ),
+    (
+        StringIO('''file,value
+f1,0.0
+f2,1.0
+f3,2.0'''),
+        pd.Series(
+            [0.0, 1.0, 2.0],
+            index=audformat.index(['f1', 'f2', 'f3']),
+            name='value',
+        ),
+    ),
+    (
+        StringIO('''file,value1,value2
+f1,0.0,a
+f2,1.0,b
+f3,2.0,c'''),
+        pd.DataFrame(
+            {
+                'value1': [0.0, 1.0, 2.0],
+                'value2': ['a', 'b', 'c'],
+            },
+            index=audformat.index(['f1', 'f2', 'f3']),
+            columns=['value1', 'value2'],
+        ),
+    ),
+    (
+        StringIO('''file,start,value
+f1,00:00:00,0.0
+f1,00:00:01,1.0
+f2,00:00:02,2.0'''),
+        pd.Series(
+            [0.0, 1.0, 2.0],
+            index=audformat.index(
+                ['f1', 'f1', 'f2'],
+                starts=pd.to_timedelta(['0s', '1s', '2s']),
+                ends=pd.to_timedelta([pd.NaT, pd.NaT, pd.NaT]),
+            ),
+            name='value',
+        ),
+    ),
+    (
+        StringIO('''file,end,value
+f1,00:00:01,0.0
+f1,00:00:02,1.0
+f2,00:00:03,2.0'''),
+        pd.Series(
+            [0.0, 1.0, 2.0],
+            index=audformat.index(
+                ['f1', 'f1', 'f2'],
+                starts=pd.to_timedelta([0, 0, 0]),
+                ends=pd.to_timedelta(['1s', '2s', '3s']),
+            ),
+            name='value',
+        ),
+    ),
+    (
+        StringIO('''file,start,end
+f1,00:00:00,00:00:01
+f1,00:00:01,00:00:02
+f2,00:00:02,00:00:03'''),
+        pd.MultiIndex.from_arrays(
+            [
+                ['f1', 'f1', 'f2'],
+                pd.to_timedelta(['0s', '1s', '2s']),
+                pd.to_timedelta(['1s', '2s', '3s']),
+            ],
+            names=['file', 'start', 'end'],
+        ),
+    ),
+    (
+        StringIO('''file,start,end,value
+f1,00:00:00,00:00:01,0.0
+f1,00:00:01,00:00:02,1.0
+f2,00:00:02,00:00:03,2.0'''),
+        pd.Series(
+            [0.0, 1.0, 2.0],
+            index=audformat.index(
+                ['f1', 'f1', 'f2'],
+                starts=pd.to_timedelta(['0s', '1s', '2s']),
+                ends=pd.to_timedelta(['1s', '2s', '3s']),
+            ),
+            name='value',
+        ),
+    ),
+    (
+        StringIO('''file,start,end,value1,value2
+f1,00:00:00,00:00:01,0.0,a
+f1,00:00:01,00:00:02,1.0,b
+f2,00:00:02,00:00:03,2.0,c'''),
+        pd.DataFrame(
+            {
+                'value1': [0.0, 1.0, 2.0],
+                'value2': ['a', 'b', 'c'],
+            },
+            index=audformat.index(
+                ['f1', 'f1', 'f2'],
+                starts=pd.to_timedelta(['0s', '1s', '2s']),
+                ends=pd.to_timedelta(['1s', '2s', '3s']),
+            ),
+            columns=['value1', 'value2'],
+        ),
+
+    ),
+    pytest.param(
+        StringIO('''value
+0.0
+1.0
+2.0'''),
+        None,
+        marks=pytest.mark.xfail(
+            raises=audformat.errors.NotConformToUnifiedFormat,
+        )
+    )
+])
+def test_from_csv(csv, result):
+    obj = audformat.utils.read_csv(csv)
+    if isinstance(result, pd.Index):
+        pd.testing.assert_index_equal(obj, result)
+    elif isinstance(result, pd.Series):
+        pd.testing.assert_series_equal(obj, result)
+    else:
+        pd.testing.assert_frame_equal(obj, result)
+
+
+@pytest.mark.parametrize(
     'table_id',
     ['files', 'segments']
 )
-def test_to_segmented_frame(table_id):
+def test_to_segmented(table_id):
     for column_id, column in pytest.DB[table_id].get().items():
         series = utils.to_segmented(column)
         pd.testing.assert_series_equal(series.reset_index(drop=True),
@@ -140,8 +301,7 @@ def test_to_segmented_frame(table_id):
         )
     ]
 )
-def test_to_filewise_frame(tmpdir, output_folder, table_id,
-                           expected_file_names):
+def test_to_filewise(tmpdir, output_folder, table_id, expected_file_names):
 
     testing.create_audio_files(pytest.DB, root=tmpdir, file_duration='1s')
 
@@ -182,28 +342,3 @@ def test_to_filewise_frame(tmpdir, output_folder, table_id,
                     define.IndexField.FILE):
                 if os.path.exists(f):
                     os.remove(f)
-
-
-@pytest.mark.parametrize(
-    'language, expected',
-    [
-        ('en', 'eng'),
-        ('en', 'eng'),
-        ('english', 'eng'),
-        ('English', 'eng'),
-        pytest.param(
-            'xx', None,
-            marks=pytest.mark.xfail(raises=ValueError)
-        ),
-        pytest.param(
-            'xxx', None,
-            marks=pytest.mark.xfail(raises=ValueError)
-        ),
-        pytest.param(
-            'Bad language', None,
-            marks=pytest.mark.xfail(raises=ValueError)
-        )
-    ]
-)
-def test_map_language(language, expected):
-    assert utils.map_language(language) == expected

@@ -57,7 +57,7 @@ def index(
 
     if starts is not None or ends is not None:
         if starts is None:
-            starts = [pd.to_timedelta(0)] * len(ends)
+            starts = [0] * len(ends)
         elif ends is None:
             ends = [pd.NaT] * len(starts)
 
@@ -65,7 +65,7 @@ def index(
             raise CannotCreateSegmentedIndex()
 
         idx = pd.MultiIndex.from_arrays(
-            [files, starts, ends],
+            [files, pd.to_timedelta(starts), pd.to_timedelta(ends)],
             names=[
                 define.IndexField.FILE,
                 define.IndexField.START,
