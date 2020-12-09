@@ -1,0 +1,31 @@
+
+digraph G {
+
+    rankdir=LR
+    node[shape=Mrecord, style=filled, color=orange]
+    compound=true
+
+    subgraph cluster_input {
+        label="Original data"
+        audio[label="Audio files"]
+        anno[label="Annotation files"]
+    }
+
+    subgraph cluster_convert {
+        label="Convert with audformat"
+        convert[label="Python script"]
+        object[label="Database object"]
+    }
+
+    subgraph cluster_output {
+        label="Unified format"
+        header[label="Header (YAML)"]
+        tables[label="Tables (CSV)"]
+    }
+
+    anno->convert [ltail=cluster_input]
+    convert->object
+    object->header [lhead=cluster_output]
+    tables->audio [ltail=cluster_output, style=dashed]
+
+}
