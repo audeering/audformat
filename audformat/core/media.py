@@ -35,6 +35,7 @@ class AudioInfo(MediaInfo):
         format: audio file format (e.g. ``wav`` or ``flac``)
         sampling_rate: sampling rate in Hz
         channels: number of channels
+        bit_rate: bit rate
         description: media description
         meta: additional meta fields
 
@@ -45,6 +46,7 @@ class AudioInfo(MediaInfo):
             format: str = None,
             sampling_rate: int = None,
             channels: int = None,
+            bit_rate: int = None,
             description: str = None,
             meta: dict = None,
     ):
@@ -55,9 +57,14 @@ class AudioInfo(MediaInfo):
             meta=meta,
         )
 
-        self.format = format
-        self.sampling_rate = sampling_rate
         self.channels = channels
+        r"""Number of channels"""
+        self.format = format
+        r"""File format"""
+        self.bit_rate = bit_rate
+        r"""Bit rate"""
+        self.sampling_rate = sampling_rate
+        r"""Sampling rate in Hz"""
 
 
 class VideoInfo(MediaInfo):
@@ -92,7 +99,12 @@ class VideoInfo(MediaInfo):
         )
 
         self.format = format
+        r"""File format"""
         self.frames_per_second = frames_per_second
+        r"""Frames per second"""
         self.resolution = resolution
+        r"""Image resolution"""
         self.channels = channels
+        r"""Number of channels"""
         self.depth = depth
+        r"""Bit depth"""

@@ -49,7 +49,7 @@ def test_add():
 
     for table_type in (audformat.define.IndexType.FILEWISE,
                        audformat.define.IndexType.SEGMENTED):
-        db.drop(list(db.tables), inplace=True)
+        db.drop_tables(list(db.tables), inplace=True)
         audformat.testing.add_table(
             db, 'table1', table_type,
             num_files=5, columns=['scheme1'],
@@ -65,7 +65,7 @@ def test_add():
 
     # tables of same type with overlap
 
-    db.drop(list(db.tables), inplace=True)
+    db.drop_tables(list(db.tables), inplace=True)
     audformat.testing.add_table(
         db, 'table1', audformat.define.IndexType.FILEWISE,
         num_files=(1, 2), columns='scheme1',
@@ -89,7 +89,7 @@ def test_add():
             (5, 4),
             (4, 5),
     ):
-        db.drop(list(db.tables), inplace=True)
+        db.drop_tables(list(db.tables), inplace=True)
         audformat.testing.add_table(
             db, 'table1', audformat.define.IndexType.FILEWISE,
             columns='scheme1', num_files=num_files_1,
@@ -114,7 +114,7 @@ def test_add():
             (5, 4),
             (4, 5),
     ):
-        db.drop(list(db.tables), inplace=True)
+        db.drop_tables(list(db.tables), inplace=True)
         audformat.testing.add_table(
             db, 'table1', audformat.define.IndexType.SEGMENTED,
             columns='scheme1', num_files=num_files_1,
@@ -140,21 +140,37 @@ def test_add():
         True,
     ]
 )
-def test_drop_and_pick(inplace):
+def test_drop_and_pick_columns(inplace):
 
     db = audformat.testing.create_db()
 
     assert 'float' in db['files'].columns
-    table = db['files'].drop('float', inplace=inplace)
+    table = db['files'].drop_columns('float', inplace=inplace)
     if not inplace:
         assert 'float' in db['files'].columns
     assert 'float' not in table.columns
     assert 'string' in table.columns
-    table = db['files'].pick('time', inplace=inplace)
+    table = db['files'].pick_columns('time', inplace=inplace)
     assert 'time' in table.columns
     assert 'string' not in table.columns
     if not inplace:
         assert 'string' in db['files'].columns
+
+
+def test_and_pick_index():
+
+    for table in ['files', 'segments']:
+        index = pytest.DB[table].index[:5]
+        df_pick = pytest.DB[table].pick_index(index).get()
+        index = pytest.DB[table].index[5:]
+        df_drop = pytest.DB[table].drop_index(index).get()
+        pd.testing.assert_frame_equal(df_pick, df_drop)
+
+    index = pytest.DB['segments'].index[:5]
+    with pytest.raises(ValueError):
+        pytest.DB['files'].drop_index(index).get()
+    with pytest.raises(ValueError):
+        pytest.DB['files'].pick_index(index).get()
 
 
 def test_empty():
@@ -213,7 +229,7 @@ def test_exceptions():
         db['table']['column'] = audformat.Column(rater_id='invalid')
 
 
-def test_extend():
+def test_extend_index():
 
     db = audformat.testing.create_db(minimal=True)
     db.schemes['scheme'] = audformat.Scheme()
@@ -221,10 +237,10 @@ def test_extend():
     # empty and invalid
 
     db['table'] = audformat.Table()
-    db['table'].extend(audformat.index([]))
+    db['table'].extend_index(audformat.index([]))
     assert db['table'].get().empty
     with pytest.raises(ValueError):
-        db['table'].extend(
+        db['table'].extend_index(
             audformat.index(
                 files=['1.wav', '2.wav'],
                 starts=[pd.Timedelta('0s'), pd.Timedelta('1s')],
@@ -233,15 +249,16 @@ def test_extend():
             fill_values='a',
         )
 
-    db.drop('table', inplace=True)
+    db.drop_tables('table', inplace=True)
 
     # filewise
 
     db['table'] = audformat.Table()
     db['table']['columns'] = audformat.Column(scheme_id='scheme')
-    db['table'].extend(
+    db['table'].extend_index(
         audformat.index(['1.wav', '2.wav']),
         fill_values='a',
+        inplace=True,
     )
     np.testing.assert_equal(
         db['table']['columns'].get().values,
@@ -249,11 +266,17 @@ def test_extend():
     )
     index = pd.Index(['1.wav', '3.wav'],
                      name=audformat.define.IndexField.FILE)
-    db['table'].extend(index=index, fill_values='b')
-    np.testing.assert_equal(db['table']['columns'].get().values,
-                            np.array(['a', 'a', 'b']))
+    db['table'].extend_index(
+        index,
+        fill_values='b',
+        inplace=True,
+    )
+    np.testing.assert_equal(
+        db['table']['columns'].get().values,
+        np.array(['a', 'a', 'b']),
+    )
 
-    db.drop('table', inplace=True)
+    db.drop_tables('table', inplace=True)
 
     # segmented
 
@@ -261,13 +284,14 @@ def test_extend():
         audformat.index(files=[], starts=[], ends=[])
     )
     db['table']['columns'] = audformat.Column(scheme_id='scheme')
-    db['table'].extend(
+    db['table'].extend_index(
         audformat.index(
             files=['1.wav', '2.wav'],
             starts=[pd.Timedelta('0s'), pd.Timedelta('1s')],
             ends=[pd.Timedelta('1s'), pd.Timedelta('2s')],
         ),
         fill_values='a',
+        inplace=True,
     )
     np.testing.assert_equal(
         db['table']['columns'].get().values,
@@ -278,13 +302,17 @@ def test_extend():
         starts=[pd.Timedelta('0s'), pd.Timedelta('2s')],
         ends=[pd.Timedelta('1s'), pd.Timedelta('3s')],
     )
-    db['table'].extend(index=index, fill_values={'columns': 'b'})
+    db['table'].extend_index(
+        index,
+        fill_values={'columns': 'b'},
+        inplace=True,
+    )
     np.testing.assert_equal(
         db['table']['columns'].get().values,
         np.array(['a', 'a', 'b']),
     )
 
-    db.drop('table', inplace=True)
+    db.drop_tables('table', inplace=True)
 
 
 @pytest.mark.parametrize('num_files,values', [
@@ -359,7 +387,7 @@ def test_from_frame(table_id):
     db = audformat.testing.create_db()
     df = db[table_id].get()
 
-    db.drop(list(db.tables), inplace=True)
+    db.drop_tables(list(db.tables), inplace=True)
 
     # set specific column
 
@@ -371,7 +399,7 @@ def test_from_frame(table_id):
     )
     pd.testing.assert_frame_equal(db[table_id].df, df.string.to_frame())
 
-    db.drop(list(db.tables), inplace=True)
+    db.drop_tables(list(db.tables), inplace=True)
 
     # set all columns
 
@@ -383,7 +411,7 @@ def test_from_frame(table_id):
     )
     pd.testing.assert_frame_equal(db[table_id].df, df)
 
-    db.drop(list(db.tables), inplace=True)
+    db.drop_tables(list(db.tables), inplace=True)
 
     # set all columns from a table that is not in the Unified Format
 
@@ -395,7 +423,7 @@ def test_from_frame(table_id):
     )
     pd.testing.assert_frame_equal(db[table_id].df, df)
 
-    db.drop(list(db.tables), inplace=True)
+    db.drop_tables(list(db.tables), inplace=True)
 
 
 @pytest.mark.parametrize('num_files,num_segments_per_file,values', [

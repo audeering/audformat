@@ -109,7 +109,7 @@ class Database(HeaderBase):
         assert isinstance(index, pd.MultiIndex)
         return index.drop_duplicates()
 
-    def drop(
+    def drop_tables(
             self,
             table_ids: typing.Union[str, typing.Sequence[str]],
             *,
@@ -130,8 +130,12 @@ class Database(HeaderBase):
             self.tables.pop(table_id)
         return self
 
-    def pick(self, table_ids: typing.Union[str, typing.Sequence[str]], *,
-             inplace: bool = False) -> 'Database':
+    def pick_tables(
+            self,
+            table_ids: typing.Union[str, typing.Sequence[str]],
+            *,
+            inplace: bool = False,
+    ) -> 'Database':
         r"""Pick tables by id (all other tables will be dropped).
 
         Args:
@@ -145,9 +149,12 @@ class Database(HeaderBase):
         for table_id in list(self.tables):
             if table_id not in table_ids:
                 drop_ids.append(table_id)
-        return self.drop(drop_ids, inplace=inplace)
+        return self.drop_tables(drop_ids, inplace=inplace)
 
-    def map_files(self, func: typing.Callable[[str], str]):
+    def map_files(
+            self,
+            func: typing.Callable[[str], str],
+    ):
         r"""Apply function to file names in all tables.
 
         Args:
@@ -162,7 +169,10 @@ class Database(HeaderBase):
                 table.df.index = table.df.index.map(
                     lambda x: func(x))
 
-    def filter_files(self, func: typing.Callable[[str], bool]) -> int:
+    def filter_files(
+            self,
+            func: typing.Callable[[str], bool],
+    ) -> int:
         r"""Filter rows by file name in all tables.
 
         Only rows with a matching file name are kept.

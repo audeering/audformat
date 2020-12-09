@@ -43,7 +43,7 @@ class Column(HeaderBase):
 
     def get(
             self,
-            index: typing.Union[pd.Index, pd.Series, pd.DataFrame] = None,
+            index: pd.Index = None,
             *,
             copy: bool = True,
     ) -> pd.Series:

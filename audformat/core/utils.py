@@ -150,7 +150,6 @@ def read_csv(
         drop.append(define.IndexField.END)
 
     index = create_index(files, starts=starts, ends=ends)
-
     frame.drop(drop, axis='columns', inplace=True)
 
     if len(frame.columns) == 0:

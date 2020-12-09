@@ -183,7 +183,7 @@ class Table(HeaderBase):
                 define.IndexField.START
             )
 
-    def drop(
+    def drop_columns(
             self,
             column_ids: typing.Union[str, typing.Sequence[str]],
             *,
@@ -200,7 +200,7 @@ class Table(HeaderBase):
 
         """
         if not inplace:
-            return self._copy().drop(column_ids, inplace=True)
+            return self._copy().drop_columns(column_ids, inplace=True)
 
         if isinstance(column_ids, str):
             column_ids = [column_ids]
@@ -213,13 +213,50 @@ class Table(HeaderBase):
 
         return self
 
-    def extend(
+    def drop_index(
             self,
-            index: typing.Union[pd.Index, pd.Series, pd.DataFrame],
+            index: pd.Index,
+            *,
+            inplace: bool = False,
+    ) -> 'Table':
+        r"""Drop rows from index.
+
+        Args:
+            index: index conform to
+                :ref:`table specifications <data-tables:Tables>`
+            inplace: drop index in place
+
+        Raises:
+            ValueError: if table type is not matched
+            RedundantArgumentError: for not allowed combinations
+                of input arguments
+
+        """
+        if not inplace:
+            return self._copy().drop_index(index, inplace=True)
+
+        input_type = index_type(index)
+        if self.type != input_type:
+            raise ValueError(
+                'It is not possible to drop a '
+                f'{input_type} index '
+                'from a '
+                f'{self.type} '
+                'index'
+            )
+        new_index = self._df.index.difference(index)
+        self._df = self._df.reindex(new_index)
+
+        return self
+
+    def extend_index(
+            self,
+            index: pd.Index,
             *,
             fill_values: typing.Union[
                 typing.Any, typing.Dict[str, typing.Any]
             ] = None,
+            inplace: bool = False,
     ):
         r"""Extend table by new rows.
 
@@ -229,18 +266,24 @@ class Table(HeaderBase):
             fill_values: replace NaN with these values (either a scalar
                 applied to all columns or a dictionary with column name as
                 key)
+            inplace: extend index in place
 
         Raises:
             ValueError: if table type is not matched
 
         """
-        table_type = index_type(index)
-        if self.type != table_type:
+        if not inplace:
+            return self._copy().extend_index(
+                index, fill_values=fill_values, inplace=True,
+            )
+
+        input_type = index_type(index)
+        if self.type != input_type:
             raise ValueError(
                 f'Cannot extend a '
                 f'{self.type} '
                 f'table with a '
-                f'{table_type} '
+                f'{input_type} '
                 f'index.'
             )
         new_index = self._df.index.union(index)
@@ -296,7 +339,7 @@ class Table(HeaderBase):
 
     def get(
             self,
-            index: typing.Union[pd.Index, pd.Series, pd.DataFrame] = None,
+            index: pd.Index = None,
             *,
             copy: bool = True,
     ) -> pd.DataFrame:
@@ -351,7 +394,7 @@ class Table(HeaderBase):
         else:
             self._load_csv(os.path.join(root, name + '.csv'))
 
-    def pick(
+    def pick_columns(
             self,
             column_ids: typing.Union[str, typing.Sequence[str]],
             *,
@@ -375,7 +418,43 @@ class Table(HeaderBase):
         for column_id in list(self.columns):
             if column_id not in column_ids:
                 drop_ids.add(column_id)
-        return self.drop(list(drop_ids), inplace=inplace)
+        return self.drop_columns(list(drop_ids), inplace=inplace)
+
+    def pick_index(
+            self,
+            index: typing.Union[pd.Index, pd.Series, pd.DataFrame] = None,
+            *,
+            inplace: bool = False,
+    ) -> 'Table':
+        r"""Pick rows from index.
+
+        Args:
+            index: index conform to
+                :ref:`table specifications <data-tables:Tables>`
+            inplace: pick index in place
+
+        Raises:
+            ValueError: if table type is not matched
+            RedundantArgumentError: for not allowed combinations
+                of input arguments
+
+        """
+        if not inplace:
+            return self._copy().pick_index(index, inplace=True)
+
+        input_type = index_type(index)
+        if self.type != input_type:
+            raise ValueError(
+                'It is not possible to pick a '
+                f'{input_type} '
+                'index from a '
+                f'{self.type} '
+                f'index'
+            )
+        new_index = self._df.index.intersection(index)
+        self._df = self._df.reindex(new_index)
+
+        return self
 
     def save(
             self,
