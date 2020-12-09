@@ -58,21 +58,6 @@ class BadIdError(ValueError):
         super().__init__(message)
 
 
-class BadIndexTypeError(ValueError):
-    r"""Raised if an invalid table type is provided.
-
-    Args:
-         invalid: invalid table type
-         supported: supported table types
-
-    """
-    def __init__(self, invalid: str, supported: typing.Sequence[str]):
-        message = "Bad table type '{}', expected one of {}".format(
-            invalid, supported
-        )
-        super().__init__(message)
-
-
 class CannotCreateSegmentedIndex(ValueError):
     r"""Raised if segmented table cannot be created."""
     def __init__(self):
@@ -94,16 +79,4 @@ class NotConformToUnifiedFormat(ValueError):
     r"""Raised if index is not conform to Unified Format."""
     def __init__(self):
         message = 'Index not conform to Unified Format.'
-        super().__init__(message)
-
-
-class RedundantArgumentError(ValueError):
-    r"""Raised if arguments are redundant.
-
-    Args:
-        names: names of redundant arguments
-
-    """
-    def __init__(self, names: typing.Sequence[str]):
-        message = f"The following argument(s) are redundant '{names}'"
         super().__init__(message)

@@ -64,7 +64,7 @@ def index(
         if not len(files) == len(starts) and len(files) == len(ends):
             raise CannotCreateSegmentedIndex()
 
-        index = pd.MultiIndex.from_arrays(
+        idx = pd.MultiIndex.from_arrays(
             [files, starts, ends],
             names=[
                 define.IndexField.FILE,
@@ -72,9 +72,9 @@ def index(
                 define.IndexField.END,
             ])
     else:
-        index = pd.Index(files, name=define.IndexField.FILE)
+        idx = pd.Index(files, name=define.IndexField.FILE)
 
-    return index
+    return idx
 
 
 def index_type(

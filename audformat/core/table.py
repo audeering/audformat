@@ -15,8 +15,30 @@ from audformat.core.common import (
 )
 from audformat.core.errors import (
     BadIdError,
-    BadIndexTypeError,
 )
+
+
+def index_to_dict(index: pd.Index) -> dict:
+    r"""Convert :class:`pandas.Index` to a dictionary.
+
+    Returns a dictionary with keys files, starts, and ends.
+
+    """
+    d = dict([(define.IndexField.FILE + 's', None),
+              (define.IndexField.START + 's', None),
+              (define.IndexField.END + 's', None)])
+
+    table_type = index_type(index)
+
+    d[define.IndexField.FILE + 's'] = index.get_level_values(
+        define.IndexField.FILE).values
+    if table_type == define.IndexType.SEGMENTED:
+        d[define.IndexField.START + 's'] = index.get_level_values(
+            define.IndexField.START).values.astype(np.timedelta64)
+        d[define.IndexField.END + 's'] = index.get_level_values(
+            define.IndexField.END).values.astype(np.timedelta64)
+
+    return d
 
 
 class Table(HeaderBase):
@@ -255,7 +277,6 @@ class Table(HeaderBase):
         """
         if isinstance(frame, pd.Series):
             frame = frame.to_frame()
-
         if isinstance(scheme_ids, str):
             scheme_ids = {name: scheme_ids for name in frame.columns}
         if isinstance(rater_ids, str):
@@ -265,19 +286,21 @@ class Table(HeaderBase):
         rater_ids = rater_ids or {}
 
         for column_id, column in frame.items():
+            column_id = str(column_id)
             scheme_id = scheme_ids[column_id] \
                 if column_id in scheme_ids else None
             rater_id = rater_ids[column_id] \
                 if column_id in rater_ids else None
-            self[column_id] = Column(scheme_id=scheme_id,
-                                     rater_id=rater_id)
+            self[column_id] = Column(scheme_id=scheme_id, rater_id=rater_id)
             self[column_id].set(column.values, index=frame.index)
 
     def get(
             self,
             index: typing.Union[pd.Index, pd.Series, pd.DataFrame] = None,
+            *,
+            copy: bool = True,
     ) -> pd.DataFrame:
-        r"""Get a copy of the labels in this table.
+        r"""Get labels.
 
         Examples are provided with the
         :ref:`table specifications <data-tables:Tables>`.
@@ -285,16 +308,29 @@ class Table(HeaderBase):
         Args:
             index: index conform to
                 :ref:`table specifications <data-tables:Tables>`
+            copy: return a new object
 
         Returns:
             table data
 
-        Raises:
-            RedundantArgumentError: for not allowed combinations
-                of input arguments
-
         """
-        return self._get(index).copy()
+        if index is None:
+            result = self._df
+        else:
+            if index_type(self.index) == index_type(index):
+                result = self._df.loc[index]
+            else:
+                files = index.get_level_values(define.IndexField.FILE)
+                if self.is_filewise:
+                    reindex = self._df.reindex(files)
+                    result = pd.DataFrame(
+                        reindex.values, index, columns=self.columns,
+                    )
+                else:
+                    files = list(dict.fromkeys(files))
+                    result = self._df.loc[files]
+
+        return result.copy() if copy else result
 
     def load(
             self,
@@ -364,7 +400,10 @@ class Table(HeaderBase):
 
     def set(
             self,
-            values: define.Typing.VALUES,
+            values: typing.Union[
+                typing.Dict[str, define.Typing.VALUES],
+                pd.DataFrame,
+            ],
             *,
             index: pd.Index = None,
     ):
@@ -377,12 +416,9 @@ class Table(HeaderBase):
             values: dictionary of values with ``column_id`` as key
             index: index conform to Unified Format
 
-        Raises:
-            RedundantArgumentError: for not allowed combinations
-                of input arguments
-
         """
-        self._set(values, index)
+        for idx, data in values.items():
+            self.columns[idx].set(data, index=index)
 
     def __add__(self, other: 'Table') -> 'Table':
         r""" Creates a new table by adding two tables.
@@ -420,7 +456,7 @@ class Table(HeaderBase):
                 if not additional_files.empty:
                     d['files'] = np.r_[d['files'], additional_files.values]
                     if table_type == define.IndexType.SEGMENTED:
-                        d_append = utils.index_to_dict(
+                        d_append = index_to_dict(
                             utils.to_segmented(additional_files)
                         )
                         d['starts'] = np.r_[d['starts'], d_append['starts']]
@@ -430,14 +466,14 @@ class Table(HeaderBase):
                 missing_files = other.files.unique().difference(
                     self.files.unique()
                 )
-                d = utils.index_to_dict(self._df.index)
+                d = index_to_dict(self._df.index)
                 add_files_to_dict(d, missing_files, self.type)
                 df_other = other.get(create_index(**d))
             elif self.type == define.IndexType.FILEWISE:
                 missing_files = self.files.unique().difference(
                     other.files.unique()
                 )
-                d = utils.index_to_dict(other._df.index)
+                d = index_to_dict(other._df.index)
                 add_files_to_dict(d, missing_files, other.type)
                 df_self = self.get(create_index(**d))
 
@@ -515,33 +551,6 @@ class Table(HeaderBase):
                                     for k, v in self.columns.items()})
         return table
 
-    def _get(
-            self,
-            index: typing.Optional[pd.Index],
-    ) -> pd.DataFrame:
-
-        if index is None:
-            return self._df
-
-        input_type = index_type(index)
-        table_type = index_type(self.index)
-
-        if table_type == input_type:
-            return self._df.loc[index]
-        else:
-            files = index.get_level_values(define.IndexField.FILE)
-            if self.is_filewise:
-                reindex = self._df.reindex(files)
-                return pd.DataFrame(
-                    reindex.values, index, columns=self.columns,
-                )
-            elif type == define.IndexType.FILEWISE:
-                return self._df.loc[files]
-
-        raise BadIndexTypeError(
-            str(input_type), [define.IndexType.FILEWISE, str(table_type)],
-        )
-
     def _load_csv(self, path: str):
 
         usecols = []
@@ -611,16 +620,6 @@ class Table(HeaderBase):
                     df[column_id] = df[column_id].astype(dtype)
 
         self._df = df
-
-    def _set(self, values, index):
-        # if isinstance(values, pd.DataFrame):
-        #     if index_type(values) is not None:
-        #         utils.check_redundant_arguments(files=files, starts=starts,
-        #                                         ends=ends)
-        #         # Get values, files, starts, ends from pd.DataFrame
-        #         return self._set(**utils.frame_to_dict(values))
-        for idx, data in values.items():
-            self.columns[idx].set(data, index=index)
 
     def _set_column(self, column_id: str, column: Column) -> Column:
         if column.scheme_id is not None and \

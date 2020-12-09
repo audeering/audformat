@@ -3,7 +3,6 @@ import shutil
 
 import pytest
 import pandas as pd
-import numpy as np
 
 import audformat
 from audformat import testing
@@ -12,138 +11,72 @@ from audformat import define
 
 
 @pytest.mark.parametrize(
-    'frames',
+    'objects, axis',
     [
         # empty
-        [],
+        ([], 'index'),
         # filewise
-        [
-            table.get() for table in pytest.DB.tables.values()
-            if table.is_filewise
-        ],
+        (
+            [
+                table.get() for table in pytest.DB.tables.values()
+                if table.is_filewise
+            ], 'index',
+        ),
         # segmented
-        [
-            utils.to_segmented(table.get()) for table in
-            pytest.DB.tables.values()
-        ],
+        (
+            [
+                utils.to_segmented(table.get()) for table in
+                pytest.DB.tables.values()
+            ], 'index',
+        ),
         # mixed
-        [
-            table.get() for table in pytest.DB.tables.values()
-        ],
+        (
+            [
+                table.get() for table in pytest.DB.tables.values()
+            ], 'index',
+        ),
+        # series filewise
+        (
+            [
+                pytest.DB['files']['string'].get(),
+                pytest.DB['files']['int'].get(),
+            ], 'columns',
+        ),
+        # series segmented
+        (
+            [
+                pytest.DB['segments']['string'].get(),
+                pytest.DB['segments']['int'].get(),
+            ], 'columns',
+        ),
+        # series filewise + segmented
+        (
+            [
+                pytest.DB['files']['string'].get(),
+                pytest.DB['segments']['int'].get(),
+            ], 'columns',
+        ),
         # not Unified Format
         pytest.param(
-            [pd.DataFrame([1, 2, 3])],
+            [pd.DataFrame([1, 2, 3])], None,
             marks=pytest.mark.xfail(
                 raises=audformat.errors.NotConformToUnifiedFormat
             ),
         )
     ],
 )
-def test_concat(frames):
-    df = utils.concat(frames)
-    if not frames:
+def test_concat(objects, axis):
+    df = utils.concat(objects)
+    if not objects:
         assert df.empty
     elif audformat.index_type(df) == define.IndexType.SEGMENTED:
-        frames = [utils.to_segmented(frame) for frame in frames]
+        objects = [utils.to_segmented(obj) for obj in objects]
         pd.testing.assert_frame_equal(
-            df, pd.concat(frames, axis='index').sort_index(),
+            df, pd.concat(objects, axis=axis).sort_index(),
         )
     else:
         pd.testing.assert_frame_equal(
-            df, pd.concat(frames, axis='index').sort_index(),
-        )
-
-
-@pytest.mark.parametrize(
-    'table_id,table_type',
-    [
-        ('files', define.IndexType.FILEWISE),
-        ('segments', define.IndexType.SEGMENTED),
-    ]
-)
-def test_index_to_dict(table_id, table_type):
-    d = utils.index_to_dict(pytest.DB[table_id].index)
-    np.testing.assert_equal(
-        d[define.IndexField.FILE + 's'],
-        pytest.DB[table_id].files,
-    )
-    if table_type == define.IndexType.SEGMENTED:
-        np.testing.assert_equal(
-            d[define.IndexField.START + 's'],
-            pytest.DB[table_id].starts,
-        )
-        np.testing.assert_equal(
-            d[define.IndexField.END + 's'],
-            pytest.DB[table_id].ends,
-        )
-    elif table_type == define.IndexType.FILEWISE:
-        assert d[define.IndexField.START + 's'] is None
-        assert d[define.IndexField.END + 's'] is None
-
-
-@pytest.mark.parametrize(
-    'table_id,table_type',
-    [
-        ('files', define.IndexType.FILEWISE),
-        ('segments', define.IndexType.SEGMENTED),
-    ]
-)
-def test_series_to_dict(table_id, table_type):
-    for _, column in pytest.DB[table_id].get().items():
-        d = utils.series_to_dict(column)
-        np.testing.assert_equal(
-            d[define.IndexField.FILE + 's'],
-            pytest.DB[table_id].files,
-        )
-        if table_type == define.IndexType.SEGMENTED:
-            np.testing.assert_equal(
-                d[define.IndexField.START + 's'],
-                pytest.DB[table_id].starts,
-            )
-            np.testing.assert_equal(
-                d[define.IndexField.END + 's'],
-                pytest.DB[table_id].ends,
-            )
-        elif table_type == define.IndexType.FILEWISE:
-            assert d[define.IndexField.START + 's'] is None
-            assert d[define.IndexField.END + 's'] is None
-        pd.testing.assert_series_equal(
-            pd.Series(d['values']),
-            pd.Series(utils.series_to_array(column)),
-        )
-
-
-@pytest.mark.parametrize(
-    'table_id,table_type',
-    [
-        ('files', define.IndexType.FILEWISE),
-        ('segments', define.IndexType.SEGMENTED),
-    ]
-)
-def test_series_to_frame(table_id, table_type):
-
-    d = utils.frame_to_dict(pytest.DB[table_id].get())
-    np.testing.assert_equal(
-        d[define.IndexField.FILE + 's'],
-        pytest.DB[table_id].files,
-    )
-    if table_type == define.IndexType.SEGMENTED:
-        np.testing.assert_equal(
-            d[define.IndexField.START + 's'],
-            pytest.DB[table_id].starts,
-        )
-        np.testing.assert_equal(
-            d[define.IndexField.END + 's'],
-            pytest.DB[table_id].ends,
-        )
-    elif table_type == define.IndexType.FILEWISE:
-        assert d[define.IndexField.START + 's'] is None
-        assert d[define.IndexField.END + 's'] is None
-
-    for column_id, column in pytest.DB[table_id].get().items():
-        pd.testing.assert_series_equal(
-            pd.Series(d['values'][column_id]),
-            pd.Series(utils.series_to_array(column)),
+            df, pd.concat(objects, axis=axis).sort_index(),
         )
 
 

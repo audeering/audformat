@@ -3,7 +3,6 @@ import os
 import typing as typing
 
 import iso639
-import numpy as np
 import pandas as pd
 
 import audeer
@@ -11,75 +10,64 @@ import audiofile
 
 from audformat.core import define
 from audformat.core.index import index_type
-from audformat.core.errors import (
-    CannotCreateSegmentedIndex,
-    NotConformToUnifiedFormat,
-    RedundantArgumentError,
-)
+from audformat.core.index import index as create_index
 
 
-def concat(frames: typing.Sequence[pd.DataFrame]) -> pd.DataFrame:
-    r"""Concatenate sequence of frames along index and columns.
+def concat(
+        objs: typing.Sequence[typing.Union[pd.Series, pd.DataFrame]],
+) -> pd.DataFrame:
+    r"""Concatenate index and columns.
 
-    If at least one frame is segmented, the output will be a segmented table.
+    If at least one object is segmented, the output has a segmented index.
 
     Args:
-        frames: sequence of :class:`pandas.DataFrame`
+        objs: objects in Unified Format
 
     Returns:
-        concatenated frame
+        concatenated objects
 
     Raises:
-        ValueError: if one or more frame are not in Unified Format
+        ValueError: if one or more objects are not in Unified Format
 
     """
-    if not frames:
-        return pd.DataFrame([], columns=[define.IndexField.FILE])
+    if not objs:
+        return pd.DataFrame([], index=create_index([]))
 
     concat_table_type = define.IndexType.FILEWISE
-    for frame in frames:
+    for frame in objs:
         if index_type(frame) == define.IndexType.SEGMENTED:
             concat_table_type = define.IndexType.SEGMENTED
 
     if concat_table_type == define.IndexType.SEGMENTED:
-        index = pd.MultiIndex(
-            levels=[[], [], []],
-            codes=[[], [], []],
-            names=[
-                define.IndexField.FILE,
-                define.IndexField.START,
-                define.IndexField.END,
-            ],
-        )
-        frames = [
-            to_segmented(frame) for frame in frames
-        ]
+        index = create_index([], starts=[], ends=[])
+        objs = [to_segmented(frame) for frame in objs]
     else:
-        index = pd.Index([], name=define.IndexField.FILE)
+        index = create_index([])
 
-    index = index.append([frame.index for frame in frames])
+    index = index.append([frame.index for frame in objs])
     index = index.drop_duplicates()
 
     columns = OrderedDict()
-    for df in frames:
-        for c, d in zip(df.columns, df.dtypes):
-            if c not in columns:
-                columns[c] = d
+    for obj in objs:
+        if isinstance(obj, pd.Series):
+            columns[obj.name] = obj.dtype
+        else:
+            for c, d in zip(obj.columns, obj.dtypes):
+                if c not in columns:
+                    columns[c] = d
 
     df_concat = pd.DataFrame(index=index, columns=columns.keys()).sort_index()
-    for df in frames:
-        if not df.empty:
-            df_concat.loc[df.index, df.columns] = df
+    for obj in objs:
+        if not obj.empty:
+            if isinstance(obj, pd.Series):
+                df_concat.loc[obj.index, obj.name] = obj
+            else:
+                df_concat.loc[obj.index, obj.columns] = obj
+
     if not df_concat.empty:
         df_concat = df_concat.astype(columns)
 
     return df_concat
-
-
-def is_scalar(value: typing.Any) -> bool:
-    r"""Check if value is scalar"""
-    return (value is not None) and \
-           (isinstance(value, str) or not hasattr(value, '__len__'))
 
 
 def map_language(language: str) -> typing.Optional[str]:
@@ -122,22 +110,6 @@ def map_language(language: str) -> typing.Optional[str]:
         )
 
     return result
-
-
-def remove_duplicates(x: typing.Sequence[typing.Any]) \
-        -> typing.Sequence[typing.Any]:
-    r""""Remove duplicates from list by keeping the order."""
-    return list(dict.fromkeys(x))
-
-
-def to_array(value: typing.Any) -> typing.Union[list, np.ndarray]:
-    r"""Converts value to list or array."""
-    if value is not None:
-        if isinstance(value, (pd.Series, pd.DataFrame, pd.Index)):
-            value = value.to_numpy()
-        elif is_scalar(value):
-            value = [value]
-    return value
 
 
 def to_filewise(
@@ -282,87 +254,3 @@ def to_segmented(
     obj = obj.reset_index(drop=True)
     obj.index = index
     return obj
-
-
-# TODO: try to get rid of following functions
-
-def check_redundant_arguments(**kwargs):
-    r"""Check for redundant arguments."""
-    redundant = []
-    for key, value in kwargs.items():
-        if value is not None:
-            redundant.append(key)
-    if redundant:
-        raise RedundantArgumentError(redundant)
-
-
-def series_to_array(series: pd.Series) -> np.ndarray:
-    r"""Convert :class:`pandas.Series` to a ::`numpy.ndarray`.
-
-    .. note:: If ``series`` holds categorical data,``NaN``s will be
-        replaced with ``None``.
-
-    Args:
-        series: series
-
-    Returns:
-        array
-
-    """
-    values = series.to_numpy()
-    if series.dtype.name == 'category':
-        for idx, item in enumerate(values):
-            if isinstance(item, float) and np.isnan(item):
-                values[idx] = None
-    return values
-
-
-def index_to_dict(index: typing.Union[pd.Index, pd.Series,
-                                      pd.DataFrame]) -> dict:
-    r"""Convert :class:`pandas.Index` to a dictionary.
-
-    Returns a dictionary with keys files, starts, and ends.
-
-    """
-    if isinstance(index, (pd.Series, pd.DataFrame)):
-        index = index.index
-
-    d = dict([(define.IndexField.FILE + 's', None),
-              (define.IndexField.START + 's', None),
-              (define.IndexField.END + 's', None)])
-
-    table_type = index_type(index)
-
-    d[define.IndexField.FILE + 's'] = index.get_level_values(
-        define.IndexField.FILE).values
-    if table_type == define.IndexType.SEGMENTED:
-        d[define.IndexField.START + 's'] = index.get_level_values(
-            define.IndexField.START).values.astype(np.timedelta64)
-        d[define.IndexField.END + 's'] = index.get_level_values(
-            define.IndexField.END).values.astype(np.timedelta64)
-
-    return d
-
-
-def series_to_dict(series: pd.Series) -> dict:
-    r"""Convert :class:`pandas.Series` to a dictionary.
-
-    Returns a dictionary with keys values, files, starts, and ends.
-
-    """
-    d = index_to_dict(series)
-    d['values'] = series_to_array(series)
-    return d
-
-
-def frame_to_dict(frame: pd.DataFrame) -> dict:
-    r"""Convert :class:`pandas.DataFrame` to a dictionary.
-
-    Returns a dictionary with keys values, files, starts, and ends.
-
-    """
-    d = index_to_dict(frame)
-    d['values'] = {}
-    for column_id, column in frame.items():
-        d['values'][column_id] = series_to_array(column)
-    return d

@@ -3,8 +3,11 @@ import typing
 import pandas as pd
 
 from audformat.core import define
-from audformat.core import utils
-from audformat.core.index import index_type
+from audformat.core.index import (
+    index_type,
+    is_scalar,
+    to_array,
+)
 from audformat.core.common import HeaderBase
 from audformat.core.errors import ColumnNotAssignedToTableError
 
@@ -41,6 +44,8 @@ class Column(HeaderBase):
     def get(
             self,
             index: typing.Union[pd.Index, pd.Series, pd.DataFrame] = None,
+            *,
+            copy: bool = True,
     ) -> pd.Series:
         r"""Get a copy of the labels in this column.
 
@@ -53,17 +58,17 @@ class Column(HeaderBase):
         Args:
             index: index conform to
                 :ref:`table specifications <data-tables:Tables>`
+            copy: return a new object
 
         Raises:
-            RedundantArgumentError: for not allowed combinations
-                of input arguments
             ColumnNotAssignToTable: if column is not assign to a table
 
         """
         if self._table is None:
             raise ColumnNotAssignedToTableError()
 
-        return self._table._get(index)[self._id].copy()
+        result = self._table.get(index, copy=False)[self._id]
+        return result.copy() if copy else result
 
     def set(
             self,
@@ -84,85 +89,34 @@ class Column(HeaderBase):
             index: index conform to Unified Format
 
         Raises:
-            RedundantArgumentError: for not allowed combinations
-                of input arguments
             ColumnNotAssignToTable: if column is not assign to a table
 
         """
         if self._table is None:
             raise ColumnNotAssignedToTableError()
 
-        self._set(self._table.df, self._id, values, index)
+        column_id = self._id
+        df = self._table.df
 
-    def _set(
-            self,
-            df: pd.DataFrame,
-            column_id: str,
-            values: define.Typing.VALUES,
-            index: pd.Index,
-    ):
-        if utils.is_scalar(values):
-            if index is None:
-                values = [values] * len(self._table)
-            else:
-                values = [values] * len(index)
-        values = utils.to_array(values)
         if index is None:
             index = df.index
-        df.loc[index, column_id] = pd.Series(
-            values,
-            index=index,
-            dtype=df[column_id].dtype,
-        )
 
-        # if isinstance(values, pd.Series):
-        #     if index_type(values) is not None:
-        #         utils.check_redundant_arguments(
-        #             files=files, starts=starts, ends=ends,
-        #         )
-        #         # Get values, files, starts, ends from pd.Series
-        #         return self._set(
-        #             df, column_id, **utils.series_to_dict(values)
-        #         )
-        #
-        # if not utils.is_scalar(values):
-        #     values = utils.to_array(values)
-        # files = utils.to_array(files)
-        # starts = utils.to_array(starts)
-        # ends = utils.to_array(ends)
-        #
-        # if files is None:
-        #     if utils.is_scalar(values):
-        #         values = [values] * len(self._table)
-        #     df.loc[:, column_id] = pd.Series(
-        #         values,
-        #         index=df.index,
-        #         dtype=df[column_id].dtype,
-        #     )
-        # else:
-        #     if self._table.is_segmented \
-        #             and starts is not None \
-        #             and ends is not None:
-        #         idx = pd.MultiIndex.from_arrays(
-        #             [files, starts, ends],
-        #             names=[define.IndexField.FILE,
-        #                    define.IndexField.START,
-        #                    define.IndexField.END])
-        #         index = df.loc[idx, column_id].index
-        #         if utils.is_scalar(values):
-        #             values = [values] * len(index)
-        #         df.loc[idx, column_id] = pd.Series(
-        #             values,
-        #             index=index,
-        #             dtype=df[column_id].dtype,
-        #         )
-        #     else:
-        #         files = utils.remove_duplicates(files)
-        #         index = df.loc[files].index
-        #         if utils.is_scalar(values):
-        #             values = [values] * len(index)
-        #         df.loc[files, column_id] = pd.Series(
-        #             values,
-        #             index=index,
-        #             dtype=df[column_id].dtype,
-        #         )
+        if index_type(df.index) == index_type(index):
+            if is_scalar(values):
+                values = [values] * len(index)
+            values = to_array(values)
+            df.loc[index, column_id] = pd.Series(
+                values,
+                index=index,
+                dtype=df[column_id].dtype,
+            )
+        else:
+            if not self._table.is_filewise:
+                files = index.get_level_values(define.IndexField.FILE)
+                index = df.loc[files].index
+                return self.set(values, index=index)
+            else:
+                raise ValueError(
+                    'Cannot set value to a filewise column '
+                    'using a segmented index.'
+                )

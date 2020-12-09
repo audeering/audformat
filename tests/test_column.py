@@ -6,7 +6,7 @@ import audformat
 import audformat.testing
 
 
-def test_column_access():
+def test_access():
     db = audformat.testing.create_db()
     for table in db.tables.values():
         for column_id in table.columns.keys():
@@ -14,7 +14,7 @@ def test_column_access():
             assert str(table.columns[column_id]) == str(table[column_id])
 
 
-def test_column_exceptions():
+def test_exceptions():
     column = audformat.Column()
     with pytest.raises(audformat.errors.ColumnNotAssignedToTableError):
         column.set([])
@@ -27,7 +27,7 @@ def test_column_exceptions():
     (6, np.array([0.0, 1.0, 2.0, 3.0, 4.0, 5.0])),
     (6, pd.Series(range(6), dtype='float').values,),
 ])
-def test_filewise_column(num_files, values):
+def test_filewise(num_files, values):
 
     db = audformat.testing.create_db(minimal=True)
     audformat.testing.add_table(
@@ -78,13 +78,18 @@ def test_filewise_column(num_files, values):
     # test df
     pd.testing.assert_series_equal(table.df[column_id], series)
 
+    # try to use segmented index
+    with pytest.raises(ValueError):
+        index = audformat.index(files=[], starts=[], ends=[])
+        column.set([], index=index)
+
 
 @pytest.mark.parametrize('num_files,num_segments_per_file,values', [
     (3, 2, [0.0, 1.0, 2.0, 3.0, 4.0, 5.0]),
     (3, 2, np.array([0.0, 1.0, 2.0, 3.0, 4.0, 5.0])),
     (3, 2, pd.Series(range(6), dtype='float').values),
 ])
-def test_segmented_column(num_files, num_segments_per_file, values):
+def test_segmented(num_files, num_segments_per_file, values):
 
     db = audformat.testing.create_db(minimal=True)
     audformat.testing.add_table(
@@ -111,6 +116,8 @@ def test_segmented_column(num_files, num_segments_per_file, values):
     pd.testing.assert_series_equal(column.get(), series)
 
     # set single
+    series[:] = np.nan
+    table.df['column'] = np.nan
     series[0] = values[0]
     index = audformat.index(
         table.files[0],
@@ -122,6 +129,8 @@ def test_segmented_column(num_files, num_segments_per_file, values):
     pd.testing.assert_series_equal(column.get(), series)
 
     # set slice
+    series[:] = np.nan
+    table.df['column'] = np.nan
     series[1:-1] = values[1:-1]
     index = audformat.index(
         table.files[1:-1],
@@ -133,14 +142,37 @@ def test_segmented_column(num_files, num_segments_per_file, values):
     pd.testing.assert_series_equal(column.get(), series)
 
     # set all
+    series[:] = np.nan
+    table.df['column'] = np.nan
     series[:] = values
     column.set(values)
     pd.testing.assert_series_equal(column.get(), series)
 
     # set scalar
+    series[:] = np.nan
+    table.df['column'] = np.nan
     series[:] = values[0]
     column.set(values[0])
     pd.testing.assert_series_equal(column.get(), series)
 
+    # set files
+    series[:] = np.nan
+    table.df['column'] = np.nan
+    series[0:num_segments_per_file * 2] = values[-1]
+    index = audformat.index(db.files[:2])
+    column.set(values[-1], index=index)
+    pd.testing.assert_series_equal(
+        column.get(index),
+        series[0:num_segments_per_file * 2],
+    )
+
+    # set series
+    series[:] = np.nan
+    table.df['column'] = np.nan
+    column.set(series)
+    pd.testing.assert_series_equal(column.get(), series)
+
     # test df
-    pd.testing.assert_series_equal(db['table'].df[column_id], series)
+    series[:] = np.nan
+    table.df['column'] = np.nan
+    pd.testing.assert_series_equal(table.df[column_id], series)
