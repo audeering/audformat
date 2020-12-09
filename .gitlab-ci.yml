@@ -7,7 +7,7 @@ stages:
 .pytest:
   before_script:
     - apt-get update
-    - apt-get install -y curl jq pandoc libsndfile1
+    - apt-get install -y curl jq pandoc graphviz libsndfile1 sox
     - python -V
   script:
     - pip install -r requirements.txt

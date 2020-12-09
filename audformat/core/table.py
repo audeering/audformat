@@ -555,7 +555,6 @@ class Table(HeaderBase):
                 )
                 d = index_to_dict(self._df.index)
                 add_files_to_dict(d, missing_files, self.type)
-                # df_other = other.get(create_index(**d))
                 reindex = other._df.reindex(d['files'])
                 df_other = pd.DataFrame(
                     reindex.values,
@@ -568,7 +567,6 @@ class Table(HeaderBase):
                 )
                 d = index_to_dict(other._df.index)
                 add_files_to_dict(d, missing_files, other.type)
-                #  df_self = self.get(create_index(**d))
                 reindex = self._df.reindex(d['files'])
                 df_self = pd.DataFrame(
                     reindex.values,
