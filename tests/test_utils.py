@@ -26,7 +26,7 @@ from audformat import define
         # segmented
         (
             [
-                utils.to_segmented(table.get()) for table in
+                utils.to_segmented_index(table.get()) for table in
                 pytest.DB.tables.values()
             ], 'index',
         ),
@@ -71,7 +71,7 @@ def test_concat(objects, axis):
     if not objects:
         assert df.empty
     elif audformat.index_type(df) == define.IndexType.SEGMENTED:
-        objects = [utils.to_segmented(obj) for obj in objects]
+        objects = [utils.to_segmented_index(obj) for obj in objects]
         pd.testing.assert_frame_equal(
             df, pd.concat(objects, axis=axis).sort_index(),
         )
@@ -247,10 +247,10 @@ def test_from_csv(csv, result):
 )
 def test_to_segmented(table_id):
     for column_id, column in pytest.DB[table_id].get().items():
-        series = utils.to_segmented(column)
+        series = utils.to_segmented_index(column)
         pd.testing.assert_series_equal(series.reset_index(drop=True),
                                        column.reset_index(drop=True))
-    df = utils.to_segmented(pytest.DB[table_id].get())
+    df = utils.to_segmented_index(pytest.DB[table_id].get())
     pd.testing.assert_frame_equal(
         df.reset_index(drop=True),
         pytest.DB[table_id].get().reset_index(drop=True),
@@ -307,7 +307,7 @@ def test_to_filewise(tmpdir, output_folder, table_id, expected_file_names):
 
     has_existed = os.path.exists(output_folder)
 
-    frame = utils.to_filewise(
+    frame = utils.to_filewise_index(
         obj=pytest.DB[table_id].get(),
         root=tmpdir,
         output_folder=output_folder,

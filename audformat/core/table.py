@@ -24,9 +24,13 @@ def index_to_dict(index: pd.Index) -> dict:
     Returns a dictionary with keys files, starts, and ends.
 
     """
-    d = dict([(define.IndexField.FILE + 's', None),
-              (define.IndexField.START + 's', None),
-              (define.IndexField.END + 's', None)])
+    d = dict(
+        [
+            (define.IndexField.FILE + 's', None),
+            (define.IndexField.START + 's', None),
+            (define.IndexField.END + 's', None),
+        ]
+    )
 
     table_type = index_type(index)
 
@@ -60,7 +64,8 @@ class Table(HeaderBase):
         meta: additional meta fields
 
     Raises:
-        NotConformToUnifiedFormat: if index is not conform to Unified Format
+        NotConformToUnifiedFormat: if index is not conform to
+            :ref:`table specifications <data-tables:Tables>`
 
     """
     TYPE = 'type'
@@ -119,7 +124,7 @@ class Table(HeaderBase):
                 define.IndexField.END
             )
         else:
-            return utils.to_segmented(self.df.index).get_level_values(
+            return utils.to_segmented_index(self.df.index).get_level_values(
                 define.IndexField.END
             )
 
@@ -179,7 +184,7 @@ class Table(HeaderBase):
                 define.IndexField.START
             )
         else:
-            return utils.to_segmented(self.df.index).get_level_values(
+            return utils.to_segmented_index(self.df.index).get_level_values(
                 define.IndexField.START
             )
 
@@ -364,13 +369,15 @@ class Table(HeaderBase):
                 result = self._df.loc[index]
             else:
                 files = index.get_level_values(define.IndexField.FILE)
-                if self.is_filewise:
-                    reindex = self._df.reindex(files)
+                if self.is_filewise:  # index is segmented
                     result = pd.DataFrame(
-                        reindex.values, index, columns=self.columns,
+                        self._df.loc[files].values,
+                        index,
+                        columns=self.columns
                     )
-                else:
-                    files = list(dict.fromkeys(files))
+                    copy = False  # we already have a copy
+                else:  # index is filewise
+                    files = list(dict.fromkeys(files))  # remove duplicates
                     result = self._df.loc[files]
 
         return result.copy() if copy else result
@@ -493,7 +500,8 @@ class Table(HeaderBase):
 
         Args:
             values: dictionary of values with ``column_id`` as key
-            index: index conform to Unified Format
+            index: index conform to
+                :ref:`table specifications <data-tables:Tables>`
 
         """
         for idx, data in values.items():
@@ -536,7 +544,7 @@ class Table(HeaderBase):
                     d['files'] = np.r_[d['files'], additional_files.values]
                     if table_type == define.IndexType.SEGMENTED:
                         d_append = index_to_dict(
-                            utils.to_segmented(additional_files)
+                            utils.to_segmented_index(additional_files)
                         )
                         d['starts'] = np.r_[d['starts'], d_append['starts']]
                         d['ends'] = np.r_[d['ends'], d_append['ends']]
@@ -547,14 +555,26 @@ class Table(HeaderBase):
                 )
                 d = index_to_dict(self._df.index)
                 add_files_to_dict(d, missing_files, self.type)
-                df_other = other.get(create_index(**d))
+                # df_other = other.get(create_index(**d))
+                reindex = other._df.reindex(d['files'])
+                df_other = pd.DataFrame(
+                    reindex.values,
+                    index=create_index(**d),
+                    columns=other.columns
+                )
             elif self.type == define.IndexType.FILEWISE:
                 missing_files = self.files.unique().difference(
                     other.files.unique()
                 )
                 d = index_to_dict(other._df.index)
                 add_files_to_dict(d, missing_files, other.type)
-                df_self = self.get(create_index(**d))
+                #  df_self = self.get(create_index(**d))
+                reindex = self._df.reindex(d['files'])
+                df_self = pd.DataFrame(
+                    reindex.values,
+                    index=create_index(**d),
+                    columns=self.columns
+                )
 
         # figure out column names, schemes and raters
         df_columns = []
@@ -719,10 +739,14 @@ class Table(HeaderBase):
             if self.is_filewise:
                 self._df.index.name = define.IndexField.FILE
             elif self.is_segmented:
-                self._df.index.rename([define.IndexField.FILE,
-                                       define.IndexField.START,
-                                       define.IndexField.END],
-                                      inplace=True)
+                self._df.index.rename(
+                    [
+                        define.IndexField.FILE,
+                        define.IndexField.START,
+                        define.IndexField.END
+                    ],
+                    inplace=True,
+                )
 
         column._id = column_id
         column._table = self

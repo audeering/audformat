@@ -57,7 +57,10 @@ Minimal example
 audformat implementation
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. code-block:: python
+.. jupyter-execute::
+
+    import audformat
+
 
     # Create Database
     db = audformat.Database(
@@ -65,8 +68,7 @@ audformat implementation
         source='https://gitlab.audeering.com/data/databasename',
         usage=audformat.define.Usage.COMMERCIAL,
     )
-    # Access name of Database
-    db.name
+    db
 
 
 Rater
@@ -98,14 +100,16 @@ Minimal example
 audformat implementation
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. code-block:: python
+.. jupyter-execute::
 
     # Create minimal Rater
-    rater = audformat.Rater(type=audformat.define.RaterType.HUMAN)
+    rater = audformat.Rater(audformat.define.RaterType.HUMAN)
     # Add Rater to Database
     db.raters['raterid'] = rater
     # Access type of Rater
     db.raters['raterid'].type
+    # Access raters
+    db.raters
 
 
 Scheme
@@ -143,14 +147,16 @@ Minimal example
 audformat implementation
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. code-block:: python
+.. jupyter-execute::
 
     # Create minimal Scheme
-    scheme = audformat.Scheme(dtype=audformat.define.DataType.FLOAT)
+    scheme = audformat.Scheme(audformat.define.DataType.FLOAT)
     # Add Scheme to Database
     db.schemes['schemeid'] = scheme
     # Access dtype of Scheme
     db.schemes['schemeid'].dtype
+    # Access schemes
+    db.schemes
 
 
 Split
@@ -183,14 +189,16 @@ Minimal example
 audformat implementation
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. code-block:: python
+.. jupyter-execute::
 
     # Create minimal Split
-    split = audformat.Split(type=audformat.define.SplitType.TEST)
+    split = audformat.Split(audformat.define.SplitType.TEST)
     # Add Split to Database
     db.splits['splitid'] = split
     # Access type of Split
     db.splits['splitid'].type
+    # Access splits
+    db.splits
 
 
 Media
@@ -246,7 +254,7 @@ Minimal example
 audformat implementation
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. code-block:: python
+.. jupyter-execute::
 
     # Create minimal AudioInfo
     audio = audformat.AudioInfo()
@@ -254,6 +262,8 @@ audformat implementation
     db.media['mediaid'] = audio
     # Access type of AudioInfo
     db.media['mediaid'].type
+    # Access media
+    db.media
 
 
 Table
@@ -288,10 +298,10 @@ Minimal example
 audformat implementation
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. code-block:: python
+.. jupyter-execute::
 
     # Create minimal Table
-    table = audformat.Table(files=[])
+    table = audformat.Table(audformat.index([]))
     # Add Table to Database
     db.tables['tableid'] = table
     # Access type of Table
@@ -300,6 +310,8 @@ audformat implementation
     db['tableid'] = table
     # Access type of Table (short notation)
     db['tableid'].type
+    # Access tables
+    db.tables
 
 
 Column
@@ -334,7 +346,7 @@ Minimal example
 audformat implementation
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. code-block:: python
+.. jupyter-execute::
 
     # Create minimal Column
     column = audformat.Column()
@@ -342,3 +354,5 @@ audformat implementation
     db.tables['tableid'].columns['columnid'] = column
     # Add Column to Table (short notation)
     db['tableid']['columnid'] = column
+    # Access columns
+    db['tableid'].columns

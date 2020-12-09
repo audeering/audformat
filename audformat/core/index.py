@@ -32,7 +32,8 @@ def index(
         starts: define.Typing.TIMESTAMPS = None,
         ends: define.Typing.TIMESTAMPS = None,
 ) -> pd.Index:
-    r"""Creates index conform to Unified Format.
+    r"""Creates index conform to
+        :ref:`table specifications <data-tables:Tables>`.
 
     Creates a filewise index if only ``files`` is given.
     Otherwise creates a segmented index,
@@ -80,16 +81,18 @@ def index(
 def index_type(
         obj: typing.Union[pd.Index, pd.Series, pd.DataFrame]
 ) -> define.IndexType:
-    r"""Derive table type.
+    r"""Derive index type.
 
     Args:
-        obj: object in Unified Format
+        obj: object conform to
+            :ref:`table specifications <data-tables:Tables>`
 
     Returns:
         table type
 
     Raises:
-        NotConformToUnifiedFormat: if not conform to Unified Format
+        NotConformToUnifiedFormat: if not conform to
+            :ref:`table specifications <data-tables:Tables>`
 
     """
     if isinstance(obj, (pd.Series, pd.DataFrame)):

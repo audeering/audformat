@@ -52,6 +52,8 @@ def test_filewise(num_files, values):
     pd.testing.assert_series_equal(column.get(), series)
 
     # set single
+    series[:] = np.nan
+    table.df['column'] = np.nan
     series[0] = values[0]
     index = audformat.index(table.files[0])
     column.set(values[0], index=index)
@@ -59,6 +61,8 @@ def test_filewise(num_files, values):
     pd.testing.assert_series_equal(column.get(), series)
 
     # set slice
+    series[:] = np.nan
+    table.df['column'] = np.nan
     series[1:-1] = values[1:-1]
     index = audformat.index(table.files[1:-1])
     column.set(values[1:-1], index=index)
@@ -66,17 +70,34 @@ def test_filewise(num_files, values):
     pd.testing.assert_series_equal(column.get(), series)
 
     # set all
+    series[:] = np.nan
+    table.df['column'] = np.nan
     series[:] = values
     column.set(values)
     pd.testing.assert_series_equal(column.get(), series)
 
     # set scalar
+    series[:] = np.nan
+    table.df['column'] = np.nan
     series[:] = values[0]
     column.set(values[0])
     pd.testing.assert_series_equal(column.get(), series)
 
-    # test df
-    pd.testing.assert_series_equal(table.df[column_id], series)
+    # get segments
+    table.df['column'] = values
+    index = audformat.index(
+        [db.files[0], db.files[0], db.files[1]],
+        starts=['0s', '1s', '0s'],
+        ends=['1s', '2s', pd.NaT],
+    )
+    pd.testing.assert_series_equal(
+        column.get(index),
+        pd.Series(
+            [values[0], values[0], values[1]],
+            index=index,
+            name='column',
+        )
+    )
 
     # try to use segmented index
     with pytest.raises(ValueError):

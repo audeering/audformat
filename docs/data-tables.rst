@@ -12,7 +12,7 @@ There are two types of tables:
 * **Filewise**: labels refer to whole files
 * **Segmented**: labels refer to specific parts of files (segments)
 
-Each type comes with a characteristic index:
+Each type comes with a characteristic index.
 
 
 Filewise
@@ -27,32 +27,97 @@ file            Path to media file
 audformat implementation
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. code-block:: python
+.. jupyter-execute::
+    :hide-code:
+    :hide-output:
 
-    # Assign labels to the whole table
-    values_dict = {'columnid': values_list}
-    db['tableid'].set(values_dict, files=files_list)    
-    # Assign labels to a column
-    db['tableid']['columnid'].set(values_list, files=files_list)    
-    # Access all labels as pandas.DataFrame
-    db['tableid'].get()    
-    # Access labels from a column as pandas.Series
-    db['tableid']['columnid'].get()    
-    # Access all labels as segments
-    db['tableid'].get(
-        files=files_list, 
-        starts=starts_list,
-        ends=ends_list)    
-    # Access labels from a column as a segmented series
-    db['tableid']['columnid'].get(
-        files=files_list,
-        starts=starts_list,
-        ends=ends_list)    
-    # Access labels from a column as segments
-    db['tableid']['columnid'].get(
-        files=files_list, 
-        starts=starts_list,
-        ends=ends_list)
+    import numpy as np
+    import pandas as pd
+
+
+    def series_to_html(self):
+        df = self.to_frame()
+        df.columns = ['']
+        return df._repr_html_()
+    setattr(pd.Series, '_repr_html_', series_to_html)
+
+
+    def index_to_html(self):
+        return self.to_frame(index=False)._repr_html_()
+    setattr(pd.Index, '_repr_html_', index_to_html)
+
+Create a filewise index:
+
+.. jupyter-execute::
+
+    import pandas as pd
+
+    import audformat
+    import audformat.testing
+
+
+    filewise_index = audformat.index(
+        ['f1', 'f2', 'f3'],
+    )
+    filewise_index
+
+Create database and add table with a filewise index:
+
+.. jupyter-execute::
+
+    db = audformat.testing.create_db(minimal=True)
+    db['filewise'] = audformat.Table(filewise_index)
+    db['filewise']['values'] = audformat.Column()
+    db.tables['filewise']
+
+Assign labels to a table:
+
+.. jupyter-execute::
+
+    values_list = [1, 2, 3]
+    values_dict = {'values': values_list}
+    db['filewise'].set(values_dict)
+
+Access labels as :class:`pandas.DataFrame`:
+
+.. jupyter-execute::
+
+    db['filewise'].get()
+
+Assign labels to a column:
+
+.. jupyter-execute::
+
+    db['filewise']['values'].set(values_list)
+
+Access labels as :class:`pandas.Series`
+
+.. jupyter-execute::
+
+    db['filewise']['values'].get()
+
+Create a segmented index:
+
+.. jupyter-execute::
+
+    segmented_index = audformat.index(
+        ['f1', 'f1', 'f1', 'f2'],
+        starts=['0s', '1s', '2s', '0s'],
+        ends=['1s', '2s', '3s', pd.NaT],
+    )
+    segmented_index
+
+Access labels from a filewise table with a segmented index:
+
+.. jupyter-execute::
+
+    db['filewise'].get(segmented_index)
+
+Access labels from a filewise column with a segmented index:
+
+.. jupyter-execute::
+
+    db['filewise']['values'].get(segmented_index)
     
 
 Segmented
@@ -71,22 +136,70 @@ end             End time of the segment
 audformat implementation
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. code-block:: python
+Create a segmented index:
 
-    # Assign labels to the whole table
-    values_dict = {'columnid': values_list}
-    db['tableid'].set(
+.. jupyter-execute::
+
+    segmented_index = audformat.index(
+        ['f1', 'f1', 'f1', 'f2', 'f3'],
+        starts=['0s', '1s', '2s', '0s', '1m'],
+        ends=['1s', '2s', '3s', pd.NaT, '1h'],
+    )
+    segmented_index
+
+Add table with a segmented index:
+
+.. jupyter-execute::
+
+    db['segmented'] = audformat.Table(segmented_index)
+    db['segmented']['values'] = audformat.Column()
+    db.tables['segmented']
+
+Assign labels to the whole table:
+
+.. jupyter-execute::
+
+    values_list = [1, 2, 3, 4, 5]
+    values_dict = {'values': values_list}
+    db['segmented'].set(
         values_dict,
-        files=files_list,
-        starts=starts_list,
-        ends=ends_list)
-    # Assign labels to a column
-    db['tableid']['columnid'].set(
-        values_list,
-        files=files_list,
-        starts=starts_list,
-        ends=ends_list)
-    # Access all labels as pandas.DataFrame
-    db['tableid'].get()
-    # Access labels from a column as pandas.Series
-    db['tableid']['columnid'].get()
+    )
+
+Access all labels as :class:`pandas.DataFrame`:
+
+.. jupyter-execute::
+
+    db['segmented'].get()
+
+Assign labels to a column:
+
+.. jupyter-execute::
+
+    db['segmented']['values'].set(values_list)
+
+Access labels from a column as :class:`pandas.Series`:
+
+.. jupyter-execute::
+
+    db['segmented']['values'].get()
+
+Create a filewise index:
+
+.. jupyter-execute::
+
+    filewise_index = audformat.index(
+        ['f1', 'f2'],
+    )
+    filewise_index
+
+Access labels from a segmented table with a filewise index:
+
+.. jupyter-execute::
+
+    db['segmented'].get(filewise_index)
+
+Access labels from a segmented column with a filewise index:
+
+.. jupyter-execute::
+
+    db['segmented']['values'].get(filewise_index)

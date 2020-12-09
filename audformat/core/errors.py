@@ -76,7 +76,8 @@ class ColumnNotAssignedToTableError(ValueError):
 
 
 class NotConformToUnifiedFormat(ValueError):
-    r"""Raised if index is not conform to Unified Format."""
+    r"""Raised if index is not conform to
+    :ref:`table specifications <data-tables:Tables>`."""
     def __init__(self):
         message = 'Index not conform to Unified Format.'
         super().__init__(message)

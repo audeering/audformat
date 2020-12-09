@@ -1,4 +1,0 @@
-file,string,number,timestamp,date,label,label_map_str,label_map_int
-audio/001.wav,2yW4Acq9GF,0.72,0 days 00:00:00.580000,1970/01/01,label1,,1
-audio/002.wav,z6Y1t9EwL5,0.78,0 days 00:00:00.140000,1970/01/01,label2,,1
-audio/003.wav,6nGisiWgNZ,0.52,0 days 00:00:00.020000,1970/01/01,label1,,3

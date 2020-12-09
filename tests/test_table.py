@@ -341,6 +341,8 @@ def test_filewise(num_files, values):
     pd.testing.assert_frame_equal(table.get(), df)
 
     # single
+    df['column'] = np.nan
+    table.df['column'] = np.nan
     df.iloc[0] = values[0]
     index = audformat.index(table.files[0])
     table.set({'column': values[0]}, index=index)
@@ -351,6 +353,8 @@ def test_filewise(num_files, values):
     pd.testing.assert_frame_equal(table.get(), df)
 
     # slice
+    df['column'] = np.nan
+    table.df['column'] = np.nan
     df['column'][1:-1] = values[1:-1]
     index = audformat.index(table.files[1:-1])
     table.set({'column': values[1:-1]}, index=index)
@@ -361,16 +365,23 @@ def test_filewise(num_files, values):
     pd.testing.assert_frame_equal(table.get(), df)
 
     # all
+    df['column'] = np.nan
+    table.df['column'] = np.nan
     df.iloc[:, 0] = values
     table.set({'column': values})
     pd.testing.assert_frame_equal(table.get(), df)
 
     # scalar
+    df['column'] = np.nan
+    table.df['column'] = np.nan
     df.iloc[:, 0] = values[0]
     table.set({'column': values[0]})
     pd.testing.assert_frame_equal(table.get(), df)
 
     # data frame
+    df['column'] = np.nan
+    table.df['column'] = np.nan
+    df.iloc[:, 0] = values
     table.set(df)
     pd.testing.assert_frame_equal(table.get(), df)
 

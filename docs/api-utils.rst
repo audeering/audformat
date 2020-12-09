@@ -20,12 +20,12 @@ read_csv
 
 .. autofunction:: read_csv
 
-to_filewise
------------
+to_filewise_index
+-----------------
 
-.. autofunction:: to_filewise
+.. autofunction:: to_filewise_index
 
-to_segmented
-------------
+to_segmented_index
+------------------
 
-.. autofunction:: to_segmented
+.. autofunction:: to_segmented_index

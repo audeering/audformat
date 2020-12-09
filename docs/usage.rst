@@ -218,7 +218,7 @@ for which age information is available:
 .. jupyter-execute::
 
     df_likability = db['likability'].get(
-        audformat.index(db['age'].files),
+        db['age'].files,
     )
 
 Which results in the following :class:`pandas.DataFrame`:
@@ -232,9 +232,7 @@ in the likeability table:
 
 .. jupyter-execute::
 
-    df_age = db['age'].get(
-        db['likability'].index
-    ).dropna()
+    df_age = db['age'].get(df_likability.index)
 
 Which results in the following :class:`pandas.DataFrame`:
 

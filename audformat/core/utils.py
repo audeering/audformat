@@ -17,18 +17,21 @@ from audformat.core.errors import NotConformToUnifiedFormat
 def concat(
         objs: typing.Sequence[typing.Union[pd.Series, pd.DataFrame]],
 ) -> pd.DataFrame:
-    r"""Concatenate index and columns.
+    r"""Concatenate objects conform to
+        :ref:`table specifications <data-tables:Tables>`
 
     If at least one object is segmented, the output has a segmented index.
 
     Args:
-        objs: objects in Unified Format
+        objs: objects conform to
+            :ref:`table specifications <data-tables:Tables>`
 
     Returns:
         concatenated objects
 
     Raises:
-        ValueError: if one or more objects are not in Unified Format
+        ValueError: if one or more objects are not conform to
+            :ref:`table specifications <data-tables:Tables>`
 
     """
     if not objs:
@@ -41,7 +44,7 @@ def concat(
 
     if concat_table_type == define.IndexType.SEGMENTED:
         index = create_index([], starts=[], ends=[])
-        objs = [to_segmented(frame) for frame in objs]
+        objs = [to_segmented_index(frame) for frame in objs]
     else:
         index = create_index([])
 
@@ -117,7 +120,9 @@ def read_csv(
         *args,
         **kwargs,
 ) -> typing.Union[pd.Index, pd.Series, pd.DataFrame]:
-    r"""Read object in Unified Format from CSV file.
+    r"""Read object conform to
+        :ref:`table specifications <data-tables:Tables>`
+        from CSV file.
 
     See :meth:`pandas.read_csv` for supported arguments.
 
@@ -126,9 +131,8 @@ def read_csv(
         **kwargs: keyword arguments
 
     Raises:
-        NotConformToUnifiedFormat: if CSV file cannot
-            be converted to the :ref:`Unified Format
-            <data-format:Unified Format>`
+        NotConformToUnifiedFormat: if CSV files is not conform to
+            :ref:`table specifications <data-tables:Tables>`
 
     """
     frame = pd.read_csv(*args, **kwargs)
@@ -162,7 +166,7 @@ def read_csv(
         return frame
 
 
-def to_filewise(
+def to_filewise_index(
         obj: typing.Union[pd.Index, pd.Series, pd.DataFrame],
         root: str,
         output_folder: str,
@@ -178,7 +182,8 @@ def to_filewise(
     If input is filewise no action is applied.
 
     Args:
-        obj: object in Unified Format
+        obj: object conform to
+            :ref:`table specifications <data-tables:Tables>`
         root: path to root folder of data. Even if the file paths of ``frame``
             are absolute, this argument is needed in order to reconstruct
             the directory structure of the original data
@@ -260,19 +265,21 @@ def to_filewise(
     return obj.set_index(keys=define.IndexField.FILE)
 
 
-def to_segmented(
+def to_segmented_index(
         obj: typing.Union[pd.Index, pd.Series, pd.DataFrame],
 ) -> typing.Union[pd.Index, pd.Series, pd.DataFrame]:
     r"""Convert to segmented index.
 
     Args:
-        obj: object in Unified Format
+        obj: object conform to
+            :ref:`table specifications <data-tables:Tables>`
 
     Returns:
         object with segmented index
 
     Raises:
-        ValueError: if not conform to Unified Format.
+        ValueError: if object not conform to
+            :ref:`table specifications <data-tables:Tables>`
 
     """
     table_type = index_type(obj)

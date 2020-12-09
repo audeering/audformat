@@ -3,13 +3,35 @@ Example
 
 Header (YAML):
 
-.. literalinclude:: examples/example.yml
-    :language: yaml
+.. jupyter-execute::
 
-Discrete table (CSV):
+    import audformat.testing
 
-.. literalinclude:: examples/example-filewise.csv
+    db = audformat.testing.create_db()
+    db
 
-Discrete table with segments (CSV):
+Filewise table as :class:`pd.DataFrame`:
 
-.. literalinclude:: examples/example-segmented.csv
+.. jupyter-execute::
+
+    db['files'].get()
+
+and as CSV:
+
+.. jupyter-execute::
+    :hide-code:
+
+    print(db['files'].get().to_csv())
+
+Segmented table as :class:`pd.DataFrame`:
+
+.. jupyter-execute::
+
+    db['segments'].get()
+
+and as CSV:
+
+.. jupyter-execute::
+    :hide-code:
+
+    print(db['segments'].get().to_csv())

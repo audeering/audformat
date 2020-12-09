@@ -9,6 +9,6 @@ from audformat.core.utils import (
     # split_id,
     # split_name,
     # split_path,
-    to_filewise,
-    to_segmented,
+    to_filewise_index,
+    to_segmented_index,
 )

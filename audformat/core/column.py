@@ -86,7 +86,8 @@ class Column(HeaderBase):
         Args:
             values: a list of values
                 matching the ``dtype`` of the corresponding :class:`Scheme`
-            index: index conform to Unified Format
+            index: index conform to
+                :ref:`table specifications <data-tables:Tables>`
 
         Raises:
             ColumnNotAssignToTable: if column is not assign to a table
