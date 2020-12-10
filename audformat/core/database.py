@@ -9,7 +9,7 @@ import audeer
 
 from audformat.core import define
 from audformat.core import utils
-from audformat.core.index import index as create_index
+from audformat.core.index import create_segmented_index
 from audformat.core.column import Column
 from audformat.core.common import HeaderBase, HeaderDict
 from audformat.core.errors import BadIdError
@@ -154,7 +154,7 @@ class Database(HeaderBase):
             segments
 
         """
-        index = create_index([], starts=[], ends=[])
+        index = create_segmented_index()
         for table in self.tables.values():
             if table.is_segmented:
                 index = index.union(table.df.index)

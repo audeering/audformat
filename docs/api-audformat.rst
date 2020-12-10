@@ -15,17 +15,22 @@ Column
 .. autoclass:: audformat.Column
     :members:
 
+create_filewise_index
+---------------------
+
+.. autofunction:: audformat.create_filewise_index
+
+create_segmented_index
+----------------------
+
+.. autofunction:: audformat.create_segmented_index
+
 Database
 --------
 
 .. autoclass:: audformat.Database
     :members:
     :special-members:
-
-index
------
-
-.. autofunction:: audformat.index
 
 index_type
 ----------

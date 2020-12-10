@@ -301,7 +301,7 @@ audformat implementation
 .. jupyter-execute::
 
     # Create minimal Table
-    table = audformat.Table(audformat.index([]))
+    table = audformat.Table(audformat.create_filewise_index())
     # Add Table to Database
     db.tables['tableid'] = table
     # Access type of Table

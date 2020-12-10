@@ -26,18 +26,37 @@ def to_array(value: typing.Any) -> typing.Union[list, np.ndarray]:
     return value
 
 
-def index(
-        files: define.Typing.FILES,
-        *,
+def create_filewise_index(
+        files: define.Typing.FILES = None,
+) -> pd.Index:
+    r"""Creates a filewise index conform to
+        :ref:`table specifications <data-tables:Tables>`.
+
+    Args:
+        files: list of files
+
+    Returns:
+        filewise index
+
+    """
+    if files is None:
+        files = []
+    files = to_array(files)
+    return pd.Index(files, name=define.IndexField.FILE)
+
+
+def create_segmented_index(
+        files: define.Typing.FILES = None,
         starts: define.Typing.TIMESTAMPS = None,
         ends: define.Typing.TIMESTAMPS = None,
 ) -> pd.Index:
-    r"""Create index conform to
+    r"""Create segmented index conform to
         :ref:`table specifications <data-tables:Tables>`.
 
-    Creates a filewise index if only ``files`` is given.
-    Otherwise creates a segmented index,
-    where ``starts`` default to ``0`` and ``ends`` to ``NaT``.
+    If a non-empty index is created and ``starts`` is set to ``None``,
+    the level will be filled up with ``0``.
+    If a non-empty index is created and ``ends`` is set to ``None``,
+    the level will be filled up with ``NaT``.
 
     Args:
         files: set confidence values only on a sub-set of files
@@ -45,7 +64,7 @@ def index(
         ends: segment end positions
 
     Returns:
-        index
+        segmented index
 
     Raises:
         CannotCreateSegmentedIndex: if ``files``, ``start`` and ``ends``
@@ -56,26 +75,27 @@ def index(
     starts = to_array(starts)
     ends = to_array(ends)
 
-    if starts is not None or ends is not None:
-        if starts is None:
-            starts = [0] * len(ends)
-        elif ends is None:
-            ends = [pd.NaT] * len(starts)
+    if files is None:
+        files = []
 
-        if not len(files) == len(starts) and len(files) == len(ends):
-            raise CannotCreateSegmentedIndex()
+    num_files = len(files)
 
-        idx = pd.MultiIndex.from_arrays(
-            [files, pd.to_timedelta(starts), pd.to_timedelta(ends)],
-            names=[
-                define.IndexField.FILE,
-                define.IndexField.START,
-                define.IndexField.END,
-            ])
-    else:
-        idx = pd.Index(files, name=define.IndexField.FILE)
+    if starts is None:
+        starts = [0] * num_files
 
-    return idx
+    if ends is None:
+        ends = [pd.NaT] * num_files
+
+    if num_files != len(starts) or num_files != len(ends):
+        raise CannotCreateSegmentedIndex()
+
+    return pd.MultiIndex.from_arrays(
+        [files, pd.to_timedelta(starts), pd.to_timedelta(ends)],
+        names=[
+            define.IndexField.FILE,
+            define.IndexField.START,
+            define.IndexField.END,
+        ])
 
 
 def index_type(

@@ -4,9 +4,56 @@ import pytest
 import audformat
 
 
+def to_array(value):
+    if value is not None:
+        if isinstance(value, (pd.Series, pd.DataFrame, pd.Index)):
+            value = value.tolist()
+        elif not isinstance(value, list):
+            value = [value]
+    return value
+
+
+@pytest.mark.parametrize(
+    'files',
+    [
+        None,
+        [],
+        '1.wav',
+        ['1.wav', '2.wav'],
+        pytest.DB['files'].files,
+    ]
+)
+def test_create_filewise_index(files):
+
+    index = audformat.create_filewise_index(files)
+
+    files = to_array(files)
+    if files is None:
+        files = []
+
+    assert index.get_level_values(
+        audformat.define.IndexField.FILE
+    ).tolist() == files
+
+
 @pytest.mark.parametrize(
     'files,starts,ends',
     [
+        (
+            None,
+            None,
+            None,
+        ),
+        (
+            [],
+            None,
+            None,
+        ),
+        (
+            [],
+            [],
+            [],
+        ),
         (
             '1.wav',
             None,
@@ -65,43 +112,37 @@ import audformat
         ),
     ]
 )
-def test_to_index(files, starts, ends):
+def test_create_segmented_index(files, starts, ends):
 
-    def to_array(value):
-        if value is not None:
-            if isinstance(value, (pd.Series, pd.DataFrame, pd.Index)):
-                value = value.tolist()
-            elif not isinstance(value, list):
-                value = [value]
-        return value
+    index = audformat.create_segmented_index(files, starts=starts, ends=ends)
 
     files = to_array(files)
     starts = to_array(starts)
     ends = to_array(ends)
 
-    index = audformat.index(files, starts=starts, ends=ends)
-    index_type = audformat.index_type(index)
+    if files is None:
+        files = []
 
     assert index.get_level_values(
         audformat.define.IndexField.FILE
     ).tolist() == files
-    if index_type == audformat.define.IndexType.SEGMENTED:
-        if starts is not None:
-            assert index.get_level_values(
-                audformat.define.IndexField.START
-            ).tolist() == starts
-        else:
-            assert index.get_level_values(
-                audformat.define.IndexField.START
-            ).tolist() == [pd.Timedelta(0)] * len(ends)
-        if ends is not None:
-            assert index.get_level_values(
-                audformat.define.IndexField.END
-            ).tolist() == ends
-        else:
-            assert index.get_level_values(
-                audformat.define.IndexField.END
-            ).tolist() == [pd.NaT] * len(starts)
+
+    if starts is not None:
+        assert index.get_level_values(
+            audformat.define.IndexField.START
+        ).tolist() == starts
+    else:
+        assert index.get_level_values(
+            audformat.define.IndexField.START
+        ).tolist() == [pd.Timedelta(0)] * len(files)
+    if ends is not None:
+        assert index.get_level_values(
+            audformat.define.IndexField.END
+        ).tolist() == ends
+    else:
+        assert index.get_level_values(
+            audformat.define.IndexField.END
+        ).tolist() == [pd.NaT] * len(files)
 
 
 @pytest.mark.parametrize(

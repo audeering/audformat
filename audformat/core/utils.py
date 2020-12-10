@@ -10,7 +10,10 @@ import audiofile
 
 from audformat.core import define
 from audformat.core.index import index_type
-from audformat.core.index import index as create_index
+from audformat.core.index import (
+    create_filewise_index,
+    create_segmented_index,
+)
 from audformat.core.errors import NotConformToUnifiedFormat
 
 
@@ -35,7 +38,7 @@ def concat(
 
     """
     if not objs:
-        return pd.DataFrame([], index=create_index([]))
+        return pd.DataFrame([], index=create_filewise_index())
 
     concat_table_type = define.IndexType.FILEWISE
     for frame in objs:
@@ -43,10 +46,10 @@ def concat(
             concat_table_type = define.IndexType.SEGMENTED
 
     if concat_table_type == define.IndexType.SEGMENTED:
-        index = create_index([], starts=[], ends=[])
+        index = create_segmented_index()
         objs = [to_segmented_index(frame) for frame in objs]
     else:
-        index = create_index([])
+        index = create_filewise_index()
 
     index = index.append([frame.index for frame in objs])
     index = index.drop_duplicates()
@@ -153,7 +156,10 @@ def read_csv(
         ends = pd.to_timedelta(frame[define.IndexField.END])
         drop.append(define.IndexField.END)
 
-    index = create_index(files, starts=starts, ends=ends)
+    if starts is None and ends is None:
+        index = create_filewise_index(files)
+    else:
+        index = create_segmented_index(files, starts=starts, ends=ends)
     frame.drop(drop, axis='columns', inplace=True)
 
     if len(frame.columns) == 0:
