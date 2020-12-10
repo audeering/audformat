@@ -18,8 +18,8 @@ import audiofile as af
 from audformat.core import define
 from audformat.core.database import Database
 from audformat.core.index import (
-    create_filewise_index,
-    create_segmented_index,
+    filewise_index,
+    segmented_index,
 )
 from audformat.core.media import (
     AudioInfo,
@@ -108,7 +108,7 @@ def add_table(
 
         n_items = num_files
         db[table_id] = Table(
-            create_filewise_index(files),
+            filewise_index(files),
             split_id=split_id,
             media_id=media_id,
         )
@@ -130,7 +130,7 @@ def add_table(
             new_files.extend([file] * num_segments_per_file)
 
         db[table_id] = Table(
-            create_segmented_index(new_files, starts=starts, ends=ends),
+            segmented_index(new_files, starts=starts, ends=ends),
             split_id=split_id,
             media_id=media_id,
         )

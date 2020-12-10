@@ -8,11 +8,6 @@ import audeer
 
 from audformat.core import define
 from audformat.core import utils
-from audformat.core.index import (
-    create_filewise_index,
-    create_segmented_index,
-    index_type,
-)
 from audformat.core.column import Column
 from audformat.core.common import (
     HeaderBase,
@@ -20,6 +15,14 @@ from audformat.core.common import (
 )
 from audformat.core.errors import (
     BadIdError,
+)
+from audformat.core.index import (
+    filewise_index,
+    segmented_index,
+    index_type,
+)
+from audformat.core.typing import (
+    Values,
 )
 
 
@@ -73,7 +76,7 @@ class Table(HeaderBase):
             :ref:`table specifications <data-tables:Tables>`
 
     Example:
-        >>> index = create_filewise_index(['f1', 'f2', 'f3'])
+        >>> index = filewise_index(['f1', 'f2', 'f3'])
         >>> table = Table(
         ...     index,
         ...     split_id=define.SplitType.TEST,
@@ -102,7 +105,7 @@ class Table(HeaderBase):
         file
         f1        0
         f2        1
-        >>> index_ex = create_filewise_index('f4')
+        >>> index_ex = filewise_index('f4')
         >>> table_ex = table.extend_index(
         ...     index_ex,
         ...     inplace=False,
@@ -157,7 +160,7 @@ class Table(HeaderBase):
         super().__init__(description=description, meta=meta)
 
         if index is None:
-            index = create_filewise_index()
+            index = filewise_index()
 
         self.type = index_type(index)
         r"""Table type"""
@@ -212,7 +215,7 @@ class Table(HeaderBase):
 
         """
         if self.df.index.empty:
-            return create_filewise_index()
+            return filewise_index()
         else:
             return self.df.index.get_level_values(define.IndexField.FILE)
 
@@ -593,7 +596,7 @@ class Table(HeaderBase):
     def set(
             self,
             values: typing.Union[
-                typing.Dict[str, define.Typing.VALUES],
+                typing.Dict[str, Values],
                 pd.DataFrame,
             ],
             *,
@@ -671,7 +674,7 @@ class Table(HeaderBase):
                 reindex = other._df.reindex(d['files'])
                 df_other = pd.DataFrame(
                     reindex.values,
-                    index=create_segmented_index(**d),
+                    index=segmented_index(**d),
                     columns=other.columns
                 )
             elif self.type == define.IndexType.FILEWISE:
@@ -683,7 +686,7 @@ class Table(HeaderBase):
                 reindex = self._df.reindex(d['files'])
                 df_self = pd.DataFrame(
                     reindex.values,
-                    index=create_segmented_index(**d),
+                    index=segmented_index(**d),
                     columns=self.columns
                 )
 

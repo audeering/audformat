@@ -31,17 +31,18 @@ source_suffix = '.rst'
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', '**.ipynb_checkpoints']
 pygments_style = None
 extensions = [
-    'sphinx.ext.autodoc',
-    'sphinx_autodoc_typehints',
-    'sphinx_copybutton',
-    'sphinx.ext.autosectionlabel',
     'sphinx.ext.graphviz',
-    'sphinx.ext.intersphinx',
+    'sphinx.ext.autodoc',
     'sphinx.ext.napoleon',  # support for Google-style docstrings
+    'sphinx_autodoc_typehints',
+    'sphinx.ext.autosectionlabel',
     'sphinx.ext.viewcode',
+    'sphinx.ext.intersphinx',
+    'sphinx_copybutton',
     'sphinxcontrib.katex',  # has to be before jupyter_sphinx
     'jupyter_sphinx',
 ]
+
 napoleon_use_ivar = True  # List of class attributes
 autodoc_inherit_docstrings = False  # disable docstring inheritance
 intersphinx_mapping = {

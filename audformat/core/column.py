@@ -10,6 +10,7 @@ from audformat.core.index import (
 )
 from audformat.core.common import HeaderBase
 from audformat.core.errors import ColumnNotAssignedToTableError
+from audformat.core.typing import Values
 
 
 class Column(HeaderBase):
@@ -82,7 +83,7 @@ class Column(HeaderBase):
 
     def set(
             self,
-            values: define.Typing.VALUES,
+            values: Values,
             *,
             index: pd.Index = None,
     ):

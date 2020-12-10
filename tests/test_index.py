@@ -25,7 +25,7 @@ def to_array(value):
 )
 def test_create_filewise_index(files):
 
-    index = audformat.create_filewise_index(files)
+    index = audformat.filewise_index(files)
 
     files = to_array(files)
     if files is None:
@@ -114,7 +114,7 @@ def test_create_filewise_index(files):
 )
 def test_create_segmented_index(files, starts, ends):
 
-    index = audformat.create_segmented_index(files, starts=starts, ends=ends)
+    index = audformat.segmented_index(files, starts=starts, ends=ends)
 
     files = to_array(files)
     starts = to_array(starts)

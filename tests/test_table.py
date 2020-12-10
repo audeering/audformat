@@ -194,7 +194,7 @@ def test_exceptions():
 
     with pytest.raises(ValueError):
         db['table'] = audformat.Table(
-            audformat.create_segmented_index(
+            audformat.segmented_index(
                 files=['f1', 'f2'],
                 starts=['0s'],
                 ends=['1s']
@@ -202,7 +202,7 @@ def test_exceptions():
         )
     with pytest.raises(ValueError):
         db['table'] = audformat.Table(
-            audformat.create_segmented_index(
+            audformat.segmented_index(
                 files=['f1', 'f2'],
                 starts=['0s', '1s'],
                 ends=['1s'],
@@ -210,7 +210,7 @@ def test_exceptions():
         )
     with pytest.raises(ValueError):
         db['table'] = audformat.Table(
-            audformat.create_segmented_index(
+            audformat.segmented_index(
                 files=['f1', 'f2'],
                 starts=['0s'],
                 ends=['1s', '2s'],
@@ -221,12 +221,12 @@ def test_exceptions():
 
     with pytest.raises(audformat.errors.BadIdError):
         db['table'] = audformat.Table(
-            audformat.create_filewise_index(['f1', 'f2']),
+            audformat.filewise_index(['f1', 'f2']),
         )
         db['table']['column'] = audformat.Column(scheme_id='invalid')
     with pytest.raises(audformat.errors.BadIdError):
         db['table'] = audformat.Table(
-            audformat.create_filewise_index(['f1', 'f2']),
+            audformat.filewise_index(['f1', 'f2']),
         )
         db['table']['column'] = audformat.Column(rater_id='invalid')
 
@@ -239,11 +239,11 @@ def test_extend_index():
     # empty and invalid
 
     db['table'] = audformat.Table()
-    db['table'].extend_index(audformat.create_filewise_index())
+    db['table'].extend_index(audformat.filewise_index())
     assert db['table'].get().empty
     with pytest.raises(ValueError):
         db['table'].extend_index(
-            audformat.create_segmented_index(
+            audformat.segmented_index(
                 files=['1.wav', '2.wav'],
                 starts=['0s', '1s'],
                 ends=['1s', '2s'],
@@ -258,7 +258,7 @@ def test_extend_index():
     db['table'] = audformat.Table()
     db['table']['columns'] = audformat.Column(scheme_id='scheme')
     db['table'].extend_index(
-        audformat.create_filewise_index(['1.wav', '2.wav']),
+        audformat.filewise_index(['1.wav', '2.wav']),
         fill_values='a',
         inplace=True,
     )
@@ -283,11 +283,11 @@ def test_extend_index():
     # segmented
 
     db['table'] = audformat.Table(
-        audformat.create_segmented_index()
+        audformat.segmented_index()
     )
     db['table']['columns'] = audformat.Column(scheme_id='scheme')
     db['table'].extend_index(
-        audformat.create_segmented_index(
+        audformat.segmented_index(
             files=['1.wav', '2.wav'],
             starts=['0s', '1s'],
             ends=['1s', '2s'],
@@ -299,7 +299,7 @@ def test_extend_index():
         db['table']['columns'].get().values,
         np.array(['a', 'a']),
     )
-    index = audformat.create_segmented_index(
+    index = audformat.segmented_index(
         files=['1.wav', '3.wav'],
         starts=['0s', '2s'],
         ends=['1s', '3s'],
@@ -334,7 +334,7 @@ def test_filewise(num_files, values):
     table = db['table']
 
     # empty table
-    df = pd.DataFrame(index=audformat.create_filewise_index(table.files))
+    df = pd.DataFrame(index=audformat.filewise_index(table.files))
     pd.testing.assert_frame_equal(table.get(), df)
 
     # no values
@@ -346,7 +346,7 @@ def test_filewise(num_files, values):
     df['column'] = np.nan
     table.df['column'] = np.nan
     df.iloc[0] = values[0]
-    index = audformat.create_filewise_index(table.files[0])
+    index = audformat.filewise_index(table.files[0])
     table.set({'column': values[0]}, index=index)
     pd.testing.assert_frame_equal(
         table.get(index),
@@ -358,7 +358,7 @@ def test_filewise(num_files, values):
     df['column'] = np.nan
     table.df['column'] = np.nan
     df['column'][1:-1] = values[1:-1]
-    index = audformat.create_filewise_index(table.files[1:-1])
+    index = audformat.filewise_index(table.files[1:-1])
     table.set({'column': values[1:-1]}, index=index)
     pd.testing.assert_frame_equal(
         table.get(index),
@@ -468,7 +468,7 @@ def test_segmented(num_files, num_segments_per_file, values):
     # single
     df['column'] = np.nan
     table.df['column'] = np.nan
-    index = audformat.create_segmented_index(
+    index = audformat.segmented_index(
         table.files[0],
         starts=table.starts[0],
         ends=table.ends[0],
@@ -483,7 +483,7 @@ def test_segmented(num_files, num_segments_per_file, values):
     # slice
     df['column'] = np.nan
     table.df['column'] = np.nan
-    index = audformat.create_segmented_index(
+    index = audformat.segmented_index(
         table.files[1:-1],
         starts=table.starts[1:-1],
         ends=table.ends[1:-1],

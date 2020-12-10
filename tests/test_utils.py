@@ -124,7 +124,7 @@ f2,1.0
 f3,2.0'''),
         pd.Series(
             [0.0, 1.0, 2.0],
-            index=audformat.create_filewise_index(['f1', 'f2', 'f3']),
+            index=audformat.filewise_index(['f1', 'f2', 'f3']),
             name='value',
         ),
     ),
@@ -138,7 +138,7 @@ f3,2.0,c'''),
                 'value1': [0.0, 1.0, 2.0],
                 'value2': ['a', 'b', 'c'],
             },
-            index=audformat.create_filewise_index(['f1', 'f2', 'f3']),
+            index=audformat.filewise_index(['f1', 'f2', 'f3']),
             columns=['value1', 'value2'],
         ),
     ),
@@ -149,7 +149,7 @@ f1,00:00:01,1.0
 f2,00:00:02,2.0'''),
         pd.Series(
             [0.0, 1.0, 2.0],
-            index=audformat.create_segmented_index(
+            index=audformat.segmented_index(
                 ['f1', 'f1', 'f2'],
                 starts=['0s', '1s', '2s'],
                 ends=pd.to_timedelta([pd.NaT, pd.NaT, pd.NaT]),
@@ -164,7 +164,7 @@ f1,00:00:02,1.0
 f2,00:00:03,2.0'''),
         pd.Series(
             [0.0, 1.0, 2.0],
-            index=audformat.create_segmented_index(
+            index=audformat.segmented_index(
                 ['f1', 'f1', 'f2'],
                 starts=['0s', '0s', '0s'],
                 ends=['1s', '2s', '3s'],
@@ -193,7 +193,7 @@ f1,00:00:01,00:00:02,1.0
 f2,00:00:02,00:00:03,2.0'''),
         pd.Series(
             [0.0, 1.0, 2.0],
-            index=audformat.create_segmented_index(
+            index=audformat.segmented_index(
                 ['f1', 'f1', 'f2'],
                 starts=['0s', '1s', '2s'],
                 ends=['1s', '2s', '3s'],
@@ -211,7 +211,7 @@ f2,00:00:02,00:00:03,2.0,c'''),
                 'value1': [0.0, 1.0, 2.0],
                 'value2': ['a', 'b', 'c'],
             },
-            index=audformat.create_segmented_index(
+            index=audformat.segmented_index(
                 ['f1', 'f1', 'f2'],
                 starts=['0s', '1s', '2s'],
                 ends=['1s', '2s', '3s'],

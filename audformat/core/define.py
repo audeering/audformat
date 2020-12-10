@@ -65,24 +65,6 @@ class SpeakerProfession(DefineBase):
     AMATEUR = 'amateur'
 
 
-class Typing:
-    r"""Type hints"""
-    FILES = typing.Union[
-        str, typing.Sequence[str], pd.Index, pd.Series,
-    ]
-    TIMESTAMPS = typing.Union[
-        pd.Timedelta, typing.Sequence[pd.Timedelta], pd.Index, pd.Series,
-    ]
-    VALUES = typing.Union[
-        int, float, str, pd.Timedelta,
-        typing.Sequence[
-            typing.Union[int, float, str, pd.Timedelta],
-        ],
-        np.ndarray,
-        pd.Series,
-    ]
-
-
 class Usage(DefineBase):
     COMMERCIAL = 'commercial'
     RESEARCH = 'research'

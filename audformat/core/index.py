@@ -8,6 +8,10 @@ from audformat.errors import (
     CannotCreateSegmentedIndex,
     InvalidIndex,
 )
+from audformat.core.typing import (
+    Files,
+    Timestamps,
+)
 
 
 def is_scalar(value: typing.Any) -> bool:
@@ -26,8 +30,8 @@ def to_array(value: typing.Any) -> typing.Union[list, np.ndarray]:
     return value
 
 
-def create_filewise_index(
-        files: define.Typing.FILES = None,
+def filewise_index(
+        files: Files = None,
 ) -> pd.Index:
     r"""Creates a filewise index conform to
         :ref:`table specifications <data-tables:Tables>`.
@@ -45,10 +49,10 @@ def create_filewise_index(
     return pd.Index(files, name=define.IndexField.FILE)
 
 
-def create_segmented_index(
-        files: define.Typing.FILES = None,
-        starts: define.Typing.TIMESTAMPS = None,
-        ends: define.Typing.TIMESTAMPS = None,
+def segmented_index(
+        files: Files = None,
+        starts: Timestamps = None,
+        ends: Timestamps = None,
 ) -> pd.Index:
     r"""Create segmented index conform to
         :ref:`table specifications <data-tables:Tables>`.
