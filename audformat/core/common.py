@@ -137,6 +137,9 @@ class HeaderBase:
     def to_dict(self) -> dict:
         r"""Serialize object to dictionary.
 
+        Returns:
+            dictionary with attributes
+
         """
         d = OrderedDict()
         for key, value in self.__dict__.items():
@@ -147,7 +150,11 @@ class HeaderBase:
                 d[key] = HeaderBase._value(value)
         return d
 
-    def from_dict(self, d: dict, ignore_keys: Sequence[str] = None):
+    def from_dict(
+            self,
+            d: dict,
+            ignore_keys: Sequence[str] = None,
+    ):
         r"""Deserialize object from dictionary.
 
         Args:
@@ -167,12 +174,19 @@ class HeaderBase:
                     self.meta = HeaderDict()  # pragma: no cover
                 self.meta[key] = value
 
-    def dump(self, stream=None, indent: int = 2) -> str:
-        r""" Serialize object to YAML.
+    def dump(
+            self,
+            stream=None,
+            indent: int = 2,
+    ) -> str:
+        r"""Serialize object to YAML.
 
         Args:
             stream: file-like object. If ``None`` serializes to string
             indent: indent
+
+        Returns:
+            YAML string
 
         """
         return yaml.dump(

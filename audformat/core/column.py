@@ -13,7 +13,9 @@ from audformat.core.errors import ColumnNotAssignedToTableError
 
 
 class Column(HeaderBase):
-    r"""Represents a table column (see :class:`audformat.Table`) and
+    r"""Table column.
+
+    Represents a table column (see :class:`audformat.Table`) and
     optionally links it to a scheme (see :class:`audformat.Scheme`) and
     a rater (see :class:`audformat.Rater`).
 
@@ -47,18 +49,21 @@ class Column(HeaderBase):
             *,
             copy: bool = True,
     ) -> pd.Series:
-        r"""Get a copy of the labels in this column.
+        r"""Get labels.
+
+        By default all labels of the column are returned,
+        use ``index`` to get a subset.
 
         Examples are provided with the
         :ref:`table specifications <data-tables:Tables>`.
 
-        You can use ``index`` or a any allowed combinations of ``files``,
-        ``starts``, and ``ends`` as arguments.
-
         Args:
             index: index conform to
                 :ref:`table specifications <data-tables:Tables>`
-            copy: return a new object
+            copy: return a copy of the labels
+
+        Returns:
+            labels
 
         Raises:
             ColumnNotAssignToTable: if column is not assign to a table
@@ -76,16 +81,18 @@ class Column(HeaderBase):
             *,
             index: pd.Index = None,
     ):
-        r"""Set labels in this column.
+        r"""Set labels.
+
+        By default all labels of the column are replaced,
+        use ``index`` to set a subset.
+        If columns is assigned to a :class:`Scheme`
+        values have to match its ``dtype``.
 
         Examples are provided with the
         :ref:`table specifications <data-tables:Tables>`.
 
-        You can use ``starts`` and ``ends`` as arguments.
-
         Args:
-            values: a list of values
-                matching the ``dtype`` of the corresponding :class:`Scheme`
+            values: list of values
             index: index conform to
                 :ref:`table specifications <data-tables:Tables>`
 
@@ -118,6 +125,6 @@ class Column(HeaderBase):
                 return self.set(values, index=index)
             else:
                 raise ValueError(
-                    'Cannot set value to a filewise column '
+                    'Cannot set values of a filewise column '
                     'using a segmented index.'
                 )

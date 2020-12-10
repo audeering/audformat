@@ -14,7 +14,7 @@ class Scheme(HeaderBase):
     r"""A scheme defines valid values of an annotation.
 
     Allowed values for ``dtype`` are:
-    ``bool``, ``str``, ``int``, ``float``, ``time``, and ``date``
+    ``'bool'``, ``'str'``, ``'int'``, ``'float'``, ``'time'``, and ``'date'``
     (see :class:`audformat.define.DataType`).
     Values can be restricted to a set of labels provided by a
     list or a dictionary.
@@ -22,7 +22,7 @@ class Scheme(HeaderBase):
     maximum value.
 
     Args:
-        dtype: if ``None`` derived from ``labels``, otherwise set to ``str``
+        dtype: if ``None`` derived from ``labels``, otherwise set to ``'str'``
         labels: list or dictionary with valid labels.
         minimum: minimum value
         maximum: maximum value
@@ -31,6 +31,9 @@ class Scheme(HeaderBase):
 
     Raises:
         BadValueError: if an invalid ``dtype`` is passed
+        ValueError: if ``labels`` are not passed as list or dictionary
+        ValueError: if ``labels`` are not of same data type
+        ValueError: ``dtype`` does not match type of ``labels``
 
     """
     _dtypes = {
@@ -50,11 +53,7 @@ class Scheme(HeaderBase):
 
     def __init__(
             self,
-            dtype: typing.Union[
-                bool, str, int, float,
-                pd.Timedelta, datetime.datetime,
-                define.DataType
-            ] = None,
+            dtype: typing.Union[typing.Type, define.DataType] = None,
             *,
             labels: typing.Union[dict, list] = None,
             minimum: typing.Union[int, float] = None,
@@ -198,7 +197,7 @@ class Scheme(HeaderBase):
         return self.dtype
 
     def __contains__(self, item: typing.Any) -> bool:
-        r"""Check if data type of item satisfies scheme.
+        r"""Check if scheme contains data type of item.
 
         Returns:
             ``True`` if item is covered by scheme

@@ -5,7 +5,9 @@ from audformat.core.common import HeaderBase
 
 
 class Split(HeaderBase):
-    r"""Defines if a subset of a database should be used for training,
+    r"""Database split.
+
+    Defines if a subset of a database should be used for training,
     development or testing.
 
     Args:

@@ -34,24 +34,14 @@ def test_drop_and_pick():
     db = audformat.testing.create_db()
 
     assert 'segments' in db
-    db.pick_tables('files', inplace=True)
+    db.pick_tables('files')
     assert 'segments' not in db
-
-    db = audformat.testing.create_db()
-
-    with pytest.raises(NotImplementedError):
-        db.pick_tables('files', inplace=False)
 
     db = audformat.testing.create_db()
 
     assert 'segments' in db
-    db.drop_tables('segments', inplace=True)
+    db.drop_tables('segments')
     assert 'segments' not in db
-
-    db = audformat.testing.create_db()
-
-    with pytest.raises(NotImplementedError):
-        db.drop_tables('segments', inplace=False)
 
 
 @pytest.mark.parametrize(

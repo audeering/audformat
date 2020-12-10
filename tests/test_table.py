@@ -49,7 +49,7 @@ def test_add():
 
     for table_type in (audformat.define.IndexType.FILEWISE,
                        audformat.define.IndexType.SEGMENTED):
-        db.drop_tables(list(db.tables), inplace=True)
+        db.drop_tables(list(db.tables))
         audformat.testing.add_table(
             db, 'table1', table_type,
             num_files=5, columns=['scheme1'],
@@ -65,7 +65,7 @@ def test_add():
 
     # tables of same type with overlap
 
-    db.drop_tables(list(db.tables), inplace=True)
+    db.drop_tables(list(db.tables))
     audformat.testing.add_table(
         db, 'table1', audformat.define.IndexType.FILEWISE,
         num_files=(1, 2), columns='scheme1',
@@ -89,7 +89,7 @@ def test_add():
             (5, 4),
             (4, 5),
     ):
-        db.drop_tables(list(db.tables), inplace=True)
+        db.drop_tables(list(db.tables))
         audformat.testing.add_table(
             db, 'table1', audformat.define.IndexType.FILEWISE,
             columns='scheme1', num_files=num_files_1,
@@ -114,7 +114,7 @@ def test_add():
             (5, 4),
             (4, 5),
     ):
-        db.drop_tables(list(db.tables), inplace=True)
+        db.drop_tables(list(db.tables))
         audformat.testing.add_table(
             db, 'table1', audformat.define.IndexType.SEGMENTED,
             columns='scheme1', num_files=num_files_1,
@@ -249,7 +249,7 @@ def test_extend_index():
             fill_values='a',
         )
 
-    db.drop_tables('table', inplace=True)
+    db.drop_tables('table')
 
     # filewise
 
@@ -276,7 +276,7 @@ def test_extend_index():
         np.array(['a', 'a', 'b']),
     )
 
-    db.drop_tables('table', inplace=True)
+    db.drop_tables('table')
 
     # segmented
 
@@ -312,7 +312,7 @@ def test_extend_index():
         np.array(['a', 'a', 'b']),
     )
 
-    db.drop_tables('table', inplace=True)
+    db.drop_tables('table')
 
 
 @pytest.mark.parametrize('num_files,values', [
@@ -398,7 +398,7 @@ def test_from_frame(table_id):
     db = audformat.testing.create_db()
     df = db[table_id].get()
 
-    db.drop_tables(list(db.tables), inplace=True)
+    db.drop_tables(list(db.tables))
 
     # set specific column
 
@@ -410,7 +410,7 @@ def test_from_frame(table_id):
     )
     pd.testing.assert_frame_equal(db[table_id].df, df.string.to_frame())
 
-    db.drop_tables(list(db.tables), inplace=True)
+    db.drop_tables(list(db.tables))
 
     # set all columns
 
@@ -422,7 +422,7 @@ def test_from_frame(table_id):
     )
     pd.testing.assert_frame_equal(db[table_id].df, df)
 
-    db.drop_tables(list(db.tables), inplace=True)
+    db.drop_tables(list(db.tables))
 
     # set all columns from a table that is not in the Unified Format
 
@@ -434,7 +434,7 @@ def test_from_frame(table_id):
     )
     pd.testing.assert_frame_equal(db[table_id].df, df)
 
-    db.drop_tables(list(db.tables), inplace=True)
+    db.drop_tables(list(db.tables))
 
 
 @pytest.mark.parametrize('num_files,num_segments_per_file,values', [

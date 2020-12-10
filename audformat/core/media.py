@@ -32,7 +32,7 @@ class AudioInfo(MediaInfo):
     r"""Audio media information.
 
     Args:
-        format: audio file format (e.g. ``wav`` or ``flac``)
+        format: audio file format (e.g. WAV or FLAC)
         sampling_rate: sampling rate in Hz
         channels: number of channels
         bit_depth: bit depth
@@ -71,7 +71,7 @@ class VideoInfo(MediaInfo):
     r"""Video media information.
 
     Args:
-        format: video file format (e.g. ``avi`` or ``mp4``)
+        format: video file format (e.g. AVI or MP4)
         frames_per_second: number of frames per seconds (fps)
         resolution: resolution in width x height in pixels (e.g. ``[800,
             600]``)

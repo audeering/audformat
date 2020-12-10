@@ -21,8 +21,12 @@ from audformat.core.table import Table
 
 
 class Database(HeaderBase):
-    r"""A database consists of a header holding raters, schemes, splits, and
-    other meta information, as well as, a number of tables with annotations.
+    r"""Database object.
+
+    A database consists of a header holding raters,
+    schemes, splits, and other meta information.
+    In addition it links to a number of tables
+    listing files and labels.
 
     Args:
         name: name of database
@@ -112,35 +116,26 @@ class Database(HeaderBase):
     def drop_tables(
             self,
             table_ids: typing.Union[str, typing.Sequence[str]],
-            *,
-            inplace: bool = False,
-    ) -> 'Database':
+    ):
         r"""Drop tables by id.
 
         Args:
             table_ids: table ids to drop
-            inplace: drop tables in place
 
         """
-        if not inplace:
-            raise NotImplementedError()
         if isinstance(table_ids, str):
             table_ids = [table_ids]
         for table_id in table_ids:
             self.tables.pop(table_id)
-        return self
 
     def pick_tables(
             self,
             table_ids: typing.Union[str, typing.Sequence[str]],
-            *,
-            inplace: bool = False,
-    ) -> 'Database':
+    ):
         r"""Pick tables by id (all other tables will be dropped).
 
         Args:
             table_ids: table ids to pick
-            inplace: pick tables in place
 
         """
         if isinstance(table_ids, str):
@@ -149,7 +144,7 @@ class Database(HeaderBase):
         for table_id in list(self.tables):
             if table_id not in table_ids:
                 drop_ids.append(table_id)
-        return self.drop_tables(drop_ids, inplace=inplace)
+        self.drop_tables(drop_ids)
 
     def map_files(
             self,
@@ -219,9 +214,11 @@ class Database(HeaderBase):
         with open(path, 'w') as fp:
             self.dump(fp, indent=indent)
         if not header_only:
-            for id, table in self.tables.items():
-                self.save_table(id, root, name + '.' + id,
-                                compressed=compressed)
+            for table_id, table in self.tables.items():
+                self.save_table(
+                    table_id, root, name + '.' + table_id,
+                    compressed=compressed,
+                )
 
     def save_table(
             self,
@@ -277,8 +274,8 @@ class Database(HeaderBase):
             table: the table
 
         Raises:
-            BadIdError: if a table with a ``split_id`` or ``media_id`` is
-                added that does not exist
+            BadIdError: if a ``split_id`` or ``media_id`` is attached to the
+                table that does not exist in this database
 
         """
         self.tables[table_id] = table
@@ -293,14 +290,18 @@ class Database(HeaderBase):
     ) -> 'Database':
         r"""Load database from disk.
 
-        By default expects a header ``<root>/db.yaml`` and for every table
-        a file ``<root>/db.<table-id>.csv``.
+        By default expects a header ``<root>/db.yaml``
+        and for every table a file ``<root>/db.<table-id>.[csv|pkl]``
+        Media files should be located under root, too.
 
         Args:
             root: root directory
-            name: base name of files
+            name: base name of header and table files
             load_data: if ``False`` :class:`audformat.Table`
                 will contain empty tables
+
+        Returns:
+            database object
 
         """
         ext = '.yaml'
@@ -328,6 +329,9 @@ class Database(HeaderBase):
 
         Args:
             header: YAML header definition
+
+        Returns:
+            database object
 
         """
         # for backward compatibility

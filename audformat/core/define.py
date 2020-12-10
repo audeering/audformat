@@ -9,18 +9,19 @@ from audformat.core.common import DefineBase
 class DataType(DefineBase):
     r"""Data types"""
     BOOL = 'bool'
-    STRING = 'str'
+    DATE = 'date'
     INTEGER = 'int'
     FLOAT = 'float'
+    STRING = 'str'
     TIME = 'time'
-    DATE = 'date'
 
 
 class Gender(DefineBase):
     r"""Gender"""
-    MALE = 'male'
-    FEMALE = 'female'
     CHILD = 'child'
+    FEMALE = 'female'
+    MALE = 'male'
+    OTHER = 'other'
 
 
 class IndexField(DefineBase):
@@ -55,7 +56,7 @@ class SplitType(DefineBase):
     TRAIN = 'train'
     DEVELOP = 'dev'
     TEST = 'test'
-    UNDEFINED = 'undef'
+    UNDEFINED = 'undefined'
 
 
 class SpeakerProfession(DefineBase):

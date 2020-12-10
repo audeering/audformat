@@ -4,7 +4,7 @@ from audformat.core import define
 
 
 class BadValueError(ValueError):
-    """Raised if a value is not in a list of pre-defined strings.
+    """Raised when a value is not in a list of pre-defined strings.
 
     Args:
         invalid_value: value causing the error
@@ -20,7 +20,7 @@ class BadValueError(ValueError):
 
 
 class BadTypeError(ValueError):
-    r"""Raised if a value has an unexpected type.
+    r"""Raised when a value has an unexpected type.
 
     Args:
         invalid_value: value causing the error
@@ -36,7 +36,7 @@ class BadTypeError(ValueError):
 
 
 class BadIdError(ValueError):
-    r"""Raised if a field identifier is unknown.
+    r"""Raised when a field identifier is unknown.
 
     Args:
          name: name of the field
@@ -59,7 +59,7 @@ class BadIdError(ValueError):
 
 
 class CannotCreateSegmentedIndex(ValueError):
-    r"""Raised if segmented table cannot be created."""
+    r"""Raised when segmented table cannot be created."""
     def __init__(self):
         message = (
             "Cannot create segmented table if 'files', "
@@ -69,14 +69,14 @@ class CannotCreateSegmentedIndex(ValueError):
 
 
 class ColumnNotAssignedToTableError(ValueError):
-    r"""Raised if column is not assigned to a table."""
+    r"""Raised when column is not assigned to a table."""
     def __init__(self):
         message = 'Column is not assigned to a table'
         super().__init__(message)
 
 
 class NotConformToUnifiedFormat(ValueError):
-    r"""Raised if index is not conform to
+    r"""Raised when index is not conform to
     :ref:`table specifications <data-tables:Tables>`."""
     def __init__(self):
         message = 'Index not conform to Unified Format.'

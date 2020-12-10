@@ -50,9 +50,9 @@ class Table(HeaderBase):
 
     Consists of a list of file names to which it assigns
     numerical values or labels.
-    To add data to the table,
-    add a column first (see :class:`audformat.Column`) and afterwards
-    use `set()` and `set_conf()` to set the values.
+    To fill a table with labels,
+    add one ore more :class:`audformat.Column`s
+    and use :meth:`audformat.Table.set` to set the values.
 
     Args:
         index: index conform to
@@ -188,6 +188,26 @@ class Table(HeaderBase):
                 define.IndexField.START
             )
 
+    def copy(self) -> 'Table':
+        r"""Copy table.
+
+        Return:
+            new ``Table`` object
+
+        """
+        table = Table(
+            self._df.index,
+            media_id=self.media_id,
+            split_id=self.split_id,
+        )
+        table._db = self._db
+        table.from_frame(
+            self._df,
+            scheme_ids={k: v.scheme_id for k, v in self.columns.items()},
+            rater_ids={k: v.rater_id for k, v in self.columns.items()},
+        )
+        return table
+
     def drop_columns(
             self,
             column_ids: typing.Union[str, typing.Sequence[str]],
@@ -201,11 +221,11 @@ class Table(HeaderBase):
             inplace: drop columns in place
 
         Returns:
-            table
+            new ``Table`` if ``inplace=False``, otherwise ``self``
 
         """
         if not inplace:
-            return self._copy().drop_columns(column_ids, inplace=True)
+            return self.copy().drop_columns(column_ids, inplace=True)
 
         if isinstance(column_ids, str):
             column_ids = [column_ids]
@@ -231,6 +251,9 @@ class Table(HeaderBase):
                 :ref:`table specifications <data-tables:Tables>`
             inplace: drop index in place
 
+        Returns:
+            new ``Table`` if ``inplace=False``, otherwise ``self``
+
         Raises:
             ValueError: if table type is not matched
             RedundantArgumentError: for not allowed combinations
@@ -238,7 +261,7 @@ class Table(HeaderBase):
 
         """
         if not inplace:
-            return self._copy().drop_index(index, inplace=True)
+            return self.copy().drop_index(index, inplace=True)
 
         input_type = index_type(index)
         if self.type != input_type:
@@ -273,12 +296,15 @@ class Table(HeaderBase):
                 key)
             inplace: extend index in place
 
+        Returns:
+            new ``Table`` if ``inplace=False``, otherwise ``self``
+
         Raises:
-            ValueError: if table type is not matched
+            ValueError: if index type is not matched
 
         """
         if not inplace:
-            return self._copy().extend_index(
+            return self.copy().extend_index(
                 index, fill_values=fill_values, inplace=True,
             )
 
@@ -302,45 +328,45 @@ class Table(HeaderBase):
 
     def from_frame(
             self,
-            frame: typing.Union[pd.Series, pd.DataFrame],
+            obj: typing.Union[pd.Series, pd.DataFrame],
             *,
             scheme_ids: typing.Union[str, typing.Dict[str, str]] = None,
             rater_ids: typing.Union[str, typing.Dict[str, str]] = None,
     ):
-        r"""Adds columns of a :class:`pandas.DataFrame` to the table.
+        r"""Add columns from a :class:`pandas.Series` or
+            :class:`pandas.DataFrame`
 
-        Column names are used as identifiers. If the index of ``frame``
-        follows the :ref:`table specifications <data-tables:Tables>`,
-        it will be used as index.
+        Uses the names of the column names as identifiers.
 
         Args:
-            frame: table data
-            scheme_ids: a dictionary mapping a specific column to a scheme
+            obj: object conform to
+                :ref:`table specifications <data-tables:Tables>`
+            scheme_ids: dictionary mapping specific columns to a scheme
                 identifier. If a single scheme identifier is passed, all
                 columns will be assigned to it
-            rater_ids: a dictionary mapping a specific column to a rater
+            rater_ids: dictionary mapping specific columns to a rater
                 identifier. If a single rater identifier is passed, all
                 columns will be assigned to it
 
         """
-        if isinstance(frame, pd.Series):
-            frame = frame.to_frame()
+        if isinstance(obj, pd.Series):
+            obj = obj.to_frame()
         if isinstance(scheme_ids, str):
-            scheme_ids = {name: scheme_ids for name in frame.columns}
+            scheme_ids = {name: scheme_ids for name in obj.columns}
         if isinstance(rater_ids, str):
-            rater_ids = {name: rater_ids for name in frame.columns}
+            rater_ids = {name: rater_ids for name in obj.columns}
 
         scheme_ids = scheme_ids or {}
         rater_ids = rater_ids or {}
 
-        for column_id, column in frame.items():
+        for column_id, column in obj.items():
             column_id = str(column_id)
             scheme_id = scheme_ids[column_id] \
                 if column_id in scheme_ids else None
             rater_id = rater_ids[column_id] \
                 if column_id in rater_ids else None
             self[column_id] = Column(scheme_id=scheme_id, rater_id=rater_id)
-            self[column_id].set(column.values, index=frame.index)
+            self[column_id].set(column.values, index=obj.index)
 
     def get(
             self,
@@ -350,16 +376,19 @@ class Table(HeaderBase):
     ) -> pd.DataFrame:
         r"""Get labels.
 
+        By default all labels of the table are returned,
+        use ``index`` to get a subset.
+
         Examples are provided with the
         :ref:`table specifications <data-tables:Tables>`.
 
         Args:
             index: index conform to
                 :ref:`table specifications <data-tables:Tables>`
-            copy: return a new object
+            copy: return a copy of the labels
 
         Returns:
-            table data
+            labels
 
         """
         if index is None:
@@ -391,7 +420,7 @@ class Table(HeaderBase):
 
         Args:
             root: root directory
-            name: file name
+            name: file name without extension
 
         """
         compressed = os.path.exists(os.path.join(root, name + '.pkl'))
@@ -416,7 +445,7 @@ class Table(HeaderBase):
             inplace: pick columns in place
 
         Returns:
-            table
+            new ``Table`` if ``inplace=False``, otherwise ``self``
 
         """
         if isinstance(column_ids, str):
@@ -429,7 +458,7 @@ class Table(HeaderBase):
 
     def pick_index(
             self,
-            index: typing.Union[pd.Index, pd.Series, pd.DataFrame] = None,
+            index: pd.Index,
             *,
             inplace: bool = False,
     ) -> 'Table':
@@ -440,6 +469,9 @@ class Table(HeaderBase):
                 :ref:`table specifications <data-tables:Tables>`
             inplace: pick index in place
 
+        Returns:
+            new ``Table`` if ``inplace=False``, otherwise ``self``
+
         Raises:
             ValueError: if table type is not matched
             RedundantArgumentError: for not allowed combinations
@@ -447,7 +479,7 @@ class Table(HeaderBase):
 
         """
         if not inplace:
-            return self._copy().pick_index(index, inplace=True)
+            return self.copy().pick_index(index, inplace=True)
 
         input_type = index_type(index)
         if self.type != input_type:
@@ -473,7 +505,8 @@ class Table(HeaderBase):
 
         Args:
             root: root directory
-            name: file name, if ``None`` set to ``<id>_<version>``.
+            name: file name without extension.
+                If ``None`` set to ``<id>_<version>``.
             compressed: store tables in compressed format instead of CSV
 
         """
@@ -493,7 +526,12 @@ class Table(HeaderBase):
             *,
             index: pd.Index = None,
     ):
-        r"""Set labels in this table.
+        r"""Set labels.
+
+        By default all labels of the table are replaced,
+        use ``index`` to select a subset.
+        If a column is assigned to a :class:`Scheme`
+        values have to match its ``dtype``.
 
         Examples are provided with the
         :ref:`table specifications <data-tables:Tables>`.
@@ -508,20 +546,22 @@ class Table(HeaderBase):
             self.columns[idx].set(data, index=index)
 
     def __add__(self, other: 'Table') -> 'Table':
-        r""" Creates a new table by adding two tables.
+        r"""Create new table by combining two tables.
 
-        If the tables are of the same type, the created tables contains index
-        and columns of both tables. If the tables are not of the same type
-        and one of the tables is a file-wise table, the created table has the
-        index of segmented table and columns of both tables.
-        References to schemes and raters are always preserved. Media and split
-        information only when they match.
+        If the tables are of the same type, the created tables contain index
+        and columns of both tables.
+        If the tables are not of the same type and one of the tables is a
+        file-wise table, the created table has the index of segmented table
+        and columns of both tables.
+        Missing values will be set to ``NaN``.
+        References to schemes and raters are always preserved.
+        Media and split information only when they match.
 
         .. warning::
-            * Columns with the same identifier are combined to a single column.
-              This requires that either the indices of the tables do not
-              overlap or at least one table contains a NaN in places where the
-              indices overlap.
+            Columns with the same identifier are combined to a single column.
+            This requires that either the indices of the tables do not
+            overlap or at least one table contains a ``NaN`` in places where
+            the indices overlap.
 
         Args:
             other: the other table
@@ -633,20 +673,6 @@ class Table(HeaderBase):
         """
         self.columns[column_id] = column
         return column
-
-    def _copy(self) -> 'Table':
-        table = Table(
-            self._df.index,
-            media_id=self.media_id,
-            split_id=self.split_id,
-        )
-        table._db = self._db
-        table.from_frame(self._df,
-                         scheme_ids={k: v.scheme_id
-                                     for k, v in self.columns.items()},
-                         rater_ids={k: v.rater_id
-                                    for k, v in self.columns.items()})
-        return table
 
     def _load_csv(self, path: str):
 

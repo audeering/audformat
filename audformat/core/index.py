@@ -17,7 +17,7 @@ def is_scalar(value: typing.Any) -> bool:
 
 
 def to_array(value: typing.Any) -> typing.Union[list, np.ndarray]:
-    r"""Converts value to list or array."""
+    r"""Convert value to list or array."""
     if value is not None:
         if isinstance(value, (pd.Series, pd.DataFrame, pd.Index)):
             value = value.to_numpy()
@@ -32,7 +32,7 @@ def index(
         starts: define.Typing.TIMESTAMPS = None,
         ends: define.Typing.TIMESTAMPS = None,
 ) -> pd.Index:
-    r"""Creates index conform to
+    r"""Create index conform to
         :ref:`table specifications <data-tables:Tables>`.
 
     Creates a filewise index if only ``files`` is given.
