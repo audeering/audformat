@@ -14,7 +14,7 @@ from audformat.core.index import (
     create_filewise_index,
     create_segmented_index,
 )
-from audformat.core.errors import NotConformToUnifiedFormat
+from audformat.core.errors import InvalidIndex
 
 
 def concat(
@@ -144,7 +144,7 @@ def read_csv(
     if define.IndexField.FILE in frame.columns:
         files = frame[define.IndexField.FILE].astype(str)
     else:
-        raise NotConformToUnifiedFormat()
+        raise InvalidIndex()
 
     starts = None
     if define.IndexField.START in frame.columns:

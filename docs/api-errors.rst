@@ -34,3 +34,9 @@ ColumnNotAssignedToTableError
 
 .. autoclass:: audformat.errors.ColumnNotAssignedToTableError
     :members:
+
+InvalidIndex
+------------
+
+.. autoclass:: audformat.errors.InvalidIndex
+    :members:

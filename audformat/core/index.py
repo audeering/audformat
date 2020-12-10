@@ -6,7 +6,7 @@ import pandas as pd
 from audformat.core import define
 from audformat.errors import (
     CannotCreateSegmentedIndex,
-    NotConformToUnifiedFormat,
+    InvalidIndex,
 )
 
 
@@ -127,4 +127,4 @@ def index_type(
             obj.names[2] == define.IndexField.END:
         return define.IndexType.SEGMENTED
 
-    raise NotConformToUnifiedFormat()
+    raise InvalidIndex()

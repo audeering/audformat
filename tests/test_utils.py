@@ -57,11 +57,11 @@ from audformat import define
                 pytest.DB['segments']['int'].get(),
             ], 'columns',
         ),
-        # not Unified Format
+        # invalid index
         pytest.param(
             [pd.DataFrame([1, 2, 3])], None,
             marks=pytest.mark.xfail(
-                raises=audformat.errors.NotConformToUnifiedFormat
+                raises=audformat.errors.InvalidIndex
             ),
         )
     ],
@@ -227,7 +227,7 @@ f2,00:00:02,00:00:03,2.0,c'''),
 2.0'''),
         None,
         marks=pytest.mark.xfail(
-            raises=audformat.errors.NotConformToUnifiedFormat,
+            raises=audformat.errors.InvalidIndex,
         )
     )
 ])

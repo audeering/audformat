@@ -426,7 +426,7 @@ def test_from_frame(table_id):
 
     db.drop_tables(list(db.tables))
 
-    # set all columns from a table that is not in the Unified Format
+    # set all columns from table not in audformat
 
     db[table_id] = audformat.Table(df.index)
     db[table_id].from_frame(

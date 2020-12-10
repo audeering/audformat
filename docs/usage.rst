@@ -2,10 +2,10 @@ Usage
 =====
 
 :mod:`audformat` is the reference implementation
-of the :ref:`data-format:Unified Format`.
+of the :ref:`data-format:audformat`.
 So it's main usage is to store data in that format
 or to access or change data from the format.
-The :ref:`data-format:Unified Format` is represented by
+:ref:`data-format:audformat` is represented by
 the :class:`audformat.Database` object.
 A :class:`audformat.Database` can be generated manually,
 or loaded from disk using :meth:`audformat.Database.load()`.

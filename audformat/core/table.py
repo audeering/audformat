@@ -56,7 +56,7 @@ class Table(HeaderBase):
     Consists of a list of file names to which it assigns
     numerical values or labels.
     To fill a table with labels,
-    add one ore more :class:`audformat.Column`s
+    add one ore more :class:`audformat.Column`
     and use :meth:`audformat.Table.set` to set the values.
 
     Args:

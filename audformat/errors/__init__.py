@@ -4,5 +4,5 @@ from audformat.core.errors import (
     BadIdError,
     CannotCreateSegmentedIndex,
     ColumnNotAssignedToTableError,
-    NotConformToUnifiedFormat,
+    InvalidIndex,
 )

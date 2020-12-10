@@ -1,7 +1,7 @@
-Unified Format
-==============
+audformat
+=========
 
-The Unified Format is implemented in the :class:`audformat.Database`.
+audformat is implemented in the :class:`audformat.Database`.
 Written to hard disk it is converted to a YAML file (*Header*),
 which contains information about the raters,
 annotation schemes and meta information.
@@ -11,7 +11,7 @@ Each table column is linked to a scheme and/or to a rater.
 Each table row is linked to a media file,
 or a specific segment in a media file.
 
-.. table:: Parts of a database stored in the Unified Format on the hard disk.
+.. table:: Parts of a database stored in the audformat on the hard disk.
 
     =======================  ==========================================
     File                     Content
@@ -27,8 +27,8 @@ or a specific segment in a media file.
 The connection between the header and the tables
 is highlighted in the following sketch:
 
-.. figure:: pics/unified-format.dot.svg
-    :alt: Unified Format
+.. figure:: pics/audformat.dot.svg
+    :alt: audformat
     :align: center
 
     Connection between header definitions and table entries.

@@ -2,7 +2,7 @@
 audformat
 =========
 
-Reference implementation of the Unified Format.
+Specification and reference implementation of **AudFormat**
 
 
 For documentation see:
