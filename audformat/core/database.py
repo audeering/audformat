@@ -322,8 +322,8 @@ class Database(HeaderBase):
             table: the table
 
         Raises:
-            BadIdError: if a ``split_id`` or ``media_id`` is attached to the
-                table that does not exist in this database
+            BadIdError: if a ``split_id`` or ``media_id`` is assigned to the
+                table, which is not specified in the underlying database
 
         """
         self.tables[table_id] = table
@@ -340,7 +340,7 @@ class Database(HeaderBase):
 
         By default expects a header ``<root>/db.yaml``
         and for every table a file ``<root>/db.<table-id>.[csv|pkl]``
-        Media files should be located under root, too.
+        Media files should be located under ``root``, too.
 
         Args:
             root: root directory

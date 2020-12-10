@@ -361,7 +361,7 @@ class Table(HeaderBase):
                 typing.Any, typing.Dict[str, typing.Any]
             ] = None,
             inplace: bool = False,
-    ):
+    ) -> 'Table':
         r"""Extend table by new rows.
 
         Args:
@@ -645,7 +645,7 @@ class Table(HeaderBase):
             other: the other table
 
         Raises:
-            ValueError: Overlapping non-NA data is detected
+            ValueError: if overlapping values are detected that are not ``NaN``
 
         """
         if self == other:

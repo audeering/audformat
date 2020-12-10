@@ -125,7 +125,8 @@ class Scheme(HeaderBase):
 
         Args:
             n: number of values
-            str_len: string length (applied when drawn from string scheme)
+            str_len: string length if drawing from a string scheme without
+                labels
             p_none: probability for drawing an invalid value
 
         Returns:
