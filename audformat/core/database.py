@@ -41,6 +41,54 @@ class Database(HeaderBase):
         BadValueError: if an invalid ``usage`` value is passed
         ValueError: if language is unknown
 
+    Example:
+        >>> db = Database(
+        ...     'mydb',
+        ...     'https://www.audeering.com/',
+        ...     define.Usage.COMMERCIAL,
+        ...     languages=['English', 'de'],
+        ... )
+        >>> db
+        name: mydb
+        source: https://www.audeering.com/
+        usage: commercial
+        languages: [eng, deu]
+        >>> labels = ['positive', 'neutral', 'negative']
+        >>> db.schemes['emotion'] = Scheme(
+        ...     labels=labels,
+        ... )
+        >>> db.raters['rater'] = Rater()
+        >>> db.media['audio'] = AudioInfo(
+        ...     format='WAV',
+        ...     sampling_rate=16000,
+        ... )
+        >>> db['table'] = Table(
+        ...     media_id='audio',
+        ... )
+        >>> db['table']['column'] = Column(
+        ...     scheme_id='emotion',
+        ...     rater_id='rater',
+        ... )
+        >>> db
+        name: mydb
+        source: https://www.audeering.com/
+        usage: commercial
+        languages: [eng, deu]
+        media:
+          audio: {type: audio, format: WAV, sampling_rate: 16000}
+        raters:
+          rater: {type: human}
+        schemes:
+          emotion:
+            dtype: str
+            labels: [positive, neutral, negative]
+        tables:
+          table:
+            type: filewise
+            media_id: audio
+            columns:
+              column: {scheme_id: emotion, rater_id: rater}
+
     """
     def __init__(
             self,

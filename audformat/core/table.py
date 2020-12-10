@@ -67,6 +67,82 @@ class Table(HeaderBase):
         NotConformToUnifiedFormat: if index is not conform to
             :ref:`table specifications <data-tables:Tables>`
 
+    Example:
+        >>> index = pd.Index(
+        ...     ['f1', 'f2', 'f3'],
+        ...     name=define.IndexField.FILE,
+        ... )
+        >>> table = Table(
+        ...     index,
+        ...     split_id=define.SplitType.TEST,
+        ... )
+        >>> table['values'] = Column()
+        >>> table
+        type: filewise
+        split_id: test
+        columns:
+          values: {}
+        >>> table.get()
+             values
+        file
+        f1      NaN
+        f2      NaN
+        f3      NaN
+        >>> table.set({'values': [0, 1, 2]})
+        >>> table.get()
+             values
+        file
+        f1        0
+        f2        1
+        f3        2
+        >>> table.get(index[:2])
+             values
+        file
+        f1        0
+        f2        1
+        >>> index_ex = pd.Index(
+        ...     ['f4'],
+        ...     name=define.IndexField.FILE,
+        ... )
+        >>> table_ex = table.extend_index(
+        ...     index_ex,
+        ...     inplace=False,
+        ... )
+        >>> table_ex.get()
+             values
+        file
+        f1        0
+        f2        1
+        f3        2
+        f4      NaN
+        >>> table_ex.set(
+        ...     {'values': 3},
+        ...     index=index_ex,
+        ... )
+        >>> table_ex.get()
+             values
+        file
+        f1        0
+        f2        1
+        f3        2
+        f4        3
+        >>> table_str = Table(index)
+        >>> table_str['strings'] = Column()
+        >>> table_str.set({'strings': ['a', 'b', 'c']})
+        >>> (table + table_str).get()
+             values strings
+        file
+        f1        0       a
+        f2        1       b
+        f3        2       c
+        >>> (table_ex + table_str).get()
+             values strings
+        file
+        f1        0       a
+        f2        1       b
+        f3        2       c
+        f4        3     NaN
+
     """
     TYPE = 'type'
 
@@ -325,6 +401,8 @@ class Table(HeaderBase):
                     self._df[key].fillna(value, inplace=True)
             else:
                 self._df.fillna(fill_values, inplace=True)
+
+        return self
 
     def from_frame(
             self,

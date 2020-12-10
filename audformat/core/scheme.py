@@ -35,6 +35,17 @@ class Scheme(HeaderBase):
         ValueError: if ``labels`` are not of same data type
         ValueError: ``dtype`` does not match type of ``labels``
 
+    Example:
+        >>> Scheme()
+        {dtype: str}
+        >>> Scheme(labels=['a', 'b', 'c'])
+        dtype: str
+        labels: [a, b, c]
+        >>> Scheme(define.DataType.INTEGER)
+        {dtype: int}
+        >>> Scheme(float, minimum=0, maximum=1)
+        {dtype: float, minimum: 0, maximum: 1}
+
     """
     _dtypes = {
         'bool': define.DataType.BOOL,

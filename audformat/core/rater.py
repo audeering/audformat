@@ -13,6 +13,11 @@ class Rater(HeaderBase):
     Raises:
         BadValueError: if an invalid ``type`` is passed
 
+
+    Example:
+        >>> Rater(define.RaterType.HUMAN)
+        {type: human}
+
     """
     def __init__(
             self,

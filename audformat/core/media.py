@@ -39,6 +39,14 @@ class AudioInfo(MediaInfo):
         description: media description
         meta: additional meta fields
 
+    Example:
+        >>> AudioInfo(
+        ...     format='WAV',
+        ...     sampling_rate=16000,
+        ...     channels=2,
+        ... )
+        {type: audio, channels: 2, format: WAV, sampling_rate: 16000}
+
     """
     def __init__(
             self,
@@ -79,6 +87,17 @@ class VideoInfo(MediaInfo):
         depth: number of bits per channel
         description: media description
         meta: additional meta fields
+
+    Example:
+        >>> VideoInfo(
+        ...     format='MP4',
+        ...     frames_per_second=30,
+        ...     resolution=[800, 600],
+        ... )
+        type: video
+        format: MP4
+        frames_per_second: 30
+        resolution: [800, 600]
 
     """
     def __init__(

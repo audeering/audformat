@@ -25,6 +25,10 @@ class Column(HeaderBase):
         description: table description
         meta: additional meta fields
 
+    Example:
+        >>> Column(scheme_id='emotion')
+        {scheme_id: emotion}
+
     """
     def __init__(
             self,
@@ -67,6 +71,7 @@ class Column(HeaderBase):
 
         Raises:
             ColumnNotAssignToTable: if column is not assign to a table
+
 
         """
         if self._table is None:
