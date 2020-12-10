@@ -31,6 +31,17 @@ class HeaderDict(OrderedDict):
     Raises:
         BadTypeError: if a value of an invalid type is added
 
+    Example:
+        >>> HeaderDict()
+
+        >>> HeaderDict(
+        ...     get_callback=lambda key, value: value + value,
+        ...     set_callback=lambda key, value: value.upper(),
+        ...     foo='bar',
+        ... )
+        foo:
+          BARBAR
+
     """
     def __init__(
             self,
@@ -61,7 +72,7 @@ class HeaderDict(OrderedDict):
 
     def __getitem__(self, key):
         value = super().__getitem__(key)
-        if self.get_callback is not None:  # pragma: no cover
+        if self.get_callback is not None:
             value = self.get_callback(key, value)
         return value
 
@@ -71,19 +82,20 @@ class HeaderDict(OrderedDict):
         else:
             return super().items()
 
-    def dump(self) -> str:  # pragma: no cover
+    def dump(self) -> str:
         if not self:
             return ''
         else:
-            return '\n'.join(['{}:\n{}'.format(
-                key, textwrap.indent(str(value), '  '))
-                for key, value in self.items()])
+            return '\n'.join(
+                [
+                    '{}:\n{}'.format(
+                        key, textwrap.indent(str(self[key]), '  '))
+                    for key in self
+                ]
+            )
 
-    def __repr__(self) -> str:  # pragma: no cover
+    def __repr__(self) -> str:
         return self.dump()
-
-    def __str__(self) -> str:  # pragma: no cover
-        return repr(self)
 
 
 class HeaderBase:
@@ -170,8 +182,6 @@ class HeaderBase:
                     assert isinstance(value, type(self.__dict__[key]))
                 self.__dict__[key] = value
             else:
-                if self.meta is None:
-                    self.meta = HeaderDict()  # pragma: no cover
                 self.meta[key] = value
 
     def dump(

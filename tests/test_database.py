@@ -8,13 +8,19 @@ import audformat
 import audformat.testing
 
 
-def test_map_files():
+def test_drop_and_pick_tables():
 
     db = audformat.testing.create_db()
 
-    files = sorted(db.files)
-    db.map_files(lambda x: x.upper())
-    assert [x.upper() for x in files] == sorted(db.files)
+    assert 'segments' in db
+    db.pick_tables('files')
+    assert 'segments' not in db
+
+    db = audformat.testing.create_db()
+
+    assert 'segments' in db
+    db.drop_tables('segments')
+    assert 'segments' not in db
 
 
 def test_filter_files():
@@ -29,19 +35,13 @@ def test_filter_files():
         os.path.basename(x))[0]) % 2) for x in db.files)
 
 
-def test_drop_and_pick():
+def test_map_files():
 
     db = audformat.testing.create_db()
 
-    assert 'segments' in db
-    db.pick_tables('files')
-    assert 'segments' not in db
-
-    db = audformat.testing.create_db()
-
-    assert 'segments' in db
-    db.drop_tables('segments')
-    assert 'segments' not in db
+    files = sorted(db.files)
+    db.map_files(lambda x: x.upper())
+    assert [x.upper() for x in files] == sorted(db.files)
 
 
 @pytest.mark.parametrize(
@@ -86,3 +86,12 @@ def test_save_and_load(tmpdir, db, compressed):
         for column_id, column in table.columns.items():
             assert column._id == column_id
             assert column._table is table
+
+
+def test_string():
+
+    db = audformat.testing.create_db(minimal=True)
+    assert str(db) == 'name: unittest\n' \
+                      'source: internal\n' \
+                      'usage: commercial\n' \
+                      'languages: [deu, eng]'
