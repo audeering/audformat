@@ -322,8 +322,8 @@ class Database(HeaderBase):
             table: the table
 
         Raises:
-            BadIdError: if a ``split_id`` or ``media_id`` is assigned to the
-                table, which is not specified in the underlying database
+            BadIdError: if table has a ``split_id`` or ``media_id``,
+                which is not specified in the underlying database
 
         """
         self.tables[table_id] = table

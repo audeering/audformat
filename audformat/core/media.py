@@ -41,7 +41,7 @@ class AudioInfo(MediaInfo):
 
     Example:
         >>> AudioInfo(
-        ...     format='WAV',
+        ...     format='wav',
         ...     sampling_rate=16000,
         ...     channels=2,
         ... )
@@ -90,7 +90,7 @@ class VideoInfo(MediaInfo):
 
     Example:
         >>> VideoInfo(
-        ...     format='MP4',
+        ...     format='mp4',
         ...     frames_per_second=30,
         ...     resolution=[800, 600],
         ... )
