@@ -215,7 +215,7 @@ def create_db(minimal: bool = False) -> Database:
     #########
 
     db.media['microphone'] = AudioInfo(
-        format='wav', sampling_rate=16000, channels=1, bit_rate=16,
+        format='wav', sampling_rate=16000, channels=1, bit_depth=16,
     )
     db.media['webcam'] = VideoInfo(
         format='avi', frames_per_second=25, resolution=[800, 600],
