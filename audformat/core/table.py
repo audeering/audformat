@@ -4,6 +4,8 @@ import typing
 import numpy as np
 import pandas as pd
 
+import audeer
+
 from audformat.core import define
 from audformat.core import utils
 from audformat.core.index import (
@@ -488,22 +490,20 @@ class Table(HeaderBase):
 
     def load(
             self,
-            root: str,
-            name: str,
+            path: str,
     ):
         r"""Load table data from disk.
 
         Args:
-            root: root directory
-            name: file name without extension
+            path: file path without extension
 
         """
-        compressed = os.path.exists(os.path.join(root, name + '.pkl'))
-
+        path = audeer.safe_path(path)
+        compressed = os.path.exists(path + '.pkl')
         if compressed:
-            self._load_compressed(os.path.join(root, name + '.pkl'))
+            self._load_compressed(path + '.pkl')
         else:
-            self._load_csv(os.path.join(root, name + '.csv'))
+            self._load_csv(path + '.csv')
 
     def pick_columns(
             self,
@@ -572,24 +572,22 @@ class Table(HeaderBase):
 
     def save(
             self,
-            root: str,
-            name: str,
+            path: str,
+            *,
             compressed: bool = False,
     ):
         r"""Save table data to disk.
 
         Args:
-            root: root directory
-            name: file name without extension.
-                If ``None`` set to ``<id>_<version>``.
+            path: file path without extension
             compressed: store tables in compressed format instead of CSV
 
         """
+        path = audeer.safe_path(path)
         if compressed:
-            self._df.to_pickle(
-                os.path.join(root, name + '.pkl'), compression='xz')
+            self._df.to_pickle(path + '.pkl', compression='xz')
         else:
-            with open(os.path.join(root, name + '.csv'), 'w') as fp:
+            with open(path + '.csv', 'w') as fp:
                 self.df.to_csv(fp, encoding='utf-8')
 
     def set(

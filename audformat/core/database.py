@@ -258,33 +258,13 @@ class Database(HeaderBase):
         root = audeer.mkdir(root)
 
         ext = '.yaml'
-        path = os.path.join(root, name + ext)
-        with open(path, 'w') as fp:
+        header_path = os.path.join(root, name + ext)
+        with open(header_path, 'w') as fp:
             self.dump(fp, indent=indent)
         if not header_only:
             for table_id, table in self.tables.items():
-                self.save_table(
-                    table_id, root, name + '.' + table_id,
-                    compressed=compressed,
-                )
-
-    def save_table(
-            self,
-            table_id: str,
-            root: str,
-            name: str,
-            compressed: bool = False,
-    ):
-        r"""Save specific table to disk.
-
-        Args:
-            table_id: table identifier
-            root: root directory
-            name: base name of files
-            compressed: store tables in compressed format instead of CSV
-
-        """
-        self.tables[table_id].save(root, name, compressed=compressed)
+                table_path = os.path.join(root, name + '.' + table_id)
+                table.save(table_path, compressed=compressed)
 
     def __contains__(
             self,
@@ -367,7 +347,8 @@ class Database(HeaderBase):
             if 'tables' in header and header['tables'] and load_data:
                 for table_id, table_d in header['tables'].items():
                     table = db[table_id]
-                    table.load(root, name + '.' + table_id)
+                    path = os.path.join(root, name + '.' + table_id)
+                    table.load(path)
 
         return db
 

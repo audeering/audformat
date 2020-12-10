@@ -45,7 +45,7 @@ class AudioInfo(MediaInfo):
         ...     sampling_rate=16000,
         ...     channels=2,
         ... )
-        {type: audio, channels: 2, format: WAV, sampling_rate: 16000}
+        {type: audio, channels: 2, format: wav, sampling_rate: 16000}
 
     """
     def __init__(
@@ -95,7 +95,7 @@ class VideoInfo(MediaInfo):
         ...     resolution=[800, 600],
         ... )
         type: video
-        format: MP4
+        format: mp4
         frames_per_second: 30
         resolution: [800, 600]
 
