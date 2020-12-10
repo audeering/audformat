@@ -39,7 +39,6 @@ raters                     Dictionary of rater objects (see below)
 schemes                    Dictionary of scheme objects (see below)
 splits                     Dictionary of rater objects (see below)
 tables                     Dictionary of tables (see below)
-tags                       List of tags
 *meta-key-1*               1st optional meta field
 ...                        ...
 *meta-key-N*               Nth optional meta field
@@ -82,7 +81,6 @@ Field           Mandatory  Description
 id              yes        Unique identifier of rater
 type            yes        Rater type, see :class:`audformat.define.RaterType`
 description                Description of rater
-tags                       List of tags
 *meta-key-1*               1st optional meta field
 ...                        ...
 *meta-key-N*               Nth optional meta field
@@ -129,7 +127,6 @@ minimum                    Minimum label value (only applied if ``dtype`` is
                            numeric)
 maximum                    Maximum label value (only applied if ``dtype`` is
                            numeric)
-tags                       List of tags
 *meta-key-1*               1st optional meta field
 ...                        ...
 *meta-key-N*               Nth optional meta field
@@ -171,7 +168,6 @@ id              yes        Unique identifier of split
 type            yes        Split type,
                            typically one of :class:`audformat.define.SplitType`
 description                Description of split
-tags                       List of tags
 *meta-key-1*               1st optional meta field
 ...                        ...
 *meta-key-N*               Nth optional meta field
@@ -218,7 +214,6 @@ channels                   Number of channels
 description                Description of audio information
 format                     Audio file format (e.g. ``wav``)
 sampling_rate              Sampling rate in Hz
-tags                       List of tags
 *meta-key-1*               1st optional meta field
 ...                        ...
 *meta-key-N*               Nth optional meta field
@@ -236,7 +231,6 @@ depth                         Number of bits per channel
 description                   Description of video information
 format                        Video file format (e.g. ``avi``)
 frames_per_second             Frames per second
-tags                          List of tags
 *meta-key-1*                  1st optional meta field
 ...                           ...
 *meta-key-N*                  Nth optional meta field
@@ -280,7 +274,6 @@ columns                    Dictionary of columns (see below)
 description                Description of table
 media_id                   Files in this table are of this media type
 split_id                   The split the table belongs to
-tags                       List of tags
 *meta-key-1*               1st optional meta field
 ...                        ...
 *meta-key-N*               Nth optional meta field
@@ -326,7 +319,6 @@ id              yes        Unique identifier of column
 description                Description of column
 scheme_id                  The scheme the values in this column belong to
 rater_id                   The rater who assigned the values
-tags                       List of tags
 *meta-key-1*               1st optional meta field
 ...                        ...
 *meta-key-N*               Nth optional meta field
