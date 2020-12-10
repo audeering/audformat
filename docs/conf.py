@@ -103,7 +103,7 @@ html_title = title
 # Graphviz figures --------------------------------------------------------
 dot_files = [
     './pics/tables.dot',
-    './pics/unified-format.dot',
+    './pics/audformat.dot',
     './pics/workflow.dot',
 ]
 for dot_file in dot_files:
