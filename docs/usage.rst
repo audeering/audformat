@@ -182,15 +182,17 @@ for age and likability:
     audformat.testing.add_table(
         db,
         table_id='age',
-        table_type=audformat.define.IndexType.FILEWISE,
+        index_type=audformat.define.IndexType.FILEWISE,
         columns='age',
-        num_files=3)
+        num_files=3,
+    )
     audformat.testing.add_table(
         db,
         table_id='likability',
-        table_type=audformat.define.IndexType.SEGMENTED,
+        index_type=audformat.define.IndexType.SEGMENTED,
         columns='likability',
-        num_files=4)
+        num_files=4,
+    )
 
 Which results in the following two :class:`pandas.DataFrame`:
 

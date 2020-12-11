@@ -184,7 +184,7 @@ def to_filewise_index(
 
     If input is segmented, each segment is saved to a separate file
     in ``output_folder``. The directory structure of the original data is
-    preserved within ``output folder``.
+    preserved within ``output_folder``.
     If input is filewise no action is applied.
 
     Args:
@@ -288,9 +288,7 @@ def to_segmented_index(
             :ref:`table specifications <data-tables:Tables>`
 
     """
-    table_type = index_type(obj)
-
-    if obj.empty or table_type == define.IndexType.SEGMENTED:
+    if obj.empty or index_type(obj) == define.IndexType.SEGMENTED:
         return obj
 
     if isinstance(obj, (pd.Series, pd.DataFrame)):

@@ -25,7 +25,7 @@ class Split(HeaderBase):
     """
     def __init__(
             self,
-            type: define.SplitType = define.SplitType.UNDEFINED,
+            type: define.SplitType = define.SplitType.OTHER,
             *,
             description: str = None,
             meta: dict = None,

@@ -162,14 +162,34 @@ class Database(HeaderBase):
         assert isinstance(index, pd.MultiIndex)
         return index.drop_duplicates()
 
+    def drop_files(
+            self,
+            files: typing.Union[
+                str,
+                typing.Sequence[str],
+                typing.Callable[[str], bool],
+            ]
+    ):
+        r"""Drop files from tables.
+
+        Iterate through all tables and remove rows with a reference to
+        listed or matching files.
+
+        Args:
+            files: list of files or condition function
+
+        """
+        for table in self.tables.values():
+            table.drop_files(files, inplace=True)
+
     def drop_tables(
             self,
             table_ids: typing.Union[str, typing.Sequence[str]],
     ):
-        r"""Drop tables by id.
+        r"""Drop tables by ID.
 
         Args:
-            table_ids: table ids to drop
+            table_ids: table IDs to drop
 
         """
         if isinstance(table_ids, str):
@@ -177,14 +197,34 @@ class Database(HeaderBase):
         for table_id in table_ids:
             self.tables.pop(table_id)
 
+    def pick_files(
+            self,
+            files: typing.Union[
+                str,
+                typing.Sequence[str],
+                typing.Callable[[str], bool],
+            ]
+    ):
+        r"""Pick files from tables.
+
+        Iterate through all tables and keep only rows with a reference
+        to listed files or matching files.
+
+        Args:
+            files: list of files or condition function
+
+        """
+        for table in self.tables.values():
+            table.pick_files(files, inplace=True)
+
     def pick_tables(
             self,
             table_ids: typing.Union[str, typing.Sequence[str]],
     ):
-        r"""Pick tables by id (all other tables will be dropped).
+        r"""Pick tables by ID.
 
         Args:
-            table_ids: table ids to pick
+            table_ids: table IDs to pick
 
         """
         if isinstance(table_ids, str):
@@ -233,27 +273,6 @@ class Database(HeaderBase):
                 table.df.index = table.df.index.map(
                     lambda x: func(x))
 
-    def filter_files(
-            self,
-            func: typing.Callable[[str], bool],
-    ) -> int:
-        r"""Filter rows by file name in all tables.
-
-        Only rows with a matching file name are kept.
-
-        Args:
-            func: condition function
-
-        Returns:
-            number of removed files
-
-        """
-        n = len(self.files)
-        for table in self.tables.values():
-            sel = table.files.to_series().apply(func)
-            table._df = table._df[sel.values]
-        return n - len(self.files)
-
     def save(
             self,
             root: str,
@@ -265,8 +284,8 @@ class Database(HeaderBase):
     ):
         r"""Save database to disk.
 
-        By default this creates a header ``<root>/db.yaml`` and for every table
-        a file ``<root>/db.<table-id>.csv``.
+        Creates a header ``<root>/<name>.yaml`` and for every table
+        a file ``<root>/<name>.<table-id>.[csv,pkl]``.
 
         Args:
             root: root directory (possibly created)
@@ -339,9 +358,9 @@ class Database(HeaderBase):
     ) -> 'Database':
         r"""Load database from disk.
 
-        By default expects a header ``<root>/db.yaml``
-        and for every table a file ``<root>/db.<table-id>.[csv|pkl]``
-        Media files should be located under ``root``, too.
+        Expects a header ``<root>/<name>.yaml``
+        and for every table a file ``<root>/<name>.<table-id>.[csv|pkl]``
+        Media files should be located under ``root``.
 
         Args:
             root: root directory

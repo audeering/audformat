@@ -157,6 +157,61 @@ def test_drop_and_pick_columns(inplace):
         assert 'string' in db['files'].columns
 
 
+@pytest.mark.parametrize(
+    'files',
+    [
+        pytest.DB.files,
+        pytest.DB.files[0],
+        [pytest.DB.files[0], 'does-not-exist.wav'],
+        lambda x: '1' in x,
+    ]
+)
+@pytest.mark.parametrize(
+    'table',
+    [
+        pytest.DB['files'],
+        pytest.DB['segments'],
+    ]
+)
+def test_drop_files(files, table):
+
+    table = table.drop_files(files, inplace=False)
+    if callable(files):
+        files = table.files.to_series().apply(files)
+    elif isinstance(files, str):
+        files = [files]
+    assert table.files.intersection(files).empty
+
+
+@pytest.mark.parametrize(
+    'files',
+    [
+        pytest.DB.files,
+        pytest.DB.files[0],
+        [pytest.DB.files[0], 'does-not-exist.wav'],
+        lambda x: '1' in x,
+    ]
+)
+@pytest.mark.parametrize(
+    'table',
+    [
+        pytest.DB['files'],
+        pytest.DB['segments'],
+    ]
+)
+def test_pick_files(files, table):
+
+    table = table.pick_files(files, inplace=False)
+    if callable(files):
+        files = table.files[table.files.to_series().apply(files)]
+    elif isinstance(files, str):
+        files = [files]
+    pd.testing.assert_index_equal(
+        table.files.unique(),
+        audformat.filewise_index(files).intersection(table.files),
+    )
+
+
 def test_and_pick_index():
 
     for table in ['files', 'segments']:

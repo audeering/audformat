@@ -32,7 +32,7 @@ from audformat.core.column import Column
 def add_table(
         db: Database,
         table_id: str,
-        table_type: define.IndexType,
+        index_type: define.IndexType,
         *,
         columns: Union[
             str,
@@ -57,9 +57,9 @@ def add_table(
     determined from there. Otherwise WAV is used.
 
     Args:
-        db: the database
-        table_id: id of table that will be created
-        table_type: the table type
+        db: a database
+        table_id: ID of table that will be created
+        index_type: the table type
         columns: a list of scheme_ids or a dictionary with column names as
             keys and tuples of ``(scheme_id, rater_id)`` as values. ``None``
             values are allowed
@@ -71,8 +71,8 @@ def add_table(
         file_duration: the file duration
         file_root: file sub directory
         p_none: probability to draw invalid values
-        split_id: optional split id
-        media_id: optional media id
+        split_id: optional split ID
+        media_id: optional media ID
 
     """
     if isinstance(file_duration, str):
@@ -91,17 +91,17 @@ def add_table(
 
     if isinstance(num_files, int):
         files = [
-            os.path.join(file_root, '{:03}.{}'.format(idx + 1, audio_format))
+            os.path.join(file_root, f'{idx + 1:03}.{audio_format}')
             for idx in range(num_files)
         ]
     else:
         files = [
-            os.path.join(file_root, '{:03}.{}'.format(idx, audio_format))
+            os.path.join(file_root, f'{idx:03}.{audio_format}')
             for idx in num_files
         ]
         num_files = len(num_files)
 
-    if table_type == define.IndexType.FILEWISE:
+    if index_type == define.IndexType.FILEWISE:
 
         n_items = num_files
         db[table_id] = Table(
@@ -110,7 +110,7 @@ def add_table(
             media_id=media_id,
         )
 
-    elif table_type == define.IndexType.SEGMENTED:
+    elif index_type == define.IndexType.SEGMENTED:
 
         n_items = num_files * num_segments_per_file
         starts = []

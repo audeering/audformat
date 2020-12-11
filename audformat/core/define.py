@@ -46,9 +46,9 @@ class MediaType(DefineBase):
 
 class RaterType(DefineBase):
     r"""Rater type"""
-    TRUTH = 'ground truth'
     HUMAN = 'human'
     MACHINE = 'machine'
+    TRUTH = 'ground truth'
     VOTE = 'vote'
 
 
@@ -56,8 +56,8 @@ class SplitType(DefineBase):
     r"""Split type"""
     TRAIN = 'train'
     DEVELOP = 'dev'
+    OTHER = 'other'
     TEST = 'test'
-    UNDEFINED = 'undefined'
 
 
 class SpeakerProfession(DefineBase):

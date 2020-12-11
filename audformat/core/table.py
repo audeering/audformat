@@ -40,11 +40,9 @@ def index_to_dict(index: pd.Index) -> dict:
         ]
     )
 
-    table_type = index_type(index)
-
     d[define.IndexField.FILE + 's'] = index.get_level_values(
         define.IndexField.FILE).values
-    if table_type == define.IndexType.SEGMENTED:
+    if index_type(index) == define.IndexType.SEGMENTED:
         d[define.IndexField.START + 's'] = index.get_level_values(
             define.IndexField.START).values.astype(np.timedelta64)
         d[define.IndexField.END + 's'] = index.get_level_values(
@@ -217,7 +215,9 @@ class Table(HeaderBase):
         if self.df.index.empty:
             return filewise_index()
         else:
-            return self.df.index.get_level_values(define.IndexField.FILE)
+            index = self.df.index.get_level_values(define.IndexField.FILE)
+            index.name = define.IndexField.FILE
+            return index
 
     @property
     def index(self) -> pd.Index:
@@ -313,6 +313,43 @@ class Table(HeaderBase):
         self.df.drop(column_ids_, inplace=True, axis='columns')
         for column_id in column_ids_:
             self.columns.pop(column_id)
+
+        return self
+
+    def drop_files(
+            self,
+            files: typing.Union[
+                str,
+                typing.Sequence[str],
+                typing.Callable[[str], bool],
+            ],
+            *,
+            inplace: bool = False,
+    ) -> 'Table':
+        r"""Drop files.
+
+        Remove rows with a reference to listed or matching files.
+
+        Args:
+            files: list of files or condition function
+            inplace: drop files in place
+
+        Returns:
+            new ``Table`` if ``inplace=False``, otherwise ``self``
+
+        """
+        if not inplace:
+            return self.copy().drop_files(files, inplace=True)
+
+        if isinstance(files, str):
+            files = [files]
+        if callable(files):
+            sel = self.files.to_series().apply(files)
+            self._df = self._df[~sel.values]
+        else:
+            index = self.files.intersection(files)
+            index.name = define.IndexField.FILE
+            self._df.drop(index, inplace=True)
 
         return self
 
@@ -570,6 +607,43 @@ class Table(HeaderBase):
             )
         new_index = self._df.index.intersection(index)
         self._df = self._df.reindex(new_index)
+
+        return self
+
+    def pick_files(
+            self,
+            files: typing.Union[
+                str,
+                typing.Sequence[str],
+                typing.Callable[[str], bool],
+            ],
+            *,
+            inplace: bool = False,
+    ) -> 'Table':
+        r"""Pick files.
+
+        Keep only rows with a reference to listed files or matching files.
+
+        Args:
+            files: list of files or condition function
+            inplace: pick files in place
+
+        Returns:
+            new ``Table`` if ``inplace=False``, otherwise ``self``
+
+        """
+        if not inplace:
+            return self.copy().pick_files(files, inplace=True)
+
+        if isinstance(files, str):
+            files = [files]
+        if callable(files):
+            sel = self.files.to_series().apply(files)
+            self._df = self._df[sel.values]
+        else:
+            index = self.files.intersection(files)
+            index.name = define.IndexField.FILE
+            self._df = self.get(index, copy=False)
 
         return self
 

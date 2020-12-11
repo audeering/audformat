@@ -1,11 +1,56 @@
 import os
-import shutil
 import filecmp
 
+import pandas as pd
 import pytest
 
 import audformat
 import audformat.testing
+
+
+@pytest.mark.parametrize(
+    'files',
+    [
+        pytest.DB.files,
+        pytest.DB.files[:2],
+        pytest.DB.files[0],
+        lambda x: '1' in x,
+    ]
+)
+def test_drop_files(files):
+
+    db = audformat.testing.create_db()
+    db.drop_files(files)
+    if callable(files):
+        files = db.files.to_series().apply(files)
+    else:
+        if isinstance(files, str):
+            files = [files]
+    assert db.files.intersection(files).empty
+
+
+@pytest.mark.parametrize(
+    'files',
+    [
+        pytest.DB.files,
+        pytest.DB.files[:2],
+        pytest.DB.files[0],
+        lambda x: '1' in x,
+    ]
+)
+def test_pick_files(files):
+
+    db = audformat.testing.create_db()
+    db.pick_files(files)
+    if callable(files):
+        files = db.files[db.files.to_series().apply(files)]
+    else:
+        if isinstance(files, str):
+            files = [files]
+    pd.testing.assert_index_equal(
+        db.files,
+        audformat.filewise_index(files),
+    )
 
 
 def test_drop_and_pick_tables():
@@ -21,18 +66,6 @@ def test_drop_and_pick_tables():
     assert 'segments' in db
     db.drop_tables('segments')
     assert 'segments' not in db
-
-
-def test_filter_files():
-
-    db = audformat.testing.create_db()
-
-    files = db.files
-    n_removed = db.filter_files(lambda x: bool(
-        int(os.path.splitext(os.path.basename(x))[0]) % 2))
-    assert n_removed == len(files) - len(db.files)
-    assert all(bool(int(os.path.splitext(
-        os.path.basename(x))[0]) % 2) for x in db.files)
 
 
 def test_map_files():
