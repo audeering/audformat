@@ -44,7 +44,8 @@ The raters rated the emotion anger in the range 0 to 5.
     )
 
     # Add media, split and scheme
-    db.media['microphone'] = audformat.AudioInfo(
+    db.media['microphone'] = audformat.Media(
+        audformat.define.MediaType.AUDIO,
         format='wav',
     )
     db.splits['train'] = audformat.Split(

@@ -40,6 +40,7 @@ class IndexType(DefineBase):
 class MediaType(DefineBase):
     r"""Media type"""
     AUDIO = 'audio'
+    OTHER = 'other'
     VIDEO = 'video'
 
 

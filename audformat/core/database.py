@@ -13,7 +13,7 @@ from audformat.core.index import segmented_index
 from audformat.core.column import Column
 from audformat.core.common import HeaderBase, HeaderDict
 from audformat.core.errors import BadIdError
-from audformat.core.media import MediaInfo, AudioInfo, VideoInfo
+from audformat.core.media import Media
 from audformat.core.rater import Rater
 from audformat.core.scheme import Scheme
 from audformat.core.split import Split
@@ -58,8 +58,9 @@ class Database(HeaderBase):
         ...     labels=labels,
         ... )
         >>> db.raters['rater'] = Rater()
-        >>> db.media['audio'] = AudioInfo(
-        ...     format='WAV',
+        >>> db.media['audio'] = Media(
+        ...     define.MediaType.AUDIO,
+        ...     format='wav',
         ...     sampling_rate=16000,
         ... )
         >>> db['table'] = Table(
@@ -75,7 +76,7 @@ class Database(HeaderBase):
         usage: commercial
         languages: [eng, deu]
         media:
-          audio: {type: audio, format: WAV, sampling_rate: 16000}
+          audio: {type: audio, format: wav, sampling_rate: 16000}
         raters:
           rater: {type: human}
         schemes:
@@ -118,7 +119,7 @@ class Database(HeaderBase):
         r"""Expiry date"""
         self.languages = languages
         r"""List of included languages"""
-        self.media = HeaderDict(value_type=MediaInfo)
+        self.media = HeaderDict(value_type=Media)
         r"""Dictionary of media information"""
         self.raters = HeaderDict(value_type=Rater)
         r"""Dictionary of raters"""
@@ -398,10 +399,7 @@ class Database(HeaderBase):
 
         if 'media' in header and header['media']:
             for media_id, media_d in header['media'].items():
-                if media_d['type'] == define.MediaType.AUDIO:
-                    media = AudioInfo()
-                elif media_d['type'] == define.MediaType.VIDEO:
-                    media = VideoInfo()
+                media = Media()
                 media.from_dict(media_d)
                 db.media[media_id] = media
 

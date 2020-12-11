@@ -21,10 +21,7 @@ from audformat.core.index import (
     filewise_index,
     segmented_index,
 )
-from audformat.core.media import (
-    AudioInfo,
-    VideoInfo,
-)
+from audformat.core.media import Media
 from audformat.core.rater import Rater
 from audformat.core.scheme import Scheme
 from audformat.core.split import Split
@@ -214,12 +211,12 @@ def create_db(minimal: bool = False) -> Database:
     # Media #
     #########
 
-    db.media['microphone'] = AudioInfo(
+    db.media['microphone'] = Media(
         format='wav', sampling_rate=16000, channels=1, bit_depth=16,
     )
-    db.media['webcam'] = VideoInfo(
-        format='avi', frames_per_second=25, resolution=[800, 600],
-        depth=8, channels=3,
+    db.media['webcam'] = Media(
+        format='avi', video_fps=25, video_resolution=[800, 600],
+        video_depth=8, video_channels=3,
     )
 
     ##########

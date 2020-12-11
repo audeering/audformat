@@ -200,41 +200,28 @@ audformat implementation
 Media
 -----
 
-This part of the header is represented by :class:`audformat.AudioInfo` and
-:class:`audformat.VideoInfo`.
+This part of the header is represented by :class:`audformat.Media`.
 
-To store audio information use:
+To store media information use:
 
-==============  =========  ====================================================
-Field           Mandatory  Description
-==============  =========  ====================================================
-id              yes        Unique identifier of media type
-type            yes        Media type, must be ``audio``
-channels                   Number of channels
-description                Description of audio information
-format                     Audio file format (e.g. ``wav``)
-sampling_rate              Sampling rate in Hz
-*meta-key-1*               1st optional meta field
-...                        ...
-*meta-key-N*               Nth optional meta field
-==============  =========  ====================================================
-
-To store video information use:
-
-=================  =========  =================================================
-Field              Mandatory  Description
-=================  =========  =================================================
-id                 yes        Unique identifier of media type
-type               yes        Media type, must be ``video``
-channels                      Number of channels
-depth                         Number of bits per channel
-description                   Description of video information
-format                        Video file format (e.g. ``avi``)
-frames_per_second             Frames per second
-*meta-key-1*                  1st optional meta field
-...                           ...
-*meta-key-N*                  Nth optional meta field
-=================  =========  =================================================
+================  =========  ====================================================
+Field             Mandatory  Description
+================  =========  ====================================================
+id                yes        Unique identifier of media type
+type                         Media type, one of (``audio``, ``video``, ``other``)
+bit_depth                    Audio bit depth
+channels                     Number of audio channels
+description                  Description
+format                       Media file format (e.g. ``wav`` or ``mp4``)
+sampling_rate                Audio sampling rate in Hz
+video_fps                    Video rate in frames per seconds
+video_resolution             Video resolution in pixels (``width`` x ``height``)
+video_channels               Number of channels per pixel (e.g. 3 for RGB)
+video_depth                  Number of bits per video channel
+*meta-key-1*                 1st optional meta field
+...                          ...
+*meta-key-N*                 Nth optional meta field
+================  =========  ====================================================
 
 Minimal example
 ^^^^^^^^^^^^^^^
@@ -250,11 +237,11 @@ audformat implementation
 
 .. jupyter-execute::
 
-    # Create minimal AudioInfo
-    audio = audformat.AudioInfo()
-    # Add AudioInfo to Database
-    db.media['mediaid'] = audio
-    # Access type of AudioInfo
+    # Create minimal media information
+    media = audformat.Media()
+    # Add media to Database
+    db.media['mediaid'] = media
+    # Access type of Media
     db.media['mediaid'].type
     # Access media
     db.media
@@ -294,7 +281,7 @@ audformat implementation
 .. jupyter-execute::
 
     # Create minimal Table
-    table = audformat.Table(audformat.create_filewise_index())
+    table = audformat.Table(audformat.filewise_index())
     # Add Table to Database
     db.tables['tableid'] = table
     # Access type of Table

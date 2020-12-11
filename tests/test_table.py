@@ -16,7 +16,7 @@ def test_table_access():
 def test_add():
 
     db = audformat.testing.create_db(minimal=True)
-    db.media['media'] = audformat.AudioInfo()
+    db.media['media'] = audformat.Media()
     db.splits['split'] = audformat.Split()
 
     # empty tables

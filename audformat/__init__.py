@@ -7,11 +7,7 @@ from audformat.core.index import (
     segmented_index,
     index_type,
 )
-from audformat.core.media import (
-    AudioInfo,
-    MediaInfo,
-    VideoInfo,
-)
+from audformat.core.media import Media
 from audformat.core.rater import Rater
 from audformat.core.scheme import Scheme
 from audformat.core.split import Split

@@ -56,7 +56,7 @@ Create a filewise index:
     import audformat.testing
 
 
-    filewise_index = audformat.create_filewise_index(
+    filewise_index = audformat.filewise_index(
         ['f1', 'f2', 'f3'],
     )
     filewise_index
@@ -100,7 +100,7 @@ Create a segmented index:
 
 .. jupyter-execute::
 
-    segmented_index = audformat.create_segmented_index(
+    segmented_index = audformat.segmented_index(
         files=['f1', 'f1', 'f1', 'f2'],
         starts=['0s', '1s', '2s', '0s'],
         ends=['1s', '2s', '3s', pd.NaT],
@@ -140,7 +140,7 @@ Create a segmented index:
 
 .. jupyter-execute::
 
-    segmented_index = audformat.create_segmented_index(
+    segmented_index = audformat.segmented_index(
         files=['f1', 'f1', 'f1', 'f2', 'f3'],
         starts=['0s', '1s', '2s', '0s', '1m'],
         ends=['1s', '2s', '3s', pd.NaT, '1h'],
@@ -187,7 +187,7 @@ Create a filewise index:
 
 .. jupyter-execute::
 
-    filewise_index = audformat.create_filewise_index(
+    filewise_index = audformat.filewise_index(
         ['f1', 'f2'],
     )
     filewise_index

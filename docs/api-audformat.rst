@@ -3,12 +3,6 @@ audformat
 
 .. automodule:: audformat
 
-AudioInfo
----------
-
-.. autoclass:: audformat.AudioInfo
-    :members:
-
 Column
 ------
 
@@ -37,10 +31,10 @@ index_type
 
 .. autofunction:: audformat.index_type
 
-MediaInfo
+Media
 ---------
 
-.. autoclass:: audformat.MediaInfo
+.. autoclass:: audformat.Media
     :members:
 
 Rater
@@ -78,10 +72,4 @@ There are two types of tables:
 * :class:`audformat.define.TableType.SEGMENTED` tables annotate file segments
 
 .. autoclass:: audformat.Table
-    :members:
-
-VideoInfo
----------
-
-.. autoclass:: audformat.VideoInfo
     :members:

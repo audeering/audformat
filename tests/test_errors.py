@@ -27,7 +27,7 @@ def test_errors():
         db.media['media'] = audformat.Rater()
 
     with pytest.raises(audformat.errors.BadTypeError):
-        db.splits['split'] = audformat.AudioInfo()
+        db.splits['split'] = audformat.Media()
 
     with pytest.raises(audformat.errors.BadTypeError):
         db.schemes['table'] = audformat.Split()
