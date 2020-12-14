@@ -74,6 +74,9 @@ def add_table(
         split_id: optional split ID
         media_id: optional media ID
 
+    Returns:
+        table object
+
     """
     if isinstance(file_duration, str):
         file_duration = pd.Timedelta(file_duration)
@@ -161,7 +164,7 @@ def create_audio_files(
     and should create a sample in the amplitude range ``[-1..1]``.
 
     Args:
-        db: the database
+        db: a database
         root: root folder where the database is (or will be) stored
         sample_generator: sample generator
         sampling_rate: sampling rate in Hz
@@ -187,7 +190,16 @@ def create_audio_files(
 
 
 def create_db(minimal: bool = False) -> Database:
-    r"""Creates a database with content for unit tests.
+    r"""Create test database.
+
+    Creates a test database called ``unittest`` with a filewise
+    and segmented table.
+
+    Args:
+        minimal: create minimal database without tables
+
+    Returns:
+        database object
 
     """
     ########

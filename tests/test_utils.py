@@ -231,7 +231,7 @@ f2,00:00:02,00:00:03,2.0,c'''),
         )
     )
 ])
-def test_from_csv(csv, result):
+def test_read_csv(csv, result):
     obj = audformat.utils.read_csv(csv)
     if isinstance(result, pd.Index):
         pd.testing.assert_index_equal(obj, result)

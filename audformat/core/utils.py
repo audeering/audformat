@@ -20,8 +20,10 @@ from audformat.core.errors import InvalidIndex
 def concat(
         objs: typing.Sequence[typing.Union[pd.Series, pd.DataFrame]],
 ) -> pd.DataFrame:
-    r"""Concatenate objects conform to
-        :ref:`table specifications <data-tables:Tables>`
+    r"""Concatenate objects.
+
+    Objects must be conform to
+    :ref:`table specifications <data-tables:Tables>`.
 
     If at least one object is segmented, the output has a segmented index.
 
@@ -35,6 +37,26 @@ def concat(
     Raises:
         ValueError: if one or more objects are not conform to
             :ref:`table specifications <data-tables:Tables>`
+
+    Example:
+    >>> series = pd.Series(
+    ...     [1., 2., 3.],
+    ...     index=filewise_index(['f1', 'f2', 'f3']),
+    ...     name='number',
+    ... )
+    >>> df = pd.DataFrame(
+    ...     {
+    ...         'string': ['a', 'b', 'c'],
+    ...     },
+    ...     index=filewise_index(['f2', 'f3', 'f4']),
+    ... )
+    >>> concat([series, df])
+          number string
+    file
+    f1       1.0    NaN
+    f2       2.0      a
+    f3       3.0      b
+    f4       NaN      c
 
     """
     if not objs:
@@ -77,7 +99,7 @@ def concat(
     return df_concat
 
 
-def map_language(language: str) -> typing.Optional[str]:
+def map_language(language: str) -> str:
     r"""Map language to ISO 639-3.
 
     Args:
@@ -88,6 +110,14 @@ def map_language(language: str) -> typing.Optional[str]:
 
     Raises:
         ValueError: if language is not supported
+
+    Example:
+        >>> map_language('en')
+        'eng'
+        >>> map_language('eng')
+        'eng'
+        >>> map_language('English')
+        'eng'
 
     """
     result = None
@@ -123,9 +153,11 @@ def read_csv(
         *args,
         **kwargs,
 ) -> typing.Union[pd.Index, pd.Series, pd.DataFrame]:
-    r"""Read object conform to
-        :ref:`table specifications <data-tables:Tables>`
-        from CSV file.
+    r"""Read object from CSV file..
+
+    Automatically detects the index type and returns a an object that is
+    conform to :ref:`table specifications <data-tables:Tables>`.
+    If conversion is not possible, an error is raised.
 
     See :meth:`pandas.read_csv` for supported arguments.
 
@@ -136,6 +168,19 @@ def read_csv(
     Raises:
         NotConformToUnifiedFormat: if CSV files is not conform to
             :ref:`table specifications <data-tables:Tables>`
+
+    Example:
+        >>> from io import StringIO
+        >>> string = StringIO('''file,start,end,value
+        ... f1,00:00:00,00:00:01,0.0
+        ... f1,00:00:01,00:00:02,1.0
+        ... f2,00:00:02,00:00:03,2.0''')
+        >>> read_csv(string)
+        file  start            end
+        f1    0 days 00:00:00  0 days 00:00:01    0.0
+              0 days 00:00:01  0 days 00:00:02    1.0
+        f2    0 days 00:00:02  0 days 00:00:03    2.0
+        Name: value, dtype: float64
 
     """
     frame = pd.read_csv(*args, **kwargs)
