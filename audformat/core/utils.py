@@ -39,24 +39,24 @@ def concat(
             :ref:`table specifications <data-tables:Tables>`
 
     Example:
-    >>> series = pd.Series(
-    ...     [1., 2., 3.],
-    ...     index=filewise_index(['f1', 'f2', 'f3']),
-    ...     name='number',
-    ... )
-    >>> df = pd.DataFrame(
-    ...     {
-    ...         'string': ['a', 'b', 'c'],
-    ...     },
-    ...     index=filewise_index(['f2', 'f3', 'f4']),
-    ... )
-    >>> concat([series, df])
-          number string
-    file
-    f1       1.0    NaN
-    f2       2.0      a
-    f3       3.0      b
-    f4       NaN      c
+        >>> series = pd.Series(
+        ...     [1., 2., 3.],
+        ...     index=filewise_index(['f1', 'f2', 'f3']),
+        ...     name='number',
+        ... )
+        >>> df = pd.DataFrame(
+        ...     {
+        ...         'string': ['a', 'b', 'c'],
+        ...     },
+        ...     index=filewise_index(['f2', 'f3', 'f4']),
+        ... )
+        >>> concat([series, df])
+              number string
+        file
+        f1       1.0    NaN
+        f2       2.0      a
+        f3       3.0      b
+        f4       NaN      c
 
     """
     if not objs:
