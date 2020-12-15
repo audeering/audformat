@@ -7,7 +7,7 @@ from audformat.core.common import DefineBase
 
 
 class DataType(DefineBase):
-    r"""Data types"""
+    r"""Data types of column content."""
     BOOL = 'bool'
     DATE = 'date'
     INTEGER = 'int'
@@ -17,7 +17,7 @@ class DataType(DefineBase):
 
 
 class Gender(DefineBase):
-    r"""Gender"""
+    r"""Gender scheme definitions."""
     CHILD = 'child'
     FEMALE = 'female'
     MALE = 'male'
@@ -25,48 +25,48 @@ class Gender(DefineBase):
 
 
 class IndexField(DefineBase):
-    r"""Index field"""
+    r"""Index fields defined in
+        :ref:`table specifications <data-tables:Tables>`.
+    """
     FILE = 'file'
     START = 'start'
     END = 'end'
 
 
 class IndexType(DefineBase):
-    r"""Index type"""
+    r"""Index types defined in
+        :ref:`table specifications <data-tables:Tables>`.
+    """
     FILEWISE = 'filewise'
     SEGMENTED = 'segmented'
 
 
 class MediaType(DefineBase):
-    r"""Media type"""
+    r"""Media type of table."""
     AUDIO = 'audio'
     OTHER = 'other'
     VIDEO = 'video'
 
 
 class RaterType(DefineBase):
-    r"""Rater type"""
+    r"""Rater type of column."""
     HUMAN = 'human'
     MACHINE = 'machine'
+    OTHER = 'other'
     TRUTH = 'ground truth'
     VOTE = 'vote'
 
 
 class SplitType(DefineBase):
-    r"""Split type"""
+    r"""Split type of table."""
     TRAIN = 'train'
     DEVELOP = 'dev'
     OTHER = 'other'
     TEST = 'test'
 
 
-class SpeakerProfession(DefineBase):
-    r"""Speaker profession"""
-    ACTOR = 'actor'
-    AMATEUR = 'amateur'
-
-
 class Usage(DefineBase):
+    r"""Usage permission of database."""
     COMMERCIAL = 'commercial'
     RESEARCH = 'research'
     RESTRICTED = 'restricted'

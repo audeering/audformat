@@ -1,7 +1,7 @@
 Introduction
 ============
 
-The :ref:`data-format:audformat` was created
+The :ref:`data-format:Database` was created
 to handle all databases inside audEERING
 in an unified way to make them easily accessible.
 
@@ -10,7 +10,7 @@ The main challenge in specifying the format was to
 to be applicable to many use cases as possible,
 but simple enough to be understood and parsed easily**.
 
-:ref:`data-format:audformat` can store the following information:
+:ref:`data-format:Database` can store the following information:
 
 * Raters (humans, aggregated, machine)
 * Labels (categorical, numeric, etc.)

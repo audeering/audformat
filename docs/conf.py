@@ -11,7 +11,7 @@ config.read(os.path.join('..', 'setup.cfg'))
 
 # Project -----------------------------------------------------------------
 author = config['metadata']['author']
-copyright = f'2020-{date.today().year} audEERING GmbH'
+copyright = f'2019-{date.today().year} audEERING GmbH'
 project = config['metadata']['name']
 # The x.y.z version read from tags
 try:
@@ -75,20 +75,6 @@ intersphinx_mapping = {
 linkcheck_ignore = [
     'https://gitlab.audeering.com',
 ]
-
-# Disable auto-build of Jupyter notebooks
-nbsphinx_execute = 'never'
-# This is processed by Jinja2 and inserted before each Jupyter notebook
-nbsphinx_prolog = r"""
-{% set docname = env.doc2path(env.docname, base='docs') %}
-{% set base_url = "https://gitlab.audeering.com/tools/audfoo/raw" %}
-
-.. role:: raw-html(raw)
-    :format: html
-
-:raw-html:`<div class="notebook"><a href="{{ base_url }}/{{ env.config.version }}/{{ docname }}?inline=false"> Download notebook: {{ docname }}</a></div>`
-"""  # noqa: E501
-nbsphinx_timeout = 3600
 
 # HTML --------------------------------------------------------------------
 html_theme = 'sphinx_audeering_theme'

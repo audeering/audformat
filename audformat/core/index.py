@@ -33,8 +33,9 @@ def to_array(value: typing.Any) -> typing.Union[list, np.ndarray]:
 def filewise_index(
         files: Files = None,
 ) -> pd.Index:
-    r"""Creates a filewise index conform to
-        :ref:`table specifications <data-tables:Tables>`.
+    r"""Creates a filewise index.
+
+    Index is conform to :ref:`table specifications <data-tables:Tables>`.
 
     Args:
         files: list of files
@@ -49,13 +50,46 @@ def filewise_index(
     return pd.Index(files, name=define.IndexField.FILE)
 
 
+def index_type(
+        obj: typing.Union[pd.Index, pd.Series, pd.DataFrame]
+) -> define.IndexType:
+    r"""Derive index type.
+
+    Args:
+        obj: object conform to
+            :ref:`table specifications <data-tables:Tables>`
+
+    Returns:
+        table type
+
+    Raises:
+        NotConformToUnifiedFormat: if not conform to
+            :ref:`table specifications <data-tables:Tables>`
+
+    """
+    if isinstance(obj, (pd.Series, pd.DataFrame)):
+        obj = obj.index
+
+    num = len(obj.names)
+    if num == 1 and obj.names[0] == define.IndexField.FILE:
+        return define.IndexType.FILEWISE
+    elif num == 3 and \
+            obj.names[0] == define.IndexField.FILE and \
+            obj.names[1] == define.IndexField.START and \
+            obj.names[2] == define.IndexField.END:
+        return define.IndexType.SEGMENTED
+
+    raise InvalidIndex()
+
+
 def segmented_index(
         files: Files = None,
         starts: Timestamps = None,
         ends: Timestamps = None,
 ) -> pd.Index:
-    r"""Create segmented index conform to
-        :ref:`table specifications <data-tables:Tables>`.
+    r"""Create segmented index.
+
+    Index is conform to :ref:`table specifications <data-tables:Tables>`.
 
     If a non-empty index is created and ``starts`` is set to ``None``,
     the level will be filled up with ``0``.
@@ -100,35 +134,3 @@ def segmented_index(
             define.IndexField.START,
             define.IndexField.END,
         ])
-
-
-def index_type(
-        obj: typing.Union[pd.Index, pd.Series, pd.DataFrame]
-) -> define.IndexType:
-    r"""Derive index type.
-
-    Args:
-        obj: object conform to
-            :ref:`table specifications <data-tables:Tables>`
-
-    Returns:
-        table type
-
-    Raises:
-        NotConformToUnifiedFormat: if not conform to
-            :ref:`table specifications <data-tables:Tables>`
-
-    """
-    if isinstance(obj, (pd.Series, pd.DataFrame)):
-        obj = obj.index
-
-    num = len(obj.names)
-    if num == 1 and obj.names[0] == define.IndexField.FILE:
-        return define.IndexType.FILEWISE
-    elif num == 3 and \
-            obj.names[0] == define.IndexField.FILE and \
-            obj.names[1] == define.IndexField.START and \
-            obj.names[2] == define.IndexField.END:
-        return define.IndexType.SEGMENTED
-
-    raise InvalidIndex()

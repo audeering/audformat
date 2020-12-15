@@ -1,4 +1,4 @@
-.. pyaudata documentation master file
+.. documentation master file
 
 .. include:: ../README.rst
     :end-line: 6
@@ -28,7 +28,7 @@
     :caption: API Documentation
     :hidden:
 
-    api-audformat
+    api
     api-define
     api-errors
     api-testing

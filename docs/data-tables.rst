@@ -50,8 +50,6 @@ Create a filewise index:
 
 .. jupyter-execute::
 
-    import pandas as pd
-
     import audformat
     import audformat.testing
 

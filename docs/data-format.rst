@@ -1,5 +1,5 @@
-audformat
-=========
+Database
+========
 
 audformat is implemented in the :class:`audformat.Database`.
 Written to hard disk it is converted to a YAML file (*Header*),

@@ -46,13 +46,6 @@ RaterType
     :members:
     :undoc-members:
 
-SpeakerProfession
------------------
-
-.. autoclass:: SpeakerProfession
-    :members:
-    :undoc-members:
-
 SplitType
 ---------
 

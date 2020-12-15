@@ -3,7 +3,6 @@ from audformat.core.define import (
     Gender,
     MediaType,
     RaterType,
-    SpeakerProfession,
     SplitType,
     IndexType,
     IndexField,

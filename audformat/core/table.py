@@ -450,8 +450,7 @@ class Table(HeaderBase):
             scheme_ids: typing.Union[str, typing.Dict[str, str]] = None,
             rater_ids: typing.Union[str, typing.Dict[str, str]] = None,
     ):
-        r"""Add columns from a :class:`pandas.Series` or
-            :class:`pandas.DataFrame`
+        r"""Add columns from an object.
 
         Uses the names of the column names as identifiers.
 

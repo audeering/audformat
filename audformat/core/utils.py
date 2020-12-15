@@ -155,7 +155,7 @@ def read_csv(
 ) -> typing.Union[pd.Index, pd.Series, pd.DataFrame]:
     r"""Read object from CSV file..
 
-    Automatically detects the index type and returns a an object that is
+    Automatically detects the index type and returns an object that is
     conform to :ref:`table specifications <data-tables:Tables>`.
     If conversion is not possible, an error is raised.
 
@@ -164,6 +164,9 @@ def read_csv(
     Args:
         *args: arguments
         **kwargs: keyword arguments
+
+    Returns:
+        object conform to :ref:`table specifications <data-tables:Tables>`
 
     Raises:
         NotConformToUnifiedFormat: if CSV files is not conform to
