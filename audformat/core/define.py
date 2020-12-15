@@ -68,5 +68,7 @@ class SplitType(DefineBase):
 class Usage(DefineBase):
     r"""Usage permission of database."""
     COMMERCIAL = 'commercial'
+    OTHER = 'other'
     RESEARCH = 'research'
     RESTRICTED = 'restricted'
+    UnRESTRICTED = 'unrestricted'

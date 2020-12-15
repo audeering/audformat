@@ -153,7 +153,7 @@ def read_csv(
         *args,
         **kwargs,
 ) -> typing.Union[pd.Index, pd.Series, pd.DataFrame]:
-    r"""Read object from CSV file..
+    r"""Read object from CSV file.
 
     Automatically detects the index type and returns an object that is
     conform to :ref:`table specifications <data-tables:Tables>`.
