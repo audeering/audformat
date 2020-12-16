@@ -1,14 +1,16 @@
 .. documentation master file
 
 .. include:: ../README.rst
-    :end-line: 6
+
 
 .. toctree::
     :caption: Getting started
     :hidden:
 
     install
-    usage
+    create-database
+    accessing-data
+    combine-tables
 
 .. toctree::
     :caption: Format specification

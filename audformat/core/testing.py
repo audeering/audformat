@@ -209,7 +209,7 @@ def create_db(minimal: bool = False) -> Database:
     db = Database(
         name='unittest',
         source='internal',
-        usage=define.Usage.COMMERCIAL,
+        usage=define.Usage.UNRESTRICTED,
         languages=['de', 'English'],
     )
 

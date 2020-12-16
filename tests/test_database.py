@@ -126,5 +126,5 @@ def test_string():
     db = audformat.testing.create_db(minimal=True)
     assert str(db) == 'name: unittest\n' \
                       'source: internal\n' \
-                      'usage: commercial\n' \
+                      'usage: unrestricted\n' \
                       'languages: [deu, eng]'

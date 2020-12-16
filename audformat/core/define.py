@@ -71,4 +71,4 @@ class Usage(DefineBase):
     OTHER = 'other'
     RESEARCH = 'research'
     RESTRICTED = 'restricted'
-    UnRESTRICTED = 'unrestricted'
+    UNRESTRICTED = 'unrestricted'
