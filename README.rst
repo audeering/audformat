@@ -2,17 +2,17 @@
 audformat
 =========
 
-Specification and reference implementation of **AudFormat**.
+Specification and reference implementation of **audformat**.
 
-AudFormat is intended to store media data,
+audformat is intended to store media data,
 such as audio or video,
 together with corresponding annotations
 in a pre-defined way.
-An AudFormat database is a folder that contains
-the binary data together with a header YAML file
-and one or several CSV files storing the annotations.
+An audformat database is a folder that contains
+media files together with a header YAML file
+and one or several files storing the annotations.
 
-An AudFormat database is represented as a
+An audformat database is represented as a
 ``audformat.Database`` object and can be loaded with
 ``audformat.Database.load()``
 or written to disk with
