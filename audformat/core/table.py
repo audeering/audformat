@@ -538,11 +538,11 @@ class Table(HeaderBase):
 
         """
         path = audeer.safe_path(path)
-        compressed = os.path.exists(path + '.pkl')
-        if compressed:
-            self._load_compressed(path + '.pkl')
+        pickled = os.path.exists(path + f'.{define.TableStorageFormat.PICKLE}')
+        if pickled:
+            self._load_pickled(path + f'.{define.TableStorageFormat.PICKLE}')
         else:
-            self._load_csv(path + '.csv')
+            self._load_csv(path + f'.{define.TableStorageFormat.CSV}')
 
     def pick_columns(
             self,
@@ -650,20 +650,28 @@ class Table(HeaderBase):
             self,
             path: str,
             *,
-            compressed: bool = False,
+            storage_format: define.TableStorageFormat = (
+                define.TableStorageFormat.CSV
+            ),
     ):
         r"""Save table data to disk.
 
         Args:
             path: file path without extension
-            compressed: store tables in compressed format instead of CSV
+            storage_format: storage format of tables.
+                See :class:`audformat.define.TableStorageFormat`
+                for available formats
 
         """
         path = audeer.safe_path(path)
-        if compressed:
-            self._df.to_pickle(path + '.pkl', compression='xz')
+        define.TableStorageFormat.assert_has_value(storage_format)
+        if storage_format == define.TableStorageFormat.PICKLE:
+            self._df.to_pickle(
+                path + f'.{define.TableStorageFormat.PICKLE}',
+                compression='xz',
+            )
         else:
-            with open(path + '.csv', 'w') as fp:
+            with open(path + f'.{define.TableStorageFormat.CSV}', 'w') as fp:
                 self.df.to_csv(fp, encoding='utf-8')
 
     def set(
@@ -874,7 +882,7 @@ class Table(HeaderBase):
 
         self._df = df
 
-    def _load_compressed(self, path: str):
+    def _load_pickled(self, path: str):
 
         df = pd.read_pickle(path, compression='xz')
         for column_id in df:

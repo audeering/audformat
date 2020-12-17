@@ -78,26 +78,39 @@ def test_map_files():
 
 
 @pytest.mark.parametrize(
-    'db, compressed',
+    'db, storage_format',
     [
-        (audformat.testing.create_db(minimal=True), False),
-        (audformat.testing.create_db(minimal=True), True),
-        (audformat.testing.create_db(), False),
-        (audformat.testing.create_db(), True)],
+        (
+            audformat.testing.create_db(minimal=True),
+            audformat.define.TableStorageFormat.CSV,
+        ),
+        (
+            audformat.testing.create_db(minimal=True),
+            audformat.define.TableStorageFormat.PICKLE,
+        ),
+        (
+            audformat.testing.create_db(),
+            audformat.define.TableStorageFormat.CSV,
+        ),
+        (
+            audformat.testing.create_db(),
+            audformat.define.TableStorageFormat.PICKLE,
+        ),
+    ],
 )
-def test_save_and_load(tmpdir, db, compressed):
+def test_save_and_load(tmpdir, db, storage_format):
 
-    db.save(tmpdir, compressed=compressed)
+    db.save(tmpdir, storage_format=storage_format)
 
     db_load = audformat.Database.load(tmpdir)
-    db_load.save(tmpdir, name='db-2', compressed=compressed)
+    db_load.save(tmpdir, name='db-2', storage_format=storage_format)
 
     assert filecmp.cmp(os.path.join(tmpdir, 'db.yaml'),
                        os.path.join(tmpdir, 'db-2.yaml'))
 
-    ext = '.pkl' if compressed else '.csv'
+    ext = f'.{storage_format}'
     for table_id, table in db.tables.items():
-        if compressed:
+        if storage_format != audformat.define.TableStorageFormat.CSV:
             # TODO: why is this test failing if compression is turned off?
             assert db[table_id].df.equals(db_load[table_id].df)
         else:

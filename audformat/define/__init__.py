@@ -6,5 +6,6 @@ from audformat.core.define import (
     SplitType,
     IndexType,
     IndexField,
+    TableStorageFormat,
     Usage,
 )

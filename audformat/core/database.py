@@ -280,7 +280,9 @@ class Database(HeaderBase):
             *,
             name: str = 'db',
             indent: int = 2,
-            compressed: bool = False,
+            storage_format: define.TableStorageFormat = (
+                define.TableStorageFormat.CSV
+            ),
             header_only: bool = False,
     ):
         r"""Save database to disk.
@@ -292,7 +294,9 @@ class Database(HeaderBase):
             root: root directory (possibly created)
             name: base name of files
             indent: indent size
-            compressed: store tables in compressed format (binary)
+            storage_format: storage format of tables.
+                See :class:`audformat.define.TableStorageFormat`
+                for available formats
             header_only: store header only
 
         """
@@ -305,7 +309,7 @@ class Database(HeaderBase):
         if not header_only:
             for table_id, table in self.tables.items():
                 table_path = os.path.join(root, name + '.' + table_id)
-                table.save(table_path, compressed=compressed)
+                table.save(table_path, storage_format=storage_format)
 
     def __contains__(
             self,

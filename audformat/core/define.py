@@ -65,6 +65,12 @@ class SplitType(DefineBase):
     TEST = 'test'
 
 
+class TableStorageFormat(DefineBase):
+    r"""Storage format of tables."""
+    CSV = 'csv'
+    PICKLE = 'pkl'
+
+
 class Usage(DefineBase):
     r"""Usage permission of database."""
     COMMERCIAL = 'commercial'

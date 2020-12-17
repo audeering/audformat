@@ -53,6 +53,13 @@ SplitType
     :members:
     :undoc-members:
 
+TableStorageFormat
+------------------
+
+.. autoclass:: TableStorageFormat
+    :members:
+    :undoc-members:
+
 Usage
 -----
 
