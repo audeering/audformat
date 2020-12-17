@@ -95,8 +95,8 @@ class Database(HeaderBase):
     def __init__(
             self,
             name: str,
-            source: str,
-            usage: define.Usage,
+            source: str = '',
+            usage: define.Usage = define.Usage.UNRESTRICTED,
             *,
             expires: datetime.date = None,
             languages: typing.Union[str, typing.Sequence[str]] = None,
