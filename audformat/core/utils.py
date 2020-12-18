@@ -225,7 +225,7 @@ def to_filewise_index(
         output_folder: str,
         *,
         num_workers: int = 1,
-        progress_bar: bool = True
+        progress_bar: bool = False,
 ) -> typing.Union[pd.Index, pd.Series, pd.DataFrame]:
     r"""Convert to filewise index.
 
