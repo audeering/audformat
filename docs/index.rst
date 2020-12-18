@@ -12,6 +12,7 @@
     accessing-data
     combine-tables
     map-scheme
+    emodb-example
 
 .. toctree::
     :caption: Format specification

@@ -7,3 +7,5 @@ dist/
 venv/
 *.dot.svg
 .coverage
+emodb-src/
+emodb.zip
