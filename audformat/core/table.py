@@ -447,47 +447,6 @@ class Table(HeaderBase):
 
         return self
 
-    def from_frame(
-            self,
-            obj: typing.Union[pd.Series, pd.DataFrame],
-            *,
-            scheme_ids: typing.Union[str, typing.Dict[str, str]] = None,
-            rater_ids: typing.Union[str, typing.Dict[str, str]] = None,
-    ):
-        r"""Add columns from an object.
-
-        Uses the names of the column names as identifiers.
-
-        Args:
-            obj: object conform to
-                :ref:`table specifications <data-tables:Tables>`
-            scheme_ids: dictionary mapping specific columns to a scheme
-                identifier. If a single scheme identifier is passed, all
-                columns will be assigned to it
-            rater_ids: dictionary mapping specific columns to a rater
-                identifier. If a single rater identifier is passed, all
-                columns will be assigned to it
-
-        """
-        if isinstance(obj, pd.Series):
-            obj = obj.to_frame()
-        if isinstance(scheme_ids, str):
-            scheme_ids = {name: scheme_ids for name in obj.columns}
-        if isinstance(rater_ids, str):
-            rater_ids = {name: rater_ids for name in obj.columns}
-
-        scheme_ids = scheme_ids or {}
-        rater_ids = rater_ids or {}
-
-        for column_id, column in obj.items():
-            column_id = str(column_id)
-            scheme_id = scheme_ids[column_id] \
-                if column_id in scheme_ids else None
-            rater_id = rater_ids[column_id] \
-                if column_id in rater_ids else None
-            self[column_id] = Column(scheme_id=scheme_id, rater_id=rater_id)
-            self[column_id].set(column.values, index=obj.index)
-
     def get(
             self,
             index: pd.Index = None,
@@ -802,24 +761,16 @@ class Table(HeaderBase):
                 )
                 d = index_to_dict(self._df.index)
                 add_files_to_dict(d, missing_files, self.type)
-                reindex = other._df.reindex(d['files'])
-                df_other = pd.DataFrame(
-                    reindex.values,
-                    index=segmented_index(**d),
-                    columns=other.columns
-                )
+                df_other = other._df.reindex(d['files'])
+                df_other.set_index(segmented_index(**d))
             elif self.type == define.IndexType.FILEWISE:
                 missing_files = self.files.unique().difference(
                     other.files.unique()
                 )
                 d = index_to_dict(other._df.index)
                 add_files_to_dict(d, missing_files, other.type)
-                reindex = self._df.reindex(d['files'])
-                df_self = pd.DataFrame(
-                    reindex.values,
-                    index=segmented_index(**d),
-                    columns=self.columns
-                )
+                df_self = self._df.reindex(d['files'])
+                df_self.set_index(segmented_index(**d))
 
         # figure out column names, schemes and raters
         df_columns = []
@@ -850,7 +801,12 @@ class Table(HeaderBase):
         split_id = self.split_id if self.split_id == other.split_id else None
         table = Table(df.index, media_id=media_id, split_id=split_id)
         table._db = self._db
-        table.from_frame(df, scheme_ids=scheme_ids, rater_ids=rater_ids)
+        for column_id in df_columns:
+            table[column_id] = Column(
+                scheme_id=scheme_ids[column_id],
+                rater_id=rater_ids[column_id],
+            )
+            table[column_id].set(df[column_id])
 
         return table
 

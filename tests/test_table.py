@@ -460,45 +460,6 @@ def test_filewise(num_files, values):
 
 
 @pytest.mark.parametrize(
-    'table_id',
-    [
-        'files',
-        'segments'
-    ]
-)
-def test_from_frame(table_id):
-
-    db = audformat.testing.create_db()
-    df = db[table_id].get()
-
-    db.drop_tables(list(db.tables))
-
-    # set specific column
-
-    db[table_id] = audformat.Table(df.index)
-    db[table_id].from_frame(
-        df.string,
-        scheme_ids='string',
-        rater_ids='gold',
-    )
-    pd.testing.assert_frame_equal(db[table_id].df, df.string.to_frame())
-
-    db.drop_tables(list(db.tables))
-
-    # set all columns
-
-    db[table_id] = audformat.Table(df.index)
-    db[table_id].from_frame(
-        df,
-        scheme_ids={s: s for s in list(db.schemes)},
-        rater_ids={s: 'gold' for s in list(db.schemes)},
-    )
-    pd.testing.assert_frame_equal(db[table_id].df, df)
-
-    db.drop_tables(list(db.tables))
-
-
-@pytest.mark.parametrize(
     'table, map',
     [
         (pytest.DB['files'], {'label_map_int': 'int'}),
