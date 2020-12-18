@@ -21,6 +21,6 @@ or written to disk with
 Have a look at the installation_ and usage_ instructions
 and the `format specifications`_ as a starting point.
 
-.. _installation: http://tools.pp.audeering.com/audformat/installation.html
-.. _usage: http://tools.pp.audeering.com/audformat/create-from-csv.html
-.. _format specifications: http://tools.pp.audeering.com/audformat/data-introduction.html
+.. _installation: https://audeering.github.io/audformat/installation.html
+.. _usage: https://audeering.github.io/audformat/create-database.html
+.. _format specifications: https://audeering.github.io/audformat/data-introduction.html

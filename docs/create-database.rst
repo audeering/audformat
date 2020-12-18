@@ -55,7 +55,7 @@ for the defined scheme covering the emotion anger.
     # Create database
     db = audformat.Database(
         name='foo',
-        source='https://gitlab.audeering.com/tools/audformat',
+        source='https://github.com/audeering/audformat/',
         usage=audformat.define.Usage.UNRESTRICTED,
     )
 

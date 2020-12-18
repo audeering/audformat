@@ -217,7 +217,7 @@ def create_db(minimal: bool = False) -> Database:
         return db
 
     db.description = 'A database for unit testing.'
-    db.meta['audformat'] = 'https://gitlab.audeering.com/tools/audformat'
+    db.meta['audformat'] = 'https://github.com/audeering/audformat'
 
     #########
     # Media #
