@@ -9,3 +9,4 @@ venv/
 .coverage
 emodb-src/
 emodb.zip
+./coverage.xml
