@@ -762,7 +762,7 @@ class Table(HeaderBase):
                 d = index_to_dict(self._df.index)
                 add_files_to_dict(d, missing_files, self.type)
                 df_other = other._df.reindex(d['files'])
-                df_other.set_index(segmented_index(**d))
+                df_other.set_index(segmented_index(**d), inplace=True)
             elif self.type == define.IndexType.FILEWISE:
                 missing_files = self.files.unique().difference(
                     other.files.unique()
@@ -770,7 +770,7 @@ class Table(HeaderBase):
                 d = index_to_dict(other._df.index)
                 add_files_to_dict(d, missing_files, other.type)
                 df_self = self._df.reindex(d['files'])
-                df_self.set_index(segmented_index(**d))
+                df_self.set_index(segmented_index(**d), inplace=True)
 
         # figure out column names, schemes and raters
         df_columns = []
@@ -806,7 +806,7 @@ class Table(HeaderBase):
                 scheme_id=scheme_ids[column_id],
                 rater_id=rater_ids[column_id],
             )
-            table[column_id].set(df[column_id])
+        table._df = df
 
         return table
 
