@@ -497,18 +497,6 @@ def test_from_frame(table_id):
 
     db.drop_tables(list(db.tables))
 
-    # set all columns from table not in audformat
-
-    db[table_id] = audformat.Table(df.index)
-    db[table_id].from_frame(
-        pd.DataFrame(df.values, columns=df.columns, index=df.index),
-        scheme_ids={s: s for s in list(db.schemes)},
-        rater_ids={s: 'gold' for s in list(db.schemes)},
-    )
-    pd.testing.assert_frame_equal(db[table_id].df, df)
-
-    db.drop_tables(list(db.tables))
-
 
 @pytest.mark.parametrize(
     'table, map',

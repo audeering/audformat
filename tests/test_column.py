@@ -244,15 +244,40 @@ def test_segmented(num_files, num_segments_per_file, values):
 def test_set_invalid_values():
 
     db = pytest.DB
+    num = len(db['files'])
+
+    with pytest.raises(ValueError):
+        db['files']['float'].set(-2.0)
+
+    with pytest.raises(ValueError):
+        db['files']['float'].set([-2.0] * num)
+
+    with pytest.raises(ValueError):
+        db['files']['float'].set(np.array([-2.0] * num))
+
+    with pytest.raises(ValueError):
+        db['files']['float'].set(pd.Series([-2.0] * num))
 
     with pytest.raises(ValueError):
         db['files']['float'].set(2.0)
 
     with pytest.raises(ValueError):
-        db['files']['float'].set([2.0] * len(db['files']))
+        db['files']['float'].set([2.0] * num)
+
+    with pytest.raises(ValueError):
+        db['files']['float'].set(np.array([2.0] * num))
+
+    with pytest.raises(ValueError):
+        db['files']['float'].set(pd.Series([-2.0] * num))
 
     with pytest.raises(ValueError):
         db['files']['label'].set('bad')
 
     with pytest.raises(ValueError):
         db['files']['label'].set(['bad'] * len(db['files']))
+
+    with pytest.raises(ValueError):
+        db['files']['label'].set(np.array(['bad'] * len(db['files'])))
+
+    with pytest.raises(ValueError):
+        db['files']['label'].set(pd.Series(['bad'] * len(db['files'])))

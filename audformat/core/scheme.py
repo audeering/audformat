@@ -3,7 +3,6 @@ import random
 import string
 import typing
 
-import numpy as np
 import pandas as pd
 
 from audformat.core import define

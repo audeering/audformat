@@ -1,5 +1,4 @@
-import typing
-
+import numpy as np
 import pandas as pd
 
 from audformat.core import define
@@ -17,6 +16,7 @@ def assert_values(
         values: Values,
         scheme: Scheme,
 ):
+    r"""Raise error if values do not match scheme."""
     ok = True
 
     if scheme.labels is not None or \
@@ -26,10 +26,20 @@ def assert_values(
         if is_scalar(values):
             ok = values in scheme
         else:
-            for value in values:
-                if value not in scheme:
-                    ok = False
-                    break
+            if isinstance(values, pd.Series):
+                values = values.values
+            if isinstance(values, np.ndarray):
+                if scheme.is_numeric:
+                    print(values)
+                    values = [
+                        np.min(values),
+                        np.max(values),
+                    ]
+                else:
+                    values = np.unique(values)
+            else:
+                values = set(values)
+            ok = all([value in scheme for value in values])
 
     if not ok:
         raise ValueError(
