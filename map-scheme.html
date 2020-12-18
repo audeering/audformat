@@ -74,7 +74,7 @@
             
             
               <div class="version">
-                v0.9.0-rc3
+                v0.9.0
               </div>
             
           
@@ -181,7 +181,7 @@
         
             
             
-              <a href="https://github.com/audeering/audformat/blob/v0.9.0-rc3/docs/map-scheme.rst" class="fa fa-github"> Edit on GitHub</a>
+              <a href="https://github.com/audeering/audformat/blob/v0.9.0/docs/map-scheme.rst" class="fa fa-github"> Edit on GitHub</a>
             
           
         
@@ -282,7 +282,7 @@ we get a <code class="xref py py-class docutils literal notranslate"><span class
   <tbody>
     <tr>
       <th>audio/001.wav</th>
-      <td>0</td>
+      <td>1</td>
     </tr>
     <tr>
       <th>audio/002.wav</th>
@@ -290,15 +290,15 @@ we get a <code class="xref py py-class docutils literal notranslate"><span class
     </tr>
     <tr>
       <th>audio/003.wav</th>
-      <td>1</td>
+      <td>0</td>
     </tr>
     <tr>
       <th>audio/004.wav</th>
-      <td>1</td>
+      <td>0</td>
     </tr>
     <tr>
       <th>audio/005.wav</th>
-      <td>1</td>
+      <td>0</td>
     </tr>
   </tbody>
 </table>
@@ -341,7 +341,7 @@ we can use the <code class="docutils literal notranslate"><span class="pre">map<
   <tbody>
     <tr>
       <th>audio/001.wav</th>
-      <td>hello</td>
+      <td>goodbye</td>
     </tr>
     <tr>
       <th>audio/002.wav</th>
@@ -349,15 +349,15 @@ we can use the <code class="docutils literal notranslate"><span class="pre">map<
     </tr>
     <tr>
       <th>audio/003.wav</th>
-      <td>goodbye</td>
+      <td>hello</td>
     </tr>
     <tr>
       <th>audio/004.wav</th>
-      <td>goodbye</td>
+      <td>hello</td>
     </tr>
     <tr>
       <th>audio/005.wav</th>
-      <td>goodbye</td>
+      <td>hello</td>
     </tr>
   </tbody>
 </table>
@@ -416,7 +416,7 @@ a list of names is returned:</p>
   <tbody>
     <tr>
       <th>audio/001.wav</th>
-      <td>spk1</td>
+      <td>spk3</td>
     </tr>
     <tr>
       <th>audio/002.wav</th>
@@ -424,15 +424,15 @@ a list of names is returned:</p>
     </tr>
     <tr>
       <th>audio/003.wav</th>
-      <td>spk3</td>
-    </tr>
-    <tr>
-      <th>audio/004.wav</th>
       <td>spk1</td>
     </tr>
     <tr>
+      <th>audio/004.wav</th>
+      <td>spk3</td>
+    </tr>
+    <tr>
       <th>audio/005.wav</th>
-      <td>spk2</td>
+      <td>spk3</td>
     </tr>
   </tbody>
 </table>
@@ -474,7 +474,7 @@ a list of names is returned:</p>
   <tbody>
     <tr>
       <th>audio/001.wav</th>
-      <td>33</td>
+      <td>37</td>
     </tr>
     <tr>
       <th>audio/002.wav</th>
@@ -482,15 +482,15 @@ a list of names is returned:</p>
     </tr>
     <tr>
       <th>audio/003.wav</th>
-      <td>37</td>
-    </tr>
-    <tr>
-      <th>audio/004.wav</th>
       <td>33</td>
     </tr>
     <tr>
+      <th>audio/004.wav</th>
+      <td>37</td>
+    </tr>
+    <tr>
       <th>audio/005.wav</th>
-      <td>30</td>
+      <td>37</td>
     </tr>
   </tbody>
 </table>
@@ -539,8 +539,8 @@ as keys and scheme fields as values.</p>
   <tbody>
     <tr>
       <th>audio/001.wav</th>
-      <td>0</td>
-      <td>33</td>
+      <td>1</td>
+      <td>37</td>
     </tr>
     <tr>
       <th>audio/002.wav</th>
@@ -549,18 +549,18 @@ as keys and scheme fields as values.</p>
     </tr>
     <tr>
       <th>audio/003.wav</th>
-      <td>1</td>
-      <td>37</td>
-    </tr>
-    <tr>
-      <th>audio/004.wav</th>
-      <td>1</td>
+      <td>0</td>
       <td>33</td>
     </tr>
     <tr>
+      <th>audio/004.wav</th>
+      <td>0</td>
+      <td>37</td>
+    </tr>
+    <tr>
       <th>audio/005.wav</th>
-      <td>1</td>
-      <td>30</td>
+      <td>0</td>
+      <td>37</td>
     </tr>
   </tbody>
 </table>
@@ -611,8 +611,8 @@ and to map the same column to multiple fields.</p>
   <tbody>
     <tr>
       <th>audio/001.wav</th>
-      <td>hello</td>
-      <td>33</td>
+      <td>goodbye</td>
+      <td>37</td>
       <td>male</td>
     </tr>
     <tr>
@@ -623,21 +623,21 @@ and to map the same column to multiple fields.</p>
     </tr>
     <tr>
       <th>audio/003.wav</th>
-      <td>goodbye</td>
-      <td>37</td>
-      <td>male</td>
-    </tr>
-    <tr>
-      <th>audio/004.wav</th>
-      <td>goodbye</td>
+      <td>hello</td>
       <td>33</td>
       <td>male</td>
     </tr>
     <tr>
+      <th>audio/004.wav</th>
+      <td>hello</td>
+      <td>37</td>
+      <td>male</td>
+    </tr>
+    <tr>
       <th>audio/005.wav</th>
-      <td>goodbye</td>
-      <td>30</td>
-      <td>female</td>
+      <td>hello</td>
+      <td>37</td>
+      <td>male</td>
     </tr>
   </tbody>
 </table>
@@ -692,10 +692,10 @@ we can include the column name in the list.</p>
   <tbody>
     <tr>
       <th>audio/001.wav</th>
-      <td>0</td>
-      <td>spk1</td>
-      <td>hello</td>
-      <td>33</td>
+      <td>1</td>
+      <td>spk3</td>
+      <td>goodbye</td>
+      <td>37</td>
       <td>male</td>
     </tr>
     <tr>
@@ -708,27 +708,27 @@ we can include the column name in the list.</p>
     </tr>
     <tr>
       <th>audio/003.wav</th>
-      <td>1</td>
-      <td>spk3</td>
-      <td>goodbye</td>
-      <td>37</td>
-      <td>male</td>
-    </tr>
-    <tr>
-      <th>audio/004.wav</th>
-      <td>1</td>
+      <td>0</td>
       <td>spk1</td>
-      <td>goodbye</td>
+      <td>hello</td>
       <td>33</td>
       <td>male</td>
     </tr>
     <tr>
+      <th>audio/004.wav</th>
+      <td>0</td>
+      <td>spk3</td>
+      <td>hello</td>
+      <td>37</td>
+      <td>male</td>
+    </tr>
+    <tr>
       <th>audio/005.wav</th>
-      <td>1</td>
-      <td>spk2</td>
-      <td>goodbye</td>
-      <td>30</td>
-      <td>female</td>
+      <td>0</td>
+      <td>spk3</td>
+      <td>hello</td>
+      <td>37</td>
+      <td>male</td>
     </tr>
   </tbody>
 </table>
