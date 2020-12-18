@@ -3,13 +3,38 @@ import typing
 import pandas as pd
 
 from audformat.core import define
+from audformat.core.common import HeaderBase
 from audformat.core.index import (
     index_type,
     is_scalar,
     to_array,
 )
-from audformat.core.common import HeaderBase
+from audformat.core.scheme import Scheme
 from audformat.core.typing import Values
+
+
+def assert_values(
+        values: Values,
+        scheme: Scheme,
+):
+    ok = True
+
+    if scheme.labels is not None or \
+            scheme.minimum is not None or \
+            scheme.maximum is not None:
+
+        if is_scalar(values):
+            ok = values in scheme
+        else:
+            for value in values:
+                if value not in scheme:
+                    ok = False
+                    break
+
+    if not ok:
+        raise ValueError(
+            f'Some value(s) do not match scheme:\n{scheme}.'
+        )
 
 
 class Column(HeaderBase):
@@ -161,6 +186,10 @@ class Column(HeaderBase):
 
         if index is None:
             index = df.index
+
+        if self.scheme_id is not None:
+            scheme = self._table._db.schemes[self.scheme_id]
+            assert_values(values, scheme)
 
         if index_type(df.index) == index_type(index):
             if is_scalar(values):

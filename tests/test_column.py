@@ -239,3 +239,20 @@ def test_segmented(num_files, num_segments_per_file, values):
     series[:] = np.nan
     table.df['column'] = np.nan
     pd.testing.assert_series_equal(table.df[column_id], series)
+
+
+def test_set_invalid_values():
+
+    db = pytest.DB
+
+    with pytest.raises(ValueError):
+        db['files']['float'].set(2.0)
+
+    with pytest.raises(ValueError):
+        db['files']['float'].set([2.0] * len(db['files']))
+
+    with pytest.raises(ValueError):
+        db['files']['label'].set('bad')
+
+    with pytest.raises(ValueError):
+        db['files']['label'].set(['bad'] * len(db['files']))
