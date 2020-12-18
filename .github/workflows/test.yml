@@ -12,8 +12,13 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ ubuntu-latest, windows-latest, macOS-latest ]
+        os: [ ubuntu-18.04, windows-latest, macOS-latest ]
         python-version: [3.6]
+        include:
+          - os: ubuntu-latest
+            python-version: 3.7
+          - os: ubuntu-latest
+            python-version: 3.8
 
     steps:
     - uses: actions/checkout@v2
@@ -25,7 +30,7 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install --no-install-recommends --yes graphviz libsndfile1 sox
-      if: matrix.os == 'ubuntu-latest'
+      if: matrix.os == 'ubuntu-latest' || matrix.os == 'ubuntu-18.04'
     - name: Prepare Windows
       run: choco install sox.portable
       if: matrix.os == 'windows-latest'
@@ -47,8 +52,8 @@ jobs:
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
         file: ./coverage.xml
-      if: matrix.os == 'ubuntu-latest'
+      if: matrix.os == 'ubuntu-18.04'
     - name: Test building documentation
       run: |
         python -m sphinx docs/ docs/_build/ -b html -W
-      if: matrix.os == 'ubuntu-latest'
+      if: matrix.os == 'ubuntu-18.04'
