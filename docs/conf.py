@@ -68,6 +68,10 @@ intersphinx_mapping = {
     'python': ('https://docs.python.org/3/', None),
 }
 
+linkcheck_ignore = [
+    'https://www.isca-speech.org',
+]
+
 
 # HTML --------------------------------------------------------------------
 html_theme = 'sphinx_audeering_theme'
