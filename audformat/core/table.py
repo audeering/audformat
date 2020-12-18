@@ -280,11 +280,14 @@ class Table(HeaderBase):
             split_id=self.split_id,
         )
         table._db = self._db
-        table.from_frame(
-            self._df,
-            scheme_ids={k: v.scheme_id for k, v in self.columns.items()},
-            rater_ids={k: v.rater_id for k, v in self.columns.items()},
-        )
+        for column_id, column in self.columns.items():
+            table.columns[column_id] = Column(
+                scheme_id=column.scheme_id,
+                rater_id=column.rater_id,
+                description=column.description,
+                meta=column.meta.copy()
+            )
+        table._df = self._df.copy()
         return table
 
     def drop_columns(

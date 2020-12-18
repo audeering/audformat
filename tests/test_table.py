@@ -136,6 +136,20 @@ def test_add():
 
 
 @pytest.mark.parametrize(
+    'table',
+    [
+        audformat.Table(),
+        pytest.DB['files'],
+        pytest.DB['segments'],
+    ]
+)
+def test_copy(table):
+    table_copy = table.copy()
+    assert str(table_copy) == str(table)
+    pd.testing.assert_frame_equal(table_copy.df, table.df)
+
+
+@pytest.mark.parametrize(
     'inplace',
     [
         False,
