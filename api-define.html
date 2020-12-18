@@ -1,0 +1,545 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>audformat.define &mdash; audformat Documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="_static/favicon.png"/>
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/audeering.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
+  <link rel="stylesheet" href="_static/copybutton.css" type="text/css" />
+  <link rel="stylesheet" href="_static/jupyter-sphinx.css" type="text/css" />
+  <link rel="stylesheet" href="_static/thebelab.css" type="text/css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" type="text/css" />
+  <link rel="stylesheet" href="_static/katex-math.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="audformat.errors" href="api-errors.html" />
+    <link rel="prev" title="audformat" href="api.html" />
+    
+      
+    
+  
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          <a href="index.html">
+          
+            <img src="_static/images/audeering.svg" class="logo" alt="audEERING"/>
+          
+          
+            <span> audformat</span>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                v0.9.0-rc3
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Getting started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="create-database.html">Create a database</a></li>
+<li class="toctree-l1"><a class="reference internal" href="accessing-data.html">Working with a database</a></li>
+<li class="toctree-l1"><a class="reference internal" href="combine-tables.html">Combine tables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="map-scheme.html">Map scheme labels</a></li>
+<li class="toctree-l1"><a class="reference internal" href="emodb-example.html">Emodb example</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Format specification</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="data-introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data-format.html">Database</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data-conventions.html">Conventions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data-header.html">Header</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data-tables.html">Tables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data-example.html">Example</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API Documentation</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="api.html">audformat</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">audformat.define</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#datatype">DataType</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#gender">Gender</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#indexfield">IndexField</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#indextype">IndexType</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#mediatype">MediaType</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ratertype">RaterType</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#splittype">SplitType</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#tablestorageformat">TableStorageFormat</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#usage">Usage</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api-errors.html">audformat.errors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api-testing.html">audformat.testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api-utils.html">audformat.utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="genindex.html">Index</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">audformat</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>audformat.define</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            
+              <a href="https://github.com/audeering/audformat/blob/v0.9.0-rc3/docs/api-define.rst" class="fa fa-github"> Edit on GitHub</a>
+            
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-audformat.define">
+<span id="audformat-define"></span><h1>audformat.define<a class="headerlink" href="#module-audformat.define" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="datatype">
+<h2>DataType<a class="headerlink" href="#datatype" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="audformat.define.DataType">
+<em class="property">class </em><code class="sig-prename descclassname">audformat.define.</code><code class="sig-name descname">DataType</code><a class="reference internal" href="_modules/audformat/core/define.html#DataType"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#audformat.define.DataType" title="Permalink to this definition">¶</a></dt>
+<dd><p>Data types of column content.</p>
+<dl class="py attribute">
+<dt id="audformat.define.DataType.BOOL">
+<code class="sig-name descname">BOOL</code><em class="property"> = 'bool'</em><a class="headerlink" href="#audformat.define.DataType.BOOL" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="audformat.define.DataType.DATE">
+<code class="sig-name descname">DATE</code><em class="property"> = 'date'</em><a class="headerlink" href="#audformat.define.DataType.DATE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="audformat.define.DataType.FLOAT">
+<code class="sig-name descname">FLOAT</code><em class="property"> = 'float'</em><a class="headerlink" href="#audformat.define.DataType.FLOAT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="audformat.define.DataType.INTEGER">
+<code class="sig-name descname">INTEGER</code><em class="property"> = 'int'</em><a class="headerlink" href="#audformat.define.DataType.INTEGER" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="audformat.define.DataType.STRING">
+<code class="sig-name descname">STRING</code><em class="property"> = 'str'</em><a class="headerlink" href="#audformat.define.DataType.STRING" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="audformat.define.DataType.TIME">
+<code class="sig-name descname">TIME</code><em class="property"> = 'time'</em><a class="headerlink" href="#audformat.define.DataType.TIME" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="gender">
+<h2>Gender<a class="headerlink" href="#gender" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="audformat.define.Gender">
+<em class="property">class </em><code class="sig-prename descclassname">audformat.define.</code><code class="sig-name descname">Gender</code><a class="reference internal" href="_modules/audformat/core/define.html#Gender"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#audformat.define.Gender" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gender scheme definitions.</p>
+<dl class="py attribute">
+<dt id="audformat.define.Gender.CHILD">
+<code class="sig-name descname">CHILD</code><em class="property"> = 'child'</em><a class="headerlink" href="#audformat.define.Gender.CHILD" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="audformat.define.Gender.FEMALE">
+<code class="sig-name descname">FEMALE</code><em class="property"> = 'female'</em><a class="headerlink" href="#audformat.define.Gender.FEMALE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="audformat.define.Gender.MALE">
+<code class="sig-name descname">MALE</code><em class="property"> = 'male'</em><a class="headerlink" href="#audformat.define.Gender.MALE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="audformat.define.Gender.OTHER">
+<code class="sig-name descname">OTHER</code><em class="property"> = 'other'</em><a class="headerlink" href="#audformat.define.Gender.OTHER" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="indexfield">
+<h2>IndexField<a class="headerlink" href="#indexfield" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="audformat.define.IndexField">
+<em class="property">class </em><code class="sig-prename descclassname">audformat.define.</code><code class="sig-name descname">IndexField</code><a class="reference internal" href="_modules/audformat/core/define.html#IndexField"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#audformat.define.IndexField" title="Permalink to this definition">¶</a></dt>
+<dd><p>Index fields defined in
+<a class="reference internal" href="data-tables.html#tables"><span class="std std-ref">table specifications</span></a>.</p>
+<dl class="py attribute">
+<dt id="audformat.define.IndexField.END">
+<code class="sig-name descname">END</code><em class="property"> = 'end'</em><a class="headerlink" href="#audformat.define.IndexField.END" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="audformat.define.IndexField.FILE">
+<code class="sig-name descname">FILE</code><em class="property"> = 'file'</em><a class="headerlink" href="#audformat.define.IndexField.FILE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="audformat.define.IndexField.START">
+<code class="sig-name descname">START</code><em class="property"> = 'start'</em><a class="headerlink" href="#audformat.define.IndexField.START" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="indextype">
+<h2>IndexType<a class="headerlink" href="#indextype" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="audformat.define.IndexType">
+<em class="property">class </em><code class="sig-prename descclassname">audformat.define.</code><code class="sig-name descname">IndexType</code><a class="reference internal" href="_modules/audformat/core/define.html#IndexType"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#audformat.define.IndexType" title="Permalink to this definition">¶</a></dt>
+<dd><p>Index types defined in
+<a class="reference internal" href="data-tables.html#tables"><span class="std std-ref">table specifications</span></a>.</p>
+<dl class="py attribute">
+<dt id="audformat.define.IndexType.FILEWISE">
+<code class="sig-name descname">FILEWISE</code><em class="property"> = 'filewise'</em><a class="headerlink" href="#audformat.define.IndexType.FILEWISE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="audformat.define.IndexType.SEGMENTED">
+<code class="sig-name descname">SEGMENTED</code><em class="property"> = 'segmented'</em><a class="headerlink" href="#audformat.define.IndexType.SEGMENTED" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="mediatype">
+<h2>MediaType<a class="headerlink" href="#mediatype" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="audformat.define.MediaType">
+<em class="property">class </em><code class="sig-prename descclassname">audformat.define.</code><code class="sig-name descname">MediaType</code><a class="reference internal" href="_modules/audformat/core/define.html#MediaType"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#audformat.define.MediaType" title="Permalink to this definition">¶</a></dt>
+<dd><p>Media type of table.</p>
+<dl class="py attribute">
+<dt id="audformat.define.MediaType.AUDIO">
+<code class="sig-name descname">AUDIO</code><em class="property"> = 'audio'</em><a class="headerlink" href="#audformat.define.MediaType.AUDIO" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="audformat.define.MediaType.OTHER">
+<code class="sig-name descname">OTHER</code><em class="property"> = 'other'</em><a class="headerlink" href="#audformat.define.MediaType.OTHER" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="audformat.define.MediaType.VIDEO">
+<code class="sig-name descname">VIDEO</code><em class="property"> = 'video'</em><a class="headerlink" href="#audformat.define.MediaType.VIDEO" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="ratertype">
+<h2>RaterType<a class="headerlink" href="#ratertype" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="audformat.define.RaterType">
+<em class="property">class </em><code class="sig-prename descclassname">audformat.define.</code><code class="sig-name descname">RaterType</code><a class="reference internal" href="_modules/audformat/core/define.html#RaterType"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#audformat.define.RaterType" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rater type of column.</p>
+<dl class="py attribute">
+<dt id="audformat.define.RaterType.HUMAN">
+<code class="sig-name descname">HUMAN</code><em class="property"> = 'human'</em><a class="headerlink" href="#audformat.define.RaterType.HUMAN" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="audformat.define.RaterType.MACHINE">
+<code class="sig-name descname">MACHINE</code><em class="property"> = 'machine'</em><a class="headerlink" href="#audformat.define.RaterType.MACHINE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="audformat.define.RaterType.OTHER">
+<code class="sig-name descname">OTHER</code><em class="property"> = 'other'</em><a class="headerlink" href="#audformat.define.RaterType.OTHER" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="audformat.define.RaterType.TRUTH">
+<code class="sig-name descname">TRUTH</code><em class="property"> = 'ground truth'</em><a class="headerlink" href="#audformat.define.RaterType.TRUTH" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="audformat.define.RaterType.VOTE">
+<code class="sig-name descname">VOTE</code><em class="property"> = 'vote'</em><a class="headerlink" href="#audformat.define.RaterType.VOTE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="splittype">
+<h2>SplitType<a class="headerlink" href="#splittype" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="audformat.define.SplitType">
+<em class="property">class </em><code class="sig-prename descclassname">audformat.define.</code><code class="sig-name descname">SplitType</code><a class="reference internal" href="_modules/audformat/core/define.html#SplitType"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#audformat.define.SplitType" title="Permalink to this definition">¶</a></dt>
+<dd><p>Split type of table.</p>
+<dl class="py attribute">
+<dt id="audformat.define.SplitType.DEVELOP">
+<code class="sig-name descname">DEVELOP</code><em class="property"> = 'dev'</em><a class="headerlink" href="#audformat.define.SplitType.DEVELOP" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="audformat.define.SplitType.OTHER">
+<code class="sig-name descname">OTHER</code><em class="property"> = 'other'</em><a class="headerlink" href="#audformat.define.SplitType.OTHER" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="audformat.define.SplitType.TEST">
+<code class="sig-name descname">TEST</code><em class="property"> = 'test'</em><a class="headerlink" href="#audformat.define.SplitType.TEST" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="audformat.define.SplitType.TRAIN">
+<code class="sig-name descname">TRAIN</code><em class="property"> = 'train'</em><a class="headerlink" href="#audformat.define.SplitType.TRAIN" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="tablestorageformat">
+<h2>TableStorageFormat<a class="headerlink" href="#tablestorageformat" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="audformat.define.TableStorageFormat">
+<em class="property">class </em><code class="sig-prename descclassname">audformat.define.</code><code class="sig-name descname">TableStorageFormat</code><a class="reference internal" href="_modules/audformat/core/define.html#TableStorageFormat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#audformat.define.TableStorageFormat" title="Permalink to this definition">¶</a></dt>
+<dd><p>Storage format of tables.</p>
+<dl class="py attribute">
+<dt id="audformat.define.TableStorageFormat.CSV">
+<code class="sig-name descname">CSV</code><em class="property"> = 'csv'</em><a class="headerlink" href="#audformat.define.TableStorageFormat.CSV" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="audformat.define.TableStorageFormat.PICKLE">
+<code class="sig-name descname">PICKLE</code><em class="property"> = 'pkl'</em><a class="headerlink" href="#audformat.define.TableStorageFormat.PICKLE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="usage">
+<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="audformat.define.Usage">
+<em class="property">class </em><code class="sig-prename descclassname">audformat.define.</code><code class="sig-name descname">Usage</code><a class="reference internal" href="_modules/audformat/core/define.html#Usage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#audformat.define.Usage" title="Permalink to this definition">¶</a></dt>
+<dd><p>Usage permission of database.</p>
+<dl class="py attribute">
+<dt id="audformat.define.Usage.COMMERCIAL">
+<code class="sig-name descname">COMMERCIAL</code><em class="property"> = 'commercial'</em><a class="headerlink" href="#audformat.define.Usage.COMMERCIAL" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="audformat.define.Usage.OTHER">
+<code class="sig-name descname">OTHER</code><em class="property"> = 'other'</em><a class="headerlink" href="#audformat.define.Usage.OTHER" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="audformat.define.Usage.RESEARCH">
+<code class="sig-name descname">RESEARCH</code><em class="property"> = 'research'</em><a class="headerlink" href="#audformat.define.Usage.RESEARCH" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="audformat.define.Usage.RESTRICTED">
+<code class="sig-name descname">RESTRICTED</code><em class="property"> = 'restricted'</em><a class="headerlink" href="#audformat.define.Usage.RESTRICTED" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="audformat.define.Usage.UNRESTRICTED">
+<code class="sig-name descname">UNRESTRICTED</code><em class="property"> = 'unrestricted'</em><a class="headerlink" href="#audformat.define.Usage.UNRESTRICTED" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="api-errors.html" class="btn btn-neutral float-right" title="audformat.errors" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="api.html" class="btn btn-neutral float-left" title="audformat" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div>
+    <p>
+        
+        
+        
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2020/12/18 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+        
+    </p>
+  </div>
+
+  <div role="contentinfo">
+    <p>
+        
+      &copy; 2019-2020 audEERING GmbH
+    </p>
+  </div> 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script src="_static/clipboard.min.js"></script>
+        <script src="_static/copybutton.js"></script>
+        <script src="_static/thebelab-helper.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js"></script>
+        <script src="_static/katex_autorenderer.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.18.0/dist/embed-amd.js"></script>
+    
+
+  
+
+  <script type="text/javascript" src="_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

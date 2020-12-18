@@ -1,0 +1,1174 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Emodb example &mdash; audformat Documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="_static/favicon.png"/>
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/audeering.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
+  <link rel="stylesheet" href="_static/copybutton.css" type="text/css" />
+  <link rel="stylesheet" href="_static/jupyter-sphinx.css" type="text/css" />
+  <link rel="stylesheet" href="_static/thebelab.css" type="text/css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" type="text/css" />
+  <link rel="stylesheet" href="_static/katex-math.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Introduction" href="data-introduction.html" />
+    <link rel="prev" title="Map scheme labels" href="map-scheme.html" />
+    
+      
+    
+  
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          <a href="index.html">
+          
+            <img src="_static/images/audeering.svg" class="logo" alt="audEERING"/>
+          
+          
+            <span> audformat</span>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                v0.9.0-rc3
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Getting started</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="create-database.html">Create a database</a></li>
+<li class="toctree-l1"><a class="reference internal" href="accessing-data.html">Working with a database</a></li>
+<li class="toctree-l1"><a class="reference internal" href="combine-tables.html">Combine tables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="map-scheme.html">Map scheme labels</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Emodb example</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#get-source-database">Get source database</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#gather-metadata-and-annotations">Gather metadata and annotations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#create-audformat-database">Create audformat database</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#inspect-database-header">Inspect database header</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#inspect-database-tables">Inspect database tables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#store-database-to-disk">Store database to disk</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Format specification</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="data-introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data-format.html">Database</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data-conventions.html">Conventions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data-header.html">Header</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data-tables.html">Tables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data-example.html">Example</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api.html">audformat</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api-define.html">audformat.define</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api-errors.html">audformat.errors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api-testing.html">audformat.testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api-utils.html">audformat.utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="genindex.html">Index</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">audformat</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Emodb example</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            
+              <a href="https://github.com/audeering/audformat/blob/v0.9.0-rc3/docs/emodb-example.rst" class="fa fa-github"> Edit on GitHub</a>
+            
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="emodb-example">
+<h1>Emodb example<a class="headerlink" href="#emodb-example" title="Permalink to this headline">¶</a></h1>
+<p>In this example we download the small <a class="reference external" href="http://emodb.bilderbar.info">emodb</a> database,
+that contains sentences
+spoken with different emotions
+by different actors.
+The audio is stored as WAV files.</p>
+<div class="section" id="get-source-database">
+<h2>Get source database<a class="headerlink" href="#get-source-database" title="Permalink to this headline">¶</a></h2>
+<p>First we download the source <a class="reference external" href="http://emodb.bilderbar.info">emodb</a> database
+to the folder <code class="file docutils literal notranslate"><span class="pre">emodb-src</span></code>.</p>
+<div class="jupyter_cell jupyter_container docutils container">
+<div class="cell_input code_cell docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">urllib.request</span>
+
+<span class="kn">import</span> <span class="nn">audeer</span>
+
+
+<span class="c1"># Get database source</span>
+<span class="n">source</span> <span class="o">=</span> <span class="s1">&#39;http://emodb.bilderbar.info/download/download.zip&#39;</span>
+<span class="n">src_dir</span> <span class="o">=</span> <span class="s1">&#39;emodb-src&#39;</span>
+<span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">src_dir</span><span class="p">):</span>
+    <span class="n">urllib</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">urlretrieve</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="s1">&#39;emodb.zip&#39;</span><span class="p">)</span>
+    <span class="n">audeer</span><span class="o">.</span><span class="n">extract_archive</span><span class="p">(</span><span class="s1">&#39;emodb.zip&#39;</span><span class="p">,</span> <span class="n">src_dir</span><span class="p">)</span>
+
+<span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">src_dir</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>[&#39;wav&#39;, &#39;lablaut&#39;, &#39;labsilb&#39;, &#39;erkennung.txt&#39;, &#39;silb&#39;, &#39;erklaerung.txt&#39;]
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="gather-metadata-and-annotations">
+<h2>Gather metadata and annotations<a class="headerlink" href="#gather-metadata-and-annotations" title="Permalink to this headline">¶</a></h2>
+<p>Afterwards we collect all metadata
+and annotations
+that we would like to store in the audformat version
+of the database.</p>
+<p>First, have a look at the file names.</p>
+<div class="jupyter_cell jupyter_container docutils container">
+<div class="cell_input code_cell docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">src_dir</span><span class="p">,</span> <span class="s1">&#39;wav&#39;</span><span class="p">))[:</span><span class="mi">3</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>[&#39;15b01Na.wav&#39;, &#39;11b03Lc.wav&#39;, &#39;15b09Ac.wav&#39;]
+</pre></div>
+</div>
+</div>
+</div>
+<p>As described in the <a class="reference external" href="http://emodb.bilderbar.info/index-1280.html">emodb documentation</a>
+the encoding is the following.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 35%" />
+<col style="width: 65%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Position</p></th>
+<th class="head"><p>Encoding</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>0..1</p></td>
+<td><p>speaker</p></td>
+</tr>
+<tr class="row-odd"><td><p>2..4</p></td>
+<td><p>spoken sentence</p></td>
+</tr>
+<tr class="row-even"><td><p>5</p></td>
+<td><p>emotion</p></td>
+</tr>
+<tr class="row-odd"><td><p>6</p></td>
+<td><p>repetition</p></td>
+</tr>
+</tbody>
+</table>
+<p>For speaker further information is provided.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 53%" />
+<col style="width: 32%" />
+<col style="width: 16%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Speaker ID</p></th>
+<th class="head"><p>Gender</p></th>
+<th class="head"><p>Age</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>03</p></td>
+<td><p>male</p></td>
+<td><p>31</p></td>
+</tr>
+<tr class="row-odd"><td><p>08</p></td>
+<td><p>female</p></td>
+<td><p>34</p></td>
+</tr>
+<tr class="row-even"><td><p>09</p></td>
+<td><p>female</p></td>
+<td><p>21</p></td>
+</tr>
+<tr class="row-odd"><td><p>10</p></td>
+<td><p>male</p></td>
+<td><p>32</p></td>
+</tr>
+<tr class="row-even"><td><p>11</p></td>
+<td><p>male</p></td>
+<td><p>26</p></td>
+</tr>
+<tr class="row-odd"><td><p>12</p></td>
+<td><p>male</p></td>
+<td><p>30</p></td>
+</tr>
+<tr class="row-even"><td><p>13</p></td>
+<td><p>female</p></td>
+<td><p>32</p></td>
+</tr>
+<tr class="row-odd"><td><p>14</p></td>
+<td><p>female</p></td>
+<td><p>35</p></td>
+</tr>
+<tr class="row-even"><td><p>15</p></td>
+<td><p>male</p></td>
+<td><p>25</p></td>
+</tr>
+<tr class="row-odd"><td><p>16</p></td>
+<td><p>female</p></td>
+<td><p>31</p></td>
+</tr>
+</tbody>
+</table>
+<p>For the sentences we have transcriptions.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 5%" />
+<col style="width: 95%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Code</p></th>
+<th class="head"><p>Transcription</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>a01</p></td>
+<td><p>Der Lappen liegt auf dem Eisschrank.</p></td>
+</tr>
+<tr class="row-odd"><td><p>a02</p></td>
+<td><p>Das will sie am Mittwoch abgeben.</p></td>
+</tr>
+<tr class="row-even"><td><p>a04</p></td>
+<td><p>Heute Abend könnte ich es ihm sagen.</p></td>
+</tr>
+<tr class="row-odd"><td><p>a05</p></td>
+<td><p>Das schwarze Stück Papier befindet sich da oben neben dem Holzstück.</p></td>
+</tr>
+<tr class="row-even"><td><p>a07</p></td>
+<td><p>In sieben Stunden wird es soweit sein.</p></td>
+</tr>
+<tr class="row-odd"><td><p>b01</p></td>
+<td><p>Was sind denn das für Tüten, die da unter dem Tisch stehen?</p></td>
+</tr>
+<tr class="row-even"><td><p>b02</p></td>
+<td><p>Sie haben es gerade hoch getragen und jetzt gehen sie wieder runter.</p></td>
+</tr>
+<tr class="row-odd"><td><p>b03</p></td>
+<td><p>An den Wochenenden bin ich jetzt immer nach Hause gefahren und habe Agnes besucht.</p></td>
+</tr>
+<tr class="row-even"><td><p>b09</p></td>
+<td><p>Ich will das eben wegbringen und dann mit Karl was trinken gehen.</p></td>
+</tr>
+<tr class="row-odd"><td><p>b10</p></td>
+<td><p>Die wird auf dem Platz sein, wo wir sie immer hinlegen.</p></td>
+</tr>
+</tbody>
+</table>
+<p>The emotion codes belong to the following emotions.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 31%" />
+<col style="width: 69%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Code</p></th>
+<th class="head"><p>Emotion</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>W</p></td>
+<td><p>anger</p></td>
+</tr>
+<tr class="row-odd"><td><p>L</p></td>
+<td><p>boredom</p></td>
+</tr>
+<tr class="row-even"><td><p>E</p></td>
+<td><p>disgust</p></td>
+</tr>
+<tr class="row-odd"><td><p>A</p></td>
+<td><p>fear</p></td>
+</tr>
+<tr class="row-even"><td><p>F</p></td>
+<td><p>happiness</p></td>
+</tr>
+<tr class="row-odd"><td><p>T</p></td>
+<td><p>sadness</p></td>
+</tr>
+<tr class="row-even"><td><p>N</p></td>
+<td><p>neutral</p></td>
+</tr>
+</tbody>
+</table>
+<p>As stated in the <a class="reference external" href="https://www.isca-speech.org/archive/archive_papers/interspeech_2005/i05_1517.pdf">emodb paper</a>,
+the acted emotions were further evaluated
+by 20 participants
+that had to assign emotion labels
+to the audio presentations.
+Their agreement of the rating is stored
+as the <code class="docutils literal notranslate"><span class="pre">erkannt</span></code> column
+in the file <code class="file docutils literal notranslate"><span class="pre">erkennung.txt</span></code>.
+We will read in this file
+and use the annotations to add a confidence column
+to the emotion table.</p>
+<div class="jupyter_cell jupyter_container docutils container">
+<div class="cell_input code_cell docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">audformat</span>
+<span class="kn">import</span> <span class="nn">audiofile</span> <span class="k">as</span> <span class="nn">af</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="c1"># Prepare functions for getting information from file names</span>
+<span class="k">def</span> <span class="nf">parse_names</span><span class="p">(</span><span class="n">names</span><span class="p">,</span> <span class="n">from_i</span><span class="p">,</span> <span class="n">to_i</span><span class="p">,</span> <span class="n">is_number</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">mapping</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">names</span><span class="p">:</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="n">name</span><span class="p">[</span><span class="n">from_i</span><span class="p">:</span><span class="n">to_i</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">is_number</span><span class="p">:</span>
+            <span class="n">key</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+        <span class="k">yield</span> <span class="n">mapping</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">if</span> <span class="n">mapping</span> <span class="k">else</span> <span class="n">key</span>
+
+
+<span class="n">description</span> <span class="o">=</span> <span class="p">(</span>
+   <span class="s1">&#39;Berlin Database of Emotional Speech&#39;</span>
+   <span class="s1">&#39;&#39;</span>
+   <span class="s1">&#39;A German database of emotional utterances &#39;</span>
+   <span class="s1">&#39;spoken by actors &#39;</span>
+   <span class="s1">&#39;recorded as a part of the DFG funded research project &#39;</span>
+   <span class="s1">&#39;SE462/3-1 in 1997 and 1999. &#39;</span>
+   <span class="s1">&#39;Recordings took place in the anechoic chamber &#39;</span>
+   <span class="s1">&#39;of the Technical University Berlin, &#39;</span>
+   <span class="s1">&#39;department of Technical Acoustics. &#39;</span>
+   <span class="s1">&#39;It contains about 500 utterances &#39;</span>
+   <span class="s1">&#39;from ten different actors &#39;</span>
+   <span class="s1">&#39;expressing basic six emotions and neutral.&#39;</span>
+<span class="p">)</span>
+
+<span class="n">files</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span>
+    <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;wav&#39;</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">src_dir</span><span class="p">,</span> <span class="s1">&#39;wav&#39;</span><span class="p">))]</span>
+<span class="p">)</span>
+<span class="n">names</span> <span class="o">=</span> <span class="p">[</span><span class="n">audeer</span><span class="o">.</span><span class="n">basename_wo_ext</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">files</span><span class="p">]</span>
+
+<span class="n">emotion_mapping</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;W&#39;</span><span class="p">:</span> <span class="s1">&#39;anger&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;L&#39;</span><span class="p">:</span> <span class="s1">&#39;boredom&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;E&#39;</span><span class="p">:</span> <span class="s1">&#39;disgust&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;A&#39;</span><span class="p">:</span> <span class="s1">&#39;fear&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;F&#39;</span><span class="p">:</span> <span class="s1">&#39;happiness&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;T&#39;</span><span class="p">:</span> <span class="s1">&#39;sadness&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;N&#39;</span><span class="p">:</span> <span class="s1">&#39;neutral&#39;</span><span class="p">,</span>
+<span class="p">}</span>
+<span class="n">emotions</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">parse_names</span><span class="p">(</span><span class="n">names</span><span class="p">,</span> <span class="n">from_i</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">to_i</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">mapping</span><span class="o">=</span><span class="n">emotion_mapping</span><span class="p">))</span>
+
+<span class="n">y</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">src_dir</span><span class="p">,</span> <span class="s1">&#39;erkennung.txt&#39;</span><span class="p">),</span>
+    <span class="n">usecols</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Satz&#39;</span><span class="p">,</span> <span class="s1">&#39;erkannt&#39;</span><span class="p">],</span>
+    <span class="n">index_col</span><span class="o">=</span><span class="s1">&#39;Satz&#39;</span><span class="p">,</span>
+    <span class="n">delim_whitespace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;Latin-1&#39;</span><span class="p">,</span>
+    <span class="n">decimal</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="p">,</span>
+    <span class="n">converters</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;Satz&#39;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;wav&#39;</span><span class="p">,</span> <span class="n">x</span><span class="p">)},</span>
+    <span class="n">squeeze</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">y</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">files</span><span class="p">]</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">y</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">to_replace</span><span class="o">=</span><span class="sa">u</span><span class="s1">&#39;</span><span class="se">\xa0</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">regex</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">y</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">to_replace</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="n">regex</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">confidences</span> <span class="o">=</span> <span class="n">y</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;float&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">values</span>
+
+<span class="n">male</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">define</span><span class="o">.</span><span class="n">Gender</span><span class="o">.</span><span class="n">MALE</span>
+<span class="n">female</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">define</span><span class="o">.</span><span class="n">Gender</span><span class="o">.</span><span class="n">FEMALE</span>
+<span class="n">language</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">map_language</span><span class="p">(</span><span class="s1">&#39;de&#39;</span><span class="p">)</span>
+<span class="n">speaker_mapping</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="mi">3</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;gender&#39;</span><span class="p">:</span> <span class="n">male</span><span class="p">,</span> <span class="s1">&#39;age&#39;</span><span class="p">:</span> <span class="mi">31</span><span class="p">,</span> <span class="s1">&#39;language&#39;</span><span class="p">:</span> <span class="n">language</span><span class="p">},</span>
+    <span class="mi">8</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;gender&#39;</span><span class="p">:</span> <span class="n">female</span><span class="p">,</span> <span class="s1">&#39;age&#39;</span><span class="p">:</span> <span class="mi">34</span><span class="p">,</span> <span class="s1">&#39;language&#39;</span><span class="p">:</span> <span class="n">language</span><span class="p">},</span>
+    <span class="mi">9</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;gender&#39;</span><span class="p">:</span> <span class="n">male</span><span class="p">,</span> <span class="s1">&#39;age&#39;</span><span class="p">:</span> <span class="mi">21</span><span class="p">,</span> <span class="s1">&#39;language&#39;</span><span class="p">:</span> <span class="n">language</span><span class="p">},</span>
+    <span class="mi">10</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;gender&#39;</span><span class="p">:</span> <span class="n">female</span><span class="p">,</span> <span class="s1">&#39;age&#39;</span><span class="p">:</span> <span class="mi">32</span><span class="p">,</span> <span class="s1">&#39;language&#39;</span><span class="p">:</span> <span class="n">language</span><span class="p">},</span>
+    <span class="mi">11</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;gender&#39;</span><span class="p">:</span> <span class="n">male</span><span class="p">,</span> <span class="s1">&#39;age&#39;</span><span class="p">:</span> <span class="mi">26</span><span class="p">,</span> <span class="s1">&#39;language&#39;</span><span class="p">:</span> <span class="n">language</span><span class="p">},</span>
+    <span class="mi">12</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;gender&#39;</span><span class="p">:</span> <span class="n">female</span><span class="p">,</span> <span class="s1">&#39;age&#39;</span><span class="p">:</span> <span class="mi">30</span><span class="p">,</span> <span class="s1">&#39;language&#39;</span><span class="p">:</span> <span class="n">language</span><span class="p">},</span>
+    <span class="mi">13</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;gender&#39;</span><span class="p">:</span> <span class="n">male</span><span class="p">,</span> <span class="s1">&#39;age&#39;</span><span class="p">:</span> <span class="mi">32</span><span class="p">,</span> <span class="s1">&#39;language&#39;</span><span class="p">:</span> <span class="n">language</span><span class="p">},</span>
+    <span class="mi">14</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;gender&#39;</span><span class="p">:</span> <span class="n">female</span><span class="p">,</span> <span class="s1">&#39;age&#39;</span><span class="p">:</span> <span class="mi">35</span><span class="p">,</span> <span class="s1">&#39;language&#39;</span><span class="p">:</span> <span class="n">language</span><span class="p">},</span>
+    <span class="mi">15</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;gender&#39;</span><span class="p">:</span> <span class="n">male</span><span class="p">,</span> <span class="s1">&#39;age&#39;</span><span class="p">:</span> <span class="mi">25</span><span class="p">,</span> <span class="s1">&#39;language&#39;</span><span class="p">:</span> <span class="n">language</span><span class="p">},</span>
+    <span class="mi">16</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;gender&#39;</span><span class="p">:</span> <span class="n">female</span><span class="p">,</span> <span class="s1">&#39;age&#39;</span><span class="p">:</span> <span class="mi">31</span><span class="p">,</span> <span class="s1">&#39;language&#39;</span><span class="p">:</span> <span class="n">language</span><span class="p">},</span>
+<span class="p">}</span>
+<span class="n">speakers</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">parse_names</span><span class="p">(</span><span class="n">names</span><span class="p">,</span> <span class="n">from_i</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">to_i</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">is_number</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+
+<span class="n">transcription_mapping</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;a01&#39;</span><span class="p">:</span> <span class="s1">&#39;Der Lappen liegt auf dem Eisschrank.&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;a02&#39;</span><span class="p">:</span> <span class="s1">&#39;Das will sie am Mittwoch abgeben.&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;a04&#39;</span><span class="p">:</span> <span class="s1">&#39;Heute abend könnte ich es ihm sagen.&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;a05&#39;</span><span class="p">:</span> <span class="s1">&#39;Das schwarze Stück Papier befindet sich da oben neben dem &#39;</span>
+           <span class="s1">&#39;Holzstück.&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;a07&#39;</span><span class="p">:</span> <span class="s1">&#39;In sieben Stunden wird es soweit sein.&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;b01&#39;</span><span class="p">:</span> <span class="s1">&#39;Was sind denn das für Tüten, die da unter dem Tisch &#39;</span>
+           <span class="s1">&#39;stehen.&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;b02&#39;</span><span class="p">:</span> <span class="s1">&#39;Sie haben es gerade hochgetragen und jetzt gehen sie &#39;</span>
+           <span class="s1">&#39;wieder runter.&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;b03&#39;</span><span class="p">:</span> <span class="s1">&#39;An den Wochenenden bin ich jetzt immer nach Hause &#39;</span>
+           <span class="s1">&#39;gefahren und habe Agnes besucht.&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;b09&#39;</span><span class="p">:</span> <span class="s1">&#39;Ich will das eben wegbringen und dann mit Karl was &#39;</span>
+           <span class="s1">&#39;trinken gehen.&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;b10&#39;</span><span class="p">:</span> <span class="s1">&#39;Die wird auf dem Platz sein, wo wir sie immer hinlegen.&#39;</span><span class="p">,</span>
+<span class="p">}</span>
+<span class="n">transcriptions</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">parse_names</span><span class="p">(</span><span class="n">names</span><span class="p">,</span> <span class="n">from_i</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">to_i</span><span class="o">=</span><span class="mi">5</span><span class="p">))</span>
+
+<span class="n">durations</span> <span class="o">=</span> <span class="n">audeer</span><span class="o">.</span><span class="n">run_tasks</span><span class="p">(</span>
+    <span class="n">task_func</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_timedelta</span><span class="p">(</span>
+        <span class="n">af</span><span class="o">.</span><span class="n">duration</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">src_dir</span><span class="p">,</span> <span class="n">x</span><span class="p">)),</span>
+        <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;s&#39;</span><span class="p">,</span>
+    <span class="p">),</span>
+    <span class="n">params</span><span class="o">=</span><span class="p">[([</span><span class="n">f</span><span class="p">],</span> <span class="p">{})</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">files</span><span class="p">],</span>
+    <span class="n">num_workers</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+</div>
+</div>
+</div>
+<div class="section" id="create-audformat-database">
+<h2>Create audformat database<a class="headerlink" href="#create-audformat-database" title="Permalink to this headline">¶</a></h2>
+<p>Now we create the database object
+and assign the information to it.</p>
+<div class="jupyter_cell jupyter_container docutils container">
+<div class="cell_input code_cell docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">db</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Database</span><span class="p">(</span>
+    <span class="n">name</span><span class="o">=</span><span class="s1">&#39;emodb&#39;</span><span class="p">,</span>
+    <span class="n">source</span><span class="o">=</span><span class="n">source</span><span class="p">,</span>
+    <span class="n">usage</span><span class="o">=</span><span class="n">audformat</span><span class="o">.</span><span class="n">define</span><span class="o">.</span><span class="n">Usage</span><span class="o">.</span><span class="n">UNRESTRICTED</span><span class="p">,</span>
+    <span class="n">languages</span><span class="o">=</span><span class="p">[</span><span class="n">language</span><span class="p">],</span>
+    <span class="n">description</span><span class="o">=</span><span class="n">description</span><span class="p">,</span>
+    <span class="n">meta</span><span class="o">=</span><span class="p">{</span>
+        <span class="s1">&#39;pdf&#39;</span><span class="p">:</span> <span class="p">(</span>
+            <span class="s1">&#39;http://citeseerx.ist.psu.edu/viewdoc/&#39;</span>
+            <span class="s1">&#39;download?doi=10.1.1.130.8506&amp;rep=rep1&amp;type=pdf&#39;</span>
+        <span class="p">),</span>
+    <span class="p">},</span>
+<span class="p">)</span>
+
+<span class="c1"># Media</span>
+<span class="n">db</span><span class="o">.</span><span class="n">media</span><span class="p">[</span><span class="s1">&#39;microphone&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Media</span><span class="p">(</span>
+    <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;wav&#39;</span><span class="p">,</span>
+    <span class="n">sampling_rate</span><span class="o">=</span><span class="mi">16000</span><span class="p">,</span>
+    <span class="n">channels</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="c1"># Raters</span>
+<span class="n">db</span><span class="o">.</span><span class="n">raters</span><span class="p">[</span><span class="s1">&#39;gold&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Rater</span><span class="p">()</span>
+
+<span class="c1"># Schemes</span>
+<span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s1">&#39;emotion&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Scheme</span><span class="p">(</span>
+    <span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">emotion_mapping</span><span class="o">.</span><span class="n">values</span><span class="p">()],</span>
+    <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Six basic emotions and neutral.&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s1">&#39;confidence&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Scheme</span><span class="p">(</span>
+    <span class="n">audformat</span><span class="o">.</span><span class="n">define</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">FLOAT</span><span class="p">,</span>
+    <span class="n">minimum</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="n">maximum</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Confidence of emotion ratings.&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s1">&#39;speaker&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Scheme</span><span class="p">(</span>
+    <span class="n">labels</span><span class="o">=</span><span class="n">speaker_mapping</span><span class="p">,</span>
+    <span class="n">description</span><span class="o">=</span><span class="p">(</span>
+        <span class="s1">&#39;The actors could produce each sentence as often as &#39;</span>
+        <span class="s1">&#39;they liked and were asked to remember a real &#39;</span>
+        <span class="s1">&#39;situation from their past when they had felt this &#39;</span>
+        <span class="s1">&#39;emotion.&#39;</span>
+    <span class="p">),</span>
+<span class="p">)</span>
+<span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s1">&#39;transcription&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Scheme</span><span class="p">(</span>
+    <span class="n">labels</span><span class="o">=</span><span class="n">transcription_mapping</span><span class="p">,</span>
+    <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Sentence produced by actor.&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s1">&#39;duration&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Scheme</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">audformat</span><span class="o">.</span><span class="n">define</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">TIME</span><span class="p">)</span>
+
+<span class="c1"># Tables</span>
+<span class="n">index</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">filewise_index</span><span class="p">(</span><span class="n">files</span><span class="p">)</span>
+<span class="n">db</span><span class="p">[</span><span class="s1">&#39;files&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Table</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+
+<span class="n">db</span><span class="p">[</span><span class="s1">&#39;files&#39;</span><span class="p">][</span><span class="s1">&#39;duration&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">scheme_id</span><span class="o">=</span><span class="s1">&#39;duration&#39;</span><span class="p">)</span>
+<span class="n">db</span><span class="p">[</span><span class="s1">&#39;files&#39;</span><span class="p">][</span><span class="s1">&#39;duration&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">durations</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">)</span>
+
+<span class="n">db</span><span class="p">[</span><span class="s1">&#39;files&#39;</span><span class="p">][</span><span class="s1">&#39;speaker&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">scheme_id</span><span class="o">=</span><span class="s1">&#39;speaker&#39;</span><span class="p">)</span>
+<span class="n">db</span><span class="p">[</span><span class="s1">&#39;files&#39;</span><span class="p">][</span><span class="s1">&#39;speaker&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">speakers</span><span class="p">)</span>
+
+<span class="n">db</span><span class="p">[</span><span class="s1">&#39;files&#39;</span><span class="p">][</span><span class="s1">&#39;transcription&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">scheme_id</span><span class="o">=</span><span class="s1">&#39;transcription&#39;</span><span class="p">)</span>
+<span class="n">db</span><span class="p">[</span><span class="s1">&#39;files&#39;</span><span class="p">][</span><span class="s1">&#39;transcription&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">transcriptions</span><span class="p">)</span>
+
+<span class="n">db</span><span class="p">[</span><span class="s1">&#39;emotion&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Table</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+<span class="n">db</span><span class="p">[</span><span class="s1">&#39;emotion&#39;</span><span class="p">][</span><span class="s1">&#39;emotion&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+    <span class="n">scheme_id</span><span class="o">=</span><span class="s1">&#39;emotion&#39;</span><span class="p">,</span>
+    <span class="n">rater_id</span><span class="o">=</span><span class="s1">&#39;gold&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">db</span><span class="p">[</span><span class="s1">&#39;emotion&#39;</span><span class="p">][</span><span class="s1">&#39;emotion&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">emotions</span><span class="p">)</span>
+<span class="n">db</span><span class="p">[</span><span class="s1">&#39;emotion&#39;</span><span class="p">][</span><span class="s1">&#39;emotion.confidence&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+    <span class="n">scheme_id</span><span class="o">=</span><span class="s1">&#39;confidence&#39;</span><span class="p">,</span>
+    <span class="n">rater_id</span><span class="o">=</span><span class="s1">&#39;gold&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">db</span><span class="p">[</span><span class="s1">&#39;emotion&#39;</span><span class="p">][</span><span class="s1">&#39;emotion.confidence&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">confidences</span> <span class="o">/</span> <span class="mf">100.0</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+</div>
+</div>
+</div>
+<div class="section" id="inspect-database-header">
+<h2>Inspect database header<a class="headerlink" href="#inspect-database-header" title="Permalink to this headline">¶</a></h2>
+<p>Before storing the database,
+we can inspect its header.</p>
+<div class="jupyter_cell jupyter_container docutils container">
+<div class="cell_input code_cell docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">db</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>name: emodb
+description: Berlin Database of Emotional SpeechA German database of emotional utterances
+  spoken by actors recorded as a part of the DFG funded research project SE462/3-1
+  in 1997 and 1999. Recordings took place in the anechoic chamber of the Technical
+  University Berlin, department of Technical Acoustics. It contains about 500 utterances
+  from ten different actors expressing basic six emotions and neutral.
+source: http://emodb.bilderbar.info/download/download.zip
+usage: unrestricted
+languages: [deu]
+media:
+  microphone: {type: other, format: wav, channels: 1, sampling_rate: 16000}
+raters:
+  gold: {type: human}
+schemes:
+  confidence: {description: Confidence of emotion ratings., dtype: float, minimum: 0,
+    maximum: 1}
+  duration: {dtype: time}
+  emotion:
+    description: Six basic emotions and neutral.
+    dtype: str
+    labels: [anger, boredom, disgust, fear, happiness, sadness, neutral]
+  speaker:
+    description: The actors could produce each sentence as often as they liked and
+      were asked to remember a real situation from their past when they had felt this
+      emotion.
+    dtype: int
+    labels:
+      3: {gender: male, age: 31, language: deu}
+      8: {gender: female, age: 34, language: deu}
+      9: {gender: male, age: 21, language: deu}
+      10: {gender: female, age: 32, language: deu}
+      11: {gender: male, age: 26, language: deu}
+      12: {gender: female, age: 30, language: deu}
+      13: {gender: male, age: 32, language: deu}
+      14: {gender: female, age: 35, language: deu}
+      15: {gender: male, age: 25, language: deu}
+      16: {gender: female, age: 31, language: deu}
+  transcription:
+    description: Sentence produced by actor.
+    dtype: str
+    labels: {a01: Der Lappen liegt auf dem Eisschrank., a02: Das will sie am Mittwoch
+        abgeben., a04: Heute abend könnte ich es ihm sagen., a05: Das schwarze Stück
+        Papier befindet sich da oben neben dem Holzstück., a07: In sieben Stunden
+        wird es soweit sein., b01: &#39;Was sind denn das für Tüten, die da unter dem
+        Tisch stehen.&#39;, b02: Sie haben es gerade hochgetragen und jetzt gehen sie
+        wieder runter., b03: An den Wochenenden bin ich jetzt immer nach Hause gefahren
+        und habe Agnes besucht., b09: Ich will das eben wegbringen und dann mit Karl
+        was trinken gehen., b10: &#39;Die wird auf dem Platz sein, wo wir sie immer hinlegen.&#39;}
+tables:
+  emotion:
+    type: filewise
+    columns:
+      emotion: {scheme_id: emotion, rater_id: gold}
+      emotion.confidence: {scheme_id: confidence, rater_id: gold}
+  files:
+    type: filewise
+    columns:
+      duration: {scheme_id: duration}
+      speaker: {scheme_id: speaker}
+      transcription: {scheme_id: transcription}
+pdf: http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.130.8506&amp;rep=rep1&amp;type=pdf
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="inspect-database-tables">
+<h2>Inspect database tables<a class="headerlink" href="#inspect-database-tables" title="Permalink to this headline">¶</a></h2>
+<p>First check which tables are available.</p>
+<div class="jupyter_cell jupyter_container docutils container">
+<div class="cell_input code_cell docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">list</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">tables</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>[&#39;files&#39;, &#39;emotion&#39;]
+</pre></div>
+</div>
+</div>
+</div>
+<p>Then list the first 10 entries of every table.</p>
+<div class="jupyter_cell jupyter_container docutils container">
+<div class="cell_input code_cell docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="p">[</span><span class="s1">&#39;files&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()[:</span><span class="mi">10</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>duration</th>
+      <th>speaker</th>
+      <th>transcription</th>
+    </tr>
+    <tr>
+      <th>file</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>wav/03a01Fa.wav</th>
+      <td>0 days 00:00:01.898250</td>
+      <td>3</td>
+      <td>a01</td>
+    </tr>
+    <tr>
+      <th>wav/03a01Nc.wav</th>
+      <td>0 days 00:00:01.611250</td>
+      <td>3</td>
+      <td>a01</td>
+    </tr>
+    <tr>
+      <th>wav/03a01Wa.wav</th>
+      <td>0 days 00:00:01.877812500</td>
+      <td>3</td>
+      <td>a01</td>
+    </tr>
+    <tr>
+      <th>wav/03a02Fc.wav</th>
+      <td>0 days 00:00:02.006250</td>
+      <td>3</td>
+      <td>a02</td>
+    </tr>
+    <tr>
+      <th>wav/03a02Nc.wav</th>
+      <td>0 days 00:00:01.439812500</td>
+      <td>3</td>
+      <td>a02</td>
+    </tr>
+    <tr>
+      <th>wav/03a02Ta.wav</th>
+      <td>0 days 00:00:01.735687500</td>
+      <td>3</td>
+      <td>a02</td>
+    </tr>
+    <tr>
+      <th>wav/03a02Wb.wav</th>
+      <td>0 days 00:00:02.123625</td>
+      <td>3</td>
+      <td>a02</td>
+    </tr>
+    <tr>
+      <th>wav/03a02Wc.wav</th>
+      <td>0 days 00:00:01.498062500</td>
+      <td>3</td>
+      <td>a02</td>
+    </tr>
+    <tr>
+      <th>wav/03a04Ad.wav</th>
+      <td>0 days 00:00:01.504874999</td>
+      <td>3</td>
+      <td>a04</td>
+    </tr>
+    <tr>
+      <th>wav/03a04Fd.wav</th>
+      <td>0 days 00:00:01.696812500</td>
+      <td>3</td>
+      <td>a04</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<div class="jupyter_cell jupyter_container docutils container">
+<div class="cell_input code_cell docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="p">[</span><span class="s1">&#39;emotion&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()[:</span><span class="mi">10</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>emotion</th>
+      <th>emotion.confidence</th>
+    </tr>
+    <tr>
+      <th>file</th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>wav/03a01Fa.wav</th>
+      <td>happiness</td>
+      <td>0.90</td>
+    </tr>
+    <tr>
+      <th>wav/03a01Nc.wav</th>
+      <td>neutral</td>
+      <td>1.00</td>
+    </tr>
+    <tr>
+      <th>wav/03a01Wa.wav</th>
+      <td>anger</td>
+      <td>0.95</td>
+    </tr>
+    <tr>
+      <th>wav/03a02Fc.wav</th>
+      <td>happiness</td>
+      <td>0.85</td>
+    </tr>
+    <tr>
+      <th>wav/03a02Nc.wav</th>
+      <td>neutral</td>
+      <td>1.00</td>
+    </tr>
+    <tr>
+      <th>wav/03a02Ta.wav</th>
+      <td>sadness</td>
+      <td>0.90</td>
+    </tr>
+    <tr>
+      <th>wav/03a02Wb.wav</th>
+      <td>anger</td>
+      <td>1.00</td>
+    </tr>
+    <tr>
+      <th>wav/03a02Wc.wav</th>
+      <td>anger</td>
+      <td>1.00</td>
+    </tr>
+    <tr>
+      <th>wav/03a04Ad.wav</th>
+      <td>fear</td>
+      <td>0.90</td>
+    </tr>
+    <tr>
+      <th>wav/03a04Fd.wav</th>
+      <td>happiness</td>
+      <td>1.00</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<p>You access additional header information in a table
+with the <code class="docutils literal notranslate"><span class="pre">map</span></code> argument of <a class="reference internal" href="api.html#audformat.Table.get" title="audformat.Table.get"><code class="xref py py-meth docutils literal notranslate"><span class="pre">audformat.Table.get()</span></code></a>,
+see <a class="reference internal" href="map-scheme.html#map-scheme-labels"><span class="std std-ref">Map scheme labels</span></a>
+for an extended documentation.</p>
+<div class="jupyter_cell jupyter_container docutils container">
+<div class="cell_input code_cell docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="p">[</span><span class="s1">&#39;files&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">map</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;speaker&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;speaker&#39;</span><span class="p">,</span> <span class="s1">&#39;age&#39;</span><span class="p">,</span> <span class="s1">&#39;gender&#39;</span><span class="p">]})[:</span><span class="mi">10</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>duration</th>
+      <th>speaker</th>
+      <th>transcription</th>
+      <th>age</th>
+      <th>gender</th>
+    </tr>
+    <tr>
+      <th>file</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>wav/03a01Fa.wav</th>
+      <td>0 days 00:00:01.898250</td>
+      <td>3</td>
+      <td>a01</td>
+      <td>31</td>
+      <td>male</td>
+    </tr>
+    <tr>
+      <th>wav/03a01Nc.wav</th>
+      <td>0 days 00:00:01.611250</td>
+      <td>3</td>
+      <td>a01</td>
+      <td>31</td>
+      <td>male</td>
+    </tr>
+    <tr>
+      <th>wav/03a01Wa.wav</th>
+      <td>0 days 00:00:01.877812500</td>
+      <td>3</td>
+      <td>a01</td>
+      <td>31</td>
+      <td>male</td>
+    </tr>
+    <tr>
+      <th>wav/03a02Fc.wav</th>
+      <td>0 days 00:00:02.006250</td>
+      <td>3</td>
+      <td>a02</td>
+      <td>31</td>
+      <td>male</td>
+    </tr>
+    <tr>
+      <th>wav/03a02Nc.wav</th>
+      <td>0 days 00:00:01.439812500</td>
+      <td>3</td>
+      <td>a02</td>
+      <td>31</td>
+      <td>male</td>
+    </tr>
+    <tr>
+      <th>wav/03a02Ta.wav</th>
+      <td>0 days 00:00:01.735687500</td>
+      <td>3</td>
+      <td>a02</td>
+      <td>31</td>
+      <td>male</td>
+    </tr>
+    <tr>
+      <th>wav/03a02Wb.wav</th>
+      <td>0 days 00:00:02.123625</td>
+      <td>3</td>
+      <td>a02</td>
+      <td>31</td>
+      <td>male</td>
+    </tr>
+    <tr>
+      <th>wav/03a02Wc.wav</th>
+      <td>0 days 00:00:01.498062500</td>
+      <td>3</td>
+      <td>a02</td>
+      <td>31</td>
+      <td>male</td>
+    </tr>
+    <tr>
+      <th>wav/03a04Ad.wav</th>
+      <td>0 days 00:00:01.504874999</td>
+      <td>3</td>
+      <td>a04</td>
+      <td>31</td>
+      <td>male</td>
+    </tr>
+    <tr>
+      <th>wav/03a04Fd.wav</th>
+      <td>0 days 00:00:01.696812500</td>
+      <td>3</td>
+      <td>a04</td>
+      <td>31</td>
+      <td>male</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+</div>
+<div class="section" id="store-database-to-disk">
+<h2>Store database to disk<a class="headerlink" href="#store-database-to-disk" title="Permalink to this headline">¶</a></h2>
+<p>Now we store the database in the folder <code class="docutils literal notranslate"><span class="pre">emodb</span></code>.
+Note, that we have to make sure
+that the media files are located at the correct position ourselves.</p>
+<div class="jupyter_cell jupyter_container docutils container">
+<div class="cell_input code_cell docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">shutil</span>
+
+
+<span class="n">db_dir</span> <span class="o">=</span> <span class="n">audeer</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="s1">&#39;emodb&#39;</span><span class="p">)</span>
+<span class="n">shutil</span><span class="o">.</span><span class="n">copytree</span><span class="p">(</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">src_dir</span><span class="p">,</span> <span class="s1">&#39;wav&#39;</span><span class="p">),</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">db_dir</span><span class="p">,</span> <span class="s1">&#39;wav&#39;</span><span class="p">),</span>
+<span class="p">)</span>
+<span class="n">db</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">db_dir</span><span class="p">)</span>
+
+<span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">db_dir</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>[&#39;wav&#39;, &#39;db.emotion.csv&#39;, &#39;db.files.csv&#39;, &#39;db.yaml&#39;]
+</pre></div>
+</div>
+</div>
+</div>
+<p>You can read the database from disk as well.</p>
+<div class="jupyter_cell jupyter_container docutils container">
+<div class="cell_input code_cell docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">db</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Database</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">db_dir</span><span class="p">)</span>
+<span class="n">db</span><span class="o">.</span><span class="n">name</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>&#39;emodb&#39;
+</pre></div>
+</div>
+</div>
+</div>
+<div class="jupyter_cell docutils container">
+<div class="cell_output docutils container">
+</div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="data-introduction.html" class="btn btn-neutral float-right" title="Introduction" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="map-scheme.html" class="btn btn-neutral float-left" title="Map scheme labels" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div>
+    <p>
+        
+        
+        
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2020/12/18 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+        
+    </p>
+  </div>
+
+  <div role="contentinfo">
+    <p>
+        
+      &copy; 2019-2020 audEERING GmbH
+    </p>
+  </div> 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script src="_static/clipboard.min.js"></script>
+        <script src="_static/copybutton.js"></script>
+        <script src="_static/thebelab-helper.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js"></script>
+        <script src="_static/katex_autorenderer.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.18.0/dist/embed-amd.js"></script>
+    
+
+  
+
+  <script type="text/javascript" src="_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

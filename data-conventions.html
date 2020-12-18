@@ -1,0 +1,889 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Conventions &mdash; audformat Documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="_static/favicon.png"/>
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/audeering.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
+  <link rel="stylesheet" href="_static/copybutton.css" type="text/css" />
+  <link rel="stylesheet" href="_static/jupyter-sphinx.css" type="text/css" />
+  <link rel="stylesheet" href="_static/thebelab.css" type="text/css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" type="text/css" />
+  <link rel="stylesheet" href="_static/katex-math.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Header" href="data-header.html" />
+    <link rel="prev" title="Database" href="data-format.html" />
+    
+      
+    
+  
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          <a href="index.html">
+          
+            <img src="_static/images/audeering.svg" class="logo" alt="audEERING"/>
+          
+          
+            <span> audformat</span>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                v0.9.0-rc3
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Getting started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="create-database.html">Create a database</a></li>
+<li class="toctree-l1"><a class="reference internal" href="accessing-data.html">Working with a database</a></li>
+<li class="toctree-l1"><a class="reference internal" href="combine-tables.html">Combine tables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="map-scheme.html">Map scheme labels</a></li>
+<li class="toctree-l1"><a class="reference internal" href="emodb-example.html">Emodb example</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Format specification</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="data-introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data-format.html">Database</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Conventions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#database-name">Database name</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#table-and-scheme-names">Table and scheme names</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#tables-schemes-and-raters">Tables, schemes, and raters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#database-splits">Database splits</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#gold-standard-annotation">Gold standard annotation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#confidence-values">Confidence values</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#file-and-speaker-information">File and speaker information</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#file-duration-and-temporal-data">File duration and temporal data</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="data-header.html">Header</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data-tables.html">Tables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data-example.html">Example</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api.html">audformat</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api-define.html">audformat.define</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api-errors.html">audformat.errors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api-testing.html">audformat.testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api-utils.html">audformat.utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="genindex.html">Index</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">audformat</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Conventions</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            
+              <a href="https://github.com/audeering/audformat/blob/v0.9.0-rc3/docs/data-conventions.rst" class="fa fa-github"> Edit on GitHub</a>
+            
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="conventions">
+<h1>Conventions<a class="headerlink" href="#conventions" title="Permalink to this headline">¶</a></h1>
+<div class="jupyter_cell docutils container">
+<div class="cell_output docutils container">
+</div>
+</div>
+<div class="section" id="database-name">
+<h2>Database name<a class="headerlink" href="#database-name" title="Permalink to this headline">¶</a></h2>
+<p>The name of a database should be lowercase
+and must not contain blanks or
+special characters.
+If you have different versions,
+or very long names you can use <code class="docutils literal notranslate"><span class="pre">-</span></code>
+to increase readability.</p>
+<p>Negative example:</p>
+<div class="jupyter_cell jupyter_container docutils container">
+<div class="cell_input code_cell docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">audformat</span><span class="o">.</span><span class="n">Database</span><span class="p">(</span><span class="s1">&#39;My Nice-Database!&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>name: My Nice-Database!
+source: &#39;&#39;
+usage: unrestricted
+languages: []
+</pre></div>
+</div>
+</div>
+</div>
+<p>Positive example:</p>
+<div class="jupyter_cell jupyter_container docutils container">
+<div class="cell_input code_cell docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">audformat</span><span class="o">.</span><span class="n">Database</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;librispeech-mfa-cseg-pho&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>name: librispeech-mfa-cseg-pho
+source: &#39;&#39;
+usage: unrestricted
+languages: []
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="table-and-scheme-names">
+<h2>Table and scheme names<a class="headerlink" href="#table-and-scheme-names" title="Permalink to this headline">¶</a></h2>
+<p>Use lower case for table and scheme names.</p>
+<p>Here’s a list of common scheme names:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 39%" />
+<col style="width: 61%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Content</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>emotion</p></td>
+<td><p>emotion categories</p></td>
+</tr>
+<tr class="row-odd"><td><p>arousal / valence / dominance</p></td>
+<td><p>emotion dimensions</p></td>
+</tr>
+<tr class="row-even"><td><p>speaker</p></td>
+<td><p>unique speaker id</p></td>
+</tr>
+<tr class="row-odd"><td><p>role</p></td>
+<td><p>the role a speaker has, e.g. agent vs. client</p></td>
+</tr>
+<tr class="row-even"><td><p>duration</p></td>
+<td><p>file duration</p></td>
+</tr>
+<tr class="row-odd"><td><p>transcription</p></td>
+<td><p>transcriptions on word or phonetic level
+accurate enough to be used for ASR</p></td>
+</tr>
+<tr class="row-even"><td><p>text</p></td>
+<td><p>transcriptions that are not accurate enough
+for ASR</p></td>
+</tr>
+</tbody>
+</table>
+<p>In case you have several schemes of the same type,
+append <code class="docutils literal notranslate"><span class="pre">-xxx</span></code>.
+E.g. use <code class="docutils literal notranslate"><span class="pre">transcription-word</span></code>
+and <code class="docutils literal notranslate"><span class="pre">transcription-phoneme</span></code>
+if a database offers word
+<em>and</em> phoneme transcriptions.</p>
+</div>
+<div class="section" id="tables-schemes-and-raters">
+<h2>Tables, schemes, and raters<a class="headerlink" href="#tables-schemes-and-raters" title="Permalink to this headline">¶</a></h2>
+<p>Consider one table per scheme
+with the name of the scheme.
+Use lower case for table and scheme names.
+If you have multiple raters,
+name each column after the name of the rater.</p>
+<p>Example:</p>
+<div class="jupyter_cell jupyter_container docutils container">
+<div class="cell_input code_cell docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">db</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Database</span><span class="p">(</span><span class="s1">&#39;mydata&#39;</span><span class="p">)</span>
+
+<span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s1">&#39;arousal&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Scheme</span><span class="p">(</span><span class="n">audformat</span><span class="o">.</span><span class="n">define</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">FLOAT</span><span class="p">)</span>
+<span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s1">&#39;valence&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Scheme</span><span class="p">(</span><span class="n">audformat</span><span class="o">.</span><span class="n">define</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">FLOAT</span><span class="p">)</span>
+
+<span class="n">db</span><span class="o">.</span><span class="n">raters</span><span class="p">[</span><span class="s1">&#39;rater1&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Rater</span><span class="p">()</span>
+<span class="n">db</span><span class="o">.</span><span class="n">raters</span><span class="p">[</span><span class="s1">&#39;rater2&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Rater</span><span class="p">()</span>
+
+<span class="k">for</span> <span class="n">scheme_id</span> <span class="ow">in</span> <span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">:</span>
+    <span class="n">db</span><span class="p">[</span><span class="n">scheme_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Table</span><span class="p">(</span><span class="n">audformat</span><span class="o">.</span><span class="n">filewise_index</span><span class="p">())</span>
+    <span class="k">for</span> <span class="n">rater_id</span> <span class="ow">in</span> <span class="n">db</span><span class="o">.</span><span class="n">raters</span><span class="p">:</span>
+        <span class="n">db</span><span class="p">[</span><span class="n">scheme_id</span><span class="p">][</span><span class="n">rater_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+            <span class="n">scheme_id</span><span class="o">=</span><span class="n">scheme_id</span><span class="p">,</span>
+            <span class="n">rater_id</span><span class="o">=</span><span class="n">rater_id</span><span class="p">,</span>
+        <span class="p">)</span>
+
+<span class="n">db</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>name: mydata
+source: &#39;&#39;
+usage: unrestricted
+languages: []
+raters:
+  rater1: {type: human}
+  rater2: {type: human}
+schemes:
+  arousal: {dtype: float}
+  valence: {dtype: float}
+tables:
+  arousal:
+    type: filewise
+    columns:
+      rater1: {scheme_id: arousal, rater_id: rater1}
+      rater2: {scheme_id: arousal, rater_id: rater2}
+  valence:
+    type: filewise
+    columns:
+      rater1: {scheme_id: valence, rater_id: rater1}
+      rater2: {scheme_id: valence, rater_id: rater2}
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="database-splits">
+<h2>Database splits<a class="headerlink" href="#database-splits" title="Permalink to this headline">¶</a></h2>
+<p>If an official split into training,
+development
+and test set
+consists,
+consider one table per split,
+named <code class="docutils literal notranslate"><span class="pre">scheme_id.split</span></code>.</p>
+<p>Example:</p>
+<div class="jupyter_cell jupyter_container docutils container">
+<div class="cell_input code_cell docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">db</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Database</span><span class="p">(</span><span class="s1">&#39;mydata&#39;</span><span class="p">)</span>
+
+<span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s1">&#39;arousal&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Scheme</span><span class="p">(</span><span class="n">audformat</span><span class="o">.</span><span class="n">define</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">FLOAT</span><span class="p">)</span>
+
+<span class="n">db</span><span class="o">.</span><span class="n">splits</span><span class="p">[</span><span class="s1">&#39;train&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Split</span><span class="p">(</span><span class="n">audformat</span><span class="o">.</span><span class="n">define</span><span class="o">.</span><span class="n">SplitType</span><span class="o">.</span><span class="n">TRAIN</span><span class="p">)</span>
+<span class="n">db</span><span class="o">.</span><span class="n">splits</span><span class="p">[</span><span class="s1">&#39;dev&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Split</span><span class="p">(</span><span class="n">audformat</span><span class="o">.</span><span class="n">define</span><span class="o">.</span><span class="n">SplitType</span><span class="o">.</span><span class="n">DEVELOP</span><span class="p">)</span>
+<span class="n">db</span><span class="o">.</span><span class="n">splits</span><span class="p">[</span><span class="s1">&#39;test&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Split</span><span class="p">(</span><span class="n">audformat</span><span class="o">.</span><span class="n">define</span><span class="o">.</span><span class="n">SplitType</span><span class="o">.</span><span class="n">TEST</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">scheme_id</span> <span class="ow">in</span> <span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">split_id</span> <span class="ow">in</span> <span class="n">db</span><span class="o">.</span><span class="n">splits</span><span class="p">:</span>
+        <span class="n">table_id</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">scheme_id</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="n">split_id</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="n">db</span><span class="p">[</span><span class="n">table_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Table</span><span class="p">(</span>
+            <span class="n">index</span><span class="o">=</span><span class="n">audformat</span><span class="o">.</span><span class="n">filewise_index</span><span class="p">(),</span>
+            <span class="n">split_id</span><span class="o">=</span><span class="n">split_id</span><span class="p">,</span>
+        <span class="p">)</span>
+
+<span class="n">db</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>name: mydata
+source: &#39;&#39;
+usage: unrestricted
+languages: []
+schemes:
+  arousal: {dtype: float}
+splits:
+  dev: {type: dev}
+  test: {type: test}
+  train: {type: train}
+tables:
+  arousal.dev: {type: filewise, split_id: dev}
+  arousal.test: {type: filewise, split_id: test}
+  arousal.train: {type: filewise, split_id: train}
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="gold-standard-annotation">
+<h2>Gold standard annotation<a class="headerlink" href="#gold-standard-annotation" title="Permalink to this headline">¶</a></h2>
+<p>Annotations by several raters
+belonging to the same scheme
+should be stored in a single table,
+but <strong>not</strong> aggregated,
+e.g. by adding a column with mean or some other metric.
+Instead a new table with the postfix <code class="docutils literal notranslate"><span class="pre">.gold_standard</span></code>
+should be created
+to store the average of all rater.
+In addition,
+a rater with the id <code class="docutils literal notranslate"><span class="pre">'gold_standard'</span></code>
+and the type <code class="docutils literal notranslate"><span class="pre">audformat.define.RaterType.VOTE</span></code>
+should be created
+and associated with the column
+holding the gold standard values.</p>
+<p>Example:</p>
+<div class="jupyter_cell jupyter_container docutils container">
+<div class="cell_input code_cell docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">db</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Database</span><span class="p">(</span><span class="s1">&#39;mydata&#39;</span><span class="p">)</span>
+
+<span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s1">&#39;arousal&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Scheme</span><span class="p">(</span><span class="n">audformat</span><span class="o">.</span><span class="n">define</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">FLOAT</span><span class="p">)</span>
+
+<span class="n">db</span><span class="o">.</span><span class="n">raters</span><span class="p">[</span><span class="s1">&#39;rater1&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Rater</span><span class="p">()</span>
+<span class="n">db</span><span class="o">.</span><span class="n">raters</span><span class="p">[</span><span class="s1">&#39;rater2&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Rater</span><span class="p">()</span>
+<span class="n">db</span><span class="o">.</span><span class="n">raters</span><span class="p">[</span><span class="s1">&#39;gold_standard&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Rater</span><span class="p">(</span><span class="n">audformat</span><span class="o">.</span><span class="n">define</span><span class="o">.</span><span class="n">RaterType</span><span class="o">.</span><span class="n">VOTE</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">scheme_id</span> <span class="ow">in</span> <span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">:</span>
+    <span class="n">db</span><span class="p">[</span><span class="n">scheme_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Table</span><span class="p">(</span><span class="n">audformat</span><span class="o">.</span><span class="n">filewise_index</span><span class="p">())</span>
+    <span class="k">for</span> <span class="n">rater_id</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;rater1&#39;</span><span class="p">,</span> <span class="s1">&#39;rater2&#39;</span><span class="p">]:</span>
+        <span class="n">db</span><span class="p">[</span><span class="n">scheme_id</span><span class="p">][</span><span class="n">rater_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+            <span class="n">scheme_id</span><span class="o">=</span><span class="n">scheme_id</span><span class="p">,</span>
+            <span class="n">rater_id</span><span class="o">=</span><span class="n">rater_id</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="n">gold_id</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">scheme_id</span><span class="si">}</span><span class="s1">.gold_standard&#39;</span>
+    <span class="n">db</span><span class="p">[</span><span class="n">gold_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Table</span><span class="p">(</span><span class="n">audformat</span><span class="o">.</span><span class="n">filewise_index</span><span class="p">())</span>
+    <span class="n">db</span><span class="p">[</span><span class="n">gold_id</span><span class="p">][</span><span class="n">scheme_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="n">scheme_id</span><span class="o">=</span><span class="n">scheme_id</span><span class="p">,</span>
+        <span class="n">rater_id</span><span class="o">=</span><span class="s1">&#39;gold_standard&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+<span class="n">db</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>name: mydata
+source: &#39;&#39;
+usage: unrestricted
+languages: []
+raters:
+  gold_standard: {type: vote}
+  rater1: {type: human}
+  rater2: {type: human}
+schemes:
+  arousal: {dtype: float}
+tables:
+  arousal:
+    type: filewise
+    columns:
+      rater1: {scheme_id: arousal, rater_id: rater1}
+      rater2: {scheme_id: arousal, rater_id: rater2}
+  arousal.gold_standard:
+    type: filewise
+    columns:
+      arousal: {scheme_id: arousal, rater_id: gold_standard}
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="confidence-values">
+<h2>Confidence values<a class="headerlink" href="#confidence-values" title="Permalink to this headline">¶</a></h2>
+<p>Assume you have an annotation
+that does not only provide a value,
+but also a confidence of that value.
+In this case you create
+two schemes,
+one for the value,
+and one for the confidence
+using the same scheme ID,
+but followed by <code class="docutils literal notranslate"><span class="pre">.confidence</span></code>.</p>
+<p>The confidence values should be stored in a separate table.
+Or it can be stored within the same table as a different column,
+which might be worth considering when storing the gold standard.</p>
+<p>Example:</p>
+<div class="jupyter_cell jupyter_container docutils container">
+<div class="cell_input code_cell docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">db</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Database</span><span class="p">(</span><span class="s1">&#39;mydata&#39;</span><span class="p">)</span>
+
+<span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s1">&#39;arousal&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Scheme</span><span class="p">(</span><span class="n">audformat</span><span class="o">.</span><span class="n">define</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">FLOAT</span><span class="p">)</span>
+<span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s1">&#39;arousal.confidence&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Scheme</span><span class="p">(</span>
+    <span class="n">audformat</span><span class="o">.</span><span class="n">define</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">FLOAT</span><span class="p">,</span>
+    <span class="n">minimum</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="n">maximum</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">db</span><span class="o">.</span><span class="n">raters</span><span class="p">[</span><span class="s1">&#39;gold_standard&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Rater</span><span class="p">(</span><span class="n">audformat</span><span class="o">.</span><span class="n">define</span><span class="o">.</span><span class="n">RaterType</span><span class="o">.</span><span class="n">VOTE</span><span class="p">)</span>
+
+<span class="n">db</span><span class="p">[</span><span class="s1">&#39;arousal&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Table</span><span class="p">(</span><span class="n">audformat</span><span class="o">.</span><span class="n">filewise_index</span><span class="p">())</span>
+<span class="k">for</span> <span class="n">scheme_id</span> <span class="ow">in</span> <span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">:</span>
+    <span class="n">db</span><span class="p">[</span><span class="s1">&#39;arousal&#39;</span><span class="p">][</span><span class="n">scheme_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="n">scheme_id</span><span class="o">=</span><span class="n">scheme_id</span><span class="p">,</span>
+        <span class="n">rater_id</span><span class="o">=</span><span class="s1">&#39;gold_standard&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+<span class="n">db</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>name: mydata
+source: &#39;&#39;
+usage: unrestricted
+languages: []
+raters:
+  gold_standard: {type: vote}
+schemes:
+  arousal: {dtype: float}
+  arousal.confidence: {dtype: float, minimum: 0, maximum: 1}
+tables:
+  arousal:
+    type: filewise
+    columns:
+      arousal: {scheme_id: arousal, rater_id: gold_standard}
+      arousal.confidence: {scheme_id: arousal.confidence, rater_id: gold_standard}
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="file-and-speaker-information">
+<h2>File and speaker information<a class="headerlink" href="#file-and-speaker-information" title="Permalink to this headline">¶</a></h2>
+<p>Meta information like speaker ID
+or file duration
+should be collected in a table <code class="docutils literal notranslate"><span class="pre">files</span></code>.
+If you have metadata
+belonging only to segments,
+collect it in a table <code class="docutils literal notranslate"><span class="pre">segments</span></code>.</p>
+<p>Additional meta information,
+that is bound to another information
+like age of speaker,
+should be collected in the header
+as it can be later automatically mapped.</p>
+<p>Example:</p>
+<div class="jupyter_cell jupyter_container docutils container">
+<div class="cell_input code_cell docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">db</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Database</span><span class="p">(</span><span class="s1">&#39;mydata&#39;</span><span class="p">)</span>
+
+<span class="n">M</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">define</span><span class="o">.</span><span class="n">Gender</span><span class="o">.</span><span class="n">MALE</span>
+<span class="n">F</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">define</span><span class="o">.</span><span class="n">Gender</span><span class="o">.</span><span class="n">FEMALE</span>
+<span class="n">speaker</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;speaker1&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;gender&#39;</span><span class="p">:</span> <span class="n">F</span><span class="p">,</span> <span class="s1">&#39;age&#39;</span><span class="p">:</span> <span class="mi">31</span><span class="p">},</span>
+    <span class="s1">&#39;speaker2&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;gender&#39;</span><span class="p">:</span> <span class="n">M</span><span class="p">,</span> <span class="s1">&#39;age&#39;</span><span class="p">:</span> <span class="mi">85</span><span class="p">},</span>
+<span class="p">}</span>
+
+<span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s1">&#39;speaker&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Scheme</span><span class="p">(</span><span class="n">labels</span><span class="o">=</span><span class="n">speaker</span><span class="p">)</span>
+<span class="n">db</span><span class="p">[</span><span class="s1">&#39;files&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Table</span><span class="p">(</span>
+    <span class="n">index</span><span class="o">=</span><span class="n">audformat</span><span class="o">.</span><span class="n">filewise_index</span><span class="p">([</span><span class="s1">&#39;a.wav&#39;</span><span class="p">,</span> <span class="s1">&#39;b.wav&#39;</span><span class="p">])</span>
+<span class="p">)</span>
+<span class="n">db</span><span class="p">[</span><span class="s1">&#39;files&#39;</span><span class="p">][</span><span class="s1">&#39;speaker&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">scheme_id</span><span class="o">=</span><span class="s1">&#39;speaker&#39;</span><span class="p">)</span>
+<span class="n">db</span><span class="p">[</span><span class="s1">&#39;files&#39;</span><span class="p">][</span><span class="s1">&#39;speaker&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">([</span><span class="s1">&#39;speaker1&#39;</span><span class="p">,</span> <span class="s1">&#39;speaker2&#39;</span><span class="p">])</span>
+
+<span class="n">db</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>name: mydata
+source: &#39;&#39;
+usage: unrestricted
+languages: []
+schemes:
+  speaker:
+    dtype: str
+    labels:
+      speaker1: {gender: female, age: 31}
+      speaker2: {gender: male, age: 85}
+tables:
+  files:
+    type: filewise
+    columns:
+      speaker: {scheme_id: speaker}
+</pre></div>
+</div>
+</div>
+</div>
+<div class="jupyter_cell jupyter_container docutils container">
+<div class="cell_input code_cell docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="p">[</span><span class="s1">&#39;files&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>speaker</th>
+    </tr>
+    <tr>
+      <th>file</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>a.wav</th>
+      <td>speaker1</td>
+    </tr>
+    <tr>
+      <th>b.wav</th>
+      <td>speaker2</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<p>You can access the additional information with the <code class="docutils literal notranslate"><span class="pre">map</span></code> argument
+of <a class="reference internal" href="api.html#audformat.Table.get" title="audformat.Table.get"><code class="xref py py-meth docutils literal notranslate"><span class="pre">audformat.Table.get()</span></code></a>,
+see <a class="reference internal" href="map-scheme.html#map-scheme-labels"><span class="std std-ref">Map scheme labels</span></a>
+for an extended documentation.</p>
+<div class="jupyter_cell jupyter_container docutils container">
+<div class="cell_input code_cell docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="p">[</span><span class="s1">&#39;files&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">map</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;speaker&#39;</span><span class="p">:</span> <span class="s1">&#39;gender&#39;</span><span class="p">})</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>gender</th>
+    </tr>
+    <tr>
+      <th>file</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>a.wav</th>
+      <td>female</td>
+    </tr>
+    <tr>
+      <th>b.wav</th>
+      <td>male</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+</div>
+<div class="section" id="file-duration-and-temporal-data">
+<h2>File duration and temporal data<a class="headerlink" href="#file-duration-and-temporal-data" title="Permalink to this headline">¶</a></h2>
+<p>It is recommended to store file durations
+for every database
+in a table <code class="docutils literal notranslate"><span class="pre">files</span></code>.
+This information is in principle redundant
+as you can calculate the duration always on the fly,
+but if you have thousands of files
+this might take some time.</p>
+<p>Every temporal data
+like file durations
+should be stored as <code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.Timedelta</span></code>
+or <a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">datetime.datetime</span></code></a>.</p>
+<p>Example:</p>
+<div class="jupyter_cell docutils container">
+<div class="cell_output docutils container">
+</div>
+</div>
+<div class="jupyter_cell jupyter_container docutils container">
+<div class="cell_input code_cell docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">audeer</span>
+<span class="kn">import</span> <span class="nn">audiofile</span> <span class="k">as</span> <span class="nn">af</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+
+<span class="c1"># Create dummy WAV files</span>
+<span class="n">sampling_rate</span> <span class="o">=</span> <span class="mi">1000</span>
+<span class="n">af</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;a.wav&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1000</span><span class="p">]),</span> <span class="n">sampling_rate</span><span class="p">)</span>
+<span class="n">af</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;b.wav&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">500</span><span class="p">]),</span> <span class="n">sampling_rate</span><span class="p">)</span>
+
+<span class="n">db</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Database</span><span class="p">(</span><span class="s1">&#39;mydata&#39;</span><span class="p">)</span>
+
+<span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s1">&#39;duration&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Scheme</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">audformat</span><span class="o">.</span><span class="n">define</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">TIME</span><span class="p">)</span>
+<span class="n">db</span><span class="p">[</span><span class="s1">&#39;files&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Table</span><span class="p">(</span>
+    <span class="n">index</span><span class="o">=</span><span class="n">audformat</span><span class="o">.</span><span class="n">filewise_index</span><span class="p">([</span><span class="s1">&#39;a.wav&#39;</span><span class="p">,</span> <span class="s1">&#39;b.wav&#39;</span><span class="p">])</span>
+<span class="p">)</span>
+<span class="n">db</span><span class="p">[</span><span class="s1">&#39;files&#39;</span><span class="p">][</span><span class="s1">&#39;duration&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">scheme_id</span><span class="o">=</span><span class="s1">&#39;duration&#39;</span><span class="p">)</span>
+<span class="n">durations</span> <span class="o">=</span> <span class="n">audeer</span><span class="o">.</span><span class="n">run_tasks</span><span class="p">(</span>
+    <span class="n">task_func</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_timedelta</span><span class="p">(</span><span class="n">af</span><span class="o">.</span><span class="n">duration</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;s&#39;</span><span class="p">),</span>
+    <span class="n">params</span><span class="o">=</span><span class="p">[([</span><span class="n">f</span><span class="p">],</span> <span class="p">{})</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">db</span><span class="o">.</span><span class="n">files</span><span class="p">],</span>
+    <span class="n">num_workers</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span>
+    <span class="n">progress_bar</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">db</span><span class="p">[</span><span class="s1">&#39;files&#39;</span><span class="p">][</span><span class="s1">&#39;duration&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">durations</span><span class="p">)</span>
+
+<span class="n">db</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>name: mydata
+source: &#39;&#39;
+usage: unrestricted
+languages: []
+schemes:
+  duration: {dtype: time}
+tables:
+  files:
+    type: filewise
+    columns:
+      duration: {scheme_id: duration}
+</pre></div>
+</div>
+</div>
+</div>
+<div class="jupyter_cell jupyter_container docutils container">
+<div class="cell_input code_cell docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="p">[</span><span class="s1">&#39;files&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>duration</th>
+    </tr>
+    <tr>
+      <th>file</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>a.wav</th>
+      <td>0 days 00:00:01</td>
+    </tr>
+    <tr>
+      <th>b.wav</th>
+      <td>0 days 00:00:00.500000</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<div class="jupyter_cell docutils container">
+<div class="cell_output docutils container">
+</div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="data-header.html" class="btn btn-neutral float-right" title="Header" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="data-format.html" class="btn btn-neutral float-left" title="Database" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div>
+    <p>
+        
+        
+        
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2020/12/18 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+        
+    </p>
+  </div>
+
+  <div role="contentinfo">
+    <p>
+        
+      &copy; 2019-2020 audEERING GmbH
+    </p>
+  </div> 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script src="_static/clipboard.min.js"></script>
+        <script src="_static/copybutton.js"></script>
+        <script src="_static/thebelab-helper.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js"></script>
+        <script src="_static/katex_autorenderer.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.18.0/dist/embed-amd.js"></script>
+    
+
+  
+
+  <script type="text/javascript" src="_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

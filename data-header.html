@@ -1,0 +1,960 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Header &mdash; audformat Documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="_static/favicon.png"/>
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/audeering.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
+  <link rel="stylesheet" href="_static/copybutton.css" type="text/css" />
+  <link rel="stylesheet" href="_static/jupyter-sphinx.css" type="text/css" />
+  <link rel="stylesheet" href="_static/thebelab.css" type="text/css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" type="text/css" />
+  <link rel="stylesheet" href="_static/katex-math.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Tables" href="data-tables.html" />
+    <link rel="prev" title="Conventions" href="data-conventions.html" />
+    
+      
+    
+  
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          <a href="index.html">
+          
+            <img src="_static/images/audeering.svg" class="logo" alt="audEERING"/>
+          
+          
+            <span> audformat</span>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                v0.9.0-rc3
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Getting started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="create-database.html">Create a database</a></li>
+<li class="toctree-l1"><a class="reference internal" href="accessing-data.html">Working with a database</a></li>
+<li class="toctree-l1"><a class="reference internal" href="combine-tables.html">Combine tables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="map-scheme.html">Map scheme labels</a></li>
+<li class="toctree-l1"><a class="reference internal" href="emodb-example.html">Emodb example</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Format specification</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="data-introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data-format.html">Database</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data-conventions.html">Conventions</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Header</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#database">Database</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#minimal-example">Minimal example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#audformat-implementation">audformat implementation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#rater">Rater</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id1">Minimal example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id2">audformat implementation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#scheme">Scheme</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id3">Minimal example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id4">audformat implementation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#split">Split</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id5">Minimal example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id6">audformat implementation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#media">Media</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id7">Minimal example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id8">audformat implementation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#table">Table</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id9">Minimal example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id10">audformat implementation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#column">Column</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id11">Minimal example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id12">audformat implementation</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="data-tables.html">Tables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data-example.html">Example</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api.html">audformat</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api-define.html">audformat.define</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api-errors.html">audformat.errors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api-testing.html">audformat.testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api-utils.html">audformat.utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="genindex.html">Index</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">audformat</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Header</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            
+              <a href="https://github.com/audeering/audformat/blob/v0.9.0-rc3/docs/data-header.rst" class="fa fa-github"> Edit on GitHub</a>
+            
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="header">
+<h1>Header<a class="headerlink" href="#header" title="Permalink to this headline">¶</a></h1>
+<p>The header of a database is organized in different parts:</p>
+<ul class="simple">
+<li><p>Core information about the database</p></li>
+<li><p>Information about media</p></li>
+<li><p>Information about raters</p></li>
+<li><p>Information about schemes</p></li>
+<li><p>Information about splits</p></li>
+<li><p>Tables and their columns</p></li>
+</ul>
+<p>Each part is characterized by a set of fields (see below).
+Note that fields marked as mandatory do not have a default value
+and have to be set explicitly.
+Optionally, every object can have an arbitrary number of <code class="docutils literal notranslate"><span class="pre">meta</span></code> fields.
+These can be used to store additional information about the database.
+Fields set to <code class="docutils literal notranslate"><span class="pre">None</span></code> can be omitted.</p>
+<div class="section" id="database">
+<h2>Database<a class="headerlink" href="#database" title="Permalink to this headline">¶</a></h2>
+<p>This part of the header is represented by <a class="reference internal" href="api.html#audformat.Database" title="audformat.Database"><code class="xref py py-class docutils literal notranslate"><span class="pre">audformat.Database</span></code></a>.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 19%" />
+<col style="width: 12%" />
+<col style="width: 69%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Field</p></th>
+<th class="head"><p>Mandatory</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>name</p></td>
+<td><p>yes</p></td>
+<td><p>Database name</p></td>
+</tr>
+<tr class="row-odd"><td><p>source</p></td>
+<td><p>yes</p></td>
+<td><p>Original source,
+e.g. link to webpage where files are hosted</p></td>
+</tr>
+<tr class="row-even"><td><p>usage</p></td>
+<td><p>yes</p></td>
+<td><p>What the database can be used for,
+see <a class="reference internal" href="api-define.html#audformat.define.Usage" title="audformat.define.Usage"><code class="xref py py-class docutils literal notranslate"><span class="pre">audformat.define.Usage</span></code></a></p></td>
+</tr>
+<tr class="row-odd"><td><p>description</p></td>
+<td></td>
+<td><p>Description of the database</p></td>
+</tr>
+<tr class="row-even"><td><p>expires</p></td>
+<td></td>
+<td><p>Until when we are allowed to use the data</p></td>
+</tr>
+<tr class="row-odd"><td><p>languages</p></td>
+<td></td>
+<td><p>List of languages that appear in the media files</p></td>
+</tr>
+<tr class="row-even"><td><p>media</p></td>
+<td></td>
+<td><p>Dictionary of media objects (see below)</p></td>
+</tr>
+<tr class="row-odd"><td><p>raters</p></td>
+<td></td>
+<td><p>Dictionary of rater objects (see below)</p></td>
+</tr>
+<tr class="row-even"><td><p>schemes</p></td>
+<td></td>
+<td><p>Dictionary of scheme objects (see below)</p></td>
+</tr>
+<tr class="row-odd"><td><p>splits</p></td>
+<td></td>
+<td><p>Dictionary of rater objects (see below)</p></td>
+</tr>
+<tr class="row-even"><td><p>tables</p></td>
+<td></td>
+<td><p>Dictionary of tables (see below)</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>meta-key-1</em></p></td>
+<td></td>
+<td><p>1st optional meta field</p></td>
+</tr>
+<tr class="row-even"><td><p>…</p></td>
+<td></td>
+<td><p>…</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>meta-key-N</em></p></td>
+<td></td>
+<td><p>Nth optional meta field</p></td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="minimal-example">
+<h3>Minimal example<a class="headerlink" href="#minimal-example" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">databasename</span>
+<span class="nt">source</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">URL</span>
+<span class="nt">usage</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">commercial</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="audformat-implementation">
+<h3>audformat implementation<a class="headerlink" href="#audformat-implementation" title="Permalink to this headline">¶</a></h3>
+<div class="jupyter_cell jupyter_container docutils container">
+<div class="cell_input code_cell docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">audformat</span>
+
+
+<span class="c1"># Create Database</span>
+<span class="n">db</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Database</span><span class="p">(</span>
+    <span class="n">name</span><span class="o">=</span><span class="s1">&#39;databasename&#39;</span><span class="p">,</span>
+    <span class="n">source</span><span class="o">=</span><span class="s1">&#39;https://gitlab.audeering.com/data/databasename&#39;</span><span class="p">,</span>
+    <span class="n">usage</span><span class="o">=</span><span class="n">audformat</span><span class="o">.</span><span class="n">define</span><span class="o">.</span><span class="n">Usage</span><span class="o">.</span><span class="n">COMMERCIAL</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">db</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>name: databasename
+source: https://gitlab.audeering.com/data/databasename
+usage: commercial
+languages: []
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="rater">
+<h2>Rater<a class="headerlink" href="#rater" title="Permalink to this headline">¶</a></h2>
+<p>This part of the header is represented by <a class="reference internal" href="api.html#audformat.Rater" title="audformat.Rater"><code class="xref py py-class docutils literal notranslate"><span class="pre">audformat.Rater</span></code></a>.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 19%" />
+<col style="width: 12%" />
+<col style="width: 69%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Field</p></th>
+<th class="head"><p>Mandatory</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>id</p></td>
+<td><p>yes</p></td>
+<td><p>Unique identifier of rater</p></td>
+</tr>
+<tr class="row-odd"><td><p>type</p></td>
+<td><p>yes</p></td>
+<td><p>Rater type, see <a class="reference internal" href="api-define.html#audformat.define.RaterType" title="audformat.define.RaterType"><code class="xref py py-class docutils literal notranslate"><span class="pre">audformat.define.RaterType</span></code></a></p></td>
+</tr>
+<tr class="row-even"><td><p>description</p></td>
+<td></td>
+<td><p>Description of rater</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>meta-key-1</em></p></td>
+<td></td>
+<td><p>1st optional meta field</p></td>
+</tr>
+<tr class="row-even"><td><p>…</p></td>
+<td></td>
+<td><p>…</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>meta-key-N</em></p></td>
+<td></td>
+<td><p>Nth optional meta field</p></td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="id1">
+<h3>Minimal example<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">raters</span><span class="p">:</span>
+    <span class="nt">raterid</span><span class="p">:</span>
+        <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">human</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id2">
+<h3>audformat implementation<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<div class="jupyter_cell jupyter_container docutils container">
+<div class="cell_input code_cell docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create minimal Rater</span>
+<span class="n">rater</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Rater</span><span class="p">(</span><span class="n">audformat</span><span class="o">.</span><span class="n">define</span><span class="o">.</span><span class="n">RaterType</span><span class="o">.</span><span class="n">HUMAN</span><span class="p">)</span>
+<span class="c1"># Add Rater to Database</span>
+<span class="n">db</span><span class="o">.</span><span class="n">raters</span><span class="p">[</span><span class="s1">&#39;raterid&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rater</span>
+<span class="c1"># Access type of Rater</span>
+<span class="n">db</span><span class="o">.</span><span class="n">raters</span><span class="p">[</span><span class="s1">&#39;raterid&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">type</span>
+<span class="c1"># Access raters</span>
+<span class="n">db</span><span class="o">.</span><span class="n">raters</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>raterid:
+  {type: human}
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="scheme">
+<h2>Scheme<a class="headerlink" href="#scheme" title="Permalink to this headline">¶</a></h2>
+<p>This part of the header is represented by <a class="reference internal" href="api.html#audformat.Scheme" title="audformat.Scheme"><code class="xref py py-class docutils literal notranslate"><span class="pre">audformat.Scheme</span></code></a>.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 19%" />
+<col style="width: 12%" />
+<col style="width: 69%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Field</p></th>
+<th class="head"><p>Mandatory</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>dtype</p></td>
+<td><p>yes</p></td>
+<td><p>Data type, see <a class="reference internal" href="api-define.html#audformat.define.DataType" title="audformat.define.DataType"><code class="xref py py-class docutils literal notranslate"><span class="pre">audformat.define.DataType</span></code></a></p></td>
+</tr>
+<tr class="row-odd"><td><p>id</p></td>
+<td><p>yes</p></td>
+<td><p>Unique identifier of scheme</p></td>
+</tr>
+<tr class="row-even"><td><p>description</p></td>
+<td></td>
+<td><p>Description of scheme</p></td>
+</tr>
+<tr class="row-odd"><td><p>labels</p></td>
+<td></td>
+<td><p>Dictionary or list with labels
+(elements or keys must fit <code class="docutils literal notranslate"><span class="pre">dtype</span></code>)</p></td>
+</tr>
+<tr class="row-even"><td><p>minimum</p></td>
+<td></td>
+<td><p>Minimum label value (only applied if <code class="docutils literal notranslate"><span class="pre">dtype</span></code> is
+numeric)</p></td>
+</tr>
+<tr class="row-odd"><td><p>maximum</p></td>
+<td></td>
+<td><p>Maximum label value (only applied if <code class="docutils literal notranslate"><span class="pre">dtype</span></code> is
+numeric)</p></td>
+</tr>
+<tr class="row-even"><td><p><em>meta-key-1</em></p></td>
+<td></td>
+<td><p>1st optional meta field</p></td>
+</tr>
+<tr class="row-odd"><td><p>…</p></td>
+<td></td>
+<td><p>…</p></td>
+</tr>
+<tr class="row-even"><td><p><em>meta-key-N</em></p></td>
+<td></td>
+<td><p>Nth optional meta field</p></td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="id3">
+<h3>Minimal example<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">schemes</span><span class="p">:</span>
+    <span class="nt">schemeid</span><span class="p">:</span>
+        <span class="nt">dtype</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">human</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id4">
+<h3>audformat implementation<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
+<div class="jupyter_cell jupyter_container docutils container">
+<div class="cell_input code_cell docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create minimal Scheme</span>
+<span class="n">scheme</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Scheme</span><span class="p">(</span><span class="n">audformat</span><span class="o">.</span><span class="n">define</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">FLOAT</span><span class="p">)</span>
+<span class="c1"># Add Scheme to Database</span>
+<span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s1">&#39;schemeid&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">scheme</span>
+<span class="c1"># Access dtype of Scheme</span>
+<span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s1">&#39;schemeid&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span>
+<span class="c1"># Access schemes</span>
+<span class="n">db</span><span class="o">.</span><span class="n">schemes</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>schemeid:
+  {dtype: float}
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="split">
+<h2>Split<a class="headerlink" href="#split" title="Permalink to this headline">¶</a></h2>
+<p>This part of the header is represented by <a class="reference internal" href="api.html#audformat.Split" title="audformat.Split"><code class="xref py py-class docutils literal notranslate"><span class="pre">audformat.Split</span></code></a>.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 19%" />
+<col style="width: 12%" />
+<col style="width: 69%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Field</p></th>
+<th class="head"><p>Mandatory</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>id</p></td>
+<td><p>yes</p></td>
+<td><p>Unique identifier of split</p></td>
+</tr>
+<tr class="row-odd"><td><p>type</p></td>
+<td><p>yes</p></td>
+<td><p>Split type,
+typically one of <a class="reference internal" href="api-define.html#audformat.define.SplitType" title="audformat.define.SplitType"><code class="xref py py-class docutils literal notranslate"><span class="pre">audformat.define.SplitType</span></code></a></p></td>
+</tr>
+<tr class="row-even"><td><p>description</p></td>
+<td></td>
+<td><p>Description of split</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>meta-key-1</em></p></td>
+<td></td>
+<td><p>1st optional meta field</p></td>
+</tr>
+<tr class="row-even"><td><p>…</p></td>
+<td></td>
+<td><p>…</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>meta-key-N</em></p></td>
+<td></td>
+<td><p>Nth optional meta field</p></td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="id5">
+<h3>Minimal example<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">splits</span><span class="p">:</span>
+    <span class="nt">splitid</span><span class="p">:</span>
+        <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">test</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id6">
+<h3>audformat implementation<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h3>
+<div class="jupyter_cell jupyter_container docutils container">
+<div class="cell_input code_cell docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create minimal Split</span>
+<span class="n">split</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Split</span><span class="p">(</span><span class="n">audformat</span><span class="o">.</span><span class="n">define</span><span class="o">.</span><span class="n">SplitType</span><span class="o">.</span><span class="n">TEST</span><span class="p">)</span>
+<span class="c1"># Add Split to Database</span>
+<span class="n">db</span><span class="o">.</span><span class="n">splits</span><span class="p">[</span><span class="s1">&#39;splitid&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">split</span>
+<span class="c1"># Access type of Split</span>
+<span class="n">db</span><span class="o">.</span><span class="n">splits</span><span class="p">[</span><span class="s1">&#39;splitid&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">type</span>
+<span class="c1"># Access splits</span>
+<span class="n">db</span><span class="o">.</span><span class="n">splits</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>splitid:
+  {type: test}
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="media">
+<h2>Media<a class="headerlink" href="#media" title="Permalink to this headline">¶</a></h2>
+<p>This part of the header is represented by <a class="reference internal" href="api.html#audformat.Media" title="audformat.Media"><code class="xref py py-class docutils literal notranslate"><span class="pre">audformat.Media</span></code></a>.</p>
+<p>To store media information use:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 21%" />
+<col style="width: 12%" />
+<col style="width: 68%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Field</p></th>
+<th class="head"><p>Mandatory</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>id</p></td>
+<td><p>yes</p></td>
+<td><p>Unique identifier of media type</p></td>
+</tr>
+<tr class="row-odd"><td><p>type</p></td>
+<td></td>
+<td><p>Media type, one of (<code class="docutils literal notranslate"><span class="pre">audio</span></code>, <code class="docutils literal notranslate"><span class="pre">video</span></code>, <code class="docutils literal notranslate"><span class="pre">other</span></code>)</p></td>
+</tr>
+<tr class="row-even"><td><p>bit_depth</p></td>
+<td></td>
+<td><p>Audio bit depth</p></td>
+</tr>
+<tr class="row-odd"><td><p>channels</p></td>
+<td></td>
+<td><p>Number of audio channels</p></td>
+</tr>
+<tr class="row-even"><td><p>description</p></td>
+<td></td>
+<td><p>Description</p></td>
+</tr>
+<tr class="row-odd"><td><p>format</p></td>
+<td></td>
+<td><p>Media file format (e.g. <code class="docutils literal notranslate"><span class="pre">wav</span></code> or <code class="docutils literal notranslate"><span class="pre">mp4</span></code>)</p></td>
+</tr>
+<tr class="row-even"><td><p>sampling_rate</p></td>
+<td></td>
+<td><p>Audio sampling rate in Hz</p></td>
+</tr>
+<tr class="row-odd"><td><p>video_fps</p></td>
+<td></td>
+<td><p>Video rate in frames per seconds</p></td>
+</tr>
+<tr class="row-even"><td><p>video_resolution</p></td>
+<td></td>
+<td><p>Video resolution in pixels (<code class="docutils literal notranslate"><span class="pre">width</span></code> x <code class="docutils literal notranslate"><span class="pre">height</span></code>)</p></td>
+</tr>
+<tr class="row-odd"><td><p>video_channels</p></td>
+<td></td>
+<td><p>Number of channels per pixel (e.g. 3 for RGB)</p></td>
+</tr>
+<tr class="row-even"><td><p>video_depth</p></td>
+<td></td>
+<td><p>Number of bits per video channel</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>meta-key-1</em></p></td>
+<td></td>
+<td><p>1st optional meta field</p></td>
+</tr>
+<tr class="row-even"><td><p>…</p></td>
+<td></td>
+<td><p>…</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>meta-key-N</em></p></td>
+<td></td>
+<td><p>Nth optional meta field</p></td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="id7">
+<h3>Minimal example<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">media</span><span class="p">:</span>
+    <span class="nt">mediaid</span><span class="p">:</span>
+        <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">audio</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id8">
+<h3>audformat implementation<a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h3>
+<div class="jupyter_cell jupyter_container docutils container">
+<div class="cell_input code_cell docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create minimal media information</span>
+<span class="n">media</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Media</span><span class="p">()</span>
+<span class="c1"># Add media to Database</span>
+<span class="n">db</span><span class="o">.</span><span class="n">media</span><span class="p">[</span><span class="s1">&#39;mediaid&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">media</span>
+<span class="c1"># Access type of Media</span>
+<span class="n">db</span><span class="o">.</span><span class="n">media</span><span class="p">[</span><span class="s1">&#39;mediaid&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">type</span>
+<span class="c1"># Access media</span>
+<span class="n">db</span><span class="o">.</span><span class="n">media</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>mediaid:
+  {type: other}
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="table">
+<h2>Table<a class="headerlink" href="#table" title="Permalink to this headline">¶</a></h2>
+<p>This part of the header is represented by <a class="reference internal" href="api.html#audformat.Table" title="audformat.Table"><code class="xref py py-class docutils literal notranslate"><span class="pre">audformat.Table</span></code></a></p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 19%" />
+<col style="width: 12%" />
+<col style="width: 69%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Field</p></th>
+<th class="head"><p>Mandatory</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>id</p></td>
+<td><p>yes</p></td>
+<td><p>Unique identifier of table</p></td>
+</tr>
+<tr class="row-odd"><td><p>type</p></td>
+<td><p>yes</p></td>
+<td><p>Table type, see <code class="xref py py-class docutils literal notranslate"><span class="pre">audformat.define.TableType</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>columns</p></td>
+<td></td>
+<td><p>Dictionary of columns (see below)</p></td>
+</tr>
+<tr class="row-odd"><td><p>description</p></td>
+<td></td>
+<td><p>Description of table</p></td>
+</tr>
+<tr class="row-even"><td><p>media_id</p></td>
+<td></td>
+<td><p>Files in this table are of this media type</p></td>
+</tr>
+<tr class="row-odd"><td><p>split_id</p></td>
+<td></td>
+<td><p>The split the table belongs to</p></td>
+</tr>
+<tr class="row-even"><td><p><em>meta-key-1</em></p></td>
+<td></td>
+<td><p>1st optional meta field</p></td>
+</tr>
+<tr class="row-odd"><td><p>…</p></td>
+<td></td>
+<td><p>…</p></td>
+</tr>
+<tr class="row-even"><td><p><em>meta-key-N</em></p></td>
+<td></td>
+<td><p>Nth optional meta field</p></td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="id9">
+<h3>Minimal example<a class="headerlink" href="#id9" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">tables</span><span class="p">:</span>
+    <span class="nt">tableid</span><span class="p">:</span>
+        <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">filewise</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id10">
+<h3>audformat implementation<a class="headerlink" href="#id10" title="Permalink to this headline">¶</a></h3>
+<div class="jupyter_cell jupyter_container docutils container">
+<div class="cell_input code_cell docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create minimal Table</span>
+<span class="n">table</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Table</span><span class="p">(</span><span class="n">audformat</span><span class="o">.</span><span class="n">filewise_index</span><span class="p">())</span>
+<span class="c1"># Add Table to Database</span>
+<span class="n">db</span><span class="o">.</span><span class="n">tables</span><span class="p">[</span><span class="s1">&#39;tableid&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">table</span>
+<span class="c1"># Access type of Table</span>
+<span class="n">db</span><span class="o">.</span><span class="n">tables</span><span class="p">[</span><span class="s1">&#39;tableid&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">type</span>
+<span class="c1"># Add Table to Database (short notation)</span>
+<span class="n">db</span><span class="p">[</span><span class="s1">&#39;tableid&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">table</span>
+<span class="c1"># Access type of Table (short notation)</span>
+<span class="n">db</span><span class="p">[</span><span class="s1">&#39;tableid&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">type</span>
+<span class="c1"># Access tables</span>
+<span class="n">db</span><span class="o">.</span><span class="n">tables</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>tableid:
+  {type: filewise}
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="column">
+<h2>Column<a class="headerlink" href="#column" title="Permalink to this headline">¶</a></h2>
+<p>This part of the header is represented by <a class="reference internal" href="api.html#audformat.Column" title="audformat.Column"><code class="xref py py-class docutils literal notranslate"><span class="pre">audformat.Column</span></code></a></p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 19%" />
+<col style="width: 12%" />
+<col style="width: 69%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Field</p></th>
+<th class="head"><p>Mandatory</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>id</p></td>
+<td><p>yes</p></td>
+<td><p>Unique identifier of column</p></td>
+</tr>
+<tr class="row-odd"><td><p>description</p></td>
+<td></td>
+<td><p>Description of column</p></td>
+</tr>
+<tr class="row-even"><td><p>scheme_id</p></td>
+<td></td>
+<td><p>The scheme the values in this column belong to</p></td>
+</tr>
+<tr class="row-odd"><td><p>rater_id</p></td>
+<td></td>
+<td><p>The rater who assigned the values</p></td>
+</tr>
+<tr class="row-even"><td><p><em>meta-key-1</em></p></td>
+<td></td>
+<td><p>1st optional meta field</p></td>
+</tr>
+<tr class="row-odd"><td><p>…</p></td>
+<td></td>
+<td><p>…</p></td>
+</tr>
+<tr class="row-even"><td><p><em>meta-key-N</em></p></td>
+<td></td>
+<td><p>Nth optional meta field</p></td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="id11">
+<h3>Minimal example<a class="headerlink" href="#id11" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">tables</span><span class="p">:</span>
+    <span class="nt">tableid</span><span class="p">:</span>
+        <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">filewise</span>
+        <span class="nt">columns</span><span class="p">:</span>
+            <span class="nt">columnid</span><span class="p">:</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id12">
+<h3>audformat implementation<a class="headerlink" href="#id12" title="Permalink to this headline">¶</a></h3>
+<div class="jupyter_cell jupyter_container docutils container">
+<div class="cell_input code_cell docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create minimal Column</span>
+<span class="n">column</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Column</span><span class="p">()</span>
+<span class="c1"># Add Column to Table</span>
+<span class="n">db</span><span class="o">.</span><span class="n">tables</span><span class="p">[</span><span class="s1">&#39;tableid&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="s1">&#39;columnid&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">column</span>
+<span class="c1"># Add Column to Table (short notation)</span>
+<span class="n">db</span><span class="p">[</span><span class="s1">&#39;tableid&#39;</span><span class="p">][</span><span class="s1">&#39;columnid&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">column</span>
+<span class="c1"># Access columns</span>
+<span class="n">db</span><span class="p">[</span><span class="s1">&#39;tableid&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">columns</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>columnid:
+  {}
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="data-tables.html" class="btn btn-neutral float-right" title="Tables" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="data-conventions.html" class="btn btn-neutral float-left" title="Conventions" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div>
+    <p>
+        
+        
+        
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2020/12/18 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+        
+    </p>
+  </div>
+
+  <div role="contentinfo">
+    <p>
+        
+      &copy; 2019-2020 audEERING GmbH
+    </p>
+  </div> 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script src="_static/clipboard.min.js"></script>
+        <script src="_static/copybutton.js"></script>
+        <script src="_static/thebelab-helper.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js"></script>
+        <script src="_static/katex_autorenderer.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.18.0/dist/embed-amd.js"></script>
+    
+
+  
+
+  <script type="text/javascript" src="_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

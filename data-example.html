@@ -1,0 +1,978 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Example &mdash; audformat Documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="_static/favicon.png"/>
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/audeering.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
+  <link rel="stylesheet" href="_static/copybutton.css" type="text/css" />
+  <link rel="stylesheet" href="_static/jupyter-sphinx.css" type="text/css" />
+  <link rel="stylesheet" href="_static/thebelab.css" type="text/css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" type="text/css" />
+  <link rel="stylesheet" href="_static/katex-math.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="audformat" href="api.html" />
+    <link rel="prev" title="Tables" href="data-tables.html" />
+    
+      
+        <link rel="stylesheet" href="_static/css/audeering-wide.css" type="text/css" />
+      
+    
+  
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          <a href="index.html">
+          
+            <img src="_static/images/audeering.svg" class="logo" alt="audEERING"/>
+          
+          
+            <span> audformat</span>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                v0.9.0-rc3
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Getting started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="create-database.html">Create a database</a></li>
+<li class="toctree-l1"><a class="reference internal" href="accessing-data.html">Working with a database</a></li>
+<li class="toctree-l1"><a class="reference internal" href="combine-tables.html">Combine tables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="map-scheme.html">Map scheme labels</a></li>
+<li class="toctree-l1"><a class="reference internal" href="emodb-example.html">Emodb example</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Format specification</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="data-introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data-format.html">Database</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data-conventions.html">Conventions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data-header.html">Header</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data-tables.html">Tables</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Example</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api.html">audformat</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api-define.html">audformat.define</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api-errors.html">audformat.errors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api-testing.html">audformat.testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api-utils.html">audformat.utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="genindex.html">Index</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">audformat</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Example</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            
+              <a href="https://github.com/audeering/audformat/blob/v0.9.0-rc3/docs/data-example.rst" class="fa fa-github"> Edit on GitHub</a>
+            
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="example">
+<h1>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h1>
+<p>Header (YAML):</p>
+<div class="jupyter_cell jupyter_container docutils container">
+<div class="cell_input code_cell docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">audformat.testing</span>
+
+<span class="n">db</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">create_db</span><span class="p">()</span>
+<span class="n">db</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>name: unittest
+description: A database for unit testing.
+source: internal
+usage: unrestricted
+languages: [deu, eng]
+media:
+  microphone: {type: other, format: wav, channels: 1, bit_depth: 16, sampling_rate: 16000}
+  webcam:
+    type: other
+    format: avi
+    video_fps: 25
+    video_resolution: [800, 600]
+    video_channels: 3
+    video_depth: 8
+raters:
+  gold: {description: Gold standard by taking the average ratings., type: human}
+  machine: {description: Predictions made by the machine., type: machine, classifier: LibSVM,
+    features: ComParE_2016}
+schemes:
+  date: {dtype: date}
+  float: {dtype: float, minimum: -1.0, maximum: 1.0}
+  int: {dtype: int, minimum: 0, maximum: 100}
+  label:
+    dtype: str
+    labels: [label1, label2, label3]
+  label_map_int:
+    dtype: int
+    labels: {1: a, 2: b, 3: c}
+  label_map_str:
+    dtype: str
+    labels:
+      label1: {prop1: 1, prop2: a}
+      label2: {prop1: 2, prop2: b}
+      label3: {prop1: 3, prop2: c}
+  string: {dtype: str}
+  time: {dtype: time}
+splits:
+  dev: {type: dev}
+  test: {type: test}
+  train: {type: train}
+tables:
+  files:
+    type: filewise
+    split_id: train
+    media_id: microphone
+    columns:
+      string: {scheme_id: string, rater_id: gold}
+      int: {scheme_id: int, rater_id: gold}
+      float: {scheme_id: float, rater_id: gold}
+      time: {scheme_id: time, rater_id: gold}
+      date: {scheme_id: date, rater_id: gold}
+      label: {scheme_id: label, rater_id: gold}
+      label_map_str: {scheme_id: label_map_str, rater_id: gold}
+      label_map_int: {scheme_id: label_map_int, rater_id: gold}
+      no_scheme: {}
+  segments:
+    type: segmented
+    split_id: dev
+    media_id: microphone
+    columns:
+      string: {scheme_id: string, rater_id: gold}
+      int: {scheme_id: int, rater_id: gold}
+      float: {scheme_id: float, rater_id: gold}
+      time: {scheme_id: time, rater_id: gold}
+      date: {scheme_id: date, rater_id: gold}
+      label: {scheme_id: label, rater_id: gold}
+      label_map_str: {scheme_id: label_map_str, rater_id: gold}
+      label_map_int: {scheme_id: label_map_int, rater_id: gold}
+      no_scheme: {}
+audformat: https://github.com/audeering/audformat
+</pre></div>
+</div>
+</div>
+</div>
+<p>Filewise table as <code class="xref py py-class docutils literal notranslate"><span class="pre">pd.DataFrame</span></code>:</p>
+<div class="jupyter_cell jupyter_container docutils container">
+<div class="cell_input code_cell docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="p">[</span><span class="s1">&#39;files&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>string</th>
+      <th>int</th>
+      <th>float</th>
+      <th>time</th>
+      <th>date</th>
+      <th>label</th>
+      <th>label_map_str</th>
+      <th>label_map_int</th>
+      <th>no_scheme</th>
+    </tr>
+    <tr>
+      <th>file</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>audio/001.wav</th>
+      <td>8IM0u3dsl9</td>
+      <td>&lt;NA&gt;</td>
+      <td>-0.93</td>
+      <td>0 days 00:00:00.460000</td>
+      <td>1970-01-01 00:00:00.720</td>
+      <td>label2</td>
+      <td>label1</td>
+      <td>NaN</td>
+      <td>yP232GZdek</td>
+    </tr>
+    <tr>
+      <th>audio/002.wav</th>
+      <td>None</td>
+      <td>&lt;NA&gt;</td>
+      <td>0.75</td>
+      <td>0 days 00:00:00.390000</td>
+      <td>1970-01-01 00:00:00.240</td>
+      <td>label1</td>
+      <td>label1</td>
+      <td>1</td>
+      <td>STpeXARWFj</td>
+    </tr>
+    <tr>
+      <th>audio/003.wav</th>
+      <td>rWnG20efxN</td>
+      <td>75</td>
+      <td>NaN</td>
+      <td>0 days 00:00:00.190000</td>
+      <td>NaT</td>
+      <td>label1</td>
+      <td>label1</td>
+      <td>1</td>
+      <td>6beVyiTTAb</td>
+    </tr>
+    <tr>
+      <th>audio/004.wav</th>
+      <td>B0s8LLe3hC</td>
+      <td>31</td>
+      <td>0.10</td>
+      <td>NaT</td>
+      <td>1970-01-01 00:00:00.350</td>
+      <td>label3</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>Qot2DZsHRF</td>
+    </tr>
+    <tr>
+      <th>audio/005.wav</th>
+      <td>Fy46hvPyZZ</td>
+      <td>&lt;NA&gt;</td>
+      <td>0.58</td>
+      <td>0 days 00:00:00.920000</td>
+      <td>1970-01-01 00:00:00.750</td>
+      <td>label2</td>
+      <td>label3</td>
+      <td>2</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>audio/096.wav</th>
+      <td>x5ECKKsUDC</td>
+      <td>26</td>
+      <td>-0.28</td>
+      <td>0 days 00:00:00.640000</td>
+      <td>1970-01-01 00:00:00.750</td>
+      <td>label3</td>
+      <td>label2</td>
+      <td>1</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <th>audio/097.wav</th>
+      <td>eSGujlrdRv</td>
+      <td>22</td>
+      <td>NaN</td>
+      <td>0 days 00:00:00.590000</td>
+      <td>1970-01-01 00:00:00.280</td>
+      <td>label3</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>6MJn9g4F1t</td>
+    </tr>
+    <tr>
+      <th>audio/098.wav</th>
+      <td>n0re5CKgsA</td>
+      <td>&lt;NA&gt;</td>
+      <td>0.67</td>
+      <td>0 days 00:00:00.310000</td>
+      <td>NaT</td>
+      <td>label2</td>
+      <td>label2</td>
+      <td>NaN</td>
+      <td>tqJFAuCLuJ</td>
+    </tr>
+    <tr>
+      <th>audio/099.wav</th>
+      <td>tmGRHzYnBy</td>
+      <td>92</td>
+      <td>NaN</td>
+      <td>NaT</td>
+      <td>1970-01-01 00:00:00.680</td>
+      <td>label2</td>
+      <td>label1</td>
+      <td>2</td>
+      <td>KdfI7fzdlE</td>
+    </tr>
+    <tr>
+      <th>audio/100.wav</th>
+      <td>dBc4uxAXeZ</td>
+      <td>&lt;NA&gt;</td>
+      <td>-0.02</td>
+      <td>0 days 00:00:00.200000</td>
+      <td>1970-01-01 00:00:00.190</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>None</td>
+    </tr>
+  </tbody>
+</table>
+<p>100 rows × 9 columns</p>
+</div></div></div>
+</div>
+<p>and as CSV:</p>
+<div class="jupyter_cell docutils container">
+<div class="cell_output docutils container">
+<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>file,string,int,float,time,date,label,label_map_str,label_map_int,no_scheme
+audio/001.wav,8IM0u3dsl9,,-0.93,0 days 00:00:00.460000,1970-01-01 00:00:00.720,label2,label1,,yP232GZdek
+audio/002.wav,,,0.75,0 days 00:00:00.390000,1970-01-01 00:00:00.240,label1,label1,1,STpeXARWFj
+audio/003.wav,rWnG20efxN,75,,0 days 00:00:00.190000,,label1,label1,1,6beVyiTTAb
+audio/004.wav,B0s8LLe3hC,31,0.1,,1970-01-01 00:00:00.350,label3,,,Qot2DZsHRF
+audio/005.wav,Fy46hvPyZZ,,0.58,0 days 00:00:00.920000,1970-01-01 00:00:00.750,label2,label3,2,
+audio/006.wav,IRjod5Ljga,48,-0.33,0 days 00:00:00.940000,1970-01-01 00:00:00.980,,label2,3,IZrQTt5h6c
+audio/007.wav,,35,-0.47,0 days 00:00:00.860000,1970-01-01 00:00:00.430,,label2,2,gtmgQ4XgYL
+audio/008.wav,uWHdHn7Cee,37,,0 days 00:00:00.900000,1970-01-01 00:00:00.370,,label2,,IR7G3dRghe
+audio/009.wav,QMUFz5tgDv,87,0.15,0 days 00:00:00.100000,1970-01-01 00:00:00.290,label2,label2,3,LxR76nMJmR
+audio/010.wav,sAYXRVEap3,,0.48,,1970-01-01 00:00:00.570,,label1,,M87WQ1hvqy
+audio/011.wav,Lxr6Zva0k4,94,0.41,0 days 00:00:00.880000,1970-01-01 00:00:00.170,label2,label1,,ncupmQESE0
+audio/012.wav,oTUv5bNsfQ,,0.51,,1970-01-01 00:00:00.790,label1,,2,
+audio/013.wav,,2,-0.37,0 days 00:00:00.300000,1970-01-01 00:00:00.690,label1,,2,tUO0ZgNAnm
+audio/014.wav,,,-0.12,0 days 00:00:00.190000,1970-01-01 00:00:00.630,label1,label2,1,
+audio/015.wav,X1SrXPEN2y,66,-0.64,0 days 00:00:00.410000,1970-01-01 00:00:00.770,label3,label3,3,IuqMYGsAzq
+audio/016.wav,,35,0.68,0 days 00:00:00.300000,,label3,label1,3,35QsIzz2qT
+audio/017.wav,Vdhnbi72HW,38,0.33,,,label3,label3,,Udk3NSELMX
+audio/018.wav,,52,0.55,0 days 00:00:00.930000,1970-01-01 00:00:00.450,,label2,2,UWAe8hbRaM
+audio/019.wav,VluAGFz4Ts,21,-0.97,0 days 00:00:00.440000,1970-01-01 00:00:00.500,label3,,1,UQaSribQu3
+audio/020.wav,,,0.95,0 days 00:00:00.520000,1970-01-01 00:00:00.790,,label3,2,I4ESAd9pIj
+audio/021.wav,,96,0.94,0 days 00:00:00.160000,1970-01-01 00:00:00.430,label3,label1,3,mA1KBvnQkd
+audio/022.wav,,,0.12,0 days 00:00:00.490000,1970-01-01 00:00:00.440,,label2,,sAc76ZZeEi
+audio/023.wav,VT9UkG0WoP,,-0.89,0 days 00:00:00.530000,1970-01-01 00:00:00.050,label1,label2,1,4bO3tRC9a2
+audio/024.wav,imqlgp8vNT,73,,0 days 00:00:00.360000,1970-01-01 00:00:00.920,label1,label3,2,IwvPIlvLuO
+audio/025.wav,,80,0.58,0 days 00:00:00.510000,,label1,label1,1,
+audio/026.wav,EzLNrz97Cc,85,-0.38,0 days 00:00:00.930000,1970-01-01 00:00:00.040,label2,label2,,HO0W8oo5V3
+audio/027.wav,mFJKi1mvoq,,0.31,0 days 00:00:00.470000,1970-01-01 00:00:00.240,label2,label3,2,3bimnWjTfO
+audio/028.wav,ZSPMlcWv03,61,0.13,,1970-01-01 00:00:00.850,label1,label1,,LYvWUKZZHH
+audio/029.wav,9rVWY3bsoK,,-0.75,0 days 00:00:00.380000,,,label1,2,Q4hcwD8zBR
+audio/030.wav,B263TraVlv,99,0.39,0 days 00:00:00.830000,1970-01-01 00:00:00.760,label1,label3,,JjzFIiTcxC
+audio/031.wav,Qi5sXYdWol,91,0.6,0 days 00:00:00.660000,1970-01-01 00:00:00.050,label3,label2,2,a62b4vf0O8
+audio/032.wav,,82,,0 days 00:00:00.190000,,label2,label2,3,nKgwNxzoDj
+audio/033.wav,5YdYHP8GCk,22,,0 days 00:00:00.790000,1970-01-01 00:00:00.240,,,,bqVulWahn7
+audio/034.wav,kU4pGrKt9C,96,-0.78,,,,label2,3,ZNfqimDxss
+audio/035.wav,jBDFvjP78E,53,,0 days 00:00:00.670000,1970-01-01 00:00:00.370,,,1,
+audio/036.wav,nwD7gd5fKa,,-0.33,0 days 00:00:00.080000,,label3,label2,2,
+audio/037.wav,Pa9nU68gzY,55,0.7,0 days 00:00:00.900000,1970-01-01 00:00:00.560,label1,label2,2,IpiOHkdTIH
+audio/038.wav,uDkk0j9hTP,91,-0.53,0 days 00:00:00.250000,,label3,label2,,6J1MXILZD1
+audio/039.wav,LYiSTh2vWz,68,0.77,0 days 00:00:00.190000,,label3,label3,2,qIRMaofeve
+audio/040.wav,L1X2D5Z7qZ,,0.08,,1970-01-01 00:00:00.150,label2,label2,3,H0WrYAQQ5j
+audio/041.wav,ZTTfE3XJRl,,,,1970-01-01 00:00:00.080,label2,label3,3,
+audio/042.wav,yO5AbzoaBA,6,0.55,,1970-01-01 00:00:00.530,label2,label3,1,
+audio/043.wav,RtOL03rbh1,11,,0 days 00:00:00.720000,1970-01-01 00:00:00.950,,label1,3,A7sDsgJ20G
+audio/044.wav,,10,,0 days 00:00:00.450000,1970-01-01 00:00:00.340,label2,,2,wCU9vwgryy
+audio/045.wav,ItlcYo3K3s,,0.87,0 days 00:00:00.160000,,,label1,1,iXHTa9eG73
+audio/046.wav,SW52wUWxe9,70,-0.06,0 days 00:00:01,1970-01-01 00:00:00.500,label3,label1,,GYNy10bJ92
+audio/047.wav,DMV50HGsTJ,8,0.73,,1970-01-01 00:00:00.480,,,2,ngaatEn4Id
+audio/048.wav,NKBmpIlgiv,,,0 days 00:00:00.070000,,label1,label1,1,
+audio/049.wav,,32,-0.29,,1970-01-01 00:00:00.830,,,3,XVw75jPhRF
+audio/050.wav,ar73EdE25r,,-0.79,0 days 00:00:00.340000,1970-01-01 00:00:00.150,label3,label1,2,tYK41IMuWI
+audio/051.wav,5aYi4z7GRL,49,,0 days 00:00:00.880000,1970-01-01 00:00:00.960,,label1,2,
+audio/052.wav,hnk4WC09Ka,98,-0.67,0 days 00:00:00.440000,1970-01-01 00:00:00.570,,label1,,
+audio/053.wav,2irb9EF1Ka,2,0.47,0 days 00:00:00.900000,1970-01-01 00:00:00.640,label1,label2,,OAasQBWWGs
+audio/054.wav,kclFwCU5VI,87,-0.13,0 days 00:00:00.950000,1970-01-01 00:00:00.790,,label1,1,O4u7U83SVE
+audio/055.wav,MPatTF5Tqt,31,0.73,0 days 00:00:00.990000,1970-01-01 00:00:00.870,label2,label1,3,vtabVMbKQH
+audio/056.wav,ZgzxRRQ1tP,44,-0.51,,,label1,label2,3,
+audio/057.wav,92ocYO9JJH,,,0 days 00:00:00.030000,1970-01-01 00:00:00.570,label1,label2,,dLAlSrlIBM
+audio/058.wav,F31kXEjwC7,,0.77,0 days 00:00:00.790000,1970-01-01 00:00:00.700,label2,,1,4BiZvHnGec
+audio/059.wav,KCmBByZxyQ,,-0.33,,1970-01-01 00:00:00.450,,label2,2,
+audio/060.wav,UAdjgX8iBB,10,-0.18,0 days 00:00:00.150000,1970-01-01 00:00:00.650,label2,label3,2,
+audio/061.wav,ukhCYz0LBZ,13,-0.32,0 days 00:00:00.960000,,label2,label1,,Z6abiQXeTw
+audio/062.wav,dPcpTTJbnU,,,0 days 00:00:00.220000,,label1,,3,bY2sftpNkr
+audio/063.wav,,10,,,1970-01-01 00:00:00.190,,,1,
+audio/064.wav,PPynoWxQLH,38,-0.13,,1970-01-01 00:00:00.990,label1,label2,3,
+audio/065.wav,,77,,,1970-01-01 00:00:00.930,label3,label3,2,im05vPipY6
+audio/066.wav,DfuVjqZ2dS,55,0.41,0 days 00:00:00.650000,1970-01-01 00:00:00.530,label3,label2,,h5UrPweZ6w
+audio/067.wav,wbdysOyIBS,92,0.92,0 days 00:00:00.540000,,label1,,,
+audio/068.wav,xxwHLEQxar,37,,0 days 00:00:00.530000,1970-01-01 00:00:00.670,label1,label2,1,4L5M8FMHxx
+audio/069.wav,AmL1GOnwk1,44,0.24,0 days 00:00:00.380000,,label2,,1,j6PqEuU8CT
+audio/070.wav,ocGBlI39wu,87,-0.76,0 days 00:00:00.480000,1970-01-01 00:00:00.490,label3,,1,
+audio/071.wav,9JvFFRoXAp,8,-0.02,0 days 00:00:00.800000,1970-01-01 00:00:00.380,label1,,,PYSTQNXaeB
+audio/072.wav,oDzy4aFI4V,27,0.71,,,label2,label2,1,UY7CNCUI9X
+audio/073.wav,dYH8loHDAu,8,0.16,0 days 00:00:00.450000,1970-01-01 00:00:00.210,label1,label3,3,8Dmr3Mxke5
+audio/074.wav,,12,-0.78,0 days 00:00:00.270000,1970-01-01 00:00:00.130,label3,,2,
+audio/075.wav,oU7S30XJVA,51,-0.76,0 days 00:00:00.590000,,label3,label3,1,2w4eBOeSiv
+audio/076.wav,gQc8CNF2rg,23,0.52,0 days 00:00:00.900000,1970-01-01 00:00:00.690,label2,,3,d5CXxYJOck
+audio/077.wav,,,-0.01,0 days 00:00:00.080000,,label3,label3,1,DrPgmLJ2tS
+audio/078.wav,OqyduMcO7C,56,0.6,0 days 00:00:00.170000,1970-01-01 00:00:00.450,label3,label2,3,WpXylm4nCk
+audio/079.wav,,66,-0.97,0 days 00:00:00.630000,1970-01-01 00:00:00.260,label2,label3,3,mgJnPHxGjm
+audio/080.wav,,43,-0.33,0 days 00:00:00.770000,,label2,label1,3,
+audio/081.wav,,56,0.52,0 days 00:00:00.630000,1970-01-01 00:00:00.090,,label1,3,u9ZasgDsYN
+audio/082.wav,YUmNuemS66,51,-0.09,0 days 00:00:00.750000,1970-01-01 00:00:00.800,label3,,2,HO22MQTIiT
+audio/083.wav,,67,-0.7,0 days 00:00:00.280000,1970-01-01 00:00:00.220,label1,label1,2,caxipvPdMk
+audio/084.wav,KIjxLwzJhu,70,,0 days 00:00:00.700000,,label2,,3,
+audio/085.wav,,70,-0.47,0 days 00:00:00.400000,,label2,,1,Chuj8achL7
+audio/086.wav,PH9ezP3oDx,27,-0.63,,1970-01-01 00:00:00.260,label1,label1,2,jmdDAwNsVs
+audio/087.wav,L6zgr3M3dL,68,-0.02,0 days 00:00:00.180000,1970-01-01 00:00:00.450,,label3,,lHyVS5vQ2E
+audio/088.wav,iqYG59H0kR,51,-0.71,0 days 00:00:00.330000,1970-01-01 00:00:00.890,,label3,,
+audio/089.wav,jrTxW94iBM,,0.87,0 days 00:00:00.530000,,,label3,3,LMNjq419CX
+audio/090.wav,f9m9pygQtC,96,,0 days 00:00:00.650000,1970-01-01 00:00:00.450,label3,,2,OJwOLQPjjq
+audio/091.wav,,19,0.32,0 days 00:00:00.490000,,label2,label1,1,ZANIwRVdD7
+audio/092.wav,qsEIEnBDnu,,-0.64,0 days 00:00:00.070000,1970-01-01 00:00:00.480,label2,label3,3,
+audio/093.wav,5xe4SRvVAo,18,,0 days 00:00:00.660000,1970-01-01 00:00:00.750,label2,label2,,
+audio/094.wav,jmDwmMVEQ1,26,0.65,,,label1,label1,,rYozp1fgq7
+audio/095.wav,2n5Vm9FJmJ,,-0.34,0 days 00:00:00.890000,1970-01-01 00:00:00.850,label1,,,EjgQHcb5gx
+audio/096.wav,x5ECKKsUDC,26,-0.28,0 days 00:00:00.640000,1970-01-01 00:00:00.750,label3,label2,1,
+audio/097.wav,eSGujlrdRv,22,,0 days 00:00:00.590000,1970-01-01 00:00:00.280,label3,,,6MJn9g4F1t
+audio/098.wav,n0re5CKgsA,,0.67,0 days 00:00:00.310000,,label2,label2,,tqJFAuCLuJ
+audio/099.wav,tmGRHzYnBy,92,,,1970-01-01 00:00:00.680,label2,label1,2,KdfI7fzdlE
+audio/100.wav,dBc4uxAXeZ,,-0.02,0 days 00:00:00.200000,1970-01-01 00:00:00.190,,,,
+
+</pre></div>
+</div>
+</div>
+</div>
+<p>Segmented table as <code class="xref py py-class docutils literal notranslate"><span class="pre">pd.DataFrame</span></code>:</p>
+<div class="jupyter_cell jupyter_container docutils container">
+<div class="cell_input code_cell docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="p">[</span><span class="s1">&#39;segments&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th></th>
+      <th></th>
+      <th>string</th>
+      <th>int</th>
+      <th>float</th>
+      <th>time</th>
+      <th>date</th>
+      <th>label</th>
+      <th>label_map_str</th>
+      <th>label_map_int</th>
+      <th>no_scheme</th>
+    </tr>
+    <tr>
+      <th>file</th>
+      <th>start</th>
+      <th>end</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th rowspan="5" valign="top">audio/001.wav</th>
+      <th>0 days 00:00:00.580031562</th>
+      <th>0 days 00:00:02.486389681</th>
+      <td>4H7Esk7Nfr</td>
+      <td>40</td>
+      <td>0.93</td>
+      <td>NaT</td>
+      <td>1970-01-01 00:00:00.880</td>
+      <td>NaN</td>
+      <td>label3</td>
+      <td>1</td>
+      <td>khXWl7vMQL</td>
+    </tr>
+    <tr>
+      <th>0 days 00:00:09.394325906</th>
+      <th>0 days 00:00:11.612398498</th>
+      <td>wcVOSiCLT5</td>
+      <td>&lt;NA&gt;</td>
+      <td>0.81</td>
+      <td>0 days 00:00:00.780000</td>
+      <td>1970-01-01 00:00:00.430</td>
+      <td>label3</td>
+      <td>NaN</td>
+      <td>1</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <th>0 days 00:00:13.279174704</th>
+      <th>0 days 00:00:23.150127366</th>
+      <td>JWrLeJ2Hzi</td>
+      <td>91</td>
+      <td>0.77</td>
+      <td>0 days 00:00:00.440000</td>
+      <td>1970-01-01 00:00:00.980</td>
+      <td>label2</td>
+      <td>label2</td>
+      <td>NaN</td>
+      <td>VzMYNX2oPQ</td>
+    </tr>
+    <tr>
+      <th>0 days 00:00:24.737320267</th>
+      <th>0 days 00:00:25.214421088</th>
+      <td>6yu2sXUFrf</td>
+      <td>77</td>
+      <td>0.52</td>
+      <td>0 days 00:00:00.260000</td>
+      <td>1970-01-01 00:00:00.720</td>
+      <td>label3</td>
+      <td>label3</td>
+      <td>2</td>
+      <td>xj3Oy1qsYy</td>
+    </tr>
+    <tr>
+      <th>0 days 00:00:25.217188112</th>
+      <th>0 days 00:00:25.802517899</th>
+      <td>NvTjdZKuGZ</td>
+      <td>16</td>
+      <td>0.37</td>
+      <td>0 days 00:00:00.650000</td>
+      <td>1970-01-01 00:00:00.510</td>
+      <td>label3</td>
+      <td>label1</td>
+      <td>2</td>
+      <td>8E3HcLa5O6</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <th>...</th>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th rowspan="5" valign="top">audio/010.wav</th>
+      <th>0 days 00:00:45.049461405</th>
+      <th>0 days 00:00:47.179648288</th>
+      <td>None</td>
+      <td>&lt;NA&gt;</td>
+      <td>0.22</td>
+      <td>NaT</td>
+      <td>1970-01-01 00:00:00.530</td>
+      <td>label1</td>
+      <td>label1</td>
+      <td>NaN</td>
+      <td>YJK7pmps0g</td>
+    </tr>
+    <tr>
+      <th>0 days 00:00:50.272322253</th>
+      <th>0 days 00:00:52.267883418</th>
+      <td>pJ4XyKcUFn</td>
+      <td>19</td>
+      <td>-0.51</td>
+      <td>0 days 00:00:00.130000</td>
+      <td>NaT</td>
+      <td>label3</td>
+      <td>label3</td>
+      <td>3</td>
+      <td>1jr2cwfCej</td>
+    </tr>
+    <tr>
+      <th>0 days 00:00:53.045900226</th>
+      <th>0 days 00:00:57.282444637</th>
+      <td>66dHpnAd0R</td>
+      <td>&lt;NA&gt;</td>
+      <td>0.93</td>
+      <td>0 days 00:00:00.830000</td>
+      <td>NaT</td>
+      <td>label1</td>
+      <td>label3</td>
+      <td>3</td>
+      <td>7E1FDX0LCM</td>
+    </tr>
+    <tr>
+      <th>0 days 00:00:58.065215625</th>
+      <th>0 days 00:00:59.246545116</th>
+      <td>H1w5jWUzUh</td>
+      <td>83</td>
+      <td>-0.88</td>
+      <td>0 days 00:00:00.880000</td>
+      <td>1970-01-01 00:00:00.400</td>
+      <td>label1</td>
+      <td>label3</td>
+      <td>2</td>
+      <td>qrNrR6PdmD</td>
+    </tr>
+    <tr>
+      <th>0 days 00:00:59.603056008</th>
+      <th>0 days 00:00:59.885017371</th>
+      <td>k22MoXjwRN</td>
+      <td>85</td>
+      <td>0.05</td>
+      <td>0 days 00:00:00.700000</td>
+      <td>1970-01-01 00:00:00.940</td>
+      <td>label2</td>
+      <td>label1</td>
+      <td>3</td>
+      <td>None</td>
+    </tr>
+  </tbody>
+</table>
+<p>100 rows × 9 columns</p>
+</div></div></div>
+</div>
+<p>and as CSV:</p>
+<div class="jupyter_cell docutils container">
+<div class="cell_output docutils container">
+<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>file,start,end,string,int,float,time,date,label,label_map_str,label_map_int,no_scheme
+audio/001.wav,0 days 00:00:00.580031562,0 days 00:00:02.486389681,4H7Esk7Nfr,40,0.93,,1970-01-01 00:00:00.880,,label3,1,khXWl7vMQL
+audio/001.wav,0 days 00:00:09.394325906,0 days 00:00:11.612398498,wcVOSiCLT5,,0.81,0 days 00:00:00.780000,1970-01-01 00:00:00.430,label3,,1,
+audio/001.wav,0 days 00:00:13.279174704,0 days 00:00:23.150127366,JWrLeJ2Hzi,91,0.77,0 days 00:00:00.440000,1970-01-01 00:00:00.980,label2,label2,,VzMYNX2oPQ
+audio/001.wav,0 days 00:00:24.737320267,0 days 00:00:25.214421088,6yu2sXUFrf,77,0.52,0 days 00:00:00.260000,1970-01-01 00:00:00.720,label3,label3,2,xj3Oy1qsYy
+audio/001.wav,0 days 00:00:25.217188112,0 days 00:00:25.802517899,NvTjdZKuGZ,16,0.37,0 days 00:00:00.650000,1970-01-01 00:00:00.510,label3,label1,2,8E3HcLa5O6
+audio/001.wav,0 days 00:00:31.378488800,0 days 00:00:32.214509967,AeLTxtXIR0,70,-0.34,0 days 00:00:00.480000,1970-01-01 00:00:00.800,label1,label3,2,d3vgz9cIAy
+audio/001.wav,0 days 00:00:33.244027967,0 days 00:00:34.411900972,XFcWL86gxl,58,-0.07,0 days 00:00:00.120000,1970-01-01 00:00:00.540,label3,label1,1,lxho9Vmofu
+audio/001.wav,0 days 00:00:34.828050921,0 days 00:00:35.986365615,ic552W0j6g,27,,,1970-01-01 00:00:00.370,label3,,1,GDVtbbr8Tj
+audio/001.wav,0 days 00:00:38.447567197,0 days 00:00:42.228883349,HYBoXOWn5k,34,-0.4,0 days 00:00:00.080000,1970-01-01 00:00:00.070,,label1,3,
+audio/001.wav,0 days 00:00:48.594179859,0 days 00:00:56.134665293,,,0.77,0 days 00:00:00.010000,1970-01-01 00:00:00.740,label1,label3,3,
+audio/002.wav,0 days 00:00:02.572360527,0 days 00:00:03.647921331,ibVEuU5hQ9,,,0 days 00:00:00.420000,,label3,label2,3,MLCvH347Fs
+audio/002.wav,0 days 00:00:06.036863225,0 days 00:00:06.749593501,AhbHSUisBP,91,-0.23,0 days 00:00:00.290000,,,label2,,BieCEwi5aW
+audio/002.wav,0 days 00:00:11.591434600,0 days 00:00:16.061663934,4TqbD8tjiV,47,,0 days 00:00:00.440000,1970-01-01 00:00:00.960,label2,label3,3,h8GeVa9BRT
+audio/002.wav,0 days 00:00:17.431207022,0 days 00:00:18.537847272,TUM9nzZhyr,42,-0.87,,1970-01-01 00:00:00.790,label1,label2,1,
+audio/002.wav,0 days 00:00:23.298234003,0 days 00:00:26.204194646,,,,,,,label3,3,FkxuaKiq1K
+audio/002.wav,0 days 00:00:27.311299187,0 days 00:00:35.655594954,,,-0.69,0 days 00:00:00.630000,1970-01-01 00:00:00.870,label1,,2,
+audio/002.wav,0 days 00:00:37.151598082,0 days 00:00:38.425714298,7ozPnYGmSs,36,0.6,0 days 00:00:00.680000,1970-01-01 00:00:00.350,label2,label2,,M9alYI0s5x
+audio/002.wav,0 days 00:00:45.422345346,0 days 00:00:45.612027002,7JFs61EJ1E,49,-0.36,,1970-01-01 00:00:00.490,label2,,2,Xm6i06QYm6
+audio/002.wav,0 days 00:00:47.546983628,0 days 00:00:52.517619067,,,0.1,0 days 00:00:00.350000,1970-01-01 00:00:00.170,label2,label3,,VMIsGWgHsD
+audio/002.wav,0 days 00:00:57.127375815,0 days 00:00:58.386050003,YkYdRMywBO,18,0.82,0 days 00:00:00.400000,1970-01-01 00:00:00.820,label3,label1,1,YQApz5MkgP
+audio/003.wav,0 days 00:00:02.193273377,0 days 00:00:04.380182833,E64leGvBtY,85,,0 days 00:00:00.740000,,label2,label1,2,tPl1DfGNUG
+audio/003.wav,0 days 00:00:06.013926055,0 days 00:00:06.047302681,Njv33AQXmq,30,,0 days 00:00:00.090000,1970-01-01 00:00:00.910,label1,label1,1,WJwACxEX8K
+audio/003.wav,0 days 00:00:10.549639297,0 days 00:00:13.847199235,,5,,0 days 00:00:00.320000,1970-01-01 00:00:00.440,label3,label2,,9IGF6FEWUT
+audio/003.wav,0 days 00:00:14.068558322,0 days 00:00:14.170777126,,67,,0 days 00:00:00.930000,,label1,label3,,
+audio/003.wav,0 days 00:00:18.450543924,0 days 00:00:20.000728180,,67,-0.1,0 days 00:00:00.910000,1970-01-01 00:00:00.110,label2,label3,1,9gDEM47faj
+audio/003.wav,0 days 00:00:21.722908334,0 days 00:00:22.246409405,,,,0 days 00:00:00.880000,,label1,label3,3,
+audio/003.wav,0 days 00:00:24.151015934,0 days 00:00:29.516025248,7NuW5bBFMW,97,0.24,0 days 00:00:00.080000,,label2,label3,1,5AgRUr6OAQ
+audio/003.wav,0 days 00:00:30.137665019,0 days 00:00:34.357450013,12AEC1be13,,-0.43,0 days 00:00:00.560000,,label3,label2,1,qtsJahVDRD
+audio/003.wav,0 days 00:00:38.876714854,0 days 00:00:39.816604945,qBN3AuKixC,20,,,1970-01-01 00:00:00.230,,label2,2,YnYVHhjs8K
+audio/003.wav,0 days 00:00:47.426472318,0 days 00:00:57.284250498,TrgPiNG7wr,25,0.1,,1970-01-01 00:00:00.170,label1,label3,,
+audio/004.wav,0 days 00:00:07.931852540,0 days 00:00:07.982484053,qGD6ZOSHAh,,,,1970-01-01 00:00:00.610,,label1,2,zV8MGlmpYt
+audio/004.wav,0 days 00:00:08.512621427,0 days 00:00:08.669643549,,86,-0.55,,1970-01-01 00:00:00.980,,label3,3,G5vXVyrWzW
+audio/004.wav,0 days 00:00:08.679255686,0 days 00:00:13.527303234,dvw3tWF3cX,,,,1970-01-01 00:00:00.680,,label1,3,5P6GkEOMap
+audio/004.wav,0 days 00:00:13.573054910,0 days 00:00:13.920304336,,79,,0 days 00:00:00.370000,1970-01-01 00:00:00.120,label3,label2,,q7tuKbvsE6
+audio/004.wav,0 days 00:00:17.388580851,0 days 00:00:22.251397263,40FtQU35FU,89,-0.82,,1970-01-01 00:00:00.190,label2,label2,,
+audio/004.wav,0 days 00:00:26.616808213,0 days 00:00:27.085448723,,55,0.53,,1970-01-01 00:00:00.030,,label1,1,2KvtaYRxUY
+audio/004.wav,0 days 00:00:29.919952138,0 days 00:00:31.959599940,sJ0GCD2yjy,,-0.78,0 days 00:00:00.970000,1970-01-01 00:00:00.120,label1,label1,2,QkgD3tbImW
+audio/004.wav,0 days 00:00:32.899934873,0 days 00:00:33.795988223,vCcXXYD62Y,,0.13,0 days 00:00:00.260000,1970-01-01 00:00:00.050,label3,label1,,fHCiErroNK
+audio/004.wav,0 days 00:00:39.648927644,0 days 00:00:45.161033122,1Ys7ddEOXT,68,,0 days 00:00:00.120000,1970-01-01 00:00:00.150,,label3,1,40Pv7kFd25
+audio/004.wav,0 days 00:00:48.908667721,0 days 00:00:48.912448401,05mSEKApg5,,-0.77,0 days 00:00:00.240000,1970-01-01 00:00:00.670,label2,label2,2,BsgDbaO80w
+audio/005.wav,0 days 00:00:02.976289027,0 days 00:00:05.349915447,pNZBR8YrvM,63,-0.01,0 days 00:00:00.170000,1970-01-01 00:00:00.860,label2,,2,2RjxFCKKfG
+audio/005.wav,0 days 00:00:05.590438238,0 days 00:00:07.435575869,,,-0.4,0 days 00:00:01,1970-01-01 00:00:00.080,,label3,3,xDRqMQQuzd
+audio/005.wav,0 days 00:00:08.017031201,0 days 00:00:10.942166010,5IvN01Iu6V,76,0.34,0 days 00:00:00.430000,1970-01-01 00:00:00.560,label1,,1,
+audio/005.wav,0 days 00:00:16.618380694,0 days 00:00:19.649523138,srQnhzSxnU,66,0.92,0 days 00:00:00.090000,1970-01-01 00:00:00.870,label3,,3,5J9KGWWmmn
+audio/005.wav,0 days 00:00:19.756127186,0 days 00:00:20.177922724,XrWirkPgHc,7,,,1970-01-01 00:00:00.940,label3,,3,ZLbzyLgXmL
+audio/005.wav,0 days 00:00:20.559092162,0 days 00:00:21.335742193,,65,-0.65,0 days 00:00:00.900000,1970-01-01 00:00:00.660,,,2,6KSblGfAin
+audio/005.wav,0 days 00:00:22.774424694,0 days 00:00:24.377531827,,21,-0.64,0 days 00:00:00.480000,,label1,label3,1,Wrn11v6DOh
+audio/005.wav,0 days 00:00:29.831808057,0 days 00:00:33.780629261,,26,,0 days 00:00:00.030000,1970-01-01 00:00:00.830,,label1,1,YVF1WTSEWc
+audio/005.wav,0 days 00:00:34.595598534,0 days 00:00:38.810476728,786nAIKYKW,,-0.05,0 days 00:00:00.410000,1970-01-01 00:00:00.120,,label3,,
+audio/005.wav,0 days 00:00:49.894564314,0 days 00:00:52.760964574,,4,0.27,0 days 00:00:00.820000,,label1,label3,3,YJ9CaIq8MM
+audio/006.wav,0 days 00:00:00.608767081,0 days 00:00:00.756417121,,48,0.4,0 days 00:00:00.460000,1970-01-01 00:00:00.080,label3,label1,,Ze1xTRr5ZI
+audio/006.wav,0 days 00:00:11.061980123,0 days 00:00:11.627225009,,10,0.83,0 days 00:00:00.350000,1970-01-01 00:00:00.590,label1,,2,TE9je5xmvD
+audio/006.wav,0 days 00:00:17.322573359,0 days 00:00:25.039833436,,34,0.33,,1970-01-01 00:00:00.900,label2,label3,2,8HWuEJPCoH
+audio/006.wav,0 days 00:00:25.676755470,0 days 00:00:26.590984677,MazUztDcvI,97,0.14,0 days 00:00:00.340000,1970-01-01 00:00:00.950,label2,,,mmugCLuDfR
+audio/006.wav,0 days 00:00:26.702513806,0 days 00:00:28.390302083,0q0BIo1VHC,70,-0.83,0 days 00:00:00.790000,1970-01-01 00:00:00.440,,label1,1,fPdauxdNzW
+audio/006.wav,0 days 00:00:29.408427802,0 days 00:00:30.116079916,cj18dWAju7,43,-0.36,0 days 00:00:00.820000,1970-01-01 00:00:00.030,label2,label1,2,SrNP9KkSMd
+audio/006.wav,0 days 00:00:30.983153869,0 days 00:00:34.762413518,QuGfYz7Jtj,88,0.16,0 days 00:00:00.140000,1970-01-01 00:00:00.910,label1,,,UmsqU1QRhx
+audio/006.wav,0 days 00:00:40.751600565,0 days 00:00:41.386829440,nzIUgU3vNM,44,0.81,0 days 00:00:00.650000,1970-01-01 00:00:00.180,label2,label1,1,
+audio/006.wav,0 days 00:00:42.817832628,0 days 00:00:52.329576261,esKE1n8e3a,87,-0.74,0 days 00:00:00.990000,1970-01-01 00:00:00.890,label2,label1,1,
+audio/006.wav,0 days 00:00:56.003180717,0 days 00:00:56.681803747,,,0.99,,1970-01-01 00:00:00.090,,label3,,pd5PrUQ4rG
+audio/007.wav,0 days 00:00:09.839681291,0 days 00:00:10.021853186,OX3oH6ubgR,50,0.69,0 days 00:00:00.250000,1970-01-01 00:00:00.660,label3,label3,,yJcHQIugOK
+audio/007.wav,0 days 00:00:12.272665806,0 days 00:00:12.932367395,Tt9Sxn30b6,,-0.98,0 days 00:00:00.120000,,label1,label3,,
+audio/007.wav,0 days 00:00:16.247088422,0 days 00:00:19.972972833,BbYE17HVBP,35,,0 days 00:00:00.830000,1970-01-01 00:00:00.080,label3,label2,1,jADJmNTAL9
+audio/007.wav,0 days 00:00:21.223235973,0 days 00:00:21.935262547,WafnIJBR2O,41,,0 days 00:00:00.630000,1970-01-01 00:00:00.230,label2,label1,2,Pj9XQbYtyu
+audio/007.wav,0 days 00:00:22.738224611,0 days 00:00:24.071303407,bjBzsKafBn,41,0.62,0 days 00:00:00.040000,1970-01-01 00:00:00.760,label3,label1,3,aAmpmKFBQJ
+audio/007.wav,0 days 00:00:25.714826306,0 days 00:00:29.147777812,Yl6YSMEex4,85,,0 days 00:00:00.010000,1970-01-01 00:00:00.390,label3,label2,1,Um41x57SMm
+audio/007.wav,0 days 00:00:30.216848840,0 days 00:00:36.156176763,HG4VQLBQlI,71,0.87,,1970-01-01 00:00:00.280,label1,label3,,JE2U1wsMJL
+audio/007.wav,0 days 00:00:36.580591061,0 days 00:00:39.659787252,mrEnz0blHC,84,0.12,0 days 00:00:00.530000,,label2,,2,nu3HAuvJIE
+audio/007.wav,0 days 00:00:41.229159403,0 days 00:00:43.744689119,xLCqhITfV1,20,0.06,0 days 00:00:00.930000,1970-01-01 00:00:00.980,label1,label2,1,
+audio/007.wav,0 days 00:00:48.305450663,0 days 00:00:52.800021605,crDwBIUuMH,24,0.69,0 days 00:00:00.190000,,,label1,1,gXi4HhL1yl
+audio/008.wav,0 days 00:00:03.520589333,0 days 00:00:04.212937779,la224ZmUk0,,,,1970-01-01 00:00:00.490,,label1,1,CknUzdmWeg
+audio/008.wav,0 days 00:00:04.344311784,0 days 00:00:04.566795542,NgV7ff6rUU,15,-0.53,0 days 00:00:00.860000,1970-01-01 00:00:00.300,label1,label1,3,CHJxfGbrk3
+audio/008.wav,0 days 00:00:07.770323780,0 days 00:00:09.723102824,t2MiKDs7t6,24,-0.25,0 days 00:00:00.550000,,label2,label1,2,kKy9FqieMo
+audio/008.wav,0 days 00:00:14.175673625,0 days 00:00:14.228089789,,,,0 days 00:00:01,1970-01-01 00:00:00.420,label2,,,kpb54SzXd7
+audio/008.wav,0 days 00:00:18.577123577,0 days 00:00:19.935963220,oFe4tPHisS,11,0.32,0 days 00:00:00.280000,1970-01-01 00:00:00.890,,label2,2,CFxeIOtxla
+audio/008.wav,0 days 00:00:21.584147673,0 days 00:00:25.347574714,6gM35Q687K,70,0.24,0 days 00:00:00.360000,1970-01-01 00:00:00.410,label3,label3,2,
+audio/008.wav,0 days 00:00:29.607925127,0 days 00:00:34.005465989,rRey80IzY8,,-0.65,0 days 00:00:00.380000,1970-01-01 00:00:00.800,,label2,,cj6qf98Pql
+audio/008.wav,0 days 00:00:34.947547474,0 days 00:00:40.362499320,FPN56SA45z,,,,1970-01-01 00:00:00.070,label2,label3,,KzgNlze8sZ
+audio/008.wav,0 days 00:00:43.004521773,0 days 00:00:49.548741989,fdPqZ8jSPL,54,-0.86,0 days 00:00:00.200000,,,,3,pq6PiCetBh
+audio/008.wav,0 days 00:00:50.615252126,0 days 00:00:57.206291045,ukHXJTklra,41,-0.4,0 days 00:00:00.650000,,label2,label2,1,bENLGLZs0b
+audio/009.wav,0 days 00:00:02.147384615,0 days 00:00:05.843861113,NBJERFbs9k,69,-0.39,0 days 00:00:00.960000,,label1,label2,3,qYtf5Ywu0o
+audio/009.wav,0 days 00:00:09.496560309,0 days 00:00:19.784946888,,20,,0 days 00:00:00.290000,1970-01-01 00:00:00.100,label2,label2,3,tOINXFrAKz
+audio/009.wav,0 days 00:00:22.194513392,0 days 00:00:22.770880434,ZJz3oFGn5C,68,,0 days 00:00:00.920000,1970-01-01 00:00:00.610,label3,label3,1,Q5DrmrFoc4
+audio/009.wav,0 days 00:00:24.147981755,0 days 00:00:26.534126505,ot8KZsalcX,72,,0 days 00:00:00.130000,,label2,label1,1,2eqSx3iR1D
+audio/009.wav,0 days 00:00:26.770251090,0 days 00:00:29.422875624,NCKLr8wVRn,35,,0 days 00:00:00.400000,1970-01-01 00:00:00.300,label1,,,wyJXyLwdeh
+audio/009.wav,0 days 00:00:32.562418673,0 days 00:00:33.147834827,OMHpOgGP4U,79,0.12,0 days 00:00:00.850000,1970-01-01 00:00:00.730,label2,label3,,2tv1hMhwJ5
+audio/009.wav,0 days 00:00:34.564185525,0 days 00:00:35.129017352,JN01Fm1skq,8,-0.86,0 days 00:00:00.440000,1970-01-01 00:00:00.740,,label3,1,mIiJh1vh1r
+audio/009.wav,0 days 00:00:36.244067209,0 days 00:00:43.890340242,xRy1KoL88m,58,,0 days 00:00:00.540000,1970-01-01 00:00:00.810,,label1,1,ew2GKsCjaa
+audio/009.wav,0 days 00:00:49.786161116,0 days 00:00:50.246061887,1xXAj1ZFYZ,85,-0.27,0 days 00:00:00.600000,1970-01-01 00:00:00.450,label1,label3,,snJE7VuTXw
+audio/009.wav,0 days 00:00:57.742688450,0 days 00:00:59.648946607,TvHYCqpQjd,,-0.31,,1970-01-01 00:00:00.900,,label1,1,9bmWBzzu5H
+audio/010.wav,0 days 00:00:01.656811605,0 days 00:00:14.388139246,qbdTOkVv6H,43,0.68,0 days 00:00:00.760000,1970-01-01 00:00:00.610,label3,label3,1,zTb2cwWzjP
+audio/010.wav,0 days 00:00:15.543692849,0 days 00:00:20.386572769,,57,-0.68,0 days 00:00:00.090000,1970-01-01 00:00:00.750,label1,label3,2,
+audio/010.wav,0 days 00:00:20.831157584,0 days 00:00:26.897191672,7S92i5nixb,62,-0.47,0 days 00:00:00.130000,1970-01-01 00:00:00.260,label2,,2,AQMnYzUkW6
+audio/010.wav,0 days 00:00:31.085254200,0 days 00:00:33.194464484,uMTXMEE6ia,,0.84,,,,label2,2,K9tQalUaeZ
+audio/010.wav,0 days 00:00:36.331616260,0 days 00:00:38.781680493,pwU3I7o42P,,-0.08,0 days 00:00:00.630000,1970-01-01 00:00:00.700,label2,label3,2,yE2hdRJQY6
+audio/010.wav,0 days 00:00:45.049461405,0 days 00:00:47.179648288,,,0.22,,1970-01-01 00:00:00.530,label1,label1,,YJK7pmps0g
+audio/010.wav,0 days 00:00:50.272322253,0 days 00:00:52.267883418,pJ4XyKcUFn,19,-0.51,0 days 00:00:00.130000,,label3,label3,3,1jr2cwfCej
+audio/010.wav,0 days 00:00:53.045900226,0 days 00:00:57.282444637,66dHpnAd0R,,0.93,0 days 00:00:00.830000,,label1,label3,3,7E1FDX0LCM
+audio/010.wav,0 days 00:00:58.065215625,0 days 00:00:59.246545116,H1w5jWUzUh,83,-0.88,0 days 00:00:00.880000,1970-01-01 00:00:00.400,label1,label3,2,qrNrR6PdmD
+audio/010.wav,0 days 00:00:59.603056008,0 days 00:00:59.885017371,k22MoXjwRN,85,0.05,0 days 00:00:00.700000,1970-01-01 00:00:00.940,label2,label1,3,
+
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="api.html" class="btn btn-neutral float-right" title="audformat" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="data-tables.html" class="btn btn-neutral float-left" title="Tables" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div>
+    <p>
+        
+        
+        
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2020/12/18 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+        
+    </p>
+  </div>
+
+  <div role="contentinfo">
+    <p>
+        
+      &copy; 2019-2020 audEERING GmbH
+    </p>
+  </div> 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script src="_static/clipboard.min.js"></script>
+        <script src="_static/copybutton.js"></script>
+        <script src="_static/thebelab-helper.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js"></script>
+        <script src="_static/katex_autorenderer.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.18.0/dist/embed-amd.js"></script>
+    
+
+  
+
+  <script type="text/javascript" src="_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

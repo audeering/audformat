@@ -1,0 +1,1629 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>audformat &mdash; audformat Documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="_static/favicon.png"/>
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/audeering.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
+  <link rel="stylesheet" href="_static/copybutton.css" type="text/css" />
+  <link rel="stylesheet" href="_static/jupyter-sphinx.css" type="text/css" />
+  <link rel="stylesheet" href="_static/thebelab.css" type="text/css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" type="text/css" />
+  <link rel="stylesheet" href="_static/katex-math.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="audformat.define" href="api-define.html" />
+    <link rel="prev" title="Example" href="data-example.html" />
+    
+      
+    
+  
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          <a href="index.html">
+          
+            <img src="_static/images/audeering.svg" class="logo" alt="audEERING"/>
+          
+          
+            <span> audformat</span>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                v0.9.0-rc3
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Getting started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="create-database.html">Create a database</a></li>
+<li class="toctree-l1"><a class="reference internal" href="accessing-data.html">Working with a database</a></li>
+<li class="toctree-l1"><a class="reference internal" href="combine-tables.html">Combine tables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="map-scheme.html">Map scheme labels</a></li>
+<li class="toctree-l1"><a class="reference internal" href="emodb-example.html">Emodb example</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Format specification</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="data-introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data-format.html">Database</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data-conventions.html">Conventions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data-header.html">Header</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data-tables.html">Tables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data-example.html">Example</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API Documentation</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">audformat</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#column">Column</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#filewise-index">filewise_index</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#segmented-index">segmented_index</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#database">Database</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#index-type">index_type</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#media">Media</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#rater">Rater</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#scheme">Scheme</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#split">Split</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#table">Table</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api-define.html">audformat.define</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api-errors.html">audformat.errors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api-testing.html">audformat.testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api-utils.html">audformat.utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="genindex.html">Index</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">audformat</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>audformat</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            
+              <a href="https://github.com/audeering/audformat/blob/v0.9.0-rc3/docs/api.rst" class="fa fa-github"> Edit on GitHub</a>
+            
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-audformat">
+<span id="audformat"></span><h1>audformat<a class="headerlink" href="#module-audformat" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="column">
+<h2>Column<a class="headerlink" href="#column" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="audformat.Column">
+<em class="property">class </em><code class="sig-prename descclassname">audformat.</code><code class="sig-name descname">Column</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">scheme_id</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">rater_id</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">description</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">meta</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/column.html#Column"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#audformat.Column" title="Permalink to this definition">¶</a></dt>
+<dd><p>Table column.</p>
+<p>Represents a table column (see <a class="reference internal" href="#audformat.Table" title="audformat.Table"><code class="xref py py-class docutils literal notranslate"><span class="pre">audformat.Table</span></code></a>) and
+optionally links it to a scheme (see <a class="reference internal" href="#audformat.Scheme" title="audformat.Scheme"><code class="xref py py-class docutils literal notranslate"><span class="pre">audformat.Scheme</span></code></a>) and
+a rater (see <a class="reference internal" href="#audformat.Rater" title="audformat.Rater"><code class="xref py py-class docutils literal notranslate"><span class="pre">audformat.Rater</span></code></a>).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>scheme_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]) – scheme identifier (must exist)</p></li>
+<li><p><strong>rater_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]) – rater identifier (must exist)</p></li>
+<li><p><strong>description</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]) – table description</p></li>
+<li><p><strong>meta</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>]) – additional meta fields</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Column</span><span class="p">(</span><span class="n">scheme_id</span><span class="o">=</span><span class="s1">&#39;emotion&#39;</span><span class="p">)</span>
+<span class="go">{scheme_id: emotion}</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt id="audformat.Column.get">
+<code class="sig-name descname">get</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">index</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">map</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">copy</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/column.html#Column.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#audformat.Column.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get labels.</p>
+<p>By default all labels of the column are returned,
+use <code class="docutils literal notranslate"><span class="pre">index</span></code> to get a subset.</p>
+<p>Examples are provided with the
+<a class="reference internal" href="data-tables.html#tables"><span class="std std-ref">table specifications</span></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>index</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Index</span></code>]) – index conform to
+<a class="reference internal" href="data-tables.html#tables"><span class="std std-ref">table specifications</span></a></p></li>
+<li><p><strong>copy</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – return a copy of the labels</p></li>
+<li><p><strong>map</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]) – map scheme or scheme field to column values.
+For example if your column holds speaker IDs and is
+assigned to a scheme that contains a dict mapping
+speaker IDs to age entries, <code class="docutils literal notranslate"><span class="pre">map='age'</span></code>
+will replace the ID values with the age of the speaker</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Series</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>labels</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.9)"><strong>RuntimeError</strong></a> – if column is not assigned to a table</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.9)"><strong>ValueError</strong></a> – if trying to map without a scheme</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.9)"><strong>ValueError</strong></a> – if trying to map from a scheme that has no labels</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.9)"><strong>ValueError</strong></a> – if trying to map to a non-existing field</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="audformat.Column.rater_id">
+<code class="sig-name descname">rater_id</code><a class="headerlink" href="#audformat.Column.rater_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rater identifier</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="audformat.Column.scheme_id">
+<code class="sig-name descname">scheme_id</code><a class="headerlink" href="#audformat.Column.scheme_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Scheme identifier</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="audformat.Column.set">
+<code class="sig-name descname">set</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">values</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">index</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/column.html#Column.set"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#audformat.Column.set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set labels.</p>
+<p>By default all labels of the column are replaced,
+use <code class="docutils literal notranslate"><span class="pre">index</span></code> to set a subset.
+If columns is assigned to a <a class="reference internal" href="#audformat.Scheme" title="audformat.Scheme"><code class="xref py py-class docutils literal notranslate"><span class="pre">Scheme</span></code></a>
+values have to match its <code class="docutils literal notranslate"><span class="pre">dtype</span></code>.</p>
+<p>Examples are provided with the
+<a class="reference internal" href="data-tables.html#tables"><span class="std std-ref">table specifications</span></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>values</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Timedelta</span></code>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Timedelta</span></code>]], <code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Series</span></code>]) – list of values</p></li>
+<li><p><strong>index</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Index</span></code>]) – index conform to
+<a class="reference internal" href="data-tables.html#tables"><span class="std std-ref">table specifications</span></a></p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.9)"><strong>RuntimeError</strong></a> – if column is not assign to a table</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="filewise-index">
+<h2>filewise_index<a class="headerlink" href="#filewise-index" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="audformat.filewise_index">
+<code class="sig-prename descclassname">audformat.</code><code class="sig-name descname">filewise_index</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">files</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/index.html#filewise_index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#audformat.filewise_index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a filewise index.</p>
+<p>Index is conform to <a class="reference internal" href="data-tables.html#tables"><span class="std std-ref">table specifications</span></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>files</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>], <code class="xref py py-class docutils literal notranslate"><span class="pre">Index</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Series</span></code>, <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a>]) – list of files</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Index</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>filewise index</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="segmented-index">
+<h2>segmented_index<a class="headerlink" href="#segmented-index" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="audformat.segmented_index">
+<code class="sig-prename descclassname">audformat.</code><code class="sig-name descname">segmented_index</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">files</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">starts</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">ends</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/index.html#segmented_index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#audformat.segmented_index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create segmented index.</p>
+<p>Index is conform to <a class="reference internal" href="data-tables.html#tables"><span class="std std-ref">table specifications</span></a>.</p>
+<p>If a non-empty index is created and <code class="docutils literal notranslate"><span class="pre">starts</span></code> is set to <code class="docutils literal notranslate"><span class="pre">None</span></code>,
+the level will be filled up with <code class="docutils literal notranslate"><span class="pre">0</span></code>.
+If a non-empty index is created and <code class="docutils literal notranslate"><span class="pre">ends</span></code> is set to <code class="docutils literal notranslate"><span class="pre">None</span></code>,
+the level will be filled up with <code class="docutils literal notranslate"><span class="pre">NaT</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>files</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>], <code class="xref py py-class docutils literal notranslate"><span class="pre">Index</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Series</span></code>, <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a>]) – set confidence values only on a sub-set of files</p></li>
+<li><p><strong>starts</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Timedelta</span></code>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Timedelta</span></code>]], <code class="xref py py-class docutils literal notranslate"><span class="pre">Index</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Series</span></code>, <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a>]) – segment start positions</p></li>
+<li><p><strong>ends</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Timedelta</span></code>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Timedelta</span></code>]], <code class="xref py py-class docutils literal notranslate"><span class="pre">Index</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Series</span></code>, <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a>]) – segment end positions</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Index</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>segmented index</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.9)"><strong>ValueError</strong></a> – if <code class="docutils literal notranslate"><span class="pre">files</span></code>, <code class="docutils literal notranslate"><span class="pre">start</span></code> and <code class="docutils literal notranslate"><span class="pre">ends</span></code> differ in size</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="database">
+<h2>Database<a class="headerlink" href="#database" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="audformat.Database">
+<em class="property">class </em><code class="sig-prename descclassname">audformat.</code><code class="sig-name descname">Database</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">source</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">usage</span><span class="o">=</span><span class="default_value">'unrestricted'</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">expires</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">languages</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">description</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">meta</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/database.html#Database"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#audformat.Database" title="Permalink to this definition">¶</a></dt>
+<dd><p>Database object.</p>
+<p>A database consists of a header holding raters,
+schemes, splits, and other meta information.
+In addition it links to a number of tables
+listing files and labels.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – name of database</p></li>
+<li><p><strong>source</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – data source (e.g. link to website)</p></li>
+<li><p><strong>usage</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Usage</span></code>) – permission of usage, see <a class="reference internal" href="api-define.html#audformat.define.Usage" title="audformat.define.Usage"><code class="xref py py-class docutils literal notranslate"><span class="pre">audformat.define.Usage</span></code></a>.
+Set to <code class="docutils literal notranslate"><span class="pre">OTHER</span></code> if none of the other fields fit.</p></li>
+<li><p><strong>expires</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.date" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">date</span></code></a>]) – expiry date</p></li>
+<li><p><strong>languages</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>], <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a>]) – list of languages</p></li>
+<li><p><strong>description</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]) – database description</p></li>
+<li><p><strong>meta</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>]) – additional meta fields</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference internal" href="api-errors.html#audformat.errors.BadValueError" title="audformat.errors.BadValueError"><strong>BadValueError</strong></a> – if an invalid <code class="docutils literal notranslate"><span class="pre">usage</span></code> value is passed</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.9)"><strong>ValueError</strong></a> – if language is unknown</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">db</span> <span class="o">=</span> <span class="n">Database</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="s1">&#39;mydb&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="s1">&#39;https://www.audeering.com/&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">define</span><span class="o">.</span><span class="n">Usage</span><span class="o">.</span><span class="n">COMMERCIAL</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">languages</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;English&#39;</span><span class="p">,</span> <span class="s1">&#39;de&#39;</span><span class="p">],</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span>
+<span class="go">name: mydb</span>
+<span class="go">source: https://www.audeering.com/</span>
+<span class="go">usage: commercial</span>
+<span class="go">languages: [eng, deu]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;positive&#39;</span><span class="p">,</span> <span class="s1">&#39;neutral&#39;</span><span class="p">,</span> <span class="s1">&#39;negative&#39;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s1">&#39;emotion&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Scheme</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">labels</span><span class="o">=</span><span class="n">labels</span><span class="p">,</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">raters</span><span class="p">[</span><span class="s1">&#39;rater&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Rater</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">media</span><span class="p">[</span><span class="s1">&#39;audio&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Media</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">define</span><span class="o">.</span><span class="n">MediaType</span><span class="o">.</span><span class="n">AUDIO</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;wav&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">sampling_rate</span><span class="o">=</span><span class="mi">16000</span><span class="p">,</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="p">[</span><span class="s1">&#39;table&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Table</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">media_id</span><span class="o">=</span><span class="s1">&#39;audio&#39;</span><span class="p">,</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="p">[</span><span class="s1">&#39;table&#39;</span><span class="p">][</span><span class="s1">&#39;column&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">scheme_id</span><span class="o">=</span><span class="s1">&#39;emotion&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">rater_id</span><span class="o">=</span><span class="s1">&#39;rater&#39;</span><span class="p">,</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span>
+<span class="go">name: mydb</span>
+<span class="go">source: https://www.audeering.com/</span>
+<span class="go">usage: commercial</span>
+<span class="go">languages: [eng, deu]</span>
+<span class="go">media:</span>
+<span class="go">  audio: {type: audio, format: wav, sampling_rate: 16000}</span>
+<span class="go">raters:</span>
+<span class="go">  rater: {type: human}</span>
+<span class="go">schemes:</span>
+<span class="go">  emotion:</span>
+<span class="go">    dtype: str</span>
+<span class="go">    labels: [positive, neutral, negative]</span>
+<span class="go">tables:</span>
+<span class="go">  table:</span>
+<span class="go">    type: filewise</span>
+<span class="go">    media_id: audio</span>
+<span class="go">    columns:</span>
+<span class="go">      column: {scheme_id: emotion, rater_id: rater}</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt id="audformat.Database.__contains__">
+<code class="sig-name descname">__contains__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">table_id</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/database.html#Database.__contains__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#audformat.Database.__contains__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if table exists.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>table_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – table identifier</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="audformat.Database.__getitem__">
+<code class="sig-name descname">__getitem__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">table_id</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/database.html#Database.__getitem__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#audformat.Database.__getitem__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get table from database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>table_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – table identifier</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Table</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="audformat.Database.__setitem__">
+<code class="sig-name descname">__setitem__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">table_id</span></em>, <em class="sig-param"><span class="n">table</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/database.html#Database.__setitem__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#audformat.Database.__setitem__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add table to database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>table_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – table identifier</p></li>
+<li><p><strong>table</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Table</span></code>) – the table</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference internal" href="api-errors.html#audformat.errors.BadIdError" title="audformat.errors.BadIdError"><strong>BadIdError</strong></a> – if table has a <code class="docutils literal notranslate"><span class="pre">split_id</span></code> or <code class="docutils literal notranslate"><span class="pre">media_id</span></code>,
+    which is not specified in the underlying database</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Table</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="audformat.Database.drop_files">
+<code class="sig-name descname">drop_files</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">files</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/database.html#Database.drop_files"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#audformat.Database.drop_files" title="Permalink to this definition">¶</a></dt>
+<dd><p>Drop files from tables.</p>
+<p>Iterate through all tables and remove rows with a reference to
+listed or matching files.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>files</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>], <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code></a>[[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>], <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>]]) – list of files or condition function</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="audformat.Database.drop_tables">
+<code class="sig-name descname">drop_tables</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">table_ids</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/database.html#Database.drop_tables"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#audformat.Database.drop_tables" title="Permalink to this definition">¶</a></dt>
+<dd><p>Drop tables by ID.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>table_ids</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]]) – table IDs to drop</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="audformat.Database.expires">
+<code class="sig-name descname">expires</code><a class="headerlink" href="#audformat.Database.expires" title="Permalink to this definition">¶</a></dt>
+<dd><p>Expiry date</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="audformat.Database.files">
+<em class="property">property </em><code class="sig-name descname">files</code><a class="headerlink" href="#audformat.Database.files" title="Permalink to this definition">¶</a></dt>
+<dd><p>Files referenced in the database.</p>
+<p>Includes files from filewise and segmented tables.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Index</span></code></p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>files</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="audformat.Database.languages">
+<code class="sig-name descname">languages</code><a class="headerlink" href="#audformat.Database.languages" title="Permalink to this definition">¶</a></dt>
+<dd><p>List of included languages</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="audformat.Database.load">
+<em class="property">static </em><code class="sig-name descname">load</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">root</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">name</span><span class="o">=</span><span class="default_value">'db'</span></em>, <em class="sig-param"><span class="n">load_data</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/database.html#Database.load"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#audformat.Database.load" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load database from disk.</p>
+<p>Expects a header <code class="docutils literal notranslate"><span class="pre">&lt;root&gt;/&lt;name&gt;.yaml</span></code>
+and for every table a file <code class="docutils literal notranslate"><span class="pre">&lt;root&gt;/&lt;name&gt;.&lt;table-id&gt;.[csv|pkl]</span></code>
+Media files should be located under <code class="docutils literal notranslate"><span class="pre">root</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>root</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – root directory</p></li>
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – base name of header and table files</p></li>
+<li><p><strong>load_data</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – if <code class="docutils literal notranslate"><span class="pre">False</span></code> <a class="reference internal" href="#audformat.Table" title="audformat.Table"><code class="xref py py-class docutils literal notranslate"><span class="pre">audformat.Table</span></code></a>
+will contain empty tables</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Database</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>database object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="audformat.Database.load_header_from_yaml">
+<em class="property">static </em><code class="sig-name descname">load_header_from_yaml</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">header</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/database.html#Database.load_header_from_yaml"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#audformat.Database.load_header_from_yaml" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load database header from YAML.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>header</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>) – YAML header definition</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Database</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>database object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="audformat.Database.map_files">
+<code class="sig-name descname">map_files</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">func</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/database.html#Database.map_files"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#audformat.Database.map_files" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply function to file names in all tables.</p>
+<p>Relies on <code class="xref py py-meth docutils literal notranslate"><span class="pre">pandas.Index.map()</span></code>,
+which can be slow.
+If speed is crucial,
+consider to change the index directly.
+In the following example we prefix every file with a folder:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">root</span> <span class="o">=</span> <span class="s1">&#39;/root/&#39;</span>
+<span class="k">for</span> <span class="n">table</span> <span class="ow">in</span> <span class="n">db</span><span class="o">.</span><span class="n">tables</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+    <span class="k">if</span> <span class="n">table</span><span class="o">.</span><span class="n">is_filewise</span><span class="p">:</span>
+        <span class="n">table</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">root</span> <span class="o">+</span> <span class="n">table</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">index</span>
+        <span class="n">table</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">define</span><span class="o">.</span><span class="n">IndexField</span><span class="o">.</span><span class="n">FILE</span>
+    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">table</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">table</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">set_levels</span><span class="p">(</span>
+            <span class="n">root</span> <span class="o">+</span> <span class="n">table</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">levels</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+            <span class="n">audformat</span><span class="o">.</span><span class="n">define</span><span class="o">.</span><span class="n">IndexField</span><span class="o">.</span><span class="n">FILE</span><span class="p">,</span>
+            <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="p">)</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>func</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code></a>[[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>], <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]) – map function</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="audformat.Database.media">
+<code class="sig-name descname">media</code><a class="headerlink" href="#audformat.Database.media" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dictionary of media information</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="audformat.Database.name">
+<code class="sig-name descname">name</code><a class="headerlink" href="#audformat.Database.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Name of database</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="audformat.Database.pick_files">
+<code class="sig-name descname">pick_files</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">files</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/database.html#Database.pick_files"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#audformat.Database.pick_files" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pick files from tables.</p>
+<p>Iterate through all tables and keep only rows with a reference
+to listed files or matching files.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>files</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>], <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code></a>[[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>], <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>]]) – list of files or condition function</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="audformat.Database.pick_tables">
+<code class="sig-name descname">pick_tables</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">table_ids</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/database.html#Database.pick_tables"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#audformat.Database.pick_tables" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pick tables by ID.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>table_ids</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]]) – table IDs to pick</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="audformat.Database.raters">
+<code class="sig-name descname">raters</code><a class="headerlink" href="#audformat.Database.raters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dictionary of raters</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="audformat.Database.save">
+<code class="sig-name descname">save</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">root</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">name</span><span class="o">=</span><span class="default_value">'db'</span></em>, <em class="sig-param"><span class="n">indent</span><span class="o">=</span><span class="default_value">2</span></em>, <em class="sig-param"><span class="n">storage_format</span><span class="o">=</span><span class="default_value">'csv'</span></em>, <em class="sig-param"><span class="n">header_only</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/database.html#Database.save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#audformat.Database.save" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save database to disk.</p>
+<p>Creates a header <code class="docutils literal notranslate"><span class="pre">&lt;root&gt;/&lt;name&gt;.yaml</span></code> and for every table
+a file <code class="docutils literal notranslate"><span class="pre">&lt;root&gt;/&lt;name&gt;.&lt;table-id&gt;.[csv,pkl]</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>root</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – root directory (possibly created)</p></li>
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – base name of files</p></li>
+<li><p><strong>indent</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – indent size</p></li>
+<li><p><strong>storage_format</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">TableStorageFormat</span></code>) – storage format of tables.
+See <a class="reference internal" href="api-define.html#audformat.define.TableStorageFormat" title="audformat.define.TableStorageFormat"><code class="xref py py-class docutils literal notranslate"><span class="pre">audformat.define.TableStorageFormat</span></code></a>
+for available formats</p></li>
+<li><p><strong>header_only</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – store header only</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="audformat.Database.schemes">
+<code class="sig-name descname">schemes</code><a class="headerlink" href="#audformat.Database.schemes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dictionary of schemes</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="audformat.Database.segments">
+<em class="property">property </em><code class="sig-name descname">segments</code><a class="headerlink" href="#audformat.Database.segments" title="Permalink to this definition">¶</a></dt>
+<dd><p>Segments referenced in the database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">MultiIndex</span></code></p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>segments</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="audformat.Database.source">
+<code class="sig-name descname">source</code><a class="headerlink" href="#audformat.Database.source" title="Permalink to this definition">¶</a></dt>
+<dd><p>Database source</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="audformat.Database.splits">
+<code class="sig-name descname">splits</code><a class="headerlink" href="#audformat.Database.splits" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dictionary of splits</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="audformat.Database.tables">
+<code class="sig-name descname">tables</code><a class="headerlink" href="#audformat.Database.tables" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dictionary of tables</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="audformat.Database.usage">
+<code class="sig-name descname">usage</code><a class="headerlink" href="#audformat.Database.usage" title="Permalink to this definition">¶</a></dt>
+<dd><p>Usage permission</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="index-type">
+<h2>index_type<a class="headerlink" href="#index-type" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="audformat.index_type">
+<code class="sig-prename descclassname">audformat.</code><code class="sig-name descname">index_type</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">obj</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/index.html#index_type"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#audformat.index_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>Derive index type.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>obj</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Index</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Series</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code>]) – object conform to
+<a class="reference internal" href="data-tables.html#tables"><span class="std std-ref">table specifications</span></a></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">IndexType</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>table type</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.9)"><strong>ValueError</strong></a> – if not conform to
+    <a class="reference internal" href="data-tables.html#tables"><span class="std std-ref">table specifications</span></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="media">
+<h2>Media<a class="headerlink" href="#media" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="audformat.Media">
+<em class="property">class </em><code class="sig-prename descclassname">audformat.</code><code class="sig-name descname">Media</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">type</span><span class="o">=</span><span class="default_value">'other'</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">format</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">sampling_rate</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">channels</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">bit_depth</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">video_fps</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">video_resolution</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">video_channels</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">video_depth</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">description</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">meta</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/media.html#Media"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#audformat.Media" title="Permalink to this definition">¶</a></dt>
+<dd><p>Media information.</p>
+<p>File <code class="docutils literal notranslate"><span class="pre">format</span></code> is always converted to lower case.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>type</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">MediaType</span></code>) – media type</p></li>
+<li><p><strong>format</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]) – file format (e.g. ‘wav’, ‘flac’, ‘mp4’)</p></li>
+<li><p><strong>sampling_rate</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>]) – audio sampling rate in Hz</p></li>
+<li><p><strong>channels</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>]) – number of audio channels</p></li>
+<li><p><strong>bit_depth</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>]) – audio bit depth</p></li>
+<li><p><strong>video_fps</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>]) – video rate in frames per seconds</p></li>
+<li><p><strong>video_resolution</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>]]) – video resolution in pixels (e.g. <code class="docutils literal notranslate"><span class="pre">[800,</span> <span class="pre">600]</span></code>)</p></li>
+<li><p><strong>video_channels</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>]) – number of channels per pixel (e.g. 3 for RGB)</p></li>
+<li><p><strong>video_depth</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>]) – number of bits per video channel</p></li>
+<li><p><strong>description</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]) – media description</p></li>
+<li><p><strong>meta</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>]) – additional meta fields</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference internal" href="api-errors.html#audformat.errors.BadValueError" title="audformat.errors.BadValueError"><strong>BadValueError</strong></a> – if an invalid <code class="docutils literal notranslate"><span class="pre">type</span></code> is passed</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Media</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="nb">type</span><span class="o">=</span><span class="n">define</span><span class="o">.</span><span class="n">MediaType</span><span class="o">.</span><span class="n">AUDIO</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;wav&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">sampling_rate</span><span class="o">=</span><span class="mi">16000</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">channels</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="go">{type: audio, format: wav, channels: 2, sampling_rate: 16000}</span>
+</pre></div>
+</div>
+<dl class="py attribute">
+<dt id="audformat.Media.bit_depth">
+<code class="sig-name descname">bit_depth</code><a class="headerlink" href="#audformat.Media.bit_depth" title="Permalink to this definition">¶</a></dt>
+<dd><p>Audio bit depth</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="audformat.Media.channels">
+<code class="sig-name descname">channels</code><a class="headerlink" href="#audformat.Media.channels" title="Permalink to this definition">¶</a></dt>
+<dd><p>Audio channels</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="audformat.Media.format">
+<code class="sig-name descname">format</code><a class="headerlink" href="#audformat.Media.format" title="Permalink to this definition">¶</a></dt>
+<dd><p>File format</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="audformat.Media.sampling_rate">
+<code class="sig-name descname">sampling_rate</code><a class="headerlink" href="#audformat.Media.sampling_rate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Audio sampling rate in Hz</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="audformat.Media.type">
+<code class="sig-name descname">type</code><a class="headerlink" href="#audformat.Media.type" title="Permalink to this definition">¶</a></dt>
+<dd><p>Media type</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="audformat.Media.video_channels">
+<code class="sig-name descname">video_channels</code><a class="headerlink" href="#audformat.Media.video_channels" title="Permalink to this definition">¶</a></dt>
+<dd><p>Video channels per pixel</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="audformat.Media.video_depth">
+<code class="sig-name descname">video_depth</code><a class="headerlink" href="#audformat.Media.video_depth" title="Permalink to this definition">¶</a></dt>
+<dd><p>Video bit depth</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="audformat.Media.video_fps">
+<code class="sig-name descname">video_fps</code><a class="headerlink" href="#audformat.Media.video_fps" title="Permalink to this definition">¶</a></dt>
+<dd><p>Video frames per second</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="audformat.Media.video_resolution">
+<code class="sig-name descname">video_resolution</code><a class="headerlink" href="#audformat.Media.video_resolution" title="Permalink to this definition">¶</a></dt>
+<dd><p>Video resolution</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="rater">
+<h2>Rater<a class="headerlink" href="#rater" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="audformat.Rater">
+<em class="property">class </em><code class="sig-prename descclassname">audformat.</code><code class="sig-name descname">Rater</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">type</span><span class="o">=</span><span class="default_value">'human'</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">description</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">meta</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/rater.html#Rater"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#audformat.Rater" title="Permalink to this definition">¶</a></dt>
+<dd><p>A rater is the author of an annotation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>type</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">RaterType</span></code>) – rater type</p></li>
+<li><p><strong>description</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]) – rater description</p></li>
+<li><p><strong>meta</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>]) – additional meta fields</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference internal" href="api-errors.html#audformat.errors.BadValueError" title="audformat.errors.BadValueError"><strong>BadValueError</strong></a> – if an invalid <code class="docutils literal notranslate"><span class="pre">type</span></code> is passed</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Rater</span><span class="p">(</span><span class="n">define</span><span class="o">.</span><span class="n">RaterType</span><span class="o">.</span><span class="n">HUMAN</span><span class="p">)</span>
+<span class="go">{type: human}</span>
+</pre></div>
+</div>
+<dl class="py attribute">
+<dt id="audformat.Rater.type">
+<code class="sig-name descname">type</code><a class="headerlink" href="#audformat.Rater.type" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rater type</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="scheme">
+<h2>Scheme<a class="headerlink" href="#scheme" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="audformat.Scheme">
+<em class="property">class </em><code class="sig-prename descclassname">audformat.</code><code class="sig-name descname">Scheme</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dtype</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">labels</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">minimum</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">maximum</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">description</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">meta</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/scheme.html#Scheme"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#audformat.Scheme" title="Permalink to this definition">¶</a></dt>
+<dd><p>A scheme defines valid values of an annotation.</p>
+<p>Allowed values for <code class="docutils literal notranslate"><span class="pre">dtype</span></code> are:
+<code class="docutils literal notranslate"><span class="pre">'bool'</span></code>, <code class="docutils literal notranslate"><span class="pre">'str'</span></code>, <code class="docutils literal notranslate"><span class="pre">'int'</span></code>, <code class="docutils literal notranslate"><span class="pre">'float'</span></code>, <code class="docutils literal notranslate"><span class="pre">'time'</span></code>, and <code class="docutils literal notranslate"><span class="pre">'date'</span></code>
+(see <a class="reference internal" href="api-define.html#audformat.define.DataType" title="audformat.define.DataType"><code class="xref py py-class docutils literal notranslate"><span class="pre">audformat.define.DataType</span></code></a>).
+Values can be restricted to a set of labels provided by a
+list or a dictionary.
+A continuous range can be limited by a minimum and
+maximum value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dtype</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Type" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Type</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">DataType</span></code>, <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a>]) – if <code class="docutils literal notranslate"><span class="pre">None</span></code> derived from <code class="docutils literal notranslate"><span class="pre">labels</span></code>, otherwise set to <code class="docutils literal notranslate"><span class="pre">'str'</span></code></p></li>
+<li><p><strong>labels</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a>]) – list or dictionary with valid labels.</p></li>
+<li><p><strong>minimum</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a>]) – minimum value</p></li>
+<li><p><strong>maximum</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a>]) – maximum value</p></li>
+<li><p><strong>description</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]) – scheme description</p></li>
+<li><p><strong>meta</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>]) – additional meta fields</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference internal" href="api-errors.html#audformat.errors.BadValueError" title="audformat.errors.BadValueError"><strong>BadValueError</strong></a> – if an invalid <code class="docutils literal notranslate"><span class="pre">dtype</span></code> is passed</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.9)"><strong>ValueError</strong></a> – if <code class="docutils literal notranslate"><span class="pre">labels</span></code> are not passed as list or dictionary</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.9)"><strong>ValueError</strong></a> – if <code class="docutils literal notranslate"><span class="pre">labels</span></code> are not of same data type</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.9)"><strong>ValueError</strong></a> – <code class="docutils literal notranslate"><span class="pre">dtype</span></code> does not match type of <code class="docutils literal notranslate"><span class="pre">labels</span></code></p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Scheme</span><span class="p">()</span>
+<span class="go">{dtype: str}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Scheme</span><span class="p">(</span><span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">])</span>
+<span class="go">dtype: str</span>
+<span class="go">labels: [a, b, c]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Scheme</span><span class="p">(</span><span class="n">define</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">INTEGER</span><span class="p">)</span>
+<span class="go">{dtype: int}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Scheme</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="n">minimum</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">maximum</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="go">{dtype: float, minimum: 0, maximum: 1}</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt id="audformat.Scheme.draw">
+<code class="sig-name descname">draw</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">n</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">str_len</span><span class="o">=</span><span class="default_value">10</span></em>, <em class="sig-param"><span class="n">p_none</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/scheme.html#Scheme.draw"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#audformat.Scheme.draw" title="Permalink to this definition">¶</a></dt>
+<dd><p>Randomly draws values from scheme.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>n</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – number of values</p></li>
+<li><p><strong>str_len</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – string length if drawing from a string scheme without
+labels</p></li>
+<li><p><strong>p_none</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>]) – probability for drawing an invalid value</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>list with values</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="audformat.Scheme.dtype">
+<code class="sig-name descname">dtype</code><a class="headerlink" href="#audformat.Scheme.dtype" title="Permalink to this definition">¶</a></dt>
+<dd><p>Data type</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="audformat.Scheme.is_numeric">
+<em class="property">property </em><code class="sig-name descname">is_numeric</code><a class="headerlink" href="#audformat.Scheme.is_numeric" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if data type is numeric.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">True</span></code> if data type is numeric.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="audformat.Scheme.labels">
+<code class="sig-name descname">labels</code><a class="headerlink" href="#audformat.Scheme.labels" title="Permalink to this definition">¶</a></dt>
+<dd><p>List of labels</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="audformat.Scheme.maximum">
+<code class="sig-name descname">maximum</code><a class="headerlink" href="#audformat.Scheme.maximum" title="Permalink to this definition">¶</a></dt>
+<dd><p>Maximum value</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="audformat.Scheme.minimum">
+<code class="sig-name descname">minimum</code><a class="headerlink" href="#audformat.Scheme.minimum" title="Permalink to this definition">¶</a></dt>
+<dd><p>Minimum value</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="audformat.Scheme.to_pandas_dtype">
+<code class="sig-name descname">to_pandas_dtype</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/scheme.html#Scheme.to_pandas_dtype"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#audformat.Scheme.to_pandas_dtype" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert data type to <code class="xref py py-mod docutils literal notranslate"><span class="pre">pandas</span></code> data type.</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">labels</span></code> is not <code class="docutils literal notranslate"><span class="pre">None</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.CategoricalDtype</span></code> is
+returned. Otherwise the following rules are applied:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">str</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">str</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">int</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">Int64</span></code>  (to allow NaN)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">float</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">float</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">time</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">timedelta64[ns]</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">date</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">datetime64[ns]</span></code></p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">CategoricalDtype</span></code>]</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><code class="xref py py-mod docutils literal notranslate"><span class="pre">pandas</span></code> data type</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="split">
+<h2>Split<a class="headerlink" href="#split" title="Permalink to this headline">¶</a></h2>
+<p>Tables can be classified by splits.
+Usually one of <a class="reference internal" href="api-define.html#audformat.define.SplitType" title="audformat.define.SplitType"><code class="xref py py-class docutils literal notranslate"><span class="pre">audformat.define.SplitType</span></code></a>.</p>
+<dl class="py class">
+<dt id="audformat.Split">
+<em class="property">class </em><code class="sig-prename descclassname">audformat.</code><code class="sig-name descname">Split</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">type</span><span class="o">=</span><span class="default_value">'other'</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">description</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">meta</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/split.html#Split"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#audformat.Split" title="Permalink to this definition">¶</a></dt>
+<dd><p>Database split.</p>
+<p>Defines if a subset of a database should be used for training,
+development or testing.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>type</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">SplitType</span></code>) – split type</p></li>
+<li><p><strong>description</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]) – split description</p></li>
+<li><p><strong>meta</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>]) – additional meta fields</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference internal" href="api-errors.html#audformat.errors.BadValueError" title="audformat.errors.BadValueError"><strong>BadValueError</strong></a> – if an invalid <code class="docutils literal notranslate"><span class="pre">type</span></code> is passed</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Split</span><span class="p">(</span><span class="n">define</span><span class="o">.</span><span class="n">SplitType</span><span class="o">.</span><span class="n">TEST</span><span class="p">)</span>
+<span class="go">{type: test}</span>
+</pre></div>
+</div>
+<dl class="py attribute">
+<dt id="audformat.Split.type">
+<code class="sig-name descname">type</code><a class="headerlink" href="#audformat.Split.type" title="Permalink to this definition">¶</a></dt>
+<dd><p>Split type</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="table">
+<h2>Table<a class="headerlink" href="#table" title="Permalink to this headline">¶</a></h2>
+<p>Annotation data is organized in tables,
+which consist of file names
+and columns that assign labels
+or numerical values to the files.</p>
+<p>There are two types of tables:</p>
+<ul class="simple">
+<li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">audformat.define.TableType.FILEWISE</span></code> tables annotate whole files</p></li>
+<li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">audformat.define.TableType.SEGMENTED</span></code> tables annotate file segments</p></li>
+</ul>
+<dl class="py class">
+<dt id="audformat.Table">
+<em class="property">class </em><code class="sig-prename descclassname">audformat.</code><code class="sig-name descname">Table</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">index</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">split_id</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">media_id</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">description</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">meta</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/table.html#Table"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#audformat.Table" title="Permalink to this definition">¶</a></dt>
+<dd><p>Table with annotation data.</p>
+<p>Consists of a list of file names to which it assigns
+numerical values or labels.
+To fill a table with labels,
+add one ore more <a class="reference internal" href="#audformat.Column" title="audformat.Column"><code class="xref py py-class docutils literal notranslate"><span class="pre">audformat.Column</span></code></a>
+and use <a class="reference internal" href="#audformat.Table.set" title="audformat.Table.set"><code class="xref py py-meth docutils literal notranslate"><span class="pre">audformat.Table.set()</span></code></a> to set the values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>index</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Index</span></code>]) – index conform to
+<a class="reference internal" href="data-tables.html#tables"><span class="std std-ref">table specifications</span></a>.
+If <code class="docutils literal notranslate"><span class="pre">None</span></code> creates an empty filewise table</p></li>
+<li><p><strong>split_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]) – split identifier (must exist)</p></li>
+<li><p><strong>media_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]) – media identifier (must exist)</p></li>
+<li><p><strong>description</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]) – database description</p></li>
+<li><p><strong>meta</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>]) – additional meta fields</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>NotConformToUnifiedFormat</strong> – if index is not conform to
+    <a class="reference internal" href="data-tables.html#tables"><span class="std std-ref">table specifications</span></a></p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">index</span> <span class="o">=</span> <span class="n">filewise_index</span><span class="p">([</span><span class="s1">&#39;f1&#39;</span><span class="p">,</span> <span class="s1">&#39;f2&#39;</span><span class="p">,</span> <span class="s1">&#39;f3&#39;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">table</span> <span class="o">=</span> <span class="n">Table</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">index</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">split_id</span><span class="o">=</span><span class="n">define</span><span class="o">.</span><span class="n">SplitType</span><span class="o">.</span><span class="n">TEST</span><span class="p">,</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">table</span><span class="p">[</span><span class="s1">&#39;values&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Column</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">table</span>
+<span class="go">type: filewise</span>
+<span class="go">split_id: test</span>
+<span class="go">columns:</span>
+<span class="go">  values: {}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">table</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+<span class="go">     values</span>
+<span class="go">file</span>
+<span class="go">f1      NaN</span>
+<span class="go">f2      NaN</span>
+<span class="go">f3      NaN</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">table</span><span class="o">.</span><span class="n">set</span><span class="p">({</span><span class="s1">&#39;values&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">table</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+<span class="go">     values</span>
+<span class="go">file</span>
+<span class="go">f1        0</span>
+<span class="go">f2        1</span>
+<span class="go">f3        2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">table</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">index</span><span class="p">[:</span><span class="mi">2</span><span class="p">])</span>
+<span class="go">     values</span>
+<span class="go">file</span>
+<span class="go">f1        0</span>
+<span class="go">f2        1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">index_ex</span> <span class="o">=</span> <span class="n">filewise_index</span><span class="p">(</span><span class="s1">&#39;f4&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">table_ex</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">extend_index</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">index_ex</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">table_ex</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+<span class="go">     values</span>
+<span class="go">file</span>
+<span class="go">f1        0</span>
+<span class="go">f2        1</span>
+<span class="go">f3        2</span>
+<span class="go">f4      NaN</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">table_ex</span><span class="o">.</span><span class="n">set</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="p">{</span><span class="s1">&#39;values&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">},</span>
+<span class="gp">... </span>    <span class="n">index</span><span class="o">=</span><span class="n">index_ex</span><span class="p">,</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">table_ex</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+<span class="go">     values</span>
+<span class="go">file</span>
+<span class="go">f1        0</span>
+<span class="go">f2        1</span>
+<span class="go">f3        2</span>
+<span class="go">f4        3</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">table_str</span> <span class="o">=</span> <span class="n">Table</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">table_str</span><span class="p">[</span><span class="s1">&#39;strings&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Column</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">table_str</span><span class="o">.</span><span class="n">set</span><span class="p">({</span><span class="s1">&#39;strings&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">]})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">(</span><span class="n">table</span> <span class="o">+</span> <span class="n">table_str</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+<span class="go">     values strings</span>
+<span class="go">file</span>
+<span class="go">f1        0       a</span>
+<span class="go">f2        1       b</span>
+<span class="go">f3        2       c</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">(</span><span class="n">table_ex</span> <span class="o">+</span> <span class="n">table_str</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+<span class="go">     values strings</span>
+<span class="go">file</span>
+<span class="go">f1        0       a</span>
+<span class="go">f2        1       b</span>
+<span class="go">f3        2       c</span>
+<span class="go">f4        3     NaN</span>
+</pre></div>
+</div>
+<dl class="py attribute">
+<dt id="audformat.Table.columns">
+<code class="sig-name descname">columns</code><a class="headerlink" href="#audformat.Table.columns" title="Permalink to this definition">¶</a></dt>
+<dd><p>Table columns</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="audformat.Table.copy">
+<code class="sig-name descname">copy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/table.html#Table.copy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#audformat.Table.copy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Copy table.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Table</span></code></p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>new <code class="docutils literal notranslate"><span class="pre">Table</span></code> object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="audformat.Table.df">
+<em class="property">property </em><code class="sig-name descname">df</code><a class="headerlink" href="#audformat.Table.df" title="Permalink to this definition">¶</a></dt>
+<dd><p>Table data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>data</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="audformat.Table.drop_columns">
+<code class="sig-name descname">drop_columns</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">column_ids</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">inplace</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/table.html#Table.drop_columns"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#audformat.Table.drop_columns" title="Permalink to this definition">¶</a></dt>
+<dd><p>Drop columns by ID.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>column_ids</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]]) – column IDs</p></li>
+<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – drop columns in place</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Table</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>new <code class="docutils literal notranslate"><span class="pre">Table</span></code> if <code class="docutils literal notranslate"><span class="pre">inplace=False</span></code>, otherwise <code class="docutils literal notranslate"><span class="pre">self</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="audformat.Table.drop_files">
+<code class="sig-name descname">drop_files</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">files</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">inplace</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/table.html#Table.drop_files"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#audformat.Table.drop_files" title="Permalink to this definition">¶</a></dt>
+<dd><p>Drop files.</p>
+<p>Remove rows with a reference to listed or matching files.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>files</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>], <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code></a>[[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>], <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>]]) – list of files or condition function</p></li>
+<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – drop files in place</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Table</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>new <code class="docutils literal notranslate"><span class="pre">Table</span></code> if <code class="docutils literal notranslate"><span class="pre">inplace=False</span></code>, otherwise <code class="docutils literal notranslate"><span class="pre">self</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="audformat.Table.drop_index">
+<code class="sig-name descname">drop_index</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">index</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">inplace</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/table.html#Table.drop_index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#audformat.Table.drop_index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Drop rows from index.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>index</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Index</span></code>) – index conform to
+<a class="reference internal" href="data-tables.html#tables"><span class="std std-ref">table specifications</span></a></p></li>
+<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – drop index in place</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Table</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>new <code class="docutils literal notranslate"><span class="pre">Table</span></code> if <code class="docutils literal notranslate"><span class="pre">inplace=False</span></code>, otherwise <code class="docutils literal notranslate"><span class="pre">self</span></code></p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.9)"><strong>ValueError</strong></a> – if table type is not matched</p></li>
+<li><p><strong>RedundantArgumentError</strong> – for not allowed combinations
+    of input arguments</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="audformat.Table.ends">
+<em class="property">property </em><code class="sig-name descname">ends</code><a class="headerlink" href="#audformat.Table.ends" title="Permalink to this definition">¶</a></dt>
+<dd><p>Segment end times.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Index</span></code></p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>timestamps</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="audformat.Table.extend_index">
+<code class="sig-name descname">extend_index</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">index</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">fill_values</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">inplace</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/table.html#Table.extend_index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#audformat.Table.extend_index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extend table by new rows.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>index</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Index</span></code>) – index conform to
+<a class="reference internal" href="data-tables.html#tables"><span class="std std-ref">table specifications</span></a></p></li>
+<li><p><strong>fill_values</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a>], <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a>]) – replace NaN with these values (either a scalar
+applied to all columns or a dictionary with column name as
+key)</p></li>
+<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – extend index in place</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Table</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>new <code class="docutils literal notranslate"><span class="pre">Table</span></code> if <code class="docutils literal notranslate"><span class="pre">inplace=False</span></code>, otherwise <code class="docutils literal notranslate"><span class="pre">self</span></code></p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.9)"><strong>ValueError</strong></a> – if index type is not matched</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="audformat.Table.files">
+<em class="property">property </em><code class="sig-name descname">files</code><a class="headerlink" href="#audformat.Table.files" title="Permalink to this definition">¶</a></dt>
+<dd><p>Files referenced in the table.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Index</span></code></p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>files</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="audformat.Table.get">
+<code class="sig-name descname">get</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">index</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">map</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">copy</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/table.html#Table.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#audformat.Table.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get labels.</p>
+<p>By default all labels of the table are returned,
+use <code class="docutils literal notranslate"><span class="pre">index</span></code> to get a subset.</p>
+<p>Examples are provided with the
+<a class="reference internal" href="data-tables.html#tables"><span class="std std-ref">table specifications</span></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>index</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Index</span></code>]) – index conform to
+<a class="reference internal" href="data-tables.html#tables"><span class="std std-ref">table specifications</span></a></p></li>
+<li><p><strong>copy</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – return a copy of the labels</p></li>
+<li><p><strong>map</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]]]]) – map scheme or scheme fields to column values.
+For example if your table holds a column <code class="docutils literal notranslate"><span class="pre">speaker</span></code> with
+speaker IDs, which is assigned to a scheme that contains a
+dict mapping speaker IDs to age and gender entries,
+<code class="docutils literal notranslate"><span class="pre">map={'speaker':</span> <span class="pre">['age',</span> <span class="pre">'gender']}</span></code>
+will replace the column with two new columns that map ID
+values to age and gender, respectively.
+To also keep the original column with speaker IDS, you can do
+<code class="docutils literal notranslate"><span class="pre">map={'speaker':</span> <span class="pre">['speaker',</span> <span class="pre">'age',</span> <span class="pre">'gender']}</span></code></p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>labels</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.9)"><strong>RuntimeError</strong></a> – if table is not assign to a database</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.9)"><strong>ValueError</strong></a> – if trying to map without a scheme</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.9)"><strong>ValueError</strong></a> – if trying to map from a scheme that has no labels</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.9)"><strong>ValueError</strong></a> – if trying to map to a non-existing field</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="audformat.Table.index">
+<em class="property">property </em><code class="sig-name descname">index</code><a class="headerlink" href="#audformat.Table.index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Table index.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Index</span></code></p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>index</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="audformat.Table.is_filewise">
+<em class="property">property </em><code class="sig-name descname">is_filewise</code><a class="headerlink" href="#audformat.Table.is_filewise" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if filewise table.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">True</span></code> if filewise table.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="audformat.Table.is_segmented">
+<em class="property">property </em><code class="sig-name descname">is_segmented</code><a class="headerlink" href="#audformat.Table.is_segmented" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if segmented table.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">True</span></code> if segmented table.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="audformat.Table.load">
+<code class="sig-name descname">load</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/table.html#Table.load"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#audformat.Table.load" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load table data from disk.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – file path without extension</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="audformat.Table.media_id">
+<code class="sig-name descname">media_id</code><a class="headerlink" href="#audformat.Table.media_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Media ID</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="audformat.Table.pick_columns">
+<code class="sig-name descname">pick_columns</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">column_ids</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">inplace</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/table.html#Table.pick_columns"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#audformat.Table.pick_columns" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pick columns by ID.</p>
+<p>All other columns will be dropped.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>column_ids</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]]) – column IDs</p></li>
+<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – pick columns in place</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Table</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>new <code class="docutils literal notranslate"><span class="pre">Table</span></code> if <code class="docutils literal notranslate"><span class="pre">inplace=False</span></code>, otherwise <code class="docutils literal notranslate"><span class="pre">self</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="audformat.Table.pick_files">
+<code class="sig-name descname">pick_files</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">files</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">inplace</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/table.html#Table.pick_files"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#audformat.Table.pick_files" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pick files.</p>
+<p>Keep only rows with a reference to listed files or matching files.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>files</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>], <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code></a>[[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>], <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>]]) – list of files or condition function</p></li>
+<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – pick files in place</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Table</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>new <code class="docutils literal notranslate"><span class="pre">Table</span></code> if <code class="docutils literal notranslate"><span class="pre">inplace=False</span></code>, otherwise <code class="docutils literal notranslate"><span class="pre">self</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="audformat.Table.pick_index">
+<code class="sig-name descname">pick_index</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">index</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">inplace</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/table.html#Table.pick_index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#audformat.Table.pick_index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pick rows from index.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>index</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Index</span></code>) – index conform to
+<a class="reference internal" href="data-tables.html#tables"><span class="std std-ref">table specifications</span></a></p></li>
+<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – pick index in place</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Table</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>new <code class="docutils literal notranslate"><span class="pre">Table</span></code> if <code class="docutils literal notranslate"><span class="pre">inplace=False</span></code>, otherwise <code class="docutils literal notranslate"><span class="pre">self</span></code></p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.9)"><strong>ValueError</strong></a> – if table type is not matched</p></li>
+<li><p><strong>RedundantArgumentError</strong> – for not allowed combinations
+    of input arguments</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="audformat.Table.save">
+<code class="sig-name descname">save</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">storage_format</span><span class="o">=</span><span class="default_value">'csv'</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/table.html#Table.save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#audformat.Table.save" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save table data to disk.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – file path without extension</p></li>
+<li><p><strong>storage_format</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">TableStorageFormat</span></code>) – storage format of tables.
+See <a class="reference internal" href="api-define.html#audformat.define.TableStorageFormat" title="audformat.define.TableStorageFormat"><code class="xref py py-class docutils literal notranslate"><span class="pre">audformat.define.TableStorageFormat</span></code></a>
+for available formats</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="audformat.Table.set">
+<code class="sig-name descname">set</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">values</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">index</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/table.html#Table.set"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#audformat.Table.set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set labels.</p>
+<p>By default all labels of the table are replaced,
+use <code class="docutils literal notranslate"><span class="pre">index</span></code> to select a subset.
+If a column is assigned to a <a class="reference internal" href="#audformat.Scheme" title="audformat.Scheme"><code class="xref py py-class docutils literal notranslate"><span class="pre">Scheme</span></code></a>
+values have to match its <code class="docutils literal notranslate"><span class="pre">dtype</span></code>.</p>
+<p>Examples are provided with the
+<a class="reference internal" href="data-tables.html#tables"><span class="std std-ref">table specifications</span></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>values</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Timedelta</span></code>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Timedelta</span></code>]], <code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Series</span></code>]], <code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code>]) – dictionary of values with <code class="docutils literal notranslate"><span class="pre">column_id</span></code> as key</p></li>
+<li><p><strong>index</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Index</span></code>]) – index conform to
+<a class="reference internal" href="data-tables.html#tables"><span class="std std-ref">table specifications</span></a></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="audformat.Table.split_id">
+<code class="sig-name descname">split_id</code><a class="headerlink" href="#audformat.Table.split_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Split ID</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="audformat.Table.starts">
+<em class="property">property </em><code class="sig-name descname">starts</code><a class="headerlink" href="#audformat.Table.starts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Segment start times.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Index</span></code></p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>timestamps</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="audformat.Table.type">
+<code class="sig-name descname">type</code><a class="headerlink" href="#audformat.Table.type" title="Permalink to this definition">¶</a></dt>
+<dd><p>Table type</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="api-define.html" class="btn btn-neutral float-right" title="audformat.define" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="data-example.html" class="btn btn-neutral float-left" title="Example" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div>
+    <p>
+        
+        
+        
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2020/12/18 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+        
+    </p>
+  </div>
+
+  <div role="contentinfo">
+    <p>
+        
+      &copy; 2019-2020 audEERING GmbH
+    </p>
+  </div> 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script src="_static/clipboard.min.js"></script>
+        <script src="_static/copybutton.js"></script>
+        <script src="_static/thebelab-helper.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js"></script>
+        <script src="_static/katex_autorenderer.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.18.0/dist/embed-amd.js"></script>
+    
+
+  
+
+  <script type="text/javascript" src="_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

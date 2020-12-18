@@ -1,0 +1,485 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>audformat.core.column &mdash; audformat Documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../../../_static/favicon.png"/>
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/audeering.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/graphviz.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/copybutton.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/jupyter-sphinx.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/thebelab.css" type="text/css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/katex-math.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    
+      
+    
+  
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          <a href="../../../index.html">
+          
+            <img src="../../../_static/images/audeering.svg" class="logo" alt="audEERING"/>
+          
+          
+            <span> audformat</span>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                v0.9.0-rc3
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Getting started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../create-database.html">Create a database</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../accessing-data.html">Working with a database</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../combine-tables.html">Combine tables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../map-scheme.html">Map scheme labels</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../emodb-example.html">Emodb example</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Format specification</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../data-introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../data-format.html">Database</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../data-conventions.html">Conventions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../data-header.html">Header</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../data-tables.html">Tables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../data-example.html">Example</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">audformat</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api-define.html">audformat.define</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api-errors.html">audformat.errors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api-testing.html">audformat.testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api-utils.html">audformat.utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../genindex.html">Index</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Changelog</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">audformat</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>audformat.core.column</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for audformat.core.column</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="kn">from</span> <span class="nn">audformat.core</span> <span class="kn">import</span> <span class="n">define</span>
+<span class="kn">from</span> <span class="nn">audformat.core.common</span> <span class="kn">import</span> <span class="n">HeaderBase</span>
+<span class="kn">from</span> <span class="nn">audformat.core.index</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">index_type</span><span class="p">,</span>
+    <span class="n">is_scalar</span><span class="p">,</span>
+    <span class="n">to_array</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">audformat.core.scheme</span> <span class="kn">import</span> <span class="n">Scheme</span>
+<span class="kn">from</span> <span class="nn">audformat.core.typing</span> <span class="kn">import</span> <span class="n">Values</span>
+
+
+<span class="k">def</span> <span class="nf">assert_values</span><span class="p">(</span>
+        <span class="n">values</span><span class="p">:</span> <span class="n">Values</span><span class="p">,</span>
+        <span class="n">scheme</span><span class="p">:</span> <span class="n">Scheme</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Raise error if values do not match scheme.&quot;&quot;&quot;</span>
+    <span class="n">ok</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">if</span> <span class="n">scheme</span><span class="o">.</span><span class="n">labels</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span> \
+            <span class="n">scheme</span><span class="o">.</span><span class="n">minimum</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span> \
+            <span class="n">scheme</span><span class="o">.</span><span class="n">maximum</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+
+        <span class="k">if</span> <span class="n">is_scalar</span><span class="p">(</span><span class="n">values</span><span class="p">):</span>
+            <span class="n">ok</span> <span class="o">=</span> <span class="n">values</span> <span class="ow">in</span> <span class="n">scheme</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">):</span>
+                <span class="n">values</span> <span class="o">=</span> <span class="n">values</span><span class="o">.</span><span class="n">values</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">scheme</span><span class="o">.</span><span class="n">is_numeric</span><span class="p">:</span>
+                    <span class="n">values</span> <span class="o">=</span> <span class="p">[</span>
+                        <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">values</span><span class="p">),</span>
+                        <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">values</span><span class="p">),</span>
+                    <span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">values</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+            <span class="n">ok</span> <span class="o">=</span> <span class="nb">all</span><span class="p">([</span><span class="n">value</span> <span class="ow">in</span> <span class="n">scheme</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">values</span><span class="p">])</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">ok</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s1">&#39;Some value(s) do not match scheme:</span><span class="se">\n</span><span class="si">{</span><span class="n">scheme</span><span class="si">}</span><span class="s1">.&#39;</span>
+        <span class="p">)</span>
+
+
+<div class="viewcode-block" id="Column"><a class="viewcode-back" href="../../../api.html#audformat.Column">[docs]</a><span class="k">class</span> <span class="nc">Column</span><span class="p">(</span><span class="n">HeaderBase</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Table column.</span>
+
+<span class="sd">    Represents a table column (see :class:`audformat.Table`) and</span>
+<span class="sd">    optionally links it to a scheme (see :class:`audformat.Scheme`) and</span>
+<span class="sd">    a rater (see :class:`audformat.Rater`).</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        scheme_id: scheme identifier (must exist)</span>
+<span class="sd">        rater_id: rater identifier (must exist)</span>
+<span class="sd">        description: table description</span>
+<span class="sd">        meta: additional meta fields</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; Column(scheme_id=&#39;emotion&#39;)</span>
+<span class="sd">        {scheme_id: emotion}</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="o">*</span><span class="p">,</span>
+            <span class="n">scheme_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">rater_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">meta</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="n">description</span><span class="p">,</span> <span class="n">meta</span><span class="o">=</span><span class="n">meta</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">scheme_id</span> <span class="o">=</span> <span class="n">scheme_id</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Scheme identifier&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rater_id</span> <span class="o">=</span> <span class="n">rater_id</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Rater identifier&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_table</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_id</span> <span class="o">=</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="Column.get"><a class="viewcode-back" href="../../../api.html#audformat.Column.get">[docs]</a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">index</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="o">*</span><span class="p">,</span>
+            <span class="nb">map</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">copy</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">:</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Get labels.</span>
+
+<span class="sd">        By default all labels of the column are returned,</span>
+<span class="sd">        use ``index`` to get a subset.</span>
+
+<span class="sd">        Examples are provided with the</span>
+<span class="sd">        :ref:`table specifications &lt;data-tables:Tables&gt;`.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            index: index conform to</span>
+<span class="sd">                :ref:`table specifications &lt;data-tables:Tables&gt;`</span>
+<span class="sd">            copy: return a copy of the labels</span>
+<span class="sd">            map: map scheme or scheme field to column values.</span>
+<span class="sd">                For example if your column holds speaker IDs and is</span>
+<span class="sd">                assigned to a scheme that contains a dict mapping</span>
+<span class="sd">                speaker IDs to age entries, ``map=&#39;age&#39;``</span>
+<span class="sd">                will replace the ID values with the age of the speaker</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            labels</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            RuntimeError: if column is not assigned to a table</span>
+<span class="sd">            ValueError: if trying to map without a scheme</span>
+<span class="sd">            ValueError: if trying to map from a scheme that has no labels</span>
+<span class="sd">            ValueError: if trying to map to a non-existing field</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_table</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                <span class="s1">&#39;Column is not assigned to a table.&#39;</span>
+            <span class="p">)</span>
+
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_table</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_id</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="nb">map</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+
+            <span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span>  <span class="c1"># to avoid another copy</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">scheme_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Column &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_id</span><span class="si">}</span><span class="s2">&#39; is not assigned to a scheme.&quot;</span>
+                <span class="p">)</span>
+
+            <span class="n">labels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_table</span><span class="o">.</span><span class="n">_db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">scheme_id</span><span class="p">]</span><span class="o">.</span><span class="n">labels</span>
+
+            <span class="k">if</span> <span class="n">labels</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Scheme &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">scheme_id</span><span class="si">}</span><span class="s2">&#39; has no labels.&quot;</span>
+                <span class="p">)</span>
+
+            <span class="n">mapping</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">labels</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="nb">map</span> <span class="ow">in</span> <span class="n">value</span><span class="p">:</span>
+                        <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="p">[</span><span class="nb">map</span><span class="p">]</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                            <span class="sa">f</span><span class="s2">&quot;Cannot map &quot;</span>
+                            <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">mapping</span><span class="si">}</span><span class="s2">&#39; &quot;</span>
+                            <span class="sa">f</span><span class="s2">&quot;to &quot;</span>
+                            <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_id</span><span class="si">}</span><span class="s2">&#39;. &quot;</span>
+                            <span class="sa">f</span><span class="s2">&quot;Expected one of &quot;</span>
+                            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="si">}</span><span class="s2">.&quot;</span>
+                        <span class="p">)</span>
+                <span class="n">mapping</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">mapping</span><span class="p">)</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="nb">map</span>
+
+        <span class="k">return</span> <span class="n">result</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span> <span class="k">if</span> <span class="n">copy</span> <span class="k">else</span> <span class="n">result</span></div>
+
+<div class="viewcode-block" id="Column.set"><a class="viewcode-back" href="../../../api.html#audformat.Column.set">[docs]</a>    <span class="k">def</span> <span class="nf">set</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">values</span><span class="p">:</span> <span class="n">Values</span><span class="p">,</span>
+            <span class="o">*</span><span class="p">,</span>
+            <span class="n">index</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Set labels.</span>
+
+<span class="sd">        By default all labels of the column are replaced,</span>
+<span class="sd">        use ``index`` to set a subset.</span>
+<span class="sd">        If columns is assigned to a :class:`Scheme`</span>
+<span class="sd">        values have to match its ``dtype``.</span>
+
+<span class="sd">        Examples are provided with the</span>
+<span class="sd">        :ref:`table specifications &lt;data-tables:Tables&gt;`.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            values: list of values</span>
+<span class="sd">            index: index conform to</span>
+<span class="sd">                :ref:`table specifications &lt;data-tables:Tables&gt;`</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            RuntimeError: if column is not assign to a table</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_table</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                <span class="s1">&#39;Column is not assigned to a table.&#39;</span>
+            <span class="p">)</span>
+
+        <span class="n">column_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_id</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_table</span><span class="o">.</span><span class="n">df</span>
+
+        <span class="k">if</span> <span class="n">index</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">index</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">index</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">scheme_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">scheme</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_table</span><span class="o">.</span><span class="n">_db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">scheme_id</span><span class="p">]</span>
+            <span class="n">assert_values</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">scheme</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">index_type</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">)</span> <span class="o">==</span> <span class="n">index_type</span><span class="p">(</span><span class="n">index</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">is_scalar</span><span class="p">(</span><span class="n">values</span><span class="p">):</span>
+                <span class="n">values</span> <span class="o">=</span> <span class="p">[</span><span class="n">values</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+            <span class="n">values</span> <span class="o">=</span> <span class="n">to_array</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+            <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">index</span><span class="p">,</span> <span class="n">column_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span>
+                <span class="n">values</span><span class="p">,</span>
+                <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">,</span>
+                <span class="n">dtype</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="n">column_id</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_table</span><span class="o">.</span><span class="n">is_filewise</span><span class="p">:</span>
+                <span class="n">files</span> <span class="o">=</span> <span class="n">index</span><span class="o">.</span><span class="n">get_level_values</span><span class="p">(</span><span class="n">define</span><span class="o">.</span><span class="n">IndexField</span><span class="o">.</span><span class="n">FILE</span><span class="p">)</span>
+                <span class="n">index</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">files</span><span class="p">]</span><span class="o">.</span><span class="n">index</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s1">&#39;Cannot set values of a filewise column &#39;</span>
+                    <span class="s1">&#39;using a segmented index.&#39;</span>
+                <span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div>
+    <p>
+        
+        
+        
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2020/12/18 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+        
+    </p>
+  </div>
+
+  <div role="contentinfo">
+    <p>
+        
+      &copy; 2019-2020 audEERING GmbH
+    </p>
+  </div> 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
+        <script src="../../../_static/clipboard.min.js"></script>
+        <script src="../../../_static/copybutton.js"></script>
+        <script src="../../../_static/thebelab-helper.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js"></script>
+        <script src="../../../_static/katex_autorenderer.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.18.0/dist/embed-amd.js"></script>
+    
+
+  
+
+  <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

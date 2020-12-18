@@ -1,0 +1,754 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>audformat.core.database &mdash; audformat Documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../../../_static/favicon.png"/>
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/audeering.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/graphviz.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/copybutton.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/jupyter-sphinx.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/thebelab.css" type="text/css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/katex-math.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    
+      
+    
+  
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          <a href="../../../index.html">
+          
+            <img src="../../../_static/images/audeering.svg" class="logo" alt="audEERING"/>
+          
+          
+            <span> audformat</span>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                v0.9.0-rc3
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Getting started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../create-database.html">Create a database</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../accessing-data.html">Working with a database</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../combine-tables.html">Combine tables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../map-scheme.html">Map scheme labels</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../emodb-example.html">Emodb example</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Format specification</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../data-introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../data-format.html">Database</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../data-conventions.html">Conventions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../data-header.html">Header</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../data-tables.html">Tables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../data-example.html">Example</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">audformat</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api-define.html">audformat.define</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api-errors.html">audformat.errors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api-testing.html">audformat.testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api-utils.html">audformat.utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../genindex.html">Index</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Changelog</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">audformat</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>audformat.core.database</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for audformat.core.database</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">typing</span>
+
+<span class="kn">import</span> <span class="nn">oyaml</span> <span class="k">as</span> <span class="nn">yaml</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="kn">import</span> <span class="nn">audeer</span>
+
+<span class="kn">from</span> <span class="nn">audformat.core</span> <span class="kn">import</span> <span class="n">define</span>
+<span class="kn">from</span> <span class="nn">audformat.core</span> <span class="kn">import</span> <span class="n">utils</span>
+<span class="kn">from</span> <span class="nn">audformat.core.index</span> <span class="kn">import</span> <span class="n">segmented_index</span>
+<span class="kn">from</span> <span class="nn">audformat.core.column</span> <span class="kn">import</span> <span class="n">Column</span>
+<span class="kn">from</span> <span class="nn">audformat.core.common</span> <span class="kn">import</span> <span class="n">HeaderBase</span><span class="p">,</span> <span class="n">HeaderDict</span>
+<span class="kn">from</span> <span class="nn">audformat.core.errors</span> <span class="kn">import</span> <span class="n">BadIdError</span>
+<span class="kn">from</span> <span class="nn">audformat.core.media</span> <span class="kn">import</span> <span class="n">Media</span>
+<span class="kn">from</span> <span class="nn">audformat.core.rater</span> <span class="kn">import</span> <span class="n">Rater</span>
+<span class="kn">from</span> <span class="nn">audformat.core.scheme</span> <span class="kn">import</span> <span class="n">Scheme</span>
+<span class="kn">from</span> <span class="nn">audformat.core.split</span> <span class="kn">import</span> <span class="n">Split</span>
+<span class="kn">from</span> <span class="nn">audformat.core.table</span> <span class="kn">import</span> <span class="n">Table</span>
+
+
+<div class="viewcode-block" id="Database"><a class="viewcode-back" href="../../../api.html#audformat.Database">[docs]</a><span class="k">class</span> <span class="nc">Database</span><span class="p">(</span><span class="n">HeaderBase</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Database object.</span>
+
+<span class="sd">    A database consists of a header holding raters,</span>
+<span class="sd">    schemes, splits, and other meta information.</span>
+<span class="sd">    In addition it links to a number of tables</span>
+<span class="sd">    listing files and labels.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        name: name of database</span>
+<span class="sd">        source: data source (e.g. link to website)</span>
+<span class="sd">        usage: permission of usage, see :class:`audformat.define.Usage`.</span>
+<span class="sd">            Set to ``OTHER`` if none of the other fields fit.</span>
+<span class="sd">        expires: expiry date</span>
+<span class="sd">        languages: list of languages</span>
+<span class="sd">        description: database description</span>
+<span class="sd">        meta: additional meta fields</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        BadValueError: if an invalid ``usage`` value is passed</span>
+<span class="sd">        ValueError: if language is unknown</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; db = Database(</span>
+<span class="sd">        ...     &#39;mydb&#39;,</span>
+<span class="sd">        ...     &#39;https://www.audeering.com/&#39;,</span>
+<span class="sd">        ...     define.Usage.COMMERCIAL,</span>
+<span class="sd">        ...     languages=[&#39;English&#39;, &#39;de&#39;],</span>
+<span class="sd">        ... )</span>
+<span class="sd">        &gt;&gt;&gt; db</span>
+<span class="sd">        name: mydb</span>
+<span class="sd">        source: https://www.audeering.com/</span>
+<span class="sd">        usage: commercial</span>
+<span class="sd">        languages: [eng, deu]</span>
+<span class="sd">        &gt;&gt;&gt; labels = [&#39;positive&#39;, &#39;neutral&#39;, &#39;negative&#39;]</span>
+<span class="sd">        &gt;&gt;&gt; db.schemes[&#39;emotion&#39;] = Scheme(</span>
+<span class="sd">        ...     labels=labels,</span>
+<span class="sd">        ... )</span>
+<span class="sd">        &gt;&gt;&gt; db.raters[&#39;rater&#39;] = Rater()</span>
+<span class="sd">        &gt;&gt;&gt; db.media[&#39;audio&#39;] = Media(</span>
+<span class="sd">        ...     define.MediaType.AUDIO,</span>
+<span class="sd">        ...     format=&#39;wav&#39;,</span>
+<span class="sd">        ...     sampling_rate=16000,</span>
+<span class="sd">        ... )</span>
+<span class="sd">        &gt;&gt;&gt; db[&#39;table&#39;] = Table(</span>
+<span class="sd">        ...     media_id=&#39;audio&#39;,</span>
+<span class="sd">        ... )</span>
+<span class="sd">        &gt;&gt;&gt; db[&#39;table&#39;][&#39;column&#39;] = Column(</span>
+<span class="sd">        ...     scheme_id=&#39;emotion&#39;,</span>
+<span class="sd">        ...     rater_id=&#39;rater&#39;,</span>
+<span class="sd">        ... )</span>
+<span class="sd">        &gt;&gt;&gt; db</span>
+<span class="sd">        name: mydb</span>
+<span class="sd">        source: https://www.audeering.com/</span>
+<span class="sd">        usage: commercial</span>
+<span class="sd">        languages: [eng, deu]</span>
+<span class="sd">        media:</span>
+<span class="sd">          audio: {type: audio, format: wav, sampling_rate: 16000}</span>
+<span class="sd">        raters:</span>
+<span class="sd">          rater: {type: human}</span>
+<span class="sd">        schemes:</span>
+<span class="sd">          emotion:</span>
+<span class="sd">            dtype: str</span>
+<span class="sd">            labels: [positive, neutral, negative]</span>
+<span class="sd">        tables:</span>
+<span class="sd">          table:</span>
+<span class="sd">            type: filewise</span>
+<span class="sd">            media_id: audio</span>
+<span class="sd">            columns:</span>
+<span class="sd">              column: {scheme_id: emotion, rater_id: rater}</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+            <span class="n">source</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+            <span class="n">usage</span><span class="p">:</span> <span class="n">define</span><span class="o">.</span><span class="n">Usage</span> <span class="o">=</span> <span class="n">define</span><span class="o">.</span><span class="n">Usage</span><span class="o">.</span><span class="n">UNRESTRICTED</span><span class="p">,</span>
+            <span class="o">*</span><span class="p">,</span>
+            <span class="n">expires</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">date</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">languages</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">meta</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="n">define</span><span class="o">.</span><span class="n">Usage</span><span class="o">.</span><span class="n">assert_has_value</span><span class="p">(</span><span class="n">usage</span><span class="p">)</span>
+
+        <span class="n">languages</span> <span class="o">=</span> <span class="p">[]</span> <span class="k">if</span> <span class="n">languages</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">audeer</span><span class="o">.</span><span class="n">to_list</span><span class="p">(</span><span class="n">languages</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">languages</span><span class="p">)):</span>
+            <span class="n">languages</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">map_language</span><span class="p">(</span><span class="n">languages</span><span class="p">[</span><span class="n">idx</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Name of database&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="n">description</span><span class="p">,</span> <span class="n">meta</span><span class="o">=</span><span class="n">meta</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">source</span> <span class="o">=</span> <span class="n">source</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Database source&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">usage</span> <span class="o">=</span> <span class="n">usage</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Usage permission&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">expires</span> <span class="o">=</span> <span class="n">expires</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Expiry date&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">languages</span> <span class="o">=</span> <span class="n">languages</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;List of included languages&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">media</span> <span class="o">=</span> <span class="n">HeaderDict</span><span class="p">(</span><span class="n">value_type</span><span class="o">=</span><span class="n">Media</span><span class="p">)</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Dictionary of media information&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">raters</span> <span class="o">=</span> <span class="n">HeaderDict</span><span class="p">(</span><span class="n">value_type</span><span class="o">=</span><span class="n">Rater</span><span class="p">)</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Dictionary of raters&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">schemes</span> <span class="o">=</span> <span class="n">HeaderDict</span><span class="p">(</span><span class="n">value_type</span><span class="o">=</span><span class="n">Scheme</span><span class="p">)</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Dictionary of schemes&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">splits</span> <span class="o">=</span> <span class="n">HeaderDict</span><span class="p">(</span><span class="n">value_type</span><span class="o">=</span><span class="n">Split</span><span class="p">)</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Dictionary of splits&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tables</span> <span class="o">=</span> <span class="n">HeaderDict</span><span class="p">(</span>
+            <span class="n">value_type</span><span class="o">=</span><span class="n">Table</span><span class="p">,</span> <span class="n">set_callback</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_set_table</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Dictionary of tables&quot;&quot;&quot;</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">files</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">:</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Files referenced in the database.</span>
+
+<span class="sd">        Includes files from filewise and segmented tables.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            files</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">([],</span> <span class="n">name</span><span class="o">=</span><span class="n">define</span><span class="o">.</span><span class="n">IndexField</span><span class="o">.</span><span class="n">FILE</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">table</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tables</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="n">index</span> <span class="o">=</span> <span class="n">index</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="n">table</span><span class="o">.</span><span class="n">files</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">())</span>
+        <span class="k">return</span> <span class="n">index</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">segments</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">MultiIndex</span><span class="p">:</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Segments referenced in the database.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            segments</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="n">segmented_index</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">table</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tables</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">table</span><span class="o">.</span><span class="n">is_segmented</span><span class="p">:</span>
+                <span class="n">index</span> <span class="o">=</span> <span class="n">index</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="n">table</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">MultiIndex</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">index</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">()</span>
+
+<div class="viewcode-block" id="Database.drop_files"><a class="viewcode-back" href="../../../api.html#audformat.Database.drop_files">[docs]</a>    <span class="k">def</span> <span class="nf">drop_files</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">files</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span>
+                <span class="nb">str</span><span class="p">,</span>
+                <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+                <span class="n">typing</span><span class="o">.</span><span class="n">Callable</span><span class="p">[[</span><span class="nb">str</span><span class="p">],</span> <span class="nb">bool</span><span class="p">],</span>
+            <span class="p">]</span>
+    <span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Drop files from tables.</span>
+
+<span class="sd">        Iterate through all tables and remove rows with a reference to</span>
+<span class="sd">        listed or matching files.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            files: list of files or condition function</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">table</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tables</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="n">table</span><span class="o">.</span><span class="n">drop_files</span><span class="p">(</span><span class="n">files</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Database.drop_tables"><a class="viewcode-back" href="../../../api.html#audformat.Database.drop_tables">[docs]</a>    <span class="k">def</span> <span class="nf">drop_tables</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">table_ids</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span>
+    <span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Drop tables by ID.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            table_ids: table IDs to drop</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">table_ids</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">table_ids</span> <span class="o">=</span> <span class="p">[</span><span class="n">table_ids</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">table_id</span> <span class="ow">in</span> <span class="n">table_ids</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tables</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">table_id</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Database.pick_files"><a class="viewcode-back" href="../../../api.html#audformat.Database.pick_files">[docs]</a>    <span class="k">def</span> <span class="nf">pick_files</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">files</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span>
+                <span class="nb">str</span><span class="p">,</span>
+                <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+                <span class="n">typing</span><span class="o">.</span><span class="n">Callable</span><span class="p">[[</span><span class="nb">str</span><span class="p">],</span> <span class="nb">bool</span><span class="p">],</span>
+            <span class="p">]</span>
+    <span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Pick files from tables.</span>
+
+<span class="sd">        Iterate through all tables and keep only rows with a reference</span>
+<span class="sd">        to listed files or matching files.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            files: list of files or condition function</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">table</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tables</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="n">table</span><span class="o">.</span><span class="n">pick_files</span><span class="p">(</span><span class="n">files</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Database.pick_tables"><a class="viewcode-back" href="../../../api.html#audformat.Database.pick_tables">[docs]</a>    <span class="k">def</span> <span class="nf">pick_tables</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">table_ids</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span>
+    <span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Pick tables by ID.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            table_ids: table IDs to pick</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">table_ids</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">table_ids</span> <span class="o">=</span> <span class="p">[</span><span class="n">table_ids</span><span class="p">]</span>
+        <span class="n">drop_ids</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">table_id</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tables</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">table_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">table_ids</span><span class="p">:</span>
+                <span class="n">drop_ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">table_id</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">drop_tables</span><span class="p">(</span><span class="n">drop_ids</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Database.map_files"><a class="viewcode-back" href="../../../api.html#audformat.Database.map_files">[docs]</a>    <span class="k">def</span> <span class="nf">map_files</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">func</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Callable</span><span class="p">[[</span><span class="nb">str</span><span class="p">],</span> <span class="nb">str</span><span class="p">],</span>
+    <span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Apply function to file names in all tables.</span>
+
+<span class="sd">        Relies on :meth:`pandas.Index.map`,</span>
+<span class="sd">        which can be slow.</span>
+<span class="sd">        If speed is crucial,</span>
+<span class="sd">        consider to change the index directly.</span>
+<span class="sd">        In the following example we prefix every file with a folder:</span>
+
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            root = &#39;/root/&#39;</span>
+<span class="sd">            for table in db.tables.values():</span>
+<span class="sd">                if table.is_filewise:</span>
+<span class="sd">                    table.df.index = root + table.df.index</span>
+<span class="sd">                    table.df.index.name = audformat.define.IndexField.FILE</span>
+<span class="sd">                elif len(table.df.index) &gt; 0:</span>
+<span class="sd">                    table.df.index.set_levels(</span>
+<span class="sd">                        root + table.df.index.levels[0],</span>
+<span class="sd">                        audformat.define.IndexField.FILE,</span>
+<span class="sd">                        inplace=True,</span>
+<span class="sd">                    )</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            func: map function</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">table</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tables</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">table</span><span class="o">.</span><span class="n">is_segmented</span><span class="p">:</span>
+                <span class="n">table</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">map</span><span class="p">(</span>
+                    <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="n">func</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">]))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">table</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">map</span><span class="p">(</span>
+                    <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">func</span><span class="p">(</span><span class="n">x</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="Database.save"><a class="viewcode-back" href="../../../api.html#audformat.Database.save">[docs]</a>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">root</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+            <span class="o">*</span><span class="p">,</span>
+            <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;db&#39;</span><span class="p">,</span>
+            <span class="n">indent</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
+            <span class="n">storage_format</span><span class="p">:</span> <span class="n">define</span><span class="o">.</span><span class="n">TableStorageFormat</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">define</span><span class="o">.</span><span class="n">TableStorageFormat</span><span class="o">.</span><span class="n">CSV</span>
+            <span class="p">),</span>
+            <span class="n">header_only</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Save database to disk.</span>
+
+<span class="sd">        Creates a header ``&lt;root&gt;/&lt;name&gt;.yaml`` and for every table</span>
+<span class="sd">        a file ``&lt;root&gt;/&lt;name&gt;.&lt;table-id&gt;.[csv,pkl]``.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            root: root directory (possibly created)</span>
+<span class="sd">            name: base name of files</span>
+<span class="sd">            indent: indent size</span>
+<span class="sd">            storage_format: storage format of tables.</span>
+<span class="sd">                See :class:`audformat.define.TableStorageFormat`</span>
+<span class="sd">                for available formats</span>
+<span class="sd">            header_only: store header only</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">root</span> <span class="o">=</span> <span class="n">audeer</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
+
+        <span class="n">ext</span> <span class="o">=</span> <span class="s1">&#39;.yaml&#39;</span>
+        <span class="n">header_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">name</span> <span class="o">+</span> <span class="n">ext</span><span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">header_path</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="n">indent</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">header_only</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">table_id</span><span class="p">,</span> <span class="n">table</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tables</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">table_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">name</span> <span class="o">+</span> <span class="s1">&#39;.&#39;</span> <span class="o">+</span> <span class="n">table_id</span><span class="p">)</span>
+                <span class="n">table</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">table_path</span><span class="p">,</span> <span class="n">storage_format</span><span class="o">=</span><span class="n">storage_format</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Database.__contains__"><a class="viewcode-back" href="../../../api.html#audformat.Database.__contains__">[docs]</a>    <span class="k">def</span> <span class="fm">__contains__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">table_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Check if table exists.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            table_id: table identifier</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">table_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tables</span></div>
+
+<div class="viewcode-block" id="Database.__getitem__"><a class="viewcode-back" href="../../../api.html#audformat.Database.__getitem__">[docs]</a>    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">table_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Table</span><span class="p">:</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Get table from database.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            table_id: table identifier</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tables</span><span class="p">[</span><span class="n">table_id</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="Database.__setitem__"><a class="viewcode-back" href="../../../api.html#audformat.Database.__setitem__">[docs]</a>    <span class="k">def</span> <span class="fm">__setitem__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">table_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+            <span class="n">table</span><span class="p">:</span> <span class="n">Table</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Table</span><span class="p">:</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Add table to database.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            table_id: table identifier</span>
+<span class="sd">            table: the table</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            BadIdError: if table has a ``split_id`` or ``media_id``,</span>
+<span class="sd">                which is not specified in the underlying database</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tables</span><span class="p">[</span><span class="n">table_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">table</span>
+        <span class="k">return</span> <span class="n">table</span></div>
+
+<div class="viewcode-block" id="Database.load"><a class="viewcode-back" href="../../../api.html#audformat.Database.load">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span>
+            <span class="n">root</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+            <span class="o">*</span><span class="p">,</span>
+            <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;db&#39;</span><span class="p">,</span>
+            <span class="n">load_data</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Database&#39;</span><span class="p">:</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Load database from disk.</span>
+
+<span class="sd">        Expects a header ``&lt;root&gt;/&lt;name&gt;.yaml``</span>
+<span class="sd">        and for every table a file ``&lt;root&gt;/&lt;name&gt;.&lt;table-id&gt;.[csv|pkl]``</span>
+<span class="sd">        Media files should be located under ``root``.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            root: root directory</span>
+<span class="sd">            name: base name of header and table files</span>
+<span class="sd">            load_data: if ``False`` :class:`audformat.Table`</span>
+<span class="sd">                will contain empty tables</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            database object</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ext</span> <span class="o">=</span> <span class="s1">&#39;.yaml&#39;</span>
+        <span class="n">root</span> <span class="o">=</span> <span class="n">audeer</span><span class="o">.</span><span class="n">safe_path</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">name</span> <span class="o">+</span> <span class="n">ext</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
+
+            <span class="n">header</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="n">Loader</span><span class="o">=</span><span class="n">yaml</span><span class="o">.</span><span class="n">Loader</span><span class="p">)</span>
+            <span class="n">db</span> <span class="o">=</span> <span class="n">Database</span><span class="o">.</span><span class="n">load_header_from_yaml</span><span class="p">(</span><span class="n">header</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="s1">&#39;tables&#39;</span> <span class="ow">in</span> <span class="n">header</span> <span class="ow">and</span> <span class="n">header</span><span class="p">[</span><span class="s1">&#39;tables&#39;</span><span class="p">]</span> <span class="ow">and</span> <span class="n">load_data</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">table_id</span><span class="p">,</span> <span class="n">table_d</span> <span class="ow">in</span> <span class="n">header</span><span class="p">[</span><span class="s1">&#39;tables&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="n">table</span> <span class="o">=</span> <span class="n">db</span><span class="p">[</span><span class="n">table_id</span><span class="p">]</span>
+                    <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">name</span> <span class="o">+</span> <span class="s1">&#39;.&#39;</span> <span class="o">+</span> <span class="n">table_id</span><span class="p">)</span>
+                    <span class="n">table</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">db</span></div>
+
+<div class="viewcode-block" id="Database.load_header_from_yaml"><a class="viewcode-back" href="../../../api.html#audformat.Database.load_header_from_yaml">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">load_header_from_yaml</span><span class="p">(</span><span class="n">header</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Database&#39;</span><span class="p">:</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Load database header from YAML.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            header: YAML header definition</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            database object</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># for backward compatibility</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">header</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
+            <span class="nb">id</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">header</span><span class="p">))</span>
+            <span class="n">header</span> <span class="o">=</span> <span class="n">header</span><span class="p">[</span><span class="nb">id</span><span class="p">]</span>
+            <span class="n">header</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">id</span>
+
+        <span class="n">db</span> <span class="o">=</span> <span class="n">Database</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">],</span>
+            <span class="n">source</span><span class="o">=</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;source&#39;</span><span class="p">],</span>
+            <span class="n">usage</span><span class="o">=</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;usage&#39;</span><span class="p">])</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">header</span><span class="p">,</span> <span class="n">ignore_keys</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;media&#39;</span><span class="p">,</span> <span class="s1">&#39;raters&#39;</span><span class="p">,</span> <span class="s1">&#39;schemes&#39;</span><span class="p">,</span>
+                                          <span class="s1">&#39;tables&#39;</span><span class="p">,</span> <span class="s1">&#39;splits&#39;</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="s1">&#39;media&#39;</span> <span class="ow">in</span> <span class="n">header</span> <span class="ow">and</span> <span class="n">header</span><span class="p">[</span><span class="s1">&#39;media&#39;</span><span class="p">]:</span>
+            <span class="k">for</span> <span class="n">media_id</span><span class="p">,</span> <span class="n">media_d</span> <span class="ow">in</span> <span class="n">header</span><span class="p">[</span><span class="s1">&#39;media&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">media</span> <span class="o">=</span> <span class="n">Media</span><span class="p">()</span>
+                <span class="n">media</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">media_d</span><span class="p">)</span>
+                <span class="n">db</span><span class="o">.</span><span class="n">media</span><span class="p">[</span><span class="n">media_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">media</span>
+
+        <span class="k">if</span> <span class="s1">&#39;raters&#39;</span> <span class="ow">in</span> <span class="n">header</span> <span class="ow">and</span> <span class="n">header</span><span class="p">[</span><span class="s1">&#39;raters&#39;</span><span class="p">]:</span>
+            <span class="k">for</span> <span class="n">rater_id</span><span class="p">,</span> <span class="n">rater_d</span> <span class="ow">in</span> <span class="n">header</span><span class="p">[</span><span class="s1">&#39;raters&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">rater</span> <span class="o">=</span> <span class="n">Rater</span><span class="p">()</span>
+                <span class="n">rater</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">rater_d</span><span class="p">)</span>
+                <span class="n">db</span><span class="o">.</span><span class="n">raters</span><span class="p">[</span><span class="n">rater_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">rater</span>
+
+        <span class="k">if</span> <span class="s1">&#39;schemes&#39;</span> <span class="ow">in</span> <span class="n">header</span> <span class="ow">and</span> <span class="n">header</span><span class="p">[</span><span class="s1">&#39;schemes&#39;</span><span class="p">]:</span>
+            <span class="k">for</span> <span class="n">scheme_id</span><span class="p">,</span> <span class="n">scheme_d</span> <span class="ow">in</span> <span class="n">header</span><span class="p">[</span><span class="s1">&#39;schemes&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">scheme</span> <span class="o">=</span> <span class="n">Scheme</span><span class="p">()</span>
+                <span class="n">scheme</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">scheme_d</span><span class="p">)</span>
+                <span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="n">scheme_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">scheme</span>
+
+        <span class="k">if</span> <span class="s1">&#39;splits&#39;</span> <span class="ow">in</span> <span class="n">header</span> <span class="ow">and</span> <span class="n">header</span><span class="p">[</span><span class="s1">&#39;splits&#39;</span><span class="p">]:</span>
+            <span class="k">for</span> <span class="n">split_id</span><span class="p">,</span> <span class="n">split_d</span> <span class="ow">in</span> <span class="n">header</span><span class="p">[</span><span class="s1">&#39;splits&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">split</span> <span class="o">=</span> <span class="n">Split</span><span class="p">()</span>
+                <span class="n">split</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">split_d</span><span class="p">)</span>
+                <span class="n">db</span><span class="o">.</span><span class="n">splits</span><span class="p">[</span><span class="n">split_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">split</span>
+
+        <span class="k">if</span> <span class="s1">&#39;tables&#39;</span> <span class="ow">in</span> <span class="n">header</span> <span class="ow">and</span> <span class="n">header</span><span class="p">[</span><span class="s1">&#39;tables&#39;</span><span class="p">]:</span>
+            <span class="k">for</span> <span class="n">table_id</span><span class="p">,</span> <span class="n">table_d</span> <span class="ow">in</span> <span class="n">header</span><span class="p">[</span><span class="s1">&#39;tables&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">table</span> <span class="o">=</span> <span class="n">Table</span><span class="p">()</span>
+                <span class="n">table</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">table_d</span><span class="p">,</span> <span class="n">ignore_keys</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;is_segmented&#39;</span><span class="p">,</span>
+                                                      <span class="s1">&#39;columns&#39;</span><span class="p">])</span>
+                <span class="k">if</span> <span class="s1">&#39;columns&#39;</span> <span class="ow">in</span> <span class="n">table_d</span> <span class="ow">and</span> <span class="n">table_d</span><span class="p">[</span><span class="s1">&#39;columns&#39;</span><span class="p">]:</span>
+                    <span class="n">tmp_callback</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">set_callback</span>
+                    <span class="n">table</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">set_callback</span> <span class="o">=</span> <span class="kc">None</span>
+                    <span class="k">for</span> <span class="n">column_id</span><span class="p">,</span> <span class="n">column_d</span> <span class="ow">in</span> \
+                            <span class="n">table_d</span><span class="p">[</span><span class="s1">&#39;columns&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                        <span class="n">column</span> <span class="o">=</span> <span class="n">Column</span><span class="p">()</span>
+                        <span class="n">column</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span>
+                            <span class="n">column_d</span><span class="p">,</span> <span class="n">ignore_keys</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;has_confidence&#39;</span><span class="p">]</span>
+                        <span class="p">)</span>
+                        <span class="n">column</span><span class="o">.</span><span class="n">_id</span> <span class="o">=</span> <span class="n">column_id</span>
+                        <span class="n">column</span><span class="o">.</span><span class="n">_table</span> <span class="o">=</span> <span class="n">table</span>
+                        <span class="n">table</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="n">column_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">column</span>
+
+                        <span class="c1"># for backward compatibility we insert</span>
+                        <span class="c1"># confidences as a regular column</span>
+                        <span class="k">if</span> <span class="s1">&#39;has_confidence&#39;</span> <span class="ow">in</span> <span class="n">column_d</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
+                            <span class="n">column</span> <span class="o">=</span> <span class="n">Column</span><span class="p">()</span>
+                            <span class="n">column</span><span class="o">.</span><span class="n">_id</span> <span class="o">=</span> <span class="s1">&#39;@&#39;</span> <span class="o">+</span> <span class="n">column_id</span>
+                            <span class="n">column</span><span class="o">.</span><span class="n">_table</span> <span class="o">=</span> <span class="n">table</span>
+                            <span class="n">table</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="s1">&#39;@&#39;</span> <span class="o">+</span> <span class="n">column_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">column</span>
+
+                    <span class="n">table</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">set_callback</span> <span class="o">=</span> <span class="n">tmp_callback</span>
+                <span class="n">db</span><span class="p">[</span><span class="n">table_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">table</span>
+
+        <span class="k">return</span> <span class="n">db</span></div>
+
+    <span class="k">def</span> <span class="nf">_set_table</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">table_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+            <span class="n">table</span><span class="p">:</span> <span class="n">Table</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Table</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">table</span><span class="o">.</span><span class="n">split_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">table</span><span class="o">.</span><span class="n">split_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">splits</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">BadIdError</span><span class="p">(</span><span class="s1">&#39;split&#39;</span><span class="p">,</span> <span class="n">table</span><span class="o">.</span><span class="n">split_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">splits</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">table</span><span class="o">.</span><span class="n">media_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">table</span><span class="o">.</span><span class="n">media_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">media</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">BadIdError</span><span class="p">(</span><span class="s1">&#39;media&#39;</span><span class="p">,</span> <span class="n">table</span><span class="o">.</span><span class="n">media_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">media</span><span class="p">)</span>
+        <span class="n">table</span><span class="o">.</span><span class="n">_db</span> <span class="o">=</span> <span class="bp">self</span>
+        <span class="n">table</span><span class="o">.</span><span class="n">_id</span> <span class="o">=</span> <span class="n">table_id</span>
+        <span class="k">return</span> <span class="n">table</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div>
+    <p>
+        
+        
+        
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2020/12/18 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+        
+    </p>
+  </div>
+
+  <div role="contentinfo">
+    <p>
+        
+      &copy; 2019-2020 audEERING GmbH
+    </p>
+  </div> 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
+        <script src="../../../_static/clipboard.min.js"></script>
+        <script src="../../../_static/copybutton.js"></script>
+        <script src="../../../_static/thebelab-helper.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js"></script>
+        <script src="../../../_static/katex_autorenderer.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.18.0/dist/embed-amd.js"></script>
+    
+
+  
+
+  <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

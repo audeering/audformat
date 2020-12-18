@@ -1,0 +1,499 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Create a database &mdash; audformat Documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="_static/favicon.png"/>
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/audeering.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
+  <link rel="stylesheet" href="_static/copybutton.css" type="text/css" />
+  <link rel="stylesheet" href="_static/jupyter-sphinx.css" type="text/css" />
+  <link rel="stylesheet" href="_static/thebelab.css" type="text/css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" type="text/css" />
+  <link rel="stylesheet" href="_static/katex-math.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Working with a database" href="accessing-data.html" />
+    <link rel="prev" title="Installation" href="install.html" />
+    
+      
+    
+  
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          <a href="index.html">
+          
+            <img src="_static/images/audeering.svg" class="logo" alt="audEERING"/>
+          
+          
+            <span> audformat</span>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                v0.9.0-rc3
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Getting started</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Create a database</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#use-existing-audio-and-csv-files">Use existing audio and CSV files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#create-a-test-database">Create a test database</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="accessing-data.html">Working with a database</a></li>
+<li class="toctree-l1"><a class="reference internal" href="combine-tables.html">Combine tables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="map-scheme.html">Map scheme labels</a></li>
+<li class="toctree-l1"><a class="reference internal" href="emodb-example.html">Emodb example</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Format specification</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="data-introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data-format.html">Database</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data-conventions.html">Conventions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data-header.html">Header</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data-tables.html">Tables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data-example.html">Example</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api.html">audformat</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api-define.html">audformat.define</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api-errors.html">audformat.errors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api-testing.html">audformat.testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api-utils.html">audformat.utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="genindex.html">Index</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">audformat</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Create a database</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            
+              <a href="https://github.com/audeering/audformat/blob/v0.9.0-rc3/docs/create-database.rst" class="fa fa-github"> Edit on GitHub</a>
+            
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="create-a-database">
+<h1>Create a database<a class="headerlink" href="#create-a-database" title="Permalink to this headline">¶</a></h1>
+<p>The following examples show you
+how to create a <a class="reference internal" href="api.html#audformat.Database" title="audformat.Database"><code class="xref py py-class docutils literal notranslate"><span class="pre">audformat.Database</span></code></a>
+and store it to the disk.</p>
+<div class="section" id="use-existing-audio-and-csv-files">
+<h2>Use existing audio and CSV files<a class="headerlink" href="#use-existing-audio-and-csv-files" title="Permalink to this headline">¶</a></h2>
+<p>Assume you have three audio files
+in a sub-folder <code class="file docutils literal notranslate"><span class="pre">audio</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">audio</span><span class="o">/</span><span class="n">utt01</span><span class="o">.</span><span class="n">wav</span>
+<span class="n">audio</span><span class="o">/</span><span class="n">utt02</span><span class="o">.</span><span class="n">wav</span>
+<span class="n">audio</span><span class="o">/</span><span class="n">utt03</span><span class="o">.</span><span class="n">wav</span>
+</pre></div>
+</div>
+<p>Let’s assume in addition you have
+three raters annotated the files
+for the emotion anger in the range 0 to 5.</p>
+<div class="jupyter_cell jupyter_container docutils container">
+<div class="cell_input code_cell docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">io</span>
+
+
+<span class="c1"># Create dummy CSV data.</span>
+<span class="c1"># In a real example this would be a file on your disk</span>
+<span class="n">CSV</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">StringIO</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;</span>
+<span class="s1">file,R1,R2,R3</span>
+<span class="s1">audio/utt01.wav,1,0,1</span>
+<span class="s1">audio/utt02.wav,1,3,2</span>
+<span class="s1">audio/utt03.wav,,5,4</span>
+<span class="s1">&#39;&#39;&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+</div>
+</div>
+<p>From the CSV file you create a <a class="reference internal" href="api.html#audformat.Database" title="audformat.Database"><code class="xref py py-class docutils literal notranslate"><span class="pre">audformat.Database</span></code></a>.
+The database will contain one <a class="reference internal" href="api.html#audformat.Table" title="audformat.Table"><code class="xref py py-class docutils literal notranslate"><span class="pre">audformat.Table</span></code></a>
+with the ID <code class="docutils literal notranslate"><span class="pre">anger</span></code>,
+split ID <code class="docutils literal notranslate"><span class="pre">train</span></code>,
+and media ID <code class="docutils literal notranslate"><span class="pre">microphone</span></code>.
+The table contains three <a class="reference internal" href="api.html#audformat.Column" title="audformat.Column"><code class="xref py py-class docutils literal notranslate"><span class="pre">audformat.Column</span></code></a> objects,
+one per rater.
+Each column has the scheme ID <code class="docutils literal notranslate"><span class="pre">anger</span></code>
+for the defined scheme covering the emotion anger.</p>
+<div class="jupyter_cell jupyter_container docutils container">
+<div class="cell_input code_cell docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">audformat</span>
+
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">CSV</span><span class="p">)</span>
+
+<span class="c1"># Create database</span>
+<span class="n">db</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Database</span><span class="p">(</span>
+    <span class="n">name</span><span class="o">=</span><span class="s1">&#39;foo&#39;</span><span class="p">,</span>
+    <span class="n">source</span><span class="o">=</span><span class="s1">&#39;https://github.com/audeering/audformat/&#39;</span><span class="p">,</span>
+    <span class="n">usage</span><span class="o">=</span><span class="n">audformat</span><span class="o">.</span><span class="n">define</span><span class="o">.</span><span class="n">Usage</span><span class="o">.</span><span class="n">UNRESTRICTED</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="c1"># Add media, split and scheme</span>
+<span class="n">db</span><span class="o">.</span><span class="n">media</span><span class="p">[</span><span class="s1">&#39;microphone&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Media</span><span class="p">(</span>
+    <span class="n">audformat</span><span class="o">.</span><span class="n">define</span><span class="o">.</span><span class="n">MediaType</span><span class="o">.</span><span class="n">AUDIO</span><span class="p">,</span>
+    <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;wav&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">db</span><span class="o">.</span><span class="n">splits</span><span class="p">[</span><span class="s1">&#39;train&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Split</span><span class="p">(</span>
+    <span class="n">audformat</span><span class="o">.</span><span class="n">define</span><span class="o">.</span><span class="n">SplitType</span><span class="o">.</span><span class="n">TRAIN</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s1">&#39;anger&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Scheme</span><span class="p">(</span>
+    <span class="n">audformat</span><span class="o">.</span><span class="n">define</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">INTEGER</span><span class="p">,</span>
+    <span class="n">minimum</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="n">maximum</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="c1"># Create table and fill with data</span>
+<span class="n">db</span><span class="p">[</span><span class="s1">&#39;anger&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Table</span><span class="p">(</span>
+    <span class="n">index</span><span class="o">=</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">,</span>
+    <span class="n">media_id</span><span class="o">=</span><span class="s1">&#39;microphone&#39;</span><span class="p">,</span>
+    <span class="n">split_id</span><span class="o">=</span><span class="s1">&#39;train&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="k">for</span> <span class="n">rater</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">raters</span><span class="p">[</span><span class="n">rater</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Rater</span><span class="p">()</span>
+    <span class="n">db</span><span class="p">[</span><span class="s1">&#39;anger&#39;</span><span class="p">][</span><span class="n">rater</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">scheme_id</span><span class="o">=</span><span class="s1">&#39;anger&#39;</span><span class="p">,</span> <span class="n">rater_id</span><span class="o">=</span><span class="n">rater</span><span class="p">)</span>
+    <span class="n">db</span><span class="p">[</span><span class="s1">&#39;anger&#39;</span><span class="p">][</span><span class="n">rater</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">rater</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+</div>
+</div>
+<p>The resulting <a class="reference internal" href="api.html#audformat.Database" title="audformat.Database"><code class="xref py py-class docutils literal notranslate"><span class="pre">audformat.Database</span></code></a> will then contain:</p>
+<div class="jupyter_cell jupyter_container docutils container">
+<div class="cell_input code_cell docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">db</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>name: foo
+source: https://github.com/audeering/audformat/
+usage: unrestricted
+languages: []
+media:
+  microphone: {type: audio, format: wav}
+raters:
+  R1: {type: human}
+  R2: {type: human}
+  R3: {type: human}
+schemes:
+  anger: {dtype: int, minimum: 0, maximum: 5}
+splits:
+  train: {type: train}
+tables:
+  anger:
+    type: filewise
+    split_id: train
+    media_id: microphone
+    columns:
+      R1: {scheme_id: anger, rater_id: R1}
+      R2: {scheme_id: anger, rater_id: R2}
+      R3: {scheme_id: anger, rater_id: R3}
+</pre></div>
+</div>
+</div>
+</div>
+<p>For more information on how to define a database,
+have a look at the code examples in the
+<a class="reference internal" href="data-header.html#database"><span class="std std-ref">database specification</span></a>.</p>
+</div>
+<div class="section" id="create-a-test-database">
+<h2>Create a test database<a class="headerlink" href="#create-a-test-database" title="Permalink to this headline">¶</a></h2>
+<p>If you want to write unit tests using a <a class="reference internal" href="api.html#audformat.Database" title="audformat.Database"><code class="xref py py-class docutils literal notranslate"><span class="pre">audformat.Database</span></code></a>,
+or you just want to play around with a database
+without creating one, you can use <a class="reference internal" href="api-testing.html#module-audformat.testing" title="audformat.testing"><code class="xref py py-mod docutils literal notranslate"><span class="pre">audformat.testing</span></code></a>.
+It provides you with a command to create a database,
+containing all possible <a class="reference internal" href="data-tables.html#tables"><span class="std std-ref">tables types</span></a>:</p>
+<div class="jupyter_cell jupyter_container docutils container">
+<div class="cell_input code_cell docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">audformat.testing</span>
+
+
+<span class="n">db</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">create_db</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+</div>
+</div>
+<p>Which results in the following <a class="reference internal" href="api.html#audformat.Table" title="audformat.Table"><code class="xref py py-class docutils literal notranslate"><span class="pre">audformat.Table</span></code></a> objects:</p>
+<div class="jupyter_cell jupyter_container docutils container">
+<div class="cell_input code_cell docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="o">.</span><span class="n">tables</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>files:
+  type: filewise
+  split_id: train
+  media_id: microphone
+  columns:
+    string: {scheme_id: string, rater_id: gold}
+    int: {scheme_id: int, rater_id: gold}
+    float: {scheme_id: float, rater_id: gold}
+    time: {scheme_id: time, rater_id: gold}
+    date: {scheme_id: date, rater_id: gold}
+    label: {scheme_id: label, rater_id: gold}
+    label_map_str: {scheme_id: label_map_str, rater_id: gold}
+    label_map_int: {scheme_id: label_map_int, rater_id: gold}
+    no_scheme: {}
+segments:
+  type: segmented
+  split_id: dev
+  media_id: microphone
+  columns:
+    string: {scheme_id: string, rater_id: gold}
+    int: {scheme_id: int, rater_id: gold}
+    float: {scheme_id: float, rater_id: gold}
+    time: {scheme_id: time, rater_id: gold}
+    date: {scheme_id: date, rater_id: gold}
+    label: {scheme_id: label, rater_id: gold}
+    label_map_str: {scheme_id: label_map_str, rater_id: gold}
+    label_map_int: {scheme_id: label_map_int, rater_id: gold}
+    no_scheme: {}
+</pre></div>
+</div>
+</div>
+</div>
+<p>Or you can create a database,
+containing only the minimum entries,
+required by the <a class="reference internal" href="data-header.html#database"><span class="std std-ref">database specification</span></a>:</p>
+<div class="jupyter_cell jupyter_container docutils container">
+<div class="cell_input code_cell docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">db_minimal</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">create_db</span><span class="p">(</span><span class="n">minimal</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+</div>
+</div>
+<p>Which results in the following <a class="reference internal" href="api.html#audformat.Database" title="audformat.Database"><code class="xref py py-class docutils literal notranslate"><span class="pre">audformat.Database</span></code></a>:</p>
+<div class="jupyter_cell jupyter_container docutils container">
+<div class="cell_input code_cell docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">db_minimal</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>name: unittest
+source: internal
+usage: unrestricted
+languages: [deu, eng]
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="accessing-data.html" class="btn btn-neutral float-right" title="Working with a database" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="install.html" class="btn btn-neutral float-left" title="Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div>
+    <p>
+        
+        
+        
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2020/12/18 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+        
+    </p>
+  </div>
+
+  <div role="contentinfo">
+    <p>
+        
+      &copy; 2019-2020 audEERING GmbH
+    </p>
+  </div> 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script src="_static/clipboard.min.js"></script>
+        <script src="_static/copybutton.js"></script>
+        <script src="_static/thebelab-helper.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js"></script>
+        <script src="_static/katex_autorenderer.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.18.0/dist/embed-amd.js"></script>
+    
+
+  
+
+  <script type="text/javascript" src="_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
