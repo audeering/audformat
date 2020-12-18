@@ -60,9 +60,7 @@ from audformat import define
         # invalid index
         pytest.param(
             [pd.DataFrame([1, 2, 3])], None,
-            marks=pytest.mark.xfail(
-                raises=audformat.errors.InvalidIndex
-            ),
+            marks=pytest.mark.xfail(raises=ValueError),
         )
     ],
 )
@@ -226,9 +224,7 @@ f2,00:00:02,00:00:03,2.0,c'''),
 1.0
 2.0'''),
         None,
-        marks=pytest.mark.xfail(
-            raises=audformat.errors.InvalidIndex,
-        )
+        marks=pytest.mark.xfail(raises=ValueError)
     )
 ])
 def test_read_csv(csv, result):

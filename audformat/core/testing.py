@@ -261,9 +261,8 @@ def create_db(minimal: bool = False) -> Database:
                 'label2': {'prop1': 2, 'prop2': 'b'},
                 'label3': {'prop1': 3, 'prop2': 'c'}})
     db.schemes['label_map_int'] = Scheme(
-        labels={1: {'prop1': 1, 'prop2': 'a'},
-                2: {'prop1': 2, 'prop2': 'b'},
-                3: {'prop1': 3, 'prop2': 'c'}})
+        labels={1: 'a', 2: 'b', 3: 'c'}
+    )
 
     ##########
     # Splits #

@@ -1,7 +1,5 @@
 import typing
 
-from audformat.core import define
-
 
 class BadValueError(ValueError):
     """Raised when a value is not in a list of pre-defined strings.
@@ -55,29 +53,4 @@ class BadIdError(ValueError):
                 f"Bad {name} ID '{invalid_id}', "
                 f"expected one of {list(dictionary)}"
             )
-        super().__init__(message)
-
-
-class CannotCreateSegmentedIndex(ValueError):
-    r"""Raised when segmented table cannot be created."""
-    def __init__(self):
-        message = (
-            "Cannot create segmented table if 'files', "
-            "'starts', and 'ends' differ in size"
-        )
-        super().__init__(message)
-
-
-class ColumnNotAssignedToTableError(ValueError):
-    r"""Raised when column is not assigned to a table."""
-    def __init__(self):
-        message = 'Column is not assigned to a table'
-        super().__init__(message)
-
-
-class InvalidIndex(ValueError):
-    r"""Raised when index is not conform to
-    :ref:`table specifications <data-tables:Tables>`."""
-    def __init__(self):
-        message = 'Index not conform to audformat.'
         super().__init__(message)

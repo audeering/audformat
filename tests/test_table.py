@@ -2,6 +2,8 @@ import pytest
 import numpy as np
 import pandas as pd
 
+import audeer
+
 import audformat
 import audformat.testing
 
@@ -492,6 +494,45 @@ def test_from_frame(table_id):
     pd.testing.assert_frame_equal(db[table_id].df, df)
 
     db.drop_tables(list(db.tables))
+
+
+@pytest.mark.parametrize(
+    'table, map',
+    [
+        (pytest.DB['files'], {'label_map_int': 'int'}),
+        (pytest.DB['files'], {'label_map_int': 'label_map_int'}),
+        (pytest.DB['files'], {'label_map_str': 'prop1'}),
+        (pytest.DB['segments'], {'label_map_str': ['prop1', 'prop2']}),
+        (pytest.DB['segments'], {  # duplicates will be ignored
+            'label_map_str': ['prop1', 'prop2', 'prop1', 'prop2']
+        }),
+        (pytest.DB['segments'], {
+            'label_map_str': ['label_map_str', 'prop1', 'prop2']
+        }),
+        pytest.param(  # no database
+            audformat.Table(), 'map',
+            marks=pytest.mark.xfail(raises=RuntimeError),
+        ),
+    ]
+)
+def test_map(table, map):
+    result = table.get(map=map)
+    expected = table.get()
+    for column, mapped_columns in map.items():
+        mapped_columns = audeer.to_list(mapped_columns)
+        if len(mapped_columns) == 1:
+            expected[mapped_columns[0]] = table.columns[column].get(
+                map=mapped_columns[0],
+            )
+        else:
+            for mapped_column in mapped_columns:
+                if mapped_column != column:
+                    expected[mapped_column] = table.columns[column].get(
+                        map=mapped_column,
+                    )
+        if column not in mapped_columns:
+            expected.drop(columns=column, inplace=True)
+    pd.testing.assert_frame_equal(result, expected)
 
 
 @pytest.mark.parametrize('num_files,num_segments_per_file,values', [

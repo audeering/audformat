@@ -16,17 +16,19 @@ def test_access():
 
 def test_exceptions():
     column = audformat.Column()
-    with pytest.raises(audformat.errors.ColumnNotAssignedToTableError):
+    with pytest.raises(RuntimeError):
         column.set([])
-    with pytest.raises(audformat.errors.ColumnNotAssignedToTableError):
+    with pytest.raises(RuntimeError):
         column.get()
 
 
-@pytest.mark.parametrize('num_files,values', [
-    (6, [0.0, 1.0, 2.0, 3.0, 4.0, 5.0]),
-    (6, np.array([0.0, 1.0, 2.0, 3.0, 4.0, 5.0])),
-    (6, pd.Series(range(6), dtype='float').values,),
-])
+@pytest.mark.parametrize(
+    'num_files, values', [
+        (6, [0.0, 1.0, 2.0, 3.0, 4.0, 5.0]),
+        (6, np.array([0.0, 1.0, 2.0, 3.0, 4.0, 5.0])),
+        (6, pd.Series(range(6), dtype='float').values,),
+    ]
+)
 def test_filewise(num_files, values):
 
     db = audformat.testing.create_db(minimal=True)
@@ -105,11 +107,51 @@ def test_filewise(num_files, values):
         column.set([], index=index)
 
 
-@pytest.mark.parametrize('num_files,num_segments_per_file,values', [
-    (3, 2, [0.0, 1.0, 2.0, 3.0, 4.0, 5.0]),
-    (3, 2, np.array([0.0, 1.0, 2.0, 3.0, 4.0, 5.0])),
-    (3, 2, pd.Series(range(6), dtype='float').values),
-])
+@pytest.mark.parametrize(
+    'column, map',
+    [
+        (pytest.DB['files']['label_map_int'], 'int'),
+        (pytest.DB['files']['label_map_int'], 'label_map_int'),
+        (pytest.DB['files']['label_map_str'], 'prop1'),
+        (pytest.DB['segments']['label_map_str'], 'prop2'),
+        pytest.param(  # no schemes
+            pytest.DB['files']['no_scheme'], 'map',
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
+        pytest.param(  # no labels
+            pytest.DB['files']['string'], 'map',
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
+        pytest.param(  # no labels
+            pytest.DB['files']['string'], 'map',
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
+        pytest.param(  # no labels
+            pytest.DB['files']['label_map_str'], 'bad',
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
+    ]
+)
+def test_map(column, map):
+    result = column.get(map=map)
+    expected = column.get()
+    mapping = {}
+    for key, value in pytest.DB.schemes[column.scheme_id].labels.items():
+        if isinstance(value, dict):
+            value = value[map]
+        mapping[key] = value
+    expected = expected.map(mapping)
+    expected.name = map
+    pd.testing.assert_series_equal(result, expected)
+
+
+@pytest.mark.parametrize(
+    'num_files, num_segments_per_file, values', [
+        (3, 2, [0.0, 1.0, 2.0, 3.0, 4.0, 5.0]),
+        (3, 2, np.array([0.0, 1.0, 2.0, 3.0, 4.0, 5.0])),
+        (3, 2, pd.Series(range(6), dtype='float').values),
+    ]
+)
 def test_segmented(num_files, num_segments_per_file, values):
 
     db = audformat.testing.create_db(minimal=True)

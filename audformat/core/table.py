@@ -1,3 +1,4 @@
+from collections.abc import Iterable
 import os
 import typing
 
@@ -488,6 +489,9 @@ class Table(HeaderBase):
             self,
             index: pd.Index = None,
             *,
+            map: typing.Dict[
+                str, typing.Union[str, typing.Sequence[str]]
+            ] = None,
             copy: bool = True,
     ) -> pd.DataFrame:
         r"""Get labels.
@@ -502,11 +506,28 @@ class Table(HeaderBase):
             index: index conform to
                 :ref:`table specifications <data-tables:Tables>`
             copy: return a copy of the labels
+            map: map scheme or scheme fields to column values.
+                For example if your table holds a column ``speaker`` with
+                speaker IDs, which is assigned to a scheme that contains a
+                dict mapping speaker IDs to age and gender entries,
+                ``map={'speaker': ['age', 'gender']}``
+                will replace the column with two new columns that map ID
+                values to age and gender, respectively.
+                To also keep the original column with speaker IDS, you can do
+                ``map={'speaker': ['speaker', 'age', 'gender']}``
 
         Returns:
             labels
 
+        Raises:
+            RuntimeError: if table is not assign to a database
+            ValueError: if trying to map without a scheme
+            ValueError: if trying to map from a scheme that has no labels
+            ValueError: if trying to map to a non-existing field
+
         """
+        result_is_copy = False
+
         if index is None:
             result = self._df
         else:
@@ -520,12 +541,38 @@ class Table(HeaderBase):
                         index,
                         columns=self.columns
                     )
-                    copy = False  # we already have a copy
+                    result_is_copy = True  # to avoid another copy
                 else:  # index is filewise
                     files = list(dict.fromkeys(files))  # remove duplicates
                     result = self._df.loc[files]
 
-        return result.copy() if copy else result
+        if map is not None:
+
+            if self._db is None:
+                raise RuntimeError(
+                    'Table is not assigned to a database.'
+                )
+
+            if not result_is_copy:
+                result = result.copy()
+                result_is_copy = True  # to avoid another copy
+
+            for column, mapped_columns in map.items():
+                mapped_columns = audeer.to_list(mapped_columns)
+                if len(mapped_columns) == 1:
+                    result[mapped_columns[0]] = self.columns[column].get(
+                        index, map=mapped_columns[0],
+                    )
+                else:
+                    for mapped_column in mapped_columns:
+                        if mapped_column != column:
+                            result[mapped_column] = self.columns[column].get(
+                                index, map=mapped_column,
+                            )
+                if column not in mapped_columns:
+                    result.drop(columns=column, inplace=True)
+
+        return result.copy() if (copy and not result_is_copy) else result
 
     def load(
             self,

@@ -257,6 +257,15 @@ Example:
 
     db['files'].get()
 
+You can access the additional information with the ``map`` argument
+of :meth:`audformat.Table.get`,
+see :ref:`map-scheme-labels`
+for an extended documentation.
+
+.. jupyter-execute::
+
+    db['files'].get(map={'speaker': 'gender'})
+
 
 File duration and temporal data
 -------------------------------

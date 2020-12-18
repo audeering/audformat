@@ -14,7 +14,6 @@ from audformat.core.index import (
     filewise_index,
     segmented_index,
 )
-from audformat.core.errors import InvalidIndex
 
 
 def concat(
@@ -192,7 +191,7 @@ def read_csv(
     if define.IndexField.FILE in frame.columns:
         files = frame[define.IndexField.FILE].astype(str)
     else:
-        raise InvalidIndex()
+        raise ValueError('Index not conform to audformat.')
 
     starts = None
     if define.IndexField.START in frame.columns:

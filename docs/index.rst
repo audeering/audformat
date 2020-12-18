@@ -11,6 +11,7 @@
     create-database
     accessing-data
     combine-tables
+    map-scheme
 
 .. toctree::
     :caption: Format specification

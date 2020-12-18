@@ -4,10 +4,6 @@ import numpy as np
 import pandas as pd
 
 from audformat.core import define
-from audformat.errors import (
-    CannotCreateSegmentedIndex,
-    InvalidIndex,
-)
 from audformat.core.typing import (
     Files,
     Timestamps,
@@ -63,7 +59,7 @@ def index_type(
         table type
 
     Raises:
-        NotConformToUnifiedFormat: if not conform to
+        ValueError: if not conform to
             :ref:`table specifications <data-tables:Tables>`
 
     """
@@ -79,7 +75,7 @@ def index_type(
             obj.names[2] == define.IndexField.END:
         return define.IndexType.SEGMENTED
 
-    raise InvalidIndex()
+    raise ValueError('Index not conform to audformat.')
 
 
 def segmented_index(
@@ -105,8 +101,7 @@ def segmented_index(
         segmented index
 
     Raises:
-        CannotCreateSegmentedIndex: if ``files``, ``start`` and ``ends``
-            differ in size
+        ValueError: if ``files``, ``start`` and ``ends`` differ in size
 
     """
     files = to_array(files)
@@ -125,7 +120,10 @@ def segmented_index(
         ends = [pd.NaT] * num_files
 
     if num_files != len(starts) or num_files != len(ends):
-        raise CannotCreateSegmentedIndex()
+        raise ValueError(
+            "Cannot create segmented table if 'files', "
+            "'starts', and 'ends' differ in size",
+        )
 
     return pd.MultiIndex.from_arrays(
         [files, pd.to_timedelta(starts), pd.to_timedelta(ends)],

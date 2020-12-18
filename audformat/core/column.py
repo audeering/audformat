@@ -9,7 +9,6 @@ from audformat.core.index import (
     to_array,
 )
 from audformat.core.common import HeaderBase
-from audformat.core.errors import ColumnNotAssignedToTableError
 from audformat.core.typing import Values
 
 
@@ -52,6 +51,7 @@ class Column(HeaderBase):
             self,
             index: pd.Index = None,
             *,
+            map: str = None,
             copy: bool = True,
     ) -> pd.Series:
         r"""Get labels.
@@ -66,19 +66,64 @@ class Column(HeaderBase):
             index: index conform to
                 :ref:`table specifications <data-tables:Tables>`
             copy: return a copy of the labels
+            map: map scheme or scheme field to column values.
+                For example if your column holds speaker IDs and is
+                assigned to a scheme that contains a dict mapping
+                speaker IDs to age entries, ``map='age'``
+                will replace the ID values with the age of the speaker
 
         Returns:
             labels
 
         Raises:
-            ColumnNotAssignToTable: if column is not assign to a table
-
+            RuntimeError: if column is not assigned to a table
+            ValueError: if trying to map without a scheme
+            ValueError: if trying to map from a scheme that has no labels
+            ValueError: if trying to map to a non-existing field
 
         """
         if self._table is None:
-            raise ColumnNotAssignedToTableError()
+            raise RuntimeError(
+                'Column is not assigned to a table.'
+            )
 
-        result = self._table.get(index, copy=False)[self._id]
+        result = self._table.get(index, copy=False)
+        result = result[self._id]
+
+        if map is not None:
+
+            copy = False  # to avoid another copy
+
+            if self.scheme_id is None:
+                raise ValueError(
+                    f"Column '{self._id}' is not assigned to a scheme."
+                )
+
+            labels = self._table._db.schemes[self.scheme_id].labels
+
+            if labels is None:
+                raise ValueError(
+                    f"Scheme '{self.scheme_id}' has no labels."
+                )
+
+            mapping = {}
+            for key, value in labels.items():
+                if isinstance(value, dict):
+                    if map in value:
+                        value = value[map]
+                    else:
+                        raise ValueError(
+                            f"Cannot map "
+                            f"'{mapping}' "
+                            f"to "
+                            f"'{self._id}'. "
+                            f"Expected one of "
+                            f"{list(value)}."
+                        )
+                mapping[key] = value
+            result = result.map(mapping)
+            result.name = map
+
         return result.copy() if copy else result
 
     def set(
@@ -103,11 +148,13 @@ class Column(HeaderBase):
                 :ref:`table specifications <data-tables:Tables>`
 
         Raises:
-            ColumnNotAssignToTable: if column is not assign to a table
+            RuntimeError: if column is not assign to a table
 
         """
         if self._table is None:
-            raise ColumnNotAssignedToTableError()
+            raise RuntimeError(
+                'Column is not assigned to a table.'
+            )
 
         column_id = self._id
         df = self._table.df
