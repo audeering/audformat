@@ -56,4 +56,5 @@ jobs:
     - name: Test building documentation
       run: |
         python -m sphinx docs/ docs/_build/ -b html -W
+        python -m sphinx docs/ build/sphinx/html -b linkcheck
       if: matrix.os == 'ubuntu-18.04'
