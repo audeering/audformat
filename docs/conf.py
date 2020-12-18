@@ -74,6 +74,7 @@ html_theme = 'sphinx_audeering_theme'
 html_theme_options = {
     'display_version': True,
     'logo_only': False,
+    'footer_links': False,
     'wide_pages': ['data-example'],
 }
 html_title = title
