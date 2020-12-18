@@ -50,9 +50,6 @@ intersphinx_mapping = {
     'pandas': ('https://pandas.pydata.org/pandas-docs/stable/', None),
     'python': ('https://docs.python.org/3/', None),
 }
-linkcheck_ignore = [
-    'https://gitlab.audeering.com',
-]
 # Ignore package dependencies during building the docs
 autodoc_mock_imports = [
     'tqdm',
@@ -71,10 +68,6 @@ intersphinx_mapping = {
     'python': ('https://docs.python.org/3/', None),
 }
 
-# Disable Gitlab as we need to sign in
-linkcheck_ignore = [
-    'https://gitlab.audeering.com',
-]
 
 # HTML --------------------------------------------------------------------
 html_theme = 'sphinx_audeering_theme'
