@@ -2,8 +2,8 @@ import datetime
 import random
 import string
 import typing
-import warnings
 
+import numpy as np
 import pandas as pd
 
 from audformat.core import define
@@ -109,10 +109,20 @@ class Scheme(HeaderBase):
         r"""Data type"""
         self.labels = labels
         r"""List of labels"""
-        self.minimum = minimum
+        self.minimum = minimum if self.is_numeric else None
         r"""Minimum value"""
-        self.maximum = maximum
+        self.maximum = maximum if self.is_numeric else None
         r"""Maximum value"""
+
+    @property
+    def is_numeric(self) -> bool:
+        r"""Check if data type is numeric.
+
+        Returns:
+            ``True`` if data type is numeric.
+
+        """
+        return self.dtype in (define.DataType.INTEGER, define.DataType.FLOAT)
 
     def draw(
             self,
@@ -165,15 +175,6 @@ class Scheme(HeaderBase):
 
         return x
 
-    def is_numeric(self) -> bool:
-        r"""Check if data type is numeric.
-
-        Returns:
-            ``True`` if data type is numeric.
-
-        """
-        return self.dtype in (define.DataType.INTEGER, define.DataType.FLOAT)
-
     def to_pandas_dtype(self) -> typing.Union[
         str, pd.api.types.CategoricalDtype,
     ]:
@@ -211,19 +212,18 @@ class Scheme(HeaderBase):
     def __contains__(self, item: typing.Any) -> bool:
         r"""Check if scheme contains data type of item.
 
+        ``None``, ``NaT`` and ``NaN`` always match
+
         Returns:
             ``True`` if item is covered by scheme
 
         """
-
-        define.DataType.assert_has_value(self._dtypes[type(item)])
-
-        if self.labels is not None:
-            return item in self.labels
-        if self.is_numeric():
-            if self.minimum and not item >= self.minimum:
-                return False
-            if self.maximum and not item <= self.maximum:
-                return False
-
+        if item is not None and not pd.isna(item):
+            if self.labels is not None:
+                return item in self.labels
+            if self.is_numeric:
+                if self.minimum and not item >= self.minimum:
+                    return False
+                if self.maximum and not item <= self.maximum:
+                    return False
         return True
