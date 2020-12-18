@@ -30,7 +30,6 @@ def assert_values(
                 values = values.values
             if isinstance(values, np.ndarray):
                 if scheme.is_numeric:
-                    print(values)
                     values = [
                         np.min(values),
                         np.max(values),
