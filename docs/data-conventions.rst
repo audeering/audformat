@@ -18,13 +18,7 @@ If you have different versions,
 or very long names you can use ``-``
 to increase readability.
 
-Negative example:
-
-.. jupyter-execute::
-
-    audformat.Database('My Nice-Database!')
-
-Positive example:
+Example:
 
 .. jupyter-execute::
 
