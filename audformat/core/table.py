@@ -375,8 +375,6 @@ class Table(HeaderBase):
 
         Raises:
             ValueError: if table type is not matched
-            RedundantArgumentError: for not allowed combinations
-                of input arguments
 
         """
         if not inplace:
@@ -597,8 +595,6 @@ class Table(HeaderBase):
 
         Raises:
             ValueError: if table type is not matched
-            RedundantArgumentError: for not allowed combinations
-                of input arguments
 
         """
         if not inplace:
