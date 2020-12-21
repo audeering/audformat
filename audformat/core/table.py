@@ -71,7 +71,7 @@ class Table(HeaderBase):
         meta: additional meta fields
 
     Raises:
-        NotConformToUnifiedFormat: if index is not conform to
+        ValueError: if index not conform to
             :ref:`table specifications <data-tables:Tables>`
 
     Example:

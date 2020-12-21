@@ -168,7 +168,7 @@ def read_csv(
         object conform to :ref:`table specifications <data-tables:Tables>`
 
     Raises:
-        NotConformToUnifiedFormat: if CSV files is not conform to
+        ValueError: if CSV file is not conform to
             :ref:`table specifications <data-tables:Tables>`
 
     Example:
