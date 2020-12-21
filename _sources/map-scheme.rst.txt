@@ -3,24 +3,16 @@
 Map scheme labels
 =================
 
+.. Enforce HTML output for pd.Series
 .. jupyter-execute::
     :hide-code:
     :hide-output:
 
-    import numpy as np
-    import pandas as pd
+    import audformat
 
 
-    def series_to_html(self):
-        df = self.to_frame()
-        df.columns = ['']
-        return df._repr_html_()
-    setattr(pd.Series, '_repr_html_', series_to_html)
+    audformat.core.common.format_series_as_html()
 
-
-    def index_to_html(self):
-        return self.to_frame(index=False)._repr_html_()
-    setattr(pd.Index, '_repr_html_', index_to_html)
 
 The ``labels`` attribute of schemes can be used to
 encode additional information about the table data.
@@ -83,8 +75,7 @@ the returned :class:`pandas.Series`.
 
 .. jupyter-execute::
 
-    series = db['files']['transcription'].get(map='word')
-    series.name
+    db['files']['transcription'].get(map='word')
 
 Likewise, if we request the speaker column,
 a list of names is returned:

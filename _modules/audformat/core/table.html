@@ -72,7 +72,7 @@
             
             
               <div class="version">
-                v0.9.0
+                v0.9.1
               </div>
             
           
@@ -263,7 +263,7 @@
 <span class="sd">        meta: additional meta fields</span>
 
 <span class="sd">    Raises:</span>
-<span class="sd">        NotConformToUnifiedFormat: if index is not conform to</span>
+<span class="sd">        ValueError: if index not conform to</span>
 <span class="sd">            :ref:`table specifications &lt;data-tables:Tables&gt;`</span>
 
 <span class="sd">    Example:</span>
@@ -567,8 +567,6 @@
 
 <span class="sd">        Raises:</span>
 <span class="sd">            ValueError: if table type is not matched</span>
-<span class="sd">            RedundantArgumentError: for not allowed combinations</span>
-<span class="sd">                of input arguments</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">inplace</span><span class="p">:</span>
@@ -789,8 +787,6 @@
 
 <span class="sd">        Raises:</span>
 <span class="sd">            ValueError: if table type is not matched</span>
-<span class="sd">            RedundantArgumentError: for not allowed combinations</span>
-<span class="sd">                of input arguments</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">inplace</span><span class="p">:</span>
@@ -898,6 +894,9 @@
 <span class="sd">            values: dictionary of values with ``column_id`` as key</span>
 <span class="sd">            index: index conform to</span>
 <span class="sd">                :ref:`table specifications &lt;data-tables:Tables&gt;`</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError: if values do not match scheme</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">values</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
@@ -1145,7 +1144,7 @@
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2020/12/18 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2020/12/21 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
@@ -1179,7 +1178,6 @@
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/language_data.js"></script>
         <script src="../../../_static/clipboard.min.js"></script>
         <script src="../../../_static/copybutton.js"></script>
         <script src="../../../_static/thebelab-helper.js"></script>

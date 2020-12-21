@@ -74,7 +74,7 @@
             
             
               <div class="version">
-                v0.9.0
+                v0.9.1
               </div>
             
           
@@ -181,7 +181,7 @@
         
             
             
-              <a href="https://github.com/audeering/audformat/blob/v0.9.0/docs/map-scheme.rst" class="fa fa-github"> Edit on GitHub</a>
+              <a href="https://github.com/audeering/audformat/blob/v0.9.1/docs/map-scheme.rst" class="fa fa-github"> Edit on GitHub</a>
             
           
         
@@ -272,7 +272,7 @@ we get a <code class="xref py py-class docutils literal notranslate"><span class
   <thead>
     <tr style="text-align: right;">
       <th></th>
-      <th></th>
+      <th>transcription</th>
     </tr>
     <tr>
       <th>file</th>
@@ -294,11 +294,11 @@ we get a <code class="xref py py-class docutils literal notranslate"><span class
     </tr>
     <tr>
       <th>audio/004.wav</th>
-      <td>0</td>
+      <td>1</td>
     </tr>
     <tr>
       <th>audio/005.wav</th>
-      <td>0</td>
+      <td>1</td>
     </tr>
   </tbody>
 </table>
@@ -331,7 +331,7 @@ we can use the <code class="docutils literal notranslate"><span class="pre">map<
   <thead>
     <tr style="text-align: right;">
       <th></th>
-      <th></th>
+      <th>transcription</th>
     </tr>
     <tr>
       <th>file</th>
@@ -353,11 +353,11 @@ we can use the <code class="docutils literal notranslate"><span class="pre">map<
     </tr>
     <tr>
       <th>audio/004.wav</th>
-      <td>hello</td>
+      <td>goodbye</td>
     </tr>
     <tr>
       <th>audio/005.wav</th>
-      <td>hello</td>
+      <td>goodbye</td>
     </tr>
   </tbody>
 </table>
@@ -368,16 +368,60 @@ It will be used as the name of
 the returned <code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.Series</span></code>.</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">series</span> <span class="o">=</span> <span class="n">db</span><span class="p">[</span><span class="s1">&#39;files&#39;</span><span class="p">][</span><span class="s1">&#39;transcription&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">map</span><span class="o">=</span><span class="s1">&#39;word&#39;</span><span class="p">)</span>
-<span class="n">series</span><span class="o">.</span><span class="n">name</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="p">[</span><span class="s1">&#39;files&#39;</span><span class="p">][</span><span class="s1">&#39;transcription&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">map</span><span class="o">=</span><span class="s1">&#39;word&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>&#39;word&#39;
-</pre></div>
-</div>
-</div>
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>word</th>
+    </tr>
+    <tr>
+      <th>file</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>audio/001.wav</th>
+      <td>goodbye</td>
+    </tr>
+    <tr>
+      <th>audio/002.wav</th>
+      <td>goodbye</td>
+    </tr>
+    <tr>
+      <th>audio/003.wav</th>
+      <td>hello</td>
+    </tr>
+    <tr>
+      <th>audio/004.wav</th>
+      <td>goodbye</td>
+    </tr>
+    <tr>
+      <th>audio/005.wav</th>
+      <td>goodbye</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
 </div>
 <p>Likewise, if we request the speaker column,
 a list of names is returned:</p>
@@ -406,7 +450,7 @@ a list of names is returned:</p>
   <thead>
     <tr style="text-align: right;">
       <th></th>
-      <th></th>
+      <th>speaker</th>
     </tr>
     <tr>
       <th>file</th>
@@ -420,11 +464,11 @@ a list of names is returned:</p>
     </tr>
     <tr>
       <th>audio/002.wav</th>
-      <td>spk2</td>
+      <td>spk1</td>
     </tr>
     <tr>
       <th>audio/003.wav</th>
-      <td>spk1</td>
+      <td>spk3</td>
     </tr>
     <tr>
       <th>audio/004.wav</th>
@@ -464,7 +508,7 @@ a list of names is returned:</p>
   <thead>
     <tr style="text-align: right;">
       <th></th>
-      <th></th>
+      <th>age</th>
     </tr>
     <tr>
       <th>file</th>
@@ -478,11 +522,11 @@ a list of names is returned:</p>
     </tr>
     <tr>
       <th>audio/002.wav</th>
-      <td>30</td>
+      <td>33</td>
     </tr>
     <tr>
       <th>audio/003.wav</th>
-      <td>33</td>
+      <td>37</td>
     </tr>
     <tr>
       <th>audio/004.wav</th>
@@ -545,21 +589,21 @@ as keys and scheme fields as values.</p>
     <tr>
       <th>audio/002.wav</th>
       <td>1</td>
-      <td>30</td>
+      <td>33</td>
     </tr>
     <tr>
       <th>audio/003.wav</th>
       <td>0</td>
-      <td>33</td>
+      <td>37</td>
     </tr>
     <tr>
       <th>audio/004.wav</th>
-      <td>0</td>
+      <td>1</td>
       <td>37</td>
     </tr>
     <tr>
       <th>audio/005.wav</th>
-      <td>0</td>
+      <td>1</td>
       <td>37</td>
     </tr>
   </tbody>
@@ -618,24 +662,24 @@ and to map the same column to multiple fields.</p>
     <tr>
       <th>audio/002.wav</th>
       <td>goodbye</td>
-      <td>30</td>
-      <td>female</td>
-    </tr>
-    <tr>
-      <th>audio/003.wav</th>
-      <td>hello</td>
       <td>33</td>
       <td>male</td>
     </tr>
     <tr>
-      <th>audio/004.wav</th>
+      <th>audio/003.wav</th>
       <td>hello</td>
       <td>37</td>
       <td>male</td>
     </tr>
     <tr>
+      <th>audio/004.wav</th>
+      <td>goodbye</td>
+      <td>37</td>
+      <td>male</td>
+    </tr>
+    <tr>
       <th>audio/005.wav</th>
-      <td>hello</td>
+      <td>goodbye</td>
       <td>37</td>
       <td>male</td>
     </tr>
@@ -701,21 +745,13 @@ we can include the column name in the list.</p>
     <tr>
       <th>audio/002.wav</th>
       <td>1</td>
-      <td>spk2</td>
-      <td>goodbye</td>
-      <td>30</td>
-      <td>female</td>
-    </tr>
-    <tr>
-      <th>audio/003.wav</th>
-      <td>0</td>
       <td>spk1</td>
-      <td>hello</td>
+      <td>goodbye</td>
       <td>33</td>
       <td>male</td>
     </tr>
     <tr>
-      <th>audio/004.wav</th>
+      <th>audio/003.wav</th>
       <td>0</td>
       <td>spk3</td>
       <td>hello</td>
@@ -723,10 +759,18 @@ we can include the column name in the list.</p>
       <td>male</td>
     </tr>
     <tr>
-      <th>audio/005.wav</th>
-      <td>0</td>
+      <th>audio/004.wav</th>
+      <td>1</td>
       <td>spk3</td>
-      <td>hello</td>
+      <td>goodbye</td>
+      <td>37</td>
+      <td>male</td>
+    </tr>
+    <tr>
+      <th>audio/005.wav</th>
+      <td>1</td>
+      <td>spk3</td>
+      <td>goodbye</td>
       <td>37</td>
       <td>male</td>
     </tr>
@@ -759,7 +803,7 @@ we can include the column name in the list.</p>
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2020/12/18 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2020/12/21 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
@@ -793,7 +837,6 @@ we can include the column name in the list.</p>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
-        <script src="_static/language_data.js"></script>
         <script src="_static/clipboard.min.js"></script>
         <script src="_static/copybutton.js"></script>
         <script src="_static/thebelab-helper.js"></script>

@@ -134,8 +134,7 @@ to the emotion table.
 
 
     description = (
-       'Berlin Database of Emotional Speech'
-       ''
+       'Berlin Database of Emotional Speech. '
        'A German database of emotional utterances '
        'spoken by actors '
        'recorded as a part of the DFG funded research project '

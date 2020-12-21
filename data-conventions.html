@@ -74,7 +74,7 @@
             
             
               <div class="version">
-                v0.9.0
+                v0.9.1
               </div>
             
           
@@ -191,7 +191,7 @@
         
             
             
-              <a href="https://github.com/audeering/audformat/blob/v0.9.0/docs/data-conventions.rst" class="fa fa-github"> Edit on GitHub</a>
+              <a href="https://github.com/audeering/audformat/blob/v0.9.1/docs/data-conventions.rst" class="fa fa-github"> Edit on GitHub</a>
             
           
         
@@ -219,23 +219,6 @@ special characters.
 If you have different versions,
 or very long names you can use <code class="docutils literal notranslate"><span class="pre">-</span></code>
 to increase readability.</p>
-<p>Negative example:</p>
-<div class="jupyter_cell jupyter_container docutils container">
-<div class="cell_input code_cell docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">audformat</span><span class="o">.</span><span class="n">Database</span><span class="p">(</span><span class="s1">&#39;My Nice-Database!&#39;</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>name: My Nice-Database!
-source: &#39;&#39;
-usage: unrestricted
-languages: []
-</pre></div>
-</div>
-</div>
-</div>
-<p>Positive example:</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">audformat</span><span class="o">.</span><span class="n">Database</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;librispeech-mfa-cseg-pho&#39;</span><span class="p">)</span>
@@ -306,7 +289,6 @@ with the name of the scheme.
 Use lower case for table and scheme names.
 If you have multiple raters,
 name each column after the name of the rater.</p>
-<p>Example:</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">db</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Database</span><span class="p">(</span><span class="s1">&#39;mydata&#39;</span><span class="p">)</span>
@@ -364,7 +346,6 @@ and test set
 consists,
 consider one table per split,
 named <code class="docutils literal notranslate"><span class="pre">scheme_id.split</span></code>.</p>
-<p>Example:</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">db</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Database</span><span class="p">(</span><span class="s1">&#39;mydata&#39;</span><span class="p">)</span>
@@ -423,7 +404,6 @@ and the type <code class="docutils literal notranslate"><span class="pre">audfor
 should be created
 and associated with the column
 holding the gold standard values.</p>
-<p>Example:</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">db</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Database</span><span class="p">(</span><span class="s1">&#39;mydata&#39;</span><span class="p">)</span>
@@ -492,7 +472,6 @@ but followed by <code class="docutils literal notranslate"><span class="pre">.co
 <p>The confidence values should be stored in a separate table.
 Or it can be stored within the same table as a different column,
 which might be worth considering when storing the gold standard.</p>
-<p>Example:</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">db</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Database</span><span class="p">(</span><span class="s1">&#39;mydata&#39;</span><span class="p">)</span>
@@ -551,7 +530,6 @@ that is bound to another information
 like age of speaker,
 should be collected in the header
 as it can be later automatically mapped.</p>
-<p>Example:</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">db</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Database</span><span class="p">(</span><span class="s1">&#39;mydata&#39;</span><span class="p">)</span>
@@ -702,7 +680,6 @@ this might take some time.</p>
 like file durations
 should be stored as <code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.Timedelta</span></code>
 or <a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">datetime.datetime</span></code></a>.</p>
-<p>Example:</p>
 <div class="jupyter_cell docutils container">
 <div class="cell_output docutils container">
 </div>
@@ -830,7 +807,7 @@ tables:
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2020/12/18 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2020/12/21 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
@@ -864,7 +841,6 @@ tables:
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
-        <script src="_static/language_data.js"></script>
         <script src="_static/clipboard.min.js"></script>
         <script src="_static/copybutton.js"></script>
         <script src="_static/thebelab-helper.js"></script>

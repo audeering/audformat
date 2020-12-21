@@ -18,14 +18,6 @@ If you have different versions,
 or very long names you can use ``-``
 to increase readability.
 
-Negative example:
-
-.. jupyter-execute::
-
-    audformat.Database('My Nice-Database!')
-
-Positive example:
-
 .. jupyter-execute::
 
     audformat.Database(name='librispeech-mfa-cseg-pho')
@@ -69,8 +61,6 @@ Use lower case for table and scheme names.
 If you have multiple raters,
 name each column after the name of the rater.
 
-Example:
-
 .. jupyter-execute::
 
     db = audformat.Database('mydata')
@@ -101,8 +91,6 @@ and test set
 consists,
 consider one table per split,
 named ``scheme_id.split``.
-
-Example:
 
 .. jupyter-execute::
 
@@ -142,8 +130,6 @@ and the type ``audformat.define.RaterType.VOTE``
 should be created
 and associated with the column
 holding the gold standard values.
-
-Example:
 
 .. jupyter-execute::
 
@@ -189,8 +175,6 @@ The confidence values should be stored in a separate table.
 Or it can be stored within the same table as a different column,
 which might be worth considering when storing the gold standard.
 
-Example:
-
 .. jupyter-execute::
 
     db = audformat.Database('mydata')
@@ -229,8 +213,6 @@ that is bound to another information
 like age of speaker,
 should be collected in the header
 as it can be later automatically mapped.
-
-Example:
 
 .. jupyter-execute::
 
@@ -283,8 +265,6 @@ like file durations
 should be stored as :class:`pandas.Timedelta`
 or :class:`datetime.datetime`.
 
-Example:
-
 .. jupyter-execute::
     :hide-code:
     :hide-output:
@@ -294,8 +274,6 @@ Example:
 
 
     signal = np.ones([0, 1000])
-
-
 
 
 .. jupyter-execute::

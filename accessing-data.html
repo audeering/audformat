@@ -74,7 +74,7 @@
             
             
               <div class="version">
-                v0.9.0
+                v0.9.1
               </div>
             
           
@@ -185,7 +185,7 @@
         
             
             
-              <a href="https://github.com/audeering/audformat/blob/v0.9.0/docs/accessing-data.rst" class="fa fa-github"> Edit on GitHub</a>
+              <a href="https://github.com/audeering/audformat/blob/v0.9.1/docs/accessing-data.rst" class="fa fa-github"> Edit on GitHub</a>
             
           
         
@@ -201,6 +201,10 @@
             
   <div class="section" id="working-with-a-database">
 <h1>Working with a database<a class="headerlink" href="#working-with-a-database" title="Permalink to this headline">¶</a></h1>
+<div class="jupyter_cell docutils container">
+<div class="cell_output docutils container">
+</div>
+</div>
 <div class="section" id="accessing-data">
 <h2>Accessing data<a class="headerlink" href="#accessing-data" title="Permalink to this headline">¶</a></h2>
 <p>Annotation labels can be accessed
@@ -259,12 +263,12 @@ by the <a class="reference internal" href="api.html#audformat.Table.get" title="
     <tr>
       <th>audio/001.wav</th>
       <td>None</td>
-      <td>48</td>
+      <td>&lt;NA&gt;</td>
     </tr>
     <tr>
       <th>audio/002.wav</th>
-      <td>KSV0oJl34H</td>
-      <td>32</td>
+      <td>2C1CcMWw4I</td>
+      <td>27</td>
     </tr>
   </tbody>
 </table>
@@ -290,13 +294,43 @@ by the <a class="reference internal" href="api.html#audformat.Table.get" title="
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>file
-audio/001.wav          None
-audio/002.wav    KSV0oJl34H
-Name: string, dtype: object
-</pre></div>
-</div>
-</div>
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>string</th>
+    </tr>
+    <tr>
+      <th>file</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>audio/001.wav</th>
+      <td>None</td>
+    </tr>
+    <tr>
+      <th>audio/002.wav</th>
+      <td>2C1CcMWw4I</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
 </div>
 <p>For more information on how to access or add data
 have a look at the code examples in the
@@ -343,7 +377,7 @@ have a look at the code examples in the
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2020/12/18 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2020/12/21 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
@@ -377,7 +411,6 @@ have a look at the code examples in the
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
-        <script src="_static/language_data.js"></script>
         <script src="_static/clipboard.min.js"></script>
         <script src="_static/copybutton.js"></script>
         <script src="_static/thebelab-helper.js"></script>

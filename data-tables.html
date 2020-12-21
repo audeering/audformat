@@ -74,7 +74,7 @@
             
             
               <div class="version">
-                v0.9.0
+                v0.9.1
               </div>
             
           
@@ -191,7 +191,7 @@
         
             
             
-              <a href="https://github.com/audeering/audformat/blob/v0.9.0/docs/data-tables.rst" class="fa fa-github"> Edit on GitHub</a>
+              <a href="https://github.com/audeering/audformat/blob/v0.9.1/docs/data-tables.rst" class="fa fa-github"> Edit on GitHub</a>
             
           
         
@@ -207,6 +207,10 @@
             
   <div class="section" id="tables">
 <h1>Tables<a class="headerlink" href="#tables" title="Permalink to this headline">¶</a></h1>
+<div class="jupyter_cell docutils container">
+<div class="cell_output docutils container">
+</div>
+</div>
 <p>A table links labels to media files.
 It consists of one or more index columns
 followed by an arbitrary number of label columns.
@@ -238,10 +242,6 @@ An empty label means that no label has been assigned (yet).</p>
 </table>
 <div class="section" id="audformat-implementation">
 <h3>audformat implementation<a class="headerlink" href="#audformat-implementation" title="Permalink to this headline">¶</a></h3>
-<div class="jupyter_cell docutils container">
-<div class="cell_output docutils container">
-</div>
-</div>
 <p>Create a filewise index:</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
@@ -411,7 +411,7 @@ columns:
   <thead>
     <tr style="text-align: right;">
       <th></th>
-      <th></th>
+      <th>values</th>
     </tr>
     <tr>
       <th>file</th>
@@ -438,7 +438,10 @@ columns:
 <p>Create a segmented index:</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">segmented_index</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">segmented_index</span><span class="p">(</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+
+<span class="n">segmented_index</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">segmented_index</span><span class="p">(</span>
     <span class="n">files</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;f1&#39;</span><span class="p">,</span> <span class="s1">&#39;f1&#39;</span><span class="p">,</span> <span class="s1">&#39;f1&#39;</span><span class="p">,</span> <span class="s1">&#39;f2&#39;</span><span class="p">],</span>
     <span class="n">starts</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;0s&#39;</span><span class="p">,</span> <span class="s1">&#39;1s&#39;</span><span class="p">,</span> <span class="s1">&#39;2s&#39;</span><span class="p">,</span> <span class="s1">&#39;0s&#39;</span><span class="p">],</span>
     <span class="n">ends</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;1s&#39;</span><span class="p">,</span> <span class="s1">&#39;2s&#39;</span><span class="p">,</span> <span class="s1">&#39;3s&#39;</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">NaT</span><span class="p">],</span>
@@ -592,7 +595,7 @@ columns:
       <th></th>
       <th></th>
       <th></th>
-      <th></th>
+      <th>values</th>
     </tr>
     <tr>
       <th>file</th>
@@ -868,7 +871,7 @@ columns:
       <th></th>
       <th></th>
       <th></th>
-      <th></th>
+      <th>values</th>
     </tr>
     <tr>
       <th>file</th>
@@ -1047,7 +1050,7 @@ columns:
       <th></th>
       <th></th>
       <th></th>
-      <th></th>
+      <th>values</th>
     </tr>
     <tr>
       <th>file</th>
@@ -1110,7 +1113,7 @@ columns:
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2020/12/18 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2020/12/21 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
@@ -1144,7 +1147,6 @@ columns:
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
-        <script src="_static/language_data.js"></script>
         <script src="_static/clipboard.min.js"></script>
         <script src="_static/copybutton.js"></script>
         <script src="_static/thebelab-helper.js"></script>
