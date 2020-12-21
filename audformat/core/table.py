@@ -703,6 +703,9 @@ class Table(HeaderBase):
             index: index conform to
                 :ref:`table specifications <data-tables:Tables>`
 
+        Raises:
+            ValueError: if values do not match scheme
+
         """
         for idx, data in values.items():
             self.columns[idx].set(data, index=index)
