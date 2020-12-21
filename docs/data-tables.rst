@@ -1,6 +1,17 @@
 Tables
 ======
 
+.. Enforce HTML output for pd.Series
+.. jupyter-execute::
+    :hide-code:
+    :hide-output:
+
+    import audformat
+
+
+    audformat.core.common.format_series_as_html()
+
+
 A table links labels to media files.
 It consists of one or more index columns
 followed by an arbitrary number of label columns.
@@ -26,24 +37,6 @@ file            Path to media file
 
 audformat implementation
 ^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. jupyter-execute::
-    :hide-code:
-    :hide-output:
-
-    import numpy as np
-    import pandas as pd
-
-
-    def series_to_html(self):
-        df = self.to_frame()
-        return df._repr_html_()
-    setattr(pd.Series, '_repr_html_', series_to_html)
-
-
-    def index_to_html(self):
-        return self.to_frame(index=False)._repr_html_()
-    setattr(pd.Index, '_repr_html_', index_to_html)
 
 Create a filewise index:
 
@@ -96,6 +89,9 @@ Access labels as :class:`pandas.Series`
 Create a segmented index:
 
 .. jupyter-execute::
+
+    import pandas as pd
+
 
     segmented_index = audformat.segmented_index(
         files=['f1', 'f1', 'f1', 'f2'],

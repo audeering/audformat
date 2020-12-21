@@ -2,6 +2,17 @@ Working with a database
 =======================
 
 
+.. Enforce HTML output for pd.Series
+.. jupyter-execute::
+    :hide-code:
+    :hide-output:
+
+    import audformat
+
+
+    audformat.core.common.format_series_as_html()
+
+
 Accessing data
 --------------
 
