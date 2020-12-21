@@ -183,6 +183,9 @@ class Column(HeaderBase):
 
         Raises:
             RuntimeError: if column is not assign to a table
+            ValueError: if trying to set values of a filewise column
+                using a segmented index
+            ValueError: if values do not match scheme
 
         """
         if self._table is None:
