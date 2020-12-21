@@ -4,6 +4,8 @@ from typing import Sequence, Callable
 import textwrap
 from collections import OrderedDict
 
+import pandas as pd
+
 from audformat.core.errors import BadTypeError, BadValueError
 
 
@@ -222,3 +224,17 @@ class DefineBase(object):
                         not(a[0].startswith('__') and a[0].endswith('__'))]
         if value not in valid_values:
             raise BadValueError(value, valid_values)
+
+
+def format_series_as_html():  # pragma: no cover (only used in documentation)
+    setattr(pd.Series, '_repr_html_', series_to_html)
+    setattr(pd.Index, '_repr_html_', index_to_html)
+
+
+def index_to_html(self):  # pragma: no cover
+    return self.to_frame(index=False)._repr_html_()
+
+
+def series_to_html(self):  # pragma: no cover
+    df = self.to_frame()
+    return df._repr_html_()
