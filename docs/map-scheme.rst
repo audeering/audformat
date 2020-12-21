@@ -13,7 +13,6 @@ Map scheme labels
 
     def series_to_html(self):
         df = self.to_frame()
-        df.columns = ['']
         return df._repr_html_()
     setattr(pd.Series, '_repr_html_', series_to_html)
 
