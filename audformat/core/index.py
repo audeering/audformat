@@ -39,6 +39,10 @@ def filewise_index(
     Returns:
         filewise index
 
+    Example:
+        >>> filewise_index(['a.wav', 'b.wav'])
+        Index(['a.wav', 'b.wav'], dtype='object', name='file')
+
     """
     if files is None:
         files = []
