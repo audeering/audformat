@@ -113,6 +113,27 @@ def segmented_index(
     Raises:
         ValueError: if ``files``, ``start`` and ``ends`` differ in size
 
+    Example:
+        >>> segmented_index('a.wav', '0s', '1s')
+        MultiIndex([('a.wav', '0 days', '0 days 00:00:01')],
+                   names=['file', 'start', 'end'])
+        >>> segmented_index(['a.wav', 'b.wav'])
+        MultiIndex([('a.wav', '0 days', NaT),
+                    ('b.wav', '0 days', NaT)],
+                   names=['file', 'start', 'end'])
+        >>> segmented_index(['a.wav', 'b.wav'], [None, '1s'], ['1s', None])
+        MultiIndex([('a.wav',               NaT, '0 days 00:00:01'),
+                    ('b.wav', '0 days 00:00:01',               NaT)],
+                   names=['file', 'start', 'end'])
+        >>> segmented_index(
+        ...     files=['a.wav', 'a.wav'],
+        ...     starts=[f'{t}s' for t in (0, 1)],
+        ...     ends=pd.to_timedelta([1, 2], unit='s'),
+        ... )
+        MultiIndex([('a.wav', '0 days 00:00:00', '0 days 00:00:01'),
+                    ('a.wav', '0 days 00:00:01', '0 days 00:00:02')],
+                   names=['file', 'start', 'end'])
+
     """
     files = to_array(files)
     starts = to_array(starts)
