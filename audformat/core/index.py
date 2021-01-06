@@ -66,6 +66,12 @@ def index_type(
         ValueError: if not conform to
             :ref:`table specifications <data-tables:Tables>`
 
+    Example:
+        >>> index_type(filewise_index())
+        'filewise'
+        >>> index_type(segmented_index())
+        'segmented'
+
     """
     if isinstance(obj, (pd.Series, pd.DataFrame)):
         obj = obj.index
