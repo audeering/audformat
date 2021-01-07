@@ -9,18 +9,30 @@ import audformat.testing
 
 
 @pytest.mark.parametrize(
-    'files',
+    'files, num_workers',
     [
-        pytest.DB.files,
-        pytest.DB.files[:2],
-        pytest.DB.files[0],
-        lambda x: '1' in x,
+        (
+            pytest.DB.files,
+            1,
+        ),
+        (
+            pytest.DB.files[:2],
+            1,
+        ),
+        (
+            pytest.DB.files[0],
+            4,
+        ),
+        (
+            lambda x: '1' in x,
+            None,
+        ),
     ]
 )
-def test_drop_files(files):
+def test_drop_files(files, num_workers):
 
     db = audformat.testing.create_db()
-    db.drop_files(files)
+    db.drop_files(files, num_workers=num_workers)
     if callable(files):
         files = db.files.to_series().apply(files)
     else:
@@ -30,18 +42,30 @@ def test_drop_files(files):
 
 
 @pytest.mark.parametrize(
-    'files',
+    'files, num_workers',
     [
-        pytest.DB.files,
-        pytest.DB.files[:2],
-        pytest.DB.files[0],
-        lambda x: '1' in x,
+        (
+            pytest.DB.files,
+            1,
+        ),
+        (
+            pytest.DB.files[:2],
+            1,
+        ),
+        (
+            pytest.DB.files[0],
+            4,
+        ),
+        (
+            lambda x: '1' in x,
+            None,
+        ),
     ]
 )
-def test_pick_files(files):
+def test_pick_files(files, num_workers):
 
     db = audformat.testing.create_db()
-    db.pick_files(files)
+    db.pick_files(files, num_workers=num_workers)
     if callable(files):
         files = db.files[db.files.to_series().apply(files)]
     else:
@@ -68,12 +92,20 @@ def test_drop_and_pick_tables():
     assert 'segments' not in db
 
 
-def test_map_files():
+@pytest.mark.parametrize(
+    'num_workers',
+    [
+        1,
+        4,
+        None,
+    ]
+)
+def test_map_files(num_workers):
 
     db = audformat.testing.create_db()
 
     files = sorted(db.files)
-    db.map_files(lambda x: x.upper())
+    db.map_files(lambda x: x.upper(), num_workers=num_workers)
     assert [x.upper() for x in files] == sorted(db.files)
 
 

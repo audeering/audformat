@@ -169,7 +169,9 @@ class Database(HeaderBase):
                 str,
                 typing.Sequence[str],
                 typing.Callable[[str], bool],
-            ]
+            ],
+            num_workers: typing.Optional[int] = 1,
+            verbose: bool = False,
     ):
         r"""Drop files from tables.
 
@@ -178,10 +180,19 @@ class Database(HeaderBase):
 
         Args:
             files: list of files or condition function
+            num_workers: number of parallel jobs.
+                If ``None`` will be set to the number of processors
+                on the machine multiplied by 5
+            verbose: show progress bar
 
         """
-        for table in self.tables.values():
-            table.drop_files(files, inplace=True)
+        audeer.run_tasks(
+            lambda x: x.drop_files(files, inplace=True),
+            params=[([table], {}) for table in self.tables.values()],
+            num_workers=num_workers,
+            progress_bar=verbose,
+            task_description='Drop files',
+        )
 
     def drop_tables(
             self,
@@ -204,7 +215,9 @@ class Database(HeaderBase):
                 str,
                 typing.Sequence[str],
                 typing.Callable[[str], bool],
-            ]
+            ],
+            num_workers: typing.Optional[int] = 1,
+            verbose: bool = False,
     ):
         r"""Pick files from tables.
 
@@ -213,10 +226,19 @@ class Database(HeaderBase):
 
         Args:
             files: list of files or condition function
+            num_workers: number of parallel jobs.
+                If ``None`` will be set to the number of processors
+                on the machine multiplied by 5
+            verbose: show progress bar
 
         """
-        for table in self.tables.values():
-            table.pick_files(files, inplace=True)
+        audeer.run_tasks(
+            lambda x: x.pick_files(files, inplace=True),
+            params=[([table], {}) for table in self.tables.values()],
+            num_workers=num_workers,
+            progress_bar=verbose,
+            task_description='Pick files',
+        )
 
     def pick_tables(
             self,
@@ -239,6 +261,8 @@ class Database(HeaderBase):
     def map_files(
             self,
             func: typing.Callable[[str], str],
+            num_workers: typing.Optional[int] = 1,
+            verbose: bool = False,
     ):
         r"""Apply function to file names in all tables.
 
@@ -264,15 +288,27 @@ class Database(HeaderBase):
 
         Args:
             func: map function
+            num_workers: number of parallel jobs.
+                If ``None`` will be set to the number of processors
+                on the machine multiplied by 5
+            verbose: show progress bar
 
         """
-        for table in self.tables.values():
+        def job(table):
             if table.is_segmented:
                 table.df.index = table.df.index.map(
-                    lambda x: (func(x[0]), x[1], x[2]))
+                    lambda x: (func(x[0]), x[1], x[2])
+                )
             else:
-                table.df.index = table.df.index.map(
-                    lambda x: func(x))
+                table.df.index = table.df.index.map(lambda x: func(x))
+
+        audeer.run_tasks(
+            job,
+            params=[([table], {}) for table in self.tables.values()],
+            num_workers=num_workers,
+            progress_bar=verbose,
+            task_description='Map files',
+        )
 
     def save(
             self,
