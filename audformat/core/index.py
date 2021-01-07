@@ -26,6 +26,14 @@ def to_array(value: typing.Any) -> typing.Union[list, np.ndarray]:
     return value
 
 
+def to_timedelta(times):
+    r"""Convert time value to pd.TimeDelta."""
+    try:
+        return pd.to_timedelta(times, unit='s')
+    except ValueError:  # catches values like '1s'
+        return pd.to_timedelta(times)
+
+
 def filewise_index(
         files: Files = None,
 ) -> pd.Index:
@@ -159,14 +167,8 @@ def segmented_index(
             "'starts', and 'ends' differ in size",
         )
 
-    def convert_to_timedelta(times):
-        try:
-            return pd.to_timedelta(times, unit='s')
-        except ValueError:  # catches values like '1s'
-            return pd.to_timedelta(times)
-
     return pd.MultiIndex.from_arrays(
-        [files, convert_to_timedelta(starts), convert_to_timedelta(ends)],
+        [files, to_timedelta(starts), to_timedelta(ends)],
         names=[
             define.IndexField.FILE,
             define.IndexField.START,
