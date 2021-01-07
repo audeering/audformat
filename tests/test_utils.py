@@ -264,7 +264,6 @@ def test_to_segmented(table_id):
         assert type(start) == pd.core.indexes.timedeltas.TimedeltaIndex
 
         end = df.index.get_level_values(define.IndexField.END)
-
         assert end.dropna().empty
         assert type(end) == pd.core.indexes.timedeltas.TimedeltaIndex
     else:
