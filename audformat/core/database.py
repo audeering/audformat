@@ -320,6 +320,8 @@ class Database(HeaderBase):
                 define.TableStorageFormat.CSV
             ),
             header_only: bool = False,
+            num_workers: typing.Optional[int] = 1,
+            verbose: bool = False,
     ):
         r"""Save database to disk.
 
@@ -334,6 +336,10 @@ class Database(HeaderBase):
                 See :class:`audformat.define.TableStorageFormat`
                 for available formats
             header_only: store header only
+            num_workers: number of parallel jobs.
+                If ``None`` will be set to the number of processors
+                on the machine multiplied by 5
+            verbose: show progress bar
 
         """
         root = audeer.mkdir(root)
@@ -342,10 +348,23 @@ class Database(HeaderBase):
         header_path = os.path.join(root, name + ext)
         with open(header_path, 'w') as fp:
             self.dump(fp, indent=indent)
+
         if not header_only:
-            for table_id, table in self.tables.items():
+
+            def job(table_id, table):
                 table_path = os.path.join(root, name + '.' + table_id)
                 table.save(table_path, storage_format=storage_format)
+
+            audeer.run_tasks(
+                job,
+                params=[
+                    ([table_id, table], {})
+                    for table_id, table in self.tables.items()
+                ],
+                num_workers=num_workers,
+                progress_bar=verbose,
+                task_description='Save tables',
+            )
 
     def __contains__(
             self,

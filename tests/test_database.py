@@ -110,32 +110,45 @@ def test_map_files(num_workers):
 
 
 @pytest.mark.parametrize(
-    'db, storage_format',
+    'db, storage_format, num_workers',
     [
         (
             audformat.testing.create_db(minimal=True),
             audformat.define.TableStorageFormat.CSV,
+            1,
         ),
         (
             audformat.testing.create_db(minimal=True),
             audformat.define.TableStorageFormat.PICKLE,
+            1,
         ),
         (
             audformat.testing.create_db(),
             audformat.define.TableStorageFormat.CSV,
+            4,
         ),
         (
             audformat.testing.create_db(),
             audformat.define.TableStorageFormat.PICKLE,
+            None,
         ),
     ],
 )
-def test_save_and_load(tmpdir, db, storage_format):
+def test_save_and_load(tmpdir, db, storage_format, num_workers):
 
-    db.save(tmpdir, storage_format=storage_format)
+    db.save(
+        tmpdir,
+        storage_format=storage_format,
+        num_workers=num_workers,
+    )
 
     db_load = audformat.Database.load(tmpdir)
-    db_load.save(tmpdir, name='db-2', storage_format=storage_format)
+    db_load.save(
+        tmpdir,
+        name='db-2',
+        storage_format=storage_format,
+        num_workers=num_workers,
+    )
 
     assert filecmp.cmp(os.path.join(tmpdir, 'db.yaml'),
                        os.path.join(tmpdir, 'db-2.yaml'))
