@@ -114,21 +114,24 @@ def segmented_index(
         ValueError: if ``files``, ``start`` and ``ends`` differ in size
 
     Example:
-        >>> segmented_index('a.wav', '0s', '1s')
-        MultiIndex([('a.wav', '0 days', '0 days 00:00:01')],
+        >>> segmented_index('a.wav', 0, 1.1)
+        MultiIndex([('a.wav', '0 days', '0 days 00:00:01.100000')],
+                   names=['file', 'start', 'end'])
+        >>> segmented_index('a.wav', '0ms', '1ms')
+        MultiIndex([('a.wav', '0 days', '0 days 00:00:00.001000')],
                    names=['file', 'start', 'end'])
         >>> segmented_index(['a.wav', 'b.wav'])
         MultiIndex([('a.wav', '0 days', NaT),
                     ('b.wav', '0 days', NaT)],
                    names=['file', 'start', 'end'])
-        >>> segmented_index(['a.wav', 'b.wav'], [None, '1s'], ['1s', None])
+        >>> segmented_index(['a.wav', 'b.wav'], [None, 1], [1, None])
         MultiIndex([('a.wav',               NaT, '0 days 00:00:01'),
                     ('b.wav', '0 days 00:00:01',               NaT)],
                    names=['file', 'start', 'end'])
         >>> segmented_index(
         ...     files=['a.wav', 'a.wav'],
-        ...     starts=[f'{t}s' for t in (0, 1)],
-        ...     ends=pd.to_timedelta([1, 2], unit='s'),
+        ...     starts=[0, 1],
+        ...     ends=pd.to_timedelta([1000, 2000], unit='ms'),
         ... )
         MultiIndex([('a.wav', '0 days 00:00:00', '0 days 00:00:01'),
                     ('a.wav', '0 days 00:00:01', '0 days 00:00:02')],
@@ -156,8 +159,14 @@ def segmented_index(
             "'starts', and 'ends' differ in size",
         )
 
+    def convert_to_timedelta(times):
+        try:
+            return pd.to_timedelta(times, unit='s')
+        except ValueError:  # catches values like '1s'
+            return pd.to_timedelta(times)
+
     return pd.MultiIndex.from_arrays(
-        [files, pd.to_timedelta(starts), pd.to_timedelta(ends)],
+        [files, convert_to_timedelta(starts), convert_to_timedelta(ends)],
         names=[
             define.IndexField.FILE,
             define.IndexField.START,
