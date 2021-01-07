@@ -587,19 +587,15 @@ def test_type():
     pd.testing.assert_index_equal(db.files, db['files'].files)
     pd.testing.assert_index_equal(
         db['files'].starts.unique(),
-        pd.Index(
-            [
-                pd.Timedelta(0)
-            ],
+        pd.TimedeltaIndex(
+            [0],
             name=audformat.define.IndexField.START,
         )
     )
     pd.testing.assert_index_equal(
         db['files'].ends.unique(),
-        pd.Index(
-            [
-                pd.Timedelta(pd.NaT)
-            ],
+        pd.TimedeltaIndex(
+            [pd.NaT],
             name=audformat.define.IndexField.END,
         )
     )

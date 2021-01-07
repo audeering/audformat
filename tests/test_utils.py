@@ -258,10 +258,15 @@ def test_to_segmented(table_id):
                 define.IndexField.FILE
             )
         )
-        assert df.index.get_level_values(
-            define.IndexField.START).drop_duplicates()[0] == pd.Timedelta(0)
-        assert df.index.get_level_values(
-            define.IndexField.END).dropna().empty
+
+        start = df.index.get_level_values(define.IndexField.START)
+        assert start.drop_duplicates()[0] == pd.Timedelta(0)
+        assert type(start) == pd.core.indexes.timedeltas.TimedeltaIndex
+
+        end = df.index.get_level_values(define.IndexField.END)
+
+        assert end.dropna().empty
+        assert type(end) == pd.core.indexes.timedeltas.TimedeltaIndex
     else:
         pd.testing.assert_index_equal(df.index, pytest.DB[table_id].index)
 
