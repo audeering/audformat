@@ -7,17 +7,23 @@ The format is based on `Keep a Changelog`_,
 and this project adheres to `Semantic Versioning`_.
 
 
+Version 0.9.3 (2021-01-07)
+--------------------------
+
+* Fixed: avoid sphinx syntax in CHANGELOG
+
+
 Version 0.9.2 (2021-01-07)
 --------------------------
 
 * Changed: add arguments ``num_workers`` and ``verbose`` to
-  :meth:`audformat.Database.drop_files`,
-  :meth:`audformat.Database.map_files`,
-  :meth:`audformat.Database.pick_files`,
-  :meth:`audformat.Database.save`
-* Changed: :func:`audformat.segmented_index`
+  ``audformat.Database.drop_files()``,
+  ``audformat.Database.map_files()``,
+  ``audformat.Database.pick_files()``,
+  ``audformat.Database.save()``
+* Changed: ``audformat.segmented_index()``
   support ``int`` and ``float``, which will be interpreted as seconds
-* Fixed: :func:`audformat.utils.to_segmented_index`
+* Fixed: ``audformat.utils.to_segmented_index()``
   returns correct index type for ``NaT``
 
 
