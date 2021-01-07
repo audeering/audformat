@@ -11,6 +11,7 @@ Files = typing.Union[
 Timestamps = typing.Union[
     float,
     int,
+    str,
     pd.Timedelta,
     typing.Sequence[typing.Union[float, int, str, pd.Timedelta]],
     pd.Index,
