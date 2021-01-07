@@ -112,8 +112,10 @@ def segmented_index(
 
     Args:
         files: set confidence values only on a sub-set of files
-        starts: segment start positions
-        ends: segment end positions
+        starts: segment start positions.
+            Time values given as float or integers are treated as seconds
+        ends: segment end positions.
+            Time values given as float or integers are treated as seconds
 
     Returns:
         segmented index
