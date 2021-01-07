@@ -343,17 +343,10 @@ def to_segmented_index(
     else:
         index = obj
 
-    df = index.to_frame(index=False)
-    df[define.IndexField.START] = pd.to_timedelta(0)
-    df[define.IndexField.END] = pd.NaT
-
-    index = pd.MultiIndex.from_frame(
-        df,
-        names=[
-            define.IndexField.FILE,
-            define.IndexField.START,
-            define.IndexField.END,
-        ]
+    index = segmented_index(
+        files=list(index),
+        starts=[0] * len(index),
+        ends=[pd.NaT] * len(index),
     )
 
     if isinstance(obj, pd.Index):
