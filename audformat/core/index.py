@@ -27,7 +27,7 @@ def to_array(value: typing.Any) -> typing.Union[list, np.ndarray]:
 
 
 def to_timedelta(times):
-    r"""Convert time value to pd.TimeDelta."""
+    r"""Convert time value to pd.Timedelta."""
     try:
         return pd.to_timedelta(times, unit='s')
     except ValueError:  # catches values like '1s'
