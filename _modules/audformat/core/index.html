@@ -72,7 +72,7 @@
             
             
               <div class="version">
-                v0.9.1
+                v0.9.3
               </div>
             
           
@@ -166,6 +166,8 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
@@ -218,6 +220,14 @@
     <span class="k">return</span> <span class="n">value</span>
 
 
+<span class="k">def</span> <span class="nf">to_timedelta</span><span class="p">(</span><span class="n">times</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Convert time value to pd.Timedelta.&quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_timedelta</span><span class="p">(</span><span class="n">times</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;s&#39;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>  <span class="c1"># catches values like &#39;1s&#39;</span>
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_timedelta</span><span class="p">(</span><span class="n">times</span><span class="p">)</span>
+
+
 <div class="viewcode-block" id="filewise_index"><a class="viewcode-back" href="../../../api.html#audformat.filewise_index">[docs]</a><span class="k">def</span> <span class="nf">filewise_index</span><span class="p">(</span>
         <span class="n">files</span><span class="p">:</span> <span class="n">Files</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">:</span>
@@ -230,6 +240,10 @@
 
 <span class="sd">    Returns:</span>
 <span class="sd">        filewise index</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; filewise_index([&#39;a.wav&#39;, &#39;b.wav&#39;])</span>
+<span class="sd">        Index([&#39;a.wav&#39;, &#39;b.wav&#39;], dtype=&#39;object&#39;, name=&#39;file&#39;)</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">files</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -253,6 +267,12 @@
 <span class="sd">    Raises:</span>
 <span class="sd">        ValueError: if not conform to</span>
 <span class="sd">            :ref:`table specifications &lt;data-tables:Tables&gt;`</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; index_type(filewise_index())</span>
+<span class="sd">        &#39;filewise&#39;</span>
+<span class="sd">        &gt;&gt;&gt; index_type(segmented_index())</span>
+<span class="sd">        &#39;segmented&#39;</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)):</span>
@@ -286,14 +306,40 @@
 
 <span class="sd">    Args:</span>
 <span class="sd">        files: set confidence values only on a sub-set of files</span>
-<span class="sd">        starts: segment start positions</span>
-<span class="sd">        ends: segment end positions</span>
+<span class="sd">        starts: segment start positions.</span>
+<span class="sd">            Time values given as float or integers are treated as seconds</span>
+<span class="sd">        ends: segment end positions.</span>
+<span class="sd">            Time values given as float or integers are treated as seconds</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        segmented index</span>
 
 <span class="sd">    Raises:</span>
 <span class="sd">        ValueError: if ``files``, ``start`` and ``ends`` differ in size</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; segmented_index(&#39;a.wav&#39;, 0, 1.1)</span>
+<span class="sd">        MultiIndex([(&#39;a.wav&#39;, &#39;0 days&#39;, &#39;0 days 00:00:01.100000&#39;)],</span>
+<span class="sd">                   names=[&#39;file&#39;, &#39;start&#39;, &#39;end&#39;])</span>
+<span class="sd">        &gt;&gt;&gt; segmented_index(&#39;a.wav&#39;, &#39;0ms&#39;, &#39;1ms&#39;)</span>
+<span class="sd">        MultiIndex([(&#39;a.wav&#39;, &#39;0 days&#39;, &#39;0 days 00:00:00.001000&#39;)],</span>
+<span class="sd">                   names=[&#39;file&#39;, &#39;start&#39;, &#39;end&#39;])</span>
+<span class="sd">        &gt;&gt;&gt; segmented_index([&#39;a.wav&#39;, &#39;b.wav&#39;])</span>
+<span class="sd">        MultiIndex([(&#39;a.wav&#39;, &#39;0 days&#39;, NaT),</span>
+<span class="sd">                    (&#39;b.wav&#39;, &#39;0 days&#39;, NaT)],</span>
+<span class="sd">                   names=[&#39;file&#39;, &#39;start&#39;, &#39;end&#39;])</span>
+<span class="sd">        &gt;&gt;&gt; segmented_index([&#39;a.wav&#39;, &#39;b.wav&#39;], [None, 1], [1, None])</span>
+<span class="sd">        MultiIndex([(&#39;a.wav&#39;,               NaT, &#39;0 days 00:00:01&#39;),</span>
+<span class="sd">                    (&#39;b.wav&#39;, &#39;0 days 00:00:01&#39;,               NaT)],</span>
+<span class="sd">                   names=[&#39;file&#39;, &#39;start&#39;, &#39;end&#39;])</span>
+<span class="sd">        &gt;&gt;&gt; segmented_index(</span>
+<span class="sd">        ...     files=[&#39;a.wav&#39;, &#39;a.wav&#39;],</span>
+<span class="sd">        ...     starts=[0, 1],</span>
+<span class="sd">        ...     ends=pd.to_timedelta([1000, 2000], unit=&#39;ms&#39;),</span>
+<span class="sd">        ... )</span>
+<span class="sd">        MultiIndex([(&#39;a.wav&#39;, &#39;0 days 00:00:00&#39;, &#39;0 days 00:00:01&#39;),</span>
+<span class="sd">                    (&#39;a.wav&#39;, &#39;0 days 00:00:01&#39;, &#39;0 days 00:00:02&#39;)],</span>
+<span class="sd">                   names=[&#39;file&#39;, &#39;start&#39;, &#39;end&#39;])</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">files</span> <span class="o">=</span> <span class="n">to_array</span><span class="p">(</span><span class="n">files</span><span class="p">)</span>
@@ -318,7 +364,7 @@
         <span class="p">)</span>
 
     <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">MultiIndex</span><span class="o">.</span><span class="n">from_arrays</span><span class="p">(</span>
-        <span class="p">[</span><span class="n">files</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_timedelta</span><span class="p">(</span><span class="n">starts</span><span class="p">),</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_timedelta</span><span class="p">(</span><span class="n">ends</span><span class="p">)],</span>
+        <span class="p">[</span><span class="n">files</span><span class="p">,</span> <span class="n">to_timedelta</span><span class="p">(</span><span class="n">starts</span><span class="p">),</span> <span class="n">to_timedelta</span><span class="p">(</span><span class="n">ends</span><span class="p">)],</span>
         <span class="n">names</span><span class="o">=</span><span class="p">[</span>
             <span class="n">define</span><span class="o">.</span><span class="n">IndexField</span><span class="o">.</span><span class="n">FILE</span><span class="p">,</span>
             <span class="n">define</span><span class="o">.</span><span class="n">IndexField</span><span class="o">.</span><span class="n">START</span><span class="p">,</span>
@@ -339,7 +385,7 @@
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2020/12/21 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2021/01/07 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
@@ -347,7 +393,7 @@
   <div role="contentinfo">
     <p>
         
-      &copy; 2019-2020 audEERING GmbH
+      &copy; 2019-2021 audEERING GmbH
     </p>
   </div> 
 
@@ -380,7 +426,7 @@
         <script src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js"></script>
         <script src="../../../_static/katex_autorenderer.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.18.0/dist/embed-amd.js"></script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
     
 
   

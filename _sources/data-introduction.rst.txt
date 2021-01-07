@@ -1,7 +1,7 @@
 Introduction
 ============
 
-The :ref:`audformat <data-format:Database>` was created
+:ref:`audformat <data-format:Database>` was created
 to handle all databases inside audEERING
 in an unified way to make them easily accessible.
 

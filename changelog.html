@@ -73,7 +73,7 @@
             
             
               <div class="version">
-                v0.9.1
+                v0.9.3
               </div>
             
           
@@ -128,6 +128,8 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Changelog</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#version-0-9-3-2021-01-07">Version 0.9.3 (2021-01-07)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#version-0-9-2-2021-01-07">Version 0.9.2 (2021-01-07)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#version-0-9-1-2020-12-21">Version 0.9.1 (2020-12-21)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#version-0-9-0-2020-12-18">Version 0.9.0 (2020-12-18)</a></li>
 </ul>
@@ -171,6 +173,8 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
@@ -182,9 +186,9 @@
     
       <li class="wy-breadcrumbs-aside">
         
+          
             
-            
-              <a href="https://github.com/audeering/audformat/blob/v0.9.1/docs/changelog.rst" class="fa fa-github"> Edit on GitHub</a>
+              <a href="https://github.com/audeering/audformat/blob/v0.9.3/docs/changelog.rst" class="fa fa-github"> Edit on GitHub</a>
             
           
         
@@ -203,6 +207,26 @@
 <p>All notable changes to this project will be documented in this file.</p>
 <p>The format is based on <a class="reference external" href="https://keepachangelog.com/en/1.0.0/">Keep a Changelog</a>,
 and this project adheres to <a class="reference external" href="https://semver.org/spec/v2.0.0.html">Semantic Versioning</a>.</p>
+<div class="section" id="version-0-9-3-2021-01-07">
+<h2>Version 0.9.3 (2021-01-07)<a class="headerlink" href="#version-0-9-3-2021-01-07" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Fixed: avoid sphinx syntax in CHANGELOG</p></li>
+</ul>
+</div>
+<div class="section" id="version-0-9-2-2021-01-07">
+<h2>Version 0.9.2 (2021-01-07)<a class="headerlink" href="#version-0-9-2-2021-01-07" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Changed: add arguments <code class="docutils literal notranslate"><span class="pre">num_workers</span></code> and <code class="docutils literal notranslate"><span class="pre">verbose</span></code> to
+<code class="docutils literal notranslate"><span class="pre">audformat.Database.drop_files()</span></code>,
+<code class="docutils literal notranslate"><span class="pre">audformat.Database.map_files()</span></code>,
+<code class="docutils literal notranslate"><span class="pre">audformat.Database.pick_files()</span></code>,
+<code class="docutils literal notranslate"><span class="pre">audformat.Database.save()</span></code></p></li>
+<li><p>Changed: <code class="docutils literal notranslate"><span class="pre">audformat.segmented_index()</span></code>
+support <code class="docutils literal notranslate"><span class="pre">int</span></code> and <code class="docutils literal notranslate"><span class="pre">float</span></code>, which will be interpreted as seconds</p></li>
+<li><p>Fixed: <code class="docutils literal notranslate"><span class="pre">audformat.utils.to_segmented_index()</span></code>
+returns correct index type for <code class="docutils literal notranslate"><span class="pre">NaT</span></code></p></li>
+</ul>
+</div>
 <div class="section" id="version-0-9-1-2020-12-21">
 <h2>Version 0.9.1 (2020-12-21)<a class="headerlink" href="#version-0-9-1-2020-12-21" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
@@ -244,7 +268,7 @@ and <code class="docutils literal notranslate"><span class="pre">audformat.Colum
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2020/12/21 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2021/01/07 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
@@ -252,7 +276,7 @@ and <code class="docutils literal notranslate"><span class="pre">audformat.Colum
   <div role="contentinfo">
     <p>
         
-      &copy; 2019-2020 audEERING GmbH
+      &copy; 2019-2021 audEERING GmbH
     </p>
   </div> 
 
@@ -285,7 +309,7 @@ and <code class="docutils literal notranslate"><span class="pre">audformat.Colum
         <script src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js"></script>
         <script src="_static/katex_autorenderer.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.18.0/dist/embed-amd.js"></script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
     
 
   

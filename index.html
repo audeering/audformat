@@ -73,7 +73,7 @@
             
             
               <div class="version">
-                v0.9.1
+                v0.9.3
               </div>
             
           
@@ -167,6 +167,8 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
@@ -178,9 +180,9 @@
     
       <li class="wy-breadcrumbs-aside">
         
+          
             
-            
-              <a href="https://github.com/audeering/audformat/blob/v0.9.1/docs/index.rst" class="fa fa-github"> Edit on GitHub</a>
+              <a href="https://github.com/audeering/audformat/blob/v0.9.3/docs/index.rst" class="fa fa-github"> Edit on GitHub</a>
             
           
         
@@ -198,18 +200,19 @@
 <h1>audformat<a class="headerlink" href="#audformat" title="Permalink to this headline">¶</a></h1>
 <p><a class="reference external" href="https://github.com/audeering/audformat/actions?query=workflow%3ATest"><img alt="Test status" src="https://github.com/audeering/audformat/workflows/Test/badge.svg" /></a> <a class="reference external" href="https://codecov.io/gh/audeering/audformat/"><img alt="code coverage" src="https://codecov.io/gh/audeering/audformat/branch/master/graph/badge.svg?token=1FEG9P5XS0" /></a> <a class="reference external" href="https://audeering.github.io/audformat/"><img alt="audformat's documentation" src="https://img.shields.io/pypi/v/audformat?label=docs" /></a> <a class="reference external" href="https://pypi.org/project/audformat/"><img alt="audformats's supported Python versions" src="https://img.shields.io/pypi/pyversions/audformat.svg" /></a> <a class="reference external" href="https://github.com/audeering/audformat/blob/master/LICENSE"><img alt="audformat's MIT license" src="https://img.shields.io/badge/license-MIT-green.svg" /></a></p>
 <p>Specification and reference implementation of <strong>audformat</strong>.</p>
-<p>audformat is intended to store media data,
+<p>audformat stores media data,
 such as audio or video,
 together with corresponding annotations
 in a pre-defined way.
-An audformat database is a folder that contains
-media files together with a header YAML file
-and one or several files storing the annotations.</p>
-<p>An audformat database is represented as a
-<code class="docutils literal notranslate"><span class="pre">audformat.Database</span></code> object and can be loaded with
-<code class="docutils literal notranslate"><span class="pre">audformat.Database.load()</span></code>
-or written to disk with
-<code class="docutils literal notranslate"><span class="pre">audformat.Database.save()</span></code>.</p>
+This makes it easy to combine or replace databases
+in machine learning projects.</p>
+<p>An audformat database is a folder
+that contains media files
+together with a header YAML file
+and one or several files storing the annotations.
+The database is represented as an <code class="docutils literal notranslate"><span class="pre">audformat.Database</span></code> object
+and can be loaded with <code class="docutils literal notranslate"><span class="pre">audformat.Database.load()</span></code>
+or written to disk with <code class="docutils literal notranslate"><span class="pre">audformat.Database.save()</span></code>.</p>
 <p>Have a look at the <a class="reference external" href="https://audeering.github.io/audformat/install.html">installation</a> and <a class="reference external" href="https://audeering.github.io/audformat/create-database.html">usage</a> instructions
 and the <a class="reference external" href="https://audeering.github.io/audformat/data-introduction.html">format specifications</a> as a starting point.</p>
 <div class="toctree-wrapper compound">
@@ -243,7 +246,7 @@ and the <a class="reference external" href="https://audeering.github.io/audforma
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2020/12/21 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2021/01/07 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
@@ -251,7 +254,7 @@ and the <a class="reference external" href="https://audeering.github.io/audforma
   <div role="contentinfo">
     <p>
         
-      &copy; 2019-2020 audEERING GmbH
+      &copy; 2019-2021 audEERING GmbH
     </p>
   </div> 
 
@@ -284,7 +287,7 @@ and the <a class="reference external" href="https://audeering.github.io/audforma
         <script src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js"></script>
         <script src="_static/katex_autorenderer.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.18.0/dist/embed-amd.js"></script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
     
 
   
