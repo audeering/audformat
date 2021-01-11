@@ -72,7 +72,7 @@
             
             
               <div class="version">
-                v0.9.3
+                v0.9.4
               </div>
             
           
@@ -403,55 +403,6 @@
         <span class="k">for</span> <span class="n">table_id</span> <span class="ow">in</span> <span class="n">table_ids</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">tables</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">table_id</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Database.pick_files"><a class="viewcode-back" href="../../../api.html#audformat.Database.pick_files">[docs]</a>    <span class="k">def</span> <span class="nf">pick_files</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span>
-            <span class="n">files</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span>
-                <span class="nb">str</span><span class="p">,</span>
-                <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
-                <span class="n">typing</span><span class="o">.</span><span class="n">Callable</span><span class="p">[[</span><span class="nb">str</span><span class="p">],</span> <span class="nb">bool</span><span class="p">],</span>
-            <span class="p">],</span>
-            <span class="n">num_workers</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
-            <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-    <span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Pick files from tables.</span>
-
-<span class="sd">        Iterate through all tables and keep only rows with a reference</span>
-<span class="sd">        to listed files or matching files.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            files: list of files or condition function</span>
-<span class="sd">            num_workers: number of parallel jobs.</span>
-<span class="sd">                If ``None`` will be set to the number of processors</span>
-<span class="sd">                on the machine multiplied by 5</span>
-<span class="sd">            verbose: show progress bar</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">audeer</span><span class="o">.</span><span class="n">run_tasks</span><span class="p">(</span>
-            <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">pick_files</span><span class="p">(</span><span class="n">files</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
-            <span class="n">params</span><span class="o">=</span><span class="p">[([</span><span class="n">table</span><span class="p">],</span> <span class="p">{})</span> <span class="k">for</span> <span class="n">table</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tables</span><span class="o">.</span><span class="n">values</span><span class="p">()],</span>
-            <span class="n">num_workers</span><span class="o">=</span><span class="n">num_workers</span><span class="p">,</span>
-            <span class="n">progress_bar</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span>
-            <span class="n">task_description</span><span class="o">=</span><span class="s1">&#39;Pick files&#39;</span><span class="p">,</span>
-        <span class="p">)</span></div>
-
-<div class="viewcode-block" id="Database.pick_tables"><a class="viewcode-back" href="../../../api.html#audformat.Database.pick_tables">[docs]</a>    <span class="k">def</span> <span class="nf">pick_tables</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span>
-            <span class="n">table_ids</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span>
-    <span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Pick tables by ID.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            table_ids: table IDs to pick</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">table_ids</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-            <span class="n">table_ids</span> <span class="o">=</span> <span class="p">[</span><span class="n">table_ids</span><span class="p">]</span>
-        <span class="n">drop_ids</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">table_id</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tables</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">table_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">table_ids</span><span class="p">:</span>
-                <span class="n">drop_ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">table_id</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">drop_tables</span><span class="p">(</span><span class="n">drop_ids</span><span class="p">)</span></div>
-
 <div class="viewcode-block" id="Database.map_files"><a class="viewcode-back" href="../../../api.html#audformat.Database.map_files">[docs]</a>    <span class="k">def</span> <span class="nf">map_files</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
             <span class="n">func</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Callable</span><span class="p">[[</span><span class="nb">str</span><span class="p">],</span> <span class="nb">str</span><span class="p">],</span>
@@ -503,6 +454,55 @@
             <span class="n">progress_bar</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span>
             <span class="n">task_description</span><span class="o">=</span><span class="s1">&#39;Map files&#39;</span><span class="p">,</span>
         <span class="p">)</span></div>
+
+<div class="viewcode-block" id="Database.pick_files"><a class="viewcode-back" href="../../../api.html#audformat.Database.pick_files">[docs]</a>    <span class="k">def</span> <span class="nf">pick_files</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">files</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span>
+                <span class="nb">str</span><span class="p">,</span>
+                <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+                <span class="n">typing</span><span class="o">.</span><span class="n">Callable</span><span class="p">[[</span><span class="nb">str</span><span class="p">],</span> <span class="nb">bool</span><span class="p">],</span>
+            <span class="p">],</span>
+            <span class="n">num_workers</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+            <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Pick files from tables.</span>
+
+<span class="sd">        Iterate through all tables and keep only rows with a reference</span>
+<span class="sd">        to listed files or matching files.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            files: list of files or condition function</span>
+<span class="sd">            num_workers: number of parallel jobs.</span>
+<span class="sd">                If ``None`` will be set to the number of processors</span>
+<span class="sd">                on the machine multiplied by 5</span>
+<span class="sd">            verbose: show progress bar</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">audeer</span><span class="o">.</span><span class="n">run_tasks</span><span class="p">(</span>
+            <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">pick_files</span><span class="p">(</span><span class="n">files</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+            <span class="n">params</span><span class="o">=</span><span class="p">[([</span><span class="n">table</span><span class="p">],</span> <span class="p">{})</span> <span class="k">for</span> <span class="n">table</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tables</span><span class="o">.</span><span class="n">values</span><span class="p">()],</span>
+            <span class="n">num_workers</span><span class="o">=</span><span class="n">num_workers</span><span class="p">,</span>
+            <span class="n">progress_bar</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span>
+            <span class="n">task_description</span><span class="o">=</span><span class="s1">&#39;Pick files&#39;</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="Database.pick_tables"><a class="viewcode-back" href="../../../api.html#audformat.Database.pick_tables">[docs]</a>    <span class="k">def</span> <span class="nf">pick_tables</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">table_ids</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span>
+    <span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Pick tables by ID.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            table_ids: table IDs to pick</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">table_ids</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">table_ids</span> <span class="o">=</span> <span class="p">[</span><span class="n">table_ids</span><span class="p">]</span>
+        <span class="n">drop_ids</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">table_id</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tables</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">table_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">table_ids</span><span class="p">:</span>
+                <span class="n">drop_ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">table_id</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">drop_tables</span><span class="p">(</span><span class="n">drop_ids</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Database.save"><a class="viewcode-back" href="../../../api.html#audformat.Database.save">[docs]</a>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
@@ -609,6 +609,8 @@
             <span class="o">*</span><span class="p">,</span>
             <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;db&#39;</span><span class="p">,</span>
             <span class="n">load_data</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="n">num_workers</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+            <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Database&#39;</span><span class="p">:</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Load database from disk.</span>
 
@@ -621,6 +623,10 @@
 <span class="sd">            name: base name of header and table files</span>
 <span class="sd">            load_data: if ``False`` :class:`audformat.Table`</span>
 <span class="sd">                will contain empty tables</span>
+<span class="sd">            num_workers: number of parallel jobs.</span>
+<span class="sd">                If ``None`` will be set to the number of processors</span>
+<span class="sd">                on the machine multiplied by 5</span>
+<span class="sd">            verbose: show progress bar</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            database object</span>
@@ -639,10 +645,21 @@
             <span class="n">db</span> <span class="o">=</span> <span class="n">Database</span><span class="o">.</span><span class="n">load_header_from_yaml</span><span class="p">(</span><span class="n">header</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="s1">&#39;tables&#39;</span> <span class="ow">in</span> <span class="n">header</span> <span class="ow">and</span> <span class="n">header</span><span class="p">[</span><span class="s1">&#39;tables&#39;</span><span class="p">]</span> <span class="ow">and</span> <span class="n">load_data</span><span class="p">:</span>
-                <span class="k">for</span> <span class="n">table_id</span><span class="p">,</span> <span class="n">table_d</span> <span class="ow">in</span> <span class="n">header</span><span class="p">[</span><span class="s1">&#39;tables&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+
+                <span class="k">def</span> <span class="nf">job</span><span class="p">(</span><span class="n">table_id</span><span class="p">):</span>
                     <span class="n">table</span> <span class="o">=</span> <span class="n">db</span><span class="p">[</span><span class="n">table_id</span><span class="p">]</span>
                     <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">name</span> <span class="o">+</span> <span class="s1">&#39;.&#39;</span> <span class="o">+</span> <span class="n">table_id</span><span class="p">)</span>
                     <span class="n">table</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+
+                <span class="n">audeer</span><span class="o">.</span><span class="n">run_tasks</span><span class="p">(</span>
+                    <span class="n">job</span><span class="p">,</span>
+                    <span class="n">params</span><span class="o">=</span><span class="p">[</span>
+                        <span class="p">([</span><span class="n">table_id</span><span class="p">],</span> <span class="p">{})</span> <span class="k">for</span> <span class="n">table_id</span> <span class="ow">in</span> <span class="n">header</span><span class="p">[</span><span class="s1">&#39;tables&#39;</span><span class="p">]</span>
+                    <span class="p">],</span>
+                    <span class="n">num_workers</span><span class="o">=</span><span class="n">num_workers</span><span class="p">,</span>
+                    <span class="n">progress_bar</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span>
+                    <span class="n">task_description</span><span class="o">=</span><span class="s1">&#39;Load tables&#39;</span><span class="p">,</span>
+                <span class="p">)</span>
 
         <span class="k">return</span> <span class="n">db</span></div>
 
@@ -752,7 +769,7 @@
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2021/01/07 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2021/01/11 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
