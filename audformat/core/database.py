@@ -209,55 +209,6 @@ class Database(HeaderBase):
         for table_id in table_ids:
             self.tables.pop(table_id)
 
-    def pick_files(
-            self,
-            files: typing.Union[
-                str,
-                typing.Sequence[str],
-                typing.Callable[[str], bool],
-            ],
-            num_workers: typing.Optional[int] = 1,
-            verbose: bool = False,
-    ):
-        r"""Pick files from tables.
-
-        Iterate through all tables and keep only rows with a reference
-        to listed files or matching files.
-
-        Args:
-            files: list of files or condition function
-            num_workers: number of parallel jobs.
-                If ``None`` will be set to the number of processors
-                on the machine multiplied by 5
-            verbose: show progress bar
-
-        """
-        audeer.run_tasks(
-            lambda x: x.pick_files(files, inplace=True),
-            params=[([table], {}) for table in self.tables.values()],
-            num_workers=num_workers,
-            progress_bar=verbose,
-            task_description='Pick files',
-        )
-
-    def pick_tables(
-            self,
-            table_ids: typing.Union[str, typing.Sequence[str]],
-    ):
-        r"""Pick tables by ID.
-
-        Args:
-            table_ids: table IDs to pick
-
-        """
-        if isinstance(table_ids, str):
-            table_ids = [table_ids]
-        drop_ids = []
-        for table_id in list(self.tables):
-            if table_id not in table_ids:
-                drop_ids.append(table_id)
-        self.drop_tables(drop_ids)
-
     def map_files(
             self,
             func: typing.Callable[[str], str],
@@ -309,6 +260,55 @@ class Database(HeaderBase):
             progress_bar=verbose,
             task_description='Map files',
         )
+
+    def pick_files(
+            self,
+            files: typing.Union[
+                str,
+                typing.Sequence[str],
+                typing.Callable[[str], bool],
+            ],
+            num_workers: typing.Optional[int] = 1,
+            verbose: bool = False,
+    ):
+        r"""Pick files from tables.
+
+        Iterate through all tables and keep only rows with a reference
+        to listed files or matching files.
+
+        Args:
+            files: list of files or condition function
+            num_workers: number of parallel jobs.
+                If ``None`` will be set to the number of processors
+                on the machine multiplied by 5
+            verbose: show progress bar
+
+        """
+        audeer.run_tasks(
+            lambda x: x.pick_files(files, inplace=True),
+            params=[([table], {}) for table in self.tables.values()],
+            num_workers=num_workers,
+            progress_bar=verbose,
+            task_description='Pick files',
+        )
+
+    def pick_tables(
+            self,
+            table_ids: typing.Union[str, typing.Sequence[str]],
+    ):
+        r"""Pick tables by ID.
+
+        Args:
+            table_ids: table IDs to pick
+
+        """
+        if isinstance(table_ids, str):
+            table_ids = [table_ids]
+        drop_ids = []
+        for table_id in list(self.tables):
+            if table_id not in table_ids:
+                drop_ids.append(table_id)
+        self.drop_tables(drop_ids)
 
     def save(
             self,
@@ -415,6 +415,8 @@ class Database(HeaderBase):
             *,
             name: str = 'db',
             load_data: bool = True,
+            num_workers: typing.Optional[int] = 1,
+            verbose: bool = False,
     ) -> 'Database':
         r"""Load database from disk.
 
@@ -427,6 +429,10 @@ class Database(HeaderBase):
             name: base name of header and table files
             load_data: if ``False`` :class:`audformat.Table`
                 will contain empty tables
+            num_workers: number of parallel jobs.
+                If ``None`` will be set to the number of processors
+                on the machine multiplied by 5
+            verbose: show progress bar
 
         Returns:
             database object
@@ -445,10 +451,21 @@ class Database(HeaderBase):
             db = Database.load_header_from_yaml(header)
 
             if 'tables' in header and header['tables'] and load_data:
-                for table_id, table_d in header['tables'].items():
+
+                def job(table_id):
                     table = db[table_id]
                     path = os.path.join(root, name + '.' + table_id)
                     table.load(path)
+
+                audeer.run_tasks(
+                    job,
+                    params=[
+                        ([table_id], {}) for table_id in header['tables']
+                    ],
+                    num_workers=num_workers,
+                    progress_bar=verbose,
+                    task_description='Load tables',
+                )
 
         return db
 
