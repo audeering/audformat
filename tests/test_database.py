@@ -168,7 +168,9 @@ def test_save_and_load(tmpdir, db, storage_format, num_workers):
         assert table._db is db
 
     # Test load_data=False
-    db_load = audformat.Database.load(tmpdir, load_data=False)
+    db_load = audformat.Database.load(
+        tmpdir, load_data=False, num_workers=num_workers,
+    )
     for table_id, table in db_load.tables.items():
         assert list(db_load.files) == []
         assert table._id == table_id
