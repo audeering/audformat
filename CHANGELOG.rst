@@ -7,6 +7,13 @@ The format is based on `Keep a Changelog`_,
 and this project adheres to `Semantic Versioning`_.
 
 
+Version 0.9.4 (2021-01-11)
+--------------------------
+
+* Changed: add arguments ``num_workers`` and ``verbose`` to
+  ``audformat.Database.load()``
+
+
 Version 0.9.3 (2021-01-07)
 --------------------------
 
