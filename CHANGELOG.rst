@@ -7,6 +7,13 @@ The format is based on `Keep a Changelog`_,
 and this project adheres to `Semantic Versioning`_.
 
 
+Version 0.9.5 (2021-14-14)
+--------------------------
+
+* Changed: use nullable Pandas' type ``'boolean'`` for ``bool`` schemes
+* Fixed: ``Scheme.draw()`` generates boolean values if scheme is ``bool``
+
+
 Version 0.9.4 (2021-01-11)
 --------------------------
 
