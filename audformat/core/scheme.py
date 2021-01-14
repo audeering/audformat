@@ -144,7 +144,12 @@ class Scheme(HeaderBase):
         """
         x = None
         if self.labels is None:
-            if self.dtype == define.DataType.INTEGER:
+            if self.dtype == define.DataType.BOOL:
+                x = [random.choice([False, True]) for _ in range(n)]
+            elif self.dtype == define.DataType.DATE:
+                x = [pd.to_datetime(round(random.random(), 2), unit='s')
+                     for _ in range(n)]
+            elif self.dtype == define.DataType.INTEGER:
                 minimum = self.minimum or 0
                 maximum = self.maximum or minimum + 100
                 x = [random.randrange(minimum, maximum)
@@ -156,9 +161,6 @@ class Scheme(HeaderBase):
                      for _ in range(n)]
             elif self.dtype == define.DataType.TIME:
                 x = [pd.to_timedelta(round(random.random(), 2), unit='s')
-                     for _ in range(n)]
-            elif self.dtype == define.DataType.DATE:
-                x = [pd.to_datetime(round(random.random(), 2), unit='s')
                      for _ in range(n)]
             else:
                 seq = string.ascii_letters + string.digits
