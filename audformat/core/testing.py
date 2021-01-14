@@ -246,57 +246,66 @@ def create_db(minimal: bool = False) -> Database:
     # Schemes #
     ###########
 
-    db.schemes['string'] = Scheme()
-    db.schemes['int'] = Scheme(
-        dtype=define.DataType.INTEGER, minimum=0, maximum=100,
-    )
+    db.schemes['bool'] = Scheme(dtype=define.DataType.BOOL)
+    db.schemes['date'] = Scheme(dtype=define.DataType.DATE)
     db.schemes['float'] = Scheme(
         dtype=define.DataType.FLOAT, minimum=-1.0, maximum=1.0,
     )
-    db.schemes['time'] = Scheme(dtype=define.DataType.TIME)
-    db.schemes['date'] = Scheme(dtype=define.DataType.DATE)
+    db.schemes['int'] = Scheme(
+        dtype=define.DataType.INTEGER, minimum=0, maximum=100,
+    )
     db.schemes['label'] = Scheme(labels=['label1', 'label2', 'label3'])
+    db.schemes['label_map_int'] = Scheme(
+        labels={1: 'a', 2: 'b', 3: 'c'}
+    )
     db.schemes['label_map_str'] = Scheme(
         labels={'label1': {'prop1': 1, 'prop2': 'a'},
                 'label2': {'prop1': 2, 'prop2': 'b'},
                 'label3': {'prop1': 3, 'prop2': 'c'}})
-    db.schemes['label_map_int'] = Scheme(
-        labels={1: 'a', 2: 'b', 3: 'c'}
-    )
+    db.schemes['string'] = Scheme()
+    db.schemes['time'] = Scheme(dtype=define.DataType.TIME)
 
     ##########
     # Splits #
     ##########
 
-    db.splits['train'] = Split(type=define.SplitType.TRAIN)
     db.splits['dev'] = Split(type=define.SplitType.DEVELOP)
     db.splits['test'] = Split(type=define.SplitType.TEST)
+    db.splits['train'] = Split(type=define.SplitType.TRAIN)
 
     ##########
     # Tables #
     ##########
 
-    add_table(db, 'files', define.IndexType.FILEWISE,
-              columns={
-                  scheme: (scheme, 'gold') for scheme in list(db.schemes)
-              },
-              num_files=100, p_none=0.25, split_id='train',
-              media_id='microphone')
+    add_table(
+        db,
+        'files',
+        define.IndexType.FILEWISE,
+        columns={
+            scheme: (scheme, 'gold') for scheme in db.schemes
+        },
+        num_files=100, p_none=0.25, split_id='train',
+        media_id='microphone'
+    )
     db['files']['no_scheme'] = Column()
-    db['files']['no_scheme'].set(db.schemes['string'].draw(
-        100, p_none=0.25)
+    db['files']['no_scheme'].set(
+        db.schemes['string'].draw(100, p_none=0.25)
     )
 
-    add_table(db, 'segments', define.IndexType.SEGMENTED,
-              columns={
-                  scheme: (scheme, 'gold') for scheme in list(db.schemes)
-              },
-              num_files=10, num_segments_per_file=10,
-              file_duration='60s', p_none=0.25, split_id='dev',
-              media_id='microphone')
+    add_table(
+        db,
+        'segments',
+        define.IndexType.SEGMENTED,
+        columns={
+            scheme: (scheme, 'gold') for scheme in db.schemes
+        },
+        num_files=10, num_segments_per_file=10,
+        file_duration='60s', p_none=0.25, split_id='dev',
+        media_id='microphone',
+    )
     db['segments']['no_scheme'] = Column()
-    db['segments']['no_scheme'].set(db.schemes['string'].draw(
-        100, p_none=0.25)
+    db['segments']['no_scheme'].set(
+        db.schemes['string'].draw(100, p_none=0.25)
     )
 
     return db

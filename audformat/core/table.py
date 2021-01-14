@@ -864,12 +864,11 @@ class Table(HeaderBase):
             usecols.append(column_id)
             if column.scheme_id is not None:
                 dtype = schemes[column.scheme_id].to_pandas_dtype()
-                # if column contains timestamps
-                # we have to convert them later
-                if dtype == 'timedelta64[ns]':
-                    converters[column_id] = lambda x: pd.to_timedelta(x)
-                elif dtype == 'datetime64[ns]':
+                # use converter if column contains dates or timestamps
+                if dtype == 'datetime64[ns]':
                     converters[column_id] = lambda x: pd.to_datetime(x)
+                elif dtype == 'timedelta64[ns]':
+                    converters[column_id] = lambda x: pd.to_timedelta(x)
                 else:
                     dtypes[column_id] = dtype
             else:
