@@ -202,12 +202,14 @@ class Scheme(HeaderBase):
             return pd.api.types.CategoricalDtype(
                 categories=labels, ordered=False,
             )
+        elif self.dtype == define.DataType.BOOL:
+            return 'boolean'
+        elif self.dtype == define.DataType.DATE:
+            return 'datetime64[ns]'
         elif self.dtype == define.DataType.INTEGER:
             return 'Int64'
         elif self.dtype == define.DataType.TIME:
             return 'timedelta64[ns]'
-        elif self.dtype == define.DataType.DATE:
-            return 'datetime64[ns]'
         return self.dtype
 
     def __contains__(self, item: typing.Any) -> bool:
