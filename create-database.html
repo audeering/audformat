@@ -74,7 +74,7 @@
             
             
               <div class="version">
-                v0.9.4
+                v0.9.5
               </div>
             
           
@@ -187,7 +187,7 @@
         
           
             
-              <a href="https://github.com/audeering/audformat/blob/v0.9.4/docs/create-database.rst" class="fa fa-github"> Edit on GitHub</a>
+              <a href="https://github.com/audeering/audformat/blob/v0.9.5/docs/create-database.rst" class="fa fa-github"> Edit on GitHub</a>
             
           
         
@@ -361,28 +361,30 @@ containing all possible <a class="reference internal" href="data-tables.html#tab
   split_id: train
   media_id: microphone
   columns:
-    string: {scheme_id: string, rater_id: gold}
-    int: {scheme_id: int, rater_id: gold}
-    float: {scheme_id: float, rater_id: gold}
-    time: {scheme_id: time, rater_id: gold}
+    bool: {scheme_id: bool, rater_id: gold}
     date: {scheme_id: date, rater_id: gold}
+    float: {scheme_id: float, rater_id: gold}
+    int: {scheme_id: int, rater_id: gold}
     label: {scheme_id: label, rater_id: gold}
-    label_map_str: {scheme_id: label_map_str, rater_id: gold}
     label_map_int: {scheme_id: label_map_int, rater_id: gold}
+    label_map_str: {scheme_id: label_map_str, rater_id: gold}
+    string: {scheme_id: string, rater_id: gold}
+    time: {scheme_id: time, rater_id: gold}
     no_scheme: {}
 segments:
   type: segmented
   split_id: dev
   media_id: microphone
   columns:
-    string: {scheme_id: string, rater_id: gold}
-    int: {scheme_id: int, rater_id: gold}
-    float: {scheme_id: float, rater_id: gold}
-    time: {scheme_id: time, rater_id: gold}
+    bool: {scheme_id: bool, rater_id: gold}
     date: {scheme_id: date, rater_id: gold}
+    float: {scheme_id: float, rater_id: gold}
+    int: {scheme_id: int, rater_id: gold}
     label: {scheme_id: label, rater_id: gold}
-    label_map_str: {scheme_id: label_map_str, rater_id: gold}
     label_map_int: {scheme_id: label_map_int, rater_id: gold}
+    label_map_str: {scheme_id: label_map_str, rater_id: gold}
+    string: {scheme_id: string, rater_id: gold}
+    time: {scheme_id: time, rater_id: gold}
     no_scheme: {}
 </pre></div>
 </div>
@@ -442,7 +444,7 @@ languages: [deu, eng]
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2021/01/11 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2021/01/14 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
