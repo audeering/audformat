@@ -230,5 +230,5 @@ class Column(HeaderBase):
         if self.dump() != other.dump():
             return False
         if self._table is not None and other._table is not None:
-            return self.get().equals(other.get())
+            return self._table.df[self._id].equals(other._table.df[other._id])
         return self._table is None and other._table is None
