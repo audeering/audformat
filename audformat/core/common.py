@@ -206,6 +206,12 @@ class HeaderBase:
             indent=indent, allow_unicode=True,
         )
 
+    def __eq__(
+            self,
+            other: 'HeaderBase',
+    ) -> bool:
+        return self.dump() == other.dump()
+
     def __repr__(self):
         s = self.dump()
         return s[:-1] if s.endswith('\n') else s
@@ -214,7 +220,7 @@ class HeaderBase:
         return repr(self)
 
 
-class DefineBase(object):
+class DefineBase:
 
     @classmethod
     def assert_has_value(cls, value):

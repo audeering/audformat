@@ -390,6 +390,17 @@ class Database(HeaderBase):
         """
         return self.tables[table_id]
 
+    def __eq__(
+            self,
+            other: 'Database',
+    ) -> bool:
+        if self.dump() != other.dump():
+            return False
+        for table_id in self.tables:
+            if self[table_id] != other[table_id]:
+                return False
+        return True
+
     def __setitem__(
             self,
             table_id: str,

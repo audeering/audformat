@@ -818,6 +818,14 @@ class Table(HeaderBase):
         """
         return self.columns[column_id]
 
+    def __eq__(
+            self,
+            other: 'Table',
+    ) -> bool:
+        if self.dump() != other.dump():
+            return False
+        return self.df.equals(other.df)
+
     def __len__(self) -> int:
         return len(self._df)
 

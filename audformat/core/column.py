@@ -222,3 +222,13 @@ class Column(HeaderBase):
                     'Cannot set values of a filewise column '
                     'using a segmented index.'
                 )
+
+    def __eq__(
+            self,
+            other: 'Column',
+    ) -> bool:
+        if self.dump() != other.dump():
+            return False
+        if self._table is not None and other._table is not None:
+            return self.get().equals(other.get())
+        return self._table is None and other._table is None
