@@ -212,6 +212,9 @@ class HeaderBase:
     ) -> bool:
         return self.dump() == other.dump()
 
+    def __hash__(self) -> int:
+        return hash(self.dump())
+
     def __repr__(self):
         s = self.dump()
         return s[:-1] if s.endswith('\n') else s
