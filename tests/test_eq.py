@@ -1,3 +1,5 @@
+import pytest
+
 import audformat
 import audformat.testing
 
@@ -73,3 +75,20 @@ def test_without_data(tmpdir):
     c2 = audformat.Column(description='c2')
 
     assert c1 != c2
+
+
+def test_hash():
+
+    db = audformat.testing.create_db(minimal=False)
+    db2 = audformat.testing.create_db(minimal=False)
+
+    assert hash(db.schemes['string']) == hash(db2.schemes['string'])
+
+    with pytest.raises(TypeError):
+        hash(db)
+
+    with pytest.raises(TypeError):
+        hash(db['files'])
+
+    with pytest.raises(TypeError):
+        hash(db['files']['string'])
