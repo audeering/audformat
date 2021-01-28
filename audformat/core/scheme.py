@@ -157,8 +157,7 @@ class Scheme(HeaderBase):
             elif self.dtype == define.DataType.FLOAT:
                 minimum = self.minimum or 0.0
                 maximum = self.maximum or minimum + 1.0
-                x = [round(random.uniform(minimum, maximum), 2)
-                     for _ in range(n)]
+                x = [random.uniform(minimum, maximum) for _ in range(n)]
             elif self.dtype == define.DataType.TIME:
                 x = [pd.to_timedelta(round(random.random(), 2), unit='s')
                      for _ in range(n)]

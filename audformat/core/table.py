@@ -890,6 +890,7 @@ class Table(HeaderBase):
             dtype=dtypes,
             index_col=index_col,
             converters=converters,
+            float_precision='round_trip',
         )
 
         self._df = df
