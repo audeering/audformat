@@ -316,7 +316,7 @@ class Database(HeaderBase):
             *,
             name: str = 'db',
             indent: int = 2,
-            storage_format: define.TableStorageFormat = (
+            storage_format: typing.Optional[define.TableStorageFormat] = (
                 define.TableStorageFormat.CSV
             ),
             header_only: bool = False,
@@ -325,8 +325,11 @@ class Database(HeaderBase):
     ):
         r"""Save database to disk.
 
-        Creates a header ``<root>/<name>.yaml`` and for every table
-        a file ``<root>/<name>.<table-id>.[csv,pkl]``.
+        Creates a header ``<root>/<name>.yaml``
+        and for every table a file ``<root>/<name>.<table-id>.[csv,pkl]``,
+        or both of them.
+
+        Existing files will be overwritten.
 
         Args:
             root: root directory (possibly created)
