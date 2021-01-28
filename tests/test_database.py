@@ -150,18 +150,13 @@ def test_save_and_load(tmpdir, db, storage_format, num_workers):
         num_workers=num_workers,
     )
 
-    assert filecmp.cmp(os.path.join(tmpdir, 'db.yaml'),
-                       os.path.join(tmpdir, 'db-2.yaml'))
+    assert filecmp.cmp(
+        os.path.join(tmpdir, 'db.yaml'),
+        os.path.join(tmpdir, 'db-2.yaml'),
+    )
 
-    ext = f'.{storage_format}'
     for table_id, table in db.tables.items():
-        if storage_format != audformat.define.TableStorageFormat.CSV:
-            # TODO: why is this test failing if compression is turned off?
-            assert db[table_id].df.equals(db_load[table_id].df)
-        else:
-            assert filecmp.cmp(
-                os.path.join(tmpdir, 'db.{}{}'.format(table_id, ext)),
-                os.path.join(tmpdir, 'db-2.{}{}'.format(table_id, ext)))
+        assert db[table_id].df.equals(db_load[table_id].df)
         assert db[table_id].df.dtypes.equals(db_load[table_id].df.dtypes)
         assert db[table_id].files.equals(db_load[table_id].files)
         assert table._id == table_id
@@ -169,7 +164,9 @@ def test_save_and_load(tmpdir, db, storage_format, num_workers):
 
     # Test load_data=False
     db_load = audformat.Database.load(
-        tmpdir, load_data=False, num_workers=num_workers,
+        tmpdir,
+        load_data=False,
+        num_workers=num_workers,
     )
     for table_id, table in db_load.tables.items():
         assert list(db_load.files) == []
