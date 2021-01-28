@@ -7,6 +7,13 @@ The format is based on `Keep a Changelog`_,
 and this project adheres to `Semantic Versioning`_.
 
 
+Version 0.9.6 (2021-01-28)
+--------------------------
+
+* Fixed: implemented ``audformat.Database.__eq__`` and return ``True``
+  for identical databases
+
+
 Version 0.9.5 (2021-01-14)
 --------------------------
 
