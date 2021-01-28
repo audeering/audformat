@@ -655,11 +655,13 @@ class Table(HeaderBase):
             self,
             path: str,
             *,
-            storage_format: define.TableStorageFormat = (
+            storage_format: typing.Optional[define.TableStorageFormat] = (
                 define.TableStorageFormat.CSV
             ),
     ):
         r"""Save table data to disk.
+
+        Existing files will be overwritten.
 
         Args:
             path: file path without extension
@@ -669,13 +671,21 @@ class Table(HeaderBase):
 
         """
         path = audeer.safe_path(path)
-        define.TableStorageFormat.assert_has_value(storage_format)
-        if storage_format == define.TableStorageFormat.PICKLE:
+        if storage_format is None:
+            storage_formats = [
+                define.TableStorageFormat.PICKLE,
+                define.TableStorageFormat.CSV,
+            ]
+        else:
+            define.TableStorageFormat.assert_has_value(storage_format)
+            storage_formats = [storage_format]
+
+        if define.TableStorageFormat.PICKLE in storage_formats:
             self._df.to_pickle(
                 path + f'.{define.TableStorageFormat.PICKLE}',
                 compression='xz',
             )
-        else:
+        if define.TableStorageFormat.CSV in storage_formats:
             with open(path + f'.{define.TableStorageFormat.CSV}', 'w') as fp:
                 self.df.to_csv(fp, encoding='utf-8')
 

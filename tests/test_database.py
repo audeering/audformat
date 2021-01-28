@@ -132,6 +132,11 @@ def test_map_files(num_workers):
             audformat.define.TableStorageFormat.PICKLE,
             None,
         ),
+        (
+            audformat.testing.create_db(),
+            None,
+            None,
+        ),
     ],
 )
 def test_save_and_load(tmpdir, db, storage_format, num_workers):
