@@ -666,7 +666,7 @@ class Table(HeaderBase):
 
         Args:
             path: file path without extension
-            storage_format: storage format of tables.
+            storage_format: storage format of table.
                 See :class:`audformat.define.TableStorageFormat`
                 for available formats
             update_other_formats: if ``True`` it will not only save
