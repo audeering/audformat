@@ -227,12 +227,21 @@ class DefineBase:
 
     @classmethod
     def assert_has_value(cls, value):
-        attributes = inspect.getmembers(
-            cls, lambda x: not inspect.isroutine(x))
-        valid_values = [a[1] for a in attributes if
-                        not(a[0].startswith('__') and a[0].endswith('__'))]
+        valid_values = cls.values()
         if value not in valid_values:
             raise BadValueError(value, valid_values)
+
+    @classmethod
+    def values(cls):
+        attributes = inspect.getmembers(
+            cls, lambda x: not inspect.isroutine(x)
+        )
+        return sorted(
+            [
+                a[1] for a in attributes
+                if not(a[0].startswith('__') and a[0].endswith('__'))
+            ]
+        )
 
 
 def format_series_as_html():  # pragma: no cover (only used in documentation)

@@ -655,7 +655,7 @@ class Table(HeaderBase):
             self,
             path: str,
             *,
-            storage_format: typing.Optional[define.TableStorageFormat] = (
+            storage_format: typing.Union[str, define.TableStorageFormat] = (
                 define.TableStorageFormat.CSV
             ),
     ):
@@ -667,27 +667,34 @@ class Table(HeaderBase):
             path: file path without extension
             storage_format: storage format of tables.
                 See :class:`audformat.define.TableStorageFormat`
-                for available formats
+                for available formats.
+                If ``'all'`` it will write to all formats.
+                If ``'update'`` it will only update existing files
+                independend of the storage format
 
         """
         path = audeer.safe_path(path)
-        if storage_format is None:
-            storage_formats = [
-                define.TableStorageFormat.PICKLE,
-                define.TableStorageFormat.CSV,
-            ]
+
+        if storage_format in ['all', 'update']:
+            storage_formats = define.TableStorageFormat.values()
         else:
             define.TableStorageFormat.assert_has_value(storage_format)
             storage_formats = [storage_format]
 
         if define.TableStorageFormat.PICKLE in storage_formats:
-            self._df.to_pickle(
-                path + f'.{define.TableStorageFormat.PICKLE}',
-                compression='xz',
-            )
+            out_file = path + f'.{define.TableStorageFormat.PICKLE}'
+            if storage_format == 'update' and not os.path.exists(out_file):
+                pass
+            else:
+                self._df.to_pickle(out_file, compression='xz')
+
         if define.TableStorageFormat.CSV in storage_formats:
-            with open(path + f'.{define.TableStorageFormat.CSV}', 'w') as fp:
-                self.df.to_csv(fp, encoding='utf-8')
+            out_file = path + f'.{define.TableStorageFormat.CSV}'
+            if storage_format == 'update' and not os.path.exists(out_file):
+                pass
+            else:
+                with open(out_file, 'w') as fp:
+                    self.df.to_csv(fp, encoding='utf-8')
 
     def set(
             self,
