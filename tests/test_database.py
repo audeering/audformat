@@ -167,7 +167,6 @@ def test_save_and_load(tmpdir, db, storage_format, num_workers):
         # which means we are loading the second database here
         db_load = audformat.Database.load(tmpdir)
         db_load.meta = {}
-        assert str(db_load) == str(db2)
         assert db_load == db2
         assert db_load != db
         # Save and not update PKL files
