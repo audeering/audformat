@@ -152,11 +152,12 @@ def test_save_and_load(tmpdir, db, storage_format, num_workers):
                 assert not os.path.exists(table_file)
 
     # Test update other formats
-    if storage_format == audformat.define.TableStorageFormat.CSV:
+    if (
+            storage_format == audformat.define.TableStorageFormat.CSV
+            and db.tables
+    ):
         db2 = audformat.testing.create_db()
         db2.meta = {}
-        print(db)
-        print(db2)
         db2.save(
             tmpdir,
             storage_format=audformat.define.TableStorageFormat.PICKLE,
