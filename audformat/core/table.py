@@ -688,7 +688,7 @@ class Table(HeaderBase):
         if storage_format == define.TableStorageFormat.CSV:
             self._save_csv(csv_file)
             if update_other_formats and os.path.exists(pickle_file):
-                self._save_pickle(pickle_file)
+                self._save_pickled(pickle_file)
 
     def set(
             self,
