@@ -31,6 +31,6 @@ class Split(HeaderBase):
             meta: dict = None,
     ):
         super().__init__(description=description, meta=meta)
-        define.SplitType.assert_has_value(type)
+        define.SplitType.assert_has_attribute_value(type)
         self.type = type
         r"""Split type"""

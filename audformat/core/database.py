@@ -103,7 +103,7 @@ class Database(HeaderBase):
             description: str = None,
             meta: dict = None,
     ):
-        define.Usage.assert_has_value(usage)
+        define.Usage.assert_has_attribute_value(usage)
 
         languages = [] if languages is None else audeer.to_list(languages)
         for idx in range(len(languages)):
@@ -316,9 +316,10 @@ class Database(HeaderBase):
             *,
             name: str = 'db',
             indent: int = 2,
-            storage_format: typing.Optional[define.TableStorageFormat] = (
+            storage_format: define.TableStorageFormat = (
                 define.TableStorageFormat.CSV
             ),
+            update_other_formats: bool = True,
             header_only: bool = False,
             num_workers: typing.Optional[int] = 1,
             verbose: bool = False,
@@ -337,10 +338,10 @@ class Database(HeaderBase):
             indent: indent size
             storage_format: storage format of tables.
                 See :class:`audformat.define.TableStorageFormat`
-                for available formats.
-                If ``'all'`` it will write to all formats.
-                If ``'update'`` it will only update existing files
-                independend of the storage format
+                for available formats
+            update_other_formats: if ``True`` it will not only save
+                to the given ``storage_format``,
+                but update all files stored in other storage formats as well
             header_only: store header only
             num_workers: number of parallel jobs.
                 If ``None`` will be set to the number of processors
@@ -359,7 +360,11 @@ class Database(HeaderBase):
 
             def job(table_id, table):
                 table_path = os.path.join(root, name + '.' + table_id)
-                table.save(table_path, storage_format=storage_format)
+                table.save(
+                    table_path,
+                    storage_format=storage_format,
+                    update_other_formats=update_other_formats,
+                )
 
             audeer.run_tasks(
                 job,

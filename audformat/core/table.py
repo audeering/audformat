@@ -655,9 +655,10 @@ class Table(HeaderBase):
             self,
             path: str,
             *,
-            storage_format: typing.Union[str, define.TableStorageFormat] = (
+            storage_format: define.TableStorageFormat = (
                 define.TableStorageFormat.CSV
             ),
+            update_other_formats: bool = True,
     ):
         r"""Save table data to disk.
 
@@ -667,34 +668,27 @@ class Table(HeaderBase):
             path: file path without extension
             storage_format: storage format of tables.
                 See :class:`audformat.define.TableStorageFormat`
-                for available formats.
-                If ``'all'`` it will write to all formats.
-                If ``'update'`` it will only update existing files
-                independend of the storage format
+                for available formats
+            update_other_formats: if ``True`` it will not only save
+                to the given ``storage_format``,
+                but update all files stored in other storage formats as well
 
         """
         path = audeer.safe_path(path)
+        define.TableStorageFormat.assert_has_attribute_value(storage_format)
 
-        if storage_format in ['all', 'update']:
-            storage_formats = define.TableStorageFormat.values()
-        else:
-            define.TableStorageFormat.assert_has_value(storage_format)
-            storage_formats = [storage_format]
+        pickle_file = path + f'.{define.TableStorageFormat.PICKLE}'
+        csv_file = path + f'.{define.TableStorageFormat.CSV}'
 
-        if define.TableStorageFormat.PICKLE in storage_formats:
-            out_file = path + f'.{define.TableStorageFormat.PICKLE}'
-            if storage_format == 'update' and not os.path.exists(out_file):
-                pass
-            else:
-                self._df.to_pickle(out_file, compression='xz')
+        if storage_format == define.TableStorageFormat.PICKLE:
+            self._save_pickled(pickle_file)
+            if update_other_formats and os.path.exists(csv_file):
+                self._save_csv(csv_file)
 
-        if define.TableStorageFormat.CSV in storage_formats:
-            out_file = path + f'.{define.TableStorageFormat.CSV}'
-            if storage_format == 'update' and not os.path.exists(out_file):
-                pass
-            else:
-                with open(out_file, 'w') as fp:
-                    self.df.to_csv(fp, encoding='utf-8')
+        if storage_format == define.TableStorageFormat.CSV:
+            self._save_csv(csv_file)
+            if update_other_formats and os.path.exists(pickle_file):
+                self._save_pickle(pickle_file)
 
     def set(
             self,
@@ -930,6 +924,13 @@ class Table(HeaderBase):
                     df[column_id] = df[column_id].astype(dtype)
 
         self._df = df
+
+    def _save_csv(self, path: str):
+        with open(path, 'w') as fp:
+            self.df.to_csv(fp, encoding='utf-8')
+
+    def _save_pickled(self, path: str):
+        self._df.to_pickle(path, compression='xz')
 
     def _set_column(self, column_id: str, column: Column) -> Column:
         if column.scheme_id is not None and \
