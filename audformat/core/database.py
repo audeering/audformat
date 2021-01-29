@@ -337,7 +337,10 @@ class Database(HeaderBase):
             indent: indent size
             storage_format: storage format of tables.
                 See :class:`audformat.define.TableStorageFormat`
-                for available formats
+                for available formats.
+                If ``'all'`` it will write to all formats.
+                If ``'update'`` it will only update existing files
+                independend of the storage format
             header_only: store header only
             num_workers: number of parallel jobs.
                 If ``None`` will be set to the number of processors
