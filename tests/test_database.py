@@ -155,7 +155,7 @@ def test_save_and_load(tmpdir, db, storage_format, num_workers):
         db2 = audformat.testing.create_db()
         print(db)
         print(db2)
-        db.save(
+        db2.save(
             tmpdir,
             storage_format=audformat.define.TableStorageFormat.PICKLE,
             num_workers=num_workers,
@@ -163,6 +163,7 @@ def test_save_and_load(tmpdir, db, storage_format, num_workers):
         # Load prefers PKL files over CSV files,
         # which means we are loading the second database here
         db_load = audformat.Database.load(tmpdir)
+        assert str(db_load) == str(db2)
         assert db_load == db2
         assert db_load != db
         # Save and not update PKL files
