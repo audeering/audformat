@@ -76,7 +76,7 @@ class Scheme(HeaderBase):
         if dtype is not None:
             if dtype in self._dtypes:
                 dtype = self._dtypes[dtype]
-            define.DataType.assert_has_value(dtype)
+            define.DataType.assert_has_attribute_value(dtype)
 
         if dtype is None and labels is None:
             dtype = define.DataType.STRING
@@ -93,7 +93,7 @@ class Scheme(HeaderBase):
                 )
             if derived_dtype in self._dtypes:
                 derived_dtype = self._dtypes[derived_dtype]
-            define.DataType.assert_has_value(derived_dtype)
+            define.DataType.assert_has_attribute_value(derived_dtype)
             if dtype is not None:
                 if dtype != derived_dtype:
                     raise ValueError(

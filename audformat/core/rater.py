@@ -27,6 +27,6 @@ class Rater(HeaderBase):
             meta: dict = None,
     ):
         super().__init__(description=description, meta=meta)
-        define.RaterType.assert_has_value(type)
+        define.RaterType.assert_has_attribute_value(type)
         self.type = type
         r"""Rater type"""

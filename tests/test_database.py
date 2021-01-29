@@ -113,11 +113,6 @@ def test_map_files(num_workers):
     'db, storage_format, num_workers',
     [
         (
-            audformat.testing.create_db(),
-            'all',
-            None,
-        ),
-        (
             audformat.testing.create_db(minimal=True),
             audformat.define.TableStorageFormat.CSV,
             1,
@@ -137,16 +132,6 @@ def test_map_files(num_workers):
             audformat.define.TableStorageFormat.PICKLE,
             None,
         ),
-        (
-            audformat.testing.create_db(),
-            'all',
-            None,
-        ),
-        (
-            audformat.testing.create_db(),
-            'update',
-            None,
-        ),
     ],
 )
 def test_save_and_load(tmpdir, db, storage_format, num_workers):
@@ -156,35 +141,48 @@ def test_save_and_load(tmpdir, db, storage_format, num_workers):
         storage_format=storage_format,
         num_workers=num_workers,
     )
-    available_formats = audformat.define.TableStorageFormat.values()
-    if storage_format == 'all':
-        expected_formats = available_formats
-    elif storage_format == 'update':
-        expected_formats = []
-    else:
-        expected_formats = [storage_format]
+    expected_formats = [storage_format]
     for table_id in db.tables:
-        for ext in available_formats:
+        for ext in audformat.define.TableStorageFormat.attribute_values():
             table_file = os.path.join(tmpdir, f'db.{table_id}.{ext}')
             if ext in expected_formats:
                 assert os.path.exists(table_file)
             else:
                 assert not os.path.exists(table_file)
 
-    if storage_format == 'update':
-        # Test update by first storing a modified version of the database
-        # and update if afterwards
+    # Test update other formats
+    if storage_format == audformat.define.TableStorageFormat.CSV:
         db2 = audformat.testing.create_db()
-        db2.save(
+        print(db)
+        print(db2)
+        db.save(
+            tmpdir,
+            storage_format=audformat.define.TableStorageFormat.PICKLE,
+            num_workers=num_workers,
+        )
+        # Load prefers PKL files over CSV files,
+        # which means we are loading the second database here
+        db_load = audformat.Database.load(tmpdir)
+        assert db_load == db2
+        assert db_load != db
+        # Save and not update PKL files
+        db.save(
             tmpdir,
             storage_format=audformat.define.TableStorageFormat.CSV,
             num_workers=num_workers,
+            update_other_formats=False,
         )
+        db_load = audformat.Database.load(tmpdir)
+        assert db_load == db2
+        assert db_load != db
+        # Save and update PKL files
         db.save(
             tmpdir,
-            storage_format=storage_format,
+            storage_format=audformat.define.TableStorageFormat.CSV,
             num_workers=num_workers,
+            update_other_formats=True,
         )
+        assert db_load == db
 
     db_load = audformat.Database.load(tmpdir)
     db_load.save(

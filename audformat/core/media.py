@@ -51,7 +51,7 @@ class Media(HeaderBase):
             meta: dict = None,
     ):
         super().__init__(description=description, meta=meta)
-        define.MediaType.assert_has_value(type)
+        define.MediaType.assert_has_attribute_value(type)
 
         self.type = type
         r"""Media type"""
