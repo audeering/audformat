@@ -327,10 +327,11 @@ class Database(HeaderBase):
         r"""Save database to disk.
 
         Creates a header ``<root>/<name>.yaml``
-        and for every table a file ``<root>/<name>.<table-id>.[csv,pkl]``,
-        or both of them.
+        and for every table a file ``<root>/<name>.<table-id>.[csv,pkl]``.
 
         Existing files will be overwritten.
+        If ``update_other_formats`` is provided,
+        it will overwrite all existing files in others formats as well.
 
         Args:
             root: root directory (possibly created)
