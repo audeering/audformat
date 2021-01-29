@@ -136,6 +136,7 @@ def test_map_files(num_workers):
 )
 def test_save_and_load(tmpdir, db, storage_format, num_workers):
 
+    db.meta = {}
     db.save(
         tmpdir,
         storage_format=storage_format,
@@ -153,6 +154,7 @@ def test_save_and_load(tmpdir, db, storage_format, num_workers):
     # Test update other formats
     if storage_format == audformat.define.TableStorageFormat.CSV:
         db2 = audformat.testing.create_db()
+        db2.meta = {}
         print(db)
         print(db2)
         db2.save(
@@ -163,6 +165,7 @@ def test_save_and_load(tmpdir, db, storage_format, num_workers):
         # Load prefers PKL files over CSV files,
         # which means we are loading the second database here
         db_load = audformat.Database.load(tmpdir)
+        db_load.meta = {}
         assert str(db_load) == str(db2)
         assert db_load == db2
         assert db_load != db
@@ -174,6 +177,7 @@ def test_save_and_load(tmpdir, db, storage_format, num_workers):
             update_other_formats=False,
         )
         db_load = audformat.Database.load(tmpdir)
+        db_load.meta = {}
         assert db_load == db2
         assert db_load != db
         # Save and update PKL files
@@ -183,6 +187,8 @@ def test_save_and_load(tmpdir, db, storage_format, num_workers):
             num_workers=num_workers,
             update_other_formats=True,
         )
+        db_load = audformat.Database.load(tmpdir)
+        db_load.meta = {}
         assert db_load == db
 
     db_load = audformat.Database.load(tmpdir)
