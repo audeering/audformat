@@ -72,7 +72,7 @@
             
             
               <div class="version">
-                v0.9.6
+                v0.9.7
               </div>
             
           
@@ -297,7 +297,7 @@
             <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
             <span class="n">meta</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
-        <span class="n">define</span><span class="o">.</span><span class="n">Usage</span><span class="o">.</span><span class="n">assert_has_value</span><span class="p">(</span><span class="n">usage</span><span class="p">)</span>
+        <span class="n">define</span><span class="o">.</span><span class="n">Usage</span><span class="o">.</span><span class="n">assert_has_attribute_value</span><span class="p">(</span><span class="n">usage</span><span class="p">)</span>
 
         <span class="n">languages</span> <span class="o">=</span> <span class="p">[]</span> <span class="k">if</span> <span class="n">languages</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">audeer</span><span class="o">.</span><span class="n">to_list</span><span class="p">(</span><span class="n">languages</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">languages</span><span class="p">)):</span>
@@ -513,14 +513,19 @@
             <span class="n">storage_format</span><span class="p">:</span> <span class="n">define</span><span class="o">.</span><span class="n">TableStorageFormat</span> <span class="o">=</span> <span class="p">(</span>
                 <span class="n">define</span><span class="o">.</span><span class="n">TableStorageFormat</span><span class="o">.</span><span class="n">CSV</span>
             <span class="p">),</span>
+            <span class="n">update_other_formats</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
             <span class="n">header_only</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
             <span class="n">num_workers</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
             <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Save database to disk.</span>
 
-<span class="sd">        Creates a header ``&lt;root&gt;/&lt;name&gt;.yaml`` and for every table</span>
-<span class="sd">        a file ``&lt;root&gt;/&lt;name&gt;.&lt;table-id&gt;.[csv,pkl]``.</span>
+<span class="sd">        Creates a header ``&lt;root&gt;/&lt;name&gt;.yaml``</span>
+<span class="sd">        and for every table a file ``&lt;root&gt;/&lt;name&gt;.&lt;table-id&gt;.[csv,pkl]``.</span>
+
+<span class="sd">        Existing files will be overwritten.</span>
+<span class="sd">        If ``update_other_formats`` is provided,</span>
+<span class="sd">        it will overwrite all existing files in others formats as well.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            root: root directory (possibly created)</span>
@@ -529,6 +534,9 @@
 <span class="sd">            storage_format: storage format of tables.</span>
 <span class="sd">                See :class:`audformat.define.TableStorageFormat`</span>
 <span class="sd">                for available formats</span>
+<span class="sd">            update_other_formats: if ``True`` it will not only save</span>
+<span class="sd">                to the given ``storage_format``,</span>
+<span class="sd">                but update all files stored in other storage formats as well</span>
 <span class="sd">            header_only: store header only</span>
 <span class="sd">            num_workers: number of parallel jobs.</span>
 <span class="sd">                If ``None`` will be set to the number of processors</span>
@@ -547,7 +555,11 @@
 
             <span class="k">def</span> <span class="nf">job</span><span class="p">(</span><span class="n">table_id</span><span class="p">,</span> <span class="n">table</span><span class="p">):</span>
                 <span class="n">table_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">name</span> <span class="o">+</span> <span class="s1">&#39;.&#39;</span> <span class="o">+</span> <span class="n">table_id</span><span class="p">)</span>
-                <span class="n">table</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">table_path</span><span class="p">,</span> <span class="n">storage_format</span><span class="o">=</span><span class="n">storage_format</span><span class="p">)</span>
+                <span class="n">table</span><span class="o">.</span><span class="n">save</span><span class="p">(</span>
+                    <span class="n">table_path</span><span class="p">,</span>
+                    <span class="n">storage_format</span><span class="o">=</span><span class="n">storage_format</span><span class="p">,</span>
+                    <span class="n">update_other_formats</span><span class="o">=</span><span class="n">update_other_formats</span><span class="p">,</span>
+                <span class="p">)</span>
 
             <span class="n">audeer</span><span class="o">.</span><span class="n">run_tasks</span><span class="p">(</span>
                 <span class="n">job</span><span class="p">,</span>
@@ -780,7 +792,7 @@
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2021/01/28 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2021/02/01 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
