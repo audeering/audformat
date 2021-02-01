@@ -7,6 +7,15 @@ The format is based on `Keep a Changelog`_,
 and this project adheres to `Semantic Versioning`_.
 
 
+Version 0.9.7 (2021-02-01)
+--------------------------
+
+* Added: ``update_other_formats`` argument to ``audformat.Table.save()``
+  to make sure existing files in other formats are updated as well
+* Changed: use ``round_trip`` argument when loading CSV files
+  to ensure dataframes are equal after storing and loading again
+
+
 Version 0.9.6 (2021-01-28)
 --------------------------
 
