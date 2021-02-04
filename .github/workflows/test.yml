@@ -25,8 +25,9 @@ jobs:
 
     - name: Cache emodb
       uses: actions/cache@v2
-      with: emodb-src
-      key: emodb
+      with:
+        path: emodb-src
+        key: emodb
 
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v2
