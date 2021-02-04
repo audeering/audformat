@@ -221,6 +221,20 @@ def test_save_and_load(tmpdir, db, storage_format, num_workers):
             assert column._id == column_id
             assert column._table is table
 
+    # Test missing table
+    table_id = list(db.tables)[0]
+    for ext in audformat.define.TableStorageFormat.attribute_values():
+        table_file = os.path.join(tmpdir, f'db.{table_id}.{ext}')
+        if os.path.exists(table_file):
+            os.remove(table_file)
+
+    error_msg = (
+        "No file found for table with path "
+        f"'db.{table_file[:-4]}.{{pkl|csv}}"
+    )
+    with pytest.raises(RuntimeError, match=error_msg):
+        audformat.Database.load(tmpdir)
+
 
 def test_string():
 

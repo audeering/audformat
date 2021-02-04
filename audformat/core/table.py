@@ -540,16 +540,32 @@ class Table(HeaderBase):
     ):
         r"""Load table data from disk.
 
+        Tables can be stored as PKL and/or CSV files to disk.
+        It will load from the PKL file
+        if available and its modification date is newer,
+        otherwise the CSV file is loaded.
+
         Args:
             path: file path without extension
 
+        Raises:
+            RuntimeError: if table file(s) are missing
+
         """
         path = audeer.safe_path(path)
-        pickled = os.path.exists(path + f'.{define.TableStorageFormat.PICKLE}')
+        pkl_file = f'{path}.{define.TableStorageFormat.PICKLE}'
+        csv_file = f'{path}.{define.TableStorageFormat.CSV}'
+
+        if not os.path.exists(pkl_file) and not os.path.exists(csv_file):
+            raise RuntimeError(
+                f"No file found for table with path '{path}.{{pkl|csv}}'"
+            )
+
+        pickled = os.path.exists(pkl_file)
         if pickled:
-            self._load_pickled(path + f'.{define.TableStorageFormat.PICKLE}')
+            self._load_pickled(pkl_file)
         else:
-            self._load_csv(path + f'.{define.TableStorageFormat.CSV}')
+            self._load_csv(csv_file)
 
     def pick_columns(
             self,
