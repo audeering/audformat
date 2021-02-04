@@ -540,6 +540,11 @@ class Table(HeaderBase):
     ):
         r"""Load table data from disk.
 
+        Tables can be stored as PKL and/or CSV files to disk.
+        It will load from the PKL file
+        if available and its modification date is newer,
+        otherwise the CSV file is loaded.
+
         Args:
             path: file path without extension
 
@@ -556,7 +561,17 @@ class Table(HeaderBase):
                 f"No file found for table with path '{path}.{{pkl|csv}}'"
             )
 
-        pickled = os.path.exists(pkl_file)
+        # Load from PKL if file exists and is newer then CSV file.
+        # If both are written by Database.save() this is the case
+        # as it stores first the PKL file
+        pickled = False
+        if os.path.exists(pkl_file):
+            if (
+                    not os.path.exists(csv_file)
+                    or os.path.getmtime(pkl_file) > os.path.getmtime(csv_file)
+            ):
+                pickled = True
+
         if pickled:
             self._load_pickled(pkl_file)
         else:
