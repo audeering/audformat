@@ -27,7 +27,8 @@ jobs:
       uses: actions/cache@v2
       with:
         path: emodb-src
-        key: emodb
+        key: emodb-ubuntu-18.04
+      if: matrix.os == 'ubuntu-18.04'
 
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v2
