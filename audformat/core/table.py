@@ -540,11 +540,6 @@ class Table(HeaderBase):
     ):
         r"""Load table data from disk.
 
-        Tables can be stored as PKL and/or CSV files to disk.
-        It will load from the PKL file
-        if available and its modification date is newer,
-        otherwise the CSV file is loaded.
-
         Args:
             path: file path without extension
 
