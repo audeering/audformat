@@ -36,6 +36,8 @@ class Database(HeaderBase):
         expires: expiry date
         languages: list of languages
         description: database description
+        license: database license
+        license_url: URL of database license
         meta: additional meta fields
 
     Raises:
@@ -101,6 +103,8 @@ class Database(HeaderBase):
             expires: datetime.date = None,
             languages: typing.Union[str, typing.Sequence[str]] = None,
             description: str = None,
+            license: str = None,
+            license_url: str = None,
             meta: dict = None,
     ):
         define.Usage.assert_has_attribute_value(usage)
@@ -120,6 +124,10 @@ class Database(HeaderBase):
         r"""Expiry date"""
         self.languages = languages
         r"""List of included languages"""
+        self.license = license
+        r"""License of database"""
+        self.license_url = license_url
+        r"""URL of database license"""
         self.media = HeaderDict(value_type=Media)
         r"""Dictionary of media information"""
         self.raters = HeaderDict(value_type=Rater)
