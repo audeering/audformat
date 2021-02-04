@@ -13,12 +13,6 @@ jobs:
       with:
         fetch-depth: 2
 
-    - name: Cache emodb
-      uses: actions/cache@v2
-      with:
-        path: emodb-src
-        key: emodb
-
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
