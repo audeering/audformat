@@ -233,6 +233,7 @@ def test_save_and_load(tmpdir, db, storage_format, num_workers):
             "No file found for table with path "
             rf"'db.{table_file[:-4]}.{{pkl|csv}}"
         )
+        print(error_msg)
         with pytest.raises(RuntimeError, match=error_msg):
             audformat.Database.load(tmpdir)
 
