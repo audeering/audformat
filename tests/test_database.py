@@ -1,5 +1,5 @@
-import os
 import filecmp
+import os
 
 import pandas as pd
 import pytest
@@ -231,7 +231,7 @@ def test_save_and_load(tmpdir, db, storage_format, num_workers):
 
         error_msg = (
             "No file found for table with path "
-            f"'db.{table_file[:-4]}.{{pkl|csv}}"
+            rf"'db.{table_file[:-4]}.{{pkl|csv}}"
         )
         with pytest.raises(RuntimeError, match=error_msg):
             audformat.Database.load(tmpdir)
