@@ -1,5 +1,5 @@
-import os
 import filecmp
+import os
 
 import pandas as pd
 import pytest
@@ -220,6 +220,23 @@ def test_save_and_load(tmpdir, db, storage_format, num_workers):
         for column_id, column in table.columns.items():
             assert column._id == column_id
             assert column._table is table
+
+    # Test missing table
+    if db.tables:
+        table_id = list(db.tables)[0]
+        for ext in audformat.define.TableStorageFormat.attribute_values():
+            table_file = os.path.join(tmpdir, f'db.{table_id}.{ext}')
+            if os.path.exists(table_file):
+                os.remove(table_file)
+
+        # The replace part handles Windows paths
+        table_path = table_file[:-4].replace('\\', '\\\\')
+        error_msg = (
+            r"No file found for table with path "
+            rf"'{table_path}.{{pkl|csv}}'"
+        )
+        with pytest.raises(RuntimeError, match=error_msg):
+            audformat.Database.load(tmpdir)
 
 
 def test_string():
