@@ -229,12 +229,12 @@ def test_save_and_load(tmpdir, db, storage_format, num_workers):
             if os.path.exists(table_file):
                 os.remove(table_file)
 
+        # The replace part handles Windows paths
         table_path = table_file[:-4].replace('\\', '\\\\')
         error_msg = (
             r"No file found for table with path "
             rf"'{table_path}.{{pkl|csv}}'"
         )
-        print(error_msg)
         with pytest.raises(RuntimeError, match=error_msg):
             audformat.Database.load(tmpdir)
 
