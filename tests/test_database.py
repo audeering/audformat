@@ -221,6 +221,17 @@ def test_save_and_load(tmpdir, db, storage_format, num_workers):
             assert column._id == column_id
             assert column._table is table
 
+    # Test CSV file newer than PKL file
+    if db.tables:
+        table_id = list(db.tables)[0]
+        ext = audformat.define.TableStorageFormat.CSV
+        table_file = os.path.join(tmpdir, f'db.{table_id}.{ext}')
+        if os.path.exists(table_file):
+            df = pd.read_csv(table_file)
+            os.remove(table_file)
+            df.to_csv(table_file)
+            db = audformat.Database.load(tmpdir)
+
     # Test missing table
     if db.tables:
         table_id = list(db.tables)[0]
