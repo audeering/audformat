@@ -1,4 +1,5 @@
 import datetime
+import itertools
 import os
 import typing
 
@@ -377,6 +378,121 @@ class Database(HeaderBase):
                 progress_bar=verbose,
                 task_description='Save tables',
             )
+
+    def __add__(self, other: 'Database') -> 'Database':
+        r"""Create new database by combining two databases.
+
+        Args:
+            other: the other database
+
+        Raises:
+            ValueError: if cannot join field
+
+        """
+        if self == other:
+            return self
+
+        def assert_shared_ids_equal(
+            field: str,
+        ):
+            r"""Check if values with same ID match."""
+            dict1 = self.__dict__[field]
+            dict2 = other.__dict__[field]
+            for id in dict1:
+                if id in dict2:
+                    if dict1[id] != dict2[id]:
+                        raise ValueError(
+                            "Cannot join databases, "
+                            f"'db.{field}['{id}']' "
+                            "has different values:\n"
+                            f"{dict1[id]}\n"
+                            "!=\n"
+                            f"{dict2[id]}."
+                        )
+
+        # Make sure that for the following fields,
+        # entries with the same ID match
+        for field in ['media', 'raters', 'schemes', 'splits']:
+            assert_shared_ids_equal(field)
+
+        def join_dict(ds):
+            r"""Join list of dictionaries."""
+            d = ds[0].copy()
+            for d_other in ds[1:]:
+                d.update(d_other)
+            return d
+
+        def join_field(
+                field: str,
+                op: typing.Callable,
+                must_match: bool = False,
+        ) -> typing.Any:
+            r"""Join two fields of db header."""
+            value1 = self.__dict__[field]
+            value2 = other.__dict__[field]
+            if value1 == value2:
+                return value1
+            if must_match:
+                raise ValueError(
+                    "Cannot join databases, "
+                    f"'db.{field}' "
+                    "has different values."
+                    f"{value1}\n"
+                    "!=\n"
+                    f"{value2}."
+                )
+            if value1 and value2:
+                return op([value1, value2])
+            elif value1:
+                return value1
+            elif value2:
+                return value2
+            return None
+
+        # join basic fields
+        name = join_field('name', '+'.join)
+        source = join_field('source', ','.join)
+        usage = join_field('usage', ''.join, True)
+        expires = join_field('expires', min)
+        languages = list(set(join_field(
+            'languages',
+            itertools.chain.from_iterable
+        )))
+        description = join_field('description', ' '.join)
+        meta = join_field('meta', join_dict)
+
+        # create database
+        db = Database(
+            name=name,
+            source=source,
+            usage=usage,
+            expires=expires,
+            languages=languages,
+            description=description,
+            meta=meta,
+        )
+
+        # join complex fields
+        db.media = join_field('media', join_dict)
+        db.raters = join_field('raters', join_dict)
+        db.schemes = join_field('schemes', join_dict)
+        db.splits = join_field('splits', join_dict)
+
+        # combine tables that are in both dbs or otherwise copy
+        for table_id, table in self.tables.items():
+            if table_id in other.tables:
+                # we temporarily reference the new database
+                # to have access to combined schemes, raters, etc
+                table._db = db
+                db.tables[table_id] = table + other.tables[table_id]
+                table._db = self
+            else:
+                db.tables[table_id] = table.copy()
+        for table_id, table in other.tables.items():
+            if table_id not in self.tables:
+                db.tables[table_id] = table.copy()
+
+        return db
 
     def __contains__(
             self,
