@@ -167,7 +167,7 @@ def test_save_and_load(tmpdir, db, storage_format, num_workers):
         assert db_load == db2
         assert db_load != db
         # Save and not update PKL files,
-        # now it should load from CSV instead from PKL
+        # now it should load from CSV instead of PKL
         db.save(
             tmpdir,
             storage_format=audformat.define.TableStorageFormat.CSV,
