@@ -166,7 +166,8 @@ def test_save_and_load(tmpdir, db, storage_format, num_workers):
         db_load = audformat.Database.load(tmpdir)
         assert db_load == db2
         assert db_load != db
-        # Save and not update PKL files
+        # Save and not update PKL files,
+        # now it should load from CSV instead from PKL
         db.save(
             tmpdir,
             storage_format=audformat.define.TableStorageFormat.CSV,
@@ -174,8 +175,8 @@ def test_save_and_load(tmpdir, db, storage_format, num_workers):
             update_other_formats=False,
         )
         db_load = audformat.Database.load(tmpdir)
-        assert db_load == db2
-        assert db_load != db
+        assert db_load == db
+        assert db_load != db2
         # Save and update PKL files
         db.save(
             tmpdir,
@@ -220,17 +221,6 @@ def test_save_and_load(tmpdir, db, storage_format, num_workers):
         for column_id, column in table.columns.items():
             assert column._id == column_id
             assert column._table is table
-
-    # Test CSV file newer than PKL file
-    if db.tables:
-        table_id = list(db.tables)[0]
-        ext = audformat.define.TableStorageFormat.CSV
-        table_file = os.path.join(tmpdir, f'db.{table_id}.{ext}')
-        if os.path.exists(table_file):
-            df = pd.read_csv(table_file)
-            os.remove(table_file)
-            df.to_csv(table_file)
-            db = audformat.Database.load(tmpdir)
 
     # Test missing table
     if db.tables:
