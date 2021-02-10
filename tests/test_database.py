@@ -184,7 +184,7 @@ def test_save_and_load(tmpdir, db, storage_format, num_workers):
             f"than the table PKL file '{table_path}.pkl'. "
             "If you want to load from the CSV file, "
             "please delete the PKL file. "
-            "If you wanto to load from the PKL file, "
+            "If you want to load from the PKL file, "
             "please delete the CSV file."
         )
         with pytest.raises(RuntimeError, match=error_msg):
