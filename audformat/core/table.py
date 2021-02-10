@@ -580,7 +580,7 @@ class Table(HeaderBase):
                     f"than the table PKL file '{pkl_file}'. "
                     "If you want to load from the CSV file, "
                     "please delete the PKL file. "
-                    "If you wanto to load from the PKL file, "
+                    "If you want to load from the PKL file, "
                     "please delete the CSV file."
                 )
             pickled = True
