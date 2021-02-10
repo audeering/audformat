@@ -161,22 +161,32 @@ def test_save_and_load(tmpdir, db, storage_format, num_workers):
             storage_format=audformat.define.TableStorageFormat.PICKLE,
             num_workers=num_workers,
         )
+
         # Load prefers PKL files over CSV files,
         # which means we are loading the second database here
         db_load = audformat.Database.load(tmpdir)
         assert db_load == db2
         assert db_load != db
+
         # Save and not update PKL files,
-        # now it should load from CSV instead of PKL
+        # now it should raise an error as CSV file is newer
         db.save(
             tmpdir,
             storage_format=audformat.define.TableStorageFormat.CSV,
             num_workers=num_workers,
             update_other_formats=False,
         )
-        db_load = audformat.Database.load(tmpdir)
-        assert db_load == db
-        assert db_load != db2
+        error_msg = (
+            "The table CSV file '.+/db.files.csv' is newer "
+            "than the table PKL file '.+/db.files.pkl'. "
+            "If you want to load from the CSV file, "
+            "please delete the PKL file. "
+            "If you wanto to load from the PKL file, "
+            "please delete the CSV file."
+        )
+        with pytest.raises(RuntimeError, match=error_msg):
+            db_load = audformat.Database.load(tmpdir)
+
         # Save and update PKL files
         db.save(
             tmpdir,
