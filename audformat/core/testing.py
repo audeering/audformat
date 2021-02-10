@@ -217,6 +217,7 @@ def create_db(minimal: bool = False) -> Database:
         return db
 
     db.description = 'A database for unit testing.'
+    db.license = define.License.CC0_1_0,
     db.meta['audformat'] = 'https://github.com/audeering/audformat'
 
     #########
