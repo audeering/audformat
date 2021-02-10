@@ -176,9 +176,12 @@ def test_save_and_load(tmpdir, db, storage_format, num_workers):
             num_workers=num_workers,
             update_other_formats=False,
         )
+        # The replace part handles Windows paths
+        table_file = os.path.join(tmpdir, 'db.files')
+        table_path = table_file.replace('\\', '\\\\')
         error_msg = (
-            "The table CSV file '.+/db.files.csv' is newer "
-            "than the table PKL file '.+/db.files.pkl'. "
+            f"The table CSV file '{table_path}.csv' is newer "
+            f"than the table PKL file '{table_path}.pkl'. "
             "If you want to load from the CSV file, "
             "please delete the PKL file. "
             "If you wanto to load from the PKL file, "
