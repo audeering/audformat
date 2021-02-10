@@ -540,11 +540,19 @@ class Table(HeaderBase):
     ):
         r"""Load table data from disk.
 
+        Tables can be stored as PKL and/or CSV files to disk.
+        If both files are present
+        it will load the PKL file
+        as long as its modification date is newer,
+        otherwise it will raise an error
+        and ask to delete one of the files.
+
         Args:
             path: file path without extension
 
         Raises:
             RuntimeError: if table file(s) are missing
+            RuntimeError: if CSV file is newer than PKL file
 
         """
         path = audeer.safe_path(path)
@@ -556,7 +564,27 @@ class Table(HeaderBase):
                 f"No file found for table with path '{path}.{{pkl|csv}}'"
             )
 
-        pickled = os.path.exists(pkl_file)
+        # Load from PKL if file exists and is newer then CSV file.
+        # If both are written by Database.save() this is the case
+        # as it stores first the PKL file
+        pickled = False
+        if os.path.exists(pkl_file):
+            if (
+                    os.path.exists(csv_file)
+                    and os.path.getmtime(csv_file) > os.path.getmtime(pkl_file)
+            ):
+                print('CSV time:', os.path.getmtime(csv_file))
+                print('PKL time:', os.path.getmtime(pkl_file))
+                raise RuntimeError(
+                    f"The table CSV file '{csv_file}' is newer "
+                    f"than the table PKL file '{pkl_file}'. "
+                    "If you want to load from the CSV file, "
+                    "please delete the PKL file. "
+                    "If you want to load from the PKL file, "
+                    "please delete the CSV file."
+                )
+            pickled = True
+
         if pickled:
             self._load_pickled(pkl_file)
         else:
@@ -691,10 +719,12 @@ class Table(HeaderBase):
         pickle_file = path + f'.{define.TableStorageFormat.PICKLE}'
         csv_file = path + f'.{define.TableStorageFormat.CSV}'
 
+        # Make sure the CSV file is always written first
+        # as it is expected to be older by load()
         if storage_format == define.TableStorageFormat.PICKLE:
-            self._save_pickled(pickle_file)
             if update_other_formats and os.path.exists(csv_file):
                 self._save_csv(csv_file)
+            self._save_pickled(pickle_file)
 
         if storage_format == define.TableStorageFormat.CSV:
             self._save_csv(csv_file)
