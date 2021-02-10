@@ -12,7 +12,6 @@ from audformat.core import utils
 from audformat.core.index import segmented_index
 from audformat.core.column import Column
 from audformat.core.common import HeaderBase, HeaderDict
-from audformat.core.define import LICENSE_URLS
 from audformat.core.errors import BadIdError
 from audformat.core.media import Media
 from audformat.core.rater import Rater
@@ -118,7 +117,7 @@ class Database(HeaderBase):
                 license_url is None
                 and license in define.License.attribute_values()
         ):
-            license_url = LICENSE_URLS[license]
+            license_url = define.LICENSE_URLS[license]
 
         languages = [] if languages is None else audeer.to_list(languages)
         for idx in range(len(languages)):
