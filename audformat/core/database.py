@@ -12,6 +12,7 @@ from audformat.core import utils
 from audformat.core.index import segmented_index
 from audformat.core.column import Column
 from audformat.core.common import HeaderBase, HeaderDict
+from audformat.core.define import LICENSE_URLS
 from audformat.core.errors import BadIdError
 from audformat.core.media import Media
 from audformat.core.rater import Rater
@@ -36,7 +37,12 @@ class Database(HeaderBase):
         expires: expiry date
         languages: list of languages
         description: database description
-        license: database license
+        license: database license.
+            You can use a custom license
+            or pick one from :attr:`audformat.define.License`.
+            In the later case,
+            ``license_url`` will be automatically set
+            if it is not given
         license_url: URL of database license
         meta: additional meta fields
 
@@ -103,11 +109,16 @@ class Database(HeaderBase):
             expires: datetime.date = None,
             languages: typing.Union[str, typing.Sequence[str]] = None,
             description: str = None,
-            license: str = None,
+            license: typing.Union[str, define.License] = None,
             license_url: str = None,
             meta: dict = None,
     ):
         define.Usage.assert_has_attribute_value(usage)
+        if (
+                license_url is None
+                and license in define.License.attribute_values()
+        ):
+            license_url = LICENSE_URLS[license]
 
         languages = [] if languages is None else audeer.to_list(languages)
         for idx in range(len(languages)):

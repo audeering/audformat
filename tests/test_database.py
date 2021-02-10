@@ -93,6 +93,45 @@ def test_drop_and_pick_tables():
 
 
 @pytest.mark.parametrize(
+    'license, license_url, expected_license, expected_url',
+    [
+        (
+            audformat.define.License.CC0_1_0,
+            None,
+            'CC0-1.0',
+            'https://creativecommons.org/publicdomain/zero/1.0/',
+        ),
+        (
+            audformat.define.License.CC0_1_0,
+            'https://custom.org',
+            'CC0-1.0',
+            'https://custom.org',
+        ),
+        (
+            'custom',
+            None,
+            'custom',
+            None,
+        ),
+        (
+            'custom',
+            'https://custom.org',
+            'custom',
+            'https://custom.org',
+        ),
+    ]
+)
+def test_license(license, license_url, expected_license, expected_url):
+    db = audformat.Database(
+        'test',
+        license=license,
+        license_url=license_url,
+    )
+    assert db.license == expected_license
+    assert db.license_url == expected_url
+
+
+@pytest.mark.parametrize(
     'num_workers',
     [
         1,

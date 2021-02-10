@@ -32,6 +32,13 @@ IndexType
     :members:
     :undoc-members:
 
+License
+-------
+
+.. autoclass:: License
+    :members:
+    :undoc-members:
+
 MediaType
 ---------
 
