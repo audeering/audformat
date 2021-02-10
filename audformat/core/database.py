@@ -410,34 +410,30 @@ class Database(HeaderBase):
         if self == other:
             return self
 
-        def assert_shared_ids_equal(
-            field: str,
+        def join_dict(
+                field: str,
+                ds: typing.Sequence[dict],
         ):
-            r"""Check if values with same ID match."""
-            dict1 = self.__dict__[field]
-            dict2 = other.__dict__[field]
-            for id in dict1:
-                if id in dict2:
-                    if dict1[id] != dict2[id]:
-                        raise ValueError(
-                            "Cannot join databases, "
-                            f"'db.{field}['{id}']' "
-                            "has different values:\n"
-                            f"{dict1[id]}\n"
-                            "!=\n"
-                            f"{dict2[id]}."
-                        )
+            r"""Join list of dictionaries.
 
-        # Make sure that for the following fields,
-        # entries with the same ID match
-        for field in ['media', 'raters', 'schemes', 'splits']:
-            assert_shared_ids_equal(field)
+            Raise error if dictionaries have same key with different values.
 
-        def join_dict(ds):
-            r"""Join list of dictionaries."""
+            """
             d = ds[0].copy()
             for d_other in ds[1:]:
-                d.update(d_other)
+                for key, value in d_other.items():
+                    if key in d:
+                        if d[key] != value:
+                            raise ValueError(
+                                "Cannot join databases, "
+                                "found different value for "
+                                f"'db.{field}['{key}']':\n"
+                                f"{d[key]}\n"
+                                "!=\n"
+                                f"{d_other[key]}."
+                            )
+                    else:
+                        d[key] = value
             return d
 
         def join_field(
@@ -453,8 +449,8 @@ class Database(HeaderBase):
             if must_match:
                 raise ValueError(
                     "Cannot join databases, "
-                    f"'db.{field}' "
-                    "has different values."
+                    "found different value for "
+                    f"'db.{field}':"
                     f"{value1}\n"
                     "!=\n"
                     f"{value2}."
@@ -477,7 +473,7 @@ class Database(HeaderBase):
             itertools.chain.from_iterable
         )))
         description = join_field('description', ' '.join)
-        meta = join_field('meta', join_dict)
+        meta = join_field('meta', lambda x: join_dict('meta', x))
 
         # create database
         db = Database(
@@ -491,10 +487,10 @@ class Database(HeaderBase):
         )
 
         # join complex fields
-        db.media = join_field('media', join_dict)
-        db.raters = join_field('raters', join_dict)
-        db.schemes = join_field('schemes', join_dict)
-        db.splits = join_field('splits', join_dict)
+        db.media = join_field('media', lambda x: join_dict('media', x))
+        db.raters = join_field('raters', lambda x: join_dict('raters', x))
+        db.schemes = join_field('schemes', lambda x: join_dict('schemes', x))
+        db.splits = join_field('splits', lambda x: join_dict('splits', x))
 
         # combine tables that are in both dbs or otherwise copy
         for table_id, table in self.tables.items():
