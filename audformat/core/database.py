@@ -110,6 +110,7 @@ class Database(HeaderBase):
             languages: typing.Union[str, typing.Sequence[str]] = None,
             description: str = None,
             author: str = None,
+            organization: str = None,
             license: typing.Union[str, define.License] = None,
             license_url: str = None,
             meta: dict = None,
@@ -138,6 +139,8 @@ class Database(HeaderBase):
         r"""List of included languages"""
         self.author = author
         r"""Author(s) of database"""
+        self.organization = organization
+        r"""Organization that created the database"""
         self.license = license
         r"""License of database"""
         self.license_url = license_url
