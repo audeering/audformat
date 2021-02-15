@@ -36,6 +36,7 @@ class Database(HeaderBase):
         expires: expiry date
         languages: list of languages
         description: database description
+        author: database author(s)
         license: database license.
             You can use a custom license
             or pick one from :attr:`audformat.define.License`.
@@ -108,6 +109,7 @@ class Database(HeaderBase):
             expires: datetime.date = None,
             languages: typing.Union[str, typing.Sequence[str]] = None,
             description: str = None,
+            author: str = None,
             license: typing.Union[str, define.License] = None,
             license_url: str = None,
             meta: dict = None,
@@ -134,6 +136,8 @@ class Database(HeaderBase):
         r"""Expiry date"""
         self.languages = languages
         r"""List of included languages"""
+        self.author = author
+        r"""Author(s) of database"""
         self.license = license
         r"""License of database"""
         self.license_url = license_url
