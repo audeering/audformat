@@ -10,6 +10,12 @@ concat
 .. autofunction:: concat
 
 
+intersect
+---------
+
+.. autofunction:: intersect
+
+
 map_language
 ------------
 

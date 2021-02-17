@@ -80,6 +80,124 @@ def test_concat(objects, axis):
 
 
 @pytest.mark.parametrize(
+    'objs, expected',
+    [
+        (
+            [],
+            audformat.filewise_index(),
+        ),
+        (
+            [audformat.filewise_index()],
+            audformat.filewise_index(),
+        ),
+        (
+            [
+                audformat.filewise_index(['f1', 'f2']),
+                audformat.filewise_index(['f1', 'f2']),
+            ],
+            audformat.filewise_index(['f1', 'f2']),
+        ),
+        (
+            [
+                audformat.filewise_index(['f1', 'f2']),
+                audformat.filewise_index(['f1', 'f2']),
+                audformat.filewise_index(['f2', 'f3']),
+            ],
+            audformat.filewise_index('f2'),
+        ),
+        (
+            [
+                audformat.filewise_index(['f1', 'f2']),
+                audformat.filewise_index(['f1', 'f2']),
+                audformat.filewise_index('f3'),
+            ],
+            audformat.filewise_index(),
+        ),
+        (
+            [
+                audformat.segmented_index(['f1', 'f2']),
+                audformat.segmented_index(['f1', 'f2']),
+            ],
+            audformat.segmented_index(['f1', 'f2']),
+        ),
+        (
+            [
+                audformat.segmented_index(['f1', 'f2']),
+                audformat.segmented_index(['f3', 'f4']),
+            ],
+            audformat.segmented_index(),
+        ),
+        (
+            [
+                audformat.segmented_index(['f1', 'f2'], [0, 0], [1, 1]),
+                audformat.segmented_index(['f2', 'f1'], [0, 0], [1, 1]),
+                audformat.segmented_index(['f2', 'f3'], [0, 0], [1, 1]),
+            ],
+            audformat.segmented_index('f2', 0, 1),
+        ),
+        (
+            [
+                audformat.segmented_index(['f1', 'f2'], [0, 0], [1, 1]),
+                audformat.segmented_index(['f2', 'f1'], [0, 0], [1, 1]),
+                audformat.segmented_index(['f2', 'f3'], [1, 1], [2, 2]),
+            ],
+            audformat.segmented_index(),
+        ),
+        (
+            [
+                audformat.filewise_index(),
+                audformat.segmented_index(),
+            ],
+            audformat.segmented_index(),
+        ),
+        (
+            [
+                audformat.filewise_index(['f1', 'f2']),
+                audformat.segmented_index(),
+            ],
+            audformat.segmented_index(),
+        ),
+        (
+            [
+                audformat.filewise_index(),
+                audformat.segmented_index(['f1', 'f2']),
+            ],
+            audformat.segmented_index(),
+        ),
+        (
+            [
+                audformat.segmented_index(['f1', 'f2'], [0, 0], [1, 1]),
+                audformat.segmented_index(['f2', 'f3'], [0, 0], [1, 1]),
+                audformat.filewise_index(['f1', 'f2']),
+            ],
+            audformat.segmented_index('f2', 0, 1),
+        ),
+        (
+            [
+                audformat.segmented_index(['f1', 'f2'], [0, 0], [1, 1]),
+                audformat.segmented_index(['f2', 'f3'], [0, 0], [1, 1]),
+                audformat.filewise_index('f1'),
+            ],
+            audformat.segmented_index(),
+        ),
+        (
+            [
+                audformat.segmented_index(['f1', 'f2'], [0, 0], [1, 1]),
+                audformat.filewise_index(['f1', 'f2']),
+                audformat.filewise_index(['f2', 'f3']),
+            ],
+            audformat.segmented_index('f2', 0, 1),
+        ),
+    ]
+)
+def test_intersect(objs, expected):
+    pd.testing.assert_index_equal(
+        audformat.utils.intersect(objs),
+        expected,
+    )
+
+
+@pytest.mark.parametrize(
     'language, expected',
     [
         ('en', 'eng'),

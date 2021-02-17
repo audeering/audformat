@@ -98,6 +98,90 @@ def concat(
     return df_concat
 
 
+def intersect(
+    objs: typing.Sequence[typing.Union[pd.Index]],
+) -> pd.Index:
+    r"""Intersect index objects.
+
+    Index objects must be conform to
+    :ref:`table specifications <data-tables:Tables>`.
+
+    If at least one object is segmented, the output is a segmented index.
+
+    Args:
+        objs: index objects conform to
+            :ref:`table specifications <data-tables:Tables>`
+
+    Returns:
+        intersction of index objects
+
+    Raises:
+        ValueError: if one or more objects are not conform to
+            :ref:`table specifications <data-tables:Tables>`
+
+    Example:
+        >>> i1 = filewise_index(['f1', 'f2', 'f3'])
+        >>> i2 = filewise_index(['f2', 'f3', 'f4'])
+        >>> intersect([i1, i2])
+        Index(['f2', 'f3'], dtype='object', name='file')
+        >>> i3 = segmented_index(
+        ...     ['f1', 'f2', 'f3', 'f4'],
+        ...     [0, 0, 0, 0],
+        ...     [1, 1, 1, 1],
+        ... )
+        >>> i4 = segmented_index(
+        ...     ['f1', 'f2', 'f3'],
+        ...     [0, 0, 1],
+        ...     [1, 1, 2],
+        ... )
+        >>> intersect([i3, i4])
+        MultiIndex([('f1', '0 days', '0 days 00:00:01'),
+                    ('f2', '0 days', '0 days 00:00:01')],
+                   names=['file', 'start', 'end'])
+        >>> intersect([i1, i2, i3, i4])
+        MultiIndex([('f2', '0 days', '0 days 00:00:01')],
+                   names=['file', 'start', 'end'])
+
+    """
+    if not objs:
+        return filewise_index()
+
+    types = [index_type(obj) for obj in objs]
+
+    if len(set(types)) == 1:
+
+        index = objs[0]
+        for obj in objs[1:]:
+            index = index.intersection(obj)
+
+    else:
+
+        # intersect only filewise
+        objs_filewise = [
+            obj for obj, type in zip(objs, types)
+            if type == define.IndexType.FILEWISE
+        ]
+        index_filewise = intersect(objs_filewise)
+
+        # intersect only segmented
+        objs_segmented = [
+            obj for obj, type in zip(objs, types)
+            if type == define.IndexType.SEGMENTED
+        ]
+        index_segmented = intersect(objs_segmented)
+
+        # intersect segmented and filewise
+        index = index_segmented[
+            index_segmented.isin(index_filewise, 0)
+        ]
+
+    if index.empty and index_type(index) == define.IndexType.SEGMENTED:
+        # asserts that start and end are of type 'timedelta64[ns]'
+        index = segmented_index()
+
+    return index
+
+
 def map_language(language: str) -> str:
     r"""Map language to ISO 639-3.
 
