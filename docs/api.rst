@@ -3,6 +3,12 @@ audformat
 
 .. automodule:: audformat
 
+
+assert_index
+------------
+
+.. autofunction:: assert_index
+
 Column
 ------
 

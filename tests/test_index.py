@@ -14,6 +14,76 @@ def to_array(value):
 
 
 @pytest.mark.parametrize(
+    'obj',
+    [
+        audformat.filewise_index(),
+        audformat.filewise_index(['f1', 'f2']),
+        pd.Series(
+            index=audformat.filewise_index(['f1', 'f2']),
+        ),
+        pd.DataFrame(
+            index=audformat.filewise_index(['f1', 'f2']),
+        ),
+        pytest.param(  # duplicates
+            audformat.filewise_index(['f1', 'f2', 'f2']),
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
+        audformat.segmented_index(),
+        audformat.segmented_index(['f1', 'f2']),
+        pytest.param(  # duplicates
+            audformat.segmented_index(['f1', 'f2', 'f2']),
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
+        audformat.segmented_index(['f1', 'f1'], [0, 0], [1, 2]),
+        pytest.param(  # duplicates
+            audformat.segmented_index(['f1', 'f1'], [0, 0], [1, 1]),
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
+        pytest.param(  # duplicates
+            audformat.segmented_index(['f1', 'f1'], [0, 0]),
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
+        pytest.param(  # missing names
+            pd.Index(['f1', 'f2']),
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
+        pytest.param(  # missing names
+            pd.MultiIndex.from_arrays(
+                [
+                    ['f1', 'f2'],
+                    [0, 0],
+                    [0, 0],
+                ]
+            ),
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
+        pytest.param(  # invalid level number
+            pd.MultiIndex.from_arrays(
+                [
+                    ['f1', 'f2'],
+                    [0, 0],
+                ]
+            ),
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
+        pytest.param(  # invalid level number
+            pd.MultiIndex.from_arrays(
+                [
+                    ['f1', 'f2'],
+                    [0, 0],
+                    [0, 0],
+                    [0, 0],
+                ]
+            ),
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
+    ]
+)
+def test_assert_index(obj):
+    audformat.assert_index(obj)
+
+
+@pytest.mark.parametrize(
     'files',
     [
         None,

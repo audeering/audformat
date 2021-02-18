@@ -34,6 +34,74 @@ def to_timedelta(times):
         return pd.to_timedelta(times)
 
 
+def assert_index(
+    obj: typing.Union[pd.Index, pd.Series, pd.DataFrame]
+):
+    r"""Assert object is conform to :ref:`table specifications
+    <data-tables:Tables>`.
+
+    Args:
+        obj: object
+
+    Raises:
+        ValueError: if not conform to
+            :ref:`table specifications <data-tables:Tables>`
+
+    """
+    if isinstance(obj, (pd.Series, pd.DataFrame)):
+        obj = obj.index
+
+    if obj.has_duplicates:
+        duplicates = '\n'.join(
+            [
+                str(duplicate) for duplicate in obj[obj.duplicated()].tolist()
+            ]
+        )
+        raise ValueError(
+            'Index not conform to audformat. '
+            'Found duplicates:\n'
+            f'{duplicates}'
+        )
+
+    num = len(obj.names)
+
+    if num != 1 and num != 3:
+        raise ValueError(
+            'Index not conform to audformat. '
+            f'Found '
+            f'{num} '
+            f'levels, but expected 1 or 3.'
+        )
+
+    if num == 1 and not (
+            obj.names[0] == define.IndexField.FILE
+    ):
+        raise ValueError(
+            'Index not conform to audformat. '
+            'Found one level with name '
+            f'{obj.names[0]} '
+            f', but expected '
+            f"'{define.IndexField.FILE}'."
+        )
+    elif num == 3 and not (
+            obj.names[0] == define.IndexField.FILE
+            and obj.names[1] == define.IndexField.START
+            and obj.names[2] == define.IndexField.END
+    ):
+        expected_names = [
+            define.IndexField.FILE,
+            define.IndexField.START,
+            define.IndexField.END,
+        ]
+        raise ValueError(
+            'Index not conform to audformat. '
+            'Found three levels with names '
+            f'{obj.names} '
+            f', but expected '
+            f'{expected_names}.'
+        )
+
+
 def filewise_index(
         files: Files = None,
 ) -> pd.Index:
@@ -84,16 +152,12 @@ def index_type(
     if isinstance(obj, (pd.Series, pd.DataFrame)):
         obj = obj.index
 
-    num = len(obj.names)
-    if num == 1 and obj.names[0] == define.IndexField.FILE:
-        return define.IndexType.FILEWISE
-    elif num == 3 and \
-            obj.names[0] == define.IndexField.FILE and \
-            obj.names[1] == define.IndexField.START and \
-            obj.names[2] == define.IndexField.END:
-        return define.IndexType.SEGMENTED
+    assert_index(obj)
 
-    raise ValueError('Index not conform to audformat.')
+    if len(obj.names) == 1:
+        return define.IndexType.FILEWISE
+    else:
+        return define.IndexType.SEGMENTED
 
 
 def segmented_index(
