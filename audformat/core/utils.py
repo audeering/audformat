@@ -444,7 +444,7 @@ def to_segmented_index(
 
 
 def union(
-    objs: typing.Sequence[typing.Union[pd.Index]],
+    objs: typing.Sequence[pd.Index],
 ) -> pd.Index:
     r"""Create union of index objects.
 
