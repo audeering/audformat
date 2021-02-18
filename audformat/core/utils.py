@@ -517,6 +517,9 @@ def union(
         if index.empty:
             index = segmented_index()
         elif index.levels[2].empty:
+            # If all end values are NaT, pandas stores an empty array and
+            # since pd.Index.union() in that case sets the type to
+            # DatetimeArray, we need to set it back to 'timedelta64[ns]'.
             index.set_levels(
                 [pd.to_timedelta([])],
                 level=[2],

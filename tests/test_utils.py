@@ -381,7 +381,17 @@ def test_read_csv(csv, result):
     'table_id',
     ['files', 'segments']
 )
-def test_to_segmented(table_id):
+def test_to_segmented_index(table_id):
+
+    # empty case
+    for index in [audformat.filewise_index(), audformat.segmented_index()]:
+        assert audformat.index_type(
+            audformat.utils.to_segmented_index(
+                index
+            )
+        ) == audformat.define.IndexType.SEGMENTED
+
+    # non-empty case
     for column_id, column in pytest.DB[table_id].get().items():
         series = utils.to_segmented_index(column)
         pd.testing.assert_series_equal(series.reset_index(drop=True),
