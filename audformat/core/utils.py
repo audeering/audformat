@@ -499,7 +499,6 @@ def union(
                     ('f4', '0 days 00:00:00', '0 days 00:00:01')],
                    names=['file', 'start', 'end'])
 
-
     """
     if not objs:
         return filewise_index()
