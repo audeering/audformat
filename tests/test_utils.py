@@ -482,3 +482,163 @@ def test_to_filewise(tmpdir, output_folder, table_id, expected_file_names):
                     define.IndexField.FILE):
                 if os.path.exists(f):
                     os.remove(f)
+
+
+@pytest.mark.parametrize(
+    'objs, expected',
+    [
+        (
+            [],
+            audformat.filewise_index(),
+        ),
+        (
+            [
+                audformat.filewise_index(),
+            ],
+            audformat.filewise_index(),
+        ),
+        (
+            [
+                audformat.filewise_index(),
+                audformat.filewise_index(),
+            ],
+            audformat.filewise_index(),
+        ),
+        (
+            [
+                audformat.filewise_index(['f1', 'f2']),
+                audformat.filewise_index(['f1', 'f2']),
+            ],
+            audformat.filewise_index(['f1', 'f2']),
+        ),
+        (
+            [
+                audformat.filewise_index(['f1', 'f2']),
+                audformat.filewise_index(['f1', 'f2']),
+                audformat.filewise_index(['f2', 'f3']),
+            ],
+            audformat.filewise_index(['f1', 'f2', 'f3']),
+        ),
+        (
+            [
+                audformat.filewise_index(['f1', 'f2']),
+                audformat.filewise_index(['f1', 'f2']),
+                audformat.filewise_index('f3'),
+            ],
+            audformat.filewise_index(['f1', 'f2', 'f3']),
+        ),
+        (
+            [
+                audformat.segmented_index(),
+            ],
+            audformat.segmented_index(),
+        ),
+        (
+            [
+                audformat.segmented_index(),
+                audformat.segmented_index(),
+            ],
+            audformat.segmented_index(),
+        ),
+        (
+            [
+                audformat.segmented_index(['f1', 'f2']),
+                audformat.segmented_index(['f1', 'f2']),
+            ],
+            audformat.segmented_index(['f1', 'f2']),
+        ),
+        (
+            [
+                audformat.segmented_index(['f1', 'f2']),
+                audformat.segmented_index(['f3', 'f4']),
+            ],
+            audformat.segmented_index(['f1', 'f2', 'f3', 'f4']),
+        ),
+        (
+            [
+                audformat.segmented_index(['f1', 'f2'], [0, 0], [1, 1]),
+                audformat.segmented_index(['f2', 'f1'], [0, 0], [1, 1]),
+                audformat.segmented_index(['f2', 'f3'], [0, 0], [1, 1]),
+            ],
+            audformat.segmented_index(
+                ['f1', 'f2', 'f3'],
+                [0, 0, 0],
+                [1, 1, 1],
+            ),
+        ),
+        (
+            [
+                audformat.segmented_index(['f1', 'f2'], [0, 0], [1, 1]),
+                audformat.segmented_index(['f2', 'f1'], [0, 0], [1, 1]),
+                audformat.segmented_index(['f2', 'f3'], [1, 1], [2, 2]),
+            ],
+            audformat.segmented_index(
+                ['f1', 'f2', 'f2', 'f3'],
+                [0, 0, 1, 1],
+                [1, 1, 2, 2],
+            ),
+        ),
+        (
+            [
+                audformat.filewise_index(),
+                audformat.segmented_index(),
+            ],
+            audformat.segmented_index(),
+        ),
+        (
+            [
+                audformat.filewise_index(['f1', 'f2']),
+                audformat.segmented_index(),
+            ],
+            audformat.segmented_index(['f1', 'f2']),
+        ),
+        (
+            [
+                audformat.filewise_index(),
+                audformat.segmented_index(['f1', 'f2']),
+            ],
+            audformat.segmented_index(['f1', 'f2']),
+        ),
+        (
+            [
+                audformat.segmented_index(['f1', 'f2'], [0, 0], [1, 1]),
+                audformat.segmented_index(['f2', 'f3'], [0, 0], [1, 1]),
+                audformat.filewise_index(['f1', 'f2']),
+            ],
+            audformat.segmented_index(
+                ['f1', 'f1', 'f2', 'f2', 'f3'],
+                [0, 0, 0, 0, 0],
+                [1, pd.NaT, 1, pd.NaT, 1],
+            ),
+        ),
+        (
+            [
+                audformat.segmented_index(['f1', 'f2'], [0, 0], [1, 1]),
+                audformat.segmented_index(['f2', 'f3'], [0, 0], [1, 1]),
+                audformat.filewise_index('f1'),
+            ],
+            audformat.segmented_index(
+                ['f1', 'f1', 'f2', 'f3'],
+                [0, 0, 0, 0],
+                [1, pd.NaT, 1, 1],
+            ),
+        ),
+        (
+            [
+                audformat.segmented_index(['f1', 'f2'], [0, 0], [1, 1]),
+                audformat.filewise_index(['f1', 'f2']),
+                audformat.filewise_index(['f2', 'f3']),
+            ],
+            audformat.segmented_index(
+                ['f1', 'f1', 'f2', 'f2', 'f3'],
+                [0, 0, 0, 0, 0],
+                [1, pd.NaT, 1, pd.NaT, pd.NaT],
+            ),
+        ),
+    ]
+)
+def test_union(objs, expected):
+    pd.testing.assert_index_equal(
+        audformat.utils.union(objs),
+        expected,
+    )

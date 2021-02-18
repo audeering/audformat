@@ -113,7 +113,7 @@ def intersect(
             :ref:`table specifications <data-tables:Tables>`
 
     Returns:
-        intersction of index objects
+        intersection of index objects
 
     Raises:
         ValueError: if one or more objects are not conform to
@@ -419,8 +419,10 @@ def to_segmented_index(
             :ref:`table specifications <data-tables:Tables>`
 
     """
-    if obj.empty or index_type(obj) == define.IndexType.SEGMENTED:
+    if index_type(obj) == define.IndexType.SEGMENTED:
         return obj
+    elif obj.empty:
+        return segmented_index()
 
     if isinstance(obj, (pd.Series, pd.DataFrame)):
         index = obj.index
@@ -439,3 +441,87 @@ def to_segmented_index(
     obj = obj.reset_index(drop=True)
     obj.index = index
     return obj
+
+
+def union(
+    objs: typing.Sequence[typing.Union[pd.Index]],
+) -> pd.Index:
+    r"""Create union of index objects.
+
+    Index objects must be conform to
+    :ref:`table specifications <data-tables:Tables>`.
+
+    If at least one object is segmented, the output is a segmented index.
+
+    Args:
+        objs: index objects conform to
+            :ref:`table specifications <data-tables:Tables>`
+
+    Returns:
+        union of index objects
+
+    Raises:
+        ValueError: if one or more objects are not conform to
+            :ref:`table specifications <data-tables:Tables>`
+
+    Example:
+        >>> i1 = filewise_index(['f1', 'f2', 'f3'])
+        >>> i2 = filewise_index(['f2', 'f3', 'f4'])
+        >>> union([i1, i2])
+        Index(['f1', 'f2', 'f3', 'f4'], dtype='object', name='file')
+        >>> i3 = segmented_index(
+        ...     ['f1', 'f2', 'f3', 'f4'],
+        ...     [0, 0, 0, 0],
+        ...     [1, 1, 1, 1],
+        ... )
+        >>> i4 = segmented_index(
+        ...     ['f1', 'f2', 'f3'],
+        ...     [0, 0, 1],
+        ...     [1, 1, 2],
+        ... )
+        >>> union([i3, i4])
+        MultiIndex([('f1', '0 days 00:00:00', '0 days 00:00:01'),
+                    ('f2', '0 days 00:00:00', '0 days 00:00:01'),
+                    ('f3', '0 days 00:00:00', '0 days 00:00:01'),
+                    ('f3', '0 days 00:00:01', '0 days 00:00:02'),
+                    ('f4', '0 days 00:00:00', '0 days 00:00:01')],
+                   names=['file', 'start', 'end'])
+
+        >>> union([i1, i2, i3, i4])
+        MultiIndex([('f1', '0 days 00:00:00',               NaT),
+                    ('f1', '0 days 00:00:00', '0 days 00:00:01'),
+                    ('f2', '0 days 00:00:00',               NaT),
+                    ('f2', '0 days 00:00:00', '0 days 00:00:01'),
+                    ('f3', '0 days 00:00:00',               NaT),
+                    ('f3', '0 days 00:00:00', '0 days 00:00:01'),
+                    ('f3', '0 days 00:00:01', '0 days 00:00:02'),
+                    ('f4', '0 days 00:00:00',               NaT),
+                    ('f4', '0 days 00:00:00', '0 days 00:00:01')],
+                   names=['file', 'start', 'end'])
+
+
+    """
+    if not objs:
+        return filewise_index()
+
+    types = [index_type(obj) for obj in objs]
+
+    if len(set(types)) != 1:
+        objs = [to_segmented_index(obj) for obj in objs]
+
+    index = objs[0]
+    for obj in objs[1:]:
+        index = index.union(obj)
+
+    if index_type(index) == define.IndexType.SEGMENTED:
+        # asserts that start and end are of type 'timedelta64[ns]'
+        if index.empty:
+            index = segmented_index()
+        elif index.levels[2].empty:
+            index.set_levels(
+                [pd.to_timedelta([])],
+                level=[2],
+                inplace=True,
+            )
+
+    return index

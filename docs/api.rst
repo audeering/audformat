@@ -73,3 +73,8 @@ There are two types of tables:
 
 .. autoclass:: audformat.Table
     :members:
+
+union
+---------------
+
+.. autofunction:: audformat.union
