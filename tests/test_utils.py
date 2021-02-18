@@ -87,7 +87,16 @@ def test_concat(objects, axis):
             audformat.filewise_index(),
         ),
         (
-            [audformat.filewise_index()],
+            [
+                audformat.filewise_index(),
+            ],
+            audformat.filewise_index(),
+        ),
+        (
+            [
+                audformat.filewise_index(),
+                audformat.filewise_index(),
+            ],
             audformat.filewise_index(),
         ),
         (
@@ -112,6 +121,19 @@ def test_concat(objects, axis):
                 audformat.filewise_index('f3'),
             ],
             audformat.filewise_index(),
+        ),
+        (
+            [
+                audformat.segmented_index(),
+            ],
+            audformat.segmented_index(),
+        ),
+        (
+            [
+                audformat.segmented_index(),
+                audformat.segmented_index(),
+            ],
+            audformat.segmented_index(),
         ),
         (
             [
