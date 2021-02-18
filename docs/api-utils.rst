@@ -35,3 +35,8 @@ to_segmented_index
 ------------------
 
 .. autofunction:: to_segmented_index
+
+union
+-----
+
+.. autofunction:: union

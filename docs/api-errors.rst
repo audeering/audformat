@@ -7,17 +7,17 @@ audformat.errors
 BadIdError
 ----------
 
-.. autoclass:: audformat.errors.BadIdError
+.. autoclass:: BadIdError
     :members:
 
 BadTypeError
 ------------
 
-.. autoclass:: audformat.errors.BadTypeError
+.. autoclass:: BadTypeError
     :members:
 
 BadValueError
 -------------
 
-.. autoclass:: audformat.errors.BadValueError
+.. autoclass:: BadValueError
     :members:
