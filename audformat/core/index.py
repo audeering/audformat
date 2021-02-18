@@ -70,7 +70,7 @@ def assert_index(
             'Index not conform to audformat. '
             f'Found '
             f'{num} '
-            f'levels, but expected 1 or 3.'
+            f'levels, but expected 1 or 3 levels.'
         )
 
     if num == 1 and not (
@@ -78,9 +78,9 @@ def assert_index(
     ):
         raise ValueError(
             'Index not conform to audformat. '
-            'Found one level with name '
-            f'{obj.names[0]} '
-            f', but expected '
+            'Found single level with name '
+            f'{obj.names[0]}, '
+            f'but expected name '
             f"'{define.IndexField.FILE}'."
         )
     elif num == 3 and not (
@@ -96,8 +96,8 @@ def assert_index(
         raise ValueError(
             'Index not conform to audformat. '
             'Found three levels with names '
-            f'{obj.names} '
-            f', but expected '
+            f'{obj.names}, '
+            f'but expected names '
             f'{expected_names}.'
         )
 
