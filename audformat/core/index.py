@@ -119,6 +119,9 @@ def filewise_index(
     Returns:
         filewise index
 
+    Raises:
+        ValueError: if created index contains duplicates
+
     Example:
         >>> filewise_index(['a.wav', 'b.wav'])
         Index(['a.wav', 'b.wav'], dtype='object', name='file')
@@ -126,8 +129,12 @@ def filewise_index(
     """
     if files is None:
         files = []
+
     files = to_array(files)
-    return pd.Index(files, name=define.IndexField.FILE)
+    index = pd.Index(files, name=define.IndexField.FILE)
+    assert_index(index)
+
+    return index
 
 
 def index_type(
@@ -189,6 +196,9 @@ def segmented_index(
         segmented index
 
     Raises:
+        ValueError: if created index contains duplicates
+
+    Raises:
         ValueError: if ``files``, ``start`` and ``ends`` differ in size
 
     Example:
@@ -237,10 +247,13 @@ def segmented_index(
             "'starts', and 'ends' differ in size",
         )
 
-    return pd.MultiIndex.from_arrays(
+    index = pd.MultiIndex.from_arrays(
         [files, to_timedelta(starts), to_timedelta(ends)],
         names=[
             define.IndexField.FILE,
             define.IndexField.START,
             define.IndexField.END,
         ])
+    assert_index(index)
+
+    return index

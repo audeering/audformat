@@ -24,25 +24,8 @@ def to_array(value):
         pd.DataFrame(
             index=audformat.filewise_index(['f1', 'f2']),
         ),
-        pytest.param(  # duplicates
-            audformat.filewise_index(['f1', 'f2', 'f2']),
-            marks=pytest.mark.xfail(raises=ValueError),
-        ),
         audformat.segmented_index(),
         audformat.segmented_index(['f1', 'f2']),
-        pytest.param(  # duplicates
-            audformat.segmented_index(['f1', 'f2', 'f2']),
-            marks=pytest.mark.xfail(raises=ValueError),
-        ),
-        audformat.segmented_index(['f1', 'f1'], [0, 0], [1, 2]),
-        pytest.param(  # duplicates
-            audformat.segmented_index(['f1', 'f1'], [0, 0], [1, 1]),
-            marks=pytest.mark.xfail(raises=ValueError),
-        ),
-        pytest.param(  # duplicates
-            audformat.segmented_index(['f1', 'f1'], [0, 0]),
-            marks=pytest.mark.xfail(raises=ValueError),
-        ),
         pytest.param(  # missing names
             pd.Index(['f1', 'f2']),
             marks=pytest.mark.xfail(raises=ValueError),
@@ -91,6 +74,10 @@ def test_assert_index(obj):
         '1.wav',
         ['1.wav', '2.wav'],
         pytest.DB['files'].files,
+        pytest.param(  # duplicates
+            ['f1', 'f2', 'f2'],
+            marks=pytest.mark.xfail(raises=ValueError),
+        )
     ]
 )
 def test_create_filewise_index(files):
@@ -174,10 +161,28 @@ def test_create_filewise_index(files):
             pytest.DB['segments'].starts,
             pytest.DB['segments'].ends,
         ),
-        pytest.param(
+        pytest.param(  # len files != len starts/ends
             ['1.wav'],
             [pd.Timedelta('0s'), pd.Timedelta('1s')],
             [pd.Timedelta('1s'), pd.Timedelta('2s')],
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
+        pytest.param(  # duplicates
+            ['f1', 'f1'],
+            None,
+            None,
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
+        pytest.param(  # duplicates
+            ['f1', 'f1'],
+            [0, 0],
+            [1, 1],
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
+        pytest.param(  # duplicates
+            ['f1', 'f1'],
+            [0, 0],
+            None,
             marks=pytest.mark.xfail(raises=ValueError),
         ),
     ]
