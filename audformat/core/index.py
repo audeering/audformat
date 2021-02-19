@@ -52,15 +52,19 @@ def assert_index(
         obj = obj.index
 
     if obj.has_duplicates:
-        duplicates = '\n'.join(
+        max_display = 10
+        duplicates = obj[obj.duplicated()]
+        msg_tail = '\n...' if len(duplicates) > max_display else ''
+        msg_duplicates = '\n'.join(
             [
-                str(duplicate) for duplicate in obj[obj.duplicated()].tolist()
+                str(duplicate) for duplicate
+                in duplicates[:max_display].tolist()
             ]
         )
         raise ValueError(
             'Index not conform to audformat. '
             'Found duplicates:\n'
-            f'{duplicates}'
+            f'{msg_duplicates}{msg_tail}'
         )
 
     num = len(obj.names)
