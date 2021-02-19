@@ -3,6 +3,7 @@ from audformat import errors
 from audformat import utils
 from audformat.core.database import Database
 from audformat.core.index import (
+    assert_index,
     filewise_index,
     segmented_index,
     index_type,

@@ -220,6 +220,9 @@ def test_pick_files(files, table):
     table = table.pick_files(files, inplace=False)
     if callable(files):
         files = table.files[table.files.to_series().apply(files)]
+        seen = set()
+        seen_add = seen.add
+        files = [x for x in files if not (x in seen or seen_add(x))]
     elif isinstance(files, str):
         files = [files]
     pd.testing.assert_index_equal(

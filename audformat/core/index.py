@@ -34,6 +34,78 @@ def to_timedelta(times):
         return pd.to_timedelta(times)
 
 
+def assert_index(
+    obj: typing.Union[pd.Index, pd.Series, pd.DataFrame]
+):
+    r"""Assert object is conform to :ref:`table specifications
+    <data-tables:Tables>`.
+
+    Args:
+        obj: object
+
+    Raises:
+        ValueError: if not conform to
+            :ref:`table specifications <data-tables:Tables>`
+
+    """
+    if isinstance(obj, (pd.Series, pd.DataFrame)):
+        obj = obj.index
+
+    if obj.has_duplicates:
+        max_display = 10
+        duplicates = obj[obj.duplicated()]
+        msg_tail = '\n...' if len(duplicates) > max_display else ''
+        msg_duplicates = '\n'.join(
+            [
+                str(duplicate) for duplicate
+                in duplicates[:max_display].tolist()
+            ]
+        )
+        raise ValueError(
+            'Index not conform to audformat. '
+            'Found duplicates:\n'
+            f'{msg_duplicates}{msg_tail}'
+        )
+
+    num = len(obj.names)
+
+    if num != 1 and num != 3:
+        raise ValueError(
+            'Index not conform to audformat. '
+            f'Found '
+            f'{num} '
+            f'levels, but expected 1 or 3 levels.'
+        )
+
+    if num == 1 and not (
+            obj.names[0] == define.IndexField.FILE
+    ):
+        raise ValueError(
+            'Index not conform to audformat. '
+            'Found single level with name '
+            f'{obj.names[0]}, '
+            f'but expected name '
+            f"'{define.IndexField.FILE}'."
+        )
+    elif num == 3 and not (
+            obj.names[0] == define.IndexField.FILE
+            and obj.names[1] == define.IndexField.START
+            and obj.names[2] == define.IndexField.END
+    ):
+        expected_names = [
+            define.IndexField.FILE,
+            define.IndexField.START,
+            define.IndexField.END,
+        ]
+        raise ValueError(
+            'Index not conform to audformat. '
+            'Found three levels with names '
+            f'{obj.names}, '
+            f'but expected names '
+            f'{expected_names}.'
+        )
+
+
 def filewise_index(
         files: Files = None,
 ) -> pd.Index:
@@ -47,6 +119,9 @@ def filewise_index(
     Returns:
         filewise index
 
+    Raises:
+        ValueError: if created index contains duplicates
+
     Example:
         >>> filewise_index(['a.wav', 'b.wav'])
         Index(['a.wav', 'b.wav'], dtype='object', name='file')
@@ -54,8 +129,12 @@ def filewise_index(
     """
     if files is None:
         files = []
+
     files = to_array(files)
-    return pd.Index(files, name=define.IndexField.FILE)
+    index = pd.Index(files, name=define.IndexField.FILE)
+    assert_index(index)
+
+    return index
 
 
 def index_type(
@@ -84,16 +163,12 @@ def index_type(
     if isinstance(obj, (pd.Series, pd.DataFrame)):
         obj = obj.index
 
-    num = len(obj.names)
-    if num == 1 and obj.names[0] == define.IndexField.FILE:
-        return define.IndexType.FILEWISE
-    elif num == 3 and \
-            obj.names[0] == define.IndexField.FILE and \
-            obj.names[1] == define.IndexField.START and \
-            obj.names[2] == define.IndexField.END:
-        return define.IndexType.SEGMENTED
+    assert_index(obj)
 
-    raise ValueError('Index not conform to audformat.')
+    if len(obj.names) == 1:
+        return define.IndexType.FILEWISE
+    else:
+        return define.IndexType.SEGMENTED
 
 
 def segmented_index(
@@ -119,6 +194,9 @@ def segmented_index(
 
     Returns:
         segmented index
+
+    Raises:
+        ValueError: if created index contains duplicates
 
     Raises:
         ValueError: if ``files``, ``start`` and ``ends`` differ in size
@@ -169,10 +247,13 @@ def segmented_index(
             "'starts', and 'ends' differ in size",
         )
 
-    return pd.MultiIndex.from_arrays(
+    index = pd.MultiIndex.from_arrays(
         [files, to_timedelta(starts), to_timedelta(ends)],
         names=[
             define.IndexField.FILE,
             define.IndexField.START,
             define.IndexField.END,
         ])
+    assert_index(index)
+
+    return index

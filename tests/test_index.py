@@ -14,6 +14,59 @@ def to_array(value):
 
 
 @pytest.mark.parametrize(
+    'obj',
+    [
+        audformat.filewise_index(),
+        audformat.filewise_index(['f1', 'f2']),
+        pd.Series(
+            index=audformat.filewise_index(['f1', 'f2']),
+        ),
+        pd.DataFrame(
+            index=audformat.filewise_index(['f1', 'f2']),
+        ),
+        audformat.segmented_index(),
+        audformat.segmented_index(['f1', 'f2']),
+        pytest.param(  # missing names
+            pd.Index(['f1', 'f2']),
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
+        pytest.param(  # missing names
+            pd.MultiIndex.from_arrays(
+                [
+                    ['f1', 'f2'],
+                    [0, 0],
+                    [0, 0],
+                ]
+            ),
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
+        pytest.param(  # invalid level number
+            pd.MultiIndex.from_arrays(
+                [
+                    ['f1', 'f2'],
+                    [0, 0],
+                ]
+            ),
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
+        pytest.param(  # invalid level number
+            pd.MultiIndex.from_arrays(
+                [
+                    ['f1', 'f2'],
+                    [0, 0],
+                    [0, 0],
+                    [0, 0],
+                ]
+            ),
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
+    ]
+)
+def test_assert_index(obj):
+    audformat.assert_index(obj)
+
+
+@pytest.mark.parametrize(
     'files',
     [
         None,
@@ -21,6 +74,10 @@ def to_array(value):
         '1.wav',
         ['1.wav', '2.wav'],
         pytest.DB['files'].files,
+        pytest.param(  # duplicates
+            ['f1', 'f2', 'f2'],
+            marks=pytest.mark.xfail(raises=ValueError),
+        )
     ]
 )
 def test_create_filewise_index(files):
@@ -104,10 +161,28 @@ def test_create_filewise_index(files):
             pytest.DB['segments'].starts,
             pytest.DB['segments'].ends,
         ),
-        pytest.param(
+        pytest.param(  # len files != len starts/ends
             ['1.wav'],
             [pd.Timedelta('0s'), pd.Timedelta('1s')],
             [pd.Timedelta('1s'), pd.Timedelta('2s')],
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
+        pytest.param(  # duplicates
+            ['f1', 'f1'],
+            None,
+            None,
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
+        pytest.param(  # duplicates
+            ['f1', 'f1'],
+            [0, 0],
+            [1, 1],
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
+        pytest.param(  # duplicates
+            ['f1', 'f1'],
+            [0, 0],
+            None,
             marks=pytest.mark.xfail(raises=ValueError),
         ),
     ]
