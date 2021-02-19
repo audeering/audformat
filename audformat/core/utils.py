@@ -25,8 +25,8 @@ def concat(
     Objects must be conform to
     :ref:`table specifications <data-tables:Tables>`.
 
-    Columns with same name must have the same dtype and data must not
-    overlap unless all except one column have NaN or values match.
+    Columns with same name must have the same dtype and values in the
+    same position must match or NaN in all but one column.
 
     If at least one object is segmented, the output has a segmented index.
 
@@ -40,8 +40,8 @@ def concat(
     Raises:
         ValueError: if one or more objects are not conform to
             :ref:`table specifications <data-tables:Tables>`
-        ValueError: if two columns have same name but different dtype
-        ValueError: if data of two columns overlap
+        ValueError: if columns with the same name have different dtypes
+        ValueError: if values in the same position do not match
 
     Example:
         >>> obj1 = pd.Series(
@@ -67,9 +67,11 @@ def concat(
     if not objs:
         return pd.Series([], index=filewise_index())
 
-    concat_index = union([obj.index for obj in objs])
-    as_segmented = index_type(concat_index) == define.IndexType.SEGMENTED
+    # the new index is a union of the individual objects
+    index = union([obj.index for obj in objs])
+    as_segmented = index_type(index) == define.IndexType.SEGMENTED
 
+    # list with all columns we need to concatenate
     columns = []
     for obj in objs:
         if isinstance(obj, pd.Series):
@@ -78,13 +80,23 @@ def concat(
             for column in obj:
                 columns.append(obj[column])
 
+    # convert dtype int to nullable Int64
+    for idx in range(len(columns)):
+        if columns[idx].dtype == int:
+            columns[idx] = columns[idx].astype('Int64')
+
+    # reindex all columns to the new index
     columns_reindex = OrderedDict()
     for column in columns:
+
         if as_segmented:
             column = to_segmented_index(column)
+
+        # if we already have a column with that name, we have to merge them
         if column.name in columns_reindex:
-            # columns with same name must have same dtype
-            if columns_reindex[column.name].dtype != column.dtype:
+
+            # assert same dtype
+            if columns_reindex[column.name].dtype.name != column.dtype.name:
                 raise ValueError(
                     'Found two columns with name '
                     f"'{column.name}' "
@@ -93,7 +105,8 @@ def concat(
                     'and '
                     f"'{column.dtype}'."
                 )
-            # columns with overlapping index must have same value or nan
+
+            # overlapping values must match or have to be nan in one column
             intersection = intersect(
                 [
                     columns_reindex[column.name].index,
@@ -118,11 +131,14 @@ def concat(
                         'Found overlapping data:\n'
                         f"{msg_overlap}{msg_tail}"
                     )
+
+            # drop NaN to avoid overwriting values from other column
+            column = column.dropna()
             columns_reindex[column.name][column.index] = column
         else:
-            columns_reindex[column.name] = column.reindex(concat_index)
+            columns_reindex[column.name] = column.reindex(index)
 
-    df = pd.DataFrame(columns_reindex)
+    df = pd.DataFrame(columns_reindex, index=index)
 
     if len(df.columns) == 1:
         return df[df.columns[0]]

@@ -27,31 +27,6 @@ from audformat.core.typing import (
 )
 
 
-def index_to_dict(index: pd.Index) -> dict:
-    r"""Convert :class:`pandas.Index` to a dictionary.
-
-    Returns a dictionary with keys files, starts, and ends.
-
-    """
-    d = dict(
-        [
-            (define.IndexField.FILE + 's', None),
-            (define.IndexField.START + 's', None),
-            (define.IndexField.END + 's', None),
-        ]
-    )
-
-    d[define.IndexField.FILE + 's'] = index.get_level_values(
-        define.IndexField.FILE).values
-    if index_type(index) == define.IndexType.SEGMENTED:
-        d[define.IndexField.START + 's'] = index.get_level_values(
-            define.IndexField.START).values.astype(np.timedelta64)
-        d[define.IndexField.END + 's'] = index.get_level_values(
-            define.IndexField.END).values.astype(np.timedelta64)
-
-    return d
-
-
 class Table(HeaderBase):
     r"""Table with annotation data.
 
@@ -784,79 +759,40 @@ class Table(HeaderBase):
             other: the other table
 
         Raises:
-            ValueError: if overlapping values are detected that are not ``NaN``
+            ValueError: if columns with the same name have different dtypes
+            ValueError: if values in the same position do not match
 
         """
         if self == other:
             return self
 
-        df_self = self._df
-        df_other = other._df
-        df_other_copy = False
-
-        if other.type != self.type:
-
-            def add_files_to_dict(d, additional_files, table_type):
-                if not additional_files.empty:
-                    d['files'] = np.r_[d['files'], additional_files.values]
-                    if table_type == define.IndexType.SEGMENTED:
-                        d_append = index_to_dict(
-                            utils.to_segmented_index(additional_files)
-                        )
-                        d['starts'] = np.r_[d['starts'], d_append['starts']]
-                        d['ends'] = np.r_[d['ends'], d_append['ends']]
-
-            if other.type == define.IndexType.FILEWISE:
-                missing_files = other.files.unique().difference(
-                    self.files.unique()
-                )
-                d = index_to_dict(self._df.index)
-                add_files_to_dict(d, missing_files, self.type)
-                df_other = other._df.reindex(d['files'])
-                df_other.set_index(segmented_index(**d), inplace=True)
-            elif self.type == define.IndexType.FILEWISE:
-                missing_files = self.files.unique().difference(
-                    other.files.unique()
-                )
-                d = index_to_dict(other._df.index)
-                add_files_to_dict(d, missing_files, other.type)
-                df_self = self._df.reindex(d['files'])
-                df_self.set_index(segmented_index(**d), inplace=True)
-
-        # figure out column names, schemes and raters
-        df_columns = []
-        scheme_ids = {}
-        rater_ids = {}
-        for column_id, column in self.columns.items():
-            df_columns.append(column_id)
-            scheme_ids[column_id] = column.scheme_id
-            rater_ids[column_id] = column.rater_id
-        for column_id, column in other.columns.items():
-            if column_id in df_self.columns:
-                if not df_self.index.intersection(df_other.index).empty:
-                    if not df_other_copy:
-                        df_other = df_other.copy()
-                        df_other_copy = True
-                    df_other.update(df_self, errors='raise')
-            else:
-                df_columns.append(column_id)
-                scheme_ids[column_id] = column.scheme_id
-                rater_ids[column_id] = column.rater_id
-
-        # concatenate frames
-        df = utils.concat([df_self, df_other])
-        df.columns = df_columns
+        # concatenate table data
+        df = utils.concat([self._df, other._df])
+        if isinstance(df, pd.Series):
+            df = df.to_frame()
 
         # create table
         media_id = self.media_id if self.media_id == other.media_id else None
         split_id = self.split_id if self.split_id == other.split_id else None
         table = Table(df.index, media_id=media_id, split_id=split_id)
         table._db = self._db
-        for column_id in df_columns:
+
+        # add columns
+        scheme_ids = {}
+        rater_ids = {}
+        for column_id, column in self.columns.items():
+            scheme_ids[column_id] = column.scheme_id
+            rater_ids[column_id] = column.rater_id
+        for column_id, column in other.columns.items():
+            scheme_ids[column_id] = column.scheme_id
+            rater_ids[column_id] = column.rater_id
+        for column_id in df:
             table[column_id] = Column(
                 scheme_id=scheme_ids[column_id],
                 rater_id=rater_ids[column_id],
             )
+
+        # set table data
         table._df = df
 
         return table
