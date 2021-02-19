@@ -32,9 +32,10 @@ def test_add():
         p_none=0.25, num_files=[1, 6, 7, 8, 9], media_id='media',
     )
     db['table'] = db['table1'] + db['table2']
-    pd.testing.assert_index_equal(db['table'].files,
-                                  db['table1'].files.union(
-                                      db['table2'].files))
+    pd.testing.assert_index_equal(
+        db['table'].files,
+        db['table1'].files.union(db['table2'].files)
+    )
     assert db['table'].media_id == 'media'
     assert db['table'].split_id is None
 
@@ -49,39 +50,56 @@ def test_add():
 
     # tables of same type without overlap
 
-    for table_type in (audformat.define.IndexType.FILEWISE,
-                       audformat.define.IndexType.SEGMENTED):
+    for table_type in [
+        audformat.define.IndexType.FILEWISE,
+        audformat.define.IndexType.SEGMENTED
+    ]:
         db.drop_tables(list(db.tables))
         audformat.testing.add_table(
-            db, 'table1', table_type,
-            num_files=5, columns=['scheme1'],
+            db,
+            'table1',
+            table_type,
+            num_files=5,
+            columns=['scheme1'],
         )
         audformat.testing.add_table(
-            db, 'table2', table_type,
-            num_files=(6, 7, 8, 9, 10), columns='scheme1',
+            db,
+            'table2',
+            table_type,
+            num_files=(6, 7, 8, 9, 10),
+            columns='scheme1',
         )
         db['table'] = db['table1'] + db['table2']
-        pd.testing.assert_frame_equal(db['table'].get(),
-                                      pd.concat([db['table1'].get(),
-                                                 db['table2'].get()]))
+        pd.testing.assert_frame_equal(
+            db['table'].get(),
+            pd.concat([db['table1'].get(), db['table2'].get()])
+        )
 
     # tables of same type with overlap
 
     db.drop_tables(list(db.tables))
     audformat.testing.add_table(
-        db, 'table1', audformat.define.IndexType.FILEWISE,
-        num_files=(1, 2), columns='scheme1',
+        db,
+        'table1',
+        audformat.define.IndexType.FILEWISE,
+        num_files=(1, 2),
+        columns='scheme1',
     )
     audformat.testing.add_table(
-        db, 'table2', audformat.define.IndexType.FILEWISE,
-        num_files=(1,), columns='scheme1',
+        db,
+        'table2',
+        audformat.define.IndexType.FILEWISE,
+        num_files=(1,),
+        columns='scheme1',
     )
-    db['table2'].df.iloc[0] = np.nan
+    db['table2'].df.iloc[0] = np.nan  # ok if other value is nan
     db['table'] = db['table1'] + db['table2']
-    pd.testing.assert_series_equal(db['table']['scheme1'].get(),
-                                   db['table1']['scheme1'].get())
+    pd.testing.assert_series_equal(
+        db['table']['scheme1'].get(),
+        db['table1']['scheme1'].get()
+    )
     with pytest.raises(ValueError):
-        db['table2'].df.iloc[0] = db['table1'].df.iloc[0]
+        db['table2'].df.iloc[0] = 'do not match'  # values do not match
         db['table'] = db['table1'] + db['table2']
 
     # filewise with segmented table
@@ -93,12 +111,18 @@ def test_add():
     ):
         db.drop_tables(list(db.tables))
         audformat.testing.add_table(
-            db, 'table1', audformat.define.IndexType.FILEWISE,
-            columns='scheme1', num_files=num_files_1,
+            db,
+            'table1',
+            audformat.define.IndexType.FILEWISE,
+            columns='scheme1',
+            num_files=num_files_1,
         )
         audformat.testing.add_table(
-            db, 'table2', audformat.define.IndexType.SEGMENTED,
-            columns='scheme2', num_files=num_files_2,
+            db,
+            'table2',
+            audformat.define.IndexType.SEGMENTED,
+            columns='scheme2',
+            num_files=num_files_2,
         )
         db['table'] = db['table1'] + db['table2']
         assert db['table'].type == audformat.define.IndexType.SEGMENTED
@@ -118,12 +142,18 @@ def test_add():
     ):
         db.drop_tables(list(db.tables))
         audformat.testing.add_table(
-            db, 'table1', audformat.define.IndexType.SEGMENTED,
-            columns='scheme1', num_files=num_files_1,
+            db,
+            'table1',
+            audformat.define.IndexType.SEGMENTED,
+            columns='scheme1',
+            num_files=num_files_1,
         )
         audformat.testing.add_table(
-            db, 'table2', audformat.define.IndexType.FILEWISE,
-            columns='scheme2', num_files=num_files_2,
+            db,
+            'table2',
+            audformat.define.IndexType.FILEWISE,
+            columns='scheme2',
+            num_files=num_files_2,
         )
         db['table'] = db['table1'] + db['table2']
         assert db['table'].type == audformat.define.IndexType.SEGMENTED
