@@ -153,6 +153,30 @@ from audformat import define
                 audformat.filewise_index(['f1', 'f2']),
             ),
         ),
+        # combine series and data frame
+        (
+            [
+                pd.Series(
+                    [1., 2.],
+                    audformat.filewise_index(['f1', 'f2']),
+                    name='c1',
+                ),
+                pd.DataFrame(
+                    {
+                        'c1': [np.nan, 3.],
+                        'c2': ['a', 'b'],
+                    },
+                    audformat.segmented_index(['f2', 'f3']),
+                ),
+            ],
+            pd.DataFrame(
+                {
+                    'c1': [1., 2., 3.],
+                    'c2': [np.nan, 'a', 'b']
+                },
+                audformat.segmented_index(['f1', 'f2', 'f3']),
+            ),
+        ),
         # dtype does not match
         pytest.param(
             [
