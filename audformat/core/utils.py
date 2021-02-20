@@ -25,10 +25,16 @@ def concat(
     Objects must be conform to
     :ref:`table specifications <data-tables:Tables>`.
 
-    Columns with same name must have the same dtype and values in the
-    same position must match or NaN in all but one column.
-
+    The new the object contains index and columns of both objects.
+    Missing values will be set to ``NaN``.
     If at least one object is segmented, the output has a segmented index.
+
+    Columns with the same identifier are combined to a single column.
+    This requires that:
+
+    1. both columns have the same dtype
+    2. in places where the indices overlap the values of both columns
+       match or one column contains ``NaN``
 
     Args:
         objs: objects conform to

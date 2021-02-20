@@ -740,20 +740,19 @@ class Table(HeaderBase):
     def __add__(self, other: 'Table') -> 'Table':
         r"""Create new table by combining two tables.
 
-        If the tables are of the same type, the created tables contain index
-        and columns of both tables.
-        If the tables are not of the same type and one of the tables is a
-        file-wise table, the created table has the index of segmented table
-        and columns of both tables.
+        The new the table contains index and columns of both tables.
         Missing values will be set to ``NaN``.
+        If at least one table is segmented, the output has a segmented index.
+
+        Columns with the same identifier are combined to a single column.
+        This requires that:
+
+        1. both columns have the same dtype
+        2. in places where the indices overlap the values of both columns
+           match or one column contains ``NaN``
+
         References to schemes and raters are always preserved.
         Media and split information only when they match.
-
-        .. warning::
-            Columns with the same identifier are combined to a single column.
-            This requires that either the indices of the tables do not
-            overlap or at least one table contains a ``NaN`` in places where
-            the indices overlap.
 
         Args:
             other: the other table

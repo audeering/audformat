@@ -79,3 +79,4 @@ There are two types of tables:
 
 .. autoclass:: Table
     :members:
+    :special-members:
