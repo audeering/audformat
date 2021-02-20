@@ -82,7 +82,7 @@ def concat(
 
     # convert dtype int to nullable Int64
     for idx in range(len(columns)):
-        if columns[idx].dtype == int:
+        if columns[idx].dtype.name == 'int64':
             columns[idx] = columns[idx].astype('Int64')
 
     # reindex all columns to the new index
@@ -101,9 +101,9 @@ def concat(
                     'Found two columns with name '
                     f"'{column.name}' "
                     'buf different dtypes '
-                    f"'{columns_reindex[column.name].dtype}' "
+                    f"'{columns_reindex[column.name].dtype.name}' "
                     'and '
-                    f"'{column.dtype}'."
+                    f"'{column.dtype.name}'."
                 )
 
             # overlapping values must match or have to be nan in one column
