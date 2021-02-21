@@ -17,6 +17,22 @@ from audformat.core.index import (
 )
 
 
+def compare_dtype(d1, d2) -> bool:
+    r"""Helper function to compare pandas dtype."""
+    if d1.name.lower().startswith('int') and d2.name.lower().startswith('int'):
+        # match various int types, e.g. int64 and Int64
+        return True
+    if d1.name.startswith('float') and d2.name.startswith('float'):
+        # match various float types, e.g. float32 and float64
+        return True
+    if d1.name == d2.name:
+        if d1.name == 'category':
+            # check if categories match
+            return d1 == d2
+        return True
+    return False
+
+
 def concat(
         objs: typing.Sequence[typing.Union[pd.Series, pd.DataFrame]],
 ) -> typing.Union[pd.Series, pd.DataFrame]:
@@ -71,7 +87,7 @@ def concat(
 
     """
     if not objs:
-        return pd.Series([], index=filewise_index())
+        return pd.Series([], index=filewise_index(), dtype='object')
 
     # the new index is a union of the individual objects
     index = union([obj.index for obj in objs])
@@ -86,11 +102,6 @@ def concat(
             for column in obj:
                 columns.append(obj[column])
 
-    # convert dtype int to nullable Int64
-    for idx in range(len(columns)):
-        if columns[idx].dtype.name == 'int64':
-            columns[idx] = columns[idx].astype('Int64')
-
     # reindex all columns to the new index
     columns_reindex = OrderedDict()
     for column in columns:
@@ -102,14 +113,17 @@ def concat(
         if column.name in columns_reindex:
 
             # assert same dtype
-            if columns_reindex[column.name].dtype.name != column.dtype.name:
+            if not compare_dtype(
+                    columns_reindex[column.name].dtype, column.dtype
+            ):
+                # use repr() to print category names
                 raise ValueError(
                     'Found two columns with name '
                     f"'{column.name}' "
                     'buf different dtypes '
-                    f"'{columns_reindex[column.name].dtype.name}' "
+                    f"'{repr(columns_reindex[column.name].dtype)}' "
                     'and '
-                    f"'{column.dtype.name}'."
+                    f"'{repr(column.dtype)}'."
                 )
 
             # overlapping values must match or have to be nan in one column
