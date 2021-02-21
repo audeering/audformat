@@ -20,17 +20,15 @@ from audformat.core.index import (
 def compare_dtype(d1, d2) -> bool:
     r"""Helper function to compare pandas dtype."""
     if d1.name.lower().startswith('int') and d2.name.lower().startswith('int'):
-        # match various int types, e.g. int64 and Int64
+        # match different int types, e.g. int64 and Int64
         return True
     if d1.name.startswith('float') and d2.name.startswith('float'):
-        # match various float types, e.g. float32 and float64
+        # match different float types, e.g. float32 and float64
         return True
-    if d1.name == d2.name:
-        if d1.name == 'category':
-            # check if categories match
-            return d1 == d2
-        return True
-    return False
+    if d1.name == 'category' and d2.name == 'category':
+        # match only if categories are the same
+        return d1 == d2
+    return d1.name == d2.name
 
 
 def concat(
