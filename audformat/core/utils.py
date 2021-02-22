@@ -17,20 +17,6 @@ from audformat.core.index import (
 )
 
 
-def compare_dtype(d1, d2) -> bool:
-    r"""Helper function to compare pandas dtype."""
-    if d1.name.lower().startswith('int') and d2.name.lower().startswith('int'):
-        # match different int types, e.g. int64 and Int64
-        return True
-    if d1.name.startswith('float') and d2.name.startswith('float'):
-        # match different float types, e.g. float32 and float64
-        return True
-    if d1.name == 'category' and d2.name == 'category':
-        # match only if categories are the same
-        return d1 == d2
-    return d1.name == d2.name
-
-
 def concat(
         objs: typing.Sequence[typing.Union[pd.Series, pd.DataFrame]],
 ) -> typing.Union[pd.Series, pd.DataFrame]:
@@ -111,7 +97,7 @@ def concat(
         if column.name in columns_reindex:
 
             # assert same dtype
-            if not compare_dtype(
+            if not same_dtype(
                     columns_reindex[column.name].dtype, column.dtype
             ):
                 # use repr() to print category names
@@ -367,6 +353,20 @@ def read_csv(
         return frame[frame.columns[0]]
     else:
         return frame
+
+
+def same_dtype(d1, d2) -> bool:
+    r"""Helper function to compare pandas dtype."""
+    if d1.name.lower().startswith('int') and d2.name.lower().startswith('int'):
+        # match different int types, e.g. int64 and Int64
+        return True
+    if d1.name.startswith('float') and d2.name.startswith('float'):
+        # match different float types, e.g. float32 and float64
+        return True
+    if d1.name == 'category' and d2.name == 'category':
+        # match only if categories are the same
+        return d1 == d2
+    return d1.name == d2.name
 
 
 def to_filewise_index(
