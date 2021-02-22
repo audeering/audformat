@@ -137,9 +137,12 @@ def concat(
 
             # drop NaN to avoid overwriting values from other column
             column = column.dropna()
-            columns_reindex[column.name][column.index] = column
         else:
-            columns_reindex[column.name] = column.reindex(index)
+            columns_reindex[column.name] = pd.Series(
+                index=index,
+                dtype=column.dtype,
+            )
+        columns_reindex[column.name][column.index] = column
 
     df = pd.DataFrame(columns_reindex, index=index)
 
