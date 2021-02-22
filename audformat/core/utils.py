@@ -1,8 +1,8 @@
-from collections import OrderedDict
 import os
 import typing as typing
 
 import iso639
+import numpy as np
 import pandas as pd
 
 import audeer
@@ -18,13 +18,22 @@ from audformat.core.index import (
 
 def concat(
         objs: typing.Sequence[typing.Union[pd.Series, pd.DataFrame]],
-) -> pd.DataFrame:
+) -> typing.Union[pd.Series, pd.DataFrame]:
     r"""Concatenate objects.
 
     Objects must be conform to
     :ref:`table specifications <data-tables:Tables>`.
 
+    The new object contains index and columns of both objects.
+    Missing values will be set to ``NaN``.
     If at least one object is segmented, the output has a segmented index.
+
+    Columns with the same identifier are combined to a single column.
+    This requires that:
+
+    1. both columns have the same dtype
+    2. in places where the indices overlap the values of both columns
+       match or one column contains ``NaN``
 
     Args:
         objs: objects conform to
@@ -36,66 +45,111 @@ def concat(
     Raises:
         ValueError: if one or more objects are not conform to
             :ref:`table specifications <data-tables:Tables>`
+        ValueError: if columns with the same name have different dtypes
+        ValueError: if values in the same position do not match
 
     Example:
-        >>> series = pd.Series(
-        ...     [1., 2., 3.],
-        ...     index=filewise_index(['f1', 'f2', 'f3']),
-        ...     name='number',
+        >>> obj1 = pd.Series(
+        ...     [0., 1.],
+        ...     index=filewise_index(['f1', 'f2']),
+        ...     name='float',
         ... )
-        >>> df = pd.DataFrame(
+        >>> obj2 = pd.DataFrame(
         ...     {
-        ...         'string': ['a', 'b', 'c'],
+        ...         'float': [1., 2.],
+        ...         'string': ['a', 'b'],
         ...     },
-        ...     index=filewise_index(['f2', 'f3', 'f4']),
+        ...     index=segmented_index(['f2', 'f3']),
         ... )
-        >>> concat([series, df])
-              number string
-        file
-        f1       1.0    NaN
-        f2       2.0      a
-        f3       3.0      b
-        f4       NaN      c
+        >>> concat([obj1, obj2])
+                         float string
+        file start  end
+        f1   0 days NaT    0.0    NaN
+        f2   0 days NaT    1.0      a
+        f3   0 days NaT    2.0      b
 
     """
     if not objs:
-        return pd.DataFrame([], index=filewise_index())
+        return pd.Series([], index=filewise_index(), dtype='object')
 
-    concat_table_type = define.IndexType.FILEWISE
-    for frame in objs:
-        if index_type(frame) == define.IndexType.SEGMENTED:
-            concat_table_type = define.IndexType.SEGMENTED
+    # the new index is a union of the individual objects
+    index = union([obj.index for obj in objs])
+    as_segmented = index_type(index) == define.IndexType.SEGMENTED
 
-    if concat_table_type == define.IndexType.SEGMENTED:
-        index = segmented_index()
-        objs = [to_segmented_index(frame) for frame in objs]
-    else:
-        index = filewise_index()
-
-    index = index.append([frame.index for frame in objs])
-    index = index.drop_duplicates()
-
-    columns = OrderedDict()
+    # list with all columns we need to concatenate
+    columns = []
     for obj in objs:
         if isinstance(obj, pd.Series):
-            columns[obj.name] = obj.dtype
+            columns.append(obj)
         else:
-            for c, d in zip(obj.columns, obj.dtypes):
-                if c not in columns:
-                    columns[c] = d
+            for column in obj:
+                columns.append(obj[column])
 
-    df_concat = pd.DataFrame(index=index, columns=columns.keys()).sort_index()
-    for obj in objs:
-        if not obj.empty:
-            if isinstance(obj, pd.Series):
-                df_concat.loc[obj.index, obj.name] = obj
-            else:
-                df_concat.loc[obj.index, obj.columns] = obj
+    # reindex all columns to the new index
+    columns_reindex = {}
+    for column in columns:
 
-    if not df_concat.empty:
-        df_concat = df_concat.astype(columns)
+        if as_segmented:
+            column = to_segmented_index(column)
 
-    return df_concat
+        # if we already have a column with that name, we have to merge them
+        if column.name in columns_reindex:
+
+            # assert same dtype
+            if not same_dtype(
+                    columns_reindex[column.name].dtype, column.dtype
+            ):
+                # use repr() to print category names
+                raise ValueError(
+                    'Found two columns with name '
+                    f"'{column.name}' "
+                    'buf different dtypes '
+                    f"'{repr(columns_reindex[column.name].dtype)}' "
+                    'and '
+                    f"'{repr(column.dtype)}'."
+                )
+
+            # overlapping values must match or have to be nan in one column
+            intersection = intersect(
+                [
+                    columns_reindex[column.name].index,
+                    column.index,
+                ]
+            )
+            if not intersection.empty:
+                combine = pd.DataFrame(
+                    {
+                        'left': columns_reindex[column.name][intersection],
+                        'right': column[intersection]
+                    }
+                )
+                combine.dropna(inplace=True)
+                differ = combine['left'] != combine['right']
+                if np.any(differ):
+                    max_display = 10
+                    overlap = combine[differ]
+                    msg_overlap = str(overlap[:max_display])
+                    msg_tail = '\n...' if len(overlap) > max_display else ''
+                    raise ValueError(
+                        'Found overlapping data:\n'
+                        f"{msg_overlap}{msg_tail}"
+                    )
+
+            # drop NaN to avoid overwriting values from other column
+            column = column.dropna()
+        else:
+            columns_reindex[column.name] = pd.Series(
+                index=index,
+                dtype=column.dtype,
+            )
+        columns_reindex[column.name][column.index] = column
+
+    df = pd.DataFrame(columns_reindex, index=index)
+
+    if len(df.columns) == 1:
+        return df[df.columns[0]]
+    else:
+        return df
 
 
 def intersect(
@@ -301,6 +355,20 @@ def read_csv(
         return frame[frame.columns[0]]
     else:
         return frame
+
+
+def same_dtype(d1, d2) -> bool:
+    r"""Helper function to compare pandas dtype."""
+    if d1.name.lower().startswith('int') and d2.name.lower().startswith('int'):
+        # match different int types, e.g. int64 and Int64
+        return True
+    if d1.name.startswith('float') and d2.name.startswith('float'):
+        # match different float types, e.g. float32 and float64
+        return True
+    if d1.name == 'category' and d2.name == 'category':
+        # match only if categories are the same
+        return d1 == d2
+    return d1.name == d2.name
 
 
 def to_filewise_index(
