@@ -24,7 +24,7 @@ def concat(
     Objects must be conform to
     :ref:`table specifications <data-tables:Tables>`.
 
-    The new the object contains index and columns of both objects.
+    The new object contains index and columns of both objects.
     Missing values will be set to ``NaN``.
     If at least one object is segmented, the output has a segmented index.
 

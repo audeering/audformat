@@ -740,7 +740,7 @@ class Table(HeaderBase):
     def __add__(self, other: 'Table') -> 'Table':
         r"""Create new table by combining two tables.
 
-        The new the table contains index and columns of both tables.
+        The new table contains index and columns of both tables.
         Missing values will be set to ``NaN``.
         If at least one table is segmented, the output has a segmented index.
 
