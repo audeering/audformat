@@ -1,4 +1,3 @@
-from collections import OrderedDict
 import os
 import typing as typing
 
@@ -87,7 +86,7 @@ def concat(
                 columns.append(obj[column])
 
     # reindex all columns to the new index
-    columns_reindex = OrderedDict()
+    columns_reindex = {}
     for column in columns:
 
         if as_segmented:
