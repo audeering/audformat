@@ -762,36 +762,13 @@ class Table(HeaderBase):
             ValueError: if values in the same position do not match
 
         """
-        if self == other:
-            return self
-
-        # concatenate table data
         df = utils.concat([self._df, other._df])
         if isinstance(df, pd.Series):
             df = df.to_frame()
 
-        # create table
-        media_id = self.media_id if self.media_id == other.media_id else None
-        split_id = self.split_id if self.split_id == other.split_id else None
-        table = Table(df.index, media_id=media_id, split_id=split_id)
-        table._db = self._db
-
-        # add columns
-        scheme_ids = {}
-        rater_ids = {}
-        for column_id, column in self.columns.items():
-            scheme_ids[column_id] = column.scheme_id
-            rater_ids[column_id] = column.rater_id
-        for column_id, column in other.columns.items():
-            scheme_ids[column_id] = column.scheme_id
-            rater_ids[column_id] = column.rater_id
+        table = Table(df.index)
         for column_id in df:
-            table[column_id] = Column(
-                scheme_id=scheme_ids[column_id],
-                rater_id=rater_ids[column_id],
-            )
-
-        # set table data
+            table[column_id] = Column()
         table._df = df
 
         return table

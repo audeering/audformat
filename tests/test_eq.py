@@ -34,6 +34,24 @@ def test_with_data(tmpdir):
     assert db['files'] == db3['files']
     assert db['files']['string'] == db3['files']['string']
 
+    # compare with db that has different table values
+
+    db.save(tmpdir)
+    db4 = audformat.Database.load(tmpdir)
+    db4['files'].df['string'][0] = 'Believe me, I am special!'
+
+    assert db != db4
+    assert db['files'] != db4['files']
+
+    # compare with db that has different table meta
+
+    db.save(tmpdir)
+    db5 = audformat.Database.load(tmpdir)
+    db5['files'].description = 'Believe me, I am special!'
+
+    assert db != db5
+    assert db['files'] != db5['files']
+
     # compare with column that has no data
 
     c_no_data = audformat.Column(

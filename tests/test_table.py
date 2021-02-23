@@ -8,7 +8,7 @@ import audformat
 import audformat.testing
 
 
-def test_table_access():
+def test_access():
     db = audformat.testing.create_db()
     for table_id in db.tables.keys():
         assert db.tables[table_id] == db[table_id]
@@ -36,12 +36,18 @@ def test_add():
         db['table'].files,
         db['table1'].files.union(db['table2'].files)
     )
-    assert db['table'].media_id == 'media'
+    for column in db['table'].columns:
+        assert column.rater_id is None
+        assert column.scheme_id is None
+    assert db['table'].media_id is None
     assert db['table'].split_id is None
 
     # add table to itself
 
-    assert db['table1'] + db['table1'] == db['table1']
+    pd.testing.assert_frame_equal(
+        (db['table1'] + db['table1']).get(),
+        db['table1'].get(),
+    )
 
     # add two schemes
 
