@@ -7,6 +7,21 @@ The format is based on `Keep a Changelog`_,
 and this project adheres to `Semantic Versioning`_.
 
 
+Version 0.9.8 (2021-02-23)
+--------------------------
+
+* Added: ``audformat.Database.license``
+* Added: ``audformat.Database.license_url``
+* Added: ``audformat.Database.author``
+* Added: ``audformat.Database.organization``
+* Added: ``audformat.utils.intersect()`` for index objects
+* Added: ``audformat.utils.union()`` for index objects
+* Changed: ``Database.load()`` raises error if table file missing
+* Changed: forbid duplicates in ``audformat`` conform indices
+* Fixed: ``audformat.Table.__add__()`` returned wrong values
+  for some index combinations
+
+
 Version 0.9.7 (2021-02-01)
 --------------------------
 
