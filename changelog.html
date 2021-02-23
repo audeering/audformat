@@ -73,7 +73,7 @@
             
             
               <div class="version">
-                v0.9.7
+                v0.9.8
               </div>
             
           
@@ -128,6 +128,7 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Changelog</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#version-0-9-8-2021-02-23">Version 0.9.8 (2021-02-23)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#version-0-9-7-2021-02-01">Version 0.9.7 (2021-02-01)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#version-0-9-6-2021-01-28">Version 0.9.6 (2021-01-28)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#version-0-9-5-2021-01-14">Version 0.9.5 (2021-01-14)</a></li>
@@ -177,22 +178,20 @@
 
 
 
-
-
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li><a href="index.html">Docs</a> &raquo;</li>
         
       <li>Changelog</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
-          
             
-              <a href="https://github.com/audeering/audformat/blob/v0.9.7/docs/changelog.rst" class="fa fa-github"> Edit on GitHub</a>
+            
+              <a href="https://github.com/audeering/audformat/blob/v0.9.8/docs/changelog.rst" class="fa fa-github"> Edit on GitHub</a>
             
           
         
@@ -211,6 +210,21 @@
 <p>All notable changes to this project will be documented in this file.</p>
 <p>The format is based on <a class="reference external" href="https://keepachangelog.com/en/1.0.0/">Keep a Changelog</a>,
 and this project adheres to <a class="reference external" href="https://semver.org/spec/v2.0.0.html">Semantic Versioning</a>.</p>
+<div class="section" id="version-0-9-8-2021-02-23">
+<h2>Version 0.9.8 (2021-02-23)<a class="headerlink" href="#version-0-9-8-2021-02-23" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Added: <code class="docutils literal notranslate"><span class="pre">audformat.Database.license</span></code></p></li>
+<li><p>Added: <code class="docutils literal notranslate"><span class="pre">audformat.Database.license_url</span></code></p></li>
+<li><p>Added: <code class="docutils literal notranslate"><span class="pre">audformat.Database.author</span></code></p></li>
+<li><p>Added: <code class="docutils literal notranslate"><span class="pre">audformat.Database.organization</span></code></p></li>
+<li><p>Added: <code class="docutils literal notranslate"><span class="pre">audformat.utils.intersect()</span></code> for index objects</p></li>
+<li><p>Added: <code class="docutils literal notranslate"><span class="pre">audformat.utils.union()</span></code> for index objects</p></li>
+<li><p>Changed: <code class="docutils literal notranslate"><span class="pre">Database.load()</span></code> raises error if table file missing</p></li>
+<li><p>Changed: forbid duplicates in <code class="docutils literal notranslate"><span class="pre">audformat</span></code> conform indices</p></li>
+<li><p>Fixed: <code class="docutils literal notranslate"><span class="pre">audformat.Table.__add__()</span></code> returned wrong values
+for some index combinations</p></li>
+</ul>
+</div>
 <div class="section" id="version-0-9-7-2021-02-01">
 <h2>Version 0.9.7 (2021-02-01)<a class="headerlink" href="#version-0-9-7-2021-02-01" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
@@ -302,7 +316,7 @@ and <code class="docutils literal notranslate"><span class="pre">audformat.Colum
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2021/02/01 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2021/02/23 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
@@ -322,6 +336,7 @@ and <code class="docutils literal notranslate"><span class="pre">audformat.Colum
 
   </div>
   
+
 
 
   

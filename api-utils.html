@@ -74,7 +74,7 @@
             
             
               <div class="version">
-                v0.9.7
+                v0.9.8
               </div>
             
           
@@ -124,10 +124,12 @@
 <li class="toctree-l1"><a class="reference internal" href="api-testing.html">audformat.testing</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">audformat.utils</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#concat">concat</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#intersect">intersect</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#map-language">map_language</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#read-csv">read_csv</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#to-filewise-index">to_filewise_index</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#to-segmented-index">to_segmented_index</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#union">union</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="genindex.html">Index</a></li>
@@ -175,22 +177,20 @@
 
 
 
-
-
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li><a href="index.html">Docs</a> &raquo;</li>
         
       <li>audformat.utils</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
-          
             
-              <a href="https://github.com/audeering/audformat/blob/v0.9.7/docs/api-utils.rst" class="fa fa-github"> Edit on GitHub</a>
+            
+              <a href="https://github.com/audeering/audformat/blob/v0.9.8/docs/api-utils.rst" class="fa fa-github"> Edit on GitHub</a>
             
           
         
@@ -210,21 +210,83 @@
 <h2>concat<a class="headerlink" href="#concat" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
 <dt id="audformat.utils.concat">
-<code class="sig-prename descclassname">audformat.utils.</code><code class="sig-name descname">concat</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">objs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/utils.html#concat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#audformat.utils.concat" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname"><span class="pre">audformat.utils.</span></code><code class="sig-name descname"><span class="pre">concat</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">objs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/utils.html#concat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.utils.concat" title="Permalink to this definition">¶</a></dt>
 <dd><p>Concatenate objects.</p>
 <p>Objects must be conform to
 <a class="reference internal" href="data-tables.html#tables"><span class="std std-ref">table specifications</span></a>.</p>
-<p>If at least one object is segmented, the output has a segmented index.</p>
+<p>The new object contains index and columns of both objects.
+Missing values will be set to <code class="docutils literal notranslate"><span class="pre">NaN</span></code>.
+If at least one object is segmented, the output has a segmented index.</p>
+<p>Columns with the same identifier are combined to a single column.
+This requires that:</p>
+<ol class="arabic simple">
+<li><p>both columns have the same dtype</p></li>
+<li><p>in places where the indices overlap the values of both columns
+match or one column contains <code class="docutils literal notranslate"><span class="pre">NaN</span></code></p></li>
+</ol>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>objs</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Series</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code>]]) – objects conform to
 <a class="reference internal" href="data-tables.html#tables"><span class="std std-ref">table specifications</span></a></p>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Series</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code>]</p>
 </dd>
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>concatenated objects</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.9)"><strong>ValueError</strong></a> – if one or more objects are not conform to
+    <a class="reference internal" href="data-tables.html#tables"><span class="std std-ref">table specifications</span></a></p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.9)"><strong>ValueError</strong></a> – if columns with the same name have different dtypes</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.9)"><strong>ValueError</strong></a> – if values in the same position do not match</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">obj1</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="p">[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="n">index</span><span class="o">=</span><span class="n">filewise_index</span><span class="p">([</span><span class="s1">&#39;f1&#39;</span><span class="p">,</span> <span class="s1">&#39;f2&#39;</span><span class="p">]),</span>
+<span class="gp">... </span>    <span class="n">name</span><span class="o">=</span><span class="s1">&#39;float&#39;</span><span class="p">,</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">obj2</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="p">{</span>
+<span class="gp">... </span>        <span class="s1">&#39;float&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">],</span>
+<span class="gp">... </span>        <span class="s1">&#39;string&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="p">},</span>
+<span class="gp">... </span>    <span class="n">index</span><span class="o">=</span><span class="n">segmented_index</span><span class="p">([</span><span class="s1">&#39;f2&#39;</span><span class="p">,</span> <span class="s1">&#39;f3&#39;</span><span class="p">]),</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">concat</span><span class="p">([</span><span class="n">obj1</span><span class="p">,</span> <span class="n">obj2</span><span class="p">])</span>
+<span class="go">                 float string</span>
+<span class="go">file start  end</span>
+<span class="go">f1   0 days NaT    0.0    NaN</span>
+<span class="go">f2   0 days NaT    1.0      a</span>
+<span class="go">f3   0 days NaT    2.0      b</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="intersect">
+<h2>intersect<a class="headerlink" href="#intersect" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="audformat.utils.intersect">
+<code class="sig-prename descclassname"><span class="pre">audformat.utils.</span></code><code class="sig-name descname"><span class="pre">intersect</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">objs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/utils.html#intersect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.utils.intersect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Intersect index objects.</p>
+<p>Index objects must be conform to
+<a class="reference internal" href="data-tables.html#tables"><span class="std std-ref">table specifications</span></a>.</p>
+<p>If at least one object is segmented, the output is a segmented index.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>objs</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Index</span></code>]) – index objects conform to
+<a class="reference internal" href="data-tables.html#tables"><span class="std std-ref">table specifications</span></a></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Index</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>intersection of index objects</p>
 </dd>
 <dt class="field-even">Raises</dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.9)"><strong>ValueError</strong></a> – if one or more objects are not conform to
@@ -232,24 +294,27 @@
 </dd>
 </dl>
 <p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">series</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span>
-<span class="gp">... </span>    <span class="p">[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">,</span> <span class="mf">3.</span><span class="p">],</span>
-<span class="gp">... </span>    <span class="n">index</span><span class="o">=</span><span class="n">filewise_index</span><span class="p">([</span><span class="s1">&#39;f1&#39;</span><span class="p">,</span> <span class="s1">&#39;f2&#39;</span><span class="p">,</span> <span class="s1">&#39;f3&#39;</span><span class="p">]),</span>
-<span class="gp">... </span>    <span class="n">name</span><span class="o">=</span><span class="s1">&#39;number&#39;</span><span class="p">,</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">i1</span> <span class="o">=</span> <span class="n">filewise_index</span><span class="p">([</span><span class="s1">&#39;f1&#39;</span><span class="p">,</span> <span class="s1">&#39;f2&#39;</span><span class="p">,</span> <span class="s1">&#39;f3&#39;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">i2</span> <span class="o">=</span> <span class="n">filewise_index</span><span class="p">([</span><span class="s1">&#39;f2&#39;</span><span class="p">,</span> <span class="s1">&#39;f3&#39;</span><span class="p">,</span> <span class="s1">&#39;f4&#39;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">intersect</span><span class="p">([</span><span class="n">i1</span><span class="p">,</span> <span class="n">i2</span><span class="p">])</span>
+<span class="go">Index([&#39;f2&#39;, &#39;f3&#39;], dtype=&#39;object&#39;, name=&#39;file&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">i3</span> <span class="o">=</span> <span class="n">segmented_index</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="p">[</span><span class="s1">&#39;f1&#39;</span><span class="p">,</span> <span class="s1">&#39;f2&#39;</span><span class="p">,</span> <span class="s1">&#39;f3&#39;</span><span class="p">,</span> <span class="s1">&#39;f4&#39;</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
 <span class="gp">... </span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
-<span class="gp">... </span>    <span class="p">{</span>
-<span class="gp">... </span>        <span class="s1">&#39;string&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">],</span>
-<span class="gp">... </span>    <span class="p">},</span>
-<span class="gp">... </span>    <span class="n">index</span><span class="o">=</span><span class="n">filewise_index</span><span class="p">([</span><span class="s1">&#39;f2&#39;</span><span class="p">,</span> <span class="s1">&#39;f3&#39;</span><span class="p">,</span> <span class="s1">&#39;f4&#39;</span><span class="p">]),</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">i4</span> <span class="o">=</span> <span class="n">segmented_index</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="p">[</span><span class="s1">&#39;f1&#39;</span><span class="p">,</span> <span class="s1">&#39;f2&#39;</span><span class="p">,</span> <span class="s1">&#39;f3&#39;</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
 <span class="gp">... </span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">concat</span><span class="p">([</span><span class="n">series</span><span class="p">,</span> <span class="n">df</span><span class="p">])</span>
-<span class="go">      number string</span>
-<span class="go">file</span>
-<span class="go">f1       1.0    NaN</span>
-<span class="go">f2       2.0      a</span>
-<span class="go">f3       3.0      b</span>
-<span class="go">f4       NaN      c</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">intersect</span><span class="p">([</span><span class="n">i3</span><span class="p">,</span> <span class="n">i4</span><span class="p">])</span>
+<span class="go">MultiIndex([(&#39;f1&#39;, &#39;0 days&#39;, &#39;0 days 00:00:01&#39;),</span>
+<span class="go">            (&#39;f2&#39;, &#39;0 days&#39;, &#39;0 days 00:00:01&#39;)],</span>
+<span class="go">           names=[&#39;file&#39;, &#39;start&#39;, &#39;end&#39;])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">intersect</span><span class="p">([</span><span class="n">i1</span><span class="p">,</span> <span class="n">i2</span><span class="p">,</span> <span class="n">i3</span><span class="p">,</span> <span class="n">i4</span><span class="p">])</span>
+<span class="go">MultiIndex([(&#39;f2&#39;, &#39;0 days&#39;, &#39;0 days 00:00:01&#39;)],</span>
+<span class="go">           names=[&#39;file&#39;, &#39;start&#39;, &#39;end&#39;])</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -259,7 +324,7 @@
 <h2>map_language<a class="headerlink" href="#map-language" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
 <dt id="audformat.utils.map_language">
-<code class="sig-prename descclassname">audformat.utils.</code><code class="sig-name descname">map_language</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">language</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/utils.html#map_language"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#audformat.utils.map_language" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname"><span class="pre">audformat.utils.</span></code><code class="sig-name descname"><span class="pre">map_language</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">language</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/utils.html#map_language"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.utils.map_language" title="Permalink to this definition">¶</a></dt>
 <dd><p>Map language to ISO 639-3.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -291,7 +356,7 @@
 <h2>read_csv<a class="headerlink" href="#read-csv" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
 <dt id="audformat.utils.read_csv">
-<code class="sig-prename descclassname">audformat.utils.</code><code class="sig-name descname">read_csv</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/utils.html#read_csv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#audformat.utils.read_csv" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname"><span class="pre">audformat.utils.</span></code><code class="sig-name descname"><span class="pre">read_csv</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/utils.html#read_csv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.utils.read_csv" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read object from CSV file.</p>
 <p>Automatically detects the index type and returns an object that is
 conform to <a class="reference internal" href="data-tables.html#tables"><span class="std std-ref">table specifications</span></a>.
@@ -336,7 +401,7 @@ If conversion is not possible, an error is raised.</p>
 <h2>to_filewise_index<a class="headerlink" href="#to-filewise-index" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
 <dt id="audformat.utils.to_filewise_index">
-<code class="sig-prename descclassname">audformat.utils.</code><code class="sig-name descname">to_filewise_index</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">obj</span></em>, <em class="sig-param"><span class="n">root</span></em>, <em class="sig-param"><span class="n">output_folder</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">num_workers</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">progress_bar</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/utils.html#to_filewise_index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#audformat.utils.to_filewise_index" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname"><span class="pre">audformat.utils.</span></code><code class="sig-name descname"><span class="pre">to_filewise_index</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">root</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_folder</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_workers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">progress_bar</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/utils.html#to_filewise_index"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.utils.to_filewise_index" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert to filewise index.</p>
 <p>If input is segmented, each segment is saved to a separate file
 in <code class="docutils literal notranslate"><span class="pre">output_folder</span></code>. The directory structure of the original data is
@@ -375,7 +440,7 @@ data frame are also relative (absolute)</p></li>
 <h2>to_segmented_index<a class="headerlink" href="#to-segmented-index" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
 <dt id="audformat.utils.to_segmented_index">
-<code class="sig-prename descclassname">audformat.utils.</code><code class="sig-name descname">to_segmented_index</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">obj</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/utils.html#to_segmented_index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#audformat.utils.to_segmented_index" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname"><span class="pre">audformat.utils.</span></code><code class="sig-name descname"><span class="pre">to_segmented_index</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/utils.html#to_segmented_index"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.utils.to_segmented_index" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert to segmented index.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -393,6 +458,71 @@ data frame are also relative (absolute)</p></li>
     <a class="reference internal" href="data-tables.html#tables"><span class="std std-ref">table specifications</span></a></p>
 </dd>
 </dl>
+</dd></dl>
+
+</div>
+<div class="section" id="union">
+<h2>union<a class="headerlink" href="#union" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="audformat.utils.union">
+<code class="sig-prename descclassname"><span class="pre">audformat.utils.</span></code><code class="sig-name descname"><span class="pre">union</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">objs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/utils.html#union"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.utils.union" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create union of index objects.</p>
+<p>Index objects must be conform to
+<a class="reference internal" href="data-tables.html#tables"><span class="std std-ref">table specifications</span></a>.</p>
+<p>If at least one object is segmented, the output is a segmented index.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>objs</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Index</span></code>]) – index objects conform to
+<a class="reference internal" href="data-tables.html#tables"><span class="std std-ref">table specifications</span></a></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Index</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>union of index objects</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.9)"><strong>ValueError</strong></a> – if one or more objects are not conform to
+    <a class="reference internal" href="data-tables.html#tables"><span class="std std-ref">table specifications</span></a></p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">i1</span> <span class="o">=</span> <span class="n">filewise_index</span><span class="p">([</span><span class="s1">&#39;f1&#39;</span><span class="p">,</span> <span class="s1">&#39;f2&#39;</span><span class="p">,</span> <span class="s1">&#39;f3&#39;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">i2</span> <span class="o">=</span> <span class="n">filewise_index</span><span class="p">([</span><span class="s1">&#39;f2&#39;</span><span class="p">,</span> <span class="s1">&#39;f3&#39;</span><span class="p">,</span> <span class="s1">&#39;f4&#39;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">union</span><span class="p">([</span><span class="n">i1</span><span class="p">,</span> <span class="n">i2</span><span class="p">])</span>
+<span class="go">Index([&#39;f1&#39;, &#39;f2&#39;, &#39;f3&#39;, &#39;f4&#39;], dtype=&#39;object&#39;, name=&#39;file&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">i3</span> <span class="o">=</span> <span class="n">segmented_index</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="p">[</span><span class="s1">&#39;f1&#39;</span><span class="p">,</span> <span class="s1">&#39;f2&#39;</span><span class="p">,</span> <span class="s1">&#39;f3&#39;</span><span class="p">,</span> <span class="s1">&#39;f4&#39;</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">i4</span> <span class="o">=</span> <span class="n">segmented_index</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="p">[</span><span class="s1">&#39;f1&#39;</span><span class="p">,</span> <span class="s1">&#39;f2&#39;</span><span class="p">,</span> <span class="s1">&#39;f3&#39;</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">union</span><span class="p">([</span><span class="n">i3</span><span class="p">,</span> <span class="n">i4</span><span class="p">])</span>
+<span class="go">MultiIndex([(&#39;f1&#39;, &#39;0 days 00:00:00&#39;, &#39;0 days 00:00:01&#39;),</span>
+<span class="go">            (&#39;f2&#39;, &#39;0 days 00:00:00&#39;, &#39;0 days 00:00:01&#39;),</span>
+<span class="go">            (&#39;f3&#39;, &#39;0 days 00:00:00&#39;, &#39;0 days 00:00:01&#39;),</span>
+<span class="go">            (&#39;f3&#39;, &#39;0 days 00:00:01&#39;, &#39;0 days 00:00:02&#39;),</span>
+<span class="go">            (&#39;f4&#39;, &#39;0 days 00:00:00&#39;, &#39;0 days 00:00:01&#39;)],</span>
+<span class="go">           names=[&#39;file&#39;, &#39;start&#39;, &#39;end&#39;])</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">union</span><span class="p">([</span><span class="n">i1</span><span class="p">,</span> <span class="n">i2</span><span class="p">,</span> <span class="n">i3</span><span class="p">,</span> <span class="n">i4</span><span class="p">])</span>
+<span class="go">MultiIndex([(&#39;f1&#39;, &#39;0 days 00:00:00&#39;,               NaT),</span>
+<span class="go">            (&#39;f1&#39;, &#39;0 days 00:00:00&#39;, &#39;0 days 00:00:01&#39;),</span>
+<span class="go">            (&#39;f2&#39;, &#39;0 days 00:00:00&#39;,               NaT),</span>
+<span class="go">            (&#39;f2&#39;, &#39;0 days 00:00:00&#39;, &#39;0 days 00:00:01&#39;),</span>
+<span class="go">            (&#39;f3&#39;, &#39;0 days 00:00:00&#39;,               NaT),</span>
+<span class="go">            (&#39;f3&#39;, &#39;0 days 00:00:00&#39;, &#39;0 days 00:00:01&#39;),</span>
+<span class="go">            (&#39;f3&#39;, &#39;0 days 00:00:01&#39;, &#39;0 days 00:00:02&#39;),</span>
+<span class="go">            (&#39;f4&#39;, &#39;0 days 00:00:00&#39;,               NaT),</span>
+<span class="go">            (&#39;f4&#39;, &#39;0 days 00:00:00&#39;, &#39;0 days 00:00:01&#39;)],</span>
+<span class="go">           names=[&#39;file&#39;, &#39;start&#39;, &#39;end&#39;])</span>
+</pre></div>
+</div>
 </dd></dl>
 
 </div>
@@ -421,7 +551,7 @@ data frame are also relative (absolute)</p></li>
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2021/02/01 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2021/02/23 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
@@ -441,6 +571,7 @@ data frame are also relative (absolute)</p></li>
 
   </div>
   
+
 
 
   

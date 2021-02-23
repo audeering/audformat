@@ -74,7 +74,7 @@
             
             
               <div class="version">
-                v0.9.7
+                v0.9.8
               </div>
             
           
@@ -173,22 +173,20 @@
 
 
 
-
-
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li><a href="index.html">Docs</a> &raquo;</li>
         
       <li>audformat.testing</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
-          
             
-              <a href="https://github.com/audeering/audformat/blob/v0.9.7/docs/api-testing.rst" class="fa fa-github"> Edit on GitHub</a>
+            
+              <a href="https://github.com/audeering/audformat/blob/v0.9.8/docs/api-testing.rst" class="fa fa-github"> Edit on GitHub</a>
             
           
         
@@ -215,7 +213,7 @@ that are of interest for creating unit tests.</p>
 <h2>create_db<a class="headerlink" href="#create-db" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
 <dt id="audformat.testing.create_db">
-<code class="sig-prename descclassname">audformat.testing.</code><code class="sig-name descname">create_db</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">minimal</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/testing.html#create_db"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#audformat.testing.create_db" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname"><span class="pre">audformat.testing.</span></code><code class="sig-name descname"><span class="pre">create_db</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">minimal</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/testing.html#create_db"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.testing.create_db" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create test database.</p>
 <p>Creates a test database called <code class="docutils literal notranslate"><span class="pre">unittest</span></code> with a filewise
 and segmented table.</p>
@@ -237,7 +235,7 @@ and segmented table.</p>
 <h2>add_table<a class="headerlink" href="#add-table" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
 <dt id="audformat.testing.add_table">
-<code class="sig-prename descclassname">audformat.testing.</code><code class="sig-name descname">add_table</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">db</span></em>, <em class="sig-param"><span class="n">table_id</span></em>, <em class="sig-param"><span class="n">index_type</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">columns</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">num_files</span><span class="o">=</span><span class="default_value">5</span></em>, <em class="sig-param"><span class="n">num_segments_per_file</span><span class="o">=</span><span class="default_value">5</span></em>, <em class="sig-param"><span class="n">file_duration</span><span class="o">=</span><span class="default_value">'5s'</span></em>, <em class="sig-param"><span class="n">file_root</span><span class="o">=</span><span class="default_value">'audio'</span></em>, <em class="sig-param"><span class="n">p_none</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">split_id</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">media_id</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/testing.html#add_table"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#audformat.testing.add_table" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname"><span class="pre">audformat.testing.</span></code><code class="sig-name descname"><span class="pre">add_table</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">table_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index_type</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_files</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_segments_per_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_duration</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'5s'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_root</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'audio'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_none</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">split_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">media_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/testing.html#add_table"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.testing.add_table" title="Permalink to this definition">¶</a></dt>
 <dd><p>Adds a table with random values.</p>
 <p>By default adds one column for every scheme in the database.
 To create a specific set of columns use <code class="docutils literal notranslate"><span class="pre">columns</span></code>.
@@ -278,7 +276,7 @@ to segmented table)</p></li>
 <h2>create_audio_files<a class="headerlink" href="#create-audio-files" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
 <dt id="audformat.testing.create_audio_files">
-<code class="sig-prename descclassname">audformat.testing.</code><code class="sig-name descname">create_audio_files</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">db</span></em>, <em class="sig-param"><span class="n">root</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">sample_generator</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">sampling_rate</span><span class="o">=</span><span class="default_value">16000</span></em>, <em class="sig-param"><span class="n">channels</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">file_duration</span><span class="o">=</span><span class="default_value">'60s'</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/testing.html#create_audio_files"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#audformat.testing.create_audio_files" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname"><span class="pre">audformat.testing.</span></code><code class="sig-name descname"><span class="pre">create_audio_files</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">root</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_generator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sampling_rate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">16000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_duration</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'60s'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/testing.html#create_audio_files"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.testing.create_audio_files" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create audio files for a database.</p>
 <p>By default empty files are created. A sample generator function can be
 passed to generate the samples. The function gets as input a time stamp
@@ -323,7 +321,7 @@ and should create a sample in the amplitude range <code class="docutils literal 
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2021/02/01 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2021/02/23 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
@@ -343,6 +341,7 @@ and should create a sample in the amplitude range <code class="docutils literal 
 
   </div>
   
+
 
 
   

@@ -72,7 +72,7 @@
             
             
               <div class="version">
-                v0.9.7
+                v0.9.8
               </div>
             
           
@@ -166,13 +166,11 @@
 
 
 
-
-
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
         
           <li><a href="../../index.html">Module code</a> &raquo;</li>
         
@@ -230,6 +228,14 @@
 <span class="sd">        expires: expiry date</span>
 <span class="sd">        languages: list of languages</span>
 <span class="sd">        description: database description</span>
+<span class="sd">        author: database author(s)</span>
+<span class="sd">        license: database license.</span>
+<span class="sd">            You can use a custom license</span>
+<span class="sd">            or pick one from :attr:`audformat.define.License`.</span>
+<span class="sd">            In the later case,</span>
+<span class="sd">            ``license_url`` will be automatically set</span>
+<span class="sd">            if it is not given</span>
+<span class="sd">        license_url: URL of database license</span>
 <span class="sd">        meta: additional meta fields</span>
 
 <span class="sd">    Raises:</span>
@@ -295,9 +301,18 @@
             <span class="n">expires</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">date</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
             <span class="n">languages</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
             <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">author</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">organization</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">license</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">define</span><span class="o">.</span><span class="n">License</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">license_url</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
             <span class="n">meta</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="n">define</span><span class="o">.</span><span class="n">Usage</span><span class="o">.</span><span class="n">assert_has_attribute_value</span><span class="p">(</span><span class="n">usage</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span>
+                <span class="n">license_url</span> <span class="ow">is</span> <span class="kc">None</span>
+                <span class="ow">and</span> <span class="n">license</span> <span class="ow">in</span> <span class="n">define</span><span class="o">.</span><span class="n">License</span><span class="o">.</span><span class="n">attribute_values</span><span class="p">()</span>
+        <span class="p">):</span>
+            <span class="n">license_url</span> <span class="o">=</span> <span class="n">define</span><span class="o">.</span><span class="n">LICENSE_URLS</span><span class="p">[</span><span class="n">license</span><span class="p">]</span>
 
         <span class="n">languages</span> <span class="o">=</span> <span class="p">[]</span> <span class="k">if</span> <span class="n">languages</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">audeer</span><span class="o">.</span><span class="n">to_list</span><span class="p">(</span><span class="n">languages</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">languages</span><span class="p">)):</span>
@@ -314,6 +329,14 @@
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Expiry date&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">languages</span> <span class="o">=</span> <span class="n">languages</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;List of included languages&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">author</span> <span class="o">=</span> <span class="n">author</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Author(s) of database&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">organization</span> <span class="o">=</span> <span class="n">organization</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Organization that created the database&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">license</span> <span class="o">=</span> <span class="n">license</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;License of database&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">license_url</span> <span class="o">=</span> <span class="n">license_url</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;URL of database license&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">media</span> <span class="o">=</span> <span class="n">HeaderDict</span><span class="p">(</span><span class="n">value_type</span><span class="o">=</span><span class="n">Media</span><span class="p">)</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Dictionary of media information&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">raters</span> <span class="o">=</span> <span class="n">HeaderDict</span><span class="p">(</span><span class="n">value_type</span><span class="o">=</span><span class="n">Rater</span><span class="p">)</span>
@@ -792,7 +815,7 @@
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2021/02/01 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2021/02/23 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
@@ -812,6 +835,7 @@
 
   </div>
   
+
 
 
   

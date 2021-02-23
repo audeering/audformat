@@ -72,7 +72,7 @@
             
             
               <div class="version">
-                v0.9.7
+                v0.9.8
               </div>
             
           
@@ -166,13 +166,11 @@
 
 
 
-
-
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
         
           <li><a href="../../index.html">Module code</a> &raquo;</li>
         
@@ -228,6 +226,78 @@
         <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_timedelta</span><span class="p">(</span><span class="n">times</span><span class="p">)</span>
 
 
+<div class="viewcode-block" id="assert_index"><a class="viewcode-back" href="../../../api.html#audformat.assert_index">[docs]</a><span class="k">def</span> <span class="nf">assert_index</span><span class="p">(</span>
+    <span class="n">obj</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">]</span>
+<span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Assert object is conform to :ref:`table specifications</span>
+<span class="sd">    &lt;data-tables:Tables&gt;`.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        obj: object</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        ValueError: if not conform to</span>
+<span class="sd">            :ref:`table specifications &lt;data-tables:Tables&gt;`</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)):</span>
+        <span class="n">obj</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">index</span>
+
+    <span class="k">if</span> <span class="n">obj</span><span class="o">.</span><span class="n">has_duplicates</span><span class="p">:</span>
+        <span class="n">max_display</span> <span class="o">=</span> <span class="mi">10</span>
+        <span class="n">duplicates</span> <span class="o">=</span> <span class="n">obj</span><span class="p">[</span><span class="n">obj</span><span class="o">.</span><span class="n">duplicated</span><span class="p">()]</span>
+        <span class="n">msg_tail</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">...&#39;</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">duplicates</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">max_display</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span>
+        <span class="n">msg_duplicates</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="nb">str</span><span class="p">(</span><span class="n">duplicate</span><span class="p">)</span> <span class="k">for</span> <span class="n">duplicate</span>
+                <span class="ow">in</span> <span class="n">duplicates</span><span class="p">[:</span><span class="n">max_display</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s1">&#39;Index not conform to audformat. &#39;</span>
+            <span class="s1">&#39;Found duplicates:</span><span class="se">\n</span><span class="s1">&#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">msg_duplicates</span><span class="si">}{</span><span class="n">msg_tail</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="p">)</span>
+
+    <span class="n">num</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">names</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">num</span> <span class="o">!=</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">num</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s1">&#39;Index not conform to audformat. &#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;Found &#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">num</span><span class="si">}</span><span class="s1"> &#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;levels, but expected 1 or 3 levels.&#39;</span>
+        <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">num</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="ow">not</span> <span class="p">(</span>
+            <span class="n">obj</span><span class="o">.</span><span class="n">names</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">define</span><span class="o">.</span><span class="n">IndexField</span><span class="o">.</span><span class="n">FILE</span>
+    <span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s1">&#39;Index not conform to audformat. &#39;</span>
+            <span class="s1">&#39;Found single level with name &#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">obj</span><span class="o">.</span><span class="n">names</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s1">, &#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;but expected name &#39;</span>
+            <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">define</span><span class="o">.</span><span class="n">IndexField</span><span class="o">.</span><span class="n">FILE</span><span class="si">}</span><span class="s2">&#39;.&quot;</span>
+        <span class="p">)</span>
+    <span class="k">elif</span> <span class="n">num</span> <span class="o">==</span> <span class="mi">3</span> <span class="ow">and</span> <span class="ow">not</span> <span class="p">(</span>
+            <span class="n">obj</span><span class="o">.</span><span class="n">names</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">define</span><span class="o">.</span><span class="n">IndexField</span><span class="o">.</span><span class="n">FILE</span>
+            <span class="ow">and</span> <span class="n">obj</span><span class="o">.</span><span class="n">names</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">define</span><span class="o">.</span><span class="n">IndexField</span><span class="o">.</span><span class="n">START</span>
+            <span class="ow">and</span> <span class="n">obj</span><span class="o">.</span><span class="n">names</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="n">define</span><span class="o">.</span><span class="n">IndexField</span><span class="o">.</span><span class="n">END</span>
+    <span class="p">):</span>
+        <span class="n">expected_names</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">define</span><span class="o">.</span><span class="n">IndexField</span><span class="o">.</span><span class="n">FILE</span><span class="p">,</span>
+            <span class="n">define</span><span class="o">.</span><span class="n">IndexField</span><span class="o">.</span><span class="n">START</span><span class="p">,</span>
+            <span class="n">define</span><span class="o">.</span><span class="n">IndexField</span><span class="o">.</span><span class="n">END</span><span class="p">,</span>
+        <span class="p">]</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s1">&#39;Index not conform to audformat. &#39;</span>
+            <span class="s1">&#39;Found three levels with names &#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">obj</span><span class="o">.</span><span class="n">names</span><span class="si">}</span><span class="s1">, &#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;but expected names &#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">expected_names</span><span class="si">}</span><span class="s1">.&#39;</span>
+        <span class="p">)</span></div>
+
+
 <div class="viewcode-block" id="filewise_index"><a class="viewcode-back" href="../../../api.html#audformat.filewise_index">[docs]</a><span class="k">def</span> <span class="nf">filewise_index</span><span class="p">(</span>
         <span class="n">files</span><span class="p">:</span> <span class="n">Files</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">:</span>
@@ -241,6 +311,9 @@
 <span class="sd">    Returns:</span>
 <span class="sd">        filewise index</span>
 
+<span class="sd">    Raises:</span>
+<span class="sd">        ValueError: if created index contains duplicates</span>
+
 <span class="sd">    Example:</span>
 <span class="sd">        &gt;&gt;&gt; filewise_index([&#39;a.wav&#39;, &#39;b.wav&#39;])</span>
 <span class="sd">        Index([&#39;a.wav&#39;, &#39;b.wav&#39;], dtype=&#39;object&#39;, name=&#39;file&#39;)</span>
@@ -248,8 +321,12 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">files</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">files</span> <span class="o">=</span> <span class="p">[]</span>
+
     <span class="n">files</span> <span class="o">=</span> <span class="n">to_array</span><span class="p">(</span><span class="n">files</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">(</span><span class="n">files</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">define</span><span class="o">.</span><span class="n">IndexField</span><span class="o">.</span><span class="n">FILE</span><span class="p">)</span></div>
+    <span class="n">index</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">(</span><span class="n">files</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">define</span><span class="o">.</span><span class="n">IndexField</span><span class="o">.</span><span class="n">FILE</span><span class="p">)</span>
+    <span class="n">assert_index</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">index</span></div>
 
 
 <div class="viewcode-block" id="index_type"><a class="viewcode-back" href="../../../api.html#audformat.index_type">[docs]</a><span class="k">def</span> <span class="nf">index_type</span><span class="p">(</span>
@@ -278,16 +355,12 @@
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)):</span>
         <span class="n">obj</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">index</span>
 
-    <span class="n">num</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">names</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">num</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">obj</span><span class="o">.</span><span class="n">names</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">define</span><span class="o">.</span><span class="n">IndexField</span><span class="o">.</span><span class="n">FILE</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">define</span><span class="o">.</span><span class="n">IndexType</span><span class="o">.</span><span class="n">FILEWISE</span>
-    <span class="k">elif</span> <span class="n">num</span> <span class="o">==</span> <span class="mi">3</span> <span class="ow">and</span> \
-            <span class="n">obj</span><span class="o">.</span><span class="n">names</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">define</span><span class="o">.</span><span class="n">IndexField</span><span class="o">.</span><span class="n">FILE</span> <span class="ow">and</span> \
-            <span class="n">obj</span><span class="o">.</span><span class="n">names</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">define</span><span class="o">.</span><span class="n">IndexField</span><span class="o">.</span><span class="n">START</span> <span class="ow">and</span> \
-            <span class="n">obj</span><span class="o">.</span><span class="n">names</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="n">define</span><span class="o">.</span><span class="n">IndexField</span><span class="o">.</span><span class="n">END</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">define</span><span class="o">.</span><span class="n">IndexType</span><span class="o">.</span><span class="n">SEGMENTED</span>
+    <span class="n">assert_index</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
 
-    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Index not conform to audformat.&#39;</span><span class="p">)</span></div>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">names</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">define</span><span class="o">.</span><span class="n">IndexType</span><span class="o">.</span><span class="n">FILEWISE</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">define</span><span class="o">.</span><span class="n">IndexType</span><span class="o">.</span><span class="n">SEGMENTED</span></div>
 
 
 <div class="viewcode-block" id="segmented_index"><a class="viewcode-back" href="../../../api.html#audformat.segmented_index">[docs]</a><span class="k">def</span> <span class="nf">segmented_index</span><span class="p">(</span>
@@ -313,6 +386,9 @@
 
 <span class="sd">    Returns:</span>
 <span class="sd">        segmented index</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        ValueError: if created index contains duplicates</span>
 
 <span class="sd">    Raises:</span>
 <span class="sd">        ValueError: if ``files``, ``start`` and ``ends`` differ in size</span>
@@ -363,13 +439,16 @@
             <span class="s2">&quot;&#39;starts&#39;, and &#39;ends&#39; differ in size&quot;</span><span class="p">,</span>
         <span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">MultiIndex</span><span class="o">.</span><span class="n">from_arrays</span><span class="p">(</span>
+    <span class="n">index</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">MultiIndex</span><span class="o">.</span><span class="n">from_arrays</span><span class="p">(</span>
         <span class="p">[</span><span class="n">files</span><span class="p">,</span> <span class="n">to_timedelta</span><span class="p">(</span><span class="n">starts</span><span class="p">),</span> <span class="n">to_timedelta</span><span class="p">(</span><span class="n">ends</span><span class="p">)],</span>
         <span class="n">names</span><span class="o">=</span><span class="p">[</span>
             <span class="n">define</span><span class="o">.</span><span class="n">IndexField</span><span class="o">.</span><span class="n">FILE</span><span class="p">,</span>
             <span class="n">define</span><span class="o">.</span><span class="n">IndexField</span><span class="o">.</span><span class="n">START</span><span class="p">,</span>
             <span class="n">define</span><span class="o">.</span><span class="n">IndexField</span><span class="o">.</span><span class="n">END</span><span class="p">,</span>
-        <span class="p">])</span></div>
+        <span class="p">])</span>
+    <span class="n">assert_index</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">index</span></div>
 </pre></div>
 
            </div>
@@ -385,7 +464,7 @@
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2021/02/01 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2021/02/23 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
@@ -405,6 +484,7 @@
 
   </div>
   
+
 
 
   
