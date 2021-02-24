@@ -1,3 +1,5 @@
+import typing
+
 import pytest
 import numpy as np
 import pandas as pd
@@ -8,14 +10,270 @@ import audformat
 import audformat.testing
 
 
-def test_table_access():
+def create_table(
+        obj: typing.Union[pd.Series, pd.DataFrame],
+) -> audformat.Table:
+    r"""Helper function to create Table."""
+    table = audformat.Table(obj.index)
+    if isinstance(obj, pd.Series):
+        obj = obj.to_frame()
+    for name in obj:
+        table[name] = audformat.Column()
+        table[name].set(obj[name].values)
+    table._df = table.df.astype(obj.dtypes)
+    return table
+
+
+def test_access():
     db = audformat.testing.create_db()
     for table_id in db.tables.keys():
         assert db.tables[table_id] == db[table_id]
         assert str(db.tables[table_id]) == str(db[table_id])
 
 
-def test_add():
+@pytest.mark.parametrize(
+    'tables, expected',
+    [
+        # empty
+        (
+            [
+                create_table(
+                    pd.Series(
+                        index=audformat.filewise_index(),
+                        dtype=float,
+                    )
+                ),
+            ],
+            create_table(
+                pd.Series(
+                    index=audformat.filewise_index(),
+                    dtype=float,
+                )
+            ),
+        ),
+        (
+            [
+                create_table(
+                    pd.Series(
+                        index=audformat.filewise_index(),
+                        dtype=float,
+                    )
+                ),
+            ] * 3,
+            create_table(
+                pd.Series(
+                    index=audformat.filewise_index(),
+                    dtype=float,
+                )
+            ),
+        ),
+        # content + empty
+        (
+            [
+                create_table(
+                    pd.Series(
+                        [1.],
+                        index=audformat.filewise_index('f1'),
+                    )
+                ),
+                create_table(
+                    pd.Series(
+                        index=audformat.filewise_index(),
+                        dtype=float,
+                    )
+                ),
+            ],
+            create_table(
+                pd.Series(
+                    [1.],
+                    index=audformat.filewise_index('f1'),
+                )
+            ),
+        ),
+        # empty + content
+        (
+            [
+                create_table(
+                    pd.Series(
+                        index=audformat.filewise_index(),
+                        dtype=float,
+                    )
+                ),
+                create_table(
+                    pd.Series(
+                        [1.],
+                        index=audformat.filewise_index('f1'),
+                    )
+                ),
+            ],
+            create_table(
+                pd.Series(
+                    [1.],
+                    index=audformat.filewise_index('f1'),
+                )
+            ),
+        ),
+        # filewise + segmented
+        (
+            [
+                create_table(
+                    pd.Series(
+                        index=audformat.filewise_index(),
+                        dtype=float,
+                        name='c1',
+                    )
+                ),
+                create_table(
+                    pd.Series(
+                        index=audformat.segmented_index(),
+                        dtype=float,
+                        name='c2',
+                    )
+                ),
+            ],
+            create_table(
+                pd.DataFrame(
+                    {
+                        'c1': pd.Series(
+                            index=audformat.segmented_index(),
+                            dtype=float,
+                            name='c1',
+                        ),
+                        'c2': pd.Series(
+                            index=audformat.segmented_index(),
+                            dtype=float,
+                            name='c2',
+                        )
+                    },
+                )
+            ),
+        ),
+        # same column
+        (
+            [
+                create_table(
+                    pd.Series(
+                        [1., np.nan],
+                        index=audformat.filewise_index(['f1', 'f2']),
+                    )
+                ),
+                create_table(
+                    pd.Series(
+                        [2., 3.],
+                        index=audformat.filewise_index(['f2', 'f3']),
+                    )
+                ),
+                create_table(
+                    pd.Series(
+                        [3., 4.],
+                        index=audformat.filewise_index(['f3', 'f4']),
+                    )
+                ),
+            ],
+            create_table(
+                pd.Series(
+                    [1., 2., 3., 4.],
+                    index=audformat.filewise_index(['f1', 'f2', 'f3', 'f4']),
+                )
+            ),
+        ),
+        pytest.param(  # value mismatch
+            [
+                create_table(
+                    pd.Series(
+                        [1.],
+                        index=audformat.filewise_index('f1'),
+                    )
+                ),
+                create_table(
+                    pd.Series(
+                        [-1.],
+                        index=audformat.filewise_index('f1'),
+                    )
+                ),
+            ],
+            None,
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
+        # different columns
+        (
+            [
+                create_table(
+                    pd.Series(
+                        [1., 2.],
+                        index=audformat.filewise_index(['f1', 'f2']),
+                        name='c1',
+                    )
+                ),
+                create_table(
+                    pd.Series(
+                        [2., 3.],
+                        index=audformat.filewise_index(['f2', 'f3']),
+                        name='c2',
+                    )
+                ),
+            ],
+            create_table(
+                pd.DataFrame(
+                    {
+                        'c1': [1., 2., np.nan],
+                        'c2': [np.nan, 2., 3.],
+                    },
+                    index=audformat.filewise_index(['f1', 'f2', 'f3']),
+                )
+            ),
+        ),
+        # filewise + segmented
+        (
+            [
+                create_table(
+                    pd.Series(
+                        [1.],
+                        index=audformat.filewise_index('f1'),
+                    )
+                ),
+                create_table(
+                    pd.Series(
+                        [1.],
+                        index=audformat.segmented_index('f1', 0, 1),
+                    )
+                ),
+            ],
+            create_table(
+                pd.Series(
+                    [1., 1.],
+                    index=audformat.segmented_index(
+                        ['f1', 'f1'],
+                        [0, 0],
+                        [None, 1],
+                    ),
+                )
+            ),
+        ),
+        (
+            [
+                pytest.DB['files'],
+                pytest.DB['segments'],
+            ],
+            create_table(
+                audformat.utils.concat(
+                    [
+                        pytest.DB['files'].df,
+                        pytest.DB['segments'].df,
+                    ]
+                )
+            )
+        )
+    ]
+)
+def test_add(tables, expected):
+    table = tables[0]
+    for other in tables[1:]:
+        table += other
+    assert table == expected
+
+
+def test_add_2():  # TODO: turn into test_update()
 
     db = audformat.testing.create_db(minimal=True)
     db.media['media'] = audformat.Media()
@@ -36,12 +294,18 @@ def test_add():
         db['table'].files,
         db['table1'].files.union(db['table2'].files)
     )
-    assert db['table'].media_id == 'media'
+    assert db['table'].media_id is None
     assert db['table'].split_id is None
+    for column in db['table'].columns:
+        assert column.scheme_id is None
+        assert column.rater_id is None
 
     # add table to itself
 
-    assert db['table1'] + db['table1'] == db['table1']
+    pd.testing.assert_frame_equal(
+        (db['table1'] + db['table1']).df,
+        db['table1'].df,
+    )
 
     # add two schemes
 

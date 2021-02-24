@@ -661,12 +661,18 @@ def test_read_csv(csv, result):
 def test_to_segmented_index(table_id):
 
     # empty case
-    for index in [audformat.filewise_index(), audformat.segmented_index()]:
-        assert audformat.index_type(
-            audformat.utils.to_segmented_index(
-                index
-            )
-        ) == audformat.define.IndexType.SEGMENTED
+    for obj in [
+        audformat.filewise_index(),
+        audformat.segmented_index(),
+        pd.Series(
+            index=audformat.filewise_index(),
+            dtype=float,
+        )
+    ]:
+        obj_segmented = audformat.utils.to_segmented_index(obj)
+        assert isinstance(obj_segmented, type(obj))
+        assert audformat.index_type(obj_segmented)\
+               == audformat.define.IndexType.SEGMENTED
 
     # non-empty case
     for column_id, column in pytest.DB[table_id].get().items():

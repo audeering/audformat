@@ -489,8 +489,6 @@ def to_segmented_index(
     """
     if index_type(obj) == define.IndexType.SEGMENTED:
         return obj
-    elif obj.empty:
-        return segmented_index()
 
     if isinstance(obj, (pd.Series, pd.DataFrame)):
         index = obj.index
