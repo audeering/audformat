@@ -90,6 +90,7 @@ def test_access():
                 )
             ),
         ),
+        # empty + content
         (
             [
                 create_table(
