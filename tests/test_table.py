@@ -59,6 +59,23 @@ def test_access():
                         dtype=float,
                     )
                 ),
+            ] * 3,
+            create_table(
+                pd.Series(
+                    index=audformat.filewise_index(),
+                    dtype=float,
+                )
+            ),
+        ),
+        # empty + content
+        (
+            [
+                create_table(
+                    pd.Series(
+                        [1.],
+                        index=audformat.filewise_index('f1'),
+                    )
+                ),
                 create_table(
                     pd.Series(
                         index=audformat.filewise_index(),
@@ -68,8 +85,30 @@ def test_access():
             ],
             create_table(
                 pd.Series(
-                    index=audformat.filewise_index(),
-                    dtype=float,
+                    [1.],
+                    index=audformat.filewise_index('f1'),
+                )
+            ),
+        ),
+        (
+            [
+                create_table(
+                    pd.Series(
+                        index=audformat.filewise_index(),
+                        dtype=float,
+                    )
+                ),
+                create_table(
+                    pd.Series(
+                        [1.],
+                        index=audformat.filewise_index('f1'),
+                    )
+                ),
+            ],
+            create_table(
+                pd.Series(
+                    [1.],
+                    index=audformat.filewise_index('f1'),
                 )
             ),
         ),
@@ -113,14 +152,20 @@ def test_access():
             [
                 create_table(
                     pd.Series(
-                        [1., 2., np.nan],
-                        index=audformat.filewise_index(['f1', 'f2', 'f3']),
+                        [1., np.nan],
+                        index=audformat.filewise_index(['f1', 'f2']),
                     )
                 ),
                 create_table(
                     pd.Series(
-                        [2., 3., 4.],
-                        index=audformat.filewise_index(['f2', 'f3', 'f4']),
+                        [2., 3.],
+                        index=audformat.filewise_index(['f2', 'f3']),
+                    )
+                ),
+                create_table(
+                    pd.Series(
+                        [3., 4.],
+                        index=audformat.filewise_index(['f3', 'f4']),
                     )
                 ),
             ],
