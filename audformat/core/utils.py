@@ -32,9 +32,11 @@ def concat(
 
     Columns with the same identifier are combined to a single column.
     This requires that both columns have the same dtype
-    and unless ``overwrite`` is set to ``True``,
+    and if ``overwrite`` is set to ``False``,
     values in places where the indices overlap have to match
     or one column contains ``NaN``.
+    If ``overwrite`` is set to ``True``,
+    the value of the last object in the list is kept.
 
     Args:
         objs: objects conform to
@@ -70,13 +72,13 @@ def concat(
         f2   0 days NaT    1.0      a
         f3   0 days NaT    2.0      b
         >>> obj1 = pd.Series(
-        ...     [0., np.nan],
+        ...     [0., 1.],
         ...     index=filewise_index(['f1', 'f2']),
         ...     name='float',
         ... )
         >>> obj2 = pd.DataFrame(
         ...     {
-        ...         'float': [1., 2.],
+        ...         'float': [np.nan, 2.],
         ...         'string': ['a', 'b'],
         ...     },
         ...     index=segmented_index(['f2', 'f3']),
