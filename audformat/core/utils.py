@@ -18,6 +18,8 @@ from audformat.core.index import (
 
 def concat(
         objs: typing.Sequence[typing.Union[pd.Series, pd.DataFrame]],
+        *,
+        overwrite: bool = False,
 ) -> typing.Union[pd.Series, pd.DataFrame]:
     r"""Concatenate objects.
 
@@ -29,15 +31,15 @@ def concat(
     If at least one object is segmented, the output has a segmented index.
 
     Columns with the same identifier are combined to a single column.
-    This requires that:
-
-    1. both columns have the same dtype
-    2. in places where the indices overlap the values of both columns
-       match or one column contains ``NaN``
+    This requires that both columns have the same dtype
+    and unless ``overwrite`` is set to ``True``,
+    values in places where the indices overlap have to match
+    or one column contains ``NaN``.
 
     Args:
         objs: objects conform to
             :ref:`table specifications <data-tables:Tables>`
+        overwrite: overwrite values where indices overlap
 
     Returns:
         concatenated objects
@@ -62,6 +64,42 @@ def concat(
         ...     index=segmented_index(['f2', 'f3']),
         ... )
         >>> concat([obj1, obj2])
+                         float string
+        file start  end
+        f1   0 days NaT    0.0    NaN
+        f2   0 days NaT    1.0      a
+        f3   0 days NaT    2.0      b
+        >>> obj1 = pd.Series(
+        ...     [0., np.nan],
+        ...     index=filewise_index(['f1', 'f2']),
+        ...     name='float',
+        ... )
+        >>> obj2 = pd.DataFrame(
+        ...     {
+        ...         'float': [1., 2.],
+        ...         'string': ['a', 'b'],
+        ...     },
+        ...     index=segmented_index(['f2', 'f3']),
+        ... )
+        >>> concat([obj1, obj2])
+                         float string
+        file start  end
+        f1   0 days NaT    0.0    NaN
+        f2   0 days NaT    1.0      a
+        f3   0 days NaT    2.0      b
+        >>> obj1 = pd.Series(
+        ...     [0., 0.],
+        ...     index=filewise_index(['f1', 'f2']),
+        ...     name='float',
+        ... )
+        >>> obj2 = pd.DataFrame(
+        ...     {
+        ...         'float': [1., 2.],
+        ...         'string': ['a', 'b'],
+        ...     },
+        ...     index=segmented_index(['f2', 'f3']),
+        ... )
+        >>> concat([obj1, obj2], overwrite=True)
                          float string
         file start  end
         f1   0 days NaT    0.0    NaN
@@ -110,30 +148,33 @@ def concat(
                 )
 
             # overlapping values must match or have to be nan in one column
-            intersection = intersect(
-                [
-                    columns_reindex[column.name].index,
-                    column.index,
-                ]
-            )
-            if not intersection.empty:
-                combine = pd.DataFrame(
-                    {
-                        'left': columns_reindex[column.name][intersection],
-                        'right': column[intersection]
-                    }
+            if not overwrite:
+                intersection = intersect(
+                    [
+                        columns_reindex[column.name].index,
+                        column.index,
+                    ]
                 )
-                combine.dropna(inplace=True)
-                differ = combine['left'] != combine['right']
-                if np.any(differ):
-                    max_display = 10
-                    overlap = combine[differ]
-                    msg_overlap = str(overlap[:max_display])
-                    msg_tail = '\n...' if len(overlap) > max_display else ''
-                    raise ValueError(
-                        'Found overlapping data:\n'
-                        f"{msg_overlap}{msg_tail}"
+                if not intersection.empty:
+                    combine = pd.DataFrame(
+                        {
+                            'left': columns_reindex[column.name][intersection],
+                            'right': column[intersection]
+                        }
                     )
+                    combine.dropna(inplace=True)
+                    differ = combine['left'] != combine['right']
+                    if np.any(differ):
+                        max_display = 10
+                        overlap = combine[differ]
+                        msg_overlap = str(overlap[:max_display])
+                        msg_tail = '\n...' \
+                            if len(overlap) > max_display \
+                            else ''
+                        raise ValueError(
+                            'Found overlapping data:\n'
+                            f"{msg_overlap}{msg_tail}"
+                        )
 
             # drop NaN to avoid overwriting values from other column
             column = column.dropna()
