@@ -793,12 +793,12 @@ class Table(HeaderBase):
             mismatch = True
         if mismatch:
             raise ValueError(
-                    "Cannot update table, "
-                    "media does not match:\n"
-                    f"{self.media}\n"
-                    "!=\n"
-                    f"{other.media}."
-                )
+                "Cannot update table, "
+                "media does not match:\n"
+                f"{self.media}\n"
+                "!=\n"
+                f"{other.media}."
+            )
 
         # assert split matches
         mismatch = False
@@ -808,12 +808,12 @@ class Table(HeaderBase):
             mismatch = True
         if mismatch:
             raise ValueError(
-                    "Cannot update table, "
-                    "split does not match:\n"
-                    f"{self.split}\n"
-                    "!=\n"
-                    f"{other.split}."
-                )
+                "Cannot update table, "
+                "split does not match:\n"
+                f"{self.split}\n"
+                "!=\n"
+                f"{other.split}."
+            )
 
         # assert schemes match for overlapping columns and
         # look for missing schemes in new columns,
@@ -821,17 +821,17 @@ class Table(HeaderBase):
         missing_schemes = {}
         for column_id, column in other.columns.items():
             if column_id in self.columns:
-                mismatch = False           
-                scheme = self.columns[column_id].scheme                
-                if column.scheme and scheme:                    
+                mismatch = False
+                scheme = self.columns[column_id].scheme
+                if column.scheme and scheme:
                     mismatch = column.scheme != scheme
                 elif column.scheme or scheme:
-                    mismatch = True 
+                    mismatch = True
                 if mismatch:
                     raise ValueError(
                         "Cannot update table, "
                         "schemes do not match for column "
-                        f"'{column_id}':\n"                        
+                        f"'{column_id}':\n"
                         f"{scheme}\n"
                         "!=\n"
                         f"{column.scheme}."
@@ -859,17 +859,17 @@ class Table(HeaderBase):
         missing_raters = {}
         for column_id, column in other.columns.items():
             if column_id in self.columns:
-                mismatch = False           
-                rater = self.columns[column_id].rater                
-                if column.rater and rater:                    
+                mismatch = False
+                rater = self.columns[column_id].rater
+                if column.rater and rater:
                     mismatch = column.rater != rater
                 elif column.rater or rater:
-                    mismatch = True 
+                    mismatch = True
                 if mismatch:
                     raise ValueError(
                         "Cannot update table, "
                         "raters do not match for column "
-                        f"'{column_id}':\n"                        
+                        f"'{column_id}':\n"
                         f"{rater}\n"
                         "!=\n"
                         f"{column.rater}"
@@ -905,7 +905,7 @@ class Table(HeaderBase):
         # insert new columns
         for column_id, column in other.columns.items():
             if column_id not in self.columns:
-                self.columns[column_id] = copy.copy(column)                
+                self.columns[column_id] = copy.copy(column)
 
         # update table data
         self._df = df
