@@ -304,10 +304,15 @@ from audformat import define
                     audformat.filewise_index(['f1', 'f2']),
                     name='c1',
                 ),
+                pd.Series(
+                    ['a', np.nan, 'd'],
+                    audformat.filewise_index(['f1', 'f2', 'f4']),
+                    name='c2',
+                ),
                 pd.DataFrame(
                     {
                         'c1': [np.nan, 3.],
-                        'c2': ['a', 'b'],
+                        'c2': ['b', 'c'],
                     },
                     audformat.segmented_index(['f2', 'f3']),
                 ),
@@ -315,10 +320,10 @@ from audformat import define
             False,
             pd.DataFrame(
                 {
-                    'c1': [1., 2., 3.],
-                    'c2': [np.nan, 'a', 'b']
+                    'c1': [1., 2., 3., np.nan],
+                    'c2': ['a', 'b', 'c', 'd']
                 },
-                audformat.segmented_index(['f1', 'f2', 'f3']),
+                audformat.segmented_index(['f1', 'f2', 'f3', 'f4']),
             ),
         ),
         # error: dtypes do not match

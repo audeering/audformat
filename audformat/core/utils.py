@@ -174,7 +174,8 @@ def concat(
                             if len(overlap) > max_display \
                             else ''
                         raise ValueError(
-                            'Found overlapping data:\n'
+                            "Found overlapping data in column "
+                            f"'{column.name}':\n"
                             f"{msg_overlap}{msg_tail}"
                         )
 
