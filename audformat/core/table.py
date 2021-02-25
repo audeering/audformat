@@ -243,7 +243,7 @@ class Table(HeaderBase):
             media object or ``None`` if not available
 
         """
-        if self.media_id is not None and self.db:
+        if self.media_id is not None and self.db is not None:
             return self.db.media[self.media_id]
 
     @property
@@ -254,7 +254,7 @@ class Table(HeaderBase):
             split object or ``None`` if not available
 
         """
-        if self.split_id is not None and self.db:
+        if self.split_id is not None and self.db is not None:
             return self.db.splits[self.split_id]
 
     @property
@@ -771,9 +771,9 @@ class Table(HeaderBase):
     def update(
             self,
             other: typing.Union['Table', typing.Sequence['Table']],
-    ):  # pragma: no cover
-        # TODO: add tests
-
+            *,
+            overwrite: bool = False,
+    ):
         if self.db is None:
             raise RuntimeError(
                 'Cannot update table, '
@@ -785,17 +785,10 @@ class Table(HeaderBase):
                 self.update(o)
             return
 
-        # concatenate table data
-        # TODO: set overwrite=True or at least add option for it
-        #       https://github.com/audeering/audformat/pull/51
-        df = utils.concat([self._df, other._df])
-        if isinstance(df, pd.Series):
-            df = df.to_frame()
-
         # assert media matches
         mismatch = False
         if self.media and other.media:
-            mismatch = self.media == other.media
+            mismatch = self.media != other.media
         elif self.media or other.media:
             mismatch = True
         if mismatch:
@@ -810,7 +803,7 @@ class Table(HeaderBase):
         # assert split matches
         mismatch = False
         if self.split and other.split:
-            mismatch = self.split == other.split
+            mismatch = self.split != other.split
         elif self.split or other.split:
             mismatch = True
         if mismatch:
@@ -897,6 +890,11 @@ class Table(HeaderBase):
                             )
                     else:
                         missing_raters[column.rater_id] = column.rater
+
+        # concatenate table data
+        df = utils.concat([self._df, other._df], overwrite=overwrite)
+        if isinstance(df, pd.Series):
+            df = df.to_frame()
 
         # insert missing schemes and raters
         for scheme_id, scheme in missing_schemes.items():

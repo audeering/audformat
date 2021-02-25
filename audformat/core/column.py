@@ -92,7 +92,13 @@ class Column(HeaderBase):
             rater object or ``None`` if not available
 
         """
-        if self.rater_id is not None and self.table and self.table.db:
+        if (
+                self.rater_id is not None
+        ) and (
+                self.table is not None
+        ) and (
+                self.table.db is not None
+        ):
             return self.table.db.raters[self.rater_id]
 
     @property
@@ -103,7 +109,13 @@ class Column(HeaderBase):
             scheme object or ``None`` if not available
 
         """
-        if self.scheme_id is not None and self.table and self.table.db:
+        if (
+                self.scheme_id is not None
+        ) and (
+                self.table is not None
+        ) and (
+                self.table.db is not None
+        ):
             return self.table.db.schemes[self.scheme_id]
 
     @property
