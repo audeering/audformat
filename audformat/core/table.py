@@ -792,14 +792,41 @@ class Table(HeaderBase):
         #       https://github.com/audeering/audformat/pull/51
         df = utils.concat([self._df, other._df])
 
-        # assert that schemes and raters match for overlapping columns and
-        # look for missing schemes and raters in new columns,
-        # raise an error if a different scheme or rater with same ID exists
+        # assert media matches
+        mismatch = False
+        if self.media and other.media:
+            mismatch = self.media == other.media
+        elif self.media or other.media:
+            mismatch = True
+        if mismatch:
+            raise ValueError(
+                    "Cannot update table, "
+                    "media does not match:\n"
+                    f"{self.media}\n"
+                    "!=\n"
+                    f"{other.media}."
+                )
+
+        # assert split matches
+        mismatch = False
+        if self.split and other.split:
+            mismatch = self.split == other.split
+        elif self.split or other.split:
+            mismatch = True
+        if mismatch:
+            raise ValueError(
+                    "Cannot update table, "
+                    "split does not match:\n"
+                    f"{self.split}\n"
+                    "!=\n"
+                    f"{other.split}."
+                )
+
+        # assert schemes match for overlapping columns and
+        # look for missing schemes in new columns,
+        # raise an error if a different scheme with same ID exists
         missing_schemes = {}
-        missing_raters = {}
-        
         for column_id, column in other.columns.items():
-            
             if column_id in self.columns:
                 mismatch = False           
                 scheme = self.columns[column_id].scheme                
@@ -833,6 +860,11 @@ class Table(HeaderBase):
                     else:
                         missing_schemes[column.scheme_id] = column.scheme
 
+        # assert raters match for overlapping columns and
+        # look for missing raters in new columns,
+        # raise an error if a different rater with same ID exists
+        missing_raters = {}
+        for column_id, column in other.columns.items():
             if column_id in self.columns:
                 mismatch = False           
                 rater = self.columns[column_id].rater                
