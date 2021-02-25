@@ -13,19 +13,22 @@ from audformat import define
 
 
 @pytest.mark.parametrize(
-    'objs, expected',
+    'objs, overwrite, expected',
     [
         # empty
         (
             [],
+            False,
             pd.Series([], audformat.filewise_index(), dtype='object'),
         ),
         (
             [pd.Series([], audformat.filewise_index(), dtype='object')],
+            False,
             pd.Series([], audformat.filewise_index(), dtype='object')
         ),
         (
             [pd.Series([], audformat.segmented_index(), dtype='object')],
+            False,
             pd.Series([], audformat.segmented_index(), dtype='object')
         ),
         # combine series with same name
@@ -34,6 +37,7 @@ from audformat import define
                 pd.Series([], audformat.filewise_index(), dtype=float),
                 pd.Series([1., 2.], audformat.filewise_index(['f1', 'f2'])),
             ],
+            False,
             pd.Series([1., 2.], audformat.filewise_index(['f1', 'f2'])),
         ),
         (
@@ -41,6 +45,7 @@ from audformat import define
                 pd.Series([1., 2.], audformat.filewise_index(['f1', 'f2'])),
                 pd.Series([1., 2.], audformat.filewise_index(['f1', 'f2'])),
             ],
+            False,
             pd.Series([1., 2.], audformat.filewise_index(['f1', 'f2'])),
         ),
         (
@@ -48,6 +53,7 @@ from audformat import define
                 pd.Series([1.], audformat.filewise_index('f1')),
                 pd.Series([2.], audformat.filewise_index('f2')),
             ],
+            False,
             pd.Series([1., 2.], audformat.filewise_index(['f1', 'f2'])),
         ),
         (
@@ -55,6 +61,7 @@ from audformat import define
                 pd.Series([1.], audformat.segmented_index('f1')),
                 pd.Series([2.], audformat.segmented_index('f2')),
             ],
+            False,
             pd.Series([1., 2.], audformat.segmented_index(['f1', 'f2'])),
         ),
         (
@@ -62,6 +69,7 @@ from audformat import define
                 pd.Series([1.], audformat.filewise_index('f1')),
                 pd.Series([2.], audformat.segmented_index('f2')),
             ],
+            False,
             pd.Series([1., 2.], audformat.segmented_index(['f1', 'f2'])),
         ),
         # combine values in same location
@@ -70,6 +78,7 @@ from audformat import define
                 pd.Series([np.nan], audformat.filewise_index('f1')),
                 pd.Series([np.nan], audformat.filewise_index('f1')),
             ],
+            False,
             pd.Series([np.nan], audformat.filewise_index('f1')),
         ),
         (
@@ -77,6 +86,7 @@ from audformat import define
                 pd.Series([1.], audformat.filewise_index('f1')),
                 pd.Series([np.nan], audformat.filewise_index('f1')),
             ],
+            False,
             pd.Series([1.], audformat.filewise_index('f1')),
         ),
         (
@@ -84,7 +94,25 @@ from audformat import define
                 pd.Series([1.], audformat.filewise_index('f1')),
                 pd.Series([1.], audformat.filewise_index('f1')),
             ],
+            False,
             pd.Series([1.], audformat.filewise_index('f1')),
+        ),
+        # combine series and overwrite values
+        (
+            [
+                pd.Series([1.], audformat.filewise_index('f1')),
+                pd.Series([np.nan], audformat.filewise_index('f1')),
+            ],
+            True,
+            pd.Series([1.], audformat.filewise_index('f1')),
+        ),
+        (
+            [
+                pd.Series([1.], audformat.filewise_index('f1')),
+                pd.Series([2.], audformat.filewise_index('f1')),
+            ],
+            True,
+            pd.Series([2.], audformat.filewise_index('f1')),
         ),
         # combine values with matching dtype
         (
@@ -92,6 +120,7 @@ from audformat import define
                 pd.Series([1, 2], audformat.filewise_index(['f1', 'f2'])),
                 pd.Series([1, 2], audformat.filewise_index(['f1', 'f2'])),
             ],
+            False,
             pd.Series([1, 2], audformat.filewise_index(['f1', 'f2'])),
         ),
         (
@@ -107,6 +136,7 @@ from audformat import define
                     dtype='Int64',
                 ),
             ],
+            False,
             pd.Series(
                 [1, 2],
                 audformat.filewise_index(['f1', 'f2']),
@@ -126,6 +156,7 @@ from audformat import define
                     dtype='float64',
                 ),
             ],
+            False,
             pd.Series(
                 [1., 2.],
                 audformat.filewise_index(['f1', 'f2']),
@@ -145,6 +176,7 @@ from audformat import define
                     dtype='float64',
                 ),
             ],
+            False,
             pd.Series(
                 [1., 2.],
                 audformat.filewise_index(['f1', 'f2']),
@@ -162,6 +194,7 @@ from audformat import define
                     index=audformat.filewise_index(['f1', 'f2', 'f3']),
                 ),
             ],
+            False,
             pd.Series(
                 ['a', 'b', 'a'],
                 index=audformat.filewise_index(['f1', 'f2', 'f3']),
@@ -180,6 +213,7 @@ from audformat import define
                     dtype='category',
                 ),
             ],
+            False,
             pd.Series(
                 ['a', 'b', 'a'],
                 index=audformat.filewise_index(['f1', 'f2', 'f3']),
@@ -192,6 +226,7 @@ from audformat import define
                 pd.Series([1.], audformat.filewise_index('f1'), name='c1'),
                 pd.Series([2.], audformat.filewise_index('f1'), name='c2'),
             ],
+            False,
             pd.DataFrame(
                 {
                     'c1': [1.],
@@ -205,6 +240,7 @@ from audformat import define
                 pd.Series([1.], audformat.filewise_index('f1'), name='c1'),
                 pd.Series([2.], audformat.filewise_index('f2'), name='c2'),
             ],
+            False,
             pd.DataFrame(
                 {
                     'c1': [1., np.nan],
@@ -226,6 +262,7 @@ from audformat import define
                     name='c2',
                 ),
             ],
+            False,
             pd.DataFrame(
                 {
                     'c1': [1., 2.],
@@ -246,6 +283,7 @@ from audformat import define
                     name='c2',
                 ),
             ],
+            False,
             pd.DataFrame(
                 {
                     'c1': [1., np.nan],
@@ -266,20 +304,26 @@ from audformat import define
                     audformat.filewise_index(['f1', 'f2']),
                     name='c1',
                 ),
+                pd.Series(
+                    ['a', np.nan, 'd'],
+                    audformat.filewise_index(['f1', 'f2', 'f4']),
+                    name='c2',
+                ),
                 pd.DataFrame(
                     {
                         'c1': [np.nan, 3.],
-                        'c2': ['a', 'b'],
+                        'c2': ['b', 'c'],
                     },
                     audformat.segmented_index(['f2', 'f3']),
                 ),
             ],
+            False,
             pd.DataFrame(
                 {
-                    'c1': [1., 2., 3.],
-                    'c2': [np.nan, 'a', 'b']
+                    'c1': [1., 2., 3., np.nan],
+                    'c2': ['a', 'b', 'c', 'd']
                 },
-                audformat.segmented_index(['f1', 'f2', 'f3']),
+                audformat.segmented_index(['f1', 'f2', 'f3', 'f4']),
             ),
         ),
         # error: dtypes do not match
@@ -288,6 +332,7 @@ from audformat import define
                 pd.Series([1], audformat.filewise_index('f1')),
                 pd.Series([1.], audformat.filewise_index('f1')),
             ],
+            False,
             None,
             marks=pytest.mark.xfail(raises=ValueError),
         ),
@@ -303,6 +348,7 @@ from audformat import define
                     dtype='category',
                 ),
             ],
+            False,
             None,
             marks=pytest.mark.xfail(raises=ValueError),
         ),
@@ -318,6 +364,7 @@ from audformat import define
                     dtype='category',
                 ),
             ],
+            False,
             None,
             marks=pytest.mark.xfail(raises=ValueError),
         ),
@@ -334,6 +381,7 @@ from audformat import define
                     dtype='category',
                 ),
             ],
+            False,
             None,
             marks=pytest.mark.xfail(raises=ValueError),
         ),
@@ -343,13 +391,14 @@ from audformat import define
                 pd.Series([1.], audformat.filewise_index('f1')),
                 pd.Series([2.], audformat.filewise_index('f1')),
             ],
+            False,
             None,
             marks=pytest.mark.xfail(raises=ValueError),
         ),
     ],
 )
-def test_concat(objs, expected):
-    obj = utils.concat(objs)
+def test_concat(objs, overwrite, expected):
+    obj = utils.concat(objs, overwrite=overwrite)
     if isinstance(obj, pd.Series):
         pd.testing.assert_series_equal(obj, expected)
     else:
