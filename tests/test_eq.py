@@ -38,7 +38,7 @@ def test_with_data(tmpdir):
 
     db.save(tmpdir)
     db4 = audformat.Database.load(tmpdir)
-    db4['files'].df['string'][0] = 'Believe me, I am special!'
+    db4['files'].df.at['string', 0] = 'Believe me, I am special!'
 
     assert db != db4
     assert db['files'] != db4['files']

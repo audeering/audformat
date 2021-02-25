@@ -314,10 +314,15 @@ def test_add(tables, expected):
     table = tables[0]
     for other in tables[1:]:
         table += other
+    assert table.media_id is None
+    assert table.split_id is None
+    for column in table.columns.values():
+        assert column.scheme_id is None
+        assert column.rater_id is None
     assert table == expected
 
 
-def test_add_2():  # TODO: turn into test_update()
+def test_add_2():
 
     db = audformat.testing.create_db(minimal=True)
     db.media['media'] = audformat.Media()
