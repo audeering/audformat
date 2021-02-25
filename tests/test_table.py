@@ -26,9 +26,17 @@ def create_table(
 
 def test_access():
     db = audformat.testing.create_db()
-    for table_id in db.tables.keys():
+    for table_id, table in db.tables.items():
         assert db.tables[table_id] == db[table_id]
         assert str(db.tables[table_id]) == str(db[table_id])
+        if table.media_id is not None:
+            assert table.media == db.media[table.media_id]
+        else:
+            assert table.media is None
+        if table.split_id is not None:
+            assert table.split == db.splits[table.split_id]
+        else:
+            assert table.split is None
 
 
 @pytest.mark.parametrize(

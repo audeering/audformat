@@ -9,9 +9,17 @@ import audformat.testing
 def test_access():
     db = audformat.testing.create_db()
     for table in db.tables.values():
-        for column_id in table.columns.keys():
+        for column_id, column in table.columns.items():
             assert table.columns[column_id] == table[column_id]
             assert str(table.columns[column_id]) == str(table[column_id])
+            if column.scheme_id is not None:
+                assert column.scheme == db.schemes[column.scheme_id]
+            else:
+                assert column.scheme is None
+            if column.rater_id is not None:
+                assert column.rater == db.raters[column.rater_id]
+            else:
+                assert column.rater is None
 
 
 def test_exceptions():

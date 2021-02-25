@@ -18,9 +18,10 @@ from audformat.core.errors import (
 )
 from audformat.core.index import (
     filewise_index,
-    segmented_index,
     index_type,
 )
+from audformat.core.media import Media
+from audformat.core.split import Split
 from audformat.core.typing import (
     Values,
 )
@@ -153,6 +154,16 @@ class Table(HeaderBase):
         self._id = None
 
     @property
+    def db(self):
+        r"""Database object.
+
+        Returns:
+            database object or ``None`` if not assigned yet
+
+        """
+        return self._db
+
+    @property
     def df(self) -> pd.DataFrame:
         r"""Table data.
 
@@ -223,6 +234,18 @@ class Table(HeaderBase):
 
         """
         return self.type == define.IndexType.SEGMENTED
+
+    @property
+    def media(self) -> typing.Optional[Media]:
+        r"""Media object."""
+        if self.media_id is not None and self._db:
+            return self._db.media[self.media_id]
+
+    @property
+    def split(self) -> typing.Optional[Split]:
+        r"""Split object."""
+        if self.split_id is not None and self._db:
+            return self._db.splits[self.split_id]
 
     @property
     def starts(self) -> pd.Index:
