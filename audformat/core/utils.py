@@ -81,14 +81,14 @@ def concat(
         ...         'float': [np.nan, 2.],
         ...         'string': ['a', 'b'],
         ...     },
-        ...     index=segmented_index(['f2', 'f3']),
+        ...     index=filewise_index(['f2', 'f3']),
         ... )
         >>> concat([obj1, obj2])
-                         float string
-        file start  end
-        f1   0 days NaT    0.0    NaN
-        f2   0 days NaT    1.0      a
-        f3   0 days NaT    2.0      b
+              float string
+        file
+        f1      0.0    NaN
+        f2      1.0      a
+        f3      2.0      b
         >>> obj1 = pd.Series(
         ...     [0., 0.],
         ...     index=filewise_index(['f1', 'f2']),
