@@ -237,15 +237,25 @@ class Table(HeaderBase):
 
     @property
     def media(self) -> typing.Optional[Media]:
-        r"""Media object."""
-        if self.media_id is not None and self._db:
-            return self._db.media[self.media_id]
+        r"""Media object.
+
+        Returns:
+            media object or ``None`` if not available
+
+        """
+        if self.media_id is not None and self.db:
+            return self.db.media[self.media_id]
 
     @property
     def split(self) -> typing.Optional[Split]:
-        r"""Split object."""
-        if self.split_id is not None and self._db:
-            return self._db.splits[self.split_id]
+        r"""Split object.
+
+        Returns:
+            split object or ``None`` if not available
+
+        """
+        if self.split_id is not None and self.db:
+            return self.db.splits[self.split_id]
 
     @property
     def starts(self) -> pd.Index:
@@ -276,7 +286,7 @@ class Table(HeaderBase):
             media_id=self.media_id,
             split_id=self.split_id,
         )
-        table._db = self._db
+        table._db = self.db
         for column_id, column in self.columns.items():
             table.columns[column_id] = Column(
                 scheme_id=column.scheme_id,
@@ -505,9 +515,10 @@ class Table(HeaderBase):
 
         if map is not None:
 
-            if self._db is None:
+            if self.db is None:
                 raise RuntimeError(
-                    'Table is not assigned to a database.'
+                    'Cannot map schemes, '
+                    'table is not assigned to a database.'
                 )
 
             if not result_is_copy:
@@ -765,6 +776,12 @@ class Table(HeaderBase):
     ):  # pragma: no cover
         # TODO: add tests
 
+        if self.db is None:
+            raise RuntimeError(
+                'Cannot update table, '
+                'table is not assigned to a database.'
+            )
+
         if not isinstance(other, Table):
             for o in other:
                 self.update(o)
@@ -775,59 +792,90 @@ class Table(HeaderBase):
         #       https://github.com/audeering/audformat/pull/51
         df = utils.concat([self._df, other._df])
 
-        # find missing schemes and raters,
-        # raise error for different objects with same ID
+        # assert that schemes and raters match for overlapping columns and
+        # look for missing schemes and raters in new columns,
+        # raise an error if a different scheme or rater with same ID exists
         missing_schemes = {}
         missing_raters = {}
-        if self._db is not None:
-            for column_id, column in other.columns.items():
-                if column_id not in self.columns:
-                    if column.scheme_id is not None:
-                        other_scheme = other._db.schemes[column.scheme_id]
-                        if column.scheme_id in self._db.schemes:
-                            self_scheme = self._db.schemes[column.scheme_id]
-                            if other_scheme != self_scheme:
-                                raise ValueError(
-                                    "Cannot update table, "
-                                    "found different schemes with same ID "
-                                    f"'{column.scheme_id}':"
-                                    f"{self_scheme}\n"
-                                    "!=\n"
-                                    f"{other_scheme}."
-                                )
-                        else:
-                            missing_schemes[column.scheme_id] = other_scheme
-                    if column.rater_id is not None:
-                        other_rater = other._db.raters[column.rater_id]
-                        if column.rater_id in self._db.raters:
-                            self_rater = self._db.raters[column.rater_id]
-                            if other_rater != self_rater:
-                                raise ValueError(
-                                    "Cannot update table, "
-                                    "found different raters with same ID "
-                                    f"'{column.rater_id}':\n"
-                                    f"{self_rater}\n"
-                                    "!=\n"
-                                    f"{other_rater}."
-                                )
-                        else:
-                            missing_raters[column.rater_id] = other_rater
+        
+        for column_id, column in other.columns.items():
+            
+            if column_id in self.columns:
+                mismatch = False           
+                scheme = self.columns[column_id].scheme                
+                if column.scheme and scheme:                    
+                    mismatch = column.scheme != scheme
+                elif column.scheme or scheme:
+                    mismatch = True 
+                if mismatch:
+                    raise ValueError(
+                        "Cannot update table, "
+                        "schemes do not match for column "
+                        f"'{column_id}':\n"                        
+                        f"{scheme}\n"
+                        "!=\n"
+                        f"{column.scheme}."
+                    )
+            else:
+                if column.scheme is not None:
+                    if column.scheme_id in self.db.schemes:
+                        scheme = self.db.schemes[column.scheme_id]
+                        if column.scheme != scheme:
+                            raise ValueError(
+                                "Cannot update table, "
+                                "scheme "
+                                f"'{column.scheme_id}' "
+                                "does not match:\n"
+                                f"{scheme}\n"
+                                "!=\n"
+                                f"{column.scheme}"
+                            )
+                    else:
+                        missing_schemes[column.scheme_id] = column.scheme
+
+            if column_id in self.columns:
+                mismatch = False           
+                rater = self.columns[column_id].rater                
+                if column.rater and rater:                    
+                    mismatch = column.rater != rater
+                elif column.rater or rater:
+                    mismatch = True 
+                if mismatch:
+                    raise ValueError(
+                        "Cannot update table, "
+                        "raters do not match for column "
+                        f"'{column_id}':\n"                        
+                        f"{rater}\n"
+                        "!=\n"
+                        f"{column.rater}"
+                    )
+            else:
+                if column.rater is not None:
+                    if column.rater_id in self.db.raters:
+                        rater = self.db.raters[column.rater_id]
+                        if column.rater != rater:
+                            raise ValueError(
+                                "Cannot update table, "
+                                "rater "
+                                f"'{column.rater_id}' "
+                                "does not match:\n"
+                                f"{rater}\n"
+                                "!=\n"
+                                f"{column.rater}"
+                            )
+                    else:
+                        missing_raters[column.rater_id] = column.rater
 
         # insert missing schemes and raters
         for scheme_id, scheme in missing_schemes.items():
-            self._db.schemes[scheme_id] = copy.copy(scheme)
+            self.db.schemes[scheme_id] = copy.copy(scheme)
         for rater_id, rater in missing_raters.items():
-            self._db.raters[rater_id] = copy.copy(rater)
+            self.db.raters[rater_id] = copy.copy(rater)
 
         # insert new columns
         for column_id, column in other.columns.items():
             if column_id not in self.columns:
-                self.columns[column_id] = copy.copy(column)
-                if self._db is None:
-                    # if table is not assigned to a database,
-                    # set scheme_id and rater_id to None
-                    self.columns[column_id].scheme_id = None
-                    self.columns[column_id].rater_id = None
+                self.columns[column_id] = copy.copy(column)                
 
         # update table data
         self._df = df
@@ -911,7 +959,7 @@ class Table(HeaderBase):
         usecols = []
         dtypes = {}
         converters = {}
-        schemes = self._db.schemes
+        schemes = self.db.schemes
 
         # index columns
 
@@ -985,14 +1033,14 @@ class Table(HeaderBase):
 
     def _set_column(self, column_id: str, column: Column) -> Column:
         if column.scheme_id is not None and \
-                column.scheme_id not in self._db.schemes:
-            raise BadIdError('column', column.scheme_id, self._db.schemes)
+                column.scheme_id not in self.db.schemes:
+            raise BadIdError('column', column.scheme_id, self.db.schemes)
         if column.rater_id is not None and \
-                column.rater_id not in self._db.raters:
-            raise BadIdError('rater', column.rater_id, self._db.raters)
+                column.rater_id not in self.db.raters:
+            raise BadIdError('rater', column.rater_id, self.db.raters)
 
         if column.scheme_id is not None:
-            dtype = self._db.schemes[column.scheme_id].to_pandas_dtype()
+            dtype = self.db.schemes[column.scheme_id].to_pandas_dtype()
         else:
             dtype = object
         self._df[column_id] = pd.Series(dtype=dtype)

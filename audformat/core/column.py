@@ -89,7 +89,7 @@ class Column(HeaderBase):
         r"""Rater object.
 
         Returns:
-            rater object or ``None`` if not assigned yet
+            rater object or ``None`` if not available
 
         """
         if self.rater_id is not None and self.table and self.table.db:
@@ -100,7 +100,7 @@ class Column(HeaderBase):
         r"""Scheme object.
 
         Returns:
-            scheme object or ``None`` if not assigned yet
+            scheme object or ``None`` if not available
 
         """
         if self.scheme_id is not None and self.table and self.table.db:
