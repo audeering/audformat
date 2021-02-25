@@ -905,3 +905,22 @@ def test_type():
         )
     )
     pd.testing.assert_index_equal(db['files'].index, db['files'].index)
+
+
+@pytest.mark.parametrize(
+    'table, others',
+    [
+        (
+            audformat.testing.create_db(
+                data={
+                    'table': pd.Series(index=audformat.filewise_index())
+                }
+            )['table'],
+            [],
+        ),
+    ]
+)
+def test_update(table, others):
+    df = pd.concat([table.df] + [other.df for other in others])
+    table.update(others)
+    pd.testing.assert_frame_equal(table.df, df)

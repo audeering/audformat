@@ -791,6 +791,8 @@ class Table(HeaderBase):
         # TODO: set overwrite=True or at least add option for it
         #       https://github.com/audeering/audformat/pull/51
         df = utils.concat([self._df, other._df])
+        if isinstance(df, pd.Series):
+            df = df.to_frame()
 
         # assert media matches
         mismatch = False
