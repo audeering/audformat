@@ -581,8 +581,6 @@ class Table(HeaderBase):
                     os.path.exists(csv_file)
                     and os.path.getmtime(csv_file) > os.path.getmtime(pkl_file)
             ):
-                print('CSV time:', os.path.getmtime(csv_file))
-                print('PKL time:', os.path.getmtime(pkl_file))
                 raise RuntimeError(
                     f"The table CSV file '{csv_file}' is newer "
                     f"than the table PKL file '{pkl_file}'. "
