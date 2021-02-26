@@ -785,35 +785,58 @@ class Table(HeaderBase):
                 self.update(o)
             return
 
+        def assert_equal_field(
+                name: str,
+                left: typing.Optional[HeaderDict],
+                right: typing.Optional[HeaderDict],
+                col_name: str = '',
+        ):
+            equal = True
+            if left and right:
+                equal = left == right
+            elif left or right:
+                equal = False
+            if not equal:
+                col_name = col_name if not col_name else f'{col_name}.'
+                raise ValueError(
+                    "Cannot update table, "
+                    f"found different field '{col_name}{name}':\n"
+                    f"{left}\n"
+                    "!=\n"
+                    f"{right}"
+                )
+
+        def assert_equal_id(
+                name: str,
+                id: str,
+                left: typing.Optional[HeaderDict],
+                right: typing.Optional[HeaderDict],
+        ):
+            if left != right:
+                raise ValueError(
+                    "Cannot update table, "
+                    "found different "
+                    f"{name} "
+                    "with same ID "
+                    f"'{id}':\n"
+                    f"{left}\n"
+                    "!=\n"
+                    f"{right}"
+                )
+
         # assert media matches
-        mismatch = False
-        if self.media and other.media:
-            mismatch = self.media != other.media
-        elif self.media or other.media:
-            mismatch = True
-        if mismatch:
-            raise ValueError(
-                "Cannot update table, "
-                "media does not match:\n"
-                f"{self.media}\n"
-                "!=\n"
-                f"{other.media}."
-            )
+        assert_equal_field(
+            'media',
+            self.media,
+            other.media,
+        )
 
         # assert split matches
-        mismatch = False
-        if self.split and other.split:
-            mismatch = self.split != other.split
-        elif self.split or other.split:
-            mismatch = True
-        if mismatch:
-            raise ValueError(
-                "Cannot update table, "
-                "split does not match:\n"
-                f"{self.split}\n"
-                "!=\n"
-                f"{other.split}."
-            )
+        assert_equal_field(
+            'split',
+            self.split,
+            other.split,
+        )
 
         # assert schemes match for overlapping columns and
         # look for missing schemes in new columns,
@@ -821,35 +844,21 @@ class Table(HeaderBase):
         missing_schemes = {}
         for column_id, column in other.columns.items():
             if column_id in self.columns:
-                mismatch = False
-                scheme = self.columns[column_id].scheme
-                if column.scheme and scheme:
-                    mismatch = column.scheme != scheme
-                elif column.scheme or scheme:
-                    mismatch = True
-                if mismatch:
-                    raise ValueError(
-                        "Cannot update table, "
-                        "schemes do not match for column "
-                        f"'{column_id}':\n"
-                        f"{scheme}\n"
-                        "!=\n"
-                        f"{column.scheme}."
-                    )
+                assert_equal_field(
+                    'scheme',
+                    self.columns[column_id].scheme,
+                    column.scheme,
+                    column_id,
+                )
             else:
                 if column.scheme is not None:
                     if column.scheme_id in self.db.schemes:
-                        scheme = self.db.schemes[column.scheme_id]
-                        if column.scheme != scheme:
-                            raise ValueError(
-                                "Cannot update table, "
-                                "scheme "
-                                f"'{column.scheme_id}' "
-                                "does not match:\n"
-                                f"{scheme}\n"
-                                "!=\n"
-                                f"{column.scheme}"
-                            )
+                        assert_equal_id(
+                            'scheme',
+                            column.scheme_id,
+                            self.db.schemes[column.scheme_id],
+                            column.scheme,
+                        )
                     else:
                         missing_schemes[column.scheme_id] = column.scheme
 
@@ -859,35 +868,21 @@ class Table(HeaderBase):
         missing_raters = {}
         for column_id, column in other.columns.items():
             if column_id in self.columns:
-                mismatch = False
-                rater = self.columns[column_id].rater
-                if column.rater and rater:
-                    mismatch = column.rater != rater
-                elif column.rater or rater:
-                    mismatch = True
-                if mismatch:
-                    raise ValueError(
-                        "Cannot update table, "
-                        "raters do not match for column "
-                        f"'{column_id}':\n"
-                        f"{rater}\n"
-                        "!=\n"
-                        f"{column.rater}"
-                    )
+                assert_equal_field(
+                    'rater',
+                    self.columns[column_id].rater,
+                    column.rater,
+                    column_id,
+                )
             else:
                 if column.rater is not None:
                     if column.rater_id in self.db.raters:
-                        rater = self.db.raters[column.rater_id]
-                        if column.rater != rater:
-                            raise ValueError(
-                                "Cannot update table, "
-                                "rater "
-                                f"'{column.rater_id}' "
-                                "does not match:\n"
-                                f"{rater}\n"
-                                "!=\n"
-                                f"{column.rater}"
-                            )
+                        assert_equal_id(
+                            'scheme',
+                            column.rater_id,
+                            self.db.raters[column.rater_id],
+                            column.rater,
+                        )
                     else:
                         missing_raters[column.rater_id] = column.rater
 
