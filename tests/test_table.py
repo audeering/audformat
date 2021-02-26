@@ -1237,12 +1237,29 @@ def test_type():
             ),
             marks=pytest.mark.xfail(raises=ValueError),
         ),
-        # not assigned to db
+        # error: not assigned to db
         pytest.param(
             audformat.Table(),
             False,
             [],
             marks=pytest.mark.xfail(raises=RuntimeError),
+        ),
+        # error: index type must not change
+        pytest.param(
+            create_db_table(
+                pd.Series(
+                    [1., 2.],
+                    index=audformat.filewise_index(['f1', 'f2']),
+                )
+            ),
+            False,
+            create_db_table(
+                pd.Series(
+                    [2., 3.],
+                    index=audformat.segmented_index(['f2', 'f3']),
+                )
+            ),
+            marks=pytest.mark.xfail(raises=ValueError),
         ),
     ]
 )
@@ -1255,6 +1272,7 @@ def test_update(table, overwrite, others):
         [df] + [other.df for other in others],
         overwrite=overwrite,
     )
+    assert table.type == audformat.index_type(df)
     if isinstance(df, pd.Series):
         df = df.to_frame()
     pd.testing.assert_frame_equal(table.df, df)

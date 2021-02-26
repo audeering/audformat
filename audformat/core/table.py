@@ -120,8 +120,6 @@ class Table(HeaderBase):
         f4        3     NaN
 
     """
-    TYPE = 'type'
-
     def __init__(
             self,
             index: pd.Index = None,
@@ -773,7 +771,44 @@ class Table(HeaderBase):
             others: typing.Union['Table', typing.Sequence['Table']],
             *,
             overwrite: bool = False,
-    ):
+    ) -> 'Table':
+        r"""Update table with other table(s).
+
+        Table which calls ``update()`` must be assigned to a database.
+
+        Columns that are not yet part of the table will be added and
+        referenced schemes or raters are copied.
+        For overlapping columns, schemes and raters must match.
+        This also holds if table is assigned to a media or split.
+
+        Columns with the same identifier are combined to a single column.
+        This requires that both columns have the same dtype
+        and if ``overwrite`` is set to ``False``,
+        values in places where the indices overlap have to match
+        or one column contains ``NaN``.
+        If ``overwrite`` is set to ``True``,
+        the value of the last table in the list is kept.
+
+        The index type of the table must not change.
+
+        Args:
+            others: table object(s)
+            overwrite: overwrite values where indices overlap
+
+        Returns:
+            the updated table
+
+        Raises:
+            RuntimeError: if table is not assign to a database
+            ValueError: if split or media does not match
+            ValueError: if overlapping columns reference different schemes
+                or raters
+            ValueError: if a missing scheme or rater cannot be copied
+                because a different object with the same ID exists
+            ValueError: if values in same position overlap
+            ValueError: if operation would change the index type of the table
+
+        """
         if self.db is None:
             raise RuntimeError(
                 'Table is not assigned to a database.'
@@ -888,6 +923,11 @@ class Table(HeaderBase):
         if isinstance(df, pd.Series):
             df = df.to_frame()
 
+        if self.type != index_type(df):
+            raise ValueError(
+                'Index type of the table must not change.'
+            )
+
         # insert missing schemes and raters
         for scheme_id, scheme in missing_schemes.items():
             self.db.schemes[scheme_id] = copy.copy(scheme)
@@ -902,6 +942,8 @@ class Table(HeaderBase):
 
         # update table data
         self._df = df
+
+        return self
 
     def __add__(self, other: 'Table') -> 'Table':
         r"""Create new table by combining two tables.
