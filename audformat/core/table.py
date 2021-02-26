@@ -880,7 +880,7 @@ class Table(HeaderBase):
                         if column.scheme_id in self.db.schemes:
                             assert_equal(
                                 "Cannot copy scheme of column "
-                                f"'{other._id}.{column_id}' "                         
+                                f"'{other._id}.{column_id}' "
                                 "as a different scheme with ID "
                                 f"'{column.scheme_id}' "
                                 "exists",
@@ -897,7 +897,7 @@ class Table(HeaderBase):
                 if column_id in self.columns:
                     assert_equal(
                         f"self['{self._id}']['{column_id}'].rater "
-                        "does not match "                    
+                        "does not match "
                         f"other['{other._id}']['{column_id}'].rater",
                         self.columns[column_id].rater,
                         column.rater,
