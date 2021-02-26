@@ -84,3 +84,47 @@ Which results in the following :class:`pandas.DataFrame`:
 .. jupyter-execute::
 
     df_age
+
+So far we have combined tables using the ``+`` operator.
+The result is a table that is no longer attached to a database.
+That means that meta information about the media
+or referenced schemes is discarded.
+If you want to keep this information,
+you can use :meth:`audformat.Table.update`,
+which also works across database,
+as we will to demonstrate with the following example.
+
+First we create a second database
+and add a gender scheme:
+
+.. jupyter-execute::
+
+    db2 = audformat.testing.create_db(minimal=True)
+    db2.schemes['gender'] = audformat.Scheme(
+        labels=['female', 'male'],
+    )
+    db2.schemes
+
+Next, we add a table and fill in some gender information:
+
+.. jupyter-execute::
+
+    audformat.testing.add_table(
+        db2,
+        table_id='gender_and_age',
+        index_type=audformat.define.IndexType.FILEWISE,
+        columns='gender',
+        num_files=[2, 3, 4],
+    ).get()
+
+Now, we update the table with age values from the other database.
+
+.. jupyter-execute::
+
+    db2['gender_and_age'].update(db['age']).get()
+
+And also copies the according scheme to the database:
+
+.. jupyter-execute::
+
+    db2.schemes
