@@ -770,26 +770,34 @@ class Table(HeaderBase):
 
     def update(
             self,
-            other: typing.Union['Table', typing.Sequence['Table']],
+            others: typing.Union['Table', typing.Sequence['Table']],
             *,
             overwrite: bool = False,
     ):
         if self.db is None:
             raise RuntimeError(
-                'Cannot update table, '
-                'table is not assigned to a database.'
+                'Table is not assigned to a database.'
             )
 
-        if not isinstance(other, Table):
-            for o in other:
-                self.update(o)
-            return
+        if isinstance(others, Table):
+            others = [others]
 
-        def assert_equal_field(
-                name: str,
+        def raise_error(
+                msg,
                 left: typing.Optional[HeaderDict],
                 right: typing.Optional[HeaderDict],
-                col_name: str = '',
+        ):
+            raise ValueError(
+                f"{msg}:\n"
+                f"{left}\n"
+                "!=\n"
+                f"{right}"
+            )
+
+        def assert_equal(
+                msg: str,
+                left: typing.Optional[HeaderDict],
+                right: typing.Optional[HeaderDict],
         ):
             equal = True
             if left and right:
@@ -797,97 +805,86 @@ class Table(HeaderBase):
             elif left or right:
                 equal = False
             if not equal:
-                col_name = col_name if not col_name else f'{col_name}.'
-                raise ValueError(
-                    "Cannot update table, "
-                    f"found different field '{col_name}{name}':\n"
-                    f"{left}\n"
-                    "!=\n"
-                    f"{right}"
-                )
+                raise_error(msg, left, right)
 
-        def assert_equal_id(
-                name: str,
-                id: str,
-                left: typing.Optional[HeaderDict],
-                right: typing.Optional[HeaderDict],
-        ):
-            if left != right:
-                raise ValueError(
-                    "Cannot update table, "
-                    "found different "
-                    f"{name} "
-                    "with same ID "
-                    f"'{id}':\n"
-                    f"{left}\n"
-                    "!=\n"
-                    f"{right}"
-                )
-
-        # assert media matches
-        assert_equal_field(
-            'media',
-            self.media,
-            other.media,
-        )
-
-        # assert split matches
-        assert_equal_field(
-            'split',
-            self.split,
-            other.split,
-        )
-
-        # assert schemes match for overlapping columns and
-        # look for missing schemes in new columns,
-        # raise an error if a different scheme with same ID exists
         missing_schemes = {}
-        for column_id, column in other.columns.items():
-            if column_id in self.columns:
-                assert_equal_field(
-                    'scheme',
-                    self.columns[column_id].scheme,
-                    column.scheme,
-                    column_id,
-                )
-            else:
-                if column.scheme is not None:
-                    if column.scheme_id in self.db.schemes:
-                        assert_equal_id(
-                            'scheme',
-                            column.scheme_id,
-                            self.db.schemes[column.scheme_id],
-                            column.scheme,
-                        )
-                    else:
-                        missing_schemes[column.scheme_id] = column.scheme
-
-        # assert raters match for overlapping columns and
-        # look for missing raters in new columns,
-        # raise an error if a different rater with same ID exists
         missing_raters = {}
-        for column_id, column in other.columns.items():
-            if column_id in self.columns:
-                assert_equal_field(
-                    'rater',
-                    self.columns[column_id].rater,
-                    column.rater,
-                    column_id,
-                )
-            else:
-                if column.rater is not None:
-                    if column.rater_id in self.db.raters:
-                        assert_equal_id(
-                            'scheme',
-                            column.rater_id,
-                            self.db.raters[column.rater_id],
-                            column.rater,
-                        )
-                    else:
-                        missing_raters[column.rater_id] = column.rater
+
+        for other in others:
+
+            assert_equal(
+                "Media of table "
+                f"'{other._id}' "
+                "does not match",
+                self.media,
+                other.media,
+            )
+
+            assert_equal(
+                "Split of table "
+                f"'{other._id}' "
+                "does not match",
+                self.split,
+                other.split,
+            )
+
+            # assert schemes match for overlapping columns and
+            # look for missing schemes in new columns,
+            # raise an error if a different scheme with same ID exists
+            for column_id, column in other.columns.items():
+                if column_id in self.columns:
+                    assert_equal(
+                        "Scheme of common column "
+                        f"'{other._id}.{column_id}' "
+                        "does not match",
+                        self.columns[column_id].scheme,
+                        column.scheme,
+                    )
+                else:
+                    if column.scheme is not None:
+                        if column.scheme_id in self.db.schemes:
+                            assert_equal(
+                                "Cannot copy scheme of column "
+                                f"'{other._id}.{column_id}' "                         
+                                "as a different scheme with ID "
+                                f"'{column.scheme_id}' "
+                                "exists",
+                                self.db.schemes[column.scheme_id],
+                                column.scheme,
+                            )
+                        else:
+                            missing_schemes[column.scheme_id] = column.scheme
+
+            # assert raters match for overlapping columns and
+            # look for missing raters in new columns,
+            # raise an error if a different rater with same ID exists
+            for column_id, column in other.columns.items():
+                if column_id in self.columns:
+                    assert_equal(
+                        f"self['{self._id}']['{column_id}'].rater "
+                        "does not match "                    
+                        f"other['{other._id}']['{column_id}'].rater",
+                        self.columns[column_id].rater,
+                        column.rater,
+                    )
+                else:
+                    if column.rater is not None:
+                        if column.rater_id in self.db.raters:
+                            assert_equal(
+                                f"db1.raters['{column.scheme_id}'] "
+                                "does not match "
+                                f"db2.raters['{column.scheme_id}']",
+                                self.db.raters[column.rater_id],
+                                column.rater,
+                            )
+                        else:
+                            missing_raters[column.rater_id] = column.rater
 
         # concatenate table data
-        df = utils.concat([self._df, other._df], overwrite=overwrite)
+        df = utils.concat(
+            [self.df] + [other.df for other in others],
+            overwrite=overwrite,
+        )
         if isinstance(df, pd.Series):
             df = df.to_frame()
 
@@ -898,9 +895,10 @@ class Table(HeaderBase):
             self.db.raters[rater_id] = copy.copy(rater)
 
         # insert new columns
-        for column_id, column in other.columns.items():
-            if column_id not in self.columns:
-                self.columns[column_id] = copy.copy(column)
+        for other in others:
+            for column_id, column in other.columns.items():
+                if column_id not in self.columns:
+                    self.columns[column_id] = copy.copy(column)
 
         # update table data
         self._df = df
@@ -922,8 +920,8 @@ class Table(HeaderBase):
         Media and split information,
         as well as,
         references to schemes and raters are discarded.
-        If you would like to keep them,
-        use :meth:`audformat.Table.update` instead.
+        If you intend to keep them,
+        use :meth:`audformat.Table.update`.
 
         Args:
             other: the other table
