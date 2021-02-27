@@ -817,6 +817,16 @@ class Table(HeaderBase):
         if isinstance(others, Table):
             others = [others]
 
+        for other in others:
+            if self.type != other.type:
+                raise ValueError(
+                    'Cannot update a '
+                    f'{self.type} '
+                    'table with a '
+                    f'{other.type} '
+                    'table.'
+                )
+
         def raise_error(
                 msg,
                 left: typing.Optional[HeaderDict],
@@ -922,11 +932,6 @@ class Table(HeaderBase):
         )
         if isinstance(df, pd.Series):
             df = df.to_frame()
-
-        if self.type != index_type(df):
-            raise ValueError(
-                'Index type of the table must not change.'
-            )
 
         # insert missing schemes and raters
         for scheme_id, scheme in missing_schemes.items():

@@ -1244,7 +1244,7 @@ def test_type():
             [],
             marks=pytest.mark.xfail(raises=RuntimeError),
         ),
-        # error: index type must not change
+        # error: different index type
         pytest.param(
             create_db_table(
                 pd.Series(
@@ -1257,6 +1257,22 @@ def test_type():
                 pd.Series(
                     [2., 3.],
                     index=audformat.segmented_index(['f2', 'f3']),
+                )
+            ),
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
+        pytest.param(
+            create_db_table(
+                pd.Series(
+                    [1., 2.],
+                    index=audformat.segmented_index(['f1', 'f2']),
+                )
+            ),
+            False,
+            create_db_table(
+                pd.Series(
+                    [2., 3.],
+                    index=audformat.filewise_index(['f2', 'f3']),
                 )
             ),
             marks=pytest.mark.xfail(raises=ValueError),
