@@ -9,12 +9,15 @@ concat
 
 .. autofunction:: concat
 
+duration
+--------
+
+.. autofunction:: duration
 
 intersect
 ---------
 
 .. autofunction:: intersect
-
 
 map_language
 ------------
