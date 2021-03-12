@@ -1,5 +1,6 @@
 from audformat.core.utils import (
     concat,
+    duration,
     intersect,
     join_labels,
     join_schemes,

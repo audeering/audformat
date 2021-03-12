@@ -478,6 +478,55 @@ def test_concat(objs, overwrite, expected):
 
 
 @pytest.mark.parametrize(
+    'obj, expected_duration',
+    [
+        (
+            audformat.segmented_index(),
+            0,
+        ),
+        (
+            audformat.segmented_index(['f1'], [0], [2]),
+            2,
+        ),
+        (
+            audformat.segmented_index(['f1'], [0.1], [2]),
+            1.9,
+        ),
+        (
+            audformat.segmented_index(['f1', 'f2'], [0, 1], [2, 2]),
+            3,
+        ),
+        (
+            audformat.segmented_index(['f1'], [0]),
+            np.NaN,
+        ),
+        (
+            pd.Series(
+                index=audformat.segmented_index(['f1'], [1], [2]),
+                dtype='category',
+            ),
+            1,
+        ),
+        (
+            pd.DataFrame(index=audformat.segmented_index(['f1'], [1], [2])),
+            1,
+        ),
+        pytest.param(
+            audformat.filewise_index(['f1']),
+            None,
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
+    ]
+)
+def test_duration(obj, expected_duration):
+    duration = audformat.utils.duration(obj)
+    if np.isnan(expected_duration):
+        assert np.isnan(duration)
+    else:
+        assert duration == expected_duration
+
+
+@pytest.mark.parametrize(
     'objs, expected',
     [
         (

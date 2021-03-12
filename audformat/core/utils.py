@@ -212,6 +212,50 @@ def concat(
         return df
 
 
+def duration(
+        obj: typing.Union[pd.Index, pd.Series, pd.DataFrame],
+) -> float:
+    r"""Duration of all segments present in a segmented object.
+
+    Args:
+        obj: object conform to
+            :ref:`table specifications <data-tables:Tables>`
+            and containing a segmented index
+
+    Returns:
+        duration in seconds
+
+    Raises:
+        ValueError: if ``obj`` does not contain a segmented index
+
+    Example:
+
+        >>> idx = segmented_index(
+        ...     files=['a', 'b', 'c'],
+        ...     starts=[0, 1, 3],
+        ...     ends=[1, 2, 4],
+        ... )
+        >>> duration(idx)
+        3.0
+
+    """
+    if index_type(obj) != define.IndexType.SEGMENTED:
+        raise ValueError('Input does not have a segmented index.')
+
+    if not isinstance(obj, pd.MultiIndex):
+        obj = obj.index
+
+    if obj.empty:
+        return 0
+
+    starts = list(obj.get_level_values(define.IndexField.START))
+    ends = list(obj.get_level_values(define.IndexField.END))
+    duration = [end - start for start, end in zip(starts, ends)]
+    duration = np.sum(duration)
+    duration = duration.total_seconds()
+    return duration
+
+
 def intersect(
     objs: typing.Sequence[typing.Union[pd.Index]],
 ) -> pd.Index:
