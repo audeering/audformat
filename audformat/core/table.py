@@ -775,11 +775,11 @@ class Table(HeaderBase):
         r"""Update table with other table(s).
 
         Table which calls ``update()`` must be assigned to a database.
+        For all tables media and split must match.
 
         Columns that are not yet part of the table will be added and
         referenced schemes or raters are copied.
         For overlapping columns, schemes and raters must match.
-        This also holds if table is assigned to a media or split.
 
         Columns with the same identifier are combined to a single column.
         This requires that both columns have the same dtype
