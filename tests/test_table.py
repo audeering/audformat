@@ -10,6 +10,42 @@ import audformat
 import audformat.testing
 
 
+def create_db_table(
+    obj: typing.Union[pd.Series, pd.DataFrame] = None,
+    *,
+    rater: audformat.Rater = None,
+    media: audformat.Media = None,
+    split: audformat.Split = None,
+    scheme_id: str = None,  # overwrite id of first scheme
+) -> audformat.Table:
+    if obj is None:
+        obj = pd.Series(
+            index=audformat.filewise_index(),
+            dtype=float,
+        )
+    db = audformat.testing.create_db(
+        data={'table': obj}
+    )
+    table = db['table']
+    if rater is not None:
+        db.raters['rater'] = rater
+        for column in table.columns.values():
+            column.rater_id = 'rater'
+    if media is not None:
+        db.media['media'] = media
+        table.media_id = 'media'
+    if split is not None:
+        db.splits['split'] = split
+        table.split_id = 'split'
+    if scheme_id is not None:
+        old_scheme_id = list(db.schemes)[0]
+        db.schemes[scheme_id] = db.schemes.pop(old_scheme_id)
+        for column in table.columns.values():
+            if column.scheme_id == old_scheme_id:
+                column.scheme_id = scheme_id
+    return table
+
+
 def create_table(
         obj: typing.Union[pd.Series, pd.DataFrame],
 ) -> audformat.Table:
@@ -26,9 +62,17 @@ def create_table(
 
 def test_access():
     db = audformat.testing.create_db()
-    for table_id in db.tables.keys():
+    for table_id, table in db.tables.items():
         assert db.tables[table_id] == db[table_id]
         assert str(db.tables[table_id]) == str(db[table_id])
+        if table.media_id is not None:
+            assert table.media == db.media[table.media_id]
+        else:
+            assert table.media is None
+        if table.split_id is not None:
+            assert table.split == db.splits[table.split_id]
+        else:
+            assert table.split is None
 
 
 @pytest.mark.parametrize(
@@ -270,10 +314,15 @@ def test_add(tables, expected):
     table = tables[0]
     for other in tables[1:]:
         table += other
+    assert table.media_id is None
+    assert table.split_id is None
+    for column in table.columns.values():
+        assert column.scheme_id is None
+        assert column.rater_id is None
     assert table == expected
 
 
-def test_add_2():  # TODO: turn into test_update()
+def test_add_2():
 
     db = audformat.testing.create_db(minimal=True)
     db.media['media'] = audformat.Media()
@@ -897,3 +946,353 @@ def test_type():
         )
     )
     pd.testing.assert_index_equal(db['files'].index, db['files'].index)
+
+
+@pytest.mark.parametrize(
+    'table, overwrite, others',
+    [
+        # empty
+        (
+            create_db_table(),
+            False,
+            [],
+        ),
+        (
+            create_db_table(),
+            False,
+            create_db_table(),
+        ),
+        # same column, with overlap
+        (
+            create_db_table(
+                pd.Series(
+                    [1., 2.],
+                    index=audformat.filewise_index(['f1', 'f2']),
+                )
+            ),
+            False,
+            create_db_table(
+                pd.Series(
+                    [2., 3.],  # ok, value do match
+                    index=audformat.filewise_index(['f2', 'f3']),
+                )
+            ),
+        ),
+        (
+            create_db_table(
+                pd.Series(
+                    [1., 2.],
+                    index=audformat.filewise_index(['f1', 'f2']),
+                )
+            ),
+            False,
+            create_db_table(
+                pd.Series(
+                    [np.nan, 3.],  # ok, value is nan
+                    index=audformat.filewise_index(['f2', 'f3']),
+                )
+            ),
+        ),
+        pytest.param(
+            create_db_table(
+                pd.Series(
+                    [1., 2.],
+                    index=audformat.filewise_index(['f1', 'f2']),
+                )
+            ),
+            False,
+            create_db_table(
+                pd.Series(
+                    [99., 3.],  # error, value do not match
+                    index=audformat.filewise_index(['f2', 'f3']),
+                )
+            ),
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
+        (
+            create_db_table(
+                pd.Series(
+                    [1., 2.],
+                    index=audformat.filewise_index(['f1', 'f2']),
+                )
+            ),
+            True,
+            create_db_table(
+                pd.Series(
+                    [99., 3.],  # ok, will be overwritten
+                    index=audformat.filewise_index(['f2', 'f3']),
+                )
+            ),
+        ),
+        # columns with new schemes
+        (
+            create_db_table(
+                pd.Series(
+                    [1., 2.],
+                    index=audformat.filewise_index(['f1', 'f2']),
+                    name='c1',
+                )
+            ),
+            False,
+            [
+                create_db_table(
+                    pd.Series(
+                        ['a', 'b'],
+                        index=audformat.filewise_index(['f2', 'f3']),
+                        name='c2',
+                    )
+                ),
+                create_db_table(
+                    pd.Series(
+                        [1, 2],
+                        index=audformat.filewise_index(['f2', 'f3']),
+                        name='c3',
+                    )
+                ),
+            ],
+        ),
+        # error: scheme mismatch
+        pytest.param(
+            create_db_table(
+                pd.Series(
+                    [1., 2.],
+                    index=audformat.filewise_index(['f1', 'f2']),
+                )
+            ),
+            False,
+            create_db_table(  # same column, different scheme
+                pd.Series(
+                    ['a', 'b'],
+                    index=audformat.filewise_index(['f2', 'f3']),
+                )
+            ),
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
+        pytest.param(
+            create_db_table(
+                pd.Series(
+                    [1., 2.],
+                    index=audformat.filewise_index(['f1', 'f2']),
+                )
+            ),
+            False,
+            create_table(  # no scheme
+                pd.Series(
+                    [1., 2.],
+                    index=audformat.filewise_index(['f1', 'f2']),
+                )
+            ),
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
+        pytest.param(
+            create_db_table(
+                pd.Series(
+                    [1., 2.],
+                    index=audformat.filewise_index(['f1', 'f2']),
+                    name='c1',
+                ),
+                scheme_id='scheme',
+            ),
+            False,
+            create_db_table(
+                pd.Series(  # different scheme with same id
+                    ['a', 'b'],
+                    index=audformat.filewise_index(['f1', 'f2']),
+                    name='c2',
+                ),
+                scheme_id='scheme',
+            ),
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
+        # column with new rater
+        (
+            create_db_table(
+                pd.Series(
+                    index=audformat.filewise_index(),
+                    dtype=float,
+                    name='c1',
+                ),
+            ),
+            False,
+            create_db_table(
+                pd.Series(
+                    index=audformat.filewise_index(),
+                    dtype=float,
+                    name='c2',
+                ),
+                rater=audformat.Rater(
+                    audformat.define.RaterType.HUMAN),
+            ),
+        ),
+        # error: rater mismatch
+        pytest.param(
+            create_db_table(
+                rater=audformat.Rater(audformat.define.RaterType.HUMAN),
+            ),
+            False,
+            create_db_table(
+                rater=audformat.Rater(audformat.define.RaterType.MACHINE),
+            ),
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
+        pytest.param(
+            create_db_table(
+                rater=audformat.Rater(audformat.define.RaterType.HUMAN),
+            ),
+            False,
+            create_db_table(),
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
+        pytest.param(
+            create_db_table(),
+            False,
+            create_db_table(
+                rater=audformat.Rater(audformat.define.RaterType.MACHINE),
+            ),
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
+        pytest.param(
+            create_db_table(
+                pd.Series(
+                    index=audformat.filewise_index(),
+                    dtype=float,
+                    name='c1',
+                ),
+                rater=audformat.Rater(audformat.define.RaterType.HUMAN),
+            ),
+            False,
+            create_db_table(
+                pd.Series(
+                    index=audformat.filewise_index(),
+                    dtype=float,
+                    name='c2',
+                ),
+                rater=audformat.Rater(audformat.define.RaterType.MACHINE),
+            ),
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
+        # media and split match
+        (
+            create_db_table(
+                media=audformat.Media(audformat.define.MediaType.AUDIO),
+                split=audformat.Split(audformat.define.SplitType.TEST),
+            ),
+            False,
+            create_db_table(
+                media=audformat.Media(audformat.define.MediaType.AUDIO),
+                split=audformat.Split(audformat.define.SplitType.TEST),
+            ),
+        ),
+        # error: media mismatch
+        pytest.param(
+            create_db_table(
+                media=audformat.Media(audformat.define.MediaType.AUDIO),
+            ),
+            False,
+            create_db_table(
+                media=audformat.Media(audformat.define.MediaType.VIDEO),
+            ),
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
+        pytest.param(
+            create_db_table(
+                media=audformat.Media(audformat.define.MediaType.AUDIO),
+            ),
+            False,
+            create_db_table(),
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
+        pytest.param(
+            create_db_table(),
+            False,
+            create_db_table(
+                media=audformat.Media(audformat.define.MediaType.AUDIO),
+            ),
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
+        # error: split mismatch
+        pytest.param(
+            create_db_table(
+                split=audformat.Split(audformat.define.SplitType.TEST),
+            ),
+            False,
+            create_db_table(
+                split=audformat.Split(audformat.define.SplitType.TRAIN),
+            ),
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
+        pytest.param(
+            create_db_table(
+                split=audformat.Split(audformat.define.SplitType.TEST),
+            ),
+            False,
+            create_db_table(),
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
+        pytest.param(
+            create_db_table(),
+            False,
+            create_db_table(
+                split=audformat.Split(audformat.define.SplitType.TRAIN),
+            ),
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
+        # error: not assigned to db
+        pytest.param(
+            audformat.Table(),
+            False,
+            [],
+            marks=pytest.mark.xfail(raises=RuntimeError),
+        ),
+        # error: different index type
+        pytest.param(
+            create_db_table(
+                pd.Series(
+                    [1., 2.],
+                    index=audformat.filewise_index(['f1', 'f2']),
+                )
+            ),
+            False,
+            create_db_table(
+                pd.Series(
+                    [2., 3.],
+                    index=audformat.segmented_index(['f2', 'f3']),
+                )
+            ),
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
+        pytest.param(
+            create_db_table(
+                pd.Series(
+                    [1., 2.],
+                    index=audformat.segmented_index(['f1', 'f2']),
+                )
+            ),
+            False,
+            create_db_table(
+                pd.Series(
+                    [2., 3.],
+                    index=audformat.filewise_index(['f2', 'f3']),
+                )
+            ),
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
+    ]
+)
+def test_update(table, overwrite, others):
+    df = table.get()
+    table.update(others, overwrite=overwrite)
+    if isinstance(others, audformat.Table):
+        others = [others]
+    df = audformat.utils.concat(
+        [df] + [other.df for other in others],
+        overwrite=overwrite,
+    )
+    assert table.type == audformat.index_type(df)
+    if isinstance(df, pd.Series):
+        df = df.to_frame()
+    pd.testing.assert_frame_equal(table.df, df)
+    for other in others:
+        for column_id, column in other.columns.items():
+            assert column.scheme == table[column_id].scheme
+            assert column.rater == table[column_id].rater

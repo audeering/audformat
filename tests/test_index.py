@@ -20,6 +20,7 @@ def to_array(value):
         audformat.filewise_index(['f1', 'f2']),
         pd.Series(
             index=audformat.filewise_index(['f1', 'f2']),
+            dtype=float,
         ),
         pd.DataFrame(
             index=audformat.filewise_index(['f1', 'f2']),

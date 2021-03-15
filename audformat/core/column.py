@@ -1,3 +1,5 @@
+import typing
+
 import numpy as np
 import pandas as pd
 
@@ -8,6 +10,7 @@ from audformat.core.index import (
     is_scalar,
     to_array,
 )
+from audformat.core.rater import Rater
 from audformat.core.scheme import Scheme
 from audformat.core.typing import Values
 
@@ -80,6 +83,50 @@ class Column(HeaderBase):
         r"""Rater identifier"""
         self._table = None
         self._id = None
+
+    @property
+    def rater(self) -> typing.Optional[Rater]:
+        r"""Rater object.
+
+        Returns:
+            rater object or ``None`` if not available
+
+        """
+        if (
+                self.rater_id is not None
+        ) and (
+                self.table is not None
+        ) and (
+                self.table.db is not None
+        ):
+            return self.table.db.raters[self.rater_id]
+
+    @property
+    def scheme(self) -> typing.Optional[Scheme]:
+        r"""Scheme object.
+
+        Returns:
+            scheme object or ``None`` if not available
+
+        """
+        if (
+                self.scheme_id is not None
+        ) and (
+                self.table is not None
+        ) and (
+                self.table.db is not None
+        ):
+            return self.table.db.schemes[self.scheme_id]
+
+    @property
+    def table(self):
+        r"""Table object.
+
+        Returns:
+            table object or ``None`` if not assigned yet
+
+        """
+        return self._table
 
     def get(
             self,

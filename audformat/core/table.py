@@ -1,8 +1,7 @@
-from collections.abc import Iterable
+import copy
 import os
 import typing
 
-import numpy as np
 import pandas as pd
 
 import audeer
@@ -19,9 +18,10 @@ from audformat.core.errors import (
 )
 from audformat.core.index import (
     filewise_index,
-    segmented_index,
     index_type,
 )
+from audformat.core.media import Media
+from audformat.core.split import Split
 from audformat.core.typing import (
     Values,
 )
@@ -120,8 +120,6 @@ class Table(HeaderBase):
         f4        3     NaN
 
     """
-    TYPE = 'type'
-
     def __init__(
             self,
             index: pd.Index = None,
@@ -152,6 +150,16 @@ class Table(HeaderBase):
         self._df = pd.DataFrame(index=index)
         self._db = None
         self._id = None
+
+    @property
+    def db(self):
+        r"""Database object.
+
+        Returns:
+            database object or ``None`` if not assigned yet
+
+        """
+        return self._db
 
     @property
     def df(self) -> pd.DataFrame:
@@ -226,6 +234,28 @@ class Table(HeaderBase):
         return self.type == define.IndexType.SEGMENTED
 
     @property
+    def media(self) -> typing.Optional[Media]:
+        r"""Media object.
+
+        Returns:
+            media object or ``None`` if not available
+
+        """
+        if self.media_id is not None and self.db is not None:
+            return self.db.media[self.media_id]
+
+    @property
+    def split(self) -> typing.Optional[Split]:
+        r"""Split object.
+
+        Returns:
+            split object or ``None`` if not available
+
+        """
+        if self.split_id is not None and self.db is not None:
+            return self.db.splits[self.split_id]
+
+    @property
     def starts(self) -> pd.Index:
         r"""Segment start times.
 
@@ -254,7 +284,7 @@ class Table(HeaderBase):
             media_id=self.media_id,
             split_id=self.split_id,
         )
-        table._db = self._db
+        table._db = self.db
         for column_id, column in self.columns.items():
             table.columns[column_id] = Column(
                 scheme_id=column.scheme_id,
@@ -483,9 +513,10 @@ class Table(HeaderBase):
 
         if map is not None:
 
-            if self._db is None:
+            if self.db is None:
                 raise RuntimeError(
-                    'Table is not assigned to a database.'
+                    'Cannot map schemes, '
+                    'table is not assigned to a database.'
                 )
 
             if not result_is_copy:
@@ -548,8 +579,6 @@ class Table(HeaderBase):
                     os.path.exists(csv_file)
                     and os.path.getmtime(csv_file) > os.path.getmtime(pkl_file)
             ):
-                print('CSV time:', os.path.getmtime(csv_file))
-                print('PKL time:', os.path.getmtime(pkl_file))
                 raise RuntimeError(
                     f"The table CSV file '{csv_file}' is newer "
                     f"than the table PKL file '{pkl_file}'. "
@@ -737,6 +766,190 @@ class Table(HeaderBase):
         for idx, data in values.items():
             self.columns[idx].set(data, index=index)
 
+    def update(
+            self,
+            others: typing.Union['Table', typing.Sequence['Table']],
+            *,
+            overwrite: bool = False,
+    ) -> 'Table':
+        r"""Update table with other table(s).
+
+        Table which calls ``update()`` must be assigned to a database.
+        For all tables media and split must match.
+
+        Columns that are not yet part of the table will be added and
+        referenced schemes or raters are copied.
+        For overlapping columns, schemes and raters must match.
+
+        Columns with the same identifier are combined to a single column.
+        This requires that both columns have the same dtype
+        and if ``overwrite`` is set to ``False``,
+        values in places where the indices overlap have to match
+        or one column contains ``NaN``.
+        If ``overwrite`` is set to ``True``,
+        the value of the last table in the list is kept.
+
+        The index type of the table must not change.
+
+        Args:
+            others: table object(s)
+            overwrite: overwrite values where indices overlap
+
+        Returns:
+            the updated table
+
+        Raises:
+            RuntimeError: if table is not assign to a database
+            ValueError: if split or media does not match
+            ValueError: if overlapping columns reference different schemes
+                or raters
+            ValueError: if a missing scheme or rater cannot be copied
+                because a different object with the same ID exists
+            ValueError: if values in same position overlap
+            ValueError: if operation would change the index type of the table
+
+        """
+        if self.db is None:
+            raise RuntimeError(
+                'Table is not assigned to a database.'
+            )
+
+        if isinstance(others, Table):
+            others = [others]
+
+        for other in others:
+            if self.type != other.type:
+                raise ValueError(
+                    'Cannot update a '
+                    f'{self.type} '
+                    'table with a '
+                    f'{other.type} '
+                    'table.'
+                )
+
+        def raise_error(
+                msg,
+                left: typing.Optional[HeaderDict],
+                right: typing.Optional[HeaderDict],
+        ):
+            raise ValueError(
+                f"{msg}:\n"
+                f"{left}\n"
+                "!=\n"
+                f"{right}"
+            )
+
+        def assert_equal(
+                msg: str,
+                left: typing.Optional[HeaderDict],
+                right: typing.Optional[HeaderDict],
+        ):
+            equal = True
+            if left and right:
+                equal = left == right
+            elif left or right:
+                equal = False
+            if not equal:
+                raise_error(msg, left, right)
+
+        missing_schemes = {}
+        missing_raters = {}
+
+        for other in others:
+
+            assert_equal(
+                "Media of table "
+                f"'{other._id}' "
+                "does not match",
+                self.media,
+                other.media,
+            )
+
+            assert_equal(
+                "Split of table "
+                f"'{other._id}' "
+                "does not match",
+                self.split,
+                other.split,
+            )
+
+            # assert schemes match for overlapping columns and
+            # look for missing schemes in new columns,
+            # raise an error if a different scheme with same ID exists
+            for column_id, column in other.columns.items():
+                if column_id in self.columns:
+                    assert_equal(
+                        "Scheme of common column "
+                        f"'{other._id}.{column_id}' "
+                        "does not match",
+                        self.columns[column_id].scheme,
+                        column.scheme,
+                    )
+                else:
+                    if column.scheme is not None:
+                        if column.scheme_id in self.db.schemes:
+                            assert_equal(
+                                "Cannot copy scheme of column "
+                                f"'{other._id}.{column_id}' "
+                                "as a different scheme with ID "
+                                f"'{column.scheme_id}' "
+                                "exists",
+                                self.db.schemes[column.scheme_id],
+                                column.scheme,
+                            )
+                        else:
+                            missing_schemes[column.scheme_id] = column.scheme
+
+            # assert raters match for overlapping columns and
+            # look for missing raters in new columns,
+            # raise an error if a different rater with same ID exists
+            for column_id, column in other.columns.items():
+                if column_id in self.columns:
+                    assert_equal(
+                        f"self['{self._id}']['{column_id}'].rater "
+                        "does not match "
+                        f"other['{other._id}']['{column_id}'].rater",
+                        self.columns[column_id].rater,
+                        column.rater,
+                    )
+                else:
+                    if column.rater is not None:
+                        if column.rater_id in self.db.raters:
+                            assert_equal(
+                                f"db1.raters['{column.scheme_id}'] "
+                                "does not match "
+                                f"db2.raters['{column.scheme_id}']",
+                                self.db.raters[column.rater_id],
+                                column.rater,
+                            )
+                        else:
+                            missing_raters[column.rater_id] = column.rater
+
+        # concatenate table data
+        df = utils.concat(
+            [self.df] + [other.df for other in others],
+            overwrite=overwrite,
+        )
+        if isinstance(df, pd.Series):
+            df = df.to_frame()
+
+        # insert missing schemes and raters
+        for scheme_id, scheme in missing_schemes.items():
+            self.db.schemes[scheme_id] = copy.copy(scheme)
+        for rater_id, rater in missing_raters.items():
+            self.db.raters[rater_id] = copy.copy(rater)
+
+        # insert new columns
+        for other in others:
+            for column_id, column in other.columns.items():
+                if column_id not in self.columns:
+                    self.columns[column_id] = copy.copy(column)
+
+        # update table data
+        self._df = df
+
+        return self
+
     def __add__(self, other: 'Table') -> 'Table':
         r"""Create new table by combining two tables.
 
@@ -751,8 +964,11 @@ class Table(HeaderBase):
         2. in places where the indices overlap the values of both columns
            match or one column contains ``NaN``
 
-        References to schemes and raters are always preserved.
-        Media and split information only when they match.
+        Media and split information,
+        as well as,
+        references to schemes and raters are discarded.
+        If you intend to keep them,
+        use :meth:`audformat.Table.update`.
 
         Args:
             other: the other table
@@ -813,7 +1029,7 @@ class Table(HeaderBase):
         usecols = []
         dtypes = {}
         converters = {}
-        schemes = self._db.schemes
+        schemes = self.db.schemes
 
         # index columns
 
@@ -887,14 +1103,14 @@ class Table(HeaderBase):
 
     def _set_column(self, column_id: str, column: Column) -> Column:
         if column.scheme_id is not None and \
-                column.scheme_id not in self._db.schemes:
-            raise BadIdError('column', column.scheme_id, self._db.schemes)
+                column.scheme_id not in self.db.schemes:
+            raise BadIdError('column', column.scheme_id, self.db.schemes)
         if column.rater_id is not None and \
-                column.rater_id not in self._db.raters:
-            raise BadIdError('rater', column.rater_id, self._db.raters)
+                column.rater_id not in self.db.raters:
+            raise BadIdError('rater', column.rater_id, self.db.raters)
 
         if column.scheme_id is not None:
-            dtype = self._db.schemes[column.scheme_id].to_pandas_dtype()
+            dtype = self.db.schemes[column.scheme_id].to_pandas_dtype()
         else:
             dtype = object
         self._df[column_id] = pd.Series(dtype=dtype)

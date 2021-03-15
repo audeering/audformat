@@ -139,14 +139,19 @@ def concat(
             if not same_dtype(
                     columns_reindex[column.name].dtype, column.dtype
             ):
-                # use repr() to print category names
+                dtype_1 = columns_reindex[column.name].dtype
+                if dtype_1.name == 'category':
+                    dtype_1 = repr(dtype_1)
+                dtype_2 = column.dtype
+                if dtype_2.name == 'category':
+                    dtype_2 = repr(dtype_2)
                 raise ValueError(
-                    'Found two columns with name '
+                    "Found two columns with name "
                     f"'{column.name}' "
-                    'buf different dtypes '
-                    f"'{repr(columns_reindex[column.name].dtype)}' "
-                    'and '
-                    f"'{repr(column.dtype)}'."
+                    "buf different dtypes:\n"
+                    f"{dtype_1} "
+                    "!= "
+                    f"{dtype_2}."
                 )
 
             # overlapping values must match or have to be nan in one column

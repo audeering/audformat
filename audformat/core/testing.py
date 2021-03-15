@@ -189,7 +189,10 @@ def create_audio_files(
         af.write(path, x, sampling_rate)
 
 
-def create_db(minimal: bool = False) -> Database:
+def create_db(
+        minimal: bool = False,
+        data: Dict[str, Union[pd.Series, pd.DataFrame]] = None,
+) -> Database:
     r"""Create test database.
 
     Creates a test database called ``unittest`` with a filewise
@@ -197,6 +200,7 @@ def create_db(minimal: bool = False) -> Database:
 
     Args:
         minimal: create minimal database without tables
+        data: create tables from pandas objects
 
     Returns:
         database object
@@ -219,8 +223,29 @@ def create_db(minimal: bool = False) -> Database:
     db.description = 'A database for unit testing.'
     db.author = 'J. Wagner, H. Wierstorf'
     db.organization = 'audEERING GmbH'
-    db.license = define.License.CC0_1_0,
+    db.license = define.License.CC0_1_0
     db.meta['audformat'] = 'https://github.com/audeering/audformat'
+
+    if data is not None:
+
+        def to_scheme_type(series: pd.Series) -> str:
+            if series.dtype.name.startswith('int'):
+                return define.DataType.INTEGER
+            if series.dtype.name.startswith('float'):
+                return define.DataType.FLOAT
+            return 'str'
+
+        for table_id, obj in data.items():
+            if isinstance(obj, pd.Series):
+                obj = obj.to_frame()
+            db[table_id] = Table(obj.index)
+            for column_id, column in obj.items():
+                dtype = to_scheme_type(column)
+                if dtype not in db.schemes:
+                    db.schemes[dtype] = Scheme(dtype)
+                db[table_id][column_id] = Column(scheme_id=dtype)
+            db[table_id].set(obj)
+        return db
 
     #########
     # Media #
