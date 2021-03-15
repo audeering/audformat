@@ -214,7 +214,7 @@ def concat(
 
 def duration(
         obj: typing.Union[pd.Index, pd.Series, pd.DataFrame],
-) -> float:
+) -> pd.Timedelta:
     r"""Duration of all segments present in a segmented object.
 
     Args:
@@ -236,7 +236,7 @@ def duration(
         ...     ends=[1, 2, 4],
         ... )
         >>> duration(idx)
-        3.0
+        Timedelta('0 days 00:00:03')
 
     """
     if index_type(obj) != define.IndexType.SEGMENTED:
@@ -246,14 +246,11 @@ def duration(
         obj = obj.index
 
     if obj.empty:
-        return 0
+        return pd.Timedelta(0, unit='s')
 
-    starts = list(obj.get_level_values(define.IndexField.START))
-    ends = list(obj.get_level_values(define.IndexField.END))
-    duration = [end - start for start, end in zip(starts, ends)]
-    duration = np.sum(duration)
-    duration = duration.total_seconds()
-    return duration
+    starts = obj.get_level_values(define.IndexField.START)
+    ends = obj.get_level_values(define.IndexField.END)
+    return (ends - starts).sum()
 
 
 def intersect(

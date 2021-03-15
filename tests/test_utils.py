@@ -482,34 +482,34 @@ def test_concat(objs, overwrite, expected):
     [
         (
             audformat.segmented_index(),
-            0,
+            pd.Timedelta(0, unit='s'),
         ),
         (
             audformat.segmented_index(['f1'], [0], [2]),
-            2,
+            pd.Timedelta(2, unit='s'),
         ),
         (
             audformat.segmented_index(['f1'], [0.1], [2]),
-            1.9,
+            pd.Timedelta(1.9, unit='s'),
         ),
         (
             audformat.segmented_index(['f1', 'f2'], [0, 1], [2, 2]),
-            3,
+            pd.Timedelta(3, unit='s'),
         ),
         (
             audformat.segmented_index(['f1'], [0]),
-            np.NaN,
+            pd.Timedelta(np.NaN, unit='s'),
         ),
         (
             pd.Series(
                 index=audformat.segmented_index(['f1'], [1], [2]),
                 dtype='category',
             ),
-            1,
+            pd.Timedelta(1, unit='s'),
         ),
         (
             pd.DataFrame(index=audformat.segmented_index(['f1'], [1], [2])),
-            1,
+            pd.Timedelta(1, unit='s'),
         ),
         pytest.param(
             audformat.filewise_index(['f1']),
@@ -520,8 +520,8 @@ def test_concat(objs, overwrite, expected):
 )
 def test_duration(obj, expected_duration):
     duration = audformat.utils.duration(obj)
-    if np.isnan(expected_duration):
-        assert np.isnan(duration)
+    if pd.isnull(expected_duration):
+        assert pd.isnull(duration)
     else:
         assert duration == expected_duration
 
