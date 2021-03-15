@@ -92,7 +92,7 @@ or referenced schemes is discarded.
 If you want to keep this information,
 you can use :meth:`audformat.Table.update`,
 which also works across database,
-as we will to demonstrate with the following example.
+as we will demonstrate with the following example.
 
 First we create a second database
 and add a gender scheme:
