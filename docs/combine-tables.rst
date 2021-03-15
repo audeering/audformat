@@ -91,7 +91,7 @@ That means that meta information about the media
 or referenced schemes is discarded.
 If you want to keep this information,
 you can use :meth:`audformat.Table.update`,
-which also works across database,
+which also works across databases,
 as we will demonstrate with the following example.
 
 First we create a second database
