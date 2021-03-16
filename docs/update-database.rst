@@ -1,7 +1,7 @@
 Update a database
 =================
 
-A feature especially useful for databases that grow over time,
+A feature that is especially useful for databases growing over time,
 is the possibility to update a :class:`audformat.Database`.
 For instance, consider the following database that contains
 age labels for a hundred files.
@@ -31,7 +31,7 @@ age labels for a hundred files.
 
     db['table'].df
 
-Now assume that we record some more files we want add to our original database.
+Now assume we record some more files that we want add to our original database.
 To not confuse new and old data, we start from a fresh database containing
 only new files, get the annotations and update the original database.
 
@@ -68,9 +68,8 @@ the critical files, relabel them and then update the original database.
     db['table'].df
 
 Finally, we want to add gender information to the database.
-Again, it might be easier to start with a fresh database where we
-collect the gender information.
-And later merge it into our original database.
+Again, it might be easier to start with a fresh database to
+collect the new labels and only later merge it into our original database.
 
 .. jupyter-execute::
 
@@ -91,7 +90,7 @@ And later merge it into our original database.
     db.update(db_update)
     db['table'].df
 
-As expected, this not only updates the table data,
+Note that this not only updates the table data,
 but also adds the new gender scheme:
 
 .. jupyter-execute::
