@@ -424,7 +424,7 @@ class Database(HeaderBase):
             value2 = other.__dict__[field]
             if value1 != value2:
                 raise ValueError(
-                    "Cannot join databases, "
+                    "Cannot update database, "
                     "found different value for "
                     f"'db.{field}':\n"
                     f"{value1}\n"
@@ -490,6 +490,7 @@ class Database(HeaderBase):
             join_field(other, 'meta', lambda x: join_dict('meta', x))
             join_field(other, 'organization', ', '.join)
             join_field(other, 'schemes', lambda x: join_dict('schemes', x))
+            join_field(other, 'source', ', '.join)
             join_field(other, 'splits', lambda x: join_dict('splits', x))
             join_field(other, 'raters', lambda x: join_dict('raters', x))
 

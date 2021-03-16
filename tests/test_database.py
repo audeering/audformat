@@ -1,3 +1,4 @@
+import datetime
 import filecmp
 import os
 
@@ -299,3 +300,136 @@ def test_string():
                       'source: internal\n' \
                       'usage: unrestricted\n' \
                       'languages: [deu, eng]'
+
+
+def test_update():
+
+    # original database
+
+    db = audformat.testing.create_db(minimal=True)
+    db.author = 'author'
+    db.organization = 'organization'
+    db.meta['meta'] = 'meta'
+    db.raters['rater'] = audformat.Rater()
+    db.schemes['int'] = audformat.Scheme(int)
+    audformat.testing.add_table(
+        db,
+        'table',
+        audformat.define.IndexType.FILEWISE,
+        num_files=[0, 1],
+        columns={'int': ('int', 'rater')},
+    )
+
+    assert db.update(db) == db
+
+    # database with same table, but extra column
+
+    other1 = audformat.testing.create_db(minimal=True)
+    other1.raters['rater'] = audformat.Rater()
+    other1.raters['rater2'] = audformat.Rater()
+    other1.schemes['int'] = audformat.Scheme(int)
+    other1.schemes['float'] = audformat.Scheme(float)
+    audformat.testing.add_table(
+        other1,
+        'table',
+        audformat.define.IndexType.FILEWISE,
+        num_files=[1, 2],
+        columns={'int': ('int', 'rater'), 'float': ('float', 'rater2')},
+    )
+
+    # database with new table
+
+    other2 = audformat.testing.create_db(minimal=True)
+    other2.raters['rater2'] = audformat.Rater()
+    other2.schemes['str'] = audformat.Scheme(str)
+    audformat.testing.add_table(
+        other2,
+        'table_new',
+        audformat.define.IndexType.SEGMENTED,
+        columns={'str': ('str', 'rater2')},
+    )
+
+    df = audformat.utils.concat(
+        [db['table'].df, other1['table'].df],
+        overwrite=True,
+    )
+    others = [other1, other2]
+
+    # assert that raters, schemes and tables are correctly updated
+
+    with pytest.raises(ValueError):
+        db.update(others, overwrite=False)
+    db.update(others, overwrite=True)
+
+    pd.testing.assert_frame_equal(db['table'].df, df)
+    assert db['table_new'] == other2['table_new']
+
+    for other in others:
+        for rater_id, rater in other.raters.items():
+            assert db.raters[rater_id] == rater
+        for scheme_id, scheme in other.schemes.items():
+            assert db.schemes[scheme_id] == scheme
+
+    # test other fields
+
+    db_author = db.author
+    db_description = db.description
+    db_languages = db.languages.copy()
+    db_license_url = db.license_url
+    db_meta = db.meta.copy()
+    db_name = db.name
+    db_organization = db.organization
+    db_source = db.source
+
+    other = audformat.Database(
+        author='other',
+        description='other',
+        expires=datetime.date.today(),
+        languages=audformat.utils.map_language('french'),
+        license_url='other',
+        meta={'other': 'other'},
+        name='other',
+        organization='other',
+        source='other',
+    )
+    db.update(other)
+
+    assert db.author == f'{db_author}, {other.author}'
+    assert db.name == db_name
+    assert db.description == db_description
+    assert db.expires == other.expires
+    assert db.languages == db_languages + other.languages
+    assert db.license_url == db_license_url
+    db_meta.update(other.meta)
+    assert db.meta == db_meta
+    assert db.organization == f'{db_organization}, {other.organization}'
+    assert db.source == f'{db_source}, {other.source}'
+
+    # errors
+
+    with pytest.raises(ValueError):
+        other = audformat.testing.create_db(minimal=True)
+        other.license = 'other'
+        db.update(other)
+
+    with pytest.raises(ValueError):
+        other = audformat.testing.create_db(minimal=True)
+        other.usage = 'other'
+        db.update(other)
+
+    with pytest.raises(ValueError):
+        other = audformat.testing.create_db(minimal=True)
+        other.raters['rater'] = audformat.Rater(
+            type=audformat.define.RaterType.MACHINE
+        )
+        db.update(other)
+
+    with pytest.raises(ValueError):
+        other = audformat.testing.create_db(minimal=True)
+        other.schemes['int'] = audformat.Scheme(str)
+        db.update(other)
+
+    with pytest.raises(ValueError):
+        other = audformat.testing.create_db(minimal=True)
+        other.meta['meta'] = 'other'
+        db.update(other)
