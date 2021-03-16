@@ -38,6 +38,7 @@ class Database(HeaderBase):
         languages: list of languages
         description: database description
         author: database author(s)
+        organization: organization(s) maintaining the database
         license: database license.
             You can use a custom license
             or pick one from :attr:`audformat.define.License`.
