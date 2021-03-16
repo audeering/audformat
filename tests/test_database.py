@@ -311,13 +311,13 @@ def test_update():
     db.organization = 'organization'
     db.meta['meta'] = 'meta'
     db.raters['rater'] = audformat.Rater()
-    db.schemes['int'] = audformat.Scheme(int)
+    db.schemes['float'] = audformat.Scheme(float)
     audformat.testing.add_table(
         db,
         'table',
         audformat.define.IndexType.FILEWISE,
         num_files=[0, 1],
-        columns={'int': ('int', 'rater')},
+        columns={'float': ('float', 'rater')},
     )
 
     assert db.update(db) == db
