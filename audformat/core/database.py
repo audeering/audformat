@@ -411,6 +411,42 @@ class Database(HeaderBase):
             *,
             overwrite: bool = False,
     ) -> 'Database':
+        r"""Update database with other database(s).
+
+        In order to update a database, *license* and *usage* have to match.
+        *Media*, *raters*, *schemes* and *splits* that are not part of
+        the database yet are added. Other fields will be updated by
+        applying the following rules:
+
+        ============= =====================================
+        **field**     **result**
+        ------------- -------------------------------------
+        author        'db.author, other.author'
+        description   db.description
+        expires       min(db.expires, other.expires)
+        languages     db.languages + other.languages
+        license_url   db.license_url
+        meta          db.meta + other.meta
+        name          db.name
+        organization  'db.organization, other.organization'
+        source        'db.source, other.source'
+        ============= =====================================
+
+        Args:
+            others: database object(s)
+            overwrite: overwrite table values where indices overlap
+
+        Returns:
+            the updated database
+
+        Raises:
+            ValueError: if database has different license or usage
+            ValueError: if different media, rater, scheme or split with
+                same ID is found
+            ValueError: if table data cannot be combined (e.g. values in
+                same position overlap)
+
+        """
 
         if isinstance(others, Database):
             others = [others]
