@@ -1,4 +1,5 @@
 import datetime
+import itertools
 import os
 import typing
 
@@ -37,6 +38,7 @@ class Database(HeaderBase):
         languages: list of languages
         description: database description
         author: database author(s)
+        organization: organization(s) maintaining the database
         license: database license.
             You can use a custom license
             or pick one from :attr:`audformat.define.License`.
@@ -402,6 +404,141 @@ class Database(HeaderBase):
                 progress_bar=verbose,
                 task_description='Save tables',
             )
+
+    def update(
+            self,
+            others: typing.Union['Database', typing.Sequence['Database']],
+            *,
+            overwrite: bool = False,
+    ) -> 'Database':
+        r"""Update database with other database(s).
+
+        In order to update a database, *license* and *usage* have to match.
+        *Media*, *raters*, *schemes* and *splits* that are not part of
+        the database yet are added. Other fields will be updated by
+        applying the following rules:
+
+        ============= =====================================
+        **field**     **result**
+        ------------- -------------------------------------
+        author        'db.author, other.author'
+        description   db.description
+        expires       min(db.expires, other.expires)
+        languages     db.languages + other.languages
+        license_url   db.license_url
+        meta          db.meta + other.meta
+        name          db.name
+        organization  'db.organization, other.organization'
+        source        'db.source, other.source'
+        ============= =====================================
+
+        Args:
+            others: database object(s)
+            overwrite: overwrite table values where indices overlap
+
+        Returns:
+            the updated database
+
+        Raises:
+            ValueError: if database has different license or usage
+            ValueError: if different media, rater, scheme or split with
+                same ID is found
+            ValueError: if table data cannot be combined (e.g. values in
+                same position overlap)
+
+        """
+
+        if isinstance(others, Database):
+            others = [others]
+
+        def assert_equal(
+                other: Database,
+                field: str,
+        ):
+            r"""Assert fields are equal."""
+            value1 = self.__dict__[field]
+            value2 = other.__dict__[field]
+            if value1 != value2:
+                raise ValueError(
+                    "Cannot update database, "
+                    "found different value for "
+                    f"'db.{field}':\n"
+                    f"{value1}\n"
+                    "!=\n"
+                    f"{value2}"
+                )
+
+        def join_dict(
+                field: str,
+                ds: typing.Sequence[dict],
+        ):
+            r"""Join list of dictionaries.
+
+            Raise error if dictionaries have same key with different values.
+
+            """
+            d = ds[0].copy()
+            for d_other in ds[1:]:
+                for key, value in d_other.items():
+                    if key in d:
+                        if d[key] != value:
+                            raise ValueError(
+                                "Cannot update database, "
+                                "found different value for "
+                                f"'db.{field}['{key}']':\n"
+                                f"{d[key]}\n"
+                                "!=\n"
+                                f"{d_other[key]}"
+                            )
+                    else:
+                        d[key] = value
+            return d
+
+        def join_field(
+                other: Database,
+                field: str,
+                op: typing.Callable,
+        ):
+            r"""Join two fields of db header."""
+            value1 = self.__dict__[field]
+            value2 = other.__dict__[field]
+            if value1 != value2:
+                if value1 and value2:
+                    self.__dict__[field] = op([value1, value2])
+                elif value1:
+                    self.__dict__[field] = value1
+                elif value2:
+                    self.__dict__[field] = value2
+
+        # assert equal fields
+        for other in others:
+            assert_equal(other, 'license')
+            assert_equal(other, 'usage')
+
+        # join fields
+        for other in others:
+            join_field(other, 'author', ', '.join)
+            join_field(other, 'expires', min)
+            join_field(other, 'languages', itertools.chain.from_iterable)
+            # remove duplicates whilst preserving order
+            self.languages = list(dict.fromkeys(self.languages))
+            join_field(other, 'media', lambda x: join_dict('media', x))
+            join_field(other, 'meta', lambda x: join_dict('meta', x))
+            join_field(other, 'organization', ', '.join)
+            join_field(other, 'schemes', lambda x: join_dict('schemes', x))
+            join_field(other, 'source', ', '.join)
+            join_field(other, 'splits', lambda x: join_dict('splits', x))
+            join_field(other, 'raters', lambda x: join_dict('raters', x))
+
+        # join tables
+        for other in others:
+            for table_id, table in other.tables.items():
+                if table_id in self.tables:
+                    self[table_id].update(table, overwrite=overwrite)
+                else:
+                    self[table_id] = table.copy()
+
+        return self
 
     def __contains__(
             self,
