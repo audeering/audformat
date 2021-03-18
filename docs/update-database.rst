@@ -32,8 +32,8 @@ age labels for a hundred files.
     db['table'].df
 
 Now assume we record more files to add to our original database.
-To not confuse new and old data, we start from a fresh database containing
-only new files, get the annotations and update the original database.
+The new files are stored together with annotations in a second database,
+that is then added to the original database.
 
 .. jupyter-execute::
 
