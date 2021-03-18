@@ -49,7 +49,7 @@ only new files, get the annotations and update the original database.
     db.update(db_update)  # update original database with new data
     db['table'].df
 
-Or we find out that the some files have wrong labels.
+Or we find out that some files in the original database have wrong labels.
 To update those, we again start from a fresh database containing only
 the critical files, relabel them and then update the original database.
 
