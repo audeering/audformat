@@ -7,6 +7,15 @@ The format is based on `Keep a Changelog`_,
 and this project adheres to `Semantic Versioning`_.
 
 
+Version 0.10.0 (2021-03-18)
+---------------------------
+
+* Added: ``audformat.Database.update()``
+* Added: ``audformat.Table.update()``
+* Added: ``overwrite`` argument to ``audformat.utils.concat()``
+* Changed: result of ``audformat.Table.__add__()`` is no longer assigned to a ``audformat.Database``
+
+
 Version 0.9.8 (2021-02-23)
 --------------------------
 
