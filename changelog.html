@@ -73,7 +73,7 @@
             
             
               <div class="version">
-                v0.9.8
+                v0.10.0
               </div>
             
           
@@ -104,6 +104,7 @@
 <li class="toctree-l1"><a class="reference internal" href="accessing-data.html">Working with a database</a></li>
 <li class="toctree-l1"><a class="reference internal" href="combine-tables.html">Combine tables</a></li>
 <li class="toctree-l1"><a class="reference internal" href="map-scheme.html">Map scheme labels</a></li>
+<li class="toctree-l1"><a class="reference internal" href="update-database.html">Update a database</a></li>
 <li class="toctree-l1"><a class="reference internal" href="emodb-example.html">Emodb example</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Format specification</span></p>
@@ -128,6 +129,7 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Changelog</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#version-0-10-0-2021-03-18">Version 0.10.0 (2021-03-18)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#version-0-9-8-2021-02-23">Version 0.9.8 (2021-02-23)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#version-0-9-7-2021-02-01">Version 0.9.7 (2021-02-01)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#version-0-9-6-2021-01-28">Version 0.9.6 (2021-01-28)</a></li>
@@ -191,7 +193,7 @@
         
             
             
-              <a href="https://github.com/audeering/audformat/blob/v0.9.8/docs/changelog.rst" class="fa fa-github"> Edit on GitHub</a>
+              <a href="https://github.com/audeering/audformat/blob/v0.10.0/docs/changelog.rst" class="fa fa-github"> Edit on GitHub</a>
             
           
         
@@ -210,6 +212,15 @@
 <p>All notable changes to this project will be documented in this file.</p>
 <p>The format is based on <a class="reference external" href="https://keepachangelog.com/en/1.0.0/">Keep a Changelog</a>,
 and this project adheres to <a class="reference external" href="https://semver.org/spec/v2.0.0.html">Semantic Versioning</a>.</p>
+<div class="section" id="version-0-10-0-2021-03-18">
+<h2>Version 0.10.0 (2021-03-18)<a class="headerlink" href="#version-0-10-0-2021-03-18" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Added: <code class="docutils literal notranslate"><span class="pre">audformat.Database.update()</span></code></p></li>
+<li><p>Added: <code class="docutils literal notranslate"><span class="pre">audformat.Table.update()</span></code></p></li>
+<li><p>Added: <code class="docutils literal notranslate"><span class="pre">overwrite</span></code> argument to <code class="docutils literal notranslate"><span class="pre">audformat.utils.concat()</span></code></p></li>
+<li><p>Changed: result of <code class="docutils literal notranslate"><span class="pre">audformat.Table.__add__()</span></code> is no longer assigned to a <code class="docutils literal notranslate"><span class="pre">audformat.Database</span></code></p></li>
+</ul>
+</div>
 <div class="section" id="version-0-9-8-2021-02-23">
 <h2>Version 0.9.8 (2021-02-23)<a class="headerlink" href="#version-0-9-8-2021-02-23" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
@@ -316,7 +327,7 @@ and <code class="docutils literal notranslate"><span class="pre">audformat.Colum
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2021/02/23 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2021/03/18 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>

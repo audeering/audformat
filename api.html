@@ -74,7 +74,7 @@
             
             
               <div class="version">
-                v0.9.8
+                v0.10.0
               </div>
             
           
@@ -105,6 +105,7 @@
 <li class="toctree-l1"><a class="reference internal" href="accessing-data.html">Working with a database</a></li>
 <li class="toctree-l1"><a class="reference internal" href="combine-tables.html">Combine tables</a></li>
 <li class="toctree-l1"><a class="reference internal" href="map-scheme.html">Map scheme labels</a></li>
+<li class="toctree-l1"><a class="reference internal" href="update-database.html">Update a database</a></li>
 <li class="toctree-l1"><a class="reference internal" href="emodb-example.html">Emodb example</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Format specification</span></p>
@@ -194,7 +195,7 @@
         
             
             
-              <a href="https://github.com/audeering/audformat/blob/v0.9.8/docs/api.rst" class="fa fa-github"> Edit on GitHub</a>
+              <a href="https://github.com/audeering/audformat/blob/v0.10.0/docs/api.rst" class="fa fa-github"> Edit on GitHub</a>
             
           
         
@@ -290,10 +291,38 @@ will replace the ID values with the age of the speaker</p></li>
 </dl>
 </dd></dl>
 
+<dl class="py method">
+<dt id="audformat.Column.rater">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">rater</span></code><a class="headerlink" href="#audformat.Column.rater" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rater object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Rater</span></code>]</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>rater object or <code class="docutils literal notranslate"><span class="pre">None</span></code> if not available</p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py attribute">
 <dt id="audformat.Column.rater_id">
 <code class="sig-name descname"><span class="pre">rater_id</span></code><a class="headerlink" href="#audformat.Column.rater_id" title="Permalink to this definition">¶</a></dt>
 <dd><p>Rater identifier</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="audformat.Column.scheme">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">scheme</span></code><a class="headerlink" href="#audformat.Column.scheme" title="Permalink to this definition">¶</a></dt>
+<dd><p>Scheme object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Scheme</span></code>]</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>scheme object or <code class="docutils literal notranslate"><span class="pre">None</span></code> if not available</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py attribute">
@@ -327,6 +356,17 @@ values have to match its <code class="docutils literal notranslate"><span class=
     using a segmented index</p></li>
 <li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.9)"><strong>ValueError</strong></a> – if values do not match scheme</p></li>
 </ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="audformat.Column.table">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">table</span></code><a class="headerlink" href="#audformat.Column.table" title="Permalink to this definition">¶</a></dt>
+<dd><p>Table object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>table object or <code class="docutils literal notranslate"><span class="pre">None</span></code> if not assigned yet</p>
 </dd>
 </dl>
 </dd></dl>
@@ -446,6 +486,7 @@ Set to <code class="docutils literal notranslate"><span class="pre">OTHER</span>
 <li><p><strong>languages</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>], <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a>]) – list of languages</p></li>
 <li><p><strong>description</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]) – database description</p></li>
 <li><p><strong>author</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]) – database author(s)</p></li>
+<li><p><strong>organization</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]) – organization(s) maintaining the database</p></li>
 <li><p><strong>license</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">License</span></code>, <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a>]) – database license.
 You can use a custom license
 or pick one from <a class="reference internal" href="api-define.html#audformat.define.License" title="audformat.define.License"><code class="xref py py-attr docutils literal notranslate"><span class="pre">audformat.define.License</span></code></a>.
@@ -839,6 +880,77 @@ on the machine multiplied by 5</p></li>
 <dt id="audformat.Database.tables">
 <code class="sig-name descname"><span class="pre">tables</span></code><a class="headerlink" href="#audformat.Database.tables" title="Permalink to this definition">¶</a></dt>
 <dd><p>Dictionary of tables</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="audformat.Database.update">
+<code class="sig-name descname"><span class="pre">update</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">others</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/database.html#Database.update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.Database.update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update database with other database(s).</p>
+<p>In order to update a database, <em>license</em> and <em>usage</em> have to match.
+<em>Media</em>, <em>raters</em>, <em>schemes</em> and <em>splits</em> that are not part of
+the database yet are added. Other fields will be updated by
+applying the following rules:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 26%" />
+<col style="width: 74%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><strong>field</strong></p></td>
+<td><p><strong>result</strong></p></td>
+</tr>
+<tr class="row-even"><td><p>author</p></td>
+<td><p>‘db.author, other.author’</p></td>
+</tr>
+<tr class="row-odd"><td><p>description</p></td>
+<td><p>db.description</p></td>
+</tr>
+<tr class="row-even"><td><p>expires</p></td>
+<td><p>min(db.expires, other.expires)</p></td>
+</tr>
+<tr class="row-odd"><td><p>languages</p></td>
+<td><p>db.languages + other.languages</p></td>
+</tr>
+<tr class="row-even"><td><p>license_url</p></td>
+<td><p>db.license_url</p></td>
+</tr>
+<tr class="row-odd"><td><p>meta</p></td>
+<td><p>db.meta + other.meta</p></td>
+</tr>
+<tr class="row-even"><td><p>name</p></td>
+<td><p>db.name</p></td>
+</tr>
+<tr class="row-odd"><td><p>organization</p></td>
+<td><p>‘db.organization, other.organization’</p></td>
+</tr>
+<tr class="row-even"><td><p>source</p></td>
+<td><p>‘db.source, other.source’</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>others</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Database</span></code>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Database</span></code>]]) – database object(s)</p></li>
+<li><p><strong>overwrite</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – overwrite table values where indices overlap</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Database</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>the updated database</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.9)"><strong>ValueError</strong></a> – if database has different license or usage</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.9)"><strong>ValueError</strong></a> – if different media, rater, scheme or split with
+    same ID is found</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.9)"><strong>ValueError</strong></a> – if table data cannot be combined (e.g. values in
+    same position overlap)</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py attribute">
@@ -1297,8 +1409,11 @@ This requires that:</p>
 <li><p>in places where the indices overlap the values of both columns
 match or one column contains <code class="docutils literal notranslate"><span class="pre">NaN</span></code></p></li>
 </ol>
-<p>References to schemes and raters are always preserved.
-Media and split information only when they match.</p>
+<p>Media and split information,
+as well as,
+references to schemes and raters are discarded.
+If you intend to keep them,
+use <a class="reference internal" href="#audformat.Table.update" title="audformat.Table.update"><code class="xref py py-meth docutils literal notranslate"><span class="pre">audformat.Table.update()</span></code></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>other</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Table</span></code>) – the other table</p>
@@ -1366,6 +1481,17 @@ Media and split information only when they match.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>new <code class="docutils literal notranslate"><span class="pre">Table</span></code> object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="audformat.Table.db">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">db</span></code><a class="headerlink" href="#audformat.Table.db" title="Permalink to this definition">¶</a></dt>
+<dd><p>Database object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>database object or <code class="docutils literal notranslate"><span class="pre">None</span></code> if not assigned yet</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1611,6 +1737,20 @@ and ask to delete one of the files.</p>
 </dl>
 </dd></dl>
 
+<dl class="py method">
+<dt id="audformat.Table.media">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">media</span></code><a class="headerlink" href="#audformat.Table.media" title="Permalink to this definition">¶</a></dt>
+<dd><p>Media object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Media</span></code>]</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>media object or <code class="docutils literal notranslate"><span class="pre">None</span></code> if not available</p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py attribute">
 <dt id="audformat.Table.media_id">
 <code class="sig-name descname"><span class="pre">media_id</span></code><a class="headerlink" href="#audformat.Table.media_id" title="Permalink to this definition">¶</a></dt>
@@ -1727,6 +1867,20 @@ values have to match its <code class="docutils literal notranslate"><span class=
 </dl>
 </dd></dl>
 
+<dl class="py method">
+<dt id="audformat.Table.split">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">split</span></code><a class="headerlink" href="#audformat.Table.split" title="Permalink to this definition">¶</a></dt>
+<dd><p>Split object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Split</span></code>]</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>split object or <code class="docutils literal notranslate"><span class="pre">None</span></code> if not available</p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py attribute">
 <dt id="audformat.Table.split_id">
 <code class="sig-name descname"><span class="pre">split_id</span></code><a class="headerlink" href="#audformat.Table.split_id" title="Permalink to this definition">¶</a></dt>
@@ -1751,6 +1905,51 @@ values have to match its <code class="docutils literal notranslate"><span class=
 <dt id="audformat.Table.type">
 <code class="sig-name descname"><span class="pre">type</span></code><a class="headerlink" href="#audformat.Table.type" title="Permalink to this definition">¶</a></dt>
 <dd><p>Table type</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="audformat.Table.update">
+<code class="sig-name descname"><span class="pre">update</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">others</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/table.html#Table.update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.Table.update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update table with other table(s).</p>
+<p>Table which calls <code class="docutils literal notranslate"><span class="pre">update()</span></code> must be assigned to a database.
+For all tables media and split must match.</p>
+<p>Columns that are not yet part of the table will be added and
+referenced schemes or raters are copied.
+For overlapping columns, schemes and raters must match.</p>
+<p>Columns with the same identifier are combined to a single column.
+This requires that both columns have the same dtype
+and if <code class="docutils literal notranslate"><span class="pre">overwrite</span></code> is set to <code class="docutils literal notranslate"><span class="pre">False</span></code>,
+values in places where the indices overlap have to match
+or one column contains <code class="docutils literal notranslate"><span class="pre">NaN</span></code>.
+If <code class="docutils literal notranslate"><span class="pre">overwrite</span></code> is set to <code class="docutils literal notranslate"><span class="pre">True</span></code>,
+the value of the last table in the list is kept.</p>
+<p>The index type of the table must not change.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>others</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Table</span></code>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Table</span></code>]]) – table object(s)</p></li>
+<li><p><strong>overwrite</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – overwrite values where indices overlap</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Table</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>the updated table</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.9)"><strong>RuntimeError</strong></a> – if table is not assign to a database</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.9)"><strong>ValueError</strong></a> – if split or media does not match</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.9)"><strong>ValueError</strong></a> – if overlapping columns reference different schemes
+    or raters</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.9)"><strong>ValueError</strong></a> – if a missing scheme or rater cannot be copied
+    because a different object with the same ID exists</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.9)"><strong>ValueError</strong></a> – if values in same position overlap</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.9)"><strong>ValueError</strong></a> – if operation would change the index type of the table</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -1781,7 +1980,7 @@ values have to match its <code class="docutils literal notranslate"><span class=
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2021/02/23 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2021/03/18 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>

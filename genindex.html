@@ -72,7 +72,7 @@
             
             
               <div class="version">
-                v0.9.8
+                v0.10.0
               </div>
             
           
@@ -103,6 +103,7 @@
 <li class="toctree-l1"><a class="reference internal" href="accessing-data.html">Working with a database</a></li>
 <li class="toctree-l1"><a class="reference internal" href="combine-tables.html">Combine tables</a></li>
 <li class="toctree-l1"><a class="reference internal" href="map-scheme.html">Map scheme labels</a></li>
+<li class="toctree-l1"><a class="reference internal" href="update-database.html">Update a database</a></li>
 <li class="toctree-l1"><a class="reference internal" href="emodb-example.html">Emodb example</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Format specification</span></p>
@@ -179,7 +180,7 @@
         
             
             
-              <a href="https://github.com/audeering/audformat/blob/v0.9.8/docs/genindex" class="fa fa-github"> Edit on GitHub</a>
+              <a href="https://github.com/audeering/audformat/blob/v0.10.0/docs/genindex" class="fa fa-github"> Edit on GitHub</a>
             
           
         
@@ -359,14 +360,16 @@
 </li>
       <li><a href="api-define.html#audformat.define.DataType.DATE">DATE (audformat.define.DataType attribute)</a>
 </li>
+      <li><a href="api.html#audformat.Table.db">db() (audformat.Table property)</a>
+</li>
       <li><a href="api-define.html#audformat.define.SplitType.DEVELOP">DEVELOP (audformat.define.SplitType attribute)</a>
 </li>
       <li><a href="api.html#audformat.Table.df">df() (audformat.Table property)</a>
 </li>
-      <li><a href="api.html#audformat.Scheme.draw">draw() (audformat.Scheme method)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api.html#audformat.Scheme.draw">draw() (audformat.Scheme method)</a>
+</li>
       <li><a href="api.html#audformat.Table.drop_columns">drop_columns() (audformat.Table method)</a>
 </li>
       <li><a href="api.html#audformat.Database.drop_files">drop_files() (audformat.Database method)</a>
@@ -519,10 +522,12 @@
 </li>
       <li><a href="api.html#audformat.Media">Media (class in audformat)</a>
 </li>
-      <li><a href="api.html#audformat.Table.media_id">media_id (audformat.Table attribute)</a>
+      <li><a href="api.html#audformat.Table.media">media() (audformat.Table property)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api.html#audformat.Table.media_id">media_id (audformat.Table attribute)</a>
+</li>
       <li><a href="api-define.html#audformat.define.MediaType">MediaType (class in audformat.define)</a>
 </li>
       <li><a href="api.html#audformat.Scheme.minimum">minimum (audformat.Scheme attribute)</a>
@@ -600,6 +605,8 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api.html#audformat.Rater">Rater (class in audformat)</a>
 </li>
+      <li><a href="api.html#audformat.Column.rater">rater() (audformat.Column property)</a>
+</li>
       <li><a href="api.html#audformat.Column.rater_id">rater_id (audformat.Column attribute)</a>
 </li>
       <li><a href="api.html#audformat.Database.raters">raters (audformat.Database attribute)</a>
@@ -630,6 +637,8 @@
       </ul></li>
       <li><a href="api.html#audformat.Scheme">Scheme (class in audformat)</a>
 </li>
+      <li><a href="api.html#audformat.Column.scheme">scheme() (audformat.Column property)</a>
+</li>
       <li><a href="api.html#audformat.Column.scheme_id">scheme_id (audformat.Column attribute)</a>
 </li>
       <li><a href="api.html#audformat.Database.schemes">schemes (audformat.Database attribute)</a>
@@ -652,6 +661,8 @@
 </li>
       <li><a href="api.html#audformat.Split">Split (class in audformat)</a>
 </li>
+      <li><a href="api.html#audformat.Table.split">split() (audformat.Table property)</a>
+</li>
       <li><a href="api.html#audformat.Table.split_id">split_id (audformat.Table attribute)</a>
 </li>
       <li><a href="api.html#audformat.Database.splits">splits (audformat.Database attribute)</a>
@@ -672,6 +683,8 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api.html#audformat.Table">Table (class in audformat)</a>
 </li>
+      <li><a href="api.html#audformat.Column.table">table() (audformat.Column property)</a>
+</li>
       <li><a href="api.html#audformat.Database.tables">tables (audformat.Database attribute)</a>
 </li>
       <li><a href="api-define.html#audformat.define.TableStorageFormat">TableStorageFormat (class in audformat.define)</a>
@@ -682,10 +695,10 @@
 </li>
       <li><a href="api-utils.html#audformat.utils.to_filewise_index">to_filewise_index() (in module audformat.utils)</a>
 </li>
-      <li><a href="api.html#audformat.Scheme.to_pandas_dtype">to_pandas_dtype() (audformat.Scheme method)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api.html#audformat.Scheme.to_pandas_dtype">to_pandas_dtype() (audformat.Scheme method)</a>
+</li>
       <li><a href="api-utils.html#audformat.utils.to_segmented_index">to_segmented_index() (in module audformat.utils)</a>
 </li>
       <li><a href="api-define.html#audformat.define.SplitType.TRAIN">TRAIN (audformat.define.SplitType attribute)</a>
@@ -712,6 +725,12 @@
 </li>
       <li><a href="api-define.html#audformat.define.Usage.UNRESTRICTED">UNRESTRICTED (audformat.define.Usage attribute)</a>
 </li>
+      <li><a href="api.html#audformat.Database.update">update() (audformat.Database method)</a>
+
+      <ul>
+        <li><a href="api.html#audformat.Table.update">(audformat.Table method)</a>
+</li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api.html#audformat.Database.usage">usage (audformat.Database attribute)</a>
@@ -756,7 +775,7 @@
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2021/02/23 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2021/03/18 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>

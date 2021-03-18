@@ -72,7 +72,7 @@
             
             
               <div class="version">
-                v0.9.8
+                v0.10.0
               </div>
             
           
@@ -103,6 +103,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../accessing-data.html">Working with a database</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../combine-tables.html">Combine tables</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../map-scheme.html">Map scheme labels</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../update-database.html">Update a database</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../emodb-example.html">Emodb example</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Format specification</span></p>
@@ -381,7 +382,10 @@
         <span class="n">af</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">sampling_rate</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="create_db"><a class="viewcode-back" href="../../../api-testing.html#audformat.testing.create_db">[docs]</a><span class="k">def</span> <span class="nf">create_db</span><span class="p">(</span><span class="n">minimal</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Database</span><span class="p">:</span>
+<div class="viewcode-block" id="create_db"><a class="viewcode-back" href="../../../api-testing.html#audformat.testing.create_db">[docs]</a><span class="k">def</span> <span class="nf">create_db</span><span class="p">(</span>
+        <span class="n">minimal</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Database</span><span class="p">:</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Create test database.</span>
 
 <span class="sd">    Creates a test database called ``unittest`` with a filewise</span>
@@ -389,6 +393,7 @@
 
 <span class="sd">    Args:</span>
 <span class="sd">        minimal: create minimal database without tables</span>
+<span class="sd">        data: create tables from pandas objects</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        database object</span>
@@ -411,8 +416,29 @@
     <span class="n">db</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="s1">&#39;A database for unit testing.&#39;</span>
     <span class="n">db</span><span class="o">.</span><span class="n">author</span> <span class="o">=</span> <span class="s1">&#39;J. Wagner, H. Wierstorf&#39;</span>
     <span class="n">db</span><span class="o">.</span><span class="n">organization</span> <span class="o">=</span> <span class="s1">&#39;audEERING GmbH&#39;</span>
-    <span class="n">db</span><span class="o">.</span><span class="n">license</span> <span class="o">=</span> <span class="n">define</span><span class="o">.</span><span class="n">License</span><span class="o">.</span><span class="n">CC0_1_0</span><span class="p">,</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">license</span> <span class="o">=</span> <span class="n">define</span><span class="o">.</span><span class="n">License</span><span class="o">.</span><span class="n">CC0_1_0</span>
     <span class="n">db</span><span class="o">.</span><span class="n">meta</span><span class="p">[</span><span class="s1">&#39;audformat&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;https://github.com/audeering/audformat&#39;</span>
+
+    <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+
+        <span class="k">def</span> <span class="nf">to_scheme_type</span><span class="p">(</span><span class="n">series</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">series</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;int&#39;</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">define</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">INTEGER</span>
+            <span class="k">if</span> <span class="n">series</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;float&#39;</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">define</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">FLOAT</span>
+            <span class="k">return</span> <span class="s1">&#39;str&#39;</span>
+
+        <span class="k">for</span> <span class="n">table_id</span><span class="p">,</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">):</span>
+                <span class="n">obj</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">to_frame</span><span class="p">()</span>
+            <span class="n">db</span><span class="p">[</span><span class="n">table_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">Table</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">column_id</span><span class="p">,</span> <span class="n">column</span> <span class="ow">in</span> <span class="n">obj</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">dtype</span> <span class="o">=</span> <span class="n">to_scheme_type</span><span class="p">(</span><span class="n">column</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">dtype</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">:</span>
+                    <span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="n">dtype</span><span class="p">]</span> <span class="o">=</span> <span class="n">Scheme</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span>
+                <span class="n">db</span><span class="p">[</span><span class="n">table_id</span><span class="p">][</span><span class="n">column_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">scheme_id</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+            <span class="n">db</span><span class="p">[</span><span class="n">table_id</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">db</span>
 
     <span class="c1">#########</span>
     <span class="c1"># Media #</span>
@@ -519,7 +545,7 @@
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2021/02/23 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2021/03/18 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>

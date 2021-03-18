@@ -72,7 +72,7 @@
             
             
               <div class="version">
-                v0.9.8
+                v0.10.0
               </div>
             
           
@@ -103,6 +103,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../accessing-data.html">Working with a database</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../combine-tables.html">Combine tables</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../map-scheme.html">Map scheme labels</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../update-database.html">Update a database</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../emodb-example.html">Emodb example</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Format specification</span></p>
@@ -191,6 +192,7 @@
             
   <h1>Source code for audformat.core.database</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">import</span> <span class="nn">itertools</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">typing</span>
 
@@ -229,6 +231,7 @@
 <span class="sd">        languages: list of languages</span>
 <span class="sd">        description: database description</span>
 <span class="sd">        author: database author(s)</span>
+<span class="sd">        organization: organization(s) maintaining the database</span>
 <span class="sd">        license: database license.</span>
 <span class="sd">            You can use a custom license</span>
 <span class="sd">            or pick one from :attr:`audformat.define.License`.</span>
@@ -595,6 +598,141 @@
                 <span class="n">task_description</span><span class="o">=</span><span class="s1">&#39;Save tables&#39;</span><span class="p">,</span>
             <span class="p">)</span></div>
 
+<div class="viewcode-block" id="Database.update"><a class="viewcode-back" href="../../../api.html#audformat.Database.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">others</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="s1">&#39;Database&#39;</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="s1">&#39;Database&#39;</span><span class="p">]],</span>
+            <span class="o">*</span><span class="p">,</span>
+            <span class="n">overwrite</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Database&#39;</span><span class="p">:</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Update database with other database(s).</span>
+
+<span class="sd">        In order to update a database, *license* and *usage* have to match.</span>
+<span class="sd">        *Media*, *raters*, *schemes* and *splits* that are not part of</span>
+<span class="sd">        the database yet are added. Other fields will be updated by</span>
+<span class="sd">        applying the following rules:</span>
+
+<span class="sd">        ============= =====================================</span>
+<span class="sd">        **field**     **result**</span>
+<span class="sd">        ------------- -------------------------------------</span>
+<span class="sd">        author        &#39;db.author, other.author&#39;</span>
+<span class="sd">        description   db.description</span>
+<span class="sd">        expires       min(db.expires, other.expires)</span>
+<span class="sd">        languages     db.languages + other.languages</span>
+<span class="sd">        license_url   db.license_url</span>
+<span class="sd">        meta          db.meta + other.meta</span>
+<span class="sd">        name          db.name</span>
+<span class="sd">        organization  &#39;db.organization, other.organization&#39;</span>
+<span class="sd">        source        &#39;db.source, other.source&#39;</span>
+<span class="sd">        ============= =====================================</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            others: database object(s)</span>
+<span class="sd">            overwrite: overwrite table values where indices overlap</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            the updated database</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError: if database has different license or usage</span>
+<span class="sd">            ValueError: if different media, rater, scheme or split with</span>
+<span class="sd">                same ID is found</span>
+<span class="sd">            ValueError: if table data cannot be combined (e.g. values in</span>
+<span class="sd">                same position overlap)</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">others</span><span class="p">,</span> <span class="n">Database</span><span class="p">):</span>
+            <span class="n">others</span> <span class="o">=</span> <span class="p">[</span><span class="n">others</span><span class="p">]</span>
+
+        <span class="k">def</span> <span class="nf">assert_equal</span><span class="p">(</span>
+                <span class="n">other</span><span class="p">:</span> <span class="n">Database</span><span class="p">,</span>
+                <span class="n">field</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="p">):</span>
+            <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Assert fields are equal.&quot;&quot;&quot;</span>
+            <span class="n">value1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">field</span><span class="p">]</span>
+            <span class="n">value2</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">field</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">value1</span> <span class="o">!=</span> <span class="n">value2</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;Cannot update database, &quot;</span>
+                    <span class="s2">&quot;found different value for &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;&#39;db.</span><span class="si">{</span><span class="n">field</span><span class="si">}</span><span class="s2">&#39;:</span><span class="se">\n</span><span class="s2">&quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">value1</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+                    <span class="s2">&quot;!=</span><span class="se">\n</span><span class="s2">&quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">value2</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">join_dict</span><span class="p">(</span>
+                <span class="n">field</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                <span class="n">ds</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">dict</span><span class="p">],</span>
+        <span class="p">):</span>
+            <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Join list of dictionaries.</span>
+
+<span class="sd">            Raise error if dictionaries have same key with different values.</span>
+
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="n">d</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">d_other</span> <span class="ow">in</span> <span class="n">ds</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+                <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">d_other</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">d</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">d</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">!=</span> <span class="n">value</span><span class="p">:</span>
+                            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                                <span class="s2">&quot;Cannot update database, &quot;</span>
+                                <span class="s2">&quot;found different value for &quot;</span>
+                                <span class="sa">f</span><span class="s2">&quot;&#39;db.</span><span class="si">{</span><span class="n">field</span><span class="si">}</span><span class="s2">[&#39;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">&#39;]&#39;:</span><span class="se">\n</span><span class="s2">&quot;</span>
+                                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">d</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+                                <span class="s2">&quot;!=</span><span class="se">\n</span><span class="s2">&quot;</span>
+                                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">d_other</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+                            <span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">d</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+            <span class="k">return</span> <span class="n">d</span>
+
+        <span class="k">def</span> <span class="nf">join_field</span><span class="p">(</span>
+                <span class="n">other</span><span class="p">:</span> <span class="n">Database</span><span class="p">,</span>
+                <span class="n">field</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                <span class="n">op</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Callable</span><span class="p">,</span>
+        <span class="p">):</span>
+            <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Join two fields of db header.&quot;&quot;&quot;</span>
+            <span class="n">value1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">field</span><span class="p">]</span>
+            <span class="n">value2</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">field</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">value1</span> <span class="o">!=</span> <span class="n">value2</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">value1</span> <span class="ow">and</span> <span class="n">value2</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">field</span><span class="p">]</span> <span class="o">=</span> <span class="n">op</span><span class="p">([</span><span class="n">value1</span><span class="p">,</span> <span class="n">value2</span><span class="p">])</span>
+                <span class="k">elif</span> <span class="n">value1</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">field</span><span class="p">]</span> <span class="o">=</span> <span class="n">value1</span>
+                <span class="k">elif</span> <span class="n">value2</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">field</span><span class="p">]</span> <span class="o">=</span> <span class="n">value2</span>
+
+        <span class="c1"># assert equal fields</span>
+        <span class="k">for</span> <span class="n">other</span> <span class="ow">in</span> <span class="n">others</span><span class="p">:</span>
+            <span class="n">assert_equal</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="s1">&#39;license&#39;</span><span class="p">)</span>
+            <span class="n">assert_equal</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="s1">&#39;usage&#39;</span><span class="p">)</span>
+
+        <span class="c1"># join fields</span>
+        <span class="k">for</span> <span class="n">other</span> <span class="ow">in</span> <span class="n">others</span><span class="p">:</span>
+            <span class="n">join_field</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="s1">&#39;author&#39;</span><span class="p">,</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">)</span>
+            <span class="n">join_field</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="s1">&#39;expires&#39;</span><span class="p">,</span> <span class="nb">min</span><span class="p">)</span>
+            <span class="n">join_field</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="s1">&#39;languages&#39;</span><span class="p">,</span> <span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="o">.</span><span class="n">from_iterable</span><span class="p">)</span>
+            <span class="c1"># remove duplicates whilst preserving order</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">languages</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">dict</span><span class="o">.</span><span class="n">fromkeys</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">languages</span><span class="p">))</span>
+            <span class="n">join_field</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="s1">&#39;media&#39;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">join_dict</span><span class="p">(</span><span class="s1">&#39;media&#39;</span><span class="p">,</span> <span class="n">x</span><span class="p">))</span>
+            <span class="n">join_field</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="s1">&#39;meta&#39;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">join_dict</span><span class="p">(</span><span class="s1">&#39;meta&#39;</span><span class="p">,</span> <span class="n">x</span><span class="p">))</span>
+            <span class="n">join_field</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="s1">&#39;organization&#39;</span><span class="p">,</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">)</span>
+            <span class="n">join_field</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="s1">&#39;schemes&#39;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">join_dict</span><span class="p">(</span><span class="s1">&#39;schemes&#39;</span><span class="p">,</span> <span class="n">x</span><span class="p">))</span>
+            <span class="n">join_field</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="s1">&#39;source&#39;</span><span class="p">,</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">)</span>
+            <span class="n">join_field</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="s1">&#39;splits&#39;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">join_dict</span><span class="p">(</span><span class="s1">&#39;splits&#39;</span><span class="p">,</span> <span class="n">x</span><span class="p">))</span>
+            <span class="n">join_field</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="s1">&#39;raters&#39;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">join_dict</span><span class="p">(</span><span class="s1">&#39;raters&#39;</span><span class="p">,</span> <span class="n">x</span><span class="p">))</span>
+
+        <span class="c1"># join tables</span>
+        <span class="k">for</span> <span class="n">other</span> <span class="ow">in</span> <span class="n">others</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">table_id</span><span class="p">,</span> <span class="n">table</span> <span class="ow">in</span> <span class="n">other</span><span class="o">.</span><span class="n">tables</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">table_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tables</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="p">[</span><span class="n">table_id</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="n">overwrite</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="p">[</span><span class="n">table_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="bp">self</span></div>
+
 <div class="viewcode-block" id="Database.__contains__"><a class="viewcode-back" href="../../../api.html#audformat.Database.__contains__">[docs]</a>    <span class="k">def</span> <span class="fm">__contains__</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
             <span class="n">table_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -815,7 +953,7 @@
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2021/02/23 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2021/03/18 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>

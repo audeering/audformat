@@ -74,7 +74,7 @@
             
             
               <div class="version">
-                v0.9.8
+                v0.10.0
               </div>
             
           
@@ -105,6 +105,7 @@
 <li class="toctree-l1"><a class="reference internal" href="accessing-data.html">Working with a database</a></li>
 <li class="toctree-l1"><a class="reference internal" href="combine-tables.html">Combine tables</a></li>
 <li class="toctree-l1"><a class="reference internal" href="map-scheme.html">Map scheme labels</a></li>
+<li class="toctree-l1"><a class="reference internal" href="update-database.html">Update a database</a></li>
 <li class="toctree-l1"><a class="reference internal" href="emodb-example.html">Emodb example</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Format specification</span></p>
@@ -190,7 +191,7 @@
         
             
             
-              <a href="https://github.com/audeering/audformat/blob/v0.9.8/docs/api-utils.rst" class="fa fa-github"> Edit on GitHub</a>
+              <a href="https://github.com/audeering/audformat/blob/v0.10.0/docs/api-utils.rst" class="fa fa-github"> Edit on GitHub</a>
             
           
         
@@ -210,7 +211,7 @@
 <h2>concat<a class="headerlink" href="#concat" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
 <dt id="audformat.utils.concat">
-<code class="sig-prename descclassname"><span class="pre">audformat.utils.</span></code><code class="sig-name descname"><span class="pre">concat</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">objs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/utils.html#concat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.utils.concat" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname"><span class="pre">audformat.utils.</span></code><code class="sig-name descname"><span class="pre">concat</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">objs</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/utils.html#concat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.utils.concat" title="Permalink to this definition">¶</a></dt>
 <dd><p>Concatenate objects.</p>
 <p>Objects must be conform to
 <a class="reference internal" href="data-tables.html#tables"><span class="std std-ref">table specifications</span></a>.</p>
@@ -218,16 +219,19 @@
 Missing values will be set to <code class="docutils literal notranslate"><span class="pre">NaN</span></code>.
 If at least one object is segmented, the output has a segmented index.</p>
 <p>Columns with the same identifier are combined to a single column.
-This requires that:</p>
-<ol class="arabic simple">
-<li><p>both columns have the same dtype</p></li>
-<li><p>in places where the indices overlap the values of both columns
-match or one column contains <code class="docutils literal notranslate"><span class="pre">NaN</span></code></p></li>
-</ol>
+This requires that both columns have the same dtype
+and if <code class="docutils literal notranslate"><span class="pre">overwrite</span></code> is set to <code class="docutils literal notranslate"><span class="pre">False</span></code>,
+values in places where the indices overlap have to match
+or one column contains <code class="docutils literal notranslate"><span class="pre">NaN</span></code>.
+If <code class="docutils literal notranslate"><span class="pre">overwrite</span></code> is set to <code class="docutils literal notranslate"><span class="pre">True</span></code>,
+the value of the last object in the list is kept.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>objs</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Series</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code>]]) – objects conform to
-<a class="reference internal" href="data-tables.html#tables"><span class="std std-ref">table specifications</span></a></p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>objs</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Series</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code>]]) – objects conform to
+<a class="reference internal" href="data-tables.html#tables"><span class="std std-ref">table specifications</span></a></p></li>
+<li><p><strong>overwrite</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – overwrite values where indices overlap</p></li>
+</ul>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Series</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code>]</p>
@@ -258,6 +262,42 @@ match or one column contains <code class="docutils literal notranslate"><span cl
 <span class="gp">... </span>    <span class="n">index</span><span class="o">=</span><span class="n">segmented_index</span><span class="p">([</span><span class="s1">&#39;f2&#39;</span><span class="p">,</span> <span class="s1">&#39;f3&#39;</span><span class="p">]),</span>
 <span class="gp">... </span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">concat</span><span class="p">([</span><span class="n">obj1</span><span class="p">,</span> <span class="n">obj2</span><span class="p">])</span>
+<span class="go">                 float string</span>
+<span class="go">file start  end</span>
+<span class="go">f1   0 days NaT    0.0    NaN</span>
+<span class="go">f2   0 days NaT    1.0      a</span>
+<span class="go">f3   0 days NaT    2.0      b</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">obj1</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="p">[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="n">index</span><span class="o">=</span><span class="n">filewise_index</span><span class="p">([</span><span class="s1">&#39;f1&#39;</span><span class="p">,</span> <span class="s1">&#39;f2&#39;</span><span class="p">]),</span>
+<span class="gp">... </span>    <span class="n">name</span><span class="o">=</span><span class="s1">&#39;float&#39;</span><span class="p">,</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">obj2</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="p">{</span>
+<span class="gp">... </span>        <span class="s1">&#39;float&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="mf">2.</span><span class="p">],</span>
+<span class="gp">... </span>        <span class="s1">&#39;string&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="p">},</span>
+<span class="gp">... </span>    <span class="n">index</span><span class="o">=</span><span class="n">filewise_index</span><span class="p">([</span><span class="s1">&#39;f2&#39;</span><span class="p">,</span> <span class="s1">&#39;f3&#39;</span><span class="p">]),</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">concat</span><span class="p">([</span><span class="n">obj1</span><span class="p">,</span> <span class="n">obj2</span><span class="p">])</span>
+<span class="go">      float string</span>
+<span class="go">file</span>
+<span class="go">f1      0.0    NaN</span>
+<span class="go">f2      1.0      a</span>
+<span class="go">f3      2.0      b</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">obj1</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="p">[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="n">index</span><span class="o">=</span><span class="n">filewise_index</span><span class="p">([</span><span class="s1">&#39;f1&#39;</span><span class="p">,</span> <span class="s1">&#39;f2&#39;</span><span class="p">]),</span>
+<span class="gp">... </span>    <span class="n">name</span><span class="o">=</span><span class="s1">&#39;float&#39;</span><span class="p">,</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">obj2</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="p">{</span>
+<span class="gp">... </span>        <span class="s1">&#39;float&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">],</span>
+<span class="gp">... </span>        <span class="s1">&#39;string&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="p">},</span>
+<span class="gp">... </span>    <span class="n">index</span><span class="o">=</span><span class="n">segmented_index</span><span class="p">([</span><span class="s1">&#39;f2&#39;</span><span class="p">,</span> <span class="s1">&#39;f3&#39;</span><span class="p">]),</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">concat</span><span class="p">([</span><span class="n">obj1</span><span class="p">,</span> <span class="n">obj2</span><span class="p">],</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="go">                 float string</span>
 <span class="go">file start  end</span>
 <span class="go">f1   0 days NaT    0.0    NaN</span>
@@ -551,7 +591,7 @@ data frame are also relative (absolute)</p></li>
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2021/02/23 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2021/03/18 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>

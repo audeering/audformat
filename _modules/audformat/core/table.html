@@ -72,7 +72,7 @@
             
             
               <div class="version">
-                v0.9.8
+                v0.10.0
               </div>
             
           
@@ -103,6 +103,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../accessing-data.html">Working with a database</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../combine-tables.html">Combine tables</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../map-scheme.html">Map scheme labels</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../update-database.html">Update a database</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../emodb-example.html">Emodb example</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Format specification</span></p>
@@ -190,11 +191,10 @@
            <div itemprop="articleBody">
             
   <h1>Source code for audformat.core.table</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Iterable</span>
+<span></span><span class="kn">import</span> <span class="nn">copy</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">typing</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 
 <span class="kn">import</span> <span class="nn">audeer</span>
@@ -211,9 +211,10 @@
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">audformat.core.index</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">filewise_index</span><span class="p">,</span>
-    <span class="n">segmented_index</span><span class="p">,</span>
     <span class="n">index_type</span><span class="p">,</span>
 <span class="p">)</span>
+<span class="kn">from</span> <span class="nn">audformat.core.media</span> <span class="kn">import</span> <span class="n">Media</span>
+<span class="kn">from</span> <span class="nn">audformat.core.split</span> <span class="kn">import</span> <span class="n">Split</span>
 <span class="kn">from</span> <span class="nn">audformat.core.typing</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">Values</span><span class="p">,</span>
 <span class="p">)</span>
@@ -312,8 +313,6 @@
 <span class="sd">        f4        3     NaN</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">TYPE</span> <span class="o">=</span> <span class="s1">&#39;type&#39;</span>
-
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
             <span class="n">index</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -344,6 +343,16 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_db</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_id</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">db</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Database object.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            database object or ``None`` if not assigned yet</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_db</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">df</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
@@ -418,6 +427,28 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">define</span><span class="o">.</span><span class="n">IndexType</span><span class="o">.</span><span class="n">SEGMENTED</span>
 
     <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">media</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">Media</span><span class="p">]:</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Media object.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            media object or ``None`` if not available</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">media_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">media</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">media_id</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">split</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">Split</span><span class="p">]:</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Split object.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            split object or ``None`` if not available</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">split_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">splits</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">split_id</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">starts</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">:</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Segment start times.</span>
 
@@ -446,7 +477,7 @@
             <span class="n">media_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">media_id</span><span class="p">,</span>
             <span class="n">split_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">split_id</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="n">table</span><span class="o">.</span><span class="n">_db</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_db</span>
+        <span class="n">table</span><span class="o">.</span><span class="n">_db</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span>
         <span class="k">for</span> <span class="n">column_id</span><span class="p">,</span> <span class="n">column</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="n">table</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="n">column_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span>
                 <span class="n">scheme_id</span><span class="o">=</span><span class="n">column</span><span class="o">.</span><span class="n">scheme_id</span><span class="p">,</span>
@@ -675,9 +706,10 @@
 
         <span class="k">if</span> <span class="nb">map</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
 
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_db</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-                    <span class="s1">&#39;Table is not assigned to a database.&#39;</span>
+                    <span class="s1">&#39;Cannot map schemes, &#39;</span>
+                    <span class="s1">&#39;table is not assigned to a database.&#39;</span>
                 <span class="p">)</span>
 
             <span class="k">if</span> <span class="ow">not</span> <span class="n">result_is_copy</span><span class="p">:</span>
@@ -740,8 +772,6 @@
                     <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">csv_file</span><span class="p">)</span>
                     <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getmtime</span><span class="p">(</span><span class="n">csv_file</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getmtime</span><span class="p">(</span><span class="n">pkl_file</span><span class="p">)</span>
             <span class="p">):</span>
-                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;CSV time:&#39;</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getmtime</span><span class="p">(</span><span class="n">csv_file</span><span class="p">))</span>
-                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;PKL time:&#39;</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getmtime</span><span class="p">(</span><span class="n">pkl_file</span><span class="p">))</span>
                 <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
                     <span class="sa">f</span><span class="s2">&quot;The table CSV file &#39;</span><span class="si">{</span><span class="n">csv_file</span><span class="si">}</span><span class="s2">&#39; is newer &quot;</span>
                     <span class="sa">f</span><span class="s2">&quot;than the table PKL file &#39;</span><span class="si">{</span><span class="n">pkl_file</span><span class="si">}</span><span class="s2">&#39;. &quot;</span>
@@ -929,6 +959,190 @@
         <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">values</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">)</span></div>
 
+<div class="viewcode-block" id="Table.update"><a class="viewcode-back" href="../../../api.html#audformat.Table.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">others</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="s1">&#39;Table&#39;</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="s1">&#39;Table&#39;</span><span class="p">]],</span>
+            <span class="o">*</span><span class="p">,</span>
+            <span class="n">overwrite</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Table&#39;</span><span class="p">:</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Update table with other table(s).</span>
+
+<span class="sd">        Table which calls ``update()`` must be assigned to a database.</span>
+<span class="sd">        For all tables media and split must match.</span>
+
+<span class="sd">        Columns that are not yet part of the table will be added and</span>
+<span class="sd">        referenced schemes or raters are copied.</span>
+<span class="sd">        For overlapping columns, schemes and raters must match.</span>
+
+<span class="sd">        Columns with the same identifier are combined to a single column.</span>
+<span class="sd">        This requires that both columns have the same dtype</span>
+<span class="sd">        and if ``overwrite`` is set to ``False``,</span>
+<span class="sd">        values in places where the indices overlap have to match</span>
+<span class="sd">        or one column contains ``NaN``.</span>
+<span class="sd">        If ``overwrite`` is set to ``True``,</span>
+<span class="sd">        the value of the last table in the list is kept.</span>
+
+<span class="sd">        The index type of the table must not change.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            others: table object(s)</span>
+<span class="sd">            overwrite: overwrite values where indices overlap</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            the updated table</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            RuntimeError: if table is not assign to a database</span>
+<span class="sd">            ValueError: if split or media does not match</span>
+<span class="sd">            ValueError: if overlapping columns reference different schemes</span>
+<span class="sd">                or raters</span>
+<span class="sd">            ValueError: if a missing scheme or rater cannot be copied</span>
+<span class="sd">                because a different object with the same ID exists</span>
+<span class="sd">            ValueError: if values in same position overlap</span>
+<span class="sd">            ValueError: if operation would change the index type of the table</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                <span class="s1">&#39;Table is not assigned to a database.&#39;</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">others</span><span class="p">,</span> <span class="n">Table</span><span class="p">):</span>
+            <span class="n">others</span> <span class="o">=</span> <span class="p">[</span><span class="n">others</span><span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">other</span> <span class="ow">in</span> <span class="n">others</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">!=</span> <span class="n">other</span><span class="o">.</span><span class="n">type</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s1">&#39;Cannot update a &#39;</span>
+                    <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="si">}</span><span class="s1"> &#39;</span>
+                    <span class="s1">&#39;table with a &#39;</span>
+                    <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">other</span><span class="o">.</span><span class="n">type</span><span class="si">}</span><span class="s1"> &#39;</span>
+                    <span class="s1">&#39;table.&#39;</span>
+                <span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">raise_error</span><span class="p">(</span>
+                <span class="n">msg</span><span class="p">,</span>
+                <span class="n">left</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">HeaderDict</span><span class="p">],</span>
+                <span class="n">right</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">HeaderDict</span><span class="p">],</span>
+        <span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">msg</span><span class="si">}</span><span class="s2">:</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">left</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;!=</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">right</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">assert_equal</span><span class="p">(</span>
+                <span class="n">msg</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                <span class="n">left</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">HeaderDict</span><span class="p">],</span>
+                <span class="n">right</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">HeaderDict</span><span class="p">],</span>
+        <span class="p">):</span>
+            <span class="n">equal</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">if</span> <span class="n">left</span> <span class="ow">and</span> <span class="n">right</span><span class="p">:</span>
+                <span class="n">equal</span> <span class="o">=</span> <span class="n">left</span> <span class="o">==</span> <span class="n">right</span>
+            <span class="k">elif</span> <span class="n">left</span> <span class="ow">or</span> <span class="n">right</span><span class="p">:</span>
+                <span class="n">equal</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">equal</span><span class="p">:</span>
+                <span class="n">raise_error</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">)</span>
+
+        <span class="n">missing_schemes</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">missing_raters</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">for</span> <span class="n">other</span> <span class="ow">in</span> <span class="n">others</span><span class="p">:</span>
+
+            <span class="n">assert_equal</span><span class="p">(</span>
+                <span class="s2">&quot;Media of table &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">other</span><span class="o">.</span><span class="n">_id</span><span class="si">}</span><span class="s2">&#39; &quot;</span>
+                <span class="s2">&quot;does not match&quot;</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">media</span><span class="p">,</span>
+                <span class="n">other</span><span class="o">.</span><span class="n">media</span><span class="p">,</span>
+            <span class="p">)</span>
+
+            <span class="n">assert_equal</span><span class="p">(</span>
+                <span class="s2">&quot;Split of table &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">other</span><span class="o">.</span><span class="n">_id</span><span class="si">}</span><span class="s2">&#39; &quot;</span>
+                <span class="s2">&quot;does not match&quot;</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">split</span><span class="p">,</span>
+                <span class="n">other</span><span class="o">.</span><span class="n">split</span><span class="p">,</span>
+            <span class="p">)</span>
+
+            <span class="c1"># assert schemes match for overlapping columns and</span>
+            <span class="c1"># look for missing schemes in new columns,</span>
+            <span class="c1"># raise an error if a different scheme with same ID exists</span>
+            <span class="k">for</span> <span class="n">column_id</span><span class="p">,</span> <span class="n">column</span> <span class="ow">in</span> <span class="n">other</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">column_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+                    <span class="n">assert_equal</span><span class="p">(</span>
+                        <span class="s2">&quot;Scheme of common column &quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">other</span><span class="o">.</span><span class="n">_id</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">column_id</span><span class="si">}</span><span class="s2">&#39; &quot;</span>
+                        <span class="s2">&quot;does not match&quot;</span><span class="p">,</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="n">column_id</span><span class="p">]</span><span class="o">.</span><span class="n">scheme</span><span class="p">,</span>
+                        <span class="n">column</span><span class="o">.</span><span class="n">scheme</span><span class="p">,</span>
+                    <span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">column</span><span class="o">.</span><span class="n">scheme</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">column</span><span class="o">.</span><span class="n">scheme_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">:</span>
+                            <span class="n">assert_equal</span><span class="p">(</span>
+                                <span class="s2">&quot;Cannot copy scheme of column &quot;</span>
+                                <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">other</span><span class="o">.</span><span class="n">_id</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">column_id</span><span class="si">}</span><span class="s2">&#39; &quot;</span>
+                                <span class="s2">&quot;as a different scheme with ID &quot;</span>
+                                <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">column</span><span class="o">.</span><span class="n">scheme_id</span><span class="si">}</span><span class="s2">&#39; &quot;</span>
+                                <span class="s2">&quot;exists&quot;</span><span class="p">,</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="n">column</span><span class="o">.</span><span class="n">scheme_id</span><span class="p">],</span>
+                                <span class="n">column</span><span class="o">.</span><span class="n">scheme</span><span class="p">,</span>
+                            <span class="p">)</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">missing_schemes</span><span class="p">[</span><span class="n">column</span><span class="o">.</span><span class="n">scheme_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">column</span><span class="o">.</span><span class="n">scheme</span>
+
+            <span class="c1"># assert raters match for overlapping columns and</span>
+            <span class="c1"># look for missing raters in new columns,</span>
+            <span class="c1"># raise an error if a different rater with same ID exists</span>
+            <span class="k">for</span> <span class="n">column_id</span><span class="p">,</span> <span class="n">column</span> <span class="ow">in</span> <span class="n">other</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">column_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+                    <span class="n">assert_equal</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;self[&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_id</span><span class="si">}</span><span class="s2">&#39;][&#39;</span><span class="si">{</span><span class="n">column_id</span><span class="si">}</span><span class="s2">&#39;].rater &quot;</span>
+                        <span class="s2">&quot;does not match &quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot;other[&#39;</span><span class="si">{</span><span class="n">other</span><span class="o">.</span><span class="n">_id</span><span class="si">}</span><span class="s2">&#39;][&#39;</span><span class="si">{</span><span class="n">column_id</span><span class="si">}</span><span class="s2">&#39;].rater&quot;</span><span class="p">,</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="n">column_id</span><span class="p">]</span><span class="o">.</span><span class="n">rater</span><span class="p">,</span>
+                        <span class="n">column</span><span class="o">.</span><span class="n">rater</span><span class="p">,</span>
+                    <span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">column</span><span class="o">.</span><span class="n">rater</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">column</span><span class="o">.</span><span class="n">rater_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">raters</span><span class="p">:</span>
+                            <span class="n">assert_equal</span><span class="p">(</span>
+                                <span class="sa">f</span><span class="s2">&quot;db1.raters[&#39;</span><span class="si">{</span><span class="n">column</span><span class="o">.</span><span class="n">scheme_id</span><span class="si">}</span><span class="s2">&#39;] &quot;</span>
+                                <span class="s2">&quot;does not match &quot;</span>
+                                <span class="sa">f</span><span class="s2">&quot;db2.raters[&#39;</span><span class="si">{</span><span class="n">column</span><span class="o">.</span><span class="n">scheme_id</span><span class="si">}</span><span class="s2">&#39;]&quot;</span><span class="p">,</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">raters</span><span class="p">[</span><span class="n">column</span><span class="o">.</span><span class="n">rater_id</span><span class="p">],</span>
+                                <span class="n">column</span><span class="o">.</span><span class="n">rater</span><span class="p">,</span>
+                            <span class="p">)</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">missing_raters</span><span class="p">[</span><span class="n">column</span><span class="o">.</span><span class="n">rater_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">column</span><span class="o">.</span><span class="n">rater</span>
+
+        <span class="c1"># concatenate table data</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span>
+            <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="n">other</span><span class="o">.</span><span class="n">df</span> <span class="k">for</span> <span class="n">other</span> <span class="ow">in</span> <span class="n">others</span><span class="p">],</span>
+            <span class="n">overwrite</span><span class="o">=</span><span class="n">overwrite</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">):</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">to_frame</span><span class="p">()</span>
+
+        <span class="c1"># insert missing schemes and raters</span>
+        <span class="k">for</span> <span class="n">scheme_id</span><span class="p">,</span> <span class="n">scheme</span> <span class="ow">in</span> <span class="n">missing_schemes</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="n">scheme_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">scheme</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">rater_id</span><span class="p">,</span> <span class="n">rater</span> <span class="ow">in</span> <span class="n">missing_raters</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">raters</span><span class="p">[</span><span class="n">rater_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">rater</span><span class="p">)</span>
+
+        <span class="c1"># insert new columns</span>
+        <span class="k">for</span> <span class="n">other</span> <span class="ow">in</span> <span class="n">others</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">column_id</span><span class="p">,</span> <span class="n">column</span> <span class="ow">in</span> <span class="n">other</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">column_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="n">column_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">column</span><span class="p">)</span>
+
+        <span class="c1"># update table data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_df</span> <span class="o">=</span> <span class="n">df</span>
+
+        <span class="k">return</span> <span class="bp">self</span></div>
+
 <div class="viewcode-block" id="Table.__add__"><a class="viewcode-back" href="../../../api.html#audformat.Table.__add__">[docs]</a>    <span class="k">def</span> <span class="fm">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="s1">&#39;Table&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Table&#39;</span><span class="p">:</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Create new table by combining two tables.</span>
 
@@ -943,8 +1157,11 @@
 <span class="sd">        2. in places where the indices overlap the values of both columns</span>
 <span class="sd">           match or one column contains ``NaN``</span>
 
-<span class="sd">        References to schemes and raters are always preserved.</span>
-<span class="sd">        Media and split information only when they match.</span>
+<span class="sd">        Media and split information,</span>
+<span class="sd">        as well as,</span>
+<span class="sd">        references to schemes and raters are discarded.</span>
+<span class="sd">        If you intend to keep them,</span>
+<span class="sd">        use :meth:`audformat.Table.update`.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            other: the other table</span>
@@ -954,36 +1171,13 @@
 <span class="sd">            ValueError: if values in the same position do not match</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span> <span class="o">==</span> <span class="n">other</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span>
-
-        <span class="c1"># concatenate table data</span>
         <span class="n">df</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">_df</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">_df</span><span class="p">])</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">):</span>
             <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">to_frame</span><span class="p">()</span>
 
-        <span class="c1"># create table</span>
-        <span class="n">media_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">media_id</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">media_id</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">media_id</span> <span class="k">else</span> <span class="kc">None</span>
-        <span class="n">split_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">split_id</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">split_id</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">split_id</span> <span class="k">else</span> <span class="kc">None</span>
-        <span class="n">table</span> <span class="o">=</span> <span class="n">Table</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">media_id</span><span class="o">=</span><span class="n">media_id</span><span class="p">,</span> <span class="n">split_id</span><span class="o">=</span><span class="n">split_id</span><span class="p">)</span>
-        <span class="n">table</span><span class="o">.</span><span class="n">_db</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_db</span>
-
-        <span class="c1"># add columns</span>
-        <span class="n">scheme_ids</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="n">rater_ids</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">for</span> <span class="n">column_id</span><span class="p">,</span> <span class="n">column</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="n">scheme_ids</span><span class="p">[</span><span class="n">column_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">column</span><span class="o">.</span><span class="n">scheme_id</span>
-            <span class="n">rater_ids</span><span class="p">[</span><span class="n">column_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">column</span><span class="o">.</span><span class="n">rater_id</span>
-        <span class="k">for</span> <span class="n">column_id</span><span class="p">,</span> <span class="n">column</span> <span class="ow">in</span> <span class="n">other</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="n">scheme_ids</span><span class="p">[</span><span class="n">column_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">column</span><span class="o">.</span><span class="n">scheme_id</span>
-            <span class="n">rater_ids</span><span class="p">[</span><span class="n">column_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">column</span><span class="o">.</span><span class="n">rater_id</span>
+        <span class="n">table</span> <span class="o">=</span> <span class="n">Table</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">column_id</span> <span class="ow">in</span> <span class="n">df</span><span class="p">:</span>
-            <span class="n">table</span><span class="p">[</span><span class="n">column_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span>
-                <span class="n">scheme_id</span><span class="o">=</span><span class="n">scheme_ids</span><span class="p">[</span><span class="n">column_id</span><span class="p">],</span>
-                <span class="n">rater_id</span><span class="o">=</span><span class="n">rater_ids</span><span class="p">[</span><span class="n">column_id</span><span class="p">],</span>
-            <span class="p">)</span>
-
-        <span class="c1"># set table data</span>
+            <span class="n">table</span><span class="p">[</span><span class="n">column_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">Column</span><span class="p">()</span>
         <span class="n">table</span><span class="o">.</span><span class="n">_df</span> <span class="o">=</span> <span class="n">df</span>
 
         <span class="k">return</span> <span class="n">table</span></div>
@@ -1028,7 +1222,7 @@
         <span class="n">usecols</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">dtypes</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="n">converters</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="n">schemes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_db</span><span class="o">.</span><span class="n">schemes</span>
+        <span class="n">schemes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">schemes</span>
 
         <span class="c1"># index columns</span>
 
@@ -1102,14 +1296,14 @@
 
     <span class="k">def</span> <span class="nf">_set_column</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">column</span><span class="p">:</span> <span class="n">Column</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Column</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">column</span><span class="o">.</span><span class="n">scheme_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> \
-                <span class="n">column</span><span class="o">.</span><span class="n">scheme_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_db</span><span class="o">.</span><span class="n">schemes</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">BadIdError</span><span class="p">(</span><span class="s1">&#39;column&#39;</span><span class="p">,</span> <span class="n">column</span><span class="o">.</span><span class="n">scheme_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_db</span><span class="o">.</span><span class="n">schemes</span><span class="p">)</span>
+                <span class="n">column</span><span class="o">.</span><span class="n">scheme_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">BadIdError</span><span class="p">(</span><span class="s1">&#39;column&#39;</span><span class="p">,</span> <span class="n">column</span><span class="o">.</span><span class="n">scheme_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">column</span><span class="o">.</span><span class="n">rater_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> \
-                <span class="n">column</span><span class="o">.</span><span class="n">rater_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_db</span><span class="o">.</span><span class="n">raters</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">BadIdError</span><span class="p">(</span><span class="s1">&#39;rater&#39;</span><span class="p">,</span> <span class="n">column</span><span class="o">.</span><span class="n">rater_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_db</span><span class="o">.</span><span class="n">raters</span><span class="p">)</span>
+                <span class="n">column</span><span class="o">.</span><span class="n">rater_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">raters</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">BadIdError</span><span class="p">(</span><span class="s1">&#39;rater&#39;</span><span class="p">,</span> <span class="n">column</span><span class="o">.</span><span class="n">rater_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">raters</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">column</span><span class="o">.</span><span class="n">scheme_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">dtype</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="n">column</span><span class="o">.</span><span class="n">scheme_id</span><span class="p">]</span><span class="o">.</span><span class="n">to_pandas_dtype</span><span class="p">()</span>
+            <span class="n">dtype</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="n">column</span><span class="o">.</span><span class="n">scheme_id</span><span class="p">]</span><span class="o">.</span><span class="n">to_pandas_dtype</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">dtype</span> <span class="o">=</span> <span class="nb">object</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_df</span><span class="p">[</span><span class="n">column_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
@@ -1146,7 +1340,7 @@
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2021/02/23 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2021/03/18 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>

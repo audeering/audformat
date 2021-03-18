@@ -12,6 +12,7 @@
     accessing-data
     combine-tables
     map-scheme
+    update-database
     emodb-example
 
 .. toctree::

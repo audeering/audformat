@@ -38,7 +38,7 @@
   <link rel="stylesheet" href="_static/katex-math.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Emodb example" href="emodb-example.html" />
+    <link rel="next" title="Update a database" href="update-database.html" />
     <link rel="prev" title="Combine tables" href="combine-tables.html" />
     
       
@@ -74,7 +74,7 @@
             
             
               <div class="version">
-                v0.9.8
+                v0.10.0
               </div>
             
           
@@ -105,6 +105,7 @@
 <li class="toctree-l1"><a class="reference internal" href="accessing-data.html">Working with a database</a></li>
 <li class="toctree-l1"><a class="reference internal" href="combine-tables.html">Combine tables</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Map scheme labels</a></li>
+<li class="toctree-l1"><a class="reference internal" href="update-database.html">Update a database</a></li>
 <li class="toctree-l1"><a class="reference internal" href="emodb-example.html">Emodb example</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Format specification</span></p>
@@ -181,7 +182,7 @@
         
             
             
-              <a href="https://github.com/audeering/audformat/blob/v0.9.8/docs/map-scheme.rst" class="fa fa-github"> Edit on GitHub</a>
+              <a href="https://github.com/audeering/audformat/blob/v0.10.0/docs/map-scheme.rst" class="fa fa-github"> Edit on GitHub</a>
             
           
         
@@ -460,11 +461,11 @@ a list of names is returned:</p>
   <tbody>
     <tr>
       <th>audio/001.wav</th>
-      <td>spk3</td>
+      <td>spk1</td>
     </tr>
     <tr>
       <th>audio/002.wav</th>
-      <td>spk3</td>
+      <td>spk2</td>
     </tr>
     <tr>
       <th>audio/003.wav</th>
@@ -472,7 +473,7 @@ a list of names is returned:</p>
     </tr>
     <tr>
       <th>audio/004.wav</th>
-      <td>spk3</td>
+      <td>spk2</td>
     </tr>
     <tr>
       <th>audio/005.wav</th>
@@ -518,11 +519,11 @@ a list of names is returned:</p>
   <tbody>
     <tr>
       <th>audio/001.wav</th>
-      <td>37</td>
+      <td>33</td>
     </tr>
     <tr>
       <th>audio/002.wav</th>
-      <td>37</td>
+      <td>30</td>
     </tr>
     <tr>
       <th>audio/003.wav</th>
@@ -530,7 +531,7 @@ a list of names is returned:</p>
     </tr>
     <tr>
       <th>audio/004.wav</th>
-      <td>37</td>
+      <td>30</td>
     </tr>
     <tr>
       <th>audio/005.wav</th>
@@ -584,12 +585,12 @@ as keys and scheme fields as values.</p>
     <tr>
       <th>audio/001.wav</th>
       <td>1</td>
-      <td>37</td>
+      <td>33</td>
     </tr>
     <tr>
       <th>audio/002.wav</th>
       <td>0</td>
-      <td>37</td>
+      <td>30</td>
     </tr>
     <tr>
       <th>audio/003.wav</th>
@@ -599,7 +600,7 @@ as keys and scheme fields as values.</p>
     <tr>
       <th>audio/004.wav</th>
       <td>1</td>
-      <td>37</td>
+      <td>30</td>
     </tr>
     <tr>
       <th>audio/005.wav</th>
@@ -656,14 +657,14 @@ and to map the same column to multiple fields.</p>
     <tr>
       <th>audio/001.wav</th>
       <td>goodbye</td>
-      <td>37</td>
+      <td>33</td>
       <td>male</td>
     </tr>
     <tr>
       <th>audio/002.wav</th>
       <td>hello</td>
-      <td>37</td>
-      <td>male</td>
+      <td>30</td>
+      <td>female</td>
     </tr>
     <tr>
       <th>audio/003.wav</th>
@@ -674,8 +675,8 @@ and to map the same column to multiple fields.</p>
     <tr>
       <th>audio/004.wav</th>
       <td>goodbye</td>
-      <td>37</td>
-      <td>male</td>
+      <td>30</td>
+      <td>female</td>
     </tr>
     <tr>
       <th>audio/005.wav</th>
@@ -737,18 +738,18 @@ we can include the column name in the list.</p>
     <tr>
       <th>audio/001.wav</th>
       <td>1</td>
-      <td>spk3</td>
+      <td>spk1</td>
       <td>goodbye</td>
-      <td>37</td>
+      <td>33</td>
       <td>male</td>
     </tr>
     <tr>
       <th>audio/002.wav</th>
       <td>0</td>
-      <td>spk3</td>
+      <td>spk2</td>
       <td>hello</td>
-      <td>37</td>
-      <td>male</td>
+      <td>30</td>
+      <td>female</td>
     </tr>
     <tr>
       <th>audio/003.wav</th>
@@ -761,10 +762,10 @@ we can include the column name in the list.</p>
     <tr>
       <th>audio/004.wav</th>
       <td>1</td>
-      <td>spk3</td>
+      <td>spk2</td>
       <td>goodbye</td>
-      <td>37</td>
-      <td>male</td>
+      <td>30</td>
+      <td>female</td>
     </tr>
     <tr>
       <th>audio/005.wav</th>
@@ -788,7 +789,7 @@ we can include the column name in the list.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="emodb-example.html" class="btn btn-neutral float-right" title="Emodb example" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="update-database.html" class="btn btn-neutral float-right" title="Update a database" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="combine-tables.html" class="btn btn-neutral float-left" title="Combine tables" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
@@ -803,7 +804,7 @@ we can include the column name in the list.</p>
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2021/02/23 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2021/03/18 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>

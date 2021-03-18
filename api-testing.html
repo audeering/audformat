@@ -74,7 +74,7 @@
             
             
               <div class="version">
-                v0.9.8
+                v0.10.0
               </div>
             
           
@@ -105,6 +105,7 @@
 <li class="toctree-l1"><a class="reference internal" href="accessing-data.html">Working with a database</a></li>
 <li class="toctree-l1"><a class="reference internal" href="combine-tables.html">Combine tables</a></li>
 <li class="toctree-l1"><a class="reference internal" href="map-scheme.html">Map scheme labels</a></li>
+<li class="toctree-l1"><a class="reference internal" href="update-database.html">Update a database</a></li>
 <li class="toctree-l1"><a class="reference internal" href="emodb-example.html">Emodb example</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Format specification</span></p>
@@ -186,7 +187,7 @@
         
             
             
-              <a href="https://github.com/audeering/audformat/blob/v0.9.8/docs/api-testing.rst" class="fa fa-github"> Edit on GitHub</a>
+              <a href="https://github.com/audeering/audformat/blob/v0.10.0/docs/api-testing.rst" class="fa fa-github"> Edit on GitHub</a>
             
           
         
@@ -213,13 +214,16 @@ that are of interest for creating unit tests.</p>
 <h2>create_db<a class="headerlink" href="#create-db" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
 <dt id="audformat.testing.create_db">
-<code class="sig-prename descclassname"><span class="pre">audformat.testing.</span></code><code class="sig-name descname"><span class="pre">create_db</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">minimal</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/testing.html#create_db"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.testing.create_db" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname"><span class="pre">audformat.testing.</span></code><code class="sig-name descname"><span class="pre">create_db</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">minimal</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/testing.html#create_db"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.testing.create_db" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create test database.</p>
 <p>Creates a test database called <code class="docutils literal notranslate"><span class="pre">unittest</span></code> with a filewise
 and segmented table.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>minimal</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – create minimal database without tables</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>minimal</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – create minimal database without tables</p></li>
+<li><p><strong>data</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Series</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code>]]]) – create tables from pandas objects</p></li>
+</ul>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Database</span></code></p>
@@ -321,7 +325,7 @@ and should create a sample in the amplitude range <code class="docutils literal 
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2021/02/23 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2021/03/18 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
