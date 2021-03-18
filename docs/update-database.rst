@@ -31,7 +31,7 @@ age labels for a hundred files.
 
     db['table'].df
 
-Now assume we record some more files that we want add to our original database.
+Now assume we record more files to add to our original database.
 To not confuse new and old data, we start from a fresh database containing
 only new files, get the annotations and update the original database.
 
