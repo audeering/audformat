@@ -627,7 +627,7 @@ def union(
     for obj in objs[1:]:
         index = index.union(obj)
 
-    if index_type(index) == define.IndexType.SEGMENTED:
+    if isinstance(index, pd.MultiIndex) and len(index.levels) == 3:
         # asserts that start and end are of type 'timedelta64[ns]'
         if index.empty:
             index = segmented_index()
