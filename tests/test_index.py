@@ -61,6 +61,43 @@ def to_array(value):
             ),
             marks=pytest.mark.xfail(raises=ValueError),
         ),
+        pytest.param(  # invalid file type
+            pd.Index([1, 2], name='file'),
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
+        pytest.param(  # invalid file type
+            pd.MultiIndex.from_arrays(
+                [
+                    [1, 2],
+                    pd.to_timedelta([0.0, 1.0], unit='s'),
+                    pd.to_timedelta([1.0, 2.0], unit='s'),
+                ],
+                names=['file', 'start', 'end'],
+            ),
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
+        pytest.param(  # invalid start type
+            pd.MultiIndex.from_arrays(
+                [
+                    ['f1', 'f2'],
+                    [0.0, 1.0],
+                    pd.to_timedelta([1.0, 2.0], unit='s'),
+                ],
+                names=['file', 'start', 'end'],
+            ),
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
+        pytest.param(  # invalid end type
+            pd.MultiIndex.from_arrays(
+                [
+                    ['f1', 'f2'],
+                    pd.to_timedelta([0.0, 1.0], unit='s'),
+                    [1.0, 2.0],
+                ],
+                names=['file', 'start', 'end'],
+            ),
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
     ]
 )
 def test_assert_index(obj):
