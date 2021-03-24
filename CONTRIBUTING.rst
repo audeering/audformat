@@ -21,7 +21,7 @@ you should get the newest development version from Github_::
     # Create virutal environment for this project
     # e.g.
     # virtualenv --python="python3"  $HOME/.envs/audformat
-    # source $HOME/.envs/audeer/bin/activate
+    # source $HOME/.envs/audformat/bin/activate
     pip install -r requirements.txt
 
 .. _Github: https://github.com/audeering/audformat
