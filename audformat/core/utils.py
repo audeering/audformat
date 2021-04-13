@@ -1,3 +1,4 @@
+import errno
 import os
 import typing as typing
 
@@ -521,12 +522,37 @@ def to_filewise_index(
 
 def to_segmented_index(
         obj: typing.Union[pd.Index, pd.Series, pd.DataFrame],
+        *,
+        allow_nat: bool = True,
+        root: str = None,
+        num_workers: typing.Optional[int] = 1,
+        verbose: bool = False,
 ) -> typing.Union[pd.Index, pd.Series, pd.DataFrame]:
     r"""Convert to segmented index.
+
+    If the input a filewise table,
+    ``start`` and ``end`` will be added as new levels to the index.
+    By default, ``start`` will be set to 0 and ``end`` to ``NaT``.
+
+    If ``allow_nat`` is set to ``False``,
+    all occurrences of ``end=NaT``
+    are replaced with the duration of the file.
+    This, however, requires that the referenced file exists.
+    If file names in the index are relative,
+    the ``root`` argument can be used to provide
+    the location where the files are stored.
 
     Args:
         obj: object conform to
             :ref:`table specifications <data-tables:Tables>`
+        allow_nat: if set to ``False``, ``end=NaT`` is replaced with file
+            duration
+        root: root directory under which the files referenced in the index
+            are stored
+        num_workers: number of parallel jobs.
+            If ``None`` will be set to the number of processors
+            on the machine multiplied by 5
+        verbose: show progress bar
 
     Returns:
         object with segmented index
@@ -534,9 +560,12 @@ def to_segmented_index(
     Raises:
         ValueError: if object not conform to
             :ref:`table specifications <data-tables:Tables>`
+        FileNotFoundError: if file is not found
 
     """
-    if index_type(obj) == define.IndexType.SEGMENTED:
+    is_segmented = index_type(obj) == define.IndexType.SEGMENTED
+
+    if is_segmented and allow_nat:
         return obj
 
     if isinstance(obj, (pd.Series, pd.DataFrame)):
@@ -544,17 +573,53 @@ def to_segmented_index(
     else:
         index = obj
 
-    index = segmented_index(
-        files=list(index),
-        starts=[0] * len(index),
-        ends=[pd.NaT] * len(index),
-    )
+    if not is_segmented:
+        index = segmented_index(
+            files=list(index),
+            starts=[0] * len(index),
+            ends=[pd.NaT] * len(index),
+        )
+
+    if not allow_nat:
+
+        ends = index.get_level_values(define.IndexField.END)
+        has_nat = pd.isna(ends)
+
+        if any(has_nat):
+
+            idx_nat = np.where(has_nat)[0]
+            files = index.get_level_values(define.IndexField.FILE)
+            starts = index.get_level_values(define.IndexField.START)
+
+            def job(file: str) -> float:
+                if root is not None and not os.path.isabs(file):
+                    file = os.path.join(root, file)
+                if not os.path.exists(file):
+                    raise FileNotFoundError(
+                        errno.ENOENT,
+                        os.strerror(errno.ENOENT),
+                        file,
+                    )
+                return audiofile.duration(file)
+
+            params = [([file], {}) for file in files[idx_nat]]
+            durs = audeer.run_tasks(
+                job,
+                params,
+                num_workers=num_workers,
+                progress_bar=verbose,
+                task_description='Read duration',
+            )
+            ends.values[idx_nat] = pd.to_timedelta(durs, unit='s')
+
+            index = segmented_index(files, starts, ends)
 
     if isinstance(obj, pd.Index):
         return index
 
     obj = obj.reset_index(drop=True)
     obj.index = index
+
     return obj
 
 

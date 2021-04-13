@@ -704,52 +704,133 @@ def test_read_csv(csv, result):
 
 
 @pytest.mark.parametrize(
-    'table_id',
-    ['files', 'segments']
+    'obj, allow_nat, root, expected',
+    [
+        # empty
+        (
+            audformat.filewise_index(),
+            True,
+            None,
+            audformat.segmented_index(),
+        ),
+        (
+            audformat.filewise_index(),
+            False,
+            None,
+            audformat.segmented_index(),
+        ),
+        (
+            audformat.segmented_index(),
+            True,
+            None,
+            audformat.segmented_index(),
+        ),
+        (
+            audformat.segmented_index(),
+            False,
+            None,
+            audformat.segmented_index(),
+        ),
+        # allow nat
+        (
+            audformat.filewise_index(pytest.DB.files[:2]),
+            True,
+            None,
+            audformat.segmented_index(pytest.DB.files[:2]),
+        ),
+        (
+            audformat.segmented_index(pytest.DB.files[:2]),
+            True,
+            None,
+            audformat.segmented_index(pytest.DB.files[:2]),
+        ),
+        (
+            audformat.segmented_index(
+                pytest.DB.files[:2],
+                [0.1, 0.5],
+                [0.2, pd.NaT],
+            ),
+            True,
+            None,
+            audformat.segmented_index(
+                pytest.DB.files[:2],
+                [0.1, 0.5],
+                [0.2, pd.NaT],
+            ),
+        ),
+        # forbid nat
+        (
+            audformat.filewise_index(pytest.DB.files[:2]),
+            False,
+            pytest.DB_ROOT,
+            audformat.segmented_index(
+                pytest.DB.files[:2],
+                [0, 0],
+                [pytest.FILE_DUR, pytest.FILE_DUR]
+            ),
+        ),
+        (
+            audformat.segmented_index(pytest.DB.files[:2]),
+            False,
+            pytest.DB_ROOT,
+            audformat.segmented_index(
+                pytest.DB.files[:2],
+                [0, 0],
+                [pytest.FILE_DUR, pytest.FILE_DUR]
+            ),
+        ),
+        (
+            audformat.segmented_index(
+                pytest.DB.files[:2],
+                [0.1, 0.5],
+                [0.2, pd.NaT],
+            ),
+            False,
+            pytest.DB_ROOT,
+            audformat.segmented_index(
+                pytest.DB.files[:2],
+                [0.1, 0.5],
+                [0.2, pytest.FILE_DUR],
+            ),
+        ),
+        # file not found
+        pytest.param(
+            audformat.filewise_index(pytest.DB.files[:2]),
+            False,
+            None,
+            None,
+            marks=pytest.mark.xfail(raises=FileNotFoundError),
+        ),
+        # series and frame
+        (
+            pd.Series(
+                [1, 2],
+                index=audformat.filewise_index(pytest.DB.files[:2]),
+            ),
+            True,
+            None,
+            audformat.segmented_index(pytest.DB.files[:2]),
+        ),
+        (
+            pd.DataFrame(
+                {'int': [1, 2], 'str': ['a', 'b']},
+                index=audformat.filewise_index(pytest.DB.files[:2]),
+            ),
+            True,
+            None,
+            audformat.segmented_index(pytest.DB.files[:2]),
+        ),
+    ]
 )
-def test_to_segmented_index(table_id):
-
-    # empty case
-    for obj in [
-        audformat.filewise_index(),
-        audformat.segmented_index(),
-        pd.Series(
-            index=audformat.filewise_index(),
-            dtype=float,
-        )
-    ]:
-        obj_segmented = audformat.utils.to_segmented_index(obj)
-        assert isinstance(obj_segmented, type(obj))
-        assert audformat.index_type(obj_segmented)\
-               == audformat.define.IndexType.SEGMENTED
-
-    # non-empty case
-    for column_id, column in pytest.DB[table_id].get().items():
-        series = utils.to_segmented_index(column)
-        pd.testing.assert_series_equal(series.reset_index(drop=True),
-                                       column.reset_index(drop=True))
-    df = utils.to_segmented_index(pytest.DB[table_id].get())
-    pd.testing.assert_frame_equal(
-        df.reset_index(drop=True),
-        pytest.DB[table_id].get().reset_index(drop=True),
+def test_to_segmented_index(obj, allow_nat, root, expected):
+    result = audformat.utils.to_segmented_index(
+        obj,
+        allow_nat=allow_nat,
+        root=root,
     )
-    if pytest.DB[table_id].is_filewise:
-        pd.testing.assert_index_equal(
-            df.index.get_level_values(define.IndexField.FILE),
-            pytest.DB[table_id].index.get_level_values(
-                define.IndexField.FILE
-            )
-        )
-
-        start = df.index.get_level_values(define.IndexField.START)
-        assert start.drop_duplicates()[0] == pd.Timedelta(0)
-        assert type(start) == pd.core.indexes.timedeltas.TimedeltaIndex
-
-        end = df.index.get_level_values(define.IndexField.END)
-        assert end.dropna().empty
-        assert type(end) == pd.core.indexes.timedeltas.TimedeltaIndex
-    else:
-        pd.testing.assert_index_equal(df.index, pytest.DB[table_id].index)
+    if not isinstance(result, pd.Index):
+        result = result.index
+    pd.testing.assert_index_equal(result, expected)
 
 
 @pytest.mark.parametrize(
@@ -783,15 +864,13 @@ def test_to_segmented_index(table_id):
         )
     ]
 )
-def test_to_filewise(tmpdir, output_folder, table_id, expected_file_names):
-
-    testing.create_audio_files(pytest.DB, root=tmpdir, file_duration='1s')
+def test_to_filewise(output_folder, table_id, expected_file_names):
 
     has_existed = os.path.exists(output_folder)
 
     frame = utils.to_filewise_index(
         obj=pytest.DB[table_id].get(),
-        root=tmpdir,
+        root=pytest.DB_ROOT,
         output_folder=output_folder,
         num_workers=3,
     )
@@ -808,7 +887,7 @@ def test_to_filewise(tmpdir, output_folder, table_id, expected_file_names):
 
     if table_id == 'files':
         # files of unprocessed frame are relative to `root`
-        files = [os.path.join(tmpdir, f) for f in files]
+        files = [os.path.join(pytest.DB_ROOT, f) for f in files]
     assert all(os.path.exists(f) for f in files)
 
     file_names = [f.split(os.path.sep)[-1].rsplit('.', 1)[0] for f in files]
