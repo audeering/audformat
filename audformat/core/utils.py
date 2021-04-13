@@ -525,6 +525,8 @@ def to_segmented_index(
         *,
         allow_nat: bool = True,
         root: str = None,
+        num_workers: typing.Optional[int] = 1,
+        verbose: bool = False,
 ) -> typing.Union[pd.Index, pd.Series, pd.DataFrame]:
     r"""Convert to segmented index.
 
@@ -545,7 +547,12 @@ def to_segmented_index(
             :ref:`table specifications <data-tables:Tables>`
         allow_nat: if set to ``False``, ``end=NaT`` is replaced with file
             duration
-        root: root directory to files in the index
+        root: root directory under which the files referenced in the index
+            are stored
+        num_workers: number of parallel jobs.
+            If ``None`` will be set to the number of processors
+            on the machine multiplied by 5
+        verbose: show progress bar
 
     Returns:
         object with segmented index
@@ -574,27 +581,37 @@ def to_segmented_index(
         )
 
     if not allow_nat:
+
         ends = index.get_level_values(define.IndexField.END)
         has_nat = pd.isna(ends)
+
         if any(has_nat):
+
+            idx_nat = np.where(has_nat)[0]
             files = index.get_level_values(define.IndexField.FILE)
             starts = index.get_level_values(define.IndexField.START)
-            ends = list(ends)
-            for idx_nat in np.where(has_nat)[0]:
-                path = files[idx_nat]
-                if root is not None and not os.path.isabs(path):
-                    path = os.path.join(root, path)
-                path = audeer.safe_path(path)
-                if not os.path.exists(path):
+
+            def job(file: str) -> float:
+                if root is not None and not os.path.isabs(file):
+                    file = os.path.join(root, file)
+                if not os.path.exists(file):
                     raise FileNotFoundError(
                         errno.ENOENT,
                         os.strerror(errno.ENOENT),
-                        path,
+                        file,
                     )
-                ends[idx_nat] = pd.to_timedelta(
-                    audiofile.duration(path),
-                    unit='s',
-                )
+                return audiofile.duration(file)
+
+            params = [([file], {}) for file in files[idx_nat]]
+            durs = audeer.run_tasks(
+                job,
+                params,
+                num_workers=num_workers,
+                progress_bar=verbose,
+                task_description='Read duration',
+            )
+            ends.values[idx_nat] = pd.to_timedelta(durs, unit='s')
+
             index = segmented_index(files, starts, ends)
 
     if isinstance(obj, pd.Index):
