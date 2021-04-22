@@ -7,6 +7,12 @@ The format is based on `Keep a Changelog`_,
 and this project adheres to `Semantic Versioning`_.
 
 
+Version 0.10.2 (2021-04-22)
+---------------------------
+
+* Changed: ``allow_nat`` argument to ``utils.to_segmented_index()``
+
+
 Version 0.10.1 (2021-03-31)
 ---------------------------
 
