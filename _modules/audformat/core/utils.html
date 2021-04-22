@@ -72,7 +72,7 @@
             
             
               <div class="version">
-                v0.10.1
+                v0.10.2
               </div>
             
           
@@ -191,7 +191,8 @@
            <div itemprop="articleBody">
             
   <h1>Source code for audformat.core.utils</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span></span><span class="kn">import</span> <span class="nn">errno</span>
+<span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">typing</span> <span class="k">as</span> <span class="nn">typing</span>
 
 <span class="kn">import</span> <span class="nn">iso639</span>
@@ -714,12 +715,37 @@
 
 <div class="viewcode-block" id="to_segmented_index"><a class="viewcode-back" href="../../../api-utils.html#audformat.utils.to_segmented_index">[docs]</a><span class="k">def</span> <span class="nf">to_segmented_index</span><span class="p">(</span>
         <span class="n">obj</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">],</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">allow_nat</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">root</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">num_workers</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">]:</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Convert to segmented index.</span>
+
+<span class="sd">    If the input a filewise table,</span>
+<span class="sd">    ``start`` and ``end`` will be added as new levels to the index.</span>
+<span class="sd">    By default, ``start`` will be set to 0 and ``end`` to ``NaT``.</span>
+
+<span class="sd">    If ``allow_nat`` is set to ``False``,</span>
+<span class="sd">    all occurrences of ``end=NaT``</span>
+<span class="sd">    are replaced with the duration of the file.</span>
+<span class="sd">    This, however, requires that the referenced file exists.</span>
+<span class="sd">    If file names in the index are relative,</span>
+<span class="sd">    the ``root`` argument can be used to provide</span>
+<span class="sd">    the location where the files are stored.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        obj: object conform to</span>
 <span class="sd">            :ref:`table specifications &lt;data-tables:Tables&gt;`</span>
+<span class="sd">        allow_nat: if set to ``False``, ``end=NaT`` is replaced with file</span>
+<span class="sd">            duration</span>
+<span class="sd">        root: root directory under which the files referenced in the index</span>
+<span class="sd">            are stored</span>
+<span class="sd">        num_workers: number of parallel jobs.</span>
+<span class="sd">            If ``None`` will be set to the number of processors</span>
+<span class="sd">            on the machine multiplied by 5</span>
+<span class="sd">        verbose: show progress bar</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        object with segmented index</span>
@@ -727,9 +753,12 @@
 <span class="sd">    Raises:</span>
 <span class="sd">        ValueError: if object not conform to</span>
 <span class="sd">            :ref:`table specifications &lt;data-tables:Tables&gt;`</span>
+<span class="sd">        FileNotFoundError: if file is not found</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">index_type</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span> <span class="o">==</span> <span class="n">define</span><span class="o">.</span><span class="n">IndexType</span><span class="o">.</span><span class="n">SEGMENTED</span><span class="p">:</span>
+    <span class="n">is_segmented</span> <span class="o">=</span> <span class="n">index_type</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span> <span class="o">==</span> <span class="n">define</span><span class="o">.</span><span class="n">IndexType</span><span class="o">.</span><span class="n">SEGMENTED</span>
+
+    <span class="k">if</span> <span class="n">is_segmented</span> <span class="ow">and</span> <span class="n">allow_nat</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">obj</span>
 
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)):</span>
@@ -737,17 +766,53 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="n">index</span> <span class="o">=</span> <span class="n">obj</span>
 
-    <span class="n">index</span> <span class="o">=</span> <span class="n">segmented_index</span><span class="p">(</span>
-        <span class="n">files</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">index</span><span class="p">),</span>
-        <span class="n">starts</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">index</span><span class="p">),</span>
-        <span class="n">ends</span><span class="o">=</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">NaT</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">index</span><span class="p">),</span>
-    <span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">is_segmented</span><span class="p">:</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="n">segmented_index</span><span class="p">(</span>
+            <span class="n">files</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">index</span><span class="p">),</span>
+            <span class="n">starts</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">index</span><span class="p">),</span>
+            <span class="n">ends</span><span class="o">=</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">NaT</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">index</span><span class="p">),</span>
+        <span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">allow_nat</span><span class="p">:</span>
+
+        <span class="n">ends</span> <span class="o">=</span> <span class="n">index</span><span class="o">.</span><span class="n">get_level_values</span><span class="p">(</span><span class="n">define</span><span class="o">.</span><span class="n">IndexField</span><span class="o">.</span><span class="n">END</span><span class="p">)</span>
+        <span class="n">has_nat</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">isna</span><span class="p">(</span><span class="n">ends</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">has_nat</span><span class="p">):</span>
+
+            <span class="n">idx_nat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">has_nat</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">files</span> <span class="o">=</span> <span class="n">index</span><span class="o">.</span><span class="n">get_level_values</span><span class="p">(</span><span class="n">define</span><span class="o">.</span><span class="n">IndexField</span><span class="o">.</span><span class="n">FILE</span><span class="p">)</span>
+            <span class="n">starts</span> <span class="o">=</span> <span class="n">index</span><span class="o">.</span><span class="n">get_level_values</span><span class="p">(</span><span class="n">define</span><span class="o">.</span><span class="n">IndexField</span><span class="o">.</span><span class="n">START</span><span class="p">)</span>
+
+            <span class="k">def</span> <span class="nf">job</span><span class="p">(</span><span class="n">file</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">root</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isabs</span><span class="p">(</span><span class="n">file</span><span class="p">):</span>
+                    <span class="n">file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">file</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">file</span><span class="p">):</span>
+                    <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span>
+                        <span class="n">errno</span><span class="o">.</span><span class="n">ENOENT</span><span class="p">,</span>
+                        <span class="n">os</span><span class="o">.</span><span class="n">strerror</span><span class="p">(</span><span class="n">errno</span><span class="o">.</span><span class="n">ENOENT</span><span class="p">),</span>
+                        <span class="n">file</span><span class="p">,</span>
+                    <span class="p">)</span>
+                <span class="k">return</span> <span class="n">audiofile</span><span class="o">.</span><span class="n">duration</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+
+            <span class="n">params</span> <span class="o">=</span> <span class="p">[([</span><span class="n">file</span><span class="p">],</span> <span class="p">{})</span> <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">files</span><span class="p">[</span><span class="n">idx_nat</span><span class="p">]]</span>
+            <span class="n">durs</span> <span class="o">=</span> <span class="n">audeer</span><span class="o">.</span><span class="n">run_tasks</span><span class="p">(</span>
+                <span class="n">job</span><span class="p">,</span>
+                <span class="n">params</span><span class="p">,</span>
+                <span class="n">num_workers</span><span class="o">=</span><span class="n">num_workers</span><span class="p">,</span>
+                <span class="n">progress_bar</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span>
+                <span class="n">task_description</span><span class="o">=</span><span class="s1">&#39;Read duration&#39;</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">ends</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">idx_nat</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_timedelta</span><span class="p">(</span><span class="n">durs</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;s&#39;</span><span class="p">)</span>
+
+            <span class="n">index</span> <span class="o">=</span> <span class="n">segmented_index</span><span class="p">(</span><span class="n">files</span><span class="p">,</span> <span class="n">starts</span><span class="p">,</span> <span class="n">ends</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">index</span>
 
     <span class="n">obj</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">obj</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">index</span>
+
     <span class="k">return</span> <span class="n">obj</span></div>
 
 
@@ -850,7 +915,7 @@
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2021/03/31 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2021/04/22 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
