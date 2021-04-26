@@ -212,7 +212,8 @@ class Scheme(HeaderBase):
                 # allow nullable
                 labels = pd.array(labels, dtype=pd.Int64Dtype())
             return pd.api.types.CategoricalDtype(
-                categories=labels, ordered=False,
+                categories=labels,
+                ordered=False,
             )
         elif self.dtype == define.DataType.BOOL:
             return 'boolean'
@@ -223,6 +224,27 @@ class Scheme(HeaderBase):
         elif self.dtype == define.DataType.TIME:
             return 'timedelta64[ns]'
         return self.dtype
+
+    def update_labels(
+            self,
+            labels: typing.Union[dict, list],
+    ):
+        if self.labels is None:
+            raise RuntimeError(
+                'Cannot update labels because scheme does not define labels.'
+            )
+
+        self.labels = labels
+
+        if self._db is not None and self._id is not None:
+            for table in self._db.tables.values():
+                for column in table.columns.values():
+                    if column.scheme_id == self._id:
+                        column.get(copy=False).cat.set_categories(
+                            new_categories=self.labels,
+                            ordered=False,
+                            inplace=True,
+                        )
 
     def __contains__(self, item: typing.Any) -> bool:
         r"""Check if scheme contains data type of item.

@@ -312,12 +312,16 @@ def test_update():
     db.meta['meta'] = 'meta'
     db.raters['rater'] = audformat.Rater()
     db.schemes['float'] = audformat.Scheme(float)
+    db.schemes['labels'] = audformat.Scheme(labels=['a', 'b'])
     audformat.testing.add_table(
         db,
         'table',
         audformat.define.IndexType.FILEWISE,
         num_files=[0, 1],
-        columns={'float': ('float', 'rater')},
+        columns={
+            'float': ('float', 'rater'),
+            'labels': ('labels', None),
+        },
     )
 
     assert db.update(db) == db
@@ -329,12 +333,17 @@ def test_update():
     other1.raters['rater2'] = audformat.Rater()
     other1.schemes['int'] = audformat.Scheme(int)
     other1.schemes['float'] = audformat.Scheme(float)
+    other1.schemes['labels'] = audformat.Scheme(labels=['b', 'c'])
     audformat.testing.add_table(
         other1,
         'table',
         audformat.define.IndexType.FILEWISE,
         num_files=[1, 2],
-        columns={'int': ('int', 'rater'), 'float': ('float', 'rater2')},
+        columns={
+            'int': ('int', 'rater'),
+            'float': ('float', 'rater2'),
+            'labels': ('labels', None),
+        },
     )
 
     # database with new table
@@ -349,6 +358,17 @@ def test_update():
         columns={'str': ('str', 'rater2')},
     )
 
+    # raises error because schemes do not match
+
+    with pytest.raises(ValueError):
+        audformat.utils.concat(
+            [db['table'].df, other1['table'].df],
+            overwrite=True,
+        )
+
+    # update scheme to avoid error
+
+    db.schemes['labels'].update_labels(other1.schemes['labels'].labels)
     df = audformat.utils.concat(
         [db['table'].df, other1['table'].df],
         overwrite=True,
