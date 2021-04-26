@@ -229,6 +229,19 @@ class Scheme(HeaderBase):
             self,
             labels: typing.Union[dict, list],
     ):
+        r"""Update labels.
+
+        If scheme is part of a :class:`audformat.Database`
+        the dtype of :class:`audformat.Column`s that reference the scheme
+        will be updated. Values of removed labels are set to ``NaN``.
+
+        Args:
+            labels: new labels
+
+        Raises:
+            RuntimeError: if scheme does not define labels
+
+        """
         if self.labels is None:
             raise RuntimeError(
                 'Cannot update labels because scheme does not define labels.'
