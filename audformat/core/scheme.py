@@ -113,6 +113,19 @@ class Scheme(HeaderBase):
         self.maximum = maximum if self.is_numeric else None
         r"""Maximum value"""
 
+        self._db = None
+        self._id = None
+
+    @property
+    def db(self):
+        r"""Database object.
+
+        Returns:
+            database object or ``None`` if not assigned yet
+
+        """
+        return self._db
+
     @property
     def is_numeric(self) -> bool:
         r"""Check if data type is numeric.

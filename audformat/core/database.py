@@ -151,12 +151,16 @@ class Database(HeaderBase):
         r"""Dictionary of media information"""
         self.raters = HeaderDict(value_type=Rater)
         r"""Dictionary of raters"""
-        self.schemes = HeaderDict(value_type=Scheme)
+        self.schemes = HeaderDict(
+            value_type=Scheme,
+            set_callback=self._set_scheme,
+        )
         r"""Dictionary of schemes"""
         self.splits = HeaderDict(value_type=Split)
         r"""Dictionary of splits"""
         self.tables = HeaderDict(
-            value_type=Table, set_callback=self._set_table,
+            value_type=Table,
+            set_callback=self._set_table,
         )
         r"""Dictionary of tables"""
 
@@ -732,6 +736,15 @@ class Database(HeaderBase):
                 db[table_id] = table
 
         return db
+
+    def _set_scheme(
+            self,
+            scheme_id: str,
+            scheme: Scheme,
+    ) -> Scheme:
+        scheme._db = self
+        scheme._id = scheme_id
+        return scheme
 
     def _set_table(
             self,
