@@ -366,9 +366,9 @@ def test_update():
             overwrite=True,
         )
 
-    # update scheme to avoid error
+    # replace labels to avoid error
 
-    db.schemes['labels'].update_labels(other1.schemes['labels'].labels)
+    db.schemes['labels'].replace_labels(other1.schemes['labels'].labels)
     df = audformat.utils.concat(
         [db['table'].df, other1['table'].df],
         overwrite=True,

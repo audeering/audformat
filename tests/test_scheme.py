@@ -48,7 +48,7 @@ def test_scheme_errors():
     # update labels when scheme has no label
     with pytest.raises(ValueError):
         scheme = audformat.Scheme(audformat.define.DataType.INTEGER)
-        scheme.update_labels(['a', 'b'])
+        scheme.replace_labels(['a', 'b'])
 
 
 @pytest.mark.parametrize(
@@ -178,14 +178,14 @@ def test_scheme_errors():
         )
     ]
 )
-def test_update_labels(values, labels, new_labels, expected):
+def test_replace_labels(values, labels, new_labels, expected):
 
     db = audformat.testing.create_db(minimal=True)
     db.schemes['scheme'] = audformat.Scheme(labels=labels)
     db['table'] = audformat.Table(index=values.index)
     db['table']['columns'] = audformat.Column(scheme_id='scheme')
     db['table']['columns'].set(values)
-    db.schemes['scheme'].update_labels(new_labels)
+    db.schemes['scheme'].replace_labels(new_labels)
     pd.testing.assert_series_equal(
         db['table']['columns'].get(),
         expected,

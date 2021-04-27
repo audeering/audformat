@@ -213,11 +213,11 @@ class Scheme(HeaderBase):
             return 'timedelta64[ns]'
         return self.dtype
 
-    def update_labels(
+    def replace_labels(
             self,
             labels: typing.Union[dict, list],
     ):
-        r"""Update labels.
+        r"""Replace labels.
 
         If scheme is part of a :class:`audformat.Database`
         the dtype of :class:`audformat.Column`s that reference the scheme
@@ -243,7 +243,7 @@ class Scheme(HeaderBase):
             labels:
               0: {gender: female}
               1: {gender: male}
-            >>> speaker.update_labels(
+            >>> speaker.replace_labels(
             ...     labels={
             ...         1: {'gender': 'male', 'age': 33},
             ...         2: {'gender': 'female', 'age': 44},
@@ -258,7 +258,7 @@ class Scheme(HeaderBase):
         """
         if self.labels is None:
             raise ValueError(
-                'Cannot update labels when '
+                'Cannot replace labels when '
                 'scheme does not define labels.'
             )
 
