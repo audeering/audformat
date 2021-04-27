@@ -81,28 +81,16 @@ class Scheme(HeaderBase):
         if dtype is None and labels is None:
             dtype = define.DataType.STRING
 
-        if labels is not None and len(labels) > 0:
-            if not isinstance(labels, (dict, list)):
+        if labels is not None:
+            dtype_labels = self._dtype_from_labels(labels)
+            if dtype is not None and dtype != dtype_labels:
                 raise ValueError(
-                    'Labels must be passed as a dictionary or a list.'
+                    "Data type is set to "
+                    f"'{dtype}', "
+                    "but data type of labels is "
+                    f"'{dtype_labels}'."
                 )
-            derived_dtype = type(list(labels)[0])
-            if not all(isinstance(x, derived_dtype) for x in list(labels)):
-                raise ValueError(
-                    'All labels must be of the same data type.'
-                )
-            if derived_dtype in self._dtypes:
-                derived_dtype = self._dtypes[derived_dtype]
-            define.DataType.assert_has_attribute_value(derived_dtype)
-            if dtype is not None:
-                if dtype != derived_dtype:
-                    raise ValueError(
-                        "Data type is set to "
-                        f"'{dtype}', "
-                        "but data type of labels is "
-                        f"'{derived_dtype}'."
-                    )
-            dtype = derived_dtype
+            dtype = dtype_labels
 
         self.dtype = dtype
         r"""Data type"""
@@ -240,6 +228,8 @@ class Scheme(HeaderBase):
 
         Raises:
             ValueError: if scheme does not define labels
+            ValueError: if dtype of new labels does not match dtype of
+                scheme
 
         Example:
             >>> speaker = Scheme(
@@ -268,7 +258,17 @@ class Scheme(HeaderBase):
         """
         if self.labels is None:
             raise ValueError(
-                'Cannot update labels when scheme does not define labels.'
+                'Cannot update labels when '
+                'scheme does not define labels.'
+            )
+
+        dtype_labels = self._dtype_from_labels(labels)
+        if dtype_labels != self.dtype:
+            raise ValueError(
+                "Data type of labels must not change: \n"
+                f"'{self.dtype}' \n"
+                f"!=\n"
+                f"'{dtype_labels}'"
             )
 
         self.labels = labels
@@ -282,6 +282,32 @@ class Scheme(HeaderBase):
                             ordered=False,
                             inplace=True,
                         )
+
+    def _dtype_from_labels(
+            self,
+            labels: typing.Union[dict, list],
+    ) -> str:
+        r"""Derive dtype from labels."""
+
+        if not isinstance(labels, (dict, list)):
+            raise ValueError(
+                'Labels must be passed as a dictionary or a list.'
+            )
+
+        if len(labels) > 0:
+            dtype = type(list(labels)[0])
+        else:
+            dtype = 'str'
+        if not all(isinstance(x, dtype) for x in list(labels)):
+            raise ValueError(
+                'All labels must be of the same data type.'
+            )
+
+        if dtype in self._dtypes:
+            dtype = self._dtypes[dtype]
+        define.DataType.assert_has_attribute_value(dtype)
+
+        return dtype
 
     def __contains__(self, item: typing.Any) -> bool:
         r"""Check if scheme contains data type of item.
