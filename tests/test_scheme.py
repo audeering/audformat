@@ -46,7 +46,7 @@ def test_scheme_errors():
         audformat.Scheme(labels=[1, '2', 3])
 
     # update labels when scheme has no label
-    with pytest.raises(RuntimeError):
+    with pytest.raises(ValueError):
         scheme = audformat.Scheme(audformat.define.DataType.INTEGER)
         scheme.update_labels(['a', 'b'])
 
@@ -118,6 +118,20 @@ def test_scheme_errors():
                 [None, None],
                 index=audformat.filewise_index(['f1', 'f2']),
                 dtype=pd.CategoricalDtype(['c']),
+            ),
+        ),
+        (
+            pd.Series(
+                [0, 1],
+                index=audformat.filewise_index(['f1', 'f2']),
+                dtype=pd.CategoricalDtype([0, 1]),
+            ),
+            {0: 'a', 1: 'b'},
+            {1: 'b', 2: 'c'},
+            pd.Series(
+                [None, 1],
+                index=audformat.filewise_index(['f1', 'f2']),
+                dtype=pd.CategoricalDtype([1, 2]),
             ),
         ),
     ]

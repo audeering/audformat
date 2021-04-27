@@ -233,18 +233,42 @@ class Scheme(HeaderBase):
 
         If scheme is part of a :class:`audformat.Database`
         the dtype of :class:`audformat.Column`s that reference the scheme
-        will be updated. Values of removed labels are set to ``NaN``.
+        will be updated. Removed labels are set to ``NaN``.
 
         Args:
             labels: new labels
 
         Raises:
-            RuntimeError: if scheme does not define labels
+            ValueError: if scheme does not define labels
+
+        Example:
+            >>> speaker = Scheme(
+            ...     labels={
+            ...         0: {'gender': 'female'},
+            ...         1: {'gender': 'male'},
+            ...     }
+            ... )
+            >>> speaker
+            dtype: int
+            labels:
+              0: {gender: female}
+              1: {gender: male}
+            >>> speaker.update_labels(
+            ...     labels={
+            ...         1: {'gender': 'male', 'age': 33},
+            ...         2: {'gender': 'female', 'age': 44},
+            ...     }
+            ... )
+            >>> speaker
+            dtype: int
+            labels:
+              1: {gender: male, age: 33}
+              2: {gender: female, age: 44}
 
         """
         if self.labels is None:
-            raise RuntimeError(
-                'Cannot update labels because scheme does not define labels.'
+            raise ValueError(
+                'Cannot update labels when scheme does not define labels.'
             )
 
         self.labels = labels
