@@ -220,8 +220,9 @@ class Scheme(HeaderBase):
         r"""Replace labels.
 
         If scheme is part of a :class:`audformat.Database`
-        the dtype of all :class:`audformat.Column` objects that reference the scheme
-        will be updated. Removed labels are set to ``NaN``.
+        the dtype of all :class:`audformat.Column` objects
+        that reference the scheme will be updated.
+        Removed labels are set to ``NaN``.
 
         Args:
             labels: new labels
