@@ -81,28 +81,16 @@ class Scheme(HeaderBase):
         if dtype is None and labels is None:
             dtype = define.DataType.STRING
 
-        if labels is not None and len(labels) > 0:
-            if not isinstance(labels, (dict, list)):
+        if labels is not None:
+            dtype_labels = self._dtype_from_labels(labels)
+            if dtype is not None and dtype != dtype_labels:
                 raise ValueError(
-                    'Labels must be passed as a dictionary or a list.'
+                    "Data type is set to "
+                    f"'{dtype}', "
+                    "but data type of labels is "
+                    f"'{dtype_labels}'."
                 )
-            derived_dtype = type(list(labels)[0])
-            if not all(isinstance(x, derived_dtype) for x in list(labels)):
-                raise ValueError(
-                    'All labels must be of the same data type.'
-                )
-            if derived_dtype in self._dtypes:
-                derived_dtype = self._dtypes[derived_dtype]
-            define.DataType.assert_has_attribute_value(derived_dtype)
-            if dtype is not None:
-                if dtype != derived_dtype:
-                    raise ValueError(
-                        "Data type is set to "
-                        f"'{dtype}', "
-                        "but data type of labels is "
-                        f"'{derived_dtype}'."
-                    )
-            dtype = derived_dtype
+            dtype = dtype_labels
 
         self.dtype = dtype
         r"""Data type"""
@@ -112,6 +100,9 @@ class Scheme(HeaderBase):
         r"""Minimum value"""
         self.maximum = maximum if self.is_numeric else None
         r"""Maximum value"""
+
+        self._db = None
+        self._id = None
 
     @property
     def is_numeric(self) -> bool:
@@ -199,7 +190,8 @@ class Scheme(HeaderBase):
                 # allow nullable
                 labels = pd.array(labels, dtype=pd.Int64Dtype())
             return pd.api.types.CategoricalDtype(
-                categories=labels, ordered=False,
+                categories=labels,
+                ordered=False,
             )
         elif self.dtype == define.DataType.BOOL:
             return 'boolean'
@@ -210,6 +202,103 @@ class Scheme(HeaderBase):
         elif self.dtype == define.DataType.TIME:
             return 'timedelta64[ns]'
         return self.dtype
+
+    def replace_labels(
+            self,
+            labels: typing.Union[dict, list],
+    ):
+        r"""Replace labels.
+
+        If scheme is part of a :class:`audformat.Database`
+        the dtype of all :class:`audformat.Column` objects
+        that reference the scheme will be updated.
+        Removed labels are set to ``NaN``.
+
+        Args:
+            labels: new labels
+
+        Raises:
+            ValueError: if scheme does not define labels
+            ValueError: if dtype of new labels does not match dtype of
+                scheme
+
+        Example:
+            >>> speaker = Scheme(
+            ...     labels={
+            ...         0: {'gender': 'female'},
+            ...         1: {'gender': 'male'},
+            ...     }
+            ... )
+            >>> speaker
+            dtype: int
+            labels:
+              0: {gender: female}
+              1: {gender: male}
+            >>> speaker.replace_labels(
+            ...     {
+            ...         1: {'gender': 'male', 'age': 33},
+            ...         2: {'gender': 'female', 'age': 44},
+            ...     }
+            ... )
+            >>> speaker
+            dtype: int
+            labels:
+              1: {gender: male, age: 33}
+              2: {gender: female, age: 44}
+
+        """
+        if self.labels is None:
+            raise ValueError(
+                'Cannot replace labels when '
+                'scheme does not define labels.'
+            )
+
+        dtype_labels = self._dtype_from_labels(labels)
+        if dtype_labels != self.dtype:
+            raise ValueError(
+                "Data type of labels must not change: \n"
+                f"'{self.dtype}' \n"
+                f"!=\n"
+                f"'{dtype_labels}'"
+            )
+
+        self.labels = labels
+
+        if self._db is not None and self._id is not None:
+            for table in self._db.tables.values():
+                for column in table.columns.values():
+                    if column.scheme_id == self._id:
+                        column.get(copy=False).cat.set_categories(
+                            new_categories=self.labels,
+                            ordered=False,
+                            inplace=True,
+                        )
+
+    def _dtype_from_labels(
+            self,
+            labels: typing.Union[dict, list],
+    ) -> str:
+        r"""Derive dtype from labels."""
+
+        if not isinstance(labels, (dict, list)):
+            raise ValueError(
+                'Labels must be passed as a dictionary or a list.'
+            )
+
+        if len(labels) > 0:
+            dtype = type(list(labels)[0])
+        else:
+            dtype = 'str'
+        if not all(isinstance(x, dtype) for x in list(labels)):
+            raise ValueError(
+                'All labels must be of the same data type.'
+            )
+
+        if dtype in self._dtypes:
+            dtype = self._dtypes[dtype]
+        define.DataType.assert_has_attribute_value(dtype)
+
+        return dtype
 
     def __contains__(self, item: typing.Any) -> bool:
         r"""Check if scheme contains data type of item.
