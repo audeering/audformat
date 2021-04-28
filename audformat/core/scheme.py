@@ -244,7 +244,7 @@ class Scheme(HeaderBase):
               0: {gender: female}
               1: {gender: male}
             >>> speaker.replace_labels(
-            ...     labels={
+            ...     {
             ...         1: {'gender': 'male', 'age': 33},
             ...         2: {'gender': 'female', 'age': 44},
             ...     }
