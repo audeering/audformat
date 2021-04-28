@@ -105,16 +105,6 @@ class Scheme(HeaderBase):
         self._id = None
 
     @property
-    def db(self):
-        r"""Database object.
-
-        Returns:
-            database object or ``None`` if not assigned yet
-
-        """
-        return self._db
-
-    @property
     def is_numeric(self) -> bool:
         r"""Check if data type is numeric.
 

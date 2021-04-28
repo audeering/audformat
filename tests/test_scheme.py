@@ -9,9 +9,6 @@ def test_scheme():
 
     db = pytest.DB
 
-    for scheme_id in db.schemes:
-        assert db.schemes[scheme_id].db == db
-
     assert 'tests' in db.schemes['string']
     assert 0.0 in db.schemes['float']
     assert 1.0 in db.schemes['float']
