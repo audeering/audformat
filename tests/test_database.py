@@ -2,6 +2,7 @@ import datetime
 import filecmp
 import os
 
+import audeer
 import pandas as pd
 import pytest
 
@@ -176,11 +177,14 @@ def test_map_files(num_workers):
 )
 def test_save_and_load(tmpdir, db, storage_format, num_workers):
 
+    assert db.root is None
     db.save(
         tmpdir,
         storage_format=storage_format,
         num_workers=num_workers,
     )
+    assert db.root == tmpdir
+
     expected_formats = [storage_format]
     for table_id in db.tables:
         for ext in audformat.define.TableStorageFormat.attribute_values():
@@ -196,15 +200,18 @@ def test_save_and_load(tmpdir, db, storage_format, num_workers):
             and db.tables
     ):
         db2 = audformat.testing.create_db()
+        assert db2.root is None
         db2.save(
             tmpdir,
             storage_format=audformat.define.TableStorageFormat.PICKLE,
             num_workers=num_workers,
         )
+        assert db.root == tmpdir
 
         # Load prefers PKL files over CSV files,
         # which means we are loading the second database here
         db_load = audformat.Database.load(tmpdir)
+        assert db_load.root == db2.root
         assert db_load == db2
         assert db_load != db
 
@@ -266,6 +273,7 @@ def test_save_and_load(tmpdir, db, storage_format, num_workers):
         load_data=False,
         num_workers=num_workers,
     )
+    assert db_load.root == tmpdir
     for table_id, table in db_load.tables.items():
         assert list(db_load.files) == []
         assert table._id == table_id

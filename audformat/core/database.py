@@ -164,6 +164,8 @@ class Database(HeaderBase):
         )
         r"""Dictionary of tables"""
 
+        self._root = None
+
     @property
     def files(self) -> pd.Index:
         r"""Files referenced in the database.
@@ -178,6 +180,18 @@ class Database(HeaderBase):
         for table in self.tables.values():
             index = index.union(table.files.drop_duplicates())
         return index.drop_duplicates()
+
+    @property
+    def root(self) -> typing.Optional[str]:
+        r"""Database root directory.
+
+        Returns ``None`` if database has not been stored yet.
+
+        Returns:
+            root directory
+
+        """
+        return self._root
 
     @property
     def segments(self) -> pd.MultiIndex:
@@ -408,6 +422,8 @@ class Database(HeaderBase):
                 progress_bar=verbose,
                 task_description='Save tables',
             )
+
+        self._root = root
 
     def update(
             self,
@@ -655,6 +671,8 @@ class Database(HeaderBase):
                     progress_bar=verbose,
                     task_description='Load tables',
                 )
+
+        db._root = root
 
         return db
 
