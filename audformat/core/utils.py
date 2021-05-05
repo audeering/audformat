@@ -293,7 +293,7 @@ def join_labels(
 
     This might be helpful,
     if you would like to combine two databases
-    that have the same schene,
+    that have the same scheme,
     but with different labels:
 
     .. code-block:: python
