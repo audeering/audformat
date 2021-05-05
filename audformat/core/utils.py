@@ -286,6 +286,89 @@ def intersect(
     return index
 
 
+def join_labels(
+        labels: typing.Sequence[typing.Union[typing.List, typing.Dict]],
+):
+    r"""Combine scheme labels.
+
+    This might be helpful,
+    if you would like to combine two databases
+    that have the same schene,
+    but with different labels:
+
+    .. code-block:: python
+
+        labels = audformat.utils.join_labels(
+            [
+                db.schemes['scheme'].labels,
+                db_new.schemes['scheme'].labels,
+            ]
+        )
+        db.schemes['scheme'].replace_labels(labels)
+        db_new.schemes['scheme'].replace_labels(labels)
+        db.update(db_new)
+
+    Args:
+        labels: sequence of labels to join
+
+    Returns:
+        joined labels
+
+    Raises:
+        ValueError: if labels are of different type
+        ValueError: if labels are dicts
+            and contain different values for the same key
+        RuntimeError: if label type is not ``list`` or ``dict``
+
+    Example:
+        >>> join_labels([{'a': 0, 'b': 1}, {'b': 1, 'c': 2}])
+        {'a': 0, 'b': 1, 'c': 2}
+
+    """
+    if len(labels) == 0 or isinstance(labels, dict):
+        return labels
+
+    if not isinstance(labels, list):
+        labels = list(labels)
+
+    label_type = type(labels[0])
+    joined_labels = labels[0]
+
+    for label in labels[1:]:
+        if type(label) != label_type:
+            raise ValueError(
+                f"Labels are of different type:\n"
+                f"{label_type}\n"
+                f"!=\n"
+                f"{type(label)}"
+            )
+
+    if label_type == dict:
+        for label in labels[1:]:
+            for key, value in label.items():
+                if key not in joined_labels:
+                    joined_labels[key] = value
+                elif joined_labels[key] != value:
+                    raise ValueError(
+                        f"Values for key '{key}' are different:\n"
+                        f"{joined_labels[key]}\n"
+                        f"!=\n"
+                        f"{value}"
+                    )
+    elif label_type == list:
+        joined_labels = list(
+            set(list(joined_labels) + audeer.flatten_list(labels[1:]))
+        )
+        joined_labels = sorted(audeer.flatten_list(joined_labels))
+    else:
+        raise RuntimeError(
+            f"Supported label types are 'list' and 'dict', "
+            f"but your is '{label_type}'"
+        )
+
+    return joined_labels
+
+
 def map_language(language: str) -> str:
     r"""Map language to ISO 639-3.
 

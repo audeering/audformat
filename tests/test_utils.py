@@ -546,6 +546,64 @@ def test_intersect(objs, expected):
 
 
 @pytest.mark.parametrize(
+    'labels, expected',
+    [
+        (
+            [],
+            [],
+        ),
+        (
+            (['a'], ['b']),
+            ['a', 'b'],
+        ),
+        (
+            (['a'], ['a']),
+            ['a'],
+        ),
+        (
+            [{'a': 0}],
+            {'a': 0},
+        ),
+        (
+            [{'a': 0}, {'b': 1}],
+            {'a': 0, 'b': 1},
+        ),
+        (
+            [{'a': 0, 'b': 1}, {'b': 1, 'c': 2}],
+            {'a': 0, 'b': 1, 'c': 2},
+        ),
+        pytest.param(
+            ['a', 'b', 'c'],
+            [],
+            marks=pytest.mark.xfail(raises=RuntimeError),
+        ),
+        pytest.param(
+            ('a', 'b', 'c'),
+            [],
+            marks=pytest.mark.xfail(raises=RuntimeError),
+        ),
+        pytest.param(
+            [{'a': 0, 'b': 1}, {'b': 2, 'c': 2}],
+            [],
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
+        pytest.param(
+            [{'a': 0, 'b': 1}, ['c']],
+            [],
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
+        pytest.param(
+            [['a', 'b'], ['b', 'c'], 'd'],
+            [],
+            marks=pytest.mark.xfail(raises=ValueError),
+        )
+    ]
+)
+def test_join_labels(labels, expected):
+    assert utils.join_labels(labels) == expected
+
+
+@pytest.mark.parametrize(
     'language, expected',
     [
         ('en', 'eng'),
