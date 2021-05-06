@@ -72,7 +72,7 @@
             
             
               <div class="version">
-                v0.10.2
+                v0.11.0
               </div>
             
           
@@ -208,6 +208,7 @@
     <span class="n">filewise_index</span><span class="p">,</span>
     <span class="n">segmented_index</span><span class="p">,</span>
 <span class="p">)</span>
+<span class="kn">from</span> <span class="nn">audformat.core.scheme</span> <span class="kn">import</span> <span class="n">Scheme</span>
 
 
 <div class="viewcode-block" id="concat"><a class="viewcode-back" href="../../../api-utils.html#audformat.utils.concat">[docs]</a><span class="k">def</span> <span class="nf">concat</span><span class="p">(</span>
@@ -477,6 +478,87 @@
         <span class="n">index</span> <span class="o">=</span> <span class="n">segmented_index</span><span class="p">()</span>
 
     <span class="k">return</span> <span class="n">index</span></div>
+
+
+<div class="viewcode-block" id="join_labels"><a class="viewcode-back" href="../../../api-utils.html#audformat.utils.join_labels">[docs]</a><span class="k">def</span> <span class="nf">join_labels</span><span class="p">(</span>
+        <span class="n">labels</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">List</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Dict</span><span class="p">]],</span>
+<span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Combine scheme labels.</span>
+
+<span class="sd">    This might be helpful,</span>
+<span class="sd">    if you would like to combine two databases</span>
+<span class="sd">    that have the same scheme,</span>
+<span class="sd">    but with different labels:</span>
+
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        labels = audformat.utils.join_labels(</span>
+<span class="sd">            [</span>
+<span class="sd">                db.schemes[&#39;scheme&#39;].labels,</span>
+<span class="sd">                db_new.schemes[&#39;scheme&#39;].labels,</span>
+<span class="sd">            ]</span>
+<span class="sd">        )</span>
+<span class="sd">        db.schemes[&#39;scheme&#39;].replace_labels(labels)</span>
+<span class="sd">        db_new.schemes[&#39;scheme&#39;].replace_labels(labels)</span>
+<span class="sd">        db.update(db_new)</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        labels: sequence of labels to join.</span>
+<span class="sd">            For dictionary labels,</span>
+<span class="sd">            labels further to the right</span>
+<span class="sd">            can overwrite previous labels</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        joined labels</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        ValueError: if labels are of different type</span>
+<span class="sd">        ValueError: if label type is not ``list`` or ``dict``</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; join_labels([{&#39;a&#39;: 0, &#39;b&#39;: 1}, {&#39;b&#39;: 2, &#39;c&#39;: 2}])</span>
+<span class="sd">        {&#39;a&#39;: 0, &#39;b&#39;: 2, &#39;c&#39;: 2}</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">labels</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="n">labels</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span>
+
+    <span class="n">label_type</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">labels</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">joined_labels</span> <span class="o">=</span> <span class="n">labels</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">labels</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">label</span><span class="p">)</span> <span class="o">!=</span> <span class="n">label_type</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Labels are of different type:</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">label_type</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;!=</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">label</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">label_type</span> <span class="o">==</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">labels</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">label</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">joined_labels</span> <span class="ow">or</span> <span class="n">joined_labels</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">!=</span> <span class="n">value</span><span class="p">:</span>
+                    <span class="n">joined_labels</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+    <span class="k">elif</span> <span class="n">label_type</span> <span class="o">==</span> <span class="nb">list</span><span class="p">:</span>
+        <span class="n">joined_labels</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span>
+            <span class="nb">set</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">joined_labels</span><span class="p">)</span> <span class="o">+</span> <span class="n">audeer</span><span class="o">.</span><span class="n">flatten_list</span><span class="p">(</span><span class="n">labels</span><span class="p">[</span><span class="mi">1</span><span class="p">:]))</span>
+        <span class="p">)</span>
+        <span class="n">joined_labels</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">audeer</span><span class="o">.</span><span class="n">flatten_list</span><span class="p">(</span><span class="n">joined_labels</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Supported label types are &#39;list&#39; and &#39;dict&#39;, &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;but your is &#39;</span><span class="si">{</span><span class="n">label_type</span><span class="si">}</span><span class="s2">&#39;&quot;</span>
+        <span class="p">)</span>
+
+    <span class="c1"># Check if joined labels have a valid format,</span>
+    <span class="c1"># e.g. {0: {&#39;age&#39;: 20}, &#39;0&#39;: {&#39;age&#39;: 30}} is not allowed</span>
+    <span class="n">Scheme</span><span class="p">(</span><span class="n">labels</span><span class="o">=</span><span class="n">joined_labels</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">joined_labels</span></div>
 
 
 <div class="viewcode-block" id="map_language"><a class="viewcode-back" href="../../../api-utils.html#audformat.utils.map_language">[docs]</a><span class="k">def</span> <span class="nf">map_language</span><span class="p">(</span><span class="n">language</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
@@ -915,7 +997,7 @@
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2021/04/22 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2021/05/06 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>

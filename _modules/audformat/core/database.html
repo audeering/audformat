@@ -72,7 +72,7 @@
             
             
               <div class="version">
-                v0.10.2
+                v0.11.0
               </div>
             
           
@@ -344,14 +344,20 @@
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Dictionary of media information&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">raters</span> <span class="o">=</span> <span class="n">HeaderDict</span><span class="p">(</span><span class="n">value_type</span><span class="o">=</span><span class="n">Rater</span><span class="p">)</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Dictionary of raters&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">schemes</span> <span class="o">=</span> <span class="n">HeaderDict</span><span class="p">(</span><span class="n">value_type</span><span class="o">=</span><span class="n">Scheme</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">schemes</span> <span class="o">=</span> <span class="n">HeaderDict</span><span class="p">(</span>
+            <span class="n">value_type</span><span class="o">=</span><span class="n">Scheme</span><span class="p">,</span>
+            <span class="n">set_callback</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_set_scheme</span><span class="p">,</span>
+        <span class="p">)</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Dictionary of schemes&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">splits</span> <span class="o">=</span> <span class="n">HeaderDict</span><span class="p">(</span><span class="n">value_type</span><span class="o">=</span><span class="n">Split</span><span class="p">)</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Dictionary of splits&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tables</span> <span class="o">=</span> <span class="n">HeaderDict</span><span class="p">(</span>
-            <span class="n">value_type</span><span class="o">=</span><span class="n">Table</span><span class="p">,</span> <span class="n">set_callback</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_set_table</span><span class="p">,</span>
+            <span class="n">value_type</span><span class="o">=</span><span class="n">Table</span><span class="p">,</span>
+            <span class="n">set_callback</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_set_table</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Dictionary of tables&quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_root</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">files</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">:</span>
@@ -367,6 +373,18 @@
         <span class="k">for</span> <span class="n">table</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tables</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
             <span class="n">index</span> <span class="o">=</span> <span class="n">index</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="n">table</span><span class="o">.</span><span class="n">files</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">())</span>
         <span class="k">return</span> <span class="n">index</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">root</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Database root directory.</span>
+
+<span class="sd">        Returns ``None`` if database has not been stored yet.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            root directory</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_root</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">segments</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">MultiIndex</span><span class="p">:</span>
@@ -596,7 +614,9 @@
                 <span class="n">num_workers</span><span class="o">=</span><span class="n">num_workers</span><span class="p">,</span>
                 <span class="n">progress_bar</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span>
                 <span class="n">task_description</span><span class="o">=</span><span class="s1">&#39;Save tables&#39;</span><span class="p">,</span>
-            <span class="p">)</span></div>
+            <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_root</span> <span class="o">=</span> <span class="n">root</span></div>
 
 <div class="viewcode-block" id="Database.update"><a class="viewcode-back" href="../../../api.html#audformat.Database.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
@@ -845,6 +865,8 @@
                     <span class="n">task_description</span><span class="o">=</span><span class="s1">&#39;Load tables&#39;</span><span class="p">,</span>
                 <span class="p">)</span>
 
+        <span class="n">db</span><span class="o">.</span><span class="n">_root</span> <span class="o">=</span> <span class="n">root</span>
+
         <span class="k">return</span> <span class="n">db</span></div>
 
 <div class="viewcode-block" id="Database.load_header_from_yaml"><a class="viewcode-back" href="../../../api.html#audformat.Database.load_header_from_yaml">[docs]</a>    <span class="nd">@staticmethod</span>
@@ -926,6 +948,15 @@
 
         <span class="k">return</span> <span class="n">db</span></div>
 
+    <span class="k">def</span> <span class="nf">_set_scheme</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">scheme_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+            <span class="n">scheme</span><span class="p">:</span> <span class="n">Scheme</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Scheme</span><span class="p">:</span>
+        <span class="n">scheme</span><span class="o">.</span><span class="n">_db</span> <span class="o">=</span> <span class="bp">self</span>
+        <span class="n">scheme</span><span class="o">.</span><span class="n">_id</span> <span class="o">=</span> <span class="n">scheme_id</span>
+        <span class="k">return</span> <span class="n">scheme</span>
+
     <span class="k">def</span> <span class="nf">_set_table</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
             <span class="n">table_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -953,7 +984,7 @@
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2021/04/22 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2021/05/06 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
