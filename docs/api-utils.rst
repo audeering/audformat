@@ -16,6 +16,12 @@ intersect
 .. autofunction:: intersect
 
 
+join_labels
+-----------
+
+.. autofunction:: join_labels
+
+
 map_language
 ------------
 
