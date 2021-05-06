@@ -7,6 +7,18 @@ The format is based on `Keep a Changelog`_,
 and this project adheres to `Semantic Versioning`_.
 
 
+Version 0.11.0 (2021-05-06)
+---------------------------
+
+Note: tables stored from this version upwards cannot be loaded with older versions
+
+* Added: ``Database.root``
+* Added: ``utils.join_labels()``
+* Added: ``Scheme.replace_labels()``
+* Changed: set dependency to ``pandas>=1.1.5``
+* Changed: do not compress pickled table files
+
+
 Version 0.10.2 (2021-04-22)
 ---------------------------
 
