@@ -607,7 +607,12 @@ def test_intersect(objs, expected):
             [['a', 'b'], ['b', 'c'], 'd'],
             [],
             marks=pytest.mark.xfail(raises=ValueError),
-        )
+        ),
+        pytest.param(
+            [{0: {'age': 20}}, {'0': {'age': 30}}],
+            [],
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
     ]
 )
 def test_join_labels(labels, expected):

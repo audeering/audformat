@@ -15,6 +15,7 @@ from audformat.core.index import (
     filewise_index,
     segmented_index,
 )
+from audformat.core.scheme import Scheme
 
 
 def concat(
@@ -359,6 +360,10 @@ def join_labels(
             f"Supported label types are 'list' and 'dict', "
             f"but your is '{label_type}'"
         )
+
+    # Check if joined labels have a valid format,
+    # e.g. {0: {'age': 20}, '0': {'age': 30}} is not allowed
+    Scheme(labels=joined_labels)
 
     return joined_labels
 
