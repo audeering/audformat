@@ -580,6 +580,14 @@ def test_intersect(objs, expected):
             [{'a': 0, 'b': 1}, {'b': 1, 'c': 2}],
             {'a': 0, 'b': 1, 'c': 2},
         ),
+        (
+            [{'a': 0, 'b': 1}, {'b': 2, 'c': 2}],
+            {'a': 0, 'b': 2, 'c': 2},
+        ),
+        (
+            [{'a': 0}, {'a': 1}, {'a': 2}],
+            {'a': 2},
+        ),
         pytest.param(
             ['a', 'b', 'c'],
             [],
@@ -589,11 +597,6 @@ def test_intersect(objs, expected):
             ('a', 'b', 'c'),
             [],
             marks=pytest.mark.xfail(raises=RuntimeError),
-        ),
-        pytest.param(
-            [{'a': 0, 'b': 1}, {'b': 2, 'c': 2}],
-            [],
-            marks=pytest.mark.xfail(raises=ValueError),
         ),
         pytest.param(
             [{'a': 0, 'b': 1}, ['c']],

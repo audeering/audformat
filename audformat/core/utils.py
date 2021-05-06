@@ -309,20 +309,21 @@ def join_labels(
         db.update(db_new)
 
     Args:
-        labels: sequence of labels to join
+        labels: sequence of labels to join.
+            For dictionary labels,
+            labels further to the right
+            can overwrite previous labels
 
     Returns:
         joined labels
 
     Raises:
         ValueError: if labels are of different type
-        ValueError: if the labels are dicts
-            and contain different values for the same key
         RuntimeError: if label type is not ``list`` or ``dict``
 
     Example:
-        >>> join_labels([{'a': 0, 'b': 1}, {'b': 1, 'c': 2}])
-        {'a': 0, 'b': 1, 'c': 2}
+        >>> join_labels([{'a': 0, 'b': 1}, {'b': 2, 'c': 2}])
+        {'a': 0, 'b': 2, 'c': 2}
 
     """
     if len(labels) == 0 or isinstance(labels, dict):
@@ -346,15 +347,8 @@ def join_labels(
     if label_type == dict:
         for label in labels[1:]:
             for key, value in label.items():
-                if key not in joined_labels:
+                if key not in joined_labels or joined_labels[key] != value:
                     joined_labels[key] = value
-                elif joined_labels[key] != value:
-                    raise ValueError(
-                        f"Values for key '{key}' are different:\n"
-                        f"{joined_labels[key]}\n"
-                        f"!=\n"
-                        f"{value}"
-                    )
     elif label_type == list:
         joined_labels = list(
             set(list(joined_labels) + audeer.flatten_list(labels[1:]))
