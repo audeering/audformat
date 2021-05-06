@@ -1,3 +1,4 @@
+import os
 import typing
 
 import pytest
@@ -803,6 +804,21 @@ def test_filewise(num_files, values):
     df.iloc[:, 0] = values
     table.set(df)
     pd.testing.assert_frame_equal(table.get(), df)
+
+
+def test_load(tmpdir):
+    # Test backward compatibility
+    table_file = os.path.join(tmpdir, 'db.table.pkl')
+    table = create_db_table(
+        pd.Series(
+            [1., 2.],
+            index=audformat.filewise_index(['f1', 'f2']),
+        )
+    )
+    table.df.to_pickle(table_file, compression='xz')
+    table_loaded = audformat.Table()
+    table_loaded.load(table_file[:-4])
+    pd.testing.assert_frame_equal(table.df, table_loaded.df)
 
 
 @pytest.mark.parametrize(

@@ -1,5 +1,6 @@
 import copy
 import os
+import pickle
 import typing
 
 import pandas as pd
@@ -1077,7 +1078,15 @@ class Table(HeaderBase):
 
     def _load_pickled(self, path: str):
 
-        df = pd.read_pickle(path, compression='xz')
+        # Older versions of audformat used xz compression
+        # which produced smaller files,
+        # but was slower.
+        # The try-except statement allows backward compatibility
+        try:
+            df = pd.read_pickle(path)
+        except pickle.UnpicklingError:
+            df = pd.read_pickle(path, compression='xz')
+
         for column_id in df:
             # Categories of type Int64 are somehow converted to int64.
             # We have to change back to Int64 to make column nullable.
@@ -1099,7 +1108,7 @@ class Table(HeaderBase):
             self.df.to_csv(fp, encoding='utf-8')
 
     def _save_pickled(self, path: str):
-        self._df.to_pickle(path, compression='xz')
+        self._df.to_pickle(path)
 
     def _set_column(self, column_id: str, column: Column) -> Column:
         if column.scheme_id is not None and \
