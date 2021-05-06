@@ -591,12 +591,12 @@ def test_intersect(objs, expected):
         pytest.param(
             ['a', 'b', 'c'],
             [],
-            marks=pytest.mark.xfail(raises=RuntimeError),
+            marks=pytest.mark.xfail(raises=ValueError),
         ),
         pytest.param(
             ('a', 'b', 'c'),
             [],
-            marks=pytest.mark.xfail(raises=RuntimeError),
+            marks=pytest.mark.xfail(raises=ValueError),
         ),
         pytest.param(
             [{'a': 0, 'b': 1}, ['c']],

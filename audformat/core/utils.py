@@ -320,7 +320,7 @@ def join_labels(
 
     Raises:
         ValueError: if labels are of different type
-        RuntimeError: if label type is not ``list`` or ``dict``
+        ValueError: if label type is not ``list`` or ``dict``
 
     Example:
         >>> join_labels([{'a': 0, 'b': 1}, {'b': 2, 'c': 2}])
@@ -356,7 +356,7 @@ def join_labels(
         )
         joined_labels = sorted(audeer.flatten_list(joined_labels))
     else:
-        raise RuntimeError(
+        raise ValueError(
             f"Supported label types are 'list' and 'dict', "
             f"but your is '{label_type}'"
         )
