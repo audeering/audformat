@@ -326,7 +326,7 @@ def join_labels(
         {'a': 0, 'b': 2, 'c': 2}
 
     """
-    if len(labels) == 0 or isinstance(labels, dict):
+    if len(labels) == 0:
         return labels
 
     if not isinstance(labels, list):
