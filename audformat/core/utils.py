@@ -315,7 +315,6 @@ def join_labels(
         joined labels
 
     Raises:
-        ValueError: if labels argument is a dict
         ValueError: if labels are of different type
         ValueError: if the labels are dicts
             and contain different values for the same key
@@ -326,11 +325,6 @@ def join_labels(
         {'a': 0, 'b': 1, 'c': 2}
 
     """
-    if isinstance(labels, dict):
-        raise ValueError(
-            "'labels' has to be a sequence, yours is a 'dict'"
-        )
-
     if len(labels) == 0 or isinstance(labels, dict):
         return labels
 
