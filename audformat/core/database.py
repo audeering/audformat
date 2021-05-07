@@ -472,6 +472,8 @@ class Database(HeaderBase):
             RuntimeError: if ``copy_media=True``,
                 but one of the databases in ``others``
                 contains files but no root folder
+            RuntimeError: if any involved database contains absolute paths
+                in its tables
 
         """
 
@@ -566,11 +568,22 @@ class Database(HeaderBase):
                     self[table_id] = table.copy()
 
         # copy media files
+
         if copy_media and self.root is not None:
+            if self._path_absolute():
+                raise RuntimeError(
+                    f"The database '{self.name}' you are trying to update "
+                    f"must not contain absolute file paths in its tables."
+                )
             for other in others:
                 if len(other.files) > 0 and other.root is None:
                     raise RuntimeError(
                         f"The database '{other.name}' has no root folder."
+                    )
+                if other._path_absolute():
+                    raise RuntimeError(
+                        f"The database '{other.name}' you are trying to add "
+                        f"must not contain absolute file paths in its tables."
                     )
                 for file in other.files:
                     if file.startswith(other.root):
@@ -777,6 +790,16 @@ class Database(HeaderBase):
                 db[table_id] = table
 
         return db
+
+    def _path_absolute(
+        self,
+    ) -> bool:
+        r"""Check if paths in tables are absolute."""
+        return (
+                self.root is not None
+                and len(self.files) > 0
+                and self.files[0].startswith(self.root)
+        )
 
     def _set_scheme(
             self,

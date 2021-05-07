@@ -10,6 +10,22 @@ import audformat
 import audformat.testing
 
 
+def full_path(
+        db: audformat.Database,
+        db_root: str,
+):
+    # Faster solution then using db.map_files()
+    root = db_root + os.path.sep
+    for table in db.tables.values():
+        if table.is_filewise:
+            table.df.index = root + table.df.index
+            table.df.index.name = 'file'
+        elif len(table.df.index) > 0:
+            table.df.index.set_levels(
+                root + table.df.index.levels[0], 'file', inplace=True,
+            )
+
+
 @pytest.mark.parametrize(
     'files, num_workers',
     [
@@ -356,9 +372,13 @@ def test_update(tmpdir):
             'labels': ('labels', None),
         },
     )
-    db_root = audeer.mkdir(os.path.join(tmpdir, 'other1'))
-    other1.save(db_root)
-    audformat.testing.create_audio_files(other1, db_root, file_duration='0.1s')
+    other1_root = audeer.mkdir(os.path.join(tmpdir, 'other1'))
+    other1.save(other1_root)
+    audformat.testing.create_audio_files(
+        other1,
+        other1_root,
+        file_duration='0.1s',
+    )
 
     # database with new table
 
@@ -371,14 +391,13 @@ def test_update(tmpdir):
         audformat.define.IndexType.SEGMENTED,
         columns={'str': ('str', 'rater2')},
     )
-    db_root = audeer.mkdir(os.path.join(tmpdir, 'other2'))
-    other2.save(db_root)
-    audformat.testing.create_audio_files(other2, db_root, file_duration='0.1s')
-    # Make path absolute
-    for table in other2.tables.values():
-        table.df.index.set_levels(
-            f'{db_root}/' + table.df.index.levels[0], 'file', inplace=True,
-        )
+    other2_root = audeer.mkdir(os.path.join(tmpdir, 'other2'))
+    other2.save(other2_root)
+    audformat.testing.create_audio_files(
+        other2,
+        other2_root,
+        file_duration='0.1s',
+    )
 
     # raises error because schemes do not match
 
@@ -502,3 +521,16 @@ def test_update(tmpdir):
         other = audformat.testing.create_db(minimal=True)
         other.meta['meta'] = 'other'
         db.update(other)
+
+    # Make path absolute
+    with pytest.raises(RuntimeError):
+        full_path(other2, other2_root)
+        db.update(other2, overwrite=True, copy_media=True)
+
+    full_path(db, db_root)
+    print(db.files[0])
+    print(db.root)
+    print(len(db.files))
+    print(db._absolute_path())
+    assert False
+    db.update(other1, overwrite=True, copy_media=True)
