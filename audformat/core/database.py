@@ -566,7 +566,7 @@ class Database(HeaderBase):
                     self[table_id] = table.copy()
 
         # copy media files
-        if copy_media and self.root:
+        if copy_media and self.root is not None:
             for other in others:
                 if len(other.files) > 0 and other.root is None:
                     raise RuntimeError(
