@@ -310,7 +310,7 @@ def test_string():
                       'languages: [deu, eng]'
 
 
-def test_update():
+def test_update(tmpdir):
 
     # original database
 
@@ -331,6 +331,9 @@ def test_update():
             'labels': ('labels', None),
         },
     )
+    db_root = audeer.mkdir(os.path.join(tmpdir, 'db'))
+    db.save(db_root)
+    audformat.testing.create_audio_files(db, db_root, file_duration='0.1s')
 
     assert db.update(db) == db
 
@@ -353,6 +356,9 @@ def test_update():
             'labels': ('labels', None),
         },
     )
+    db_root = audeer.mkdir(os.path.join(tmpdir, 'other1'))
+    other1.save(db_root)
+    audformat.testing.create_audio_files(other1, db_root, file_duration='0.1s')
 
     # database with new table
 
@@ -365,6 +371,9 @@ def test_update():
         audformat.define.IndexType.SEGMENTED,
         columns={'str': ('str', 'rater2')},
     )
+    db_root = audeer.mkdir(os.path.join(tmpdir, 'other2'))
+    other2.save(db_root)
+    audformat.testing.create_audio_files(other2, db_root, file_duration='0.1s')
 
     # raises error because schemes do not match
 
@@ -387,7 +396,7 @@ def test_update():
 
     with pytest.raises(ValueError):
         db.update(others, overwrite=False)
-    db.update(others, overwrite=True)
+    db.update(others, overwrite=True, copy_media=True)
 
     pd.testing.assert_frame_equal(db['table'].df, df)
     assert db['table_new'] == other2['table_new']
@@ -397,6 +406,33 @@ def test_update():
             assert db.raters[rater_id] == rater
         for scheme_id, scheme in other.schemes.items():
             assert db.schemes[scheme_id] == scheme
+
+    # don't copy files if self.root is not given
+
+    db_root = db.root
+    db._root = None
+    original_files = db.files
+    db.update(others, overwrite=True, copy_media=True)
+    db._root = db_root
+    for other in others:
+        for file in other.files:
+            if file in original_files:
+                assert os.path.exists(os.path.join(db.root, file))
+            else:
+                assert not os.path.exists(os.path.join(db.root, file))
+
+    # fail if one of the others has no root folder
+
+    db_root = other1._root
+    other1._root = None
+    with pytest.raises(RuntimeError):
+        db.update(others, overwrite=True, copy_media=True)
+    other1._root = db_root
+
+    # test media files
+
+    for file in db.files:
+        assert os.path.exists(os.path.join(db.root, file))
 
     # test other fields
 
@@ -420,7 +456,7 @@ def test_update():
         organization='other',
         source='other',
     )
-    db.update(other)
+    db.update(other, copy_media=True)
 
     assert db.author == f'{db_author}, {other.author}'
     assert db.name == db_name

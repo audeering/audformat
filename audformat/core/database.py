@@ -1,6 +1,7 @@
 import datetime
 import itertools
 import os
+import shutil
 import typing
 
 import oyaml as yaml
@@ -429,6 +430,7 @@ class Database(HeaderBase):
             self,
             others: typing.Union['Database', typing.Sequence['Database']],
             *,
+            copy_media: bool = False,
             overwrite: bool = False,
     ) -> 'Database':
         r"""Update database with other database(s).
@@ -454,6 +456,8 @@ class Database(HeaderBase):
 
         Args:
             others: database object(s)
+            copy_media: if ``True`` it copies the media files
+                associated with ``others`` to the current database root folder
             overwrite: overwrite table values where indices overlap
 
         Returns:
@@ -465,6 +469,9 @@ class Database(HeaderBase):
                 same ID is found
             ValueError: if table data cannot be combined (e.g. values in
                 same position overlap)
+            RuntimeError: if ``copy_media=True``,
+                but one of the databases in ``others``
+                contains files but no root folder
 
         """
 
@@ -557,6 +564,21 @@ class Database(HeaderBase):
                     self[table_id].update(table, overwrite=overwrite)
                 else:
                     self[table_id] = table.copy()
+
+        # copy media files
+        if copy_media and self.root:
+            for other in others:
+                if len(other.files) > 0 and other.root is None:
+                    raise RuntimeError(
+                        f"The database '{other.name}' has no root folder."
+                    )
+                for file in other.files:
+                    # Joining works also if the paths are already absolute
+                    src_file = os.path.join(other.root, file)
+                    dst_file = os.path.join(self.root, file)
+                    dst_dir = os.path.dirname(dst_file)
+                    audeer.mkdir(dst_dir)
+                    shutil.copy(src_file, dst_file)
 
         return self
 
