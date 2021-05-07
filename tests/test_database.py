@@ -420,16 +420,6 @@ def test_update(tmpdir):
 
     with pytest.raises(ValueError):
         db.update(others, overwrite=False)
-    db.update(others, overwrite=True, copy_media=True)
-
-    pd.testing.assert_frame_equal(db['table'].df, df)
-    assert db['table_new'] == other2['table_new']
-
-    for other in others:
-        for rater_id, rater in other.raters.items():
-            assert db.raters[rater_id] == rater
-        for scheme_id, scheme in other.schemes.items():
-            assert db.schemes[scheme_id] == scheme
 
     # don't copy files if self.root is not given
 
@@ -445,6 +435,17 @@ def test_update(tmpdir):
             else:
                 assert not os.path.exists(os.path.join(db.root, file))
 
+    db.update(others, overwrite=True, copy_media=True)
+
+    pd.testing.assert_frame_equal(db['table'].df, df)
+    assert db['table_new'] == other2['table_new']
+
+    for other in others:
+        for rater_id, rater in other.raters.items():
+            assert db.raters[rater_id] == rater
+        for scheme_id, scheme in other.schemes.items():
+            assert db.schemes[scheme_id] == scheme
+
     # fail if one of the others has no root folder
 
     db_root = other1._root
@@ -457,6 +458,15 @@ def test_update(tmpdir):
 
     for file in db.files:
         assert os.path.exists(os.path.join(db.root, file))
+
+    # fail if other has absolute path
+
+    with pytest.raises(RuntimeError):
+        full_path(other2, other2_root)
+        db.update(other2, overwrite=True, copy_media=True)
+
+    print(db.files)
+    assert False
 
     # test other fields
 
@@ -522,15 +532,10 @@ def test_update(tmpdir):
         other.meta['meta'] = 'other'
         db.update(other)
 
-    # Make path absolute
-    with pytest.raises(RuntimeError):
-        full_path(other2, other2_root)
-        db.update(other2, overwrite=True, copy_media=True)
-
     full_path(db, db_root)
     print(db.files[0])
     print(db.root)
     print(len(db.files))
-    print(db._absolute_path())
+    print(db._path_absolute())
     assert False
     db.update(other1, overwrite=True, copy_media=True)
