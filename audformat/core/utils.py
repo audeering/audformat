@@ -498,7 +498,7 @@ def read_csv(
 def same_dtype(d1, d2) -> bool:
     r"""Helper function to compare pandas dtype."""
     if d1.name.startswith('bool') and d2.name.startswith('bool'):
-        # match different int types, e.g. int64 and Int64
+        # match different bool types, i.e. bool and boolean
         return True
     if d1.name.lower().startswith('int') and d2.name.lower().startswith('int'):
         # match different int types, e.g. int64 and Int64
