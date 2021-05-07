@@ -573,7 +573,8 @@ class Database(HeaderBase):
                         f"The database '{other.name}' has no root folder."
                     )
                 for file in other.files:
-                    # Joining works also if the paths are already absolute
+                    if file.startswith(other.root):
+                        file = file[len(other.root) + 1:]
                     src_file = os.path.join(other.root, file)
                     dst_file = os.path.join(self.root, file)
                     dst_dir = os.path.dirname(dst_file)

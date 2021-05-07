@@ -374,6 +374,11 @@ def test_update(tmpdir):
     db_root = audeer.mkdir(os.path.join(tmpdir, 'other2'))
     other2.save(db_root)
     audformat.testing.create_audio_files(other2, db_root, file_duration='0.1s')
+    # Make path absolute
+    for table in other2.tables.values():
+        table.df.index.set_levels(
+            f'{db_root}/' + table.df.index.levels[0], 'file', inplace=True,
+        )
 
     # raises error because schemes do not match
 
