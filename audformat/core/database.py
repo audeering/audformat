@@ -260,9 +260,9 @@ class Database(HeaderBase):
     ) -> bool:
         r"""Check if a database can be moved to another location.
 
-        To be portable a database is supposed to not contain any
-        absolute path,
-        or a ``.`` or ``..`` to specify a folder.
+        To be portable,
+        media may be referenced with an absolute path,
+        or contain ``.`` or ``..`` to specify a folder.
         If a database is portable
         it can be moved to another folder
         or updated by another database.
