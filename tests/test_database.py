@@ -46,15 +46,15 @@ def full_path(
             False,
         ),
         (
-            ['/a/b/c/.file.txt'],
+            [os.path.join(os.path.sep, 'a', 'b', 'c', '.file.txt')],
             True,
         ),
         (
-            ['a/b/c/.file.txt'],
+            [os.path.join('a', 'b', 'c', '.file.txt')],
             False,
         ),
         (
-            ['./file.txt'],
+            [os.path.join('.', 'file.txt')],
             True,
         ),
         (
@@ -62,11 +62,11 @@ def full_path(
             True,
         ),
         (
-            ['a/b/c/./file.txt'],
+            [os.path.join('a', 'b', 'c', '.', 'file.txt')],
             True,
         ),
         (
-            ['a/b/c/../file.txt'],
+            [os.path.join('a', 'b', 'c', '..', 'file.txt')],
             True,
         ),
     ]
