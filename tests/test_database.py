@@ -58,7 +58,7 @@ def full_path(
             False,
         ),
         (
-            ['../file.txt'],
+            [os.path.join('..', 'file.txt')],
             False,
         ),
         (
