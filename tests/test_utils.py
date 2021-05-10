@@ -117,14 +117,6 @@ from audformat import define
         # combine values with matching dtype
         (
             [
-                pd.Series([1, 2], audformat.filewise_index(['f1', 'f2'])),
-                pd.Series([1, 2], audformat.filewise_index(['f1', 'f2'])),
-            ],
-            False,
-            pd.Series([1, 2], audformat.filewise_index(['f1', 'f2'])),
-        ),
-        (
-            [
                 pd.Series(
                     [1, 2],
                     audformat.filewise_index(['f1', 'f2']),
@@ -219,6 +211,59 @@ from audformat import define
                 index=audformat.filewise_index(['f1', 'f2', 'f3']),
                 dtype='category',
             )
+        ),
+        # combine series with non-nullable dtype
+        (
+            [
+                pd.Series([1, 2], audformat.filewise_index(['f1', 'f2'])),
+                pd.Series([1, 2], audformat.filewise_index(['f1', 'f2'])),
+            ],
+            False,
+            pd.Series(
+                [1, 2],
+                audformat.filewise_index(['f1', 'f2']),
+                dtype='Int64'
+            ),
+        ),
+        (
+            [
+                pd.Series(
+                    True,
+                    audformat.filewise_index('f1'),
+                    dtype='bool',
+                ),
+                pd.Series(
+                    True,
+                    audformat.filewise_index('f2'),
+                    dtype='bool',
+                ),
+            ],
+            False,
+            pd.Series(
+                True,
+                audformat.filewise_index(['f1', 'f2']),
+                dtype='boolean',
+            ),
+        ),
+        (
+            [
+                pd.Series(
+                    1,
+                    audformat.filewise_index('f1'),
+                    dtype='int64',
+                ),
+                pd.Series(
+                    2,
+                    audformat.filewise_index('f2'),
+                    dtype='int64',
+                ),
+            ],
+            False,
+            pd.Series(
+                [1, 2],
+                audformat.filewise_index(['f1', 'f2']),
+                dtype='Int64',
+            ),
         ),
         # combine series with different names
         (

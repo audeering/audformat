@@ -189,9 +189,15 @@ def concat(
             # drop NaN to avoid overwriting values from other column
             column = column.dropna()
         else:
+            if column.dtype.name.startswith('int'):
+                dtype = 'Int64'
+            elif column.dtype.name == 'bool':
+                dtype = 'boolean'
+            else:
+                dtype = column.dtype
             columns_reindex[column.name] = pd.Series(
                 index=index,
-                dtype=column.dtype,
+                dtype=dtype,
             )
         columns_reindex[column.name][column.index] = column
 
@@ -491,6 +497,9 @@ def read_csv(
 
 def same_dtype(d1, d2) -> bool:
     r"""Helper function to compare pandas dtype."""
+    if d1.name.startswith('bool') and d2.name.startswith('bool'):
+        # match different bool types, i.e. bool and boolean
+        return True
     if d1.name.lower().startswith('int') and d2.name.lower().startswith('int'):
         # match different int types, e.g. int64 and Int64
         return True
