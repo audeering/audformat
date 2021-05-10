@@ -209,10 +209,10 @@ class Database(HeaderBase):
         assert isinstance(index, pd.MultiIndex)
         return index.drop_duplicates()
 
-    def contains_nonunique_path(
+    def contains_unique_files(
         self,
     ) -> bool:
-        r"""Check if all paths are specified in a unique way.
+        r"""Check if all files are specified in a unique way.
 
         If some path is given as an absolute path,
         contains a ``.`` or ``..`` to specify a folder,
@@ -220,13 +220,12 @@ class Database(HeaderBase):
         as two paths could then refer to the same file.
 
         Returns:
-            ``True`` if one of the file paths
-            doesn't represent a unique path
+            ``True`` if all file are given by a unique path
 
         """
         if len(self.files) == 0:
-            return False
-        return any(
+            return True
+        return not any(
             (
                 os.path.isabs(f)
                 or f.startswith(f'.{os.path.sep}')
@@ -574,7 +573,7 @@ class Database(HeaderBase):
 
         # can only join databases with relatvie paths
         for database in [self] + others:
-            if database.contains_nonunique_path():
+            if not database.contains_unique_files():
                 raise RuntimeError(
                     f"You can only use update with databases "
                     f"that not contain absolute paths, '.' or '..'. "

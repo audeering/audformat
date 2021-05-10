@@ -31,52 +31,52 @@ def full_path(
     [
         (
             [],
-            False,
+            True,
         ),
         (
             ['file.txt'],
-            False,
+            True,
         ),
         (
             ['.file.txt'],
-            False,
+            True,
         ),
         (
             ['file..txt'],
-            False,
+            True,
         ),
         (
             [os.path.join(os.path.sep, 'a', 'b', 'c', '.file.txt')],
-            True,
-        ),
-        (
-            [os.path.join('a', 'b', 'c', '.file.txt')],
             False,
         ),
         (
-            [os.path.join('.', 'file.txt')],
+            [os.path.join('a', 'b', 'c', '.file.txt')],
             True,
+        ),
+        (
+            [os.path.join('.', 'file.txt')],
+            False,
         ),
         (
             ['../file.txt'],
-            True,
+            False,
         ),
         (
             [os.path.join('a', 'b', 'c', '.', 'file.txt')],
-            True,
+            False,
         ),
         (
             [os.path.join('a', 'b', 'c', '..', 'file.txt')],
-            True,
+            False,
         ),
     ]
 )
-def test_contains_nonunique_path(files, expected):
+def test_contains_unique_files(files, expected):
     db = audformat.testing.create_db(minimal=True)
     db['table'] = audformat.Table(
         index=audformat.filewise_index(files)
     )
-    assert db.contains_nonunique_path() == expected
+    assert db.contains_unique_files() == expected
 
 
 @pytest.mark.parametrize(
