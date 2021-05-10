@@ -258,7 +258,7 @@ class Database(HeaderBase):
     def is_portable(
         self,
     ) -> bool:
-        r"""Check if a database can be moved to another loaction.
+        r"""Check if a database can be moved to another location.
 
         To be portable a database is supposed to not contain any
         absolute path,
