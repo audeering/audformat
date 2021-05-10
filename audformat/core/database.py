@@ -471,7 +471,7 @@ class Database(HeaderBase):
                 same position overlap)
             RuntimeError: if ``copy_media=True``,
                 but one of the databases in ``others``
-                contains files but no root folder
+                was not saved (contains files but no root folder)
             RuntimeError: if any involved database contains absolute paths
                 in its tables
 
@@ -544,6 +544,15 @@ class Database(HeaderBase):
             assert_equal(other, 'license')
             assert_equal(other, 'usage')
 
+        # can only join databases with relatvie paths
+        for database in [self] + others:
+            if database._contains_absolute_path():
+                raise RuntimeError(
+                    f"You can only use update with relative paths. "
+                    f"The database '{database.name}' "
+                    f"contains absolute file paths in its tables."
+                )
+
         # join fields
         for other in others:
             join_field(other, 'author', ', '.join)
@@ -570,24 +579,13 @@ class Database(HeaderBase):
         # copy media files
 
         if copy_media and self.root is not None:
-            if self._path_absolute():
-                raise RuntimeError(
-                    f"The database '{self.name}' you are trying to update "
-                    f"must not contain absolute file paths in its tables."
-                )
             for other in others:
                 if len(other.files) > 0 and other.root is None:
                     raise RuntimeError(
-                        f"The database '{other.name}' has no root folder."
-                    )
-                if other._path_absolute():
-                    raise RuntimeError(
-                        f"The database '{other.name}' you are trying to add "
-                        f"must not contain absolute file paths in its tables."
+                        f"You can only use update with saved databases. "
+                        f"The database '{other.name}' was not saved yet."
                     )
                 for file in other.files:
-                    if file.startswith(other.root):
-                        file = file[len(other.root) + 1:]
                     src_file = os.path.join(other.root, file)
                     dst_file = os.path.join(self.root, file)
                     dst_dir = os.path.dirname(dst_file)
@@ -791,14 +789,13 @@ class Database(HeaderBase):
 
         return db
 
-    def _path_absolute(
+    def _contains_absolute_path(
         self,
     ) -> bool:
         r"""Check if paths in tables are absolute."""
         return (
-                self.root is not None
-                and len(self.files) > 0
-                and self.files[0].startswith(self.root)
+            len(self.files) > 0
+            and any(os.path.isabs(f) for f in self.files)
         )
 
     def _set_scheme(

@@ -465,9 +465,6 @@ def test_update(tmpdir):
         full_path(other2, other2_root)
         db.update(other2, overwrite=True, copy_media=True)
 
-    print(db.files)
-    assert False
-
     # test other fields
 
     db_author = db.author
@@ -532,10 +529,7 @@ def test_update(tmpdir):
         other.meta['meta'] = 'other'
         db.update(other)
 
-    full_path(db, db_root)
-    print(db.files[0])
-    print(db.root)
-    print(len(db.files))
-    print(db._path_absolute())
-    assert False
-    db.update(other1, overwrite=True, copy_media=True)
+    # fail if self has absolute path
+    with pytest.raises(RuntimeError):
+        full_path(db, db_root)
+        db.update(other1, overwrite=True, copy_media=True)
