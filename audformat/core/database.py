@@ -209,6 +209,34 @@ class Database(HeaderBase):
         assert isinstance(index, pd.MultiIndex)
         return index.drop_duplicates()
 
+    def contains_nonunique_path(
+        self,
+    ) -> bool:
+        r"""Check if all paths are specified in a unique way.
+
+        If some path is given as an asolute path,
+        contains a ``.`` or ``..`` to specify a folder,
+        it returns ``False``
+        as two paths could then refer to the same file.
+        
+        Returns:
+            ``True`` if one of the file paths
+            doesn't represent a unique path
+            
+        """
+        if len(self.files) == 0:
+            return False
+        return any(
+            (
+                os.path.isabs(f)
+                or f.startswith(f'.{os.path.sep}')
+                or f'{os.path.sep}.{os.path.sep}' in f
+                or f.startswith(f'..{os.path.sep}')
+                or f'{os.path.sep}..{os.path.sep}' in f
+            )
+            for f in self.files
+        )
+
     def drop_files(
             self,
             files: typing.Union[
@@ -546,11 +574,12 @@ class Database(HeaderBase):
 
         # can only join databases with relatvie paths
         for database in [self] + others:
-            if database._contains_absolute_path():
+            if database.contains_nonunique_path():
                 raise RuntimeError(
-                    f"You can only use update with relative paths. "
+                    f"You can only use update with databases "
+                    f"that not contain absolute paths, '.' or '..'. "
                     f"The database '{database.name}' "
-                    f"contains absolute file paths in its tables."
+                    f"does not fullfill these requirements."
                 )
 
         # join fields
@@ -788,15 +817,6 @@ class Database(HeaderBase):
                 db[table_id] = table
 
         return db
-
-    def _contains_absolute_path(
-        self,
-    ) -> bool:
-        r"""Check if paths in tables are absolute."""
-        return (
-            len(self.files) > 0
-            and any(os.path.isabs(f) for f in self.files)
-        )
 
     def _set_scheme(
             self,

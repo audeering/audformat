@@ -27,6 +27,59 @@ def full_path(
 
 
 @pytest.mark.parametrize(
+    'files, expected',
+    [
+        (
+            [],
+            False,
+        ),
+        (
+            ['file.txt'],
+            False,
+        ),
+        (
+            ['.file.txt'],
+            False,
+        ),
+        (
+            ['file..txt'],
+            False,
+        ),
+        (
+            ['/a/b/c/.file.txt'],
+            True,
+        ),
+        (
+            ['a/b/c/.file.txt'],
+            False,
+        ),
+        (
+            ['./file.txt'],
+            True,
+        ),
+        (
+            ['../file.txt'],
+            True,
+        ),
+        (
+            ['a/b/c/./file.txt'],
+            True,
+        ),
+        (
+            ['a/b/c/../file.txt'],
+            True,
+        ),
+    ]
+)
+def test_contains_nonunique_path(files, expected):
+    db = audformat.testing.create_db(minimal=True)
+    db['table'] = audformat.Table(
+        index=audformat.filewise_index(files)
+    )
+    assert db.contains_nonunique_path() == expected
+
+
+@pytest.mark.parametrize(
     'files, num_workers',
     [
         (
