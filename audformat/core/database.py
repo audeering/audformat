@@ -500,7 +500,7 @@ class Database(HeaderBase):
             RuntimeError: if ``copy_media=True``,
                 but one of the databases in ``others``
                 was not saved (contains files but no root folder)
-            RuntimeError: if any involved database contains absolute paths
+            RuntimeError: if any involved database contains non-unique paths
                 in its tables
 
         """
