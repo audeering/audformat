@@ -214,7 +214,7 @@ class Database(HeaderBase):
     ) -> bool:
         r"""Check if all paths are specified in a unique way.
 
-        If some path is given as an asolute path,
+        If some path is given as an absolute path,
         contains a ``.`` or ``..`` to specify a folder,
         it returns ``False``
         as two paths could then refer to the same file.
