@@ -218,11 +218,11 @@ class Database(HeaderBase):
         contains a ``.`` or ``..`` to specify a folder,
         it returns ``False``
         as two paths could then refer to the same file.
-        
+
         Returns:
             ``True`` if one of the file paths
             doesn't represent a unique path
-            
+
         """
         if len(self.files) == 0:
             return False
