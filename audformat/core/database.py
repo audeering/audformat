@@ -209,33 +209,6 @@ class Database(HeaderBase):
         assert isinstance(index, pd.MultiIndex)
         return index.drop_duplicates()
 
-    def contains_unique_files(
-        self,
-    ) -> bool:
-        r"""Check if all files are specified in a unique way.
-
-        If some path is given as an absolute path,
-        contains a ``.`` or ``..`` to specify a folder,
-        it returns ``False``
-        as two paths could then refer to the same file.
-
-        Returns:
-            ``True`` if all file are given by a unique path
-
-        """
-        if len(self.files) == 0:
-            return True
-        return not any(
-            (
-                os.path.isabs(f)
-                or f.startswith(f'.{os.path.sep}')
-                or f'{os.path.sep}.{os.path.sep}' in f
-                or f.startswith(f'..{os.path.sep}')
-                or f'{os.path.sep}..{os.path.sep}' in f
-            )
-            for f in self.files
-        )
-
     def drop_files(
             self,
             files: typing.Union[
@@ -281,6 +254,35 @@ class Database(HeaderBase):
             table_ids = [table_ids]
         for table_id in table_ids:
             self.tables.pop(table_id)
+
+    def is_portable(
+        self,
+    ) -> bool:
+        r"""Check if a database can be moved to another loaction.
+
+        To be portable a database is supposed to not contain any
+        absolute path,
+        or a ``.`` or ``..`` to specify a folder.
+        If a database is portable
+        it can be moved to another folder
+        or updated by another database.
+
+        Returns:
+            ``True`` if the database is portable
+
+        """
+        if len(self.files) == 0:
+            return True
+        return not any(
+            (
+                os.path.isabs(f)
+                or f.startswith(f'.{os.path.sep}')
+                or f'{os.path.sep}.{os.path.sep}' in f
+                or f.startswith(f'..{os.path.sep}')
+                or f'{os.path.sep}..{os.path.sep}' in f
+            )
+            for f in self.files
+        )
 
     def map_files(
             self,
@@ -499,8 +501,9 @@ class Database(HeaderBase):
             RuntimeError: if ``copy_media=True``,
                 but one of the databases in ``others``
                 was not saved (contains files but no root folder)
-            RuntimeError: if any involved database contains non-unique paths
-                in its tables
+            RuntimeError: if any involved database is not portable
+                and contains absolute paths, or refers to folders
+                with ``.`` or ``..``
 
         """
 
@@ -573,12 +576,12 @@ class Database(HeaderBase):
 
         # can only join databases with relatvie paths
         for database in [self] + others:
-            if not database.contains_unique_files():
+            if not database.is_portable():
                 raise RuntimeError(
                     f"You can only use update with databases "
-                    f"that not contain absolute paths, '.' or '..'. "
-                    f"The database '{database.name}' "
-                    f"does not fullfill these requirements."
+                    f"that are portable "
+                    f"and do not contain absolute paths, '.' or '..'. "
+                    f"The database '{database.name}' is not portable."
                 )
 
         # join fields

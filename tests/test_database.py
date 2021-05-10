@@ -27,6 +27,39 @@ def full_path(
 
 
 @pytest.mark.parametrize(
+    'files, num_workers',
+    [
+        (
+            pytest.DB.files,
+            1,
+        ),
+        (
+            pytest.DB.files[:2],
+            1,
+        ),
+        (
+            pytest.DB.files[0],
+            4,
+        ),
+        (
+            lambda x: '1' in x,
+            None,
+        ),
+    ]
+)
+def test_drop_files(files, num_workers):
+
+    db = audformat.testing.create_db()
+    db.drop_files(files, num_workers=num_workers)
+    if callable(files):
+        files = db.files.to_series().apply(files)
+    else:
+        if isinstance(files, str):
+            files = [files]
+    assert db.files.intersection(files).empty
+
+
+@pytest.mark.parametrize(
     'files, expected',
     [
         (
@@ -71,45 +104,12 @@ def full_path(
         ),
     ]
 )
-def test_contains_unique_files(files, expected):
+def test_is_portable(files, expected):
     db = audformat.testing.create_db(minimal=True)
     db['table'] = audformat.Table(
         index=audformat.filewise_index(files)
     )
-    assert db.contains_unique_files() == expected
-
-
-@pytest.mark.parametrize(
-    'files, num_workers',
-    [
-        (
-            pytest.DB.files,
-            1,
-        ),
-        (
-            pytest.DB.files[:2],
-            1,
-        ),
-        (
-            pytest.DB.files[0],
-            4,
-        ),
-        (
-            lambda x: '1' in x,
-            None,
-        ),
-    ]
-)
-def test_drop_files(files, num_workers):
-
-    db = audformat.testing.create_db()
-    db.drop_files(files, num_workers=num_workers)
-    if callable(files):
-        files = db.files.to_series().apply(files)
-    else:
-        if isinstance(files, str):
-            files = [files]
-    assert db.files.intersection(files).empty
+    assert db.is_portable() == expected
 
 
 @pytest.mark.parametrize(
