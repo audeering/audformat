@@ -10,6 +10,22 @@ import audformat
 import audformat.testing
 
 
+def full_path(
+        db: audformat.Database,
+        db_root: str,
+):
+    # Faster solution then using db.map_files()
+    root = db_root + os.path.sep
+    for table in db.tables.values():
+        if table.is_filewise:
+            table.df.index = root + table.df.index
+            table.df.index.name = 'file'
+        elif len(table.df.index) > 0:
+            table.df.index.set_levels(
+                root + table.df.index.levels[0], 'file', inplace=True,
+            )
+
+
 @pytest.mark.parametrize(
     'files, num_workers',
     [
@@ -41,6 +57,59 @@ def test_drop_files(files, num_workers):
         if isinstance(files, str):
             files = [files]
     assert db.files.intersection(files).empty
+
+
+@pytest.mark.parametrize(
+    'files, expected',
+    [
+        (
+            [],
+            True,
+        ),
+        (
+            ['file.txt'],
+            True,
+        ),
+        (
+            ['.file.txt'],
+            True,
+        ),
+        (
+            ['file..txt'],
+            True,
+        ),
+        (
+            [os.path.join(os.path.sep, 'a', 'b', 'c', '.file.txt')],
+            False,
+        ),
+        (
+            [os.path.join('a', 'b', 'c', '.file.txt')],
+            True,
+        ),
+        (
+            [os.path.join('.', 'file.txt')],
+            False,
+        ),
+        (
+            [os.path.join('..', 'file.txt')],
+            False,
+        ),
+        (
+            [os.path.join('a', 'b', 'c', '.', 'file.txt')],
+            False,
+        ),
+        (
+            [os.path.join('a', 'b', 'c', '..', 'file.txt')],
+            False,
+        ),
+    ]
+)
+def test_is_portable(files, expected):
+    db = audformat.testing.create_db(minimal=True)
+    db['table'] = audformat.Table(
+        index=audformat.filewise_index(files)
+    )
+    assert db.is_portable() == expected
 
 
 @pytest.mark.parametrize(
@@ -310,7 +379,7 @@ def test_string():
                       'languages: [deu, eng]'
 
 
-def test_update():
+def test_update(tmpdir):
 
     # original database
 
@@ -331,6 +400,9 @@ def test_update():
             'labels': ('labels', None),
         },
     )
+    db_root = audeer.mkdir(os.path.join(tmpdir, 'db'))
+    db.save(db_root)
+    audformat.testing.create_audio_files(db, db_root, file_duration='0.1s')
 
     assert db.update(db) == db
 
@@ -353,6 +425,13 @@ def test_update():
             'labels': ('labels', None),
         },
     )
+    other1_root = audeer.mkdir(os.path.join(tmpdir, 'other1'))
+    other1.save(other1_root)
+    audformat.testing.create_audio_files(
+        other1,
+        other1_root,
+        file_duration='0.1s',
+    )
 
     # database with new table
 
@@ -364,6 +443,13 @@ def test_update():
         'table_new',
         audformat.define.IndexType.SEGMENTED,
         columns={'str': ('str', 'rater2')},
+    )
+    other2_root = audeer.mkdir(os.path.join(tmpdir, 'other2'))
+    other2.save(other2_root)
+    audformat.testing.create_audio_files(
+        other2,
+        other2_root,
+        file_duration='0.1s',
     )
 
     # raises error because schemes do not match
@@ -387,7 +473,16 @@ def test_update():
 
     with pytest.raises(ValueError):
         db.update(others, overwrite=False)
-    db.update(others, overwrite=True)
+
+    # fail if self.root is not given
+
+    db_root = db.root
+    db._root = None
+    with pytest.raises(RuntimeError):
+        db.update(others, overwrite=True, copy_media=True)
+    db._root = db_root
+
+    db.update(others, overwrite=True, copy_media=True)
 
     pd.testing.assert_frame_equal(db['table'].df, df)
     assert db['table_new'] == other2['table_new']
@@ -397,6 +492,25 @@ def test_update():
             assert db.raters[rater_id] == rater
         for scheme_id, scheme in other.schemes.items():
             assert db.schemes[scheme_id] == scheme
+
+    # fail if one of the others has no root folder
+
+    db_root = other1._root
+    other1._root = None
+    with pytest.raises(RuntimeError):
+        db.update(others, overwrite=True, copy_media=True)
+    other1._root = db_root
+
+    # test media files
+
+    for file in db.files:
+        assert os.path.exists(os.path.join(db.root, file))
+
+    # fail if other has absolute path
+
+    with pytest.raises(RuntimeError):
+        full_path(other2, other2_root)
+        db.update(other2, overwrite=True, copy_media=True)
 
     # test other fields
 
@@ -420,7 +534,7 @@ def test_update():
         organization='other',
         source='other',
     )
-    db.update(other)
+    db.update(other, copy_media=True)
 
     assert db.author == f'{db_author}, {other.author}'
     assert db.name == db_name
@@ -461,3 +575,8 @@ def test_update():
         other = audformat.testing.create_db(minimal=True)
         other.meta['meta'] = 'other'
         db.update(other)
+
+    # fail if self has absolute path
+    with pytest.raises(RuntimeError):
+        full_path(db, db_root)
+        db.update(other1, overwrite=True, copy_media=True)

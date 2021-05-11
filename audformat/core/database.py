@@ -1,6 +1,7 @@
 import datetime
 import itertools
 import os
+import shutil
 import typing
 
 import oyaml as yaml
@@ -254,6 +255,35 @@ class Database(HeaderBase):
         for table_id in table_ids:
             self.tables.pop(table_id)
 
+    def is_portable(
+        self,
+    ) -> bool:
+        r"""Check if a database can be moved to another location.
+
+        To be portable,
+        media may be referenced with an absolute path,
+        or contain ``.`` or ``..`` to specify a folder.
+        If a database is portable
+        it can be moved to another folder
+        or updated by another database.
+
+        Returns:
+            ``True`` if the database is portable
+
+        """
+        if len(self.files) == 0:
+            return True
+        return not any(
+            (
+                os.path.isabs(f)
+                or f.startswith(f'.{os.path.sep}')
+                or f'{os.path.sep}.{os.path.sep}' in f
+                or f.startswith(f'..{os.path.sep}')
+                or f'{os.path.sep}..{os.path.sep}' in f
+            )
+            for f in self.files
+        )
+
     def map_files(
             self,
             func: typing.Callable[[str], str],
@@ -429,6 +459,7 @@ class Database(HeaderBase):
             self,
             others: typing.Union['Database', typing.Sequence['Database']],
             *,
+            copy_media: bool = False,
             overwrite: bool = False,
     ) -> 'Database':
         r"""Update database with other database(s).
@@ -454,6 +485,8 @@ class Database(HeaderBase):
 
         Args:
             others: database object(s)
+            copy_media: if ``True`` it copies the media files
+                associated with ``others`` to the current database root folder
             overwrite: overwrite table values where indices overlap
 
         Returns:
@@ -465,6 +498,10 @@ class Database(HeaderBase):
                 same ID is found
             ValueError: if table data cannot be combined (e.g. values in
                 same position overlap)
+            RuntimeError: if ``copy_media=True``,
+                but one of the involved databases was not saved
+                (contains files but no root folder)
+            RuntimeError: if any involved database is not portable
 
         """
 
@@ -535,6 +572,14 @@ class Database(HeaderBase):
             assert_equal(other, 'license')
             assert_equal(other, 'usage')
 
+        # can only join databases with relatvie paths
+        for database in [self] + others:
+            if not database.is_portable():
+                raise RuntimeError(
+                    f"You can only update with databases that are portable. "
+                    f"The database '{database.name}' is not portable."
+                )
+
         # join fields
         for other in others:
             join_field(other, 'author', ', '.join)
@@ -557,6 +602,27 @@ class Database(HeaderBase):
                     self[table_id].update(table, overwrite=overwrite)
                 else:
                     self[table_id] = table.copy()
+
+        # copy media files
+
+        if copy_media:
+            if self.root is None:
+                raise RuntimeError(
+                    f"You can only update a saved database. "
+                    f"'{self.name}' was not saved yet."
+                )
+            for other in others:
+                if len(other.files) > 0 and other.root is None:
+                    raise RuntimeError(
+                        f"You can only update with saved databases. "
+                        f"The database '{other.name}' was not saved yet."
+                    )
+                for file in other.files:
+                    src_file = os.path.join(other.root, file)
+                    dst_file = os.path.join(self.root, file)
+                    dst_dir = os.path.dirname(dst_file)
+                    audeer.mkdir(dst_dir)
+                    shutil.copy(src_file, dst_file)
 
         return self
 
