@@ -183,6 +183,36 @@ class Database(HeaderBase):
         return index.drop_duplicates()
 
     @property
+    def is_portable(
+        self,
+    ) -> bool:
+        r"""Check if a database can be moved to another location.
+
+        To be portable,
+        media may be referenced with an absolute path,
+        or contain ``.`` or ``..`` to specify a folder.
+        If a database is portable
+        it can be moved to another folder
+        or updated by another database.
+
+        Returns:
+            ``True`` if the database is portable
+
+        """
+        if len(self.files) == 0:
+            return True
+        return not any(
+            (
+                os.path.isabs(f)
+                or f.startswith(f'.{os.path.sep}')
+                or f'{os.path.sep}.{os.path.sep}' in f
+                or f.startswith(f'..{os.path.sep}')
+                or f'{os.path.sep}..{os.path.sep}' in f
+            )
+            for f in self.files
+        )
+
+    @property
     def root(self) -> typing.Optional[str]:
         r"""Database root directory.
 
@@ -254,35 +284,6 @@ class Database(HeaderBase):
             table_ids = [table_ids]
         for table_id in table_ids:
             self.tables.pop(table_id)
-
-    def is_portable(
-        self,
-    ) -> bool:
-        r"""Check if a database can be moved to another location.
-
-        To be portable,
-        media may be referenced with an absolute path,
-        or contain ``.`` or ``..`` to specify a folder.
-        If a database is portable
-        it can be moved to another folder
-        or updated by another database.
-
-        Returns:
-            ``True`` if the database is portable
-
-        """
-        if len(self.files) == 0:
-            return True
-        return not any(
-            (
-                os.path.isabs(f)
-                or f.startswith(f'.{os.path.sep}')
-                or f'{os.path.sep}.{os.path.sep}' in f
-                or f.startswith(f'..{os.path.sep}')
-                or f'{os.path.sep}..{os.path.sep}' in f
-            )
-            for f in self.files
-        )
 
     def map_files(
             self,
@@ -574,7 +575,7 @@ class Database(HeaderBase):
 
         # can only join databases with relatvie paths
         for database in [self] + others:
-            if not database.is_portable():
+            if not database.is_portable:
                 raise RuntimeError(
                     f"You can only update with databases that are portable. "
                     f"The database '{database.name}' is not portable."
