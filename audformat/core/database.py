@@ -502,8 +502,6 @@ class Database(HeaderBase):
                 but one of the involved databases was not saved
                 (contains files but no root folder)
             RuntimeError: if any involved database is not portable
-                and contains absolute paths, or refers to folders
-                with ``.`` or ``..``
 
         """
 
