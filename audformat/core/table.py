@@ -931,8 +931,6 @@ class Table(HeaderBase):
             [self.df] + [other.df for other in others],
             overwrite=overwrite,
         )
-        if isinstance(df, pd.Series):
-            df = df.to_frame()
 
         # insert missing schemes and raters
         for scheme_id, scheme in missing_schemes.items():
@@ -980,8 +978,6 @@ class Table(HeaderBase):
 
         """
         df = utils.concat([self._df, other._df])
-        if isinstance(df, pd.Series):
-            df = df.to_frame()
 
         table = Table(df.index)
         for column_id in df:
