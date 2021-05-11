@@ -576,8 +576,7 @@ class Database(HeaderBase):
         for database in [self] + others:
             if not database.is_portable():
                 raise RuntimeError(
-                    f"You can only use update with databases "
-                    f"that are portable "
+                    f"You can only update with databases that are portable "
                     f"and do not contain absolute paths, '.' or '..'. "
                     f"The database '{database.name}' is not portable."
                 )
@@ -616,7 +615,7 @@ class Database(HeaderBase):
             for other in others:
                 if len(other.files) > 0 and other.root is None:
                     raise RuntimeError(
-                        f"You can only use update with saved databases. "
+                        f"You can only update with saved databases. "
                         f"The database '{other.name}' was not saved yet."
                     )
                 for file in other.files:
