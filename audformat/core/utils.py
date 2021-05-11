@@ -120,10 +120,12 @@ def concat(
 
     # list with all columns we need to concatenate
     columns = []
+    return_as_frame = False
     for obj in objs:
         if isinstance(obj, pd.Series):
             columns.append(obj)
         else:
+            return_as_frame = True
             for column in obj:
                 columns.append(obj[column])
 
@@ -203,7 +205,7 @@ def concat(
 
     df = pd.DataFrame(columns_reindex, index=index)
 
-    if len(df.columns) == 1:
+    if not return_as_frame and len(df.columns) == 1:
         return df[df.columns[0]]
     else:
         return df

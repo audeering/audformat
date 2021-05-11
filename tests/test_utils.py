@@ -31,6 +31,11 @@ from audformat import define
             False,
             pd.Series([], audformat.segmented_index(), dtype='object')
         ),
+        (
+            [pd.DataFrame([], audformat.segmented_index(), dtype='object')],
+            False,
+            pd.DataFrame([], audformat.segmented_index(), dtype='object')
+        ),
         # combine series with same name
         (
             [
@@ -342,6 +347,28 @@ from audformat import define
             ),
         ),
         # combine series and data frame
+        (
+            [
+                pd.Series(
+                    [1., 2.],
+                    audformat.filewise_index(['f1', 'f2']),
+                    name='c',
+                ),
+                pd.DataFrame(
+                    {
+                        'c': [2., 3.]
+                    },
+                    audformat.filewise_index(['f2', 'f3']),
+                ),
+            ],
+            False,
+            pd.DataFrame(
+                {
+                    'c': [1., 2., 3.],
+                },
+                audformat.filewise_index(['f1', 'f2', 'f3']),
+            ),
+        ),
         (
             [
                 pd.Series(
