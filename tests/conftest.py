@@ -20,7 +20,6 @@ pytest.FILE_DUR = pd.to_timedelta('1s')
 def create_audio_files():
     audformat.testing.create_audio_files(
         pytest.DB,
-        root=pytest.DB_ROOT,
         file_duration=pytest.FILE_DUR,
     )
     yield

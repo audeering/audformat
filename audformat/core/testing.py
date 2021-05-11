@@ -8,11 +8,11 @@ from typing import (
     Tuple,
     Optional,
 )
+import warnings
 
 import numpy as np
 import pandas as pd
 
-import audeer
 import audiofile as af
 
 from audformat.core import define
@@ -150,7 +150,7 @@ def add_table(
 
 def create_audio_files(
         db: Database,
-        root: str,
+        root: str = None,
         *,
         sample_generator: Callable[[float], float] = None,
         sampling_rate: int = 16000,
@@ -165,18 +165,38 @@ def create_audio_files(
 
     Args:
         db: a database
-        root: root folder where the database is (or will be) stored
         sample_generator: sample generator
         sampling_rate: sampling rate in Hz
         channels: number of channels
         file_duration: file duration
 
+    Raises:
+        RuntimeError: if databases was not saved yet
+        RuntimeError: if database is not portable
+
     """
+    if root is not None:  # pragma: no cover
+        warnings.warn(
+            "The argument 'root' is deprecated, "
+            "'db.root' will be used.'",
+            category=UserWarning,
+            stacklevel=2,
+        )
+
+    if db.root is None:  # pragma: no cover
+        raise RuntimeError(
+            "Cannot create files if databases was not saved."
+        )
+
+    if not db.is_portable:  # pragma: no cover
+        raise RuntimeError(
+            "Cannot create files if databases is not portable."
+        )
+
     file_duration = pd.to_timedelta(file_duration)
-    root = audeer.safe_path(root)
 
     for file in db.files:
-        path = os.path.join(root, file)
+        path = os.path.join(db.root, file)
         if not os.path.exists(os.path.dirname(path)):
             os.makedirs(os.path.dirname(path))
         n = int(file_duration.total_seconds() * sampling_rate)
