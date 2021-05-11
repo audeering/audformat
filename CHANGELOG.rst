@@ -7,6 +7,16 @@ The format is based on `Keep a Changelog`_,
 and this project adheres to `Semantic Versioning`_.
 
 
+Version 0.11.1 (2021-05-11)
+---------------------------
+
+* Added: ``Database.is_portable``
+* Added: ``copy_media`` argument to ``Database.update()``
+* Changed: remove ``root`` argument from ``testing.create_audio_files()`` and instead use ``Database.root``
+* Fixed: ``utils.concat()`` converts to nullable dtype
+* Fixed: ``utils.concat()`` returns ``DataFrame`` if input contains at least one ``DataFrame``
+
+
 Version 0.11.0 (2021-05-06)
 ---------------------------
 
