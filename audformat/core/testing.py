@@ -176,12 +176,12 @@ def create_audio_files(
     """
     if db.root is None:  # pragma: no cover
         raise RuntimeError(
-            f"Cannot create files if databases was not saved."
+            "Cannot create files if databases was not saved."
         )
 
     if not db.is_portable():  # pragma: no cover
         raise RuntimeError(
-            f"Cannot create files if databases is not portable."
+            "Cannot create files if databases is not portable."
         )
 
     file_duration = pd.to_timedelta(file_duration)
