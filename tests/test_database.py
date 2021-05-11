@@ -402,7 +402,7 @@ def test_update(tmpdir):
     )
     db_root = audeer.mkdir(os.path.join(tmpdir, 'db'))
     db.save(db_root)
-    audformat.testing.create_audio_files(db, db_root, file_duration='0.1s')
+    audformat.testing.create_audio_files(db, file_duration='0.1s')
 
     assert db.update(db) == db
 
@@ -427,11 +427,7 @@ def test_update(tmpdir):
     )
     other1_root = audeer.mkdir(os.path.join(tmpdir, 'other1'))
     other1.save(other1_root)
-    audformat.testing.create_audio_files(
-        other1,
-        other1_root,
-        file_duration='0.1s',
-    )
+    audformat.testing.create_audio_files(other1, file_duration='0.1s')
 
     # database with new table
 
@@ -446,11 +442,7 @@ def test_update(tmpdir):
     )
     other2_root = audeer.mkdir(os.path.join(tmpdir, 'other2'))
     other2.save(other2_root)
-    audformat.testing.create_audio_files(
-        other2,
-        other2_root,
-        file_duration='0.1s',
-    )
+    audformat.testing.create_audio_files(other2, file_duration='0.1s')
 
     # raises error because schemes do not match
 
