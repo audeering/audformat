@@ -8,11 +8,11 @@ from typing import (
     Tuple,
     Optional,
 )
+import warnings
 
 import numpy as np
 import pandas as pd
 
-import audeer
 import audiofile as af
 
 from audformat.core import define
@@ -150,6 +150,7 @@ def add_table(
 
 def create_audio_files(
         db: Database,
+        root: str = None,
         *,
         sample_generator: Callable[[float], float] = None,
         sampling_rate: int = 16000,
@@ -174,12 +175,20 @@ def create_audio_files(
         RuntimeError: if database is not portable
 
     """
+    if root is not None:  # pragma: no cover
+        warnings.warn(
+            "The argument 'root' is deprecated, "
+            "'db.root' will be used.'",
+            category=UserWarning,
+            stacklevel=2,
+        )
+
     if db.root is None:  # pragma: no cover
         raise RuntimeError(
             "Cannot create files if databases was not saved."
         )
 
-    if not db.is_portable():  # pragma: no cover
+    if not db.is_portable:  # pragma: no cover
         raise RuntimeError(
             "Cannot create files if databases is not portable."
         )
