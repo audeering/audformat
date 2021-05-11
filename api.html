@@ -74,7 +74,7 @@
             
             
               <div class="version">
-                v0.11.0
+                v0.11.1
               </div>
             
           
@@ -195,7 +195,7 @@
         
             
             
-              <a href="https://github.com/audeering/audformat/blob/v0.11.0/docs/api.rst" class="fa fa-github"> Edit on GitHub</a>
+              <a href="https://github.com/audeering/audformat/blob/v0.11.1/docs/api.rst" class="fa fa-github"> Edit on GitHub</a>
             
           
         
@@ -660,6 +660,26 @@ on the machine multiplied by 5</p></li>
 </dl>
 </dd></dl>
 
+<dl class="py method">
+<dt id="audformat.Database.is_portable">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">is_portable</span></code><a class="headerlink" href="#audformat.Database.is_portable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if a database can be moved to another location.</p>
+<p>To be portable,
+media may be referenced with an absolute path,
+or contain <code class="docutils literal notranslate"><span class="pre">.</span></code> or <code class="docutils literal notranslate"><span class="pre">..</span></code> to specify a folder.
+If a database is portable
+it can be moved to another folder
+or updated by another database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">True</span></code> if the database is portable</p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py attribute">
 <dt id="audformat.Database.languages">
 <code class="sig-name descname"><span class="pre">languages</span></code><a class="headerlink" href="#audformat.Database.languages" title="Permalink to this definition">¶</a></dt>
@@ -899,7 +919,7 @@ on the machine multiplied by 5</p></li>
 
 <dl class="py method">
 <dt id="audformat.Database.update">
-<code class="sig-name descname"><span class="pre">update</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">others</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/database.html#Database.update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.Database.update" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">update</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">others</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">copy_media</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/database.html#Database.update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.Database.update" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update database with other database(s).</p>
 <p>In order to update a database, <em>license</em> and <em>usage</em> have to match.
 <em>Media</em>, <em>raters</em>, <em>schemes</em> and <em>splits</em> that are not part of
@@ -947,6 +967,8 @@ applying the following rules:</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>others</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Database</span></code>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Database</span></code>]]) – database object(s)</p></li>
+<li><p><strong>copy_media</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – if <code class="docutils literal notranslate"><span class="pre">True</span></code> it copies the media files
+associated with <code class="docutils literal notranslate"><span class="pre">others</span></code> to the current database root folder</p></li>
 <li><p><strong>overwrite</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – overwrite table values where indices overlap</p></li>
 </ul>
 </dd>
@@ -963,6 +985,10 @@ applying the following rules:</p>
     same ID is found</p></li>
 <li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.9)"><strong>ValueError</strong></a> – if table data cannot be combined (e.g. values in
     same position overlap)</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.9)"><strong>RuntimeError</strong></a> – if <code class="docutils literal notranslate"><span class="pre">copy_media=True</span></code>,
+    but one of the involved databases was not saved
+    (contains files but no root folder)</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.9)"><strong>RuntimeError</strong></a> – if any involved database is not portable</p></li>
 </ul>
 </dd>
 </dl>
@@ -2042,7 +2068,7 @@ the value of the last table in the list is kept.</p>
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2021/05/06 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2021/05/11 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>

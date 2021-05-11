@@ -74,7 +74,7 @@
             
             
               <div class="version">
-                v0.11.0
+                v0.11.1
               </div>
             
           
@@ -187,7 +187,7 @@
         
             
             
-              <a href="https://github.com/audeering/audformat/blob/v0.11.0/docs/api-testing.rst" class="fa fa-github"> Edit on GitHub</a>
+              <a href="https://github.com/audeering/audformat/blob/v0.11.1/docs/api-testing.rst" class="fa fa-github"> Edit on GitHub</a>
             
           
         
@@ -280,7 +280,7 @@ to segmented table)</p></li>
 <h2>create_audio_files<a class="headerlink" href="#create-audio-files" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
 <dt id="audformat.testing.create_audio_files">
-<code class="sig-prename descclassname"><span class="pre">audformat.testing.</span></code><code class="sig-name descname"><span class="pre">create_audio_files</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">root</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_generator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sampling_rate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">16000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_duration</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'60s'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/testing.html#create_audio_files"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.testing.create_audio_files" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname"><span class="pre">audformat.testing.</span></code><code class="sig-name descname"><span class="pre">create_audio_files</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">root</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_generator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sampling_rate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">16000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_duration</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'60s'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/testing.html#create_audio_files"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.testing.create_audio_files" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create audio files for a database.</p>
 <p>By default empty files are created. A sample generator function can be
 passed to generate the samples. The function gets as input a time stamp
@@ -289,11 +289,16 @@ and should create a sample in the amplitude range <code class="docutils literal 
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>db</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Database</span></code>) – a database</p></li>
-<li><p><strong>root</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – root folder where the database is (or will be) stored</p></li>
 <li><p><strong>sample_generator</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code></a>[[<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>], <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>]]) – sample generator</p></li>
 <li><p><strong>sampling_rate</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – sampling rate in Hz</p></li>
 <li><p><strong>channels</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – number of channels</p></li>
 <li><p><strong>file_duration</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Timedelta</span></code>]) – file duration</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.9)"><strong>RuntimeError</strong></a> – if databases was not saved yet</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.9)"><strong>RuntimeError</strong></a> – if database is not portable</p></li>
 </ul>
 </dd>
 </dl>
@@ -325,7 +330,7 @@ and should create a sample in the amplitude range <code class="docutils literal 
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2021/05/06 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2021/05/11 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
