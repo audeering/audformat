@@ -109,7 +109,7 @@ def test_is_portable(files, expected):
     db['table'] = audformat.Table(
         index=audformat.filewise_index(files)
     )
-    assert db.is_portable() == expected
+    assert db.is_portable == expected
 
 
 @pytest.mark.parametrize(
