@@ -576,8 +576,7 @@ class Database(HeaderBase):
         for database in [self] + others:
             if not database.is_portable():
                 raise RuntimeError(
-                    f"You can only update with databases that are portable "
-                    f"and do not contain absolute paths, '.' or '..'. "
+                    f"You can only update with databases that are portable. "
                     f"The database '{database.name}' is not portable."
                 )
 
