@@ -474,19 +474,13 @@ def test_update(tmpdir):
     with pytest.raises(ValueError):
         db.update(others, overwrite=False)
 
-    # don't copy files if self.root is not given
+    # fail if self.root is not given
 
     db_root = db.root
     db._root = None
-    original_files = db.files
-    db.update(others, overwrite=True, copy_media=True)
+    with pytest.raises(RuntimeError):
+        db.update(others, overwrite=True, copy_media=True)
     db._root = db_root
-    for other in others:
-        for file in other.files:
-            if file in original_files:
-                assert os.path.exists(os.path.join(db.root, file))
-            else:
-                assert not os.path.exists(os.path.join(db.root, file))
 
     db.update(others, overwrite=True, copy_media=True)
 

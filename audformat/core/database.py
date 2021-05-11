@@ -499,8 +499,8 @@ class Database(HeaderBase):
             ValueError: if table data cannot be combined (e.g. values in
                 same position overlap)
             RuntimeError: if ``copy_media=True``,
-                but one of the databases in ``others``
-                was not saved (contains files but no root folder)
+                but one of the involved databases was not saved
+                (contains files but no root folder)
             RuntimeError: if any involved database is not portable
                 and contains absolute paths, or refers to folders
                 with ``.`` or ``..``
@@ -609,7 +609,12 @@ class Database(HeaderBase):
 
         # copy media files
 
-        if copy_media and self.root is not None:
+        if copy_media:
+            if self.root is None:
+                raise RuntimeError(
+                    f"You can only update a saved database. "
+                    f"'{self.name}' was not saved yet."
+                )
             for other in others:
                 if len(other.files) > 0 and other.root is None:
                     raise RuntimeError(
