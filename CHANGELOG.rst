@@ -7,6 +7,12 @@ The format is based on `Keep a Changelog`_,
 and this project adheres to `Semantic Versioning`_.
 
 
+Version 0.11.2 (2021-05-12)
+---------------------------
+
+* Added: ``audformat.utils.join_schemes``
+
+
 Version 0.11.1 (2021-05-11)
 ---------------------------
 
