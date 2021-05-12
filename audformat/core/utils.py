@@ -361,8 +361,7 @@ def join_labels(
 
 
 def join_schemes(
-        db1: Database,
-        db2: Database,
+        dbs: typing.Sequence[Database],
         scheme: str,
 ):
     r"""Join and update scheme of two databases.
@@ -377,30 +376,25 @@ def join_schemes(
     with :meth:`audformat.Database.update`.
 
     Args:
-        db1: database
-        db2: database
-        scheme: scheme with labels contained in both databases
+        dbs: sequence of databases
+        scheme: scheme ID of a scheme with labels
+            that should be joined
 
     Example:
         >>> db1 = Database('db1')
         >>> db2 = Database('db2')
         >>> db1.schemes['scheme_id'] = Scheme(labels=['a'])
         >>> db2.schemes['scheme_id'] = Scheme(labels=['b'])
-        >>> join_schemes(db1, db2, 'scheme_id')
+        >>> join_schemes([db1, db2], 'scheme_id')
         >>> db1.schemes
         scheme_id:
           dtype: str
           labels: [a, b]
 
     """
-    labels = join_labels(
-        [
-            db1.schemes[scheme].labels,
-            db2.schemes[scheme].labels,
-        ]
-    )
-    db1.schemes[scheme].replace_labels(labels)
-    db2.schemes[scheme].replace_labels(labels)
+    labels = join_labels([db.schemes[scheme].labels for db in dbs])
+    for db in dbs:
+        db.schemes[scheme].replace_labels(labels)
 
 
 def map_language(language: str) -> str:

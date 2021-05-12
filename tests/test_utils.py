@@ -712,7 +712,9 @@ def test_join_schemes(scheme1, scheme2, expected):
     db2 = audformat.Database('db2')
     db1.schemes['scheme_id'] = scheme1
     db2.schemes['scheme_id'] = scheme2
-    audformat.utils.join_schemes(db1, db2, 'scheme_id')
+    audformat.utils.join_schemes([db1], 'scheme_id')
+    assert db1.schemes['scheme_id'] == scheme1
+    audformat.utils.join_schemes([db1, db2], 'scheme_id')
     assert db1.schemes['scheme_id'] == expected
     assert db2.schemes['scheme_id'] == expected
 
