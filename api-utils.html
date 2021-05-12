@@ -74,7 +74,7 @@
             
             
               <div class="version">
-                v0.11.1
+                v0.11.2
               </div>
             
           
@@ -127,6 +127,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#concat">concat</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#intersect">intersect</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#join-labels">join_labels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#join-schemes">join_schemes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#map-language">map_language</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#read-csv">read_csv</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#to-filewise-index">to_filewise_index</a></li>
@@ -192,7 +193,7 @@
         
             
             
-              <a href="https://github.com/audeering/audformat/blob/v0.11.1/docs/api-utils.rst" class="fa fa-github"> Edit on GitHub</a>
+              <a href="https://github.com/audeering/audformat/blob/v0.11.2/docs/api-utils.rst" class="fa fa-github"> Edit on GitHub</a>
             
           
         
@@ -367,21 +368,6 @@ the value of the last object in the list is kept.</p>
 <dt id="audformat.utils.join_labels">
 <code class="sig-prename descclassname"><span class="pre">audformat.utils.</span></code><code class="sig-name descname"><span class="pre">join_labels</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">labels</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/utils.html#join_labels"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.utils.join_labels" title="Permalink to this definition">¶</a></dt>
 <dd><p>Combine scheme labels.</p>
-<p>This might be helpful,
-if you would like to combine two databases
-that have the same scheme,
-but with different labels:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">labels</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">join_labels</span><span class="p">(</span>
-    <span class="p">[</span>
-        <span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s1">&#39;scheme&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">labels</span><span class="p">,</span>
-        <span class="n">db_new</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s1">&#39;scheme&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">labels</span><span class="p">,</span>
-    <span class="p">]</span>
-<span class="p">)</span>
-<span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s1">&#39;scheme&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">replace_labels</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span>
-<span class="n">db_new</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s1">&#39;scheme&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">replace_labels</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span>
-<span class="n">db</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">db_new</span><span class="p">)</span>
-</pre></div>
-</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>labels</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>]]) – sequence of labels to join.
@@ -402,6 +388,47 @@ can overwrite previous labels</p>
 <p class="rubric">Example</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">join_labels</span><span class="p">([{</span><span class="s1">&#39;a&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">},</span> <span class="p">{</span><span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">}])</span>
 <span class="go">{&#39;a&#39;: 0, &#39;b&#39;: 2, &#39;c&#39;: 2}</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="join-schemes">
+<h2>join_schemes<a class="headerlink" href="#join-schemes" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="audformat.utils.join_schemes">
+<code class="sig-prename descclassname"><span class="pre">audformat.utils.</span></code><code class="sig-name descname"><span class="pre">join_schemes</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dbs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scheme_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/utils.html#join_schemes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.utils.join_schemes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Join and update scheme of databases.</p>
+<p>This joins the given scheme of several databases
+using <a class="reference internal" href="#audformat.utils.join_labels" title="audformat.utils.join_labels"><code class="xref py py-func docutils literal notranslate"><span class="pre">audformat.utils.join_labels()</span></code></a>
+and replaces the scheme in each database
+with the joined one.
+The dtype of all <a class="reference internal" href="api.html#audformat.Column" title="audformat.Column"><code class="xref py py-class docutils literal notranslate"><span class="pre">audformat.Column</span></code></a> objects
+that reference the scheme in the databases
+will be updated.
+Removed labels are set to <code class="docutils literal notranslate"><span class="pre">NaN</span></code>.</p>
+<p>This might be useful,
+if you want to combine databases
+with <a class="reference internal" href="api.html#audformat.Database.update" title="audformat.Database.update"><code class="xref py py-meth docutils literal notranslate"><span class="pre">audformat.Database.update()</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dbs</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Database</span></code>]) – sequence of databases</p></li>
+<li><p><strong>scheme_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – scheme ID of a scheme with labels
+that should be joined</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">db1</span> <span class="o">=</span> <span class="n">Database</span><span class="p">(</span><span class="s1">&#39;db1&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db2</span> <span class="o">=</span> <span class="n">Database</span><span class="p">(</span><span class="s1">&#39;db2&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db1</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s1">&#39;scheme_id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Scheme</span><span class="p">(</span><span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db2</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s1">&#39;scheme_id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Scheme</span><span class="p">(</span><span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;b&#39;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">join_schemes</span><span class="p">([</span><span class="n">db1</span><span class="p">,</span> <span class="n">db2</span><span class="p">],</span> <span class="s1">&#39;scheme_id&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db1</span><span class="o">.</span><span class="n">schemes</span>
+<span class="go">scheme_id:</span>
+<span class="go">  dtype: str</span>
+<span class="go">  labels: [a, b]</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -661,7 +688,7 @@ on the machine multiplied by 5</p></li>
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2021/05/11 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2021/05/12 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>

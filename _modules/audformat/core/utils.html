@@ -72,7 +72,7 @@
             
             
               <div class="version">
-                v0.11.1
+                v0.11.2
               </div>
             
           
@@ -203,6 +203,7 @@
 <span class="kn">import</span> <span class="nn">audiofile</span>
 
 <span class="kn">from</span> <span class="nn">audformat.core</span> <span class="kn">import</span> <span class="n">define</span>
+<span class="kn">from</span> <span class="nn">audformat.core.database</span> <span class="kn">import</span> <span class="n">Database</span>
 <span class="kn">from</span> <span class="nn">audformat.core.index</span> <span class="kn">import</span> <span class="n">index_type</span>
 <span class="kn">from</span> <span class="nn">audformat.core.index</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">filewise_index</span><span class="p">,</span>
@@ -493,23 +494,6 @@
 <span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Combine scheme labels.</span>
 
-<span class="sd">    This might be helpful,</span>
-<span class="sd">    if you would like to combine two databases</span>
-<span class="sd">    that have the same scheme,</span>
-<span class="sd">    but with different labels:</span>
-
-<span class="sd">    .. code-block:: python</span>
-
-<span class="sd">        labels = audformat.utils.join_labels(</span>
-<span class="sd">            [</span>
-<span class="sd">                db.schemes[&#39;scheme&#39;].labels,</span>
-<span class="sd">                db_new.schemes[&#39;scheme&#39;].labels,</span>
-<span class="sd">            ]</span>
-<span class="sd">        )</span>
-<span class="sd">        db.schemes[&#39;scheme&#39;].replace_labels(labels)</span>
-<span class="sd">        db_new.schemes[&#39;scheme&#39;].replace_labels(labels)</span>
-<span class="sd">        db.update(db_new)</span>
-
 <span class="sd">    Args:</span>
 <span class="sd">        labels: sequence of labels to join.</span>
 <span class="sd">            For dictionary labels,</span>
@@ -567,6 +551,47 @@
     <span class="n">Scheme</span><span class="p">(</span><span class="n">labels</span><span class="o">=</span><span class="n">joined_labels</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">joined_labels</span></div>
+
+
+<div class="viewcode-block" id="join_schemes"><a class="viewcode-back" href="../../../api-utils.html#audformat.utils.join_schemes">[docs]</a><span class="k">def</span> <span class="nf">join_schemes</span><span class="p">(</span>
+        <span class="n">dbs</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">Database</span><span class="p">],</span>
+        <span class="n">scheme_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Join and update scheme of databases.</span>
+
+<span class="sd">    This joins the given scheme of several databases</span>
+<span class="sd">    using :func:`audformat.utils.join_labels`</span>
+<span class="sd">    and replaces the scheme in each database</span>
+<span class="sd">    with the joined one.</span>
+<span class="sd">    The dtype of all :class:`audformat.Column` objects</span>
+<span class="sd">    that reference the scheme in the databases</span>
+<span class="sd">    will be updated.</span>
+<span class="sd">    Removed labels are set to ``NaN``.</span>
+
+<span class="sd">    This might be useful,</span>
+<span class="sd">    if you want to combine databases</span>
+<span class="sd">    with :meth:`audformat.Database.update`.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        dbs: sequence of databases</span>
+<span class="sd">        scheme_id: scheme ID of a scheme with labels</span>
+<span class="sd">            that should be joined</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; db1 = Database(&#39;db1&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; db2 = Database(&#39;db2&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; db1.schemes[&#39;scheme_id&#39;] = Scheme(labels=[&#39;a&#39;])</span>
+<span class="sd">        &gt;&gt;&gt; db2.schemes[&#39;scheme_id&#39;] = Scheme(labels=[&#39;b&#39;])</span>
+<span class="sd">        &gt;&gt;&gt; join_schemes([db1, db2], &#39;scheme_id&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; db1.schemes</span>
+<span class="sd">        scheme_id:</span>
+<span class="sd">          dtype: str</span>
+<span class="sd">          labels: [a, b]</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">labels</span> <span class="o">=</span> <span class="n">join_labels</span><span class="p">([</span><span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="n">scheme_id</span><span class="p">]</span><span class="o">.</span><span class="n">labels</span> <span class="k">for</span> <span class="n">db</span> <span class="ow">in</span> <span class="n">dbs</span><span class="p">])</span>
+    <span class="k">for</span> <span class="n">db</span> <span class="ow">in</span> <span class="n">dbs</span><span class="p">:</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="n">scheme_id</span><span class="p">]</span><span class="o">.</span><span class="n">replace_labels</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="map_language"><a class="viewcode-back" href="../../../api-utils.html#audformat.utils.map_language">[docs]</a><span class="k">def</span> <span class="nf">map_language</span><span class="p">(</span><span class="n">language</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
@@ -1008,7 +1033,7 @@
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2021/05/11 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2021/05/12 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
