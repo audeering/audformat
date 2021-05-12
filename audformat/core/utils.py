@@ -372,7 +372,7 @@ def join_schemes(
     with the joined one.
 
     This might be useful,
-    if you want to combine both databases
+    if you want to combine databases
     with :meth:`audformat.Database.update`.
 
     Args:
