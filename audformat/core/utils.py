@@ -362,7 +362,7 @@ def join_labels(
 
 def join_schemes(
         dbs: typing.Sequence[Database],
-        scheme: str,
+        scheme_id: str,
 ):
     r"""Join and update scheme of two databases.
 
@@ -377,7 +377,7 @@ def join_schemes(
 
     Args:
         dbs: sequence of databases
-        scheme: scheme ID of a scheme with labels
+        scheme_id: scheme ID of a scheme with labels
             that should be joined
 
     Example:
@@ -392,9 +392,9 @@ def join_schemes(
           labels: [a, b]
 
     """
-    labels = join_labels([db.schemes[scheme].labels for db in dbs])
+    labels = join_labels([db.schemes[scheme_id].labels for db in dbs])
     for db in dbs:
-        db.schemes[scheme].replace_labels(labels)
+        db.schemes[scheme_id].replace_labels(labels)
 
 
 def map_language(language: str) -> str:
