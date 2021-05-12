@@ -376,9 +376,6 @@ def join_schemes(
     if you want to combine both databases
     with :meth:`audformat.Database.update`.
 
-    It uses :func:`audformat.utils.join_labels`
-    to combine the scheme labels.
-
     Args:
         db1: database
         db2: database
