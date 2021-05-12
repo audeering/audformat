@@ -364,9 +364,9 @@ def join_schemes(
         dbs: typing.Sequence[Database],
         scheme_id: str,
 ):
-    r"""Join and update scheme of two databases.
+    r"""Join and update scheme of databases.
 
-    This joins the given scheme of two databases
+    This joins the given scheme of several databases
     using :func:`audformat.utils.join_labels`
     and replaces the scheme in each database
     with the joined one.
