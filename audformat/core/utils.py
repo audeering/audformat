@@ -371,6 +371,11 @@ def join_schemes(
     and replaces the scheme in each database
     with the joined one.
 
+    The dtype of all :class:`audformat.Column` objects
+    that reference the scheme in the databases
+    will be updated.
+    Removed labels are set to ``NaN``.
+
     This might be useful,
     if you want to combine databases
     with :meth:`audformat.Database.update`.
