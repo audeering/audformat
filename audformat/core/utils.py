@@ -10,6 +10,7 @@ import audeer
 import audiofile
 
 from audformat.core import define
+from audformat.core.database import Database
 from audformat.core.index import index_type
 from audformat.core.index import (
     filewise_index,
@@ -374,6 +375,52 @@ def join_labels(
     Scheme(labels=joined_labels)
 
     return joined_labels
+
+
+def join_schemes(
+        db1: Database,
+        db2: Database,
+        scheme: str,
+):
+    r"""Join and update scheme of two databases.
+
+    This joins the given scheme of two databases
+    using :func:`audformat.utils.join_labels`
+    and replaces the scheme in each database
+    with the joined one.
+
+    This might be useful,
+    if you want to combine both databases
+    with :meth:`audformat.Database.update`.
+
+    It uses :func:`audformat.utils.join_labels`
+    to combine the scheme labels.
+
+    Args:
+        db1: database
+        db2: database
+        scheme: scheme with labels contained in both databases
+
+    Example:
+        >>> db1 = Database('db1')
+        >>> db2 = Database('db2')
+        >>> db1.schemes['scheme_id'] = Scheme(labels=['a'])
+        >>> db2.schemes['scheme_id'] = Scheme(labels=['b'])
+        >>> join_schemes(db1, db2, 'scheme_id')
+        >>> db1.schemes
+        scheme_id:
+          dtype: str
+          labels: [a, b]
+
+    """
+    labels = join_labels(
+        [
+            db1.schemes[scheme].labels,
+            db2.schemes[scheme].labels,
+        ]
+    )
+    db1.schemes[scheme].replace_labels(labels)
+    db2.schemes[scheme].replace_labels(labels)
 
 
 def map_language(language: str) -> str:

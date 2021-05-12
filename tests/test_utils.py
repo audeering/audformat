@@ -692,6 +692,32 @@ def test_join_labels(labels, expected):
 
 
 @pytest.mark.parametrize(
+    'scheme1, scheme2, expected',
+    [
+        (
+            audformat.Scheme(labels={'a': [1, 2]}),
+            audformat.Scheme(labels={'b': [3]}),
+            audformat.Scheme(labels={'a': [1, 2], 'b': [3]}),
+        ),
+        pytest.param(
+            audformat.Scheme('str'),
+            audformat.Scheme('str'),
+            audformat.Scheme('str'),
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
+    ]
+)
+def test_join_schemes(scheme1, scheme2, expected):
+    db1 = audformat.Database('db1')
+    db2 = audformat.Database('db2')
+    db1.schemes['scheme_id'] = scheme1
+    db2.schemes['scheme_id'] = scheme2
+    audformat.utils.join_schemes(db1, db2, 'scheme_id')
+    assert db1.schemes['scheme_id'] == expected
+    assert db2.schemes['scheme_id'] == expected
+
+
+@pytest.mark.parametrize(
     'language, expected',
     [
         ('en', 'eng'),

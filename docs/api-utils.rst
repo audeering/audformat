@@ -22,6 +22,12 @@ join_labels
 .. autofunction:: join_labels
 
 
+join_schemes
+------------
+
+.. autofunction:: join_schemes
+
+
 map_language
 ------------
 
