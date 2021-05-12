@@ -370,7 +370,6 @@ def join_schemes(
     using :func:`audformat.utils.join_labels`
     and replaces the scheme in each database
     with the joined one.
-
     The dtype of all :class:`audformat.Column` objects
     that reference the scheme in the databases
     will be updated.
