@@ -301,23 +301,6 @@ def join_labels(
 ):
     r"""Combine scheme labels.
 
-    This might be helpful,
-    if you would like to combine two databases
-    that have the same scheme,
-    but with different labels:
-
-    .. code-block:: python
-
-        labels = audformat.utils.join_labels(
-            [
-                db.schemes['scheme'].labels,
-                db_new.schemes['scheme'].labels,
-            ]
-        )
-        db.schemes['scheme'].replace_labels(labels)
-        db_new.schemes['scheme'].replace_labels(labels)
-        db.update(db_new)
-
     Args:
         labels: sequence of labels to join.
             For dictionary labels,
