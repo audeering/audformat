@@ -10,6 +10,7 @@ import audeer
 import audiofile
 
 from audformat.core import define
+from audformat.core.database import Database
 from audformat.core.index import index_type
 from audformat.core.index import (
     filewise_index,
@@ -300,23 +301,6 @@ def join_labels(
 ):
     r"""Combine scheme labels.
 
-    This might be helpful,
-    if you would like to combine two databases
-    that have the same scheme,
-    but with different labels:
-
-    .. code-block:: python
-
-        labels = audformat.utils.join_labels(
-            [
-                db.schemes['scheme'].labels,
-                db_new.schemes['scheme'].labels,
-            ]
-        )
-        db.schemes['scheme'].replace_labels(labels)
-        db_new.schemes['scheme'].replace_labels(labels)
-        db.update(db_new)
-
     Args:
         labels: sequence of labels to join.
             For dictionary labels,
@@ -374,6 +358,47 @@ def join_labels(
     Scheme(labels=joined_labels)
 
     return joined_labels
+
+
+def join_schemes(
+        dbs: typing.Sequence[Database],
+        scheme_id: str,
+):
+    r"""Join and update scheme of databases.
+
+    This joins the given scheme of several databases
+    using :func:`audformat.utils.join_labels`
+    and replaces the scheme in each database
+    with the joined one.
+    The dtype of all :class:`audformat.Column` objects
+    that reference the scheme in the databases
+    will be updated.
+    Removed labels are set to ``NaN``.
+
+    This might be useful,
+    if you want to combine databases
+    with :meth:`audformat.Database.update`.
+
+    Args:
+        dbs: sequence of databases
+        scheme_id: scheme ID of a scheme with labels
+            that should be joined
+
+    Example:
+        >>> db1 = Database('db1')
+        >>> db2 = Database('db2')
+        >>> db1.schemes['scheme_id'] = Scheme(labels=['a'])
+        >>> db2.schemes['scheme_id'] = Scheme(labels=['b'])
+        >>> join_schemes([db1, db2], 'scheme_id')
+        >>> db1.schemes
+        scheme_id:
+          dtype: str
+          labels: [a, b]
+
+    """
+    labels = join_labels([db.schemes[scheme_id].labels for db in dbs])
+    for db in dbs:
+        db.schemes[scheme_id].replace_labels(labels)
 
 
 def map_language(language: str) -> str:

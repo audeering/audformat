@@ -691,6 +691,36 @@ def test_join_labels(labels, expected):
     assert utils.join_labels(labels) == expected
 
 
+def test_join_schemes():
+    # Empty list
+    audformat.utils.join_schemes([], 'scheme_id')
+    # One database
+    db1 = audformat.Database('db1')
+    scheme1 = audformat.Scheme(labels={'a': [1, 2]})
+    db1.schemes['scheme_id'] = scheme1
+    audformat.utils.join_schemes([db1], 'scheme_id')
+    assert db1.schemes['scheme_id'] == scheme1
+    # Two databases
+    db2 = audformat.Database('db2')
+    scheme2 = audformat.Scheme(labels={'b': [3]})
+    db2.schemes['scheme_id'] = scheme2
+    expected = audformat.Scheme(labels={'a': [1, 2], 'b': [3]})
+    audformat.utils.join_schemes([db1, db2], 'scheme_id')
+    assert db1.schemes['scheme_id'] == expected
+    assert db2.schemes['scheme_id'] == expected
+    # Three database
+    db3 = audformat.Database('db3')
+    scheme3 = audformat.Scheme(labels={'a': [4]})
+    db3.schemes['scheme_id'] = scheme3
+    expected = audformat.Scheme(labels={'a': [4], 'b': [3]})
+    audformat.utils.join_schemes([db1, db2, db3], 'scheme_id')
+    # Fail for schemes without labels
+    with pytest.raises(ValueError):
+        db = audformat.Database('db')
+        db.schemes['scheme_id'] = audformat.Scheme('str')
+        audformat.utils.join_schemes([db], 'scheme_id')
+
+
 @pytest.mark.parametrize(
     'language, expected',
     [
