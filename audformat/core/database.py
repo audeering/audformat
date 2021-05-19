@@ -189,7 +189,7 @@ class Database(HeaderBase):
         r"""Check if a database can be moved to another location.
 
         To be portable,
-        media may be referenced with an absolute path,
+        media must not be referenced with an absolute path,
         or contain ``.`` or ``..`` to specify a folder.
         If a database is portable
         it can be moved to another folder
