@@ -214,19 +214,31 @@ def concat(
 
 def duration(
         obj: typing.Union[pd.Index, pd.Series, pd.DataFrame],
+        *,
+        num_workers: int = 1,
 ) -> pd.Timedelta:
-    r"""Duration of all segments present in a segmented object.
+    r"""Duration of all entries present in the object.
+
+    The object might contain a segmented or a filewise index.
+    For a segmented index the duration is calculated
+    from its start and end values.
+    If an end value is ``NaT``
+    or the object contains a filewise index
+    the duration is calculated from the media file
+    by calling :func:`audiofile.duration`.
 
     Args:
         obj: object conform to
             :ref:`table specifications <data-tables:Tables>`
             and containing a segmented index
+        num_workers: number of parallel jobs.
+            Only relevant when the duration of the files
+            needs to be detected from the file.
+            If ``None`` will be set to the number of processors
+            on the machine multiplied by 5
 
     Returns:
-        duration in seconds
-
-    Raises:
-        ValueError: if ``obj`` does not contain a segmented index
+        duration
 
     Example:
 
@@ -239,8 +251,7 @@ def duration(
         Timedelta('0 days 00:00:03')
 
     """
-    if index_type(obj) != define.IndexType.SEGMENTED:
-        raise ValueError('Input does not have a segmented index.')
+    obj = to_segmented_index(obj, allow_nat=False, num_workers=num_workers)
 
     if not isinstance(obj, pd.MultiIndex):
         obj = obj.index

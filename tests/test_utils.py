@@ -497,10 +497,6 @@ def test_concat(objs, overwrite, expected):
             pd.Timedelta(3, unit='s'),
         ),
         (
-            audformat.segmented_index(['f1'], [0]),
-            pd.Timedelta(np.NaN, unit='s'),
-        ),
-        (
             pd.Series(
                 index=audformat.segmented_index(['f1'], [1], [2]),
                 dtype='category',
@@ -511,10 +507,17 @@ def test_concat(objs, overwrite, expected):
             pd.DataFrame(index=audformat.segmented_index(['f1'], [1], [2])),
             pd.Timedelta(1, unit='s'),
         ),
+        # filewise index, but file is missing
         pytest.param(
             audformat.filewise_index(['f1']),
             None,
-            marks=pytest.mark.xfail(raises=ValueError),
+            marks=pytest.mark.xfail(raises=FileNotFoundError),
+        ),
+        # segmented index with NaT, but file is missing
+        pytest.param(
+            audformat.segmented_index(['f1'], [0]),
+            None,
+            marks=pytest.mark.xfail(raises=FileNotFoundError),
         ),
     ]
 )
