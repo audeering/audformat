@@ -231,7 +231,6 @@ def duration(
     Args:
         obj: object conform to
             :ref:`table specifications <data-tables:Tables>`
-            and containing a segmented index
         num_workers: number of parallel jobs.
             Only relevant when the duration of the files
             needs to be detected from the file.
