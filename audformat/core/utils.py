@@ -216,6 +216,7 @@ def duration(
         obj: typing.Union[pd.Index, pd.Series, pd.DataFrame],
         *,
         num_workers: int = 1,
+        verbose: bool = False,
 ) -> pd.Timedelta:
     r"""Duration of all entries present in the object.
 
@@ -236,6 +237,7 @@ def duration(
             needs to be detected from the file.
             If ``None`` will be set to the number of processors
             on the machine multiplied by 5
+        verbose: show progress bar when duration needs to be detected
 
     Returns:
         duration
@@ -251,7 +253,12 @@ def duration(
         Timedelta('0 days 00:00:03')
 
     """
-    obj = to_segmented_index(obj, allow_nat=False, num_workers=num_workers)
+    obj = to_segmented_index(
+        obj,
+        allow_nat=False,
+        num_workers=num_workers,
+        verbose=verbose,
+    )
 
     if not isinstance(obj, pd.MultiIndex):
         obj = obj.index
