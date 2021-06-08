@@ -218,7 +218,7 @@ def duration(
         num_workers: int = 1,
         verbose: bool = False,
 ) -> pd.Timedelta:
-    r"""Duration of all entries present in the object.
+    r"""Total duration of all entries present in the object.
 
     The object might contain a segmented or a filewise index.
     For a segmented index the duration is calculated
