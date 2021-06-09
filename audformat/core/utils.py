@@ -215,6 +215,7 @@ def concat(
 def duration(
         obj: typing.Union[pd.Index, pd.Series, pd.DataFrame],
         *,
+        root: str = None,
         num_workers: int = 1,
         verbose: bool = False,
 ) -> pd.Timedelta:
@@ -231,12 +232,18 @@ def duration(
     Args:
         obj: object conform to
             :ref:`table specifications <data-tables:Tables>`
+        root: root directory under which the files referenced in the index
+            are stored.
+            Only relevant when the duration of the files
+            needs to be detected from the file.
         num_workers: number of parallel jobs.
             Only relevant when the duration of the files
             needs to be detected from the file.
             If ``None`` will be set to the number of processors
             on the machine multiplied by 5
-        verbose: show progress bar when duration needs to be detected
+        verbose: show progress bar.
+            Only relevant when the duration of the files
+            needs to be detected from the file.
 
     Returns:
         duration
@@ -255,6 +262,7 @@ def duration(
     obj = to_segmented_index(
         obj,
         allow_nat=False,
+        root=root,
         num_workers=num_workers,
         verbose=verbose,
     )
