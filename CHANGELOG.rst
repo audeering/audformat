@@ -7,6 +7,14 @@ The format is based on `Keep a Changelog`_,
 and this project adheres to `Semantic Versioning`_.
 
 
+Version 0.11.3 (2021-06-10)
+---------------------------
+
+* Added: ``audformat.utils.duration``
+* Fixed: description of ``audformat.Database.is_portable``
+  in documentation
+
+
 Version 0.11.2 (2021-05-12)
 ---------------------------
 
