@@ -9,12 +9,15 @@ concat
 
 .. autofunction:: concat
 
+duration
+--------
+
+.. autofunction:: duration
 
 intersect
 ---------
 
 .. autofunction:: intersect
-
 
 join_labels
 -----------
@@ -26,7 +29,6 @@ join_schemes
 ------------
 
 .. autofunction:: join_schemes
-
 
 map_language
 ------------

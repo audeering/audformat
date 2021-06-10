@@ -212,6 +212,72 @@ def concat(
         return df
 
 
+def duration(
+        obj: typing.Union[pd.Index, pd.Series, pd.DataFrame],
+        *,
+        root: str = None,
+        num_workers: int = 1,
+        verbose: bool = False,
+) -> pd.Timedelta:
+    r"""Total duration of all entries present in the object.
+
+    The object might contain a segmented or a filewise index.
+    For a segmented index the duration is calculated
+    from its start and end values.
+    If an end value is ``NaT``
+    or the object contains a filewise index
+    the duration is calculated from the media file
+    by calling :func:`audiofile.duration`.
+
+    Args:
+        obj: object conform to
+            :ref:`table specifications <data-tables:Tables>`
+        root: root directory under which the files referenced in the index
+            are stored.
+            Only relevant when the duration of the files
+            needs to be detected from the file
+        num_workers: number of parallel jobs.
+            Only relevant when the duration of the files
+            needs to be detected from the file
+            If ``None`` will be set to the number of processors
+            on the machine multiplied by 5
+        verbose: show progress bar.
+            Only relevant when the duration of the files
+            needs to be detected from the file
+
+    Returns:
+        duration
+
+    Example:
+
+        >>> idx = segmented_index(
+        ...     files=['a', 'b', 'c'],
+        ...     starts=[0, 1, 3],
+        ...     ends=[1, 2, 4],
+        ... )
+        >>> duration(idx)
+        Timedelta('0 days 00:00:03')
+
+    """
+    obj = to_segmented_index(
+        obj,
+        allow_nat=False,
+        root=root,
+        num_workers=num_workers,
+        verbose=verbose,
+    )
+
+    if not isinstance(obj, pd.MultiIndex):
+        obj = obj.index
+
+    if obj.empty:
+        return pd.Timedelta(0, unit='s')
+
+    starts = obj.get_level_values(define.IndexField.START)
+    ends = obj.get_level_values(define.IndexField.END)
+    return (ends - starts).sum()
+
+
 def intersect(
     objs: typing.Sequence[typing.Union[pd.Index]],
 ) -> pd.Index:

@@ -478,6 +478,58 @@ def test_concat(objs, overwrite, expected):
 
 
 @pytest.mark.parametrize(
+    'obj, expected_duration',
+    [
+        (
+            audformat.segmented_index(),
+            pd.Timedelta(0, unit='s'),
+        ),
+        (
+            audformat.segmented_index(['f1'], [0], [2]),
+            pd.Timedelta(2, unit='s'),
+        ),
+        (
+            audformat.segmented_index(['f1'], [0.1], [2]),
+            pd.Timedelta(1.9, unit='s'),
+        ),
+        (
+            audformat.segmented_index(['f1', 'f2'], [0, 1], [2, 2]),
+            pd.Timedelta(3, unit='s'),
+        ),
+        (
+            pd.Series(
+                index=audformat.segmented_index(['f1'], [1], [2]),
+                dtype='category',
+            ),
+            pd.Timedelta(1, unit='s'),
+        ),
+        (
+            pd.DataFrame(index=audformat.segmented_index(['f1'], [1], [2])),
+            pd.Timedelta(1, unit='s'),
+        ),
+        # filewise index, but file is missing
+        pytest.param(
+            audformat.filewise_index(['f1']),
+            None,
+            marks=pytest.mark.xfail(raises=FileNotFoundError),
+        ),
+        # segmented index with NaT, but file is missing
+        pytest.param(
+            audformat.segmented_index(['f1'], [0]),
+            None,
+            marks=pytest.mark.xfail(raises=FileNotFoundError),
+        ),
+    ]
+)
+def test_duration(obj, expected_duration):
+    duration = audformat.utils.duration(obj)
+    if pd.isnull(expected_duration):
+        assert pd.isnull(duration)
+    else:
+        assert duration == expected_duration
+
+
+@pytest.mark.parametrize(
     'objs, expected',
     [
         (
