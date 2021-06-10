@@ -5,7 +5,8 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <title>audformat &mdash; audformat Documentation</title>
@@ -30,11 +31,13 @@
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/css/audeering.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/audeering.css" type="text/css" />
   <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
   <link rel="stylesheet" href="_static/copybutton.css" type="text/css" />
   <link rel="stylesheet" href="_static/jupyter-sphinx.css" type="text/css" />
   <link rel="stylesheet" href="_static/thebelab.css" type="text/css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" type="text/css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.13.11/dist/katex.min.css" type="text/css" />
   <link rel="stylesheet" href="_static/katex-math.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -74,7 +77,7 @@
             
             
               <div class="version">
-                v0.11.2
+                v0.11.3
               </div>
             
           
@@ -195,7 +198,7 @@
         
             
             
-              <a href="https://github.com/audeering/audformat/blob/v0.11.2/docs/api.rst" class="fa fa-github"> Edit on GitHub</a>
+              <a href="https://github.com/audeering/audformat/blob/v0.11.3/docs/api.rst" class="fa fa-github"> Edit on GitHub</a>
             
           
         
@@ -209,13 +212,13 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="module-audformat">
+  <section id="module-audformat">
 <span id="audformat"></span><h1>audformat<a class="headerlink" href="#module-audformat" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="assert-index">
+<section id="assert-index">
 <h2>assert_index<a class="headerlink" href="#assert-index" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
-<dt id="audformat.assert_index">
-<code class="sig-prename descclassname"><span class="pre">audformat.</span></code><code class="sig-name descname"><span class="pre">assert_index</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/index.html#assert_index"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.assert_index" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="audformat.assert_index">
+<span class="sig-prename descclassname"><span class="pre">audformat.</span></span><span class="sig-name descname"><span class="pre">assert_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/index.html#assert_index"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.assert_index" title="Permalink to this definition">¶</a></dt>
 <dd><p>Assert object is conform to <a class="reference internal" href="data-tables.html#tables"><span class="std std-ref">table specifications</span></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -228,12 +231,12 @@
 </dl>
 </dd></dl>
 
-</div>
-<div class="section" id="column">
+</section>
+<section id="column">
 <h2>Column<a class="headerlink" href="#column" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
-<dt id="audformat.Column">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">audformat.</span></code><code class="sig-name descname"><span class="pre">Column</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scheme_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rater_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">meta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/column.html#Column"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.Column" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="audformat.Column">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">audformat.</span></span><span class="sig-name descname"><span class="pre">Column</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scheme_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rater_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">meta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/column.html#Column"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.Column" title="Permalink to this definition">¶</a></dt>
 <dd><p>Table column.</p>
 <p>Represents a table column (see <a class="reference internal" href="#audformat.Table" title="audformat.Table"><code class="xref py py-class docutils literal notranslate"><span class="pre">audformat.Table</span></code></a>) and
 optionally links it to a scheme (see <a class="reference internal" href="#audformat.Scheme" title="audformat.Scheme"><code class="xref py py-class docutils literal notranslate"><span class="pre">audformat.Scheme</span></code></a>) and
@@ -254,8 +257,8 @@ a rater (see <a class="reference internal" href="#audformat.Rater" title="audfor
 </pre></div>
 </div>
 <dl class="py method">
-<dt id="audformat.Column.get">
-<code class="sig-name descname"><span class="pre">get</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">map</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">copy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/column.html#Column.get"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.Column.get" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="audformat.Column.get">
+<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">map</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">copy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/column.html#Column.get"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.Column.get" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get labels.</p>
 <p>By default all labels of the column are returned,
 use <code class="docutils literal notranslate"><span class="pre">index</span></code> to get a subset.</p>
@@ -291,13 +294,13 @@ will replace the ID values with the age of the speaker</p></li>
 </dl>
 </dd></dl>
 
-<dl class="py method">
-<dt id="audformat.Column.rater">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">rater</span></code><a class="headerlink" href="#audformat.Column.rater" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="audformat.Column.rater">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">rater</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional[audformat.core.rater.Rater]</span></em><a class="headerlink" href="#audformat.Column.rater" title="Permalink to this definition">¶</a></dt>
 <dd><p>Rater object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Rater</span></code>]</p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference internal" href="#audformat.Rater" title="audformat.core.rater.Rater"><code class="xref py py-class docutils literal notranslate"><span class="pre">Rater</span></code></a>]</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>rater object or <code class="docutils literal notranslate"><span class="pre">None</span></code> if not available</p>
@@ -306,18 +309,18 @@ will replace the ID values with the age of the speaker</p></li>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="audformat.Column.rater_id">
-<code class="sig-name descname"><span class="pre">rater_id</span></code><a class="headerlink" href="#audformat.Column.rater_id" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="audformat.Column.rater_id">
+<span class="sig-name descname"><span class="pre">rater_id</span></span><a class="headerlink" href="#audformat.Column.rater_id" title="Permalink to this definition">¶</a></dt>
 <dd><p>Rater identifier</p>
 </dd></dl>
 
-<dl class="py method">
-<dt id="audformat.Column.scheme">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">scheme</span></code><a class="headerlink" href="#audformat.Column.scheme" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="audformat.Column.scheme">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">scheme</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional[audformat.core.scheme.Scheme]</span></em><a class="headerlink" href="#audformat.Column.scheme" title="Permalink to this definition">¶</a></dt>
 <dd><p>Scheme object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Scheme</span></code>]</p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference internal" href="#audformat.Scheme" title="audformat.core.scheme.Scheme"><code class="xref py py-class docutils literal notranslate"><span class="pre">Scheme</span></code></a>]</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>scheme object or <code class="docutils literal notranslate"><span class="pre">None</span></code> if not available</p>
@@ -326,14 +329,14 @@ will replace the ID values with the age of the speaker</p></li>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="audformat.Column.scheme_id">
-<code class="sig-name descname"><span class="pre">scheme_id</span></code><a class="headerlink" href="#audformat.Column.scheme_id" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="audformat.Column.scheme_id">
+<span class="sig-name descname"><span class="pre">scheme_id</span></span><a class="headerlink" href="#audformat.Column.scheme_id" title="Permalink to this definition">¶</a></dt>
 <dd><p>Scheme identifier</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="audformat.Column.set">
-<code class="sig-name descname"><span class="pre">set</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/column.html#Column.set"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.Column.set" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="audformat.Column.set">
+<span class="sig-name descname"><span class="pre">set</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/column.html#Column.set"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.Column.set" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set labels.</p>
 <p>By default all labels of the column are replaced,
 use <code class="docutils literal notranslate"><span class="pre">index</span></code> to set a subset.
@@ -360,9 +363,9 @@ values have to match its <code class="docutils literal notranslate"><span class=
 </dl>
 </dd></dl>
 
-<dl class="py method">
-<dt id="audformat.Column.table">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">table</span></code><a class="headerlink" href="#audformat.Column.table" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="audformat.Column.table">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">table</span></span><a class="headerlink" href="#audformat.Column.table" title="Permalink to this definition">¶</a></dt>
 <dd><p>Table object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -373,12 +376,12 @@ values have to match its <code class="docutils literal notranslate"><span class=
 
 </dd></dl>
 
-</div>
-<div class="section" id="filewise-index">
+</section>
+<section id="filewise-index">
 <h2>filewise_index<a class="headerlink" href="#filewise-index" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
-<dt id="audformat.filewise_index">
-<code class="sig-prename descclassname"><span class="pre">audformat.</span></code><code class="sig-name descname"><span class="pre">filewise_index</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">files</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/index.html#filewise_index"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.filewise_index" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="audformat.filewise_index">
+<span class="sig-prename descclassname"><span class="pre">audformat.</span></span><span class="sig-name descname"><span class="pre">filewise_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">files</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/index.html#filewise_index"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.filewise_index" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates a filewise index.</p>
 <p>Index is conform to <a class="reference internal" href="data-tables.html#tables"><span class="std std-ref">table specifications</span></a>.</p>
 <dl class="field-list simple">
@@ -402,12 +405,12 @@ values have to match its <code class="docutils literal notranslate"><span class=
 </div>
 </dd></dl>
 
-</div>
-<div class="section" id="segmented-index">
+</section>
+<section id="segmented-index">
 <h2>segmented_index<a class="headerlink" href="#segmented-index" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
-<dt id="audformat.segmented_index">
-<code class="sig-prename descclassname"><span class="pre">audformat.</span></code><code class="sig-name descname"><span class="pre">segmented_index</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">files</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">starts</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ends</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/index.html#segmented_index"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.segmented_index" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="audformat.segmented_index">
+<span class="sig-prename descclassname"><span class="pre">audformat.</span></span><span class="sig-name descname"><span class="pre">segmented_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">files</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">starts</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ends</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/index.html#segmented_index"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.segmented_index" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create segmented index.</p>
 <p>Index is conform to <a class="reference internal" href="data-tables.html#tables"><span class="std std-ref">table specifications</span></a>.</p>
 <p>If a non-empty index is created and <code class="docutils literal notranslate"><span class="pre">starts</span></code> is set to <code class="docutils literal notranslate"><span class="pre">None</span></code>,
@@ -464,12 +467,12 @@ Time values given as float or integers are treated as seconds</p></li>
 </div>
 </dd></dl>
 
-</div>
-<div class="section" id="database">
+</section>
+<section id="database">
 <h2>Database<a class="headerlink" href="#database" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
-<dt id="audformat.Database">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">audformat.</span></code><code class="sig-name descname"><span class="pre">Database</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">usage</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'unrestricted'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expires</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">languages</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">author</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">organization</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">license</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">license_url</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">meta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/database.html#Database"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.Database" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="audformat.Database">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">audformat.</span></span><span class="sig-name descname"><span class="pre">Database</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">usage</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'unrestricted'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expires</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">languages</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">author</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">organization</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">license</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">license_url</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">meta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/database.html#Database"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.Database" title="Permalink to this definition">¶</a></dt>
 <dd><p>Database object.</p>
 <p>A database consists of a header holding raters,
 schemes, splits, and other meta information.
@@ -480,14 +483,14 @@ listing files and labels.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – name of database</p></li>
 <li><p><strong>source</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – data source (e.g. link to website)</p></li>
-<li><p><strong>usage</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Usage</span></code>) – permission of usage, see <a class="reference internal" href="api-define.html#audformat.define.Usage" title="audformat.define.Usage"><code class="xref py py-class docutils literal notranslate"><span class="pre">audformat.define.Usage</span></code></a>.
+<li><p><strong>usage</strong> (<a class="reference internal" href="api-define.html#audformat.define.Usage" title="audformat.core.define.Usage"><code class="xref py py-class docutils literal notranslate"><span class="pre">Usage</span></code></a>) – permission of usage, see <a class="reference internal" href="api-define.html#audformat.define.Usage" title="audformat.define.Usage"><code class="xref py py-class docutils literal notranslate"><span class="pre">audformat.define.Usage</span></code></a>.
 Set to <code class="docutils literal notranslate"><span class="pre">OTHER</span></code> if none of the other fields fit.</p></li>
 <li><p><strong>expires</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.date" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">date</span></code></a>]) – expiry date</p></li>
 <li><p><strong>languages</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>], <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a>]) – list of languages</p></li>
 <li><p><strong>description</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]) – database description</p></li>
 <li><p><strong>author</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]) – database author(s)</p></li>
 <li><p><strong>organization</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]) – organization(s) maintaining the database</p></li>
-<li><p><strong>license</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">License</span></code>, <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a>]) – database license.
+<li><p><strong>license</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference internal" href="api-define.html#audformat.define.License" title="audformat.core.define.License"><code class="xref py py-class docutils literal notranslate"><span class="pre">License</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a>]) – database license.
 You can use a custom license
 or pick one from <a class="reference internal" href="api-define.html#audformat.define.License" title="audformat.define.License"><code class="xref py py-attr docutils literal notranslate"><span class="pre">audformat.define.License</span></code></a>.
 In the later case,
@@ -555,8 +558,8 @@ if it is not given</p></li>
 </pre></div>
 </div>
 <dl class="py method">
-<dt id="audformat.Database.__contains__">
-<code class="sig-name descname"><span class="pre">__contains__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">table_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/database.html#Database.__contains__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.Database.__contains__" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="audformat.Database.__contains__">
+<span class="sig-name descname"><span class="pre">__contains__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">table_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/database.html#Database.__contains__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.Database.__contains__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check if table exists.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -569,28 +572,28 @@ if it is not given</p></li>
 </dd></dl>
 
 <dl class="py method">
-<dt id="audformat.Database.__getitem__">
-<code class="sig-name descname"><span class="pre">__getitem__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">table_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/database.html#Database.__getitem__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.Database.__getitem__" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="audformat.Database.__getitem__">
+<span class="sig-name descname"><span class="pre">__getitem__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">table_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/database.html#Database.__getitem__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.Database.__getitem__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get table from database.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>table_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – table identifier</p>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Table</span></code></p>
+<dd class="field-even"><p><a class="reference internal" href="#audformat.Table" title="audformat.core.table.Table"><code class="xref py py-class docutils literal notranslate"><span class="pre">Table</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="audformat.Database.__setitem__">
-<code class="sig-name descname"><span class="pre">__setitem__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">table_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">table</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/database.html#Database.__setitem__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.Database.__setitem__" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="audformat.Database.__setitem__">
+<span class="sig-name descname"><span class="pre">__setitem__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">table_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">table</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/database.html#Database.__setitem__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.Database.__setitem__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add table to database.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>table_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – table identifier</p></li>
-<li><p><strong>table</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Table</span></code>) – the table</p></li>
+<li><p><strong>table</strong> (<a class="reference internal" href="#audformat.Table" title="audformat.core.table.Table"><code class="xref py py-class docutils literal notranslate"><span class="pre">Table</span></code></a>) – the table</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises</dt>
@@ -598,20 +601,20 @@ if it is not given</p></li>
     which is not specified in the underlying database</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Table</span></code></p>
+<dd class="field-odd"><p><a class="reference internal" href="#audformat.Table" title="audformat.core.table.Table"><code class="xref py py-class docutils literal notranslate"><span class="pre">Table</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="audformat.Database.author">
-<code class="sig-name descname"><span class="pre">author</span></code><a class="headerlink" href="#audformat.Database.author" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="audformat.Database.author">
+<span class="sig-name descname"><span class="pre">author</span></span><a class="headerlink" href="#audformat.Database.author" title="Permalink to this definition">¶</a></dt>
 <dd><p>Author(s) of database</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="audformat.Database.drop_files">
-<code class="sig-name descname"><span class="pre">drop_files</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">files</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_workers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/database.html#Database.drop_files"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.Database.drop_files" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="audformat.Database.drop_files">
+<span class="sig-name descname"><span class="pre">drop_files</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">files</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_workers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/database.html#Database.drop_files"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.Database.drop_files" title="Permalink to this definition">¶</a></dt>
 <dd><p>Drop files from tables.</p>
 <p>Iterate through all tables and remove rows with a reference to
 listed or matching files.</p>
@@ -629,8 +632,8 @@ on the machine multiplied by 5</p></li>
 </dd></dl>
 
 <dl class="py method">
-<dt id="audformat.Database.drop_tables">
-<code class="sig-name descname"><span class="pre">drop_tables</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">table_ids</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/database.html#Database.drop_tables"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.Database.drop_tables" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="audformat.Database.drop_tables">
+<span class="sig-name descname"><span class="pre">drop_tables</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">table_ids</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/database.html#Database.drop_tables"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.Database.drop_tables" title="Permalink to this definition">¶</a></dt>
 <dd><p>Drop tables by ID.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -640,14 +643,14 @@ on the machine multiplied by 5</p></li>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="audformat.Database.expires">
-<code class="sig-name descname"><span class="pre">expires</span></code><a class="headerlink" href="#audformat.Database.expires" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="audformat.Database.expires">
+<span class="sig-name descname"><span class="pre">expires</span></span><a class="headerlink" href="#audformat.Database.expires" title="Permalink to this definition">¶</a></dt>
 <dd><p>Expiry date</p>
 </dd></dl>
 
-<dl class="py method">
-<dt id="audformat.Database.files">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">files</span></code><a class="headerlink" href="#audformat.Database.files" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="audformat.Database.files">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">files</span></span><em class="property"><span class="pre">:</span> <span class="pre">pandas.core.indexes.base.Index</span></em><a class="headerlink" href="#audformat.Database.files" title="Permalink to this definition">¶</a></dt>
 <dd><p>Files referenced in the database.</p>
 <p>Includes files from filewise and segmented tables.</p>
 <dl class="field-list simple">
@@ -660,12 +663,12 @@ on the machine multiplied by 5</p></li>
 </dl>
 </dd></dl>
 
-<dl class="py method">
-<dt id="audformat.Database.is_portable">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">is_portable</span></code><a class="headerlink" href="#audformat.Database.is_portable" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="audformat.Database.is_portable">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">is_portable</span></span><em class="property"><span class="pre">:</span> <span class="pre">bool</span></em><a class="headerlink" href="#audformat.Database.is_portable" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check if a database can be moved to another location.</p>
 <p>To be portable,
-media may be referenced with an absolute path,
+media must not be referenced with an absolute path,
 or contain <code class="docutils literal notranslate"><span class="pre">.</span></code> or <code class="docutils literal notranslate"><span class="pre">..</span></code> to specify a folder.
 If a database is portable
 it can be moved to another folder
@@ -681,26 +684,26 @@ or updated by another database.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="audformat.Database.languages">
-<code class="sig-name descname"><span class="pre">languages</span></code><a class="headerlink" href="#audformat.Database.languages" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="audformat.Database.languages">
+<span class="sig-name descname"><span class="pre">languages</span></span><a class="headerlink" href="#audformat.Database.languages" title="Permalink to this definition">¶</a></dt>
 <dd><p>List of included languages</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="audformat.Database.license">
-<code class="sig-name descname"><span class="pre">license</span></code><a class="headerlink" href="#audformat.Database.license" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="audformat.Database.license">
+<span class="sig-name descname"><span class="pre">license</span></span><a class="headerlink" href="#audformat.Database.license" title="Permalink to this definition">¶</a></dt>
 <dd><p>License of database</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="audformat.Database.license_url">
-<code class="sig-name descname"><span class="pre">license_url</span></code><a class="headerlink" href="#audformat.Database.license_url" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="audformat.Database.license_url">
+<span class="sig-name descname"><span class="pre">license_url</span></span><a class="headerlink" href="#audformat.Database.license_url" title="Permalink to this definition">¶</a></dt>
 <dd><p>URL of database license</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="audformat.Database.load">
-<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">load</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">root</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'db'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">load_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_workers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/database.html#Database.load"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.Database.load" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="audformat.Database.load">
+<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">root</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'db'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">load_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_workers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/database.html#Database.load"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.Database.load" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load database from disk.</p>
 <p>Expects a header <code class="docutils literal notranslate"><span class="pre">&lt;root&gt;/&lt;name&gt;.yaml</span></code>
 and for every table a file <code class="docutils literal notranslate"><span class="pre">&lt;root&gt;/&lt;name&gt;.&lt;table-id&gt;.[csv|pkl]</span></code>
@@ -719,7 +722,7 @@ on the machine multiplied by 5</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Database</span></code></p>
+<dd class="field-even"><p><a class="reference internal" href="#audformat.Database" title="audformat.core.database.Database"><code class="xref py py-class docutils literal notranslate"><span class="pre">Database</span></code></a></p>
 </dd>
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>database object</p>
@@ -728,15 +731,15 @@ on the machine multiplied by 5</p></li>
 </dd></dl>
 
 <dl class="py method">
-<dt id="audformat.Database.load_header_from_yaml">
-<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">load_header_from_yaml</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">header</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/database.html#Database.load_header_from_yaml"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.Database.load_header_from_yaml" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="audformat.Database.load_header_from_yaml">
+<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">load_header_from_yaml</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">header</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/database.html#Database.load_header_from_yaml"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.Database.load_header_from_yaml" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load database header from YAML.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>header</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>) – YAML header definition</p>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Database</span></code></p>
+<dd class="field-even"><p><a class="reference internal" href="#audformat.Database" title="audformat.core.database.Database"><code class="xref py py-class docutils literal notranslate"><span class="pre">Database</span></code></a></p>
 </dd>
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>database object</p>
@@ -745,8 +748,8 @@ on the machine multiplied by 5</p></li>
 </dd></dl>
 
 <dl class="py method">
-<dt id="audformat.Database.map_files">
-<code class="sig-name descname"><span class="pre">map_files</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_workers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/database.html#Database.map_files"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.Database.map_files" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="audformat.Database.map_files">
+<span class="sig-name descname"><span class="pre">map_files</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_workers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/database.html#Database.map_files"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.Database.map_files" title="Permalink to this definition">¶</a></dt>
 <dd><p>Apply function to file names in all tables.</p>
 <p>Relies on <code class="xref py py-meth docutils literal notranslate"><span class="pre">pandas.Index.map()</span></code>,
 which can be slow.
@@ -780,26 +783,26 @@ on the machine multiplied by 5</p></li>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="audformat.Database.media">
-<code class="sig-name descname"><span class="pre">media</span></code><a class="headerlink" href="#audformat.Database.media" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="audformat.Database.media">
+<span class="sig-name descname"><span class="pre">media</span></span><a class="headerlink" href="#audformat.Database.media" title="Permalink to this definition">¶</a></dt>
 <dd><p>Dictionary of media information</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="audformat.Database.name">
-<code class="sig-name descname"><span class="pre">name</span></code><a class="headerlink" href="#audformat.Database.name" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="audformat.Database.name">
+<span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#audformat.Database.name" title="Permalink to this definition">¶</a></dt>
 <dd><p>Name of database</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="audformat.Database.organization">
-<code class="sig-name descname"><span class="pre">organization</span></code><a class="headerlink" href="#audformat.Database.organization" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="audformat.Database.organization">
+<span class="sig-name descname"><span class="pre">organization</span></span><a class="headerlink" href="#audformat.Database.organization" title="Permalink to this definition">¶</a></dt>
 <dd><p>Organization that created the database</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="audformat.Database.pick_files">
-<code class="sig-name descname"><span class="pre">pick_files</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">files</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_workers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/database.html#Database.pick_files"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.Database.pick_files" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="audformat.Database.pick_files">
+<span class="sig-name descname"><span class="pre">pick_files</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">files</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_workers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/database.html#Database.pick_files"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.Database.pick_files" title="Permalink to this definition">¶</a></dt>
 <dd><p>Pick files from tables.</p>
 <p>Iterate through all tables and keep only rows with a reference
 to listed files or matching files.</p>
@@ -817,8 +820,8 @@ on the machine multiplied by 5</p></li>
 </dd></dl>
 
 <dl class="py method">
-<dt id="audformat.Database.pick_tables">
-<code class="sig-name descname"><span class="pre">pick_tables</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">table_ids</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/database.html#Database.pick_tables"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.Database.pick_tables" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="audformat.Database.pick_tables">
+<span class="sig-name descname"><span class="pre">pick_tables</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">table_ids</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/database.html#Database.pick_tables"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.Database.pick_tables" title="Permalink to this definition">¶</a></dt>
 <dd><p>Pick tables by ID.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -828,14 +831,14 @@ on the machine multiplied by 5</p></li>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="audformat.Database.raters">
-<code class="sig-name descname"><span class="pre">raters</span></code><a class="headerlink" href="#audformat.Database.raters" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="audformat.Database.raters">
+<span class="sig-name descname"><span class="pre">raters</span></span><a class="headerlink" href="#audformat.Database.raters" title="Permalink to this definition">¶</a></dt>
 <dd><p>Dictionary of raters</p>
 </dd></dl>
 
-<dl class="py method">
-<dt id="audformat.Database.root">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">root</span></code><a class="headerlink" href="#audformat.Database.root" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="audformat.Database.root">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">root</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional[str]</span></em><a class="headerlink" href="#audformat.Database.root" title="Permalink to this definition">¶</a></dt>
 <dd><p>Database root directory.</p>
 <p>Returns <code class="docutils literal notranslate"><span class="pre">None</span></code> if database has not been stored yet.</p>
 <dl class="field-list simple">
@@ -849,8 +852,8 @@ on the machine multiplied by 5</p></li>
 </dd></dl>
 
 <dl class="py method">
-<dt id="audformat.Database.save">
-<code class="sig-name descname"><span class="pre">save</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">root</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'db'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">storage_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'csv'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">update_other_formats</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">header_only</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_workers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/database.html#Database.save"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.Database.save" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="audformat.Database.save">
+<span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">root</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'db'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">storage_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'csv'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">update_other_formats</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">header_only</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_workers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/database.html#Database.save"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.Database.save" title="Permalink to this definition">¶</a></dt>
 <dd><p>Save database to disk.</p>
 <p>Creates a header <code class="docutils literal notranslate"><span class="pre">&lt;root&gt;/&lt;name&gt;.yaml</span></code>
 and for every table a file <code class="docutils literal notranslate"><span class="pre">&lt;root&gt;/&lt;name&gt;.&lt;table-id&gt;.[csv,pkl]</span></code>.</p>
@@ -863,7 +866,7 @@ it will overwrite all existing files in others formats as well.</p>
 <li><p><strong>root</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – root directory (possibly created)</p></li>
 <li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – base name of files</p></li>
 <li><p><strong>indent</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – indent size</p></li>
-<li><p><strong>storage_format</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">TableStorageFormat</span></code>) – storage format of tables.
+<li><p><strong>storage_format</strong> (<a class="reference internal" href="api-define.html#audformat.define.TableStorageFormat" title="audformat.core.define.TableStorageFormat"><code class="xref py py-class docutils literal notranslate"><span class="pre">TableStorageFormat</span></code></a>) – storage format of tables.
 See <a class="reference internal" href="api-define.html#audformat.define.TableStorageFormat" title="audformat.define.TableStorageFormat"><code class="xref py py-class docutils literal notranslate"><span class="pre">audformat.define.TableStorageFormat</span></code></a>
 for available formats</p></li>
 <li><p><strong>update_other_formats</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – if <code class="docutils literal notranslate"><span class="pre">True</span></code> it will not only save
@@ -880,14 +883,14 @@ on the machine multiplied by 5</p></li>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="audformat.Database.schemes">
-<code class="sig-name descname"><span class="pre">schemes</span></code><a class="headerlink" href="#audformat.Database.schemes" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="audformat.Database.schemes">
+<span class="sig-name descname"><span class="pre">schemes</span></span><a class="headerlink" href="#audformat.Database.schemes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Dictionary of schemes</p>
 </dd></dl>
 
-<dl class="py method">
-<dt id="audformat.Database.segments">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">segments</span></code><a class="headerlink" href="#audformat.Database.segments" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="audformat.Database.segments">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">segments</span></span><em class="property"><span class="pre">:</span> <span class="pre">pandas.core.indexes.multi.MultiIndex</span></em><a class="headerlink" href="#audformat.Database.segments" title="Permalink to this definition">¶</a></dt>
 <dd><p>Segments referenced in the database.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
@@ -900,26 +903,26 @@ on the machine multiplied by 5</p></li>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="audformat.Database.source">
-<code class="sig-name descname"><span class="pre">source</span></code><a class="headerlink" href="#audformat.Database.source" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="audformat.Database.source">
+<span class="sig-name descname"><span class="pre">source</span></span><a class="headerlink" href="#audformat.Database.source" title="Permalink to this definition">¶</a></dt>
 <dd><p>Database source</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="audformat.Database.splits">
-<code class="sig-name descname"><span class="pre">splits</span></code><a class="headerlink" href="#audformat.Database.splits" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="audformat.Database.splits">
+<span class="sig-name descname"><span class="pre">splits</span></span><a class="headerlink" href="#audformat.Database.splits" title="Permalink to this definition">¶</a></dt>
 <dd><p>Dictionary of splits</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="audformat.Database.tables">
-<code class="sig-name descname"><span class="pre">tables</span></code><a class="headerlink" href="#audformat.Database.tables" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="audformat.Database.tables">
+<span class="sig-name descname"><span class="pre">tables</span></span><a class="headerlink" href="#audformat.Database.tables" title="Permalink to this definition">¶</a></dt>
 <dd><p>Dictionary of tables</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="audformat.Database.update">
-<code class="sig-name descname"><span class="pre">update</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">others</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">copy_media</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/database.html#Database.update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.Database.update" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="audformat.Database.update">
+<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">others</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">copy_media</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/database.html#Database.update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.Database.update" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update database with other database(s).</p>
 <p>In order to update a database, <em>license</em> and <em>usage</em> have to match.
 <em>Media</em>, <em>raters</em>, <em>schemes</em> and <em>splits</em> that are not part of
@@ -966,14 +969,14 @@ applying the following rules:</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>others</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Database</span></code>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Database</span></code>]]) – database object(s)</p></li>
+<li><p><strong>others</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference internal" href="#audformat.Database" title="audformat.core.database.Database"><code class="xref py py-class docutils literal notranslate"><span class="pre">Database</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a>[<a class="reference internal" href="#audformat.Database" title="audformat.core.database.Database"><code class="xref py py-class docutils literal notranslate"><span class="pre">Database</span></code></a>]]) – database object(s)</p></li>
 <li><p><strong>copy_media</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – if <code class="docutils literal notranslate"><span class="pre">True</span></code> it copies the media files
 associated with <code class="docutils literal notranslate"><span class="pre">others</span></code> to the current database root folder</p></li>
 <li><p><strong>overwrite</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – overwrite table values where indices overlap</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Database</span></code></p>
+<dd class="field-even"><p><a class="reference internal" href="#audformat.Database" title="audformat.core.database.Database"><code class="xref py py-class docutils literal notranslate"><span class="pre">Database</span></code></a></p>
 </dd>
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>the updated database</p>
@@ -995,19 +998,19 @@ associated with <code class="docutils literal notranslate"><span class="pre">oth
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="audformat.Database.usage">
-<code class="sig-name descname"><span class="pre">usage</span></code><a class="headerlink" href="#audformat.Database.usage" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="audformat.Database.usage">
+<span class="sig-name descname"><span class="pre">usage</span></span><a class="headerlink" href="#audformat.Database.usage" title="Permalink to this definition">¶</a></dt>
 <dd><p>Usage permission</p>
 </dd></dl>
 
 </dd></dl>
 
-</div>
-<div class="section" id="index-type">
+</section>
+<section id="index-type">
 <h2>index_type<a class="headerlink" href="#index-type" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
-<dt id="audformat.index_type">
-<code class="sig-prename descclassname"><span class="pre">audformat.</span></code><code class="sig-name descname"><span class="pre">index_type</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/index.html#index_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.index_type" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="audformat.index_type">
+<span class="sig-prename descclassname"><span class="pre">audformat.</span></span><span class="sig-name descname"><span class="pre">index_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/index.html#index_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.index_type" title="Permalink to this definition">¶</a></dt>
 <dd><p>Derive index type.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1015,7 +1018,7 @@ associated with <code class="docutils literal notranslate"><span class="pre">oth
 <a class="reference internal" href="data-tables.html#tables"><span class="std std-ref">table specifications</span></a></p>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">IndexType</span></code></p>
+<dd class="field-even"><p><a class="reference internal" href="api-define.html#audformat.define.IndexType" title="audformat.core.define.IndexType"><code class="xref py py-class docutils literal notranslate"><span class="pre">IndexType</span></code></a></p>
 </dd>
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>table type</p>
@@ -1034,18 +1037,18 @@ associated with <code class="docutils literal notranslate"><span class="pre">oth
 </div>
 </dd></dl>
 
-</div>
-<div class="section" id="media">
+</section>
+<section id="media">
 <h2>Media<a class="headerlink" href="#media" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
-<dt id="audformat.Media">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">audformat.</span></code><code class="sig-name descname"><span class="pre">Media</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'other'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sampling_rate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bit_depth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">video_fps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">video_resolution</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">video_channels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">video_depth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">meta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/media.html#Media"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.Media" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="audformat.Media">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">audformat.</span></span><span class="sig-name descname"><span class="pre">Media</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'other'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sampling_rate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bit_depth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">video_fps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">video_resolution</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">video_channels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">video_depth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">meta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/media.html#Media"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.Media" title="Permalink to this definition">¶</a></dt>
 <dd><p>Media information.</p>
 <p>File <code class="docutils literal notranslate"><span class="pre">format</span></code> is always converted to lower case.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>type</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">MediaType</span></code>) – media type</p></li>
+<li><p><strong>type</strong> (<a class="reference internal" href="api-define.html#audformat.define.MediaType" title="audformat.core.define.MediaType"><code class="xref py py-class docutils literal notranslate"><span class="pre">MediaType</span></code></a>) – media type</p></li>
 <li><p><strong>format</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]) – file format (e.g. ‘wav’, ‘flac’, ‘mp4’)</p></li>
 <li><p><strong>sampling_rate</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>]) – audio sampling rate in Hz</p></li>
 <li><p><strong>channels</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>]) – number of audio channels</p></li>
@@ -1073,72 +1076,72 @@ associated with <code class="docutils literal notranslate"><span class="pre">oth
 </pre></div>
 </div>
 <dl class="py attribute">
-<dt id="audformat.Media.bit_depth">
-<code class="sig-name descname"><span class="pre">bit_depth</span></code><a class="headerlink" href="#audformat.Media.bit_depth" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="audformat.Media.bit_depth">
+<span class="sig-name descname"><span class="pre">bit_depth</span></span><a class="headerlink" href="#audformat.Media.bit_depth" title="Permalink to this definition">¶</a></dt>
 <dd><p>Audio bit depth</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="audformat.Media.channels">
-<code class="sig-name descname"><span class="pre">channels</span></code><a class="headerlink" href="#audformat.Media.channels" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="audformat.Media.channels">
+<span class="sig-name descname"><span class="pre">channels</span></span><a class="headerlink" href="#audformat.Media.channels" title="Permalink to this definition">¶</a></dt>
 <dd><p>Audio channels</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="audformat.Media.format">
-<code class="sig-name descname"><span class="pre">format</span></code><a class="headerlink" href="#audformat.Media.format" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="audformat.Media.format">
+<span class="sig-name descname"><span class="pre">format</span></span><a class="headerlink" href="#audformat.Media.format" title="Permalink to this definition">¶</a></dt>
 <dd><p>File format</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="audformat.Media.sampling_rate">
-<code class="sig-name descname"><span class="pre">sampling_rate</span></code><a class="headerlink" href="#audformat.Media.sampling_rate" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="audformat.Media.sampling_rate">
+<span class="sig-name descname"><span class="pre">sampling_rate</span></span><a class="headerlink" href="#audformat.Media.sampling_rate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Audio sampling rate in Hz</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="audformat.Media.type">
-<code class="sig-name descname"><span class="pre">type</span></code><a class="headerlink" href="#audformat.Media.type" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="audformat.Media.type">
+<span class="sig-name descname"><span class="pre">type</span></span><a class="headerlink" href="#audformat.Media.type" title="Permalink to this definition">¶</a></dt>
 <dd><p>Media type</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="audformat.Media.video_channels">
-<code class="sig-name descname"><span class="pre">video_channels</span></code><a class="headerlink" href="#audformat.Media.video_channels" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="audformat.Media.video_channels">
+<span class="sig-name descname"><span class="pre">video_channels</span></span><a class="headerlink" href="#audformat.Media.video_channels" title="Permalink to this definition">¶</a></dt>
 <dd><p>Video channels per pixel</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="audformat.Media.video_depth">
-<code class="sig-name descname"><span class="pre">video_depth</span></code><a class="headerlink" href="#audformat.Media.video_depth" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="audformat.Media.video_depth">
+<span class="sig-name descname"><span class="pre">video_depth</span></span><a class="headerlink" href="#audformat.Media.video_depth" title="Permalink to this definition">¶</a></dt>
 <dd><p>Video bit depth</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="audformat.Media.video_fps">
-<code class="sig-name descname"><span class="pre">video_fps</span></code><a class="headerlink" href="#audformat.Media.video_fps" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="audformat.Media.video_fps">
+<span class="sig-name descname"><span class="pre">video_fps</span></span><a class="headerlink" href="#audformat.Media.video_fps" title="Permalink to this definition">¶</a></dt>
 <dd><p>Video frames per second</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="audformat.Media.video_resolution">
-<code class="sig-name descname"><span class="pre">video_resolution</span></code><a class="headerlink" href="#audformat.Media.video_resolution" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="audformat.Media.video_resolution">
+<span class="sig-name descname"><span class="pre">video_resolution</span></span><a class="headerlink" href="#audformat.Media.video_resolution" title="Permalink to this definition">¶</a></dt>
 <dd><p>Video resolution</p>
 </dd></dl>
 
 </dd></dl>
 
-</div>
-<div class="section" id="rater">
+</section>
+<section id="rater">
 <h2>Rater<a class="headerlink" href="#rater" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
-<dt id="audformat.Rater">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">audformat.</span></code><code class="sig-name descname"><span class="pre">Rater</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'human'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">meta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/rater.html#Rater"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.Rater" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="audformat.Rater">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">audformat.</span></span><span class="sig-name descname"><span class="pre">Rater</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'human'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">meta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/rater.html#Rater"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.Rater" title="Permalink to this definition">¶</a></dt>
 <dd><p>A rater is the author of an annotation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>type</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">RaterType</span></code>) – rater type</p></li>
+<li><p><strong>type</strong> (<a class="reference internal" href="api-define.html#audformat.define.RaterType" title="audformat.core.define.RaterType"><code class="xref py py-class docutils literal notranslate"><span class="pre">RaterType</span></code></a>) – rater type</p></li>
 <li><p><strong>description</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]) – rater description</p></li>
 <li><p><strong>meta</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>]) – additional meta fields</p></li>
 </ul>
@@ -1153,19 +1156,19 @@ associated with <code class="docutils literal notranslate"><span class="pre">oth
 </pre></div>
 </div>
 <dl class="py attribute">
-<dt id="audformat.Rater.type">
-<code class="sig-name descname"><span class="pre">type</span></code><a class="headerlink" href="#audformat.Rater.type" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="audformat.Rater.type">
+<span class="sig-name descname"><span class="pre">type</span></span><a class="headerlink" href="#audformat.Rater.type" title="Permalink to this definition">¶</a></dt>
 <dd><p>Rater type</p>
 </dd></dl>
 
 </dd></dl>
 
-</div>
-<div class="section" id="scheme">
+</section>
+<section id="scheme">
 <h2>Scheme<a class="headerlink" href="#scheme" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
-<dt id="audformat.Scheme">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">audformat.</span></code><code class="sig-name descname"><span class="pre">Scheme</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minimum</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maximum</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">meta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/scheme.html#Scheme"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.Scheme" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="audformat.Scheme">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">audformat.</span></span><span class="sig-name descname"><span class="pre">Scheme</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minimum</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maximum</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">meta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/scheme.html#Scheme"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.Scheme" title="Permalink to this definition">¶</a></dt>
 <dd><p>A scheme defines valid values of an annotation.</p>
 <p>Allowed values for <code class="docutils literal notranslate"><span class="pre">dtype</span></code> are:
 <code class="docutils literal notranslate"><span class="pre">'bool'</span></code>, <code class="docutils literal notranslate"><span class="pre">'str'</span></code>, <code class="docutils literal notranslate"><span class="pre">'int'</span></code>, <code class="docutils literal notranslate"><span class="pre">'float'</span></code>, <code class="docutils literal notranslate"><span class="pre">'time'</span></code>, and <code class="docutils literal notranslate"><span class="pre">'date'</span></code>
@@ -1177,7 +1180,7 @@ maximum value.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>dtype</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Type" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Type</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">DataType</span></code>, <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a>]) – if <code class="docutils literal notranslate"><span class="pre">None</span></code> derived from <code class="docutils literal notranslate"><span class="pre">labels</span></code>, otherwise set to <code class="docutils literal notranslate"><span class="pre">'str'</span></code></p></li>
+<li><p><strong>dtype</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Type" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Type</span></code></a>, <a class="reference internal" href="api-define.html#audformat.define.DataType" title="audformat.core.define.DataType"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataType</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a>]) – if <code class="docutils literal notranslate"><span class="pre">None</span></code> derived from <code class="docutils literal notranslate"><span class="pre">labels</span></code>, otherwise set to <code class="docutils literal notranslate"><span class="pre">'str'</span></code></p></li>
 <li><p><strong>labels</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a>]) – list or dictionary with valid labels.</p></li>
 <li><p><strong>minimum</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a>]) – minimum value</p></li>
 <li><p><strong>maximum</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a>]) – maximum value</p></li>
@@ -1207,8 +1210,8 @@ maximum value.</p>
 </pre></div>
 </div>
 <dl class="py method">
-<dt id="audformat.Scheme.draw">
-<code class="sig-name descname"><span class="pre">draw</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">str_len</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_none</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/scheme.html#Scheme.draw"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.Scheme.draw" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="audformat.Scheme.draw">
+<span class="sig-name descname"><span class="pre">draw</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">str_len</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_none</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/scheme.html#Scheme.draw"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.Scheme.draw" title="Permalink to this definition">¶</a></dt>
 <dd><p>Randomly draws values from scheme.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1229,14 +1232,14 @@ labels</p></li>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="audformat.Scheme.dtype">
-<code class="sig-name descname"><span class="pre">dtype</span></code><a class="headerlink" href="#audformat.Scheme.dtype" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="audformat.Scheme.dtype">
+<span class="sig-name descname"><span class="pre">dtype</span></span><a class="headerlink" href="#audformat.Scheme.dtype" title="Permalink to this definition">¶</a></dt>
 <dd><p>Data type</p>
 </dd></dl>
 
-<dl class="py method">
-<dt id="audformat.Scheme.is_numeric">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">is_numeric</span></code><a class="headerlink" href="#audformat.Scheme.is_numeric" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="audformat.Scheme.is_numeric">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">is_numeric</span></span><em class="property"><span class="pre">:</span> <span class="pre">bool</span></em><a class="headerlink" href="#audformat.Scheme.is_numeric" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check if data type is numeric.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
@@ -1249,26 +1252,26 @@ labels</p></li>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="audformat.Scheme.labels">
-<code class="sig-name descname"><span class="pre">labels</span></code><a class="headerlink" href="#audformat.Scheme.labels" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="audformat.Scheme.labels">
+<span class="sig-name descname"><span class="pre">labels</span></span><a class="headerlink" href="#audformat.Scheme.labels" title="Permalink to this definition">¶</a></dt>
 <dd><p>List of labels</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="audformat.Scheme.maximum">
-<code class="sig-name descname"><span class="pre">maximum</span></code><a class="headerlink" href="#audformat.Scheme.maximum" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="audformat.Scheme.maximum">
+<span class="sig-name descname"><span class="pre">maximum</span></span><a class="headerlink" href="#audformat.Scheme.maximum" title="Permalink to this definition">¶</a></dt>
 <dd><p>Maximum value</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="audformat.Scheme.minimum">
-<code class="sig-name descname"><span class="pre">minimum</span></code><a class="headerlink" href="#audformat.Scheme.minimum" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="audformat.Scheme.minimum">
+<span class="sig-name descname"><span class="pre">minimum</span></span><a class="headerlink" href="#audformat.Scheme.minimum" title="Permalink to this definition">¶</a></dt>
 <dd><p>Minimum value</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="audformat.Scheme.replace_labels">
-<code class="sig-name descname"><span class="pre">replace_labels</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">labels</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/scheme.html#Scheme.replace_labels"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.Scheme.replace_labels" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="audformat.Scheme.replace_labels">
+<span class="sig-name descname"><span class="pre">replace_labels</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">labels</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/scheme.html#Scheme.replace_labels"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.Scheme.replace_labels" title="Permalink to this definition">¶</a></dt>
 <dd><p>Replace labels.</p>
 <p>If scheme is part of a <a class="reference internal" href="#audformat.Database" title="audformat.Database"><code class="xref py py-class docutils literal notranslate"><span class="pre">audformat.Database</span></code></a>
 the dtype of all <a class="reference internal" href="#audformat.Column" title="audformat.Column"><code class="xref py py-class docutils literal notranslate"><span class="pre">audformat.Column</span></code></a> objects
@@ -1314,8 +1317,8 @@ Removed labels are set to <code class="docutils literal notranslate"><span class
 </dd></dl>
 
 <dl class="py method">
-<dt id="audformat.Scheme.to_pandas_dtype">
-<code class="sig-name descname"><span class="pre">to_pandas_dtype</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/scheme.html#Scheme.to_pandas_dtype"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.Scheme.to_pandas_dtype" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="audformat.Scheme.to_pandas_dtype">
+<span class="sig-name descname"><span class="pre">to_pandas_dtype</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/scheme.html#Scheme.to_pandas_dtype"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.Scheme.to_pandas_dtype" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert data type to <code class="xref py py-mod docutils literal notranslate"><span class="pre">pandas</span></code> data type.</p>
 <p>If <code class="docutils literal notranslate"><span class="pre">labels</span></code> is not <code class="docutils literal notranslate"><span class="pre">None</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.CategoricalDtype</span></code> is
 returned. Otherwise the following rules are applied:</p>
@@ -1338,21 +1341,21 @@ returned. Otherwise the following rules are applied:</p>
 
 </dd></dl>
 
-</div>
-<div class="section" id="split">
+</section>
+<section id="split">
 <h2>Split<a class="headerlink" href="#split" title="Permalink to this headline">¶</a></h2>
 <p>Tables can be classified by splits.
 Usually one of <a class="reference internal" href="api-define.html#audformat.define.SplitType" title="audformat.define.SplitType"><code class="xref py py-class docutils literal notranslate"><span class="pre">define.SplitType</span></code></a>.</p>
 <dl class="py class">
-<dt id="audformat.Split">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">audformat.</span></code><code class="sig-name descname"><span class="pre">Split</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'other'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">meta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/split.html#Split"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.Split" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="audformat.Split">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">audformat.</span></span><span class="sig-name descname"><span class="pre">Split</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'other'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">meta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/split.html#Split"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.Split" title="Permalink to this definition">¶</a></dt>
 <dd><p>Database split.</p>
 <p>Defines if a subset of a database should be used for training,
 development or testing.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>type</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">SplitType</span></code>) – split type</p></li>
+<li><p><strong>type</strong> (<a class="reference internal" href="api-define.html#audformat.define.SplitType" title="audformat.core.define.SplitType"><code class="xref py py-class docutils literal notranslate"><span class="pre">SplitType</span></code></a>) – split type</p></li>
 <li><p><strong>description</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]) – split description</p></li>
 <li><p><strong>meta</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>]) – additional meta fields</p></li>
 </ul>
@@ -1367,15 +1370,15 @@ development or testing.</p>
 </pre></div>
 </div>
 <dl class="py attribute">
-<dt id="audformat.Split.type">
-<code class="sig-name descname"><span class="pre">type</span></code><a class="headerlink" href="#audformat.Split.type" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="audformat.Split.type">
+<span class="sig-name descname"><span class="pre">type</span></span><a class="headerlink" href="#audformat.Split.type" title="Permalink to this definition">¶</a></dt>
 <dd><p>Split type</p>
 </dd></dl>
 
 </dd></dl>
 
-</div>
-<div class="section" id="table">
+</section>
+<section id="table">
 <h2>Table<a class="headerlink" href="#table" title="Permalink to this headline">¶</a></h2>
 <p>Annotation data is organized in tables,
 which consist of file names
@@ -1387,8 +1390,8 @@ or numerical values to the files.</p>
 <li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">define.TableType.SEGMENTED</span></code> tables annotate file segments</p></li>
 </ul>
 <dl class="py class">
-<dt id="audformat.Table">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">audformat.</span></code><code class="sig-name descname"><span class="pre">Table</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">split_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">media_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">meta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/table.html#Table"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.Table" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="audformat.Table">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">audformat.</span></span><span class="sig-name descname"><span class="pre">Table</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">split_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">media_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">meta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/table.html#Table"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.Table" title="Permalink to this definition">¶</a></dt>
 <dd><p>Table with annotation data.</p>
 <p>Consists of a list of file names to which it assigns
 numerical values or labels.
@@ -1484,8 +1487,8 @@ If <code class="docutils literal notranslate"><span class="pre">None</span></cod
 </pre></div>
 </div>
 <dl class="py method">
-<dt id="audformat.Table.__add__">
-<code class="sig-name descname"><span class="pre">__add__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/table.html#Table.__add__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.Table.__add__" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="audformat.Table.__add__">
+<span class="sig-name descname"><span class="pre">__add__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/table.html#Table.__add__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.Table.__add__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create new table by combining two tables.</p>
 <p>The new table contains index and columns of both tables.
 Missing values will be set to <code class="docutils literal notranslate"><span class="pre">NaN</span></code>.
@@ -1504,7 +1507,7 @@ If you intend to keep them,
 use <a class="reference internal" href="#audformat.Table.update" title="audformat.Table.update"><code class="xref py py-meth docutils literal notranslate"><span class="pre">audformat.Table.update()</span></code></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>other</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Table</span></code>) – the other table</p>
+<dd class="field-odd"><p><strong>other</strong> (<a class="reference internal" href="#audformat.Table" title="audformat.core.table.Table"><code class="xref py py-class docutils literal notranslate"><span class="pre">Table</span></code></a>) – the other table</p>
 </dd>
 <dt class="field-even">Raises</dt>
 <dd class="field-even"><ul class="simple">
@@ -1513,34 +1516,34 @@ use <a class="reference internal" href="#audformat.Table.update" title="audforma
 </ul>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Table</span></code></p>
+<dd class="field-odd"><p><a class="reference internal" href="#audformat.Table" title="audformat.core.table.Table"><code class="xref py py-class docutils literal notranslate"><span class="pre">Table</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="audformat.Table.__getitem__">
-<code class="sig-name descname"><span class="pre">__getitem__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">column_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/table.html#Table.__getitem__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.Table.__getitem__" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="audformat.Table.__getitem__">
+<span class="sig-name descname"><span class="pre">__getitem__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">column_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/table.html#Table.__getitem__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.Table.__getitem__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return view to a column.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>column_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – column identifier</p>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Column</span></code></p>
+<dd class="field-even"><p><a class="reference internal" href="#audformat.Column" title="audformat.core.column.Column"><code class="xref py py-class docutils literal notranslate"><span class="pre">Column</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="audformat.Table.__setitem__">
-<code class="sig-name descname"><span class="pre">__setitem__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">column_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/table.html#Table.__setitem__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.Table.__setitem__" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="audformat.Table.__setitem__">
+<span class="sig-name descname"><span class="pre">__setitem__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">column_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/table.html#Table.__setitem__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.Table.__setitem__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add new column to table.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>column_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – column identifier</p></li>
-<li><p><strong>column</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Column</span></code>) – column</p></li>
+<li><p><strong>column</strong> (<a class="reference internal" href="#audformat.Column" title="audformat.core.column.Column"><code class="xref py py-class docutils literal notranslate"><span class="pre">Column</span></code></a>) – column</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises</dt>
@@ -1548,24 +1551,24 @@ use <a class="reference internal" href="#audformat.Table.update" title="audforma
     added that does not exist</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Column</span></code></p>
+<dd class="field-odd"><p><a class="reference internal" href="#audformat.Column" title="audformat.core.column.Column"><code class="xref py py-class docutils literal notranslate"><span class="pre">Column</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="audformat.Table.columns">
-<code class="sig-name descname"><span class="pre">columns</span></code><a class="headerlink" href="#audformat.Table.columns" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="audformat.Table.columns">
+<span class="sig-name descname"><span class="pre">columns</span></span><a class="headerlink" href="#audformat.Table.columns" title="Permalink to this definition">¶</a></dt>
 <dd><p>Table columns</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="audformat.Table.copy">
-<code class="sig-name descname"><span class="pre">copy</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/table.html#Table.copy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.Table.copy" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="audformat.Table.copy">
+<span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/table.html#Table.copy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.Table.copy" title="Permalink to this definition">¶</a></dt>
 <dd><p>Copy table.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Table</span></code></p>
+<dd class="field-odd"><p><a class="reference internal" href="#audformat.Table" title="audformat.core.table.Table"><code class="xref py py-class docutils literal notranslate"><span class="pre">Table</span></code></a></p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>new <code class="docutils literal notranslate"><span class="pre">Table</span></code> object</p>
@@ -1573,9 +1576,9 @@ use <a class="reference internal" href="#audformat.Table.update" title="audforma
 </dl>
 </dd></dl>
 
-<dl class="py method">
-<dt id="audformat.Table.db">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">db</span></code><a class="headerlink" href="#audformat.Table.db" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="audformat.Table.db">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">db</span></span><a class="headerlink" href="#audformat.Table.db" title="Permalink to this definition">¶</a></dt>
 <dd><p>Database object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -1584,9 +1587,9 @@ use <a class="reference internal" href="#audformat.Table.update" title="audforma
 </dl>
 </dd></dl>
 
-<dl class="py method">
-<dt id="audformat.Table.df">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">df</span></code><a class="headerlink" href="#audformat.Table.df" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="audformat.Table.df">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">df</span></span><em class="property"><span class="pre">:</span> <span class="pre">pandas.core.frame.DataFrame</span></em><a class="headerlink" href="#audformat.Table.df" title="Permalink to this definition">¶</a></dt>
 <dd><p>Table data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
@@ -1599,8 +1602,8 @@ use <a class="reference internal" href="#audformat.Table.update" title="audforma
 </dd></dl>
 
 <dl class="py method">
-<dt id="audformat.Table.drop_columns">
-<code class="sig-name descname"><span class="pre">drop_columns</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">column_ids</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/table.html#Table.drop_columns"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.Table.drop_columns" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="audformat.Table.drop_columns">
+<span class="sig-name descname"><span class="pre">drop_columns</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">column_ids</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/table.html#Table.drop_columns"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.Table.drop_columns" title="Permalink to this definition">¶</a></dt>
 <dd><p>Drop columns by ID.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1610,7 +1613,7 @@ use <a class="reference internal" href="#audformat.Table.update" title="audforma
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Table</span></code></p>
+<dd class="field-even"><p><a class="reference internal" href="#audformat.Table" title="audformat.core.table.Table"><code class="xref py py-class docutils literal notranslate"><span class="pre">Table</span></code></a></p>
 </dd>
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>new <code class="docutils literal notranslate"><span class="pre">Table</span></code> if <code class="docutils literal notranslate"><span class="pre">inplace=False</span></code>, otherwise <code class="docutils literal notranslate"><span class="pre">self</span></code></p>
@@ -1619,8 +1622,8 @@ use <a class="reference internal" href="#audformat.Table.update" title="audforma
 </dd></dl>
 
 <dl class="py method">
-<dt id="audformat.Table.drop_files">
-<code class="sig-name descname"><span class="pre">drop_files</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">files</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/table.html#Table.drop_files"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.Table.drop_files" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="audformat.Table.drop_files">
+<span class="sig-name descname"><span class="pre">drop_files</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">files</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/table.html#Table.drop_files"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.Table.drop_files" title="Permalink to this definition">¶</a></dt>
 <dd><p>Drop files.</p>
 <p>Remove rows with a reference to listed or matching files.</p>
 <dl class="field-list simple">
@@ -1631,7 +1634,7 @@ use <a class="reference internal" href="#audformat.Table.update" title="audforma
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Table</span></code></p>
+<dd class="field-even"><p><a class="reference internal" href="#audformat.Table" title="audformat.core.table.Table"><code class="xref py py-class docutils literal notranslate"><span class="pre">Table</span></code></a></p>
 </dd>
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>new <code class="docutils literal notranslate"><span class="pre">Table</span></code> if <code class="docutils literal notranslate"><span class="pre">inplace=False</span></code>, otherwise <code class="docutils literal notranslate"><span class="pre">self</span></code></p>
@@ -1640,8 +1643,8 @@ use <a class="reference internal" href="#audformat.Table.update" title="audforma
 </dd></dl>
 
 <dl class="py method">
-<dt id="audformat.Table.drop_index">
-<code class="sig-name descname"><span class="pre">drop_index</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/table.html#Table.drop_index"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.Table.drop_index" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="audformat.Table.drop_index">
+<span class="sig-name descname"><span class="pre">drop_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/table.html#Table.drop_index"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.Table.drop_index" title="Permalink to this definition">¶</a></dt>
 <dd><p>Drop rows from index.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1652,7 +1655,7 @@ use <a class="reference internal" href="#audformat.Table.update" title="audforma
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Table</span></code></p>
+<dd class="field-even"><p><a class="reference internal" href="#audformat.Table" title="audformat.core.table.Table"><code class="xref py py-class docutils literal notranslate"><span class="pre">Table</span></code></a></p>
 </dd>
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>new <code class="docutils literal notranslate"><span class="pre">Table</span></code> if <code class="docutils literal notranslate"><span class="pre">inplace=False</span></code>, otherwise <code class="docutils literal notranslate"><span class="pre">self</span></code></p>
@@ -1663,9 +1666,9 @@ use <a class="reference internal" href="#audformat.Table.update" title="audforma
 </dl>
 </dd></dl>
 
-<dl class="py method">
-<dt id="audformat.Table.ends">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">ends</span></code><a class="headerlink" href="#audformat.Table.ends" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="audformat.Table.ends">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">ends</span></span><em class="property"><span class="pre">:</span> <span class="pre">pandas.core.indexes.base.Index</span></em><a class="headerlink" href="#audformat.Table.ends" title="Permalink to this definition">¶</a></dt>
 <dd><p>Segment end times.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
@@ -1678,8 +1681,8 @@ use <a class="reference internal" href="#audformat.Table.update" title="audforma
 </dd></dl>
 
 <dl class="py method">
-<dt id="audformat.Table.extend_index">
-<code class="sig-name descname"><span class="pre">extend_index</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill_values</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/table.html#Table.extend_index"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.Table.extend_index" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="audformat.Table.extend_index">
+<span class="sig-name descname"><span class="pre">extend_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill_values</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/table.html#Table.extend_index"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.Table.extend_index" title="Permalink to this definition">¶</a></dt>
 <dd><p>Extend table by new rows.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1693,7 +1696,7 @@ key)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Table</span></code></p>
+<dd class="field-even"><p><a class="reference internal" href="#audformat.Table" title="audformat.core.table.Table"><code class="xref py py-class docutils literal notranslate"><span class="pre">Table</span></code></a></p>
 </dd>
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>new <code class="docutils literal notranslate"><span class="pre">Table</span></code> if <code class="docutils literal notranslate"><span class="pre">inplace=False</span></code>, otherwise <code class="docutils literal notranslate"><span class="pre">self</span></code></p>
@@ -1704,9 +1707,9 @@ key)</p></li>
 </dl>
 </dd></dl>
 
-<dl class="py method">
-<dt id="audformat.Table.files">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">files</span></code><a class="headerlink" href="#audformat.Table.files" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="audformat.Table.files">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">files</span></span><em class="property"><span class="pre">:</span> <span class="pre">pandas.core.indexes.base.Index</span></em><a class="headerlink" href="#audformat.Table.files" title="Permalink to this definition">¶</a></dt>
 <dd><p>Files referenced in the table.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
@@ -1719,8 +1722,8 @@ key)</p></li>
 </dd></dl>
 
 <dl class="py method">
-<dt id="audformat.Table.get">
-<code class="sig-name descname"><span class="pre">get</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">map</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">copy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/table.html#Table.get"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.Table.get" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="audformat.Table.get">
+<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">map</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">copy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/table.html#Table.get"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.Table.get" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get labels.</p>
 <p>By default all labels of the table are returned,
 use <code class="docutils literal notranslate"><span class="pre">index</span></code> to get a subset.</p>
@@ -1760,9 +1763,9 @@ To also keep the original column with speaker IDS, you can do
 </dl>
 </dd></dl>
 
-<dl class="py method">
-<dt id="audformat.Table.index">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">index</span></code><a class="headerlink" href="#audformat.Table.index" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="audformat.Table.index">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">index</span></span><em class="property"><span class="pre">:</span> <span class="pre">pandas.core.indexes.base.Index</span></em><a class="headerlink" href="#audformat.Table.index" title="Permalink to this definition">¶</a></dt>
 <dd><p>Table index.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
@@ -1774,9 +1777,9 @@ To also keep the original column with speaker IDS, you can do
 </dl>
 </dd></dl>
 
-<dl class="py method">
-<dt id="audformat.Table.is_filewise">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">is_filewise</span></code><a class="headerlink" href="#audformat.Table.is_filewise" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="audformat.Table.is_filewise">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">is_filewise</span></span><em class="property"><span class="pre">:</span> <span class="pre">bool</span></em><a class="headerlink" href="#audformat.Table.is_filewise" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check if filewise table.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
@@ -1788,9 +1791,9 @@ To also keep the original column with speaker IDS, you can do
 </dl>
 </dd></dl>
 
-<dl class="py method">
-<dt id="audformat.Table.is_segmented">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">is_segmented</span></code><a class="headerlink" href="#audformat.Table.is_segmented" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="audformat.Table.is_segmented">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">is_segmented</span></span><em class="property"><span class="pre">:</span> <span class="pre">bool</span></em><a class="headerlink" href="#audformat.Table.is_segmented" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check if segmented table.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
@@ -1803,8 +1806,8 @@ To also keep the original column with speaker IDS, you can do
 </dd></dl>
 
 <dl class="py method">
-<dt id="audformat.Table.load">
-<code class="sig-name descname"><span class="pre">load</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/table.html#Table.load"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.Table.load" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="audformat.Table.load">
+<span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/table.html#Table.load"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.Table.load" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load table data from disk.</p>
 <p>Tables can be stored as PKL and/or CSV files to disk.
 If both files are present
@@ -1825,13 +1828,13 @@ and ask to delete one of the files.</p>
 </dl>
 </dd></dl>
 
-<dl class="py method">
-<dt id="audformat.Table.media">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">media</span></code><a class="headerlink" href="#audformat.Table.media" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="audformat.Table.media">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">media</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional[audformat.core.media.Media]</span></em><a class="headerlink" href="#audformat.Table.media" title="Permalink to this definition">¶</a></dt>
 <dd><p>Media object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Media</span></code>]</p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference internal" href="#audformat.Media" title="audformat.core.media.Media"><code class="xref py py-class docutils literal notranslate"><span class="pre">Media</span></code></a>]</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>media object or <code class="docutils literal notranslate"><span class="pre">None</span></code> if not available</p>
@@ -1840,14 +1843,14 @@ and ask to delete one of the files.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="audformat.Table.media_id">
-<code class="sig-name descname"><span class="pre">media_id</span></code><a class="headerlink" href="#audformat.Table.media_id" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="audformat.Table.media_id">
+<span class="sig-name descname"><span class="pre">media_id</span></span><a class="headerlink" href="#audformat.Table.media_id" title="Permalink to this definition">¶</a></dt>
 <dd><p>Media ID</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="audformat.Table.pick_columns">
-<code class="sig-name descname"><span class="pre">pick_columns</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">column_ids</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/table.html#Table.pick_columns"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.Table.pick_columns" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="audformat.Table.pick_columns">
+<span class="sig-name descname"><span class="pre">pick_columns</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">column_ids</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/table.html#Table.pick_columns"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.Table.pick_columns" title="Permalink to this definition">¶</a></dt>
 <dd><p>Pick columns by ID.</p>
 <p>All other columns will be dropped.</p>
 <dl class="field-list simple">
@@ -1858,7 +1861,7 @@ and ask to delete one of the files.</p>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Table</span></code></p>
+<dd class="field-even"><p><a class="reference internal" href="#audformat.Table" title="audformat.core.table.Table"><code class="xref py py-class docutils literal notranslate"><span class="pre">Table</span></code></a></p>
 </dd>
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>new <code class="docutils literal notranslate"><span class="pre">Table</span></code> if <code class="docutils literal notranslate"><span class="pre">inplace=False</span></code>, otherwise <code class="docutils literal notranslate"><span class="pre">self</span></code></p>
@@ -1867,8 +1870,8 @@ and ask to delete one of the files.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="audformat.Table.pick_files">
-<code class="sig-name descname"><span class="pre">pick_files</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">files</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/table.html#Table.pick_files"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.Table.pick_files" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="audformat.Table.pick_files">
+<span class="sig-name descname"><span class="pre">pick_files</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">files</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/table.html#Table.pick_files"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.Table.pick_files" title="Permalink to this definition">¶</a></dt>
 <dd><p>Pick files.</p>
 <p>Keep only rows with a reference to listed files or matching files.</p>
 <dl class="field-list simple">
@@ -1879,7 +1882,7 @@ and ask to delete one of the files.</p>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Table</span></code></p>
+<dd class="field-even"><p><a class="reference internal" href="#audformat.Table" title="audformat.core.table.Table"><code class="xref py py-class docutils literal notranslate"><span class="pre">Table</span></code></a></p>
 </dd>
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>new <code class="docutils literal notranslate"><span class="pre">Table</span></code> if <code class="docutils literal notranslate"><span class="pre">inplace=False</span></code>, otherwise <code class="docutils literal notranslate"><span class="pre">self</span></code></p>
@@ -1888,8 +1891,8 @@ and ask to delete one of the files.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="audformat.Table.pick_index">
-<code class="sig-name descname"><span class="pre">pick_index</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/table.html#Table.pick_index"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.Table.pick_index" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="audformat.Table.pick_index">
+<span class="sig-name descname"><span class="pre">pick_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/table.html#Table.pick_index"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.Table.pick_index" title="Permalink to this definition">¶</a></dt>
 <dd><p>Pick rows from index.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1900,7 +1903,7 @@ and ask to delete one of the files.</p>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Table</span></code></p>
+<dd class="field-even"><p><a class="reference internal" href="#audformat.Table" title="audformat.core.table.Table"><code class="xref py py-class docutils literal notranslate"><span class="pre">Table</span></code></a></p>
 </dd>
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>new <code class="docutils literal notranslate"><span class="pre">Table</span></code> if <code class="docutils literal notranslate"><span class="pre">inplace=False</span></code>, otherwise <code class="docutils literal notranslate"><span class="pre">self</span></code></p>
@@ -1912,15 +1915,15 @@ and ask to delete one of the files.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="audformat.Table.save">
-<code class="sig-name descname"><span class="pre">save</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">storage_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'csv'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">update_other_formats</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/table.html#Table.save"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.Table.save" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="audformat.Table.save">
+<span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">storage_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'csv'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">update_other_formats</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/table.html#Table.save"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.Table.save" title="Permalink to this definition">¶</a></dt>
 <dd><p>Save table data to disk.</p>
 <p>Existing files will be overwritten.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – file path without extension</p></li>
-<li><p><strong>storage_format</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">TableStorageFormat</span></code>) – storage format of table.
+<li><p><strong>storage_format</strong> (<a class="reference internal" href="api-define.html#audformat.define.TableStorageFormat" title="audformat.core.define.TableStorageFormat"><code class="xref py py-class docutils literal notranslate"><span class="pre">TableStorageFormat</span></code></a>) – storage format of table.
 See <a class="reference internal" href="api-define.html#audformat.define.TableStorageFormat" title="audformat.define.TableStorageFormat"><code class="xref py py-class docutils literal notranslate"><span class="pre">audformat.define.TableStorageFormat</span></code></a>
 for available formats</p></li>
 <li><p><strong>update_other_formats</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – if <code class="docutils literal notranslate"><span class="pre">True</span></code> it will not only save
@@ -1932,8 +1935,8 @@ but update all files stored in other storage formats as well</p></li>
 </dd></dl>
 
 <dl class="py method">
-<dt id="audformat.Table.set">
-<code class="sig-name descname"><span class="pre">set</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/table.html#Table.set"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.Table.set" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="audformat.Table.set">
+<span class="sig-name descname"><span class="pre">set</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/table.html#Table.set"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.Table.set" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set labels.</p>
 <p>By default all labels of the table are replaced,
 use <code class="docutils literal notranslate"><span class="pre">index</span></code> to select a subset.
@@ -1955,13 +1958,13 @@ values have to match its <code class="docutils literal notranslate"><span class=
 </dl>
 </dd></dl>
 
-<dl class="py method">
-<dt id="audformat.Table.split">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">split</span></code><a class="headerlink" href="#audformat.Table.split" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="audformat.Table.split">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">split</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional[audformat.core.split.Split]</span></em><a class="headerlink" href="#audformat.Table.split" title="Permalink to this definition">¶</a></dt>
 <dd><p>Split object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Split</span></code>]</p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference internal" href="#audformat.Split" title="audformat.core.split.Split"><code class="xref py py-class docutils literal notranslate"><span class="pre">Split</span></code></a>]</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>split object or <code class="docutils literal notranslate"><span class="pre">None</span></code> if not available</p>
@@ -1970,14 +1973,14 @@ values have to match its <code class="docutils literal notranslate"><span class=
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="audformat.Table.split_id">
-<code class="sig-name descname"><span class="pre">split_id</span></code><a class="headerlink" href="#audformat.Table.split_id" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="audformat.Table.split_id">
+<span class="sig-name descname"><span class="pre">split_id</span></span><a class="headerlink" href="#audformat.Table.split_id" title="Permalink to this definition">¶</a></dt>
 <dd><p>Split ID</p>
 </dd></dl>
 
-<dl class="py method">
-<dt id="audformat.Table.starts">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">starts</span></code><a class="headerlink" href="#audformat.Table.starts" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="audformat.Table.starts">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">starts</span></span><em class="property"><span class="pre">:</span> <span class="pre">pandas.core.indexes.base.Index</span></em><a class="headerlink" href="#audformat.Table.starts" title="Permalink to this definition">¶</a></dt>
 <dd><p>Segment start times.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
@@ -1990,14 +1993,14 @@ values have to match its <code class="docutils literal notranslate"><span class=
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="audformat.Table.type">
-<code class="sig-name descname"><span class="pre">type</span></code><a class="headerlink" href="#audformat.Table.type" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="audformat.Table.type">
+<span class="sig-name descname"><span class="pre">type</span></span><a class="headerlink" href="#audformat.Table.type" title="Permalink to this definition">¶</a></dt>
 <dd><p>Table type</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="audformat.Table.update">
-<code class="sig-name descname"><span class="pre">update</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">others</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/table.html#Table.update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.Table.update" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="audformat.Table.update">
+<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">others</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/table.html#Table.update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.Table.update" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update table with other table(s).</p>
 <p>Table which calls <code class="docutils literal notranslate"><span class="pre">update()</span></code> must be assigned to a database.
 For all tables media and split must match.</p>
@@ -2015,12 +2018,12 @@ the value of the last table in the list is kept.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>others</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Table</span></code>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Table</span></code>]]) – table object(s)</p></li>
+<li><p><strong>others</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference internal" href="#audformat.Table" title="audformat.core.table.Table"><code class="xref py py-class docutils literal notranslate"><span class="pre">Table</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a>[<a class="reference internal" href="#audformat.Table" title="audformat.core.table.Table"><code class="xref py py-class docutils literal notranslate"><span class="pre">Table</span></code></a>]]) – table object(s)</p></li>
 <li><p><strong>overwrite</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – overwrite values where indices overlap</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Table</span></code></p>
+<dd class="field-even"><p><a class="reference internal" href="#audformat.Table" title="audformat.core.table.Table"><code class="xref py py-class docutils literal notranslate"><span class="pre">Table</span></code></a></p>
 </dd>
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>the updated table</p>
@@ -2042,8 +2045,8 @@ the value of the last table in the list is kept.</p>
 
 </dd></dl>
 
-</div>
-</div>
+</section>
+</section>
 
 
            </div>
@@ -2068,7 +2071,7 @@ the value of the last table in the list is kept.</p>
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2021/05/12 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2021/06/10 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
@@ -2100,14 +2103,15 @@ the value of the last table in the list is kept.</p>
     
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
         <script src="_static/clipboard.min.js"></script>
         <script src="_static/copybutton.js"></script>
         <script src="_static/thebelab-helper.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/katex@0.13.11/dist/katex.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/katex@0.13.11/dist/contrib/auto-render.min.js"></script>
         <script src="_static/katex_autorenderer.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>

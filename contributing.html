@@ -5,7 +5,8 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <title>Contributing &mdash; audformat Documentation</title>
@@ -30,11 +31,13 @@
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/css/audeering.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/audeering.css" type="text/css" />
   <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
   <link rel="stylesheet" href="_static/copybutton.css" type="text/css" />
   <link rel="stylesheet" href="_static/jupyter-sphinx.css" type="text/css" />
   <link rel="stylesheet" href="_static/thebelab.css" type="text/css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" type="text/css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.13.11/dist/katex.min.css" type="text/css" />
   <link rel="stylesheet" href="_static/katex-math.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -74,7 +77,7 @@
             
             
               <div class="version">
-                v0.11.2
+                v0.11.3
               </div>
             
           
@@ -188,7 +191,7 @@
         
             
             
-              <a href="https://github.com/audeering/audformat/blob/v0.11.2/docs/contributing.rst" class="fa fa-github"> Edit on GitHub</a>
+              <a href="https://github.com/audeering/audformat/blob/v0.11.3/docs/contributing.rst" class="fa fa-github"> Edit on GitHub</a>
             
           
         
@@ -202,13 +205,13 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="contributing">
+  <section id="contributing">
 <h1>Contributing<a class="headerlink" href="#contributing" title="Permalink to this headline">¶</a></h1>
 <p>Everyone is invited to contribute to this project.
 Feel free to create a <a class="reference external" href="https://github.com/audeering/audformat/compare/">pull request</a> .
 If you find errors, omissions, inconsistencies or other things
 that need improvement, please create an <a class="reference external" href="https://github.com/audeering/audformat/issues/new/">issue</a>.</p>
-<div class="section" id="development-installation">
+<section id="development-installation">
 <h2>Development Installation<a class="headerlink" href="#development-installation" title="Permalink to this headline">¶</a></h2>
 <p>Instead of pip-installing the latest release from PyPI,
 you should get the newest development version from <a class="reference external" href="https://github.com/audeering/audformat">Github</a>:</p>
@@ -223,8 +226,8 @@ you should get the newest development version from <a class="reference external"
 </div>
 <p>This way, your installation always stays up-to-date,
 even if you pull new changes from the Github repository.</p>
-</div>
-<div class="section" id="building-the-documentation">
+</section>
+<section id="building-the-documentation">
 <h2>Building the Documentation<a class="headerlink" href="#building-the-documentation" title="Permalink to this headline">¶</a></h2>
 <p>If you make changes to the documentation,
 you can re-create the HTML pages using <a class="reference external" href="http://sphinx-doc.org/">Sphinx</a>.
@@ -243,8 +246,8 @@ in the directory <code class="file docutils literal notranslate"><span class="pr
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">sphinx</span> <span class="n">docs</span><span class="o">/</span> <span class="n">build</span><span class="o">/</span><span class="n">sphinx</span><span class="o">/</span><span class="n">linkcheck</span> <span class="o">-</span><span class="n">b</span> <span class="n">linkcheck</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="running-the-tests">
+</section>
+<section id="running-the-tests">
 <h2>Running the Tests<a class="headerlink" href="#running-the-tests" title="Permalink to this headline">¶</a></h2>
 <p>You’ll need <a class="reference external" href="https://pytest.org/">pytest</a> for that.
 It can be installed with:</p>
@@ -255,8 +258,8 @@ It can be installed with:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">pytest</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="creating-a-new-release">
+</section>
+<section id="creating-a-new-release">
 <h2>Creating a New Release<a class="headerlink" href="#creating-a-new-release" title="Permalink to this headline">¶</a></h2>
 <p>New releases are made using the following steps:</p>
 <ol class="arabic simple">
@@ -265,8 +268,8 @@ It can be installed with:</p>
 <li><p>Create an (annotated) tag with <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">tag</span> <span class="pre">-a</span> <span class="pre">X.Y.Z</span></code></p></li>
 <li><p>Push the commit and the tag to Github</p></li>
 </ol>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>
@@ -291,7 +294,7 @@ It can be installed with:</p>
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2021/05/12 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2021/06/10 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
@@ -323,14 +326,15 @@ It can be installed with:</p>
     
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
         <script src="_static/clipboard.min.js"></script>
         <script src="_static/copybutton.js"></script>
         <script src="_static/thebelab-helper.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/katex@0.13.11/dist/katex.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/katex@0.13.11/dist/contrib/auto-render.min.js"></script>
         <script src="_static/katex_autorenderer.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>

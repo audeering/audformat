@@ -5,7 +5,8 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <title>Conventions &mdash; audformat Documentation</title>
@@ -30,11 +31,13 @@
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/css/audeering.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/audeering.css" type="text/css" />
   <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
   <link rel="stylesheet" href="_static/copybutton.css" type="text/css" />
   <link rel="stylesheet" href="_static/jupyter-sphinx.css" type="text/css" />
   <link rel="stylesheet" href="_static/thebelab.css" type="text/css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" type="text/css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.13.11/dist/katex.min.css" type="text/css" />
   <link rel="stylesheet" href="_static/katex-math.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -74,7 +77,7 @@
             
             
               <div class="version">
-                v0.11.2
+                v0.11.3
               </div>
             
           
@@ -192,7 +195,7 @@
         
             
             
-              <a href="https://github.com/audeering/audformat/blob/v0.11.2/docs/data-conventions.rst" class="fa fa-github"> Edit on GitHub</a>
+              <a href="https://github.com/audeering/audformat/blob/v0.11.3/docs/data-conventions.rst" class="fa fa-github"> Edit on GitHub</a>
             
           
         
@@ -206,13 +209,13 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="conventions">
+  <section id="conventions">
 <h1>Conventions<a class="headerlink" href="#conventions" title="Permalink to this headline">¶</a></h1>
 <div class="jupyter_cell docutils container">
 <div class="cell_output docutils container">
 </div>
 </div>
-<div class="section" id="database-name">
+<section id="database-name">
 <h2>Database name<a class="headerlink" href="#database-name" title="Permalink to this headline">¶</a></h2>
 <p>The name of a database should be lowercase
 and must not contain blanks or
@@ -235,8 +238,8 @@ languages: []
 </div>
 </div>
 </div>
-</div>
-<div class="section" id="table-and-scheme-names">
+</section>
+<section id="table-and-scheme-names">
 <h2>Table and scheme names<a class="headerlink" href="#table-and-scheme-names" title="Permalink to this headline">¶</a></h2>
 <p>Use lower case for table and scheme names.</p>
 <p>Here’s a list of common scheme names:</p>
@@ -282,8 +285,8 @@ E.g. use <code class="docutils literal notranslate"><span class="pre">transcript
 and <code class="docutils literal notranslate"><span class="pre">transcription-phoneme</span></code>
 if a database offers word
 <em>and</em> phoneme transcriptions.</p>
-</div>
-<div class="section" id="tables-schemes-and-raters">
+</section>
+<section id="tables-schemes-and-raters">
 <h2>Tables, schemes, and raters<a class="headerlink" href="#tables-schemes-and-raters" title="Permalink to this headline">¶</a></h2>
 <p>Consider one table per scheme
 with the name of the scheme.
@@ -338,8 +341,8 @@ tables:
 </div>
 </div>
 </div>
-</div>
-<div class="section" id="database-splits">
+</section>
+<section id="database-splits">
 <h2>Database splits<a class="headerlink" href="#database-splits" title="Permalink to this headline">¶</a></h2>
 <p>If an official split into training,
 development
@@ -388,8 +391,8 @@ tables:
 </div>
 </div>
 </div>
-</div>
-<div class="section" id="gold-standard-annotation">
+</section>
+<section id="gold-standard-annotation">
 <h2>Gold standard annotation<a class="headerlink" href="#gold-standard-annotation" title="Permalink to this headline">¶</a></h2>
 <p>Annotations by several raters
 belonging to the same scheme
@@ -458,8 +461,8 @@ tables:
 </div>
 </div>
 </div>
-</div>
-<div class="section" id="confidence-values">
+</section>
+<section id="confidence-values">
 <h2>Confidence values<a class="headerlink" href="#confidence-values" title="Permalink to this headline">¶</a></h2>
 <p>Assume you have an annotation
 that does not only provide a value,
@@ -517,8 +520,8 @@ tables:
 </div>
 </div>
 </div>
-</div>
-<div class="section" id="file-and-speaker-information">
+</section>
+<section id="file-and-speaker-information">
 <h2>File and speaker information<a class="headerlink" href="#file-and-speaker-information" title="Permalink to this headline">¶</a></h2>
 <p>Meta information like speaker ID
 or file duration
@@ -667,8 +670,8 @@ for an extended documentation.</p>
 </table>
 </div></div></div>
 </div>
-</div>
-<div class="section" id="file-duration-and-temporal-data">
+</section>
+<section id="file-duration-and-temporal-data">
 <h2>File duration and temporal data<a class="headerlink" href="#file-duration-and-temporal-data" title="Permalink to this headline">¶</a></h2>
 <p>It is recommended to store file durations
 for every database
@@ -782,8 +785,8 @@ tables:
 <div class="cell_output docutils container">
 </div>
 </div>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>
@@ -808,7 +811,7 @@ tables:
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2021/05/12 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2021/06/10 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
@@ -840,14 +843,15 @@ tables:
     
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
         <script src="_static/clipboard.min.js"></script>
         <script src="_static/copybutton.js"></script>
         <script src="_static/thebelab-helper.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/katex@0.13.11/dist/katex.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/katex@0.13.11/dist/contrib/auto-render.min.js"></script>
         <script src="_static/katex_autorenderer.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>

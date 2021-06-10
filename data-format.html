@@ -5,7 +5,8 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <title>Database &mdash; audformat Documentation</title>
@@ -30,11 +31,13 @@
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/css/audeering.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/audeering.css" type="text/css" />
   <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
   <link rel="stylesheet" href="_static/copybutton.css" type="text/css" />
   <link rel="stylesheet" href="_static/jupyter-sphinx.css" type="text/css" />
   <link rel="stylesheet" href="_static/thebelab.css" type="text/css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" type="text/css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.13.11/dist/katex.min.css" type="text/css" />
   <link rel="stylesheet" href="_static/katex-math.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -74,7 +77,7 @@
             
             
               <div class="version">
-                v0.11.2
+                v0.11.3
               </div>
             
           
@@ -182,7 +185,7 @@
         
             
             
-              <a href="https://github.com/audeering/audformat/blob/v0.11.2/docs/data-format.rst" class="fa fa-github"> Edit on GitHub</a>
+              <a href="https://github.com/audeering/audformat/blob/v0.11.3/docs/data-format.rst" class="fa fa-github"> Edit on GitHub</a>
             
           
         
@@ -196,7 +199,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="database">
+  <section id="database">
 <h1>Database<a class="headerlink" href="#database" title="Permalink to this headline">¶</a></h1>
 <p>audformat is implemented in the <a class="reference internal" href="api.html#audformat.Database" title="audformat.Database"><code class="xref py py-class docutils literal notranslate"><span class="pre">audformat.Database</span></code></a>.
 Written to hard disk it is converted to a YAML file (<em>Header</em>),
@@ -235,16 +238,20 @@ emotion ratings, …</p></td>
 </table>
 <p>The connection between the header and the tables
 is highlighted in the following sketch:</p>
-<div class="figure align-center" id="id2">
-<img alt="audformat" src="_images/audformat.dot.svg" /><p class="caption"><span class="caption-text">Connection between header definitions and table entries.</span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
-</div>
+<figure class="align-center" id="id2">
+<img alt="audformat" src="_images/audformat.dot.svg" /><figcaption>
+<p><span class="caption-text">Connection between header definitions and table entries.</span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
+</figcaption>
+</figure>
 <p>The annotations stored in the tables
 can be accessed as <code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code>.
 The following sketch shows an example instance of a database:</p>
-<div class="figure align-center" id="id3">
-<img alt="Header and Tables" src="_images/tables.dot.svg" /><p class="caption"><span class="caption-text">Example content of tables and there connection to the header.</span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
-</div>
-</div>
+<figure class="align-center" id="id3">
+<img alt="Header and Tables" src="_images/tables.dot.svg" /><figcaption>
+<p><span class="caption-text">Example content of tables and there connection to the header.</span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
+</figcaption>
+</figure>
+</section>
 
 
            </div>
@@ -269,7 +276,7 @@ The following sketch shows an example instance of a database:</p>
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2021/05/12 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2021/06/10 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
@@ -301,14 +308,15 @@ The following sketch shows an example instance of a database:</p>
     
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
         <script src="_static/clipboard.min.js"></script>
         <script src="_static/copybutton.js"></script>
         <script src="_static/thebelab-helper.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/katex@0.13.11/dist/katex.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/katex@0.13.11/dist/contrib/auto-render.min.js"></script>
         <script src="_static/katex_autorenderer.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>

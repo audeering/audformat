@@ -30,11 +30,13 @@
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/css/audeering.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/audeering.css" type="text/css" />
   <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
   <link rel="stylesheet" href="_static/copybutton.css" type="text/css" />
   <link rel="stylesheet" href="_static/jupyter-sphinx.css" type="text/css" />
   <link rel="stylesheet" href="_static/thebelab.css" type="text/css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" type="text/css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.13.11/dist/katex.min.css" type="text/css" />
   <link rel="stylesheet" href="_static/katex-math.css" type="text/css" />
     <link rel="index" title="Index" href="#" />
     <link rel="search" title="Search" href="search.html" />
@@ -72,7 +74,7 @@
             
             
               <div class="version">
-                v0.11.2
+                v0.11.3
               </div>
             
           
@@ -180,7 +182,7 @@
         
             
             
-              <a href="https://github.com/audeering/audformat/blob/v0.11.2/docs/genindex" class="fa fa-github"> Edit on GitHub</a>
+              <a href="https://github.com/audeering/audformat/blob/v0.11.3/docs/genindex" class="fa fa-github"> Edit on GitHub</a>
             
           
         
@@ -361,16 +363,16 @@
 </li>
       <li><a href="api-define.html#audformat.define.DataType.DATE">DATE (audformat.define.DataType attribute)</a>
 </li>
-      <li><a href="api.html#audformat.Table.db">db() (audformat.Table property)</a>
+      <li><a href="api.html#audformat.Table.db">db (audformat.Table property)</a>
 </li>
       <li><a href="api-define.html#audformat.define.SplitType.DEVELOP">DEVELOP (audformat.define.SplitType attribute)</a>
 </li>
-      <li><a href="api.html#audformat.Table.df">df() (audformat.Table property)</a>
+      <li><a href="api.html#audformat.Table.df">df (audformat.Table property)</a>
+</li>
+      <li><a href="api.html#audformat.Scheme.draw">draw() (audformat.Scheme method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api.html#audformat.Scheme.draw">draw() (audformat.Scheme method)</a>
-</li>
       <li><a href="api.html#audformat.Table.drop_columns">drop_columns() (audformat.Table method)</a>
 </li>
       <li><a href="api.html#audformat.Database.drop_files">drop_files() (audformat.Database method)</a>
@@ -385,6 +387,8 @@
 </li>
       <li><a href="api.html#audformat.Scheme.dtype">dtype (audformat.Scheme attribute)</a>
 </li>
+      <li><a href="api-utils.html#audformat.utils.duration">duration() (in module audformat.utils)</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -393,7 +397,7 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api-define.html#audformat.define.IndexField.END">END (audformat.define.IndexField attribute)</a>
 </li>
-      <li><a href="api.html#audformat.Table.ends">ends() (audformat.Table property)</a>
+      <li><a href="api.html#audformat.Table.ends">ends (audformat.Table property)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
@@ -411,7 +415,7 @@
 </li>
       <li><a href="api-define.html#audformat.define.IndexField.FILE">FILE (audformat.define.IndexField attribute)</a>
 </li>
-      <li><a href="api.html#audformat.Database.files">files() (audformat.Database property)</a>
+      <li><a href="api.html#audformat.Database.files">files (audformat.Database property)</a>
 
       <ul>
         <li><a href="api.html#audformat.Table.files">(audformat.Table property)</a>
@@ -457,7 +461,7 @@
 <h2 id="I">I</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api.html#audformat.Table.index">index() (audformat.Table property)</a>
+      <li><a href="api.html#audformat.Table.index">index (audformat.Table property)</a>
 </li>
       <li><a href="api.html#audformat.index_type">index_type() (in module audformat)</a>
 </li>
@@ -471,13 +475,13 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api-utils.html#audformat.utils.intersect">intersect() (in module audformat.utils)</a>
 </li>
-      <li><a href="api.html#audformat.Table.is_filewise">is_filewise() (audformat.Table property)</a>
+      <li><a href="api.html#audformat.Table.is_filewise">is_filewise (audformat.Table property)</a>
 </li>
-      <li><a href="api.html#audformat.Scheme.is_numeric">is_numeric() (audformat.Scheme property)</a>
+      <li><a href="api.html#audformat.Scheme.is_numeric">is_numeric (audformat.Scheme property)</a>
 </li>
-      <li><a href="api.html#audformat.Database.is_portable">is_portable() (audformat.Database property)</a>
+      <li><a href="api.html#audformat.Database.is_portable">is_portable (audformat.Database property)</a>
 </li>
-      <li><a href="api.html#audformat.Table.is_segmented">is_segmented() (audformat.Table property)</a>
+      <li><a href="api.html#audformat.Table.is_segmented">is_segmented (audformat.Table property)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -534,10 +538,12 @@
       <li><a href="api.html#audformat.Scheme.maximum">maximum (audformat.Scheme attribute)</a>
 </li>
       <li><a href="api.html#audformat.Database.media">media (audformat.Database attribute)</a>
+
+      <ul>
+        <li><a href="api.html#audformat.Table.media">(audformat.Table property)</a>
 </li>
+      </ul></li>
       <li><a href="api.html#audformat.Media">Media (class in audformat)</a>
-</li>
-      <li><a href="api.html#audformat.Table.media">media() (audformat.Table property)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
@@ -618,9 +624,9 @@
 <h2 id="R">R</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api.html#audformat.Rater">Rater (class in audformat)</a>
+      <li><a href="api.html#audformat.Column.rater">rater (audformat.Column property)</a>
 </li>
-      <li><a href="api.html#audformat.Column.rater">rater() (audformat.Column property)</a>
+      <li><a href="api.html#audformat.Rater">Rater (class in audformat)</a>
 </li>
       <li><a href="api.html#audformat.Column.rater_id">rater_id (audformat.Column attribute)</a>
 </li>
@@ -638,7 +644,7 @@
 </li>
       <li><a href="api-define.html#audformat.define.Usage.RESTRICTED">RESTRICTED (audformat.define.Usage attribute)</a>
 </li>
-      <li><a href="api.html#audformat.Database.root">root() (audformat.Database property)</a>
+      <li><a href="api.html#audformat.Database.root">root (audformat.Database property)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -654,9 +660,9 @@
         <li><a href="api.html#audformat.Table.save">(audformat.Table method)</a>
 </li>
       </ul></li>
-      <li><a href="api.html#audformat.Scheme">Scheme (class in audformat)</a>
+      <li><a href="api.html#audformat.Column.scheme">scheme (audformat.Column property)</a>
 </li>
-      <li><a href="api.html#audformat.Column.scheme">scheme() (audformat.Column property)</a>
+      <li><a href="api.html#audformat.Scheme">Scheme (class in audformat)</a>
 </li>
       <li><a href="api.html#audformat.Column.scheme_id">scheme_id (audformat.Column attribute)</a>
 </li>
@@ -666,7 +672,7 @@
 </li>
       <li><a href="api.html#audformat.segmented_index">segmented_index() (in module audformat)</a>
 </li>
-      <li><a href="api.html#audformat.Database.segments">segments() (audformat.Database property)</a>
+      <li><a href="api.html#audformat.Database.segments">segments (audformat.Database property)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
@@ -678,9 +684,9 @@
       </ul></li>
       <li><a href="api.html#audformat.Database.source">source (audformat.Database attribute)</a>
 </li>
-      <li><a href="api.html#audformat.Split">Split (class in audformat)</a>
+      <li><a href="api.html#audformat.Table.split">split (audformat.Table property)</a>
 </li>
-      <li><a href="api.html#audformat.Table.split">split() (audformat.Table property)</a>
+      <li><a href="api.html#audformat.Split">Split (class in audformat)</a>
 </li>
       <li><a href="api.html#audformat.Table.split_id">split_id (audformat.Table attribute)</a>
 </li>
@@ -690,7 +696,7 @@
 </li>
       <li><a href="api-define.html#audformat.define.IndexField.START">START (audformat.define.IndexField attribute)</a>
 </li>
-      <li><a href="api.html#audformat.Table.starts">starts() (audformat.Table property)</a>
+      <li><a href="api.html#audformat.Table.starts">starts (audformat.Table property)</a>
 </li>
       <li><a href="api-define.html#audformat.define.DataType.STRING">STRING (audformat.define.DataType attribute)</a>
 </li>
@@ -700,9 +706,9 @@
 <h2 id="T">T</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api.html#audformat.Table">Table (class in audformat)</a>
+      <li><a href="api.html#audformat.Column.table">table (audformat.Column property)</a>
 </li>
-      <li><a href="api.html#audformat.Column.table">table() (audformat.Column property)</a>
+      <li><a href="api.html#audformat.Table">Table (class in audformat)</a>
 </li>
       <li><a href="api.html#audformat.Database.tables">tables (audformat.Database attribute)</a>
 </li>
@@ -794,7 +800,7 @@
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2021/05/12 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2021/06/10 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
@@ -826,14 +832,15 @@
     
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
         <script src="_static/clipboard.min.js"></script>
         <script src="_static/copybutton.js"></script>
         <script src="_static/thebelab-helper.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/katex@0.13.11/dist/katex.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/katex@0.13.11/dist/contrib/auto-render.min.js"></script>
         <script src="_static/katex_autorenderer.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>

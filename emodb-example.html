@@ -5,7 +5,8 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <title>Emodb example &mdash; audformat Documentation</title>
@@ -30,11 +31,13 @@
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/css/audeering.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/audeering.css" type="text/css" />
   <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
   <link rel="stylesheet" href="_static/copybutton.css" type="text/css" />
   <link rel="stylesheet" href="_static/jupyter-sphinx.css" type="text/css" />
   <link rel="stylesheet" href="_static/thebelab.css" type="text/css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" type="text/css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.13.11/dist/katex.min.css" type="text/css" />
   <link rel="stylesheet" href="_static/katex-math.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -74,7 +77,7 @@
             
             
               <div class="version">
-                v0.11.2
+                v0.11.3
               </div>
             
           
@@ -190,7 +193,7 @@
         
             
             
-              <a href="https://github.com/audeering/audformat/blob/v0.11.2/docs/emodb-example.rst" class="fa fa-github"> Edit on GitHub</a>
+              <a href="https://github.com/audeering/audformat/blob/v0.11.3/docs/emodb-example.rst" class="fa fa-github"> Edit on GitHub</a>
             
           
         
@@ -204,14 +207,14 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="emodb-example">
+  <section id="emodb-example">
 <h1>Emodb example<a class="headerlink" href="#emodb-example" title="Permalink to this headline">¶</a></h1>
 <p>In this example we download the small <a class="reference external" href="http://emodb.bilderbar.info">emodb</a> database,
 that contains sentences
 spoken with different emotions
 by different actors.
 The audio is stored as WAV files.</p>
-<div class="section" id="get-source-database">
+<section id="get-source-database">
 <h2>Get source database<a class="headerlink" href="#get-source-database" title="Permalink to this headline">¶</a></h2>
 <p>First we download the source <a class="reference external" href="http://emodb.bilderbar.info">emodb</a> database
 to the folder <code class="file docutils literal notranslate"><span class="pre">emodb-src</span></code>.</p>
@@ -235,13 +238,13 @@ to the folder <code class="file docutils literal notranslate"><span class="pre">
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>[&#39;wav&#39;, &#39;erklaerung.txt&#39;, &#39;labsilb&#39;, &#39;erkennung.txt&#39;, &#39;silb&#39;, &#39;lablaut&#39;]
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>[&#39;silb&#39;, &#39;erkennung.txt&#39;, &#39;wav&#39;, &#39;labsilb&#39;, &#39;lablaut&#39;, &#39;erklaerung.txt&#39;]
 </pre></div>
 </div>
 </div>
 </div>
-</div>
-<div class="section" id="gather-metadata-and-annotations">
+</section>
+<section id="gather-metadata-and-annotations">
 <h2>Gather metadata and annotations<a class="headerlink" href="#gather-metadata-and-annotations" title="Permalink to this headline">¶</a></h2>
 <p>Afterwards we collect all metadata
 and annotations
@@ -255,7 +258,7 @@ of the database.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>[&#39;12a05Wb.wav&#39;, &#39;11a02Fb.wav&#39;, &#39;03a02Fc.wav&#39;]
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>[&#39;03b10Ab.wav&#39;, &#39;09a07Na.wav&#39;, &#39;14a04Tc.wav&#39;]
 </pre></div>
 </div>
 </div>
@@ -543,8 +546,8 @@ to the emotion table.</p>
 <div class="cell_output docutils container">
 </div>
 </div>
-</div>
-<div class="section" id="create-audformat-database">
+</section>
+<section id="create-audformat-database">
 <h2>Create audformat database<a class="headerlink" href="#create-audformat-database" title="Permalink to this headline">¶</a></h2>
 <p>Now we create the database object
 and assign the information to it.</p>
@@ -630,8 +633,8 @@ and assign the information to it.</p>
 <div class="cell_output docutils container">
 </div>
 </div>
-</div>
-<div class="section" id="inspect-database-header">
+</section>
+<section id="inspect-database-header">
 <h2>Inspect database header<a class="headerlink" href="#inspect-database-header" title="Permalink to this headline">¶</a></h2>
 <p>Before storing the database,
 we can inspect its header.</p>
@@ -707,8 +710,8 @@ pdf: http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.130.8506&amp;rep=r
 </div>
 </div>
 </div>
-</div>
-<div class="section" id="inspect-database-tables">
+</section>
+<section id="inspect-database-tables">
 <h2>Inspect database tables<a class="headerlink" href="#inspect-database-tables" title="Permalink to this headline">¶</a></h2>
 <p>First check which tables are available.</p>
 <div class="jupyter_cell jupyter_container docutils container">
@@ -1043,8 +1046,8 @@ for an extended documentation.</p>
 </table>
 </div></div></div>
 </div>
-</div>
-<div class="section" id="store-database-to-disk">
+</section>
+<section id="store-database-to-disk">
 <h2>Store database to disk<a class="headerlink" href="#store-database-to-disk" title="Permalink to this headline">¶</a></h2>
 <p>Now we store the database in the folder <code class="docutils literal notranslate"><span class="pre">emodb</span></code>.
 Note, that we have to make sure
@@ -1066,7 +1069,7 @@ that the media files are located at the correct position ourselves.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>[&#39;db.files.csv&#39;, &#39;wav&#39;, &#39;db.yaml&#39;, &#39;db.emotion.csv&#39;]
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>[&#39;db.yaml&#39;, &#39;wav&#39;, &#39;db.files.csv&#39;, &#39;db.emotion.csv&#39;]
 </pre></div>
 </div>
 </div>
@@ -1089,8 +1092,8 @@ that the media files are located at the correct position ourselves.</p>
 <div class="cell_output docutils container">
 </div>
 </div>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>
@@ -1115,7 +1118,7 @@ that the media files are located at the correct position ourselves.</p>
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2021/05/12 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2021/06/10 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
@@ -1147,14 +1150,15 @@ that the media files are located at the correct position ourselves.</p>
     
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
         <script src="_static/clipboard.min.js"></script>
         <script src="_static/copybutton.js"></script>
         <script src="_static/thebelab-helper.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/katex@0.13.11/dist/katex.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/katex@0.13.11/dist/contrib/auto-render.min.js"></script>
         <script src="_static/katex_autorenderer.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>

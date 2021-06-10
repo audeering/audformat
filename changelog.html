@@ -5,7 +5,8 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <title>Changelog &mdash; audformat Documentation</title>
@@ -30,11 +31,13 @@
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/css/audeering.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/audeering.css" type="text/css" />
   <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
   <link rel="stylesheet" href="_static/copybutton.css" type="text/css" />
   <link rel="stylesheet" href="_static/jupyter-sphinx.css" type="text/css" />
   <link rel="stylesheet" href="_static/thebelab.css" type="text/css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" type="text/css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.13.11/dist/katex.min.css" type="text/css" />
   <link rel="stylesheet" href="_static/katex-math.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -73,7 +76,7 @@
             
             
               <div class="version">
-                v0.11.2
+                v0.11.3
               </div>
             
           
@@ -129,6 +132,7 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Changelog</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#version-0-11-3-2021-06-10">Version 0.11.3 (2021-06-10)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#version-0-11-2-2021-05-12">Version 0.11.2 (2021-05-12)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#version-0-11-1-2021-05-11">Version 0.11.1 (2021-05-11)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#version-0-11-0-2021-05-06">Version 0.11.0 (2021-05-06)</a></li>
@@ -198,7 +202,7 @@
         
             
             
-              <a href="https://github.com/audeering/audformat/blob/v0.11.2/docs/changelog.rst" class="fa fa-github"> Edit on GitHub</a>
+              <a href="https://github.com/audeering/audformat/blob/v0.11.3/docs/changelog.rst" class="fa fa-github"> Edit on GitHub</a>
             
           
         
@@ -212,18 +216,26 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="changelog">
+  <section id="changelog">
 <h1>Changelog<a class="headerlink" href="#changelog" title="Permalink to this headline">¶</a></h1>
 <p>All notable changes to this project will be documented in this file.</p>
 <p>The format is based on <a class="reference external" href="https://keepachangelog.com/en/1.0.0/">Keep a Changelog</a>,
 and this project adheres to <a class="reference external" href="https://semver.org/spec/v2.0.0.html">Semantic Versioning</a>.</p>
-<div class="section" id="version-0-11-2-2021-05-12">
+<section id="version-0-11-3-2021-06-10">
+<h2>Version 0.11.3 (2021-06-10)<a class="headerlink" href="#version-0-11-3-2021-06-10" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Added: <code class="docutils literal notranslate"><span class="pre">audformat.utils.duration</span></code></p></li>
+<li><p>Fixed: description of <code class="docutils literal notranslate"><span class="pre">audformat.Database.is_portable</span></code>
+in documentation</p></li>
+</ul>
+</section>
+<section id="version-0-11-2-2021-05-12">
 <h2>Version 0.11.2 (2021-05-12)<a class="headerlink" href="#version-0-11-2-2021-05-12" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Added: <code class="docutils literal notranslate"><span class="pre">audformat.utils.join_schemes</span></code></p></li>
 </ul>
-</div>
-<div class="section" id="version-0-11-1-2021-05-11">
+</section>
+<section id="version-0-11-1-2021-05-11">
 <h2>Version 0.11.1 (2021-05-11)<a class="headerlink" href="#version-0-11-1-2021-05-11" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Added: <code class="docutils literal notranslate"><span class="pre">Database.is_portable</span></code></p></li>
@@ -232,8 +244,8 @@ and this project adheres to <a class="reference external" href="https://semver.o
 <li><p>Fixed: <code class="docutils literal notranslate"><span class="pre">utils.concat()</span></code> converts to nullable dtype</p></li>
 <li><p>Fixed: <code class="docutils literal notranslate"><span class="pre">utils.concat()</span></code> returns <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code> if input contains at least one <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code></p></li>
 </ul>
-</div>
-<div class="section" id="version-0-11-0-2021-05-06">
+</section>
+<section id="version-0-11-0-2021-05-06">
 <h2>Version 0.11.0 (2021-05-06)<a class="headerlink" href="#version-0-11-0-2021-05-06" title="Permalink to this headline">¶</a></h2>
 <p>Note: tables stored from this version upwards cannot be loaded with older versions</p>
 <ul class="simple">
@@ -243,20 +255,20 @@ and this project adheres to <a class="reference external" href="https://semver.o
 <li><p>Changed: set dependency to <code class="docutils literal notranslate"><span class="pre">pandas&gt;=1.1.5</span></code></p></li>
 <li><p>Changed: do not compress pickled table files</p></li>
 </ul>
-</div>
-<div class="section" id="version-0-10-2-2021-04-22">
+</section>
+<section id="version-0-10-2-2021-04-22">
 <h2>Version 0.10.2 (2021-04-22)<a class="headerlink" href="#version-0-10-2-2021-04-22" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Changed: <code class="docutils literal notranslate"><span class="pre">allow_nat</span></code> argument to <code class="docutils literal notranslate"><span class="pre">utils.to_segmented_index()</span></code></p></li>
 </ul>
-</div>
-<div class="section" id="version-0-10-1-2021-03-31">
+</section>
+<section id="version-0-10-1-2021-03-31">
 <h2>Version 0.10.1 (2021-03-31)<a class="headerlink" href="#version-0-10-1-2021-03-31" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Fixed: <code class="docutils literal notranslate"><span class="pre">audformat.assert_index()</span></code> checks for correct dtypes</p></li>
 </ul>
-</div>
-<div class="section" id="version-0-10-0-2021-03-18">
+</section>
+<section id="version-0-10-0-2021-03-18">
 <h2>Version 0.10.0 (2021-03-18)<a class="headerlink" href="#version-0-10-0-2021-03-18" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Added: <code class="docutils literal notranslate"><span class="pre">audformat.Database.update()</span></code></p></li>
@@ -264,8 +276,8 @@ and this project adheres to <a class="reference external" href="https://semver.o
 <li><p>Added: <code class="docutils literal notranslate"><span class="pre">overwrite</span></code> argument to <code class="docutils literal notranslate"><span class="pre">audformat.utils.concat()</span></code></p></li>
 <li><p>Changed: result of <code class="docutils literal notranslate"><span class="pre">audformat.Table.__add__()</span></code> is no longer assigned to a <code class="docutils literal notranslate"><span class="pre">audformat.Database</span></code></p></li>
 </ul>
-</div>
-<div class="section" id="version-0-9-8-2021-02-23">
+</section>
+<section id="version-0-9-8-2021-02-23">
 <h2>Version 0.9.8 (2021-02-23)<a class="headerlink" href="#version-0-9-8-2021-02-23" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Added: <code class="docutils literal notranslate"><span class="pre">audformat.Database.license</span></code></p></li>
@@ -279,8 +291,8 @@ and this project adheres to <a class="reference external" href="https://semver.o
 <li><p>Fixed: <code class="docutils literal notranslate"><span class="pre">audformat.Table.__add__()</span></code> returned wrong values
 for some index combinations</p></li>
 </ul>
-</div>
-<div class="section" id="version-0-9-7-2021-02-01">
+</section>
+<section id="version-0-9-7-2021-02-01">
 <h2>Version 0.9.7 (2021-02-01)<a class="headerlink" href="#version-0-9-7-2021-02-01" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Added: <code class="docutils literal notranslate"><span class="pre">update_other_formats</span></code> argument to <code class="docutils literal notranslate"><span class="pre">audformat.Table.save()</span></code>
@@ -288,35 +300,35 @@ to make sure existing files in other formats are updated as well</p></li>
 <li><p>Changed: use <code class="docutils literal notranslate"><span class="pre">round_trip</span></code> argument when loading CSV files
 to ensure dataframes are equal after storing and loading again</p></li>
 </ul>
-</div>
-<div class="section" id="version-0-9-6-2021-01-28">
+</section>
+<section id="version-0-9-6-2021-01-28">
 <h2>Version 0.9.6 (2021-01-28)<a class="headerlink" href="#version-0-9-6-2021-01-28" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Fixed: implemented <code class="docutils literal notranslate"><span class="pre">audformat.Database.__eq__</span></code> and return <code class="docutils literal notranslate"><span class="pre">True</span></code>
 for identical databases</p></li>
 </ul>
-</div>
-<div class="section" id="version-0-9-5-2021-01-14">
+</section>
+<section id="version-0-9-5-2021-01-14">
 <h2>Version 0.9.5 (2021-01-14)<a class="headerlink" href="#version-0-9-5-2021-01-14" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Changed: use nullable Pandas’ type <code class="docutils literal notranslate"><span class="pre">'boolean'</span></code> for <code class="docutils literal notranslate"><span class="pre">bool</span></code> schemes</p></li>
 <li><p>Fixed: <code class="docutils literal notranslate"><span class="pre">Scheme.draw()</span></code> generates boolean values if scheme is <code class="docutils literal notranslate"><span class="pre">bool</span></code></p></li>
 </ul>
-</div>
-<div class="section" id="version-0-9-4-2021-01-11">
+</section>
+<section id="version-0-9-4-2021-01-11">
 <h2>Version 0.9.4 (2021-01-11)<a class="headerlink" href="#version-0-9-4-2021-01-11" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Changed: add arguments <code class="docutils literal notranslate"><span class="pre">num_workers</span></code> and <code class="docutils literal notranslate"><span class="pre">verbose</span></code> to
 <code class="docutils literal notranslate"><span class="pre">audformat.Database.load()</span></code></p></li>
 </ul>
-</div>
-<div class="section" id="version-0-9-3-2021-01-07">
+</section>
+<section id="version-0-9-3-2021-01-07">
 <h2>Version 0.9.3 (2021-01-07)<a class="headerlink" href="#version-0-9-3-2021-01-07" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Fixed: avoid sphinx syntax in CHANGELOG</p></li>
 </ul>
-</div>
-<div class="section" id="version-0-9-2-2021-01-07">
+</section>
+<section id="version-0-9-2-2021-01-07">
 <h2>Version 0.9.2 (2021-01-07)<a class="headerlink" href="#version-0-9-2-2021-01-07" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Changed: add arguments <code class="docutils literal notranslate"><span class="pre">num_workers</span></code> and <code class="docutils literal notranslate"><span class="pre">verbose</span></code> to
@@ -329,8 +341,8 @@ support <code class="docutils literal notranslate"><span class="pre">int</span><
 <li><p>Fixed: <code class="docutils literal notranslate"><span class="pre">audformat.utils.to_segmented_index()</span></code>
 returns correct index type for <code class="docutils literal notranslate"><span class="pre">NaT</span></code></p></li>
 </ul>
-</div>
-<div class="section" id="version-0-9-1-2020-12-21">
+</section>
+<section id="version-0-9-1-2020-12-21">
 <h2>Version 0.9.1 (2020-12-21)<a class="headerlink" href="#version-0-9-1-2020-12-21" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Fixed: add column name to HTML Series output in docs</p></li>
@@ -341,14 +353,14 @@ and <code class="docutils literal notranslate"><span class="pre">RedundantArgume
 of <code class="docutils literal notranslate"><span class="pre">audformat.Table.set()</span></code>
 and <code class="docutils literal notranslate"><span class="pre">audformat.Column.set()</span></code></p></li>
 </ul>
-</div>
-<div class="section" id="version-0-9-0-2020-12-18">
+</section>
+<section id="version-0-9-0-2020-12-18">
 <h2>Version 0.9.0 (2020-12-18)<a class="headerlink" href="#version-0-9-0-2020-12-18" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Added: initial release public release</p></li>
 </ul>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>
@@ -371,7 +383,7 @@ and <code class="docutils literal notranslate"><span class="pre">audformat.Colum
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2021/05/12 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2021/06/10 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
@@ -403,14 +415,15 @@ and <code class="docutils literal notranslate"><span class="pre">audformat.Colum
     
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
         <script src="_static/clipboard.min.js"></script>
         <script src="_static/copybutton.js"></script>
         <script src="_static/thebelab-helper.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/katex@0.13.11/dist/katex.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/katex@0.13.11/dist/contrib/auto-render.min.js"></script>
         <script src="_static/katex_autorenderer.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
