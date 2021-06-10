@@ -235,15 +235,15 @@ def duration(
         root: root directory under which the files referenced in the index
             are stored.
             Only relevant when the duration of the files
-            needs to be detected from the file.
+            needs to be detected from the file
         num_workers: number of parallel jobs.
             Only relevant when the duration of the files
-            needs to be detected from the file.
+            needs to be detected from the file
             If ``None`` will be set to the number of processors
             on the machine multiplied by 5
         verbose: show progress bar.
             Only relevant when the duration of the files
-            needs to be detected from the file.
+            needs to be detected from the file
 
     Returns:
         duration
