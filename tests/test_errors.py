@@ -49,3 +49,6 @@ def test_errors():
 
     with pytest.raises(audformat.errors.BadValueError):
         audformat.Database('foo', 'internal', 'bad')
+
+    with pytest.raises(audformat.errors.BadKeyError):
+        db['bad']

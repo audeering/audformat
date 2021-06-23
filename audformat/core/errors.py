@@ -1,38 +1,6 @@
 import typing
 
 
-class BadValueError(ValueError):
-    """Raised when a value is not in a list of pre-defined strings.
-
-    Args:
-        invalid_value: value causing the error
-        valid_values: list of valid strings
-
-    """
-    def __init__(self, invalid_value: str, valid_values: typing.Sequence[str]):
-        message = (
-            f"Bad value '{invalid_value}', "
-            f"expected one of {list(valid_values)}"
-        )
-        super().__init__(message)
-
-
-class BadTypeError(ValueError):
-    r"""Raised when a value has an unexpected type.
-
-    Args:
-        invalid_value: value causing the error
-        expected_type: expected value type
-
-    """
-    def __init__(self, invalid_value: typing.Any, expected_type: type):
-        message = (
-            f"Bad type '{type(invalid_value)}', "
-            f"expected '{expected_type}'"
-        )
-        super().__init__(message)
-
-
 class BadIdError(ValueError):
     r"""Raised when a field identifier is unknown.
 
@@ -53,4 +21,52 @@ class BadIdError(ValueError):
                 f"Bad {name} ID '{invalid_id}', "
                 f"expected one of {list(dictionary)}"
             )
+        super().__init__(message)
+
+
+class BadKeyError(KeyError):
+    """Raised when a key is not found.
+
+    Args:
+        invalid_key: value causing the error
+        valid_keys: list of valid strings
+
+    """
+    def __init__(self, invalid_key: str, valid_keys: typing.Sequence[str]):
+        message = (
+            f"Bad key '{invalid_key}', "
+            f"expected one of {list(valid_keys)}"
+        )
+        super().__init__(message)
+
+
+class BadTypeError(TypeError):
+    r"""Raised when a value has an unexpected type.
+
+    Args:
+        invalid_value: value causing the error
+        expected_type: expected value type
+
+    """
+    def __init__(self, invalid_value: typing.Any, expected_type: type):
+        message = (
+            f"Bad type '{type(invalid_value)}', "
+            f"expected '{expected_type}'"
+        )
+        super().__init__(message)
+
+
+class BadValueError(ValueError):
+    """Raised when a value is not in a list of pre-defined strings.
+
+    Args:
+        invalid_value: value causing the error
+        valid_values: list of valid strings
+
+    """
+    def __init__(self, invalid_value: str, valid_values: typing.Sequence[str]):
+        message = (
+            f"Bad value '{invalid_value}', "
+            f"expected one of {list(valid_values)}"
+        )
         super().__init__(message)
