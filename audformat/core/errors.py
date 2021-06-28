@@ -5,9 +5,9 @@ class BadIdError(ValueError):
     r"""Raised when a field identifier is unknown.
 
     Args:
-         name: name of the field
-         invalid_id: identifier causing the error
-         dictionary: dictionary with valid identifiers
+        name: name of the field
+        invalid_id: identifier causing the error
+        dictionary: dictionary with valid identifiers
 
     """
     def __init__(self, name: str, invalid_id: str, dictionary: dict):
