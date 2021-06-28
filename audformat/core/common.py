@@ -6,7 +6,11 @@ from collections import OrderedDict
 
 import pandas as pd
 
-from audformat.core.errors import BadTypeError, BadValueError
+from audformat.core.errors import (
+    BadKeyError,
+    BadTypeError,
+    BadValueError,
+)
 
 
 class HeaderDict(OrderedDict):
@@ -73,6 +77,8 @@ class HeaderDict(OrderedDict):
         super().__setitem__(key, value)
 
     def __getitem__(self, key):
+        if key not in self:
+            raise BadKeyError(key, list(self))
         value = super().__getitem__(key)
         if self.get_callback is not None:
             value = self.get_callback(key, value)

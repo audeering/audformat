@@ -10,6 +10,12 @@ BadIdError
 .. autoclass:: BadIdError
     :members:
 
+BadKeyError
+-----------
+
+.. autoclass:: BadKeyError
+    :members:
+
 BadTypeError
 ------------
 
