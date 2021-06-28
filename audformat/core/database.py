@@ -34,7 +34,8 @@ class Database(HeaderBase):
         name: name of database
         source: data source (e.g. link to website)
         usage: permission of usage, see :class:`audformat.define.Usage`.
-            Set to ``OTHER`` if none of the other fields fit.
+            Set to ``'other'``
+            if none of the other fields fit.
         expires: expiry date
         languages: list of languages
         description: database description
