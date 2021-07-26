@@ -25,6 +25,7 @@ Have a look at the installation_ and usage_ instructions
 and the `format specifications`_ as a starting point.
 
 
+
 .. _installation: https://audeering.github.io/audformat/install.html
 .. _usage: https://audeering.github.io/audformat/create-database.html
 .. _format specifications: https://audeering.github.io/audformat/data-introduction.html
