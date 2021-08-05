@@ -5,8 +5,7 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <title>audformat.errors &mdash; audformat Documentation</title>
@@ -77,7 +76,7 @@
             
             
               <div class="version">
-                v0.11.3
+                v0.11.4
               </div>
             
           
@@ -101,7 +100,7 @@
               
             
             
-              <p class="caption"><span class="caption-text">Getting started</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Getting started</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="create-database.html">Create a database</a></li>
@@ -111,7 +110,7 @@
 <li class="toctree-l1"><a class="reference internal" href="update-database.html">Update a database</a></li>
 <li class="toctree-l1"><a class="reference internal" href="emodb-example.html">Emodb example</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Format specification</span></p>
+<p class="caption" role="heading"><span class="caption-text">Format specification</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="data-introduction.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data-format.html">Database</a></li>
@@ -120,12 +119,13 @@
 <li class="toctree-l1"><a class="reference internal" href="data-tables.html">Tables</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data-example.html">Example</a></li>
 </ul>
-<p class="caption"><span class="caption-text">API Documentation</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Documentation</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="api.html">audformat</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api-define.html">audformat.define</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">audformat.errors</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#badiderror">BadIdError</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#badkeyerror">BadKeyError</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#badtypeerror">BadTypeError</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#badvalueerror">BadValueError</a></li>
 </ul>
@@ -134,7 +134,7 @@
 <li class="toctree-l1"><a class="reference internal" href="api-utils.html">audformat.utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="genindex.html">Index</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Development</span></p>
+<p class="caption" role="heading"><span class="caption-text">Development</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
@@ -190,7 +190,7 @@
         
             
             
-              <a href="https://github.com/audeering/audformat/blob/v0.11.3/docs/api-errors.rst" class="fa fa-github"> Edit on GitHub</a>
+              <a href="https://github.com/audeering/audformat/blob/v0.11.4/docs/api-errors.rst" class="fa fa-github"> Edit on GitHub</a>
             
           
         
@@ -204,9 +204,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="module-audformat.errors">
+  <div class="section" id="module-audformat.errors">
 <span id="audformat-errors"></span><h1>audformat.errors<a class="headerlink" href="#module-audformat.errors" title="Permalink to this headline">¶</a></h1>
-<section id="badiderror">
+<div class="section" id="badiderror">
 <h2>BadIdError<a class="headerlink" href="#badiderror" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="audformat.errors.BadIdError">
@@ -223,8 +223,25 @@
 </dl>
 </dd></dl>
 
-</section>
-<section id="badtypeerror">
+</div>
+<div class="section" id="badkeyerror">
+<h2>BadKeyError<a class="headerlink" href="#badkeyerror" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="audformat.errors.BadKeyError">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">audformat.errors.</span></span><span class="sig-name descname"><span class="pre">BadKeyError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">invalid_key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">valid_keys</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/errors.html#BadKeyError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.errors.BadKeyError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Raised when a key is not found.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>invalid_key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – value causing the error</p></li>
+<li><p><strong>valid_keys</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]) – list of valid strings</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="badtypeerror">
 <h2>BadTypeError<a class="headerlink" href="#badtypeerror" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="audformat.errors.BadTypeError">
@@ -240,8 +257,8 @@
 </dl>
 </dd></dl>
 
-</section>
-<section id="badvalueerror">
+</div>
+<div class="section" id="badvalueerror">
 <h2>BadValueError<a class="headerlink" href="#badvalueerror" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="audformat.errors.BadValueError">
@@ -257,8 +274,8 @@
 </dl>
 </dd></dl>
 
-</section>
-</section>
+</div>
+</div>
 
 
            </div>
@@ -283,7 +300,7 @@
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2021/06/10 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2021/08/05 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>

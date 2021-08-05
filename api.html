@@ -5,8 +5,7 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <title>audformat &mdash; audformat Documentation</title>
@@ -77,7 +76,7 @@
             
             
               <div class="version">
-                v0.11.3
+                v0.11.4
               </div>
             
           
@@ -101,7 +100,7 @@
               
             
             
-              <p class="caption"><span class="caption-text">Getting started</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Getting started</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="create-database.html">Create a database</a></li>
@@ -111,7 +110,7 @@
 <li class="toctree-l1"><a class="reference internal" href="update-database.html">Update a database</a></li>
 <li class="toctree-l1"><a class="reference internal" href="emodb-example.html">Emodb example</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Format specification</span></p>
+<p class="caption" role="heading"><span class="caption-text">Format specification</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="data-introduction.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data-format.html">Database</a></li>
@@ -120,7 +119,7 @@
 <li class="toctree-l1"><a class="reference internal" href="data-tables.html">Tables</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data-example.html">Example</a></li>
 </ul>
-<p class="caption"><span class="caption-text">API Documentation</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Documentation</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">audformat</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#assert-index">assert_index</a></li>
@@ -142,7 +141,7 @@
 <li class="toctree-l1"><a class="reference internal" href="api-utils.html">audformat.utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="genindex.html">Index</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Development</span></p>
+<p class="caption" role="heading"><span class="caption-text">Development</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
@@ -198,7 +197,7 @@
         
             
             
-              <a href="https://github.com/audeering/audformat/blob/v0.11.3/docs/api.rst" class="fa fa-github"> Edit on GitHub</a>
+              <a href="https://github.com/audeering/audformat/blob/v0.11.4/docs/api.rst" class="fa fa-github"> Edit on GitHub</a>
             
           
         
@@ -212,9 +211,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="module-audformat">
+  <div class="section" id="module-audformat">
 <span id="audformat"></span><h1>audformat<a class="headerlink" href="#module-audformat" title="Permalink to this headline">¶</a></h1>
-<section id="assert-index">
+<div class="section" id="assert-index">
 <h2>assert_index<a class="headerlink" href="#assert-index" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="audformat.assert_index">
@@ -231,8 +230,8 @@
 </dl>
 </dd></dl>
 
-</section>
-<section id="column">
+</div>
+<div class="section" id="column">
 <h2>Column<a class="headerlink" href="#column" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="audformat.Column">
@@ -376,8 +375,8 @@ values have to match its <code class="docutils literal notranslate"><span class=
 
 </dd></dl>
 
-</section>
-<section id="filewise-index">
+</div>
+<div class="section" id="filewise-index">
 <h2>filewise_index<a class="headerlink" href="#filewise-index" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="audformat.filewise_index">
@@ -405,8 +404,8 @@ values have to match its <code class="docutils literal notranslate"><span class=
 </div>
 </dd></dl>
 
-</section>
-<section id="segmented-index">
+</div>
+<div class="section" id="segmented-index">
 <h2>segmented_index<a class="headerlink" href="#segmented-index" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="audformat.segmented_index">
@@ -467,8 +466,8 @@ Time values given as float or integers are treated as seconds</p></li>
 </div>
 </dd></dl>
 
-</section>
-<section id="database">
+</div>
+<div class="section" id="database">
 <h2>Database<a class="headerlink" href="#database" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="audformat.Database">
@@ -484,7 +483,8 @@ listing files and labels.</p>
 <li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – name of database</p></li>
 <li><p><strong>source</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – data source (e.g. link to website)</p></li>
 <li><p><strong>usage</strong> (<a class="reference internal" href="api-define.html#audformat.define.Usage" title="audformat.core.define.Usage"><code class="xref py py-class docutils literal notranslate"><span class="pre">Usage</span></code></a>) – permission of usage, see <a class="reference internal" href="api-define.html#audformat.define.Usage" title="audformat.define.Usage"><code class="xref py py-class docutils literal notranslate"><span class="pre">audformat.define.Usage</span></code></a>.
-Set to <code class="docutils literal notranslate"><span class="pre">OTHER</span></code> if none of the other fields fit.</p></li>
+Set to <code class="docutils literal notranslate"><span class="pre">'other'</span></code>
+if none of the other fields fit.</p></li>
 <li><p><strong>expires</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.date" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">date</span></code></a>]) – expiry date</p></li>
 <li><p><strong>languages</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>], <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a>]) – list of languages</p></li>
 <li><p><strong>description</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]) – database description</p></li>
@@ -1005,8 +1005,8 @@ associated with <code class="docutils literal notranslate"><span class="pre">oth
 
 </dd></dl>
 
-</section>
-<section id="index-type">
+</div>
+<div class="section" id="index-type">
 <h2>index_type<a class="headerlink" href="#index-type" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="audformat.index_type">
@@ -1037,8 +1037,8 @@ associated with <code class="docutils literal notranslate"><span class="pre">oth
 </div>
 </dd></dl>
 
-</section>
-<section id="media">
+</div>
+<div class="section" id="media">
 <h2>Media<a class="headerlink" href="#media" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="audformat.Media">
@@ -1131,8 +1131,8 @@ associated with <code class="docutils literal notranslate"><span class="pre">oth
 
 </dd></dl>
 
-</section>
-<section id="rater">
+</div>
+<div class="section" id="rater">
 <h2>Rater<a class="headerlink" href="#rater" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="audformat.Rater">
@@ -1163,8 +1163,8 @@ associated with <code class="docutils literal notranslate"><span class="pre">oth
 
 </dd></dl>
 
-</section>
-<section id="scheme">
+</div>
+<div class="section" id="scheme">
 <h2>Scheme<a class="headerlink" href="#scheme" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="audformat.Scheme">
@@ -1341,8 +1341,8 @@ returned. Otherwise the following rules are applied:</p>
 
 </dd></dl>
 
-</section>
-<section id="split">
+</div>
+<div class="section" id="split">
 <h2>Split<a class="headerlink" href="#split" title="Permalink to this headline">¶</a></h2>
 <p>Tables can be classified by splits.
 Usually one of <a class="reference internal" href="api-define.html#audformat.define.SplitType" title="audformat.define.SplitType"><code class="xref py py-class docutils literal notranslate"><span class="pre">define.SplitType</span></code></a>.</p>
@@ -1377,8 +1377,8 @@ development or testing.</p>
 
 </dd></dl>
 
-</section>
-<section id="table">
+</div>
+<div class="section" id="table">
 <h2>Table<a class="headerlink" href="#table" title="Permalink to this headline">¶</a></h2>
 <p>Annotation data is organized in tables,
 which consist of file names
@@ -2045,8 +2045,8 @@ the value of the last table in the list is kept.</p>
 
 </dd></dl>
 
-</section>
-</section>
+</div>
+</div>
 
 
            </div>
@@ -2071,7 +2071,7 @@ the value of the last table in the list is kept.</p>
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2021/06/10 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2021/08/05 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>

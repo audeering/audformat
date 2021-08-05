@@ -5,8 +5,7 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <title>Update a database &mdash; audformat Documentation</title>
@@ -77,7 +76,7 @@
             
             
               <div class="version">
-                v0.11.3
+                v0.11.4
               </div>
             
           
@@ -101,7 +100,7 @@
               
             
             
-              <p class="caption"><span class="caption-text">Getting started</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Getting started</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="create-database.html">Create a database</a></li>
@@ -111,7 +110,7 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Update a database</a></li>
 <li class="toctree-l1"><a class="reference internal" href="emodb-example.html">Emodb example</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Format specification</span></p>
+<p class="caption" role="heading"><span class="caption-text">Format specification</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="data-introduction.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data-format.html">Database</a></li>
@@ -120,7 +119,7 @@
 <li class="toctree-l1"><a class="reference internal" href="data-tables.html">Tables</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data-example.html">Example</a></li>
 </ul>
-<p class="caption"><span class="caption-text">API Documentation</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Documentation</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="api.html">audformat</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api-define.html">audformat.define</a></li>
@@ -129,7 +128,7 @@
 <li class="toctree-l1"><a class="reference internal" href="api-utils.html">audformat.utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="genindex.html">Index</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Development</span></p>
+<p class="caption" role="heading"><span class="caption-text">Development</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
@@ -185,7 +184,7 @@
         
             
             
-              <a href="https://github.com/audeering/audformat/blob/v0.11.3/docs/update-database.rst" class="fa fa-github"> Edit on GitHub</a>
+              <a href="https://github.com/audeering/audformat/blob/v0.11.4/docs/update-database.rst" class="fa fa-github"> Edit on GitHub</a>
             
           
         
@@ -199,7 +198,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="update-a-database">
+  <div class="section" id="update-a-database">
 <h1>Update a database<a class="headerlink" href="#update-a-database" title="Permalink to this headline">¶</a></h1>
 <p>A feature that is especially useful for databases growing over time,
 is the possibility to update a <a class="reference internal" href="api.html#audformat.Database" title="audformat.Database"><code class="xref py py-class docutils literal notranslate"><span class="pre">audformat.Database</span></code></a>.
@@ -279,23 +278,23 @@ tables:
   <tbody>
     <tr>
       <th>audio/001.wav</th>
-      <td>31</td>
+      <td>40</td>
     </tr>
     <tr>
       <th>audio/002.wav</th>
-      <td>20</td>
+      <td>43</td>
     </tr>
     <tr>
       <th>audio/003.wav</th>
-      <td>37</td>
+      <td>36</td>
     </tr>
     <tr>
       <th>audio/004.wav</th>
-      <td>29</td>
+      <td>25</td>
     </tr>
     <tr>
       <th>audio/005.wav</th>
-      <td>44</td>
+      <td>31</td>
     </tr>
     <tr>
       <th>...</th>
@@ -303,23 +302,23 @@ tables:
     </tr>
     <tr>
       <th>audio/096.wav</th>
-      <td>30</td>
+      <td>40</td>
     </tr>
     <tr>
       <th>audio/097.wav</th>
-      <td>42</td>
+      <td>38</td>
     </tr>
     <tr>
       <th>audio/098.wav</th>
-      <td>23</td>
+      <td>22</td>
     </tr>
     <tr>
       <th>audio/099.wav</th>
-      <td>42</td>
+      <td>26</td>
     </tr>
     <tr>
       <th>audio/100.wav</th>
-      <td>32</td>
+      <td>44</td>
     </tr>
   </tbody>
 </table>
@@ -374,23 +373,23 @@ that is then added to the original database.</p>
   <tbody>
     <tr>
       <th>audio/001.wav</th>
-      <td>31</td>
+      <td>40</td>
     </tr>
     <tr>
       <th>audio/002.wav</th>
-      <td>20</td>
+      <td>43</td>
     </tr>
     <tr>
       <th>audio/003.wav</th>
-      <td>37</td>
+      <td>36</td>
     </tr>
     <tr>
       <th>audio/004.wav</th>
-      <td>29</td>
+      <td>25</td>
     </tr>
     <tr>
       <th>audio/005.wav</th>
-      <td>44</td>
+      <td>31</td>
     </tr>
     <tr>
       <th>...</th>
@@ -398,23 +397,23 @@ that is then added to the original database.</p>
     </tr>
     <tr>
       <th>audio/100.wav</th>
-      <td>32</td>
+      <td>44</td>
     </tr>
     <tr>
       <th>audio/101.wav</th>
-      <td>47</td>
+      <td>40</td>
     </tr>
     <tr>
       <th>audio/102.wav</th>
-      <td>36</td>
+      <td>35</td>
     </tr>
     <tr>
       <th>audio/103.wav</th>
-      <td>21</td>
+      <td>40</td>
     </tr>
     <tr>
       <th>audio/104.wav</th>
-      <td>44</td>
+      <td>36</td>
     </tr>
   </tbody>
 </table>
@@ -469,7 +468,7 @@ the critical files, relabel them and then update the original database.</p>
   <tbody>
     <tr>
       <th>audio/001.wav</th>
-      <td>47</td>
+      <td>41</td>
     </tr>
     <tr>
       <th>audio/002.wav</th>
@@ -477,7 +476,7 @@ the critical files, relabel them and then update the original database.</p>
     </tr>
     <tr>
       <th>audio/003.wav</th>
-      <td>41</td>
+      <td>27</td>
     </tr>
     <tr>
       <th>audio/004.wav</th>
@@ -485,7 +484,7 @@ the critical files, relabel them and then update the original database.</p>
     </tr>
     <tr>
       <th>audio/005.wav</th>
-      <td>37</td>
+      <td>39</td>
     </tr>
     <tr>
       <th>...</th>
@@ -493,23 +492,23 @@ the critical files, relabel them and then update the original database.</p>
     </tr>
     <tr>
       <th>audio/100.wav</th>
-      <td>32</td>
+      <td>44</td>
     </tr>
     <tr>
       <th>audio/101.wav</th>
-      <td>47</td>
+      <td>40</td>
     </tr>
     <tr>
       <th>audio/102.wav</th>
-      <td>36</td>
+      <td>35</td>
     </tr>
     <tr>
       <th>audio/103.wav</th>
-      <td>21</td>
+      <td>40</td>
     </tr>
     <tr>
       <th>audio/104.wav</th>
-      <td>44</td>
+      <td>36</td>
     </tr>
   </tbody>
 </table>
@@ -571,7 +570,7 @@ collect the new labels and only later merge it into our original database.</p>
   <tbody>
     <tr>
       <th>audio/001.wav</th>
-      <td>47</td>
+      <td>41</td>
       <td>female</td>
     </tr>
     <tr>
@@ -581,18 +580,18 @@ collect the new labels and only later merge it into our original database.</p>
     </tr>
     <tr>
       <th>audio/003.wav</th>
-      <td>41</td>
-      <td>male</td>
+      <td>27</td>
+      <td>female</td>
     </tr>
     <tr>
       <th>audio/004.wav</th>
       <td>37</td>
-      <td>female</td>
+      <td>male</td>
     </tr>
     <tr>
       <th>audio/005.wav</th>
-      <td>37</td>
-      <td>male</td>
+      <td>39</td>
+      <td>female</td>
     </tr>
     <tr>
       <th>...</th>
@@ -601,27 +600,27 @@ collect the new labels and only later merge it into our original database.</p>
     </tr>
     <tr>
       <th>audio/100.wav</th>
-      <td>32</td>
+      <td>44</td>
       <td>female</td>
     </tr>
     <tr>
       <th>audio/101.wav</th>
-      <td>47</td>
+      <td>40</td>
       <td>female</td>
     </tr>
     <tr>
       <th>audio/102.wav</th>
-      <td>36</td>
-      <td>male</td>
+      <td>35</td>
+      <td>female</td>
     </tr>
     <tr>
       <th>audio/103.wav</th>
-      <td>21</td>
+      <td>40</td>
       <td>female</td>
     </tr>
     <tr>
       <th>audio/104.wav</th>
-      <td>44</td>
+      <td>36</td>
       <td>male</td>
     </tr>
   </tbody>
@@ -647,7 +646,7 @@ gender:
 </div>
 </div>
 </div>
-</section>
+</div>
 
 
            </div>
@@ -672,7 +671,7 @@ gender:
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2021/06/10 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2021/08/05 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>

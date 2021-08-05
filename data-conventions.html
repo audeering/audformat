@@ -5,8 +5,7 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <title>Conventions &mdash; audformat Documentation</title>
@@ -77,7 +76,7 @@
             
             
               <div class="version">
-                v0.11.3
+                v0.11.4
               </div>
             
           
@@ -101,7 +100,7 @@
               
             
             
-              <p class="caption"><span class="caption-text">Getting started</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Getting started</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="create-database.html">Create a database</a></li>
@@ -111,7 +110,7 @@
 <li class="toctree-l1"><a class="reference internal" href="update-database.html">Update a database</a></li>
 <li class="toctree-l1"><a class="reference internal" href="emodb-example.html">Emodb example</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Format specification</span></p>
+<p class="caption" role="heading"><span class="caption-text">Format specification</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="data-introduction.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data-format.html">Database</a></li>
@@ -130,7 +129,7 @@
 <li class="toctree-l1"><a class="reference internal" href="data-tables.html">Tables</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data-example.html">Example</a></li>
 </ul>
-<p class="caption"><span class="caption-text">API Documentation</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Documentation</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="api.html">audformat</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api-define.html">audformat.define</a></li>
@@ -139,7 +138,7 @@
 <li class="toctree-l1"><a class="reference internal" href="api-utils.html">audformat.utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="genindex.html">Index</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Development</span></p>
+<p class="caption" role="heading"><span class="caption-text">Development</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
@@ -195,7 +194,7 @@
         
             
             
-              <a href="https://github.com/audeering/audformat/blob/v0.11.3/docs/data-conventions.rst" class="fa fa-github"> Edit on GitHub</a>
+              <a href="https://github.com/audeering/audformat/blob/v0.11.4/docs/data-conventions.rst" class="fa fa-github"> Edit on GitHub</a>
             
           
         
@@ -209,13 +208,13 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="conventions">
+  <div class="section" id="conventions">
 <h1>Conventions<a class="headerlink" href="#conventions" title="Permalink to this headline">¶</a></h1>
 <div class="jupyter_cell docutils container">
 <div class="cell_output docutils container">
 </div>
 </div>
-<section id="database-name">
+<div class="section" id="database-name">
 <h2>Database name<a class="headerlink" href="#database-name" title="Permalink to this headline">¶</a></h2>
 <p>The name of a database should be lowercase
 and must not contain blanks or
@@ -238,8 +237,8 @@ languages: []
 </div>
 </div>
 </div>
-</section>
-<section id="table-and-scheme-names">
+</div>
+<div class="section" id="table-and-scheme-names">
 <h2>Table and scheme names<a class="headerlink" href="#table-and-scheme-names" title="Permalink to this headline">¶</a></h2>
 <p>Use lower case for table and scheme names.</p>
 <p>Here’s a list of common scheme names:</p>
@@ -285,8 +284,8 @@ E.g. use <code class="docutils literal notranslate"><span class="pre">transcript
 and <code class="docutils literal notranslate"><span class="pre">transcription-phoneme</span></code>
 if a database offers word
 <em>and</em> phoneme transcriptions.</p>
-</section>
-<section id="tables-schemes-and-raters">
+</div>
+<div class="section" id="tables-schemes-and-raters">
 <h2>Tables, schemes, and raters<a class="headerlink" href="#tables-schemes-and-raters" title="Permalink to this headline">¶</a></h2>
 <p>Consider one table per scheme
 with the name of the scheme.
@@ -341,8 +340,8 @@ tables:
 </div>
 </div>
 </div>
-</section>
-<section id="database-splits">
+</div>
+<div class="section" id="database-splits">
 <h2>Database splits<a class="headerlink" href="#database-splits" title="Permalink to this headline">¶</a></h2>
 <p>If an official split into training,
 development
@@ -391,8 +390,8 @@ tables:
 </div>
 </div>
 </div>
-</section>
-<section id="gold-standard-annotation">
+</div>
+<div class="section" id="gold-standard-annotation">
 <h2>Gold standard annotation<a class="headerlink" href="#gold-standard-annotation" title="Permalink to this headline">¶</a></h2>
 <p>Annotations by several raters
 belonging to the same scheme
@@ -461,8 +460,8 @@ tables:
 </div>
 </div>
 </div>
-</section>
-<section id="confidence-values">
+</div>
+<div class="section" id="confidence-values">
 <h2>Confidence values<a class="headerlink" href="#confidence-values" title="Permalink to this headline">¶</a></h2>
 <p>Assume you have an annotation
 that does not only provide a value,
@@ -520,8 +519,8 @@ tables:
 </div>
 </div>
 </div>
-</section>
-<section id="file-and-speaker-information">
+</div>
+<div class="section" id="file-and-speaker-information">
 <h2>File and speaker information<a class="headerlink" href="#file-and-speaker-information" title="Permalink to this headline">¶</a></h2>
 <p>Meta information like speaker ID
 or file duration
@@ -670,8 +669,8 @@ for an extended documentation.</p>
 </table>
 </div></div></div>
 </div>
-</section>
-<section id="file-duration-and-temporal-data">
+</div>
+<div class="section" id="file-duration-and-temporal-data">
 <h2>File duration and temporal data<a class="headerlink" href="#file-duration-and-temporal-data" title="Permalink to this headline">¶</a></h2>
 <p>It is recommended to store file durations
 for every database
@@ -785,8 +784,8 @@ tables:
 <div class="cell_output docutils container">
 </div>
 </div>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>
@@ -811,7 +810,7 @@ tables:
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2021/06/10 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2021/08/05 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>

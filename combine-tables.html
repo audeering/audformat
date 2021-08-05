@@ -5,8 +5,7 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <title>Combine tables &mdash; audformat Documentation</title>
@@ -77,7 +76,7 @@
             
             
               <div class="version">
-                v0.11.3
+                v0.11.4
               </div>
             
           
@@ -101,7 +100,7 @@
               
             
             
-              <p class="caption"><span class="caption-text">Getting started</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Getting started</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="create-database.html">Create a database</a></li>
@@ -111,7 +110,7 @@
 <li class="toctree-l1"><a class="reference internal" href="update-database.html">Update a database</a></li>
 <li class="toctree-l1"><a class="reference internal" href="emodb-example.html">Emodb example</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Format specification</span></p>
+<p class="caption" role="heading"><span class="caption-text">Format specification</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="data-introduction.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data-format.html">Database</a></li>
@@ -120,7 +119,7 @@
 <li class="toctree-l1"><a class="reference internal" href="data-tables.html">Tables</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data-example.html">Example</a></li>
 </ul>
-<p class="caption"><span class="caption-text">API Documentation</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Documentation</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="api.html">audformat</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api-define.html">audformat.define</a></li>
@@ -129,7 +128,7 @@
 <li class="toctree-l1"><a class="reference internal" href="api-utils.html">audformat.utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="genindex.html">Index</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Development</span></p>
+<p class="caption" role="heading"><span class="caption-text">Development</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
@@ -185,7 +184,7 @@
         
             
             
-              <a href="https://github.com/audeering/audformat/blob/v0.11.3/docs/combine-tables.rst" class="fa fa-github"> Edit on GitHub</a>
+              <a href="https://github.com/audeering/audformat/blob/v0.11.4/docs/combine-tables.rst" class="fa fa-github"> Edit on GitHub</a>
             
           
         
@@ -199,7 +198,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="combine-tables">
+  <div class="section" id="combine-tables">
 <h1>Combine tables<a class="headerlink" href="#combine-tables" title="Permalink to this headline">¶</a></h1>
 <p>It can happen that labels in your database are stored
 in tables of different type as some labels belong to the whole file,
@@ -278,15 +277,15 @@ for age and likability:</p>
   <tbody>
     <tr>
       <th>audio/001.wav</th>
-      <td>40</td>
+      <td>44</td>
     </tr>
     <tr>
       <th>audio/002.wav</th>
-      <td>26</td>
+      <td>31</td>
     </tr>
     <tr>
       <th>audio/003.wav</th>
-      <td>43</td>
+      <td>41</td>
     </tr>
   </tbody>
 </table>
@@ -322,107 +321,107 @@ for age and likability:</p>
   <tbody>
     <tr>
       <th rowspan="5" valign="top">audio/001.wav</th>
-      <th>0 days 00:00:00.509951222</th>
-      <th>0 days 00:00:00.806916839</th>
-      <td>0.893798</td>
+      <th>0 days 00:00:00.132108953</th>
+      <th>0 days 00:00:01.096688211</th>
+      <td>0.592832</td>
     </tr>
     <tr>
-      <th>0 days 00:00:01.225904836</th>
-      <th>0 days 00:00:01.571911674</th>
-      <td>0.806893</td>
+      <th>0 days 00:00:01.359454382</th>
+      <th>0 days 00:00:01.860376031</th>
+      <td>0.451976</td>
     </tr>
     <tr>
-      <th>0 days 00:00:02.175666791</th>
-      <th>0 days 00:00:02.373384052</th>
-      <td>0.789677</td>
+      <th>0 days 00:00:02.007477378</th>
+      <th>0 days 00:00:02.237295454</th>
+      <td>0.934666</td>
     </tr>
     <tr>
-      <th>0 days 00:00:02.545000677</th>
-      <th>0 days 00:00:02.554988998</th>
-      <td>0.360004</td>
+      <th>0 days 00:00:02.362861856</th>
+      <th>0 days 00:00:03.494169493</th>
+      <td>0.055798</td>
     </tr>
     <tr>
-      <th>0 days 00:00:03.623663425</th>
-      <th>0 days 00:00:04.499389597</th>
-      <td>0.081249</td>
+      <th>0 days 00:00:04.111608946</th>
+      <th>0 days 00:00:04.285050811</th>
+      <td>0.054500</td>
     </tr>
     <tr>
       <th rowspan="5" valign="top">audio/002.wav</th>
-      <th>0 days 00:00:00.159971439</th>
-      <th>0 days 00:00:00.476041998</th>
-      <td>0.376653</td>
+      <th>0 days 00:00:00.569955645</th>
+      <th>0 days 00:00:02.757969176</th>
+      <td>0.888028</td>
     </tr>
     <tr>
-      <th>0 days 00:00:01.951107314</th>
-      <th>0 days 00:00:02.180138149</th>
-      <td>0.441312</td>
+      <th>0 days 00:00:02.770027806</th>
+      <th>0 days 00:00:03.218829402</th>
+      <td>0.680681</td>
     </tr>
     <tr>
-      <th>0 days 00:00:02.515819867</th>
-      <th>0 days 00:00:02.907276421</th>
-      <td>0.903016</td>
+      <th>0 days 00:00:03.438135480</th>
+      <th>0 days 00:00:03.744180348</th>
+      <td>0.610978</td>
     </tr>
     <tr>
-      <th>0 days 00:00:02.985221441</th>
-      <th>0 days 00:00:03.272014363</th>
-      <td>0.485718</td>
+      <th>0 days 00:00:04.117456919</th>
+      <th>0 days 00:00:04.855501824</th>
+      <td>0.906996</td>
     </tr>
     <tr>
-      <th>0 days 00:00:03.765739262</th>
-      <th>0 days 00:00:04.587855983</th>
-      <td>0.367758</td>
+      <th>0 days 00:00:04.886654982</th>
+      <th>0 days 00:00:04.987763713</th>
+      <td>0.931849</td>
     </tr>
     <tr>
       <th rowspan="5" valign="top">audio/003.wav</th>
-      <th>0 days 00:00:00.769892904</th>
-      <th>0 days 00:00:01.278344509</th>
-      <td>0.787495</td>
+      <th>0 days 00:00:00.116747528</th>
+      <th>0 days 00:00:00.146906929</th>
+      <td>0.062839</td>
     </tr>
     <tr>
-      <th>0 days 00:00:02.482416292</th>
-      <th>0 days 00:00:02.553346556</th>
-      <td>0.461309</td>
+      <th>0 days 00:00:02.515266169</th>
+      <th>0 days 00:00:02.569642690</th>
+      <td>0.428156</td>
     </tr>
     <tr>
-      <th>0 days 00:00:02.604651920</th>
-      <th>0 days 00:00:03.150441957</th>
-      <td>0.138509</td>
+      <th>0 days 00:00:02.795871348</th>
+      <th>0 days 00:00:03.078347864</th>
+      <td>0.435826</td>
     </tr>
     <tr>
-      <th>0 days 00:00:03.942069941</th>
-      <th>0 days 00:00:04.554626139</th>
-      <td>0.495870</td>
+      <th>0 days 00:00:03.463573005</th>
+      <th>0 days 00:00:03.848277346</th>
+      <td>0.036050</td>
     </tr>
     <tr>
-      <th>0 days 00:00:04.575617942</th>
-      <th>0 days 00:00:04.698158479</th>
-      <td>0.065820</td>
+      <th>0 days 00:00:03.946170353</th>
+      <th>0 days 00:00:04.438347255</th>
+      <td>0.127986</td>
     </tr>
     <tr>
       <th rowspan="5" valign="top">audio/004.wav</th>
-      <th>0 days 00:00:00.745059388</th>
-      <th>0 days 00:00:01.300442442</th>
-      <td>0.685342</td>
+      <th>0 days 00:00:00.062090456</th>
+      <th>0 days 00:00:00.129003206</th>
+      <td>0.208978</td>
     </tr>
     <tr>
-      <th>0 days 00:00:02.048849880</th>
-      <th>0 days 00:00:02.293984746</th>
-      <td>0.040902</td>
+      <th>0 days 00:00:00.281857325</th>
+      <th>0 days 00:00:00.662850848</th>
+      <td>0.330232</td>
     </tr>
     <tr>
-      <th>0 days 00:00:02.409496329</th>
-      <th>0 days 00:00:02.903647855</th>
-      <td>0.326480</td>
+      <th>0 days 00:00:01.233870114</th>
+      <th>0 days 00:00:03.177952345</th>
+      <td>0.187981</td>
     </tr>
     <tr>
-      <th>0 days 00:00:03.459056943</th>
-      <th>0 days 00:00:03.939107772</th>
-      <td>0.729668</td>
+      <th>0 days 00:00:03.340827550</th>
+      <th>0 days 00:00:03.710054918</th>
+      <td>0.263543</td>
     </tr>
     <tr>
-      <th>0 days 00:00:04.326121502</th>
-      <th>0 days 00:00:04.706575358</th>
-      <td>0.146743</td>
+      <th>0 days 00:00:03.929462886</th>
+      <th>0 days 00:00:04.279386633</th>
+      <td>0.520045</td>
     </tr>
   </tbody>
 </table>
@@ -483,36 +482,36 @@ for age and likability:</p>
       <th>0 days 00:00:00</th>
       <th>NaT</th>
       <td>NaN</td>
-      <td>40</td>
+      <td>44</td>
     </tr>
     <tr>
-      <th>0 days 00:00:00.509951222</th>
-      <th>0 days 00:00:00.806916839</th>
-      <td>0.893798</td>
+      <th>0 days 00:00:00.132108953</th>
+      <th>0 days 00:00:01.096688211</th>
+      <td>0.592832</td>
       <td>&lt;NA&gt;</td>
     </tr>
     <tr>
-      <th>0 days 00:00:01.225904836</th>
-      <th>0 days 00:00:01.571911674</th>
-      <td>0.806893</td>
+      <th>0 days 00:00:01.359454382</th>
+      <th>0 days 00:00:01.860376031</th>
+      <td>0.451976</td>
       <td>&lt;NA&gt;</td>
     </tr>
     <tr>
-      <th>0 days 00:00:02.175666791</th>
-      <th>0 days 00:00:02.373384052</th>
-      <td>0.789677</td>
+      <th>0 days 00:00:02.007477378</th>
+      <th>0 days 00:00:02.237295454</th>
+      <td>0.934666</td>
       <td>&lt;NA&gt;</td>
     </tr>
     <tr>
-      <th>0 days 00:00:02.545000677</th>
-      <th>0 days 00:00:02.554988998</th>
-      <td>0.360004</td>
+      <th>0 days 00:00:02.362861856</th>
+      <th>0 days 00:00:03.494169493</th>
+      <td>0.055798</td>
       <td>&lt;NA&gt;</td>
     </tr>
     <tr>
-      <th>0 days 00:00:03.623663425</th>
-      <th>0 days 00:00:04.499389597</th>
-      <td>0.081249</td>
+      <th>0 days 00:00:04.111608946</th>
+      <th>0 days 00:00:04.285050811</th>
+      <td>0.054500</td>
       <td>&lt;NA&gt;</td>
     </tr>
     <tr>
@@ -520,36 +519,36 @@ for age and likability:</p>
       <th>0 days 00:00:00</th>
       <th>NaT</th>
       <td>NaN</td>
-      <td>26</td>
+      <td>31</td>
     </tr>
     <tr>
-      <th>0 days 00:00:00.159971439</th>
-      <th>0 days 00:00:00.476041998</th>
-      <td>0.376653</td>
+      <th>0 days 00:00:00.569955645</th>
+      <th>0 days 00:00:02.757969176</th>
+      <td>0.888028</td>
       <td>&lt;NA&gt;</td>
     </tr>
     <tr>
-      <th>0 days 00:00:01.951107314</th>
-      <th>0 days 00:00:02.180138149</th>
-      <td>0.441312</td>
+      <th>0 days 00:00:02.770027806</th>
+      <th>0 days 00:00:03.218829402</th>
+      <td>0.680681</td>
       <td>&lt;NA&gt;</td>
     </tr>
     <tr>
-      <th>0 days 00:00:02.515819867</th>
-      <th>0 days 00:00:02.907276421</th>
-      <td>0.903016</td>
+      <th>0 days 00:00:03.438135480</th>
+      <th>0 days 00:00:03.744180348</th>
+      <td>0.610978</td>
       <td>&lt;NA&gt;</td>
     </tr>
     <tr>
-      <th>0 days 00:00:02.985221441</th>
-      <th>0 days 00:00:03.272014363</th>
-      <td>0.485718</td>
+      <th>0 days 00:00:04.117456919</th>
+      <th>0 days 00:00:04.855501824</th>
+      <td>0.906996</td>
       <td>&lt;NA&gt;</td>
     </tr>
     <tr>
-      <th>0 days 00:00:03.765739262</th>
-      <th>0 days 00:00:04.587855983</th>
-      <td>0.367758</td>
+      <th>0 days 00:00:04.886654982</th>
+      <th>0 days 00:00:04.987763713</th>
+      <td>0.931849</td>
       <td>&lt;NA&gt;</td>
     </tr>
     <tr>
@@ -557,67 +556,67 @@ for age and likability:</p>
       <th>0 days 00:00:00</th>
       <th>NaT</th>
       <td>NaN</td>
-      <td>43</td>
+      <td>41</td>
     </tr>
     <tr>
-      <th>0 days 00:00:00.769892904</th>
-      <th>0 days 00:00:01.278344509</th>
-      <td>0.787495</td>
+      <th>0 days 00:00:00.116747528</th>
+      <th>0 days 00:00:00.146906929</th>
+      <td>0.062839</td>
       <td>&lt;NA&gt;</td>
     </tr>
     <tr>
-      <th>0 days 00:00:02.482416292</th>
-      <th>0 days 00:00:02.553346556</th>
-      <td>0.461309</td>
+      <th>0 days 00:00:02.515266169</th>
+      <th>0 days 00:00:02.569642690</th>
+      <td>0.428156</td>
       <td>&lt;NA&gt;</td>
     </tr>
     <tr>
-      <th>0 days 00:00:02.604651920</th>
-      <th>0 days 00:00:03.150441957</th>
-      <td>0.138509</td>
+      <th>0 days 00:00:02.795871348</th>
+      <th>0 days 00:00:03.078347864</th>
+      <td>0.435826</td>
       <td>&lt;NA&gt;</td>
     </tr>
     <tr>
-      <th>0 days 00:00:03.942069941</th>
-      <th>0 days 00:00:04.554626139</th>
-      <td>0.495870</td>
+      <th>0 days 00:00:03.463573005</th>
+      <th>0 days 00:00:03.848277346</th>
+      <td>0.036050</td>
       <td>&lt;NA&gt;</td>
     </tr>
     <tr>
-      <th>0 days 00:00:04.575617942</th>
-      <th>0 days 00:00:04.698158479</th>
-      <td>0.065820</td>
+      <th>0 days 00:00:03.946170353</th>
+      <th>0 days 00:00:04.438347255</th>
+      <td>0.127986</td>
       <td>&lt;NA&gt;</td>
     </tr>
     <tr>
       <th rowspan="5" valign="top">audio/004.wav</th>
-      <th>0 days 00:00:00.745059388</th>
-      <th>0 days 00:00:01.300442442</th>
-      <td>0.685342</td>
+      <th>0 days 00:00:00.062090456</th>
+      <th>0 days 00:00:00.129003206</th>
+      <td>0.208978</td>
       <td>&lt;NA&gt;</td>
     </tr>
     <tr>
-      <th>0 days 00:00:02.048849880</th>
-      <th>0 days 00:00:02.293984746</th>
-      <td>0.040902</td>
+      <th>0 days 00:00:00.281857325</th>
+      <th>0 days 00:00:00.662850848</th>
+      <td>0.330232</td>
       <td>&lt;NA&gt;</td>
     </tr>
     <tr>
-      <th>0 days 00:00:02.409496329</th>
-      <th>0 days 00:00:02.903647855</th>
-      <td>0.326480</td>
+      <th>0 days 00:00:01.233870114</th>
+      <th>0 days 00:00:03.177952345</th>
+      <td>0.187981</td>
       <td>&lt;NA&gt;</td>
     </tr>
     <tr>
-      <th>0 days 00:00:03.459056943</th>
-      <th>0 days 00:00:03.939107772</th>
-      <td>0.729668</td>
+      <th>0 days 00:00:03.340827550</th>
+      <th>0 days 00:00:03.710054918</th>
+      <td>0.263543</td>
       <td>&lt;NA&gt;</td>
     </tr>
     <tr>
-      <th>0 days 00:00:04.326121502</th>
-      <th>0 days 00:00:04.706575358</th>
-      <td>0.146743</td>
+      <th>0 days 00:00:03.929462886</th>
+      <th>0 days 00:00:04.279386633</th>
+      <td>0.520045</td>
       <td>&lt;NA&gt;</td>
     </tr>
   </tbody>
@@ -677,81 +676,81 @@ for which age information is available:</p>
   <tbody>
     <tr>
       <th rowspan="5" valign="top">audio/001.wav</th>
-      <th>0 days 00:00:00.509951222</th>
-      <th>0 days 00:00:00.806916839</th>
-      <td>0.893798</td>
+      <th>0 days 00:00:00.132108953</th>
+      <th>0 days 00:00:01.096688211</th>
+      <td>0.592832</td>
     </tr>
     <tr>
-      <th>0 days 00:00:01.225904836</th>
-      <th>0 days 00:00:01.571911674</th>
-      <td>0.806893</td>
+      <th>0 days 00:00:01.359454382</th>
+      <th>0 days 00:00:01.860376031</th>
+      <td>0.451976</td>
     </tr>
     <tr>
-      <th>0 days 00:00:02.175666791</th>
-      <th>0 days 00:00:02.373384052</th>
-      <td>0.789677</td>
+      <th>0 days 00:00:02.007477378</th>
+      <th>0 days 00:00:02.237295454</th>
+      <td>0.934666</td>
     </tr>
     <tr>
-      <th>0 days 00:00:02.545000677</th>
-      <th>0 days 00:00:02.554988998</th>
-      <td>0.360004</td>
+      <th>0 days 00:00:02.362861856</th>
+      <th>0 days 00:00:03.494169493</th>
+      <td>0.055798</td>
     </tr>
     <tr>
-      <th>0 days 00:00:03.623663425</th>
-      <th>0 days 00:00:04.499389597</th>
-      <td>0.081249</td>
+      <th>0 days 00:00:04.111608946</th>
+      <th>0 days 00:00:04.285050811</th>
+      <td>0.054500</td>
     </tr>
     <tr>
       <th rowspan="5" valign="top">audio/002.wav</th>
-      <th>0 days 00:00:00.159971439</th>
-      <th>0 days 00:00:00.476041998</th>
-      <td>0.376653</td>
+      <th>0 days 00:00:00.569955645</th>
+      <th>0 days 00:00:02.757969176</th>
+      <td>0.888028</td>
     </tr>
     <tr>
-      <th>0 days 00:00:01.951107314</th>
-      <th>0 days 00:00:02.180138149</th>
-      <td>0.441312</td>
+      <th>0 days 00:00:02.770027806</th>
+      <th>0 days 00:00:03.218829402</th>
+      <td>0.680681</td>
     </tr>
     <tr>
-      <th>0 days 00:00:02.515819867</th>
-      <th>0 days 00:00:02.907276421</th>
-      <td>0.903016</td>
+      <th>0 days 00:00:03.438135480</th>
+      <th>0 days 00:00:03.744180348</th>
+      <td>0.610978</td>
     </tr>
     <tr>
-      <th>0 days 00:00:02.985221441</th>
-      <th>0 days 00:00:03.272014363</th>
-      <td>0.485718</td>
+      <th>0 days 00:00:04.117456919</th>
+      <th>0 days 00:00:04.855501824</th>
+      <td>0.906996</td>
     </tr>
     <tr>
-      <th>0 days 00:00:03.765739262</th>
-      <th>0 days 00:00:04.587855983</th>
-      <td>0.367758</td>
+      <th>0 days 00:00:04.886654982</th>
+      <th>0 days 00:00:04.987763713</th>
+      <td>0.931849</td>
     </tr>
     <tr>
       <th rowspan="5" valign="top">audio/003.wav</th>
-      <th>0 days 00:00:00.769892904</th>
-      <th>0 days 00:00:01.278344509</th>
-      <td>0.787495</td>
+      <th>0 days 00:00:00.116747528</th>
+      <th>0 days 00:00:00.146906929</th>
+      <td>0.062839</td>
     </tr>
     <tr>
-      <th>0 days 00:00:02.482416292</th>
-      <th>0 days 00:00:02.553346556</th>
-      <td>0.461309</td>
+      <th>0 days 00:00:02.515266169</th>
+      <th>0 days 00:00:02.569642690</th>
+      <td>0.428156</td>
     </tr>
     <tr>
-      <th>0 days 00:00:02.604651920</th>
-      <th>0 days 00:00:03.150441957</th>
-      <td>0.138509</td>
+      <th>0 days 00:00:02.795871348</th>
+      <th>0 days 00:00:03.078347864</th>
+      <td>0.435826</td>
     </tr>
     <tr>
-      <th>0 days 00:00:03.942069941</th>
-      <th>0 days 00:00:04.554626139</th>
-      <td>0.495870</td>
+      <th>0 days 00:00:03.463573005</th>
+      <th>0 days 00:00:03.848277346</th>
+      <td>0.036050</td>
     </tr>
     <tr>
-      <th>0 days 00:00:04.575617942</th>
-      <th>0 days 00:00:04.698158479</th>
-      <td>0.065820</td>
+      <th>0 days 00:00:03.946170353</th>
+      <th>0 days 00:00:04.438347255</th>
+      <td>0.127986</td>
     </tr>
   </tbody>
 </table>
@@ -808,81 +807,81 @@ in the likeability table:</p>
   <tbody>
     <tr>
       <th rowspan="5" valign="top">audio/001.wav</th>
-      <th>0 days 00:00:00.509951222</th>
-      <th>0 days 00:00:00.806916839</th>
-      <td>40</td>
+      <th>0 days 00:00:00.132108953</th>
+      <th>0 days 00:00:01.096688211</th>
+      <td>44</td>
     </tr>
     <tr>
-      <th>0 days 00:00:01.225904836</th>
-      <th>0 days 00:00:01.571911674</th>
-      <td>40</td>
+      <th>0 days 00:00:01.359454382</th>
+      <th>0 days 00:00:01.860376031</th>
+      <td>44</td>
     </tr>
     <tr>
-      <th>0 days 00:00:02.175666791</th>
-      <th>0 days 00:00:02.373384052</th>
-      <td>40</td>
+      <th>0 days 00:00:02.007477378</th>
+      <th>0 days 00:00:02.237295454</th>
+      <td>44</td>
     </tr>
     <tr>
-      <th>0 days 00:00:02.545000677</th>
-      <th>0 days 00:00:02.554988998</th>
-      <td>40</td>
+      <th>0 days 00:00:02.362861856</th>
+      <th>0 days 00:00:03.494169493</th>
+      <td>44</td>
     </tr>
     <tr>
-      <th>0 days 00:00:03.623663425</th>
-      <th>0 days 00:00:04.499389597</th>
-      <td>40</td>
+      <th>0 days 00:00:04.111608946</th>
+      <th>0 days 00:00:04.285050811</th>
+      <td>44</td>
     </tr>
     <tr>
       <th rowspan="5" valign="top">audio/002.wav</th>
-      <th>0 days 00:00:00.159971439</th>
-      <th>0 days 00:00:00.476041998</th>
-      <td>26</td>
+      <th>0 days 00:00:00.569955645</th>
+      <th>0 days 00:00:02.757969176</th>
+      <td>31</td>
     </tr>
     <tr>
-      <th>0 days 00:00:01.951107314</th>
-      <th>0 days 00:00:02.180138149</th>
-      <td>26</td>
+      <th>0 days 00:00:02.770027806</th>
+      <th>0 days 00:00:03.218829402</th>
+      <td>31</td>
     </tr>
     <tr>
-      <th>0 days 00:00:02.515819867</th>
-      <th>0 days 00:00:02.907276421</th>
-      <td>26</td>
+      <th>0 days 00:00:03.438135480</th>
+      <th>0 days 00:00:03.744180348</th>
+      <td>31</td>
     </tr>
     <tr>
-      <th>0 days 00:00:02.985221441</th>
-      <th>0 days 00:00:03.272014363</th>
-      <td>26</td>
+      <th>0 days 00:00:04.117456919</th>
+      <th>0 days 00:00:04.855501824</th>
+      <td>31</td>
     </tr>
     <tr>
-      <th>0 days 00:00:03.765739262</th>
-      <th>0 days 00:00:04.587855983</th>
-      <td>26</td>
+      <th>0 days 00:00:04.886654982</th>
+      <th>0 days 00:00:04.987763713</th>
+      <td>31</td>
     </tr>
     <tr>
       <th rowspan="5" valign="top">audio/003.wav</th>
-      <th>0 days 00:00:00.769892904</th>
-      <th>0 days 00:00:01.278344509</th>
-      <td>43</td>
+      <th>0 days 00:00:00.116747528</th>
+      <th>0 days 00:00:00.146906929</th>
+      <td>41</td>
     </tr>
     <tr>
-      <th>0 days 00:00:02.482416292</th>
-      <th>0 days 00:00:02.553346556</th>
-      <td>43</td>
+      <th>0 days 00:00:02.515266169</th>
+      <th>0 days 00:00:02.569642690</th>
+      <td>41</td>
     </tr>
     <tr>
-      <th>0 days 00:00:02.604651920</th>
-      <th>0 days 00:00:03.150441957</th>
-      <td>43</td>
+      <th>0 days 00:00:02.795871348</th>
+      <th>0 days 00:00:03.078347864</th>
+      <td>41</td>
     </tr>
     <tr>
-      <th>0 days 00:00:03.942069941</th>
-      <th>0 days 00:00:04.554626139</th>
-      <td>43</td>
+      <th>0 days 00:00:03.463573005</th>
+      <th>0 days 00:00:03.848277346</th>
+      <td>41</td>
     </tr>
     <tr>
-      <th>0 days 00:00:04.575617942</th>
-      <th>0 days 00:00:04.698158479</th>
-      <td>43</td>
+      <th>0 days 00:00:03.946170353</th>
+      <th>0 days 00:00:04.438347255</th>
+      <td>41</td>
     </tr>
   </tbody>
 </table>
@@ -958,7 +957,7 @@ and add a gender scheme:</p>
   <tbody>
     <tr>
       <th>audio/002.wav</th>
-      <td>male</td>
+      <td>female</td>
     </tr>
     <tr>
       <th>audio/003.wav</th>
@@ -1011,17 +1010,17 @@ and add a gender scheme:</p>
     <tr>
       <th>audio/001.wav</th>
       <td>NaN</td>
-      <td>40</td>
+      <td>44</td>
     </tr>
     <tr>
       <th>audio/002.wav</th>
-      <td>male</td>
-      <td>26</td>
+      <td>female</td>
+      <td>31</td>
     </tr>
     <tr>
       <th>audio/003.wav</th>
       <td>female</td>
-      <td>43</td>
+      <td>41</td>
     </tr>
     <tr>
       <th>audio/004.wav</th>
@@ -1049,7 +1048,7 @@ age:
 </div>
 </div>
 </div>
-</section>
+</div>
 
 
            </div>
@@ -1074,7 +1073,7 @@ age:
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2021/06/10 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2021/08/05 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>

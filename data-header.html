@@ -5,8 +5,7 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <title>Header &mdash; audformat Documentation</title>
@@ -77,7 +76,7 @@
             
             
               <div class="version">
-                v0.11.3
+                v0.11.4
               </div>
             
           
@@ -101,7 +100,7 @@
               
             
             
-              <p class="caption"><span class="caption-text">Getting started</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Getting started</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="create-database.html">Create a database</a></li>
@@ -111,7 +110,7 @@
 <li class="toctree-l1"><a class="reference internal" href="update-database.html">Update a database</a></li>
 <li class="toctree-l1"><a class="reference internal" href="emodb-example.html">Emodb example</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Format specification</span></p>
+<p class="caption" role="heading"><span class="caption-text">Format specification</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="data-introduction.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data-format.html">Database</a></li>
@@ -157,7 +156,7 @@
 <li class="toctree-l1"><a class="reference internal" href="data-tables.html">Tables</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data-example.html">Example</a></li>
 </ul>
-<p class="caption"><span class="caption-text">API Documentation</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Documentation</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="api.html">audformat</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api-define.html">audformat.define</a></li>
@@ -166,7 +165,7 @@
 <li class="toctree-l1"><a class="reference internal" href="api-utils.html">audformat.utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="genindex.html">Index</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Development</span></p>
+<p class="caption" role="heading"><span class="caption-text">Development</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
@@ -222,7 +221,7 @@
         
             
             
-              <a href="https://github.com/audeering/audformat/blob/v0.11.3/docs/data-header.rst" class="fa fa-github"> Edit on GitHub</a>
+              <a href="https://github.com/audeering/audformat/blob/v0.11.4/docs/data-header.rst" class="fa fa-github"> Edit on GitHub</a>
             
           
         
@@ -236,7 +235,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="header">
+  <div class="section" id="header">
 <h1>Header<a class="headerlink" href="#header" title="Permalink to this headline">¶</a></h1>
 <p>The header of a database is organized in different parts:</p>
 <ul class="simple">
@@ -253,7 +252,7 @@ and have to be set explicitly.
 Optionally, every object can have an arbitrary number of <code class="docutils literal notranslate"><span class="pre">meta</span></code> fields.
 These can be used to store additional information about the database.
 Fields set to <code class="docutils literal notranslate"><span class="pre">None</span></code> can be omitted.</p>
-<section id="database">
+<div class="section" id="database">
 <h2>Database<a class="headerlink" href="#database" title="Permalink to this headline">¶</a></h2>
 <p>This part of the header is represented by <a class="reference internal" href="api.html#audformat.Database" title="audformat.Database"><code class="xref py py-class docutils literal notranslate"><span class="pre">audformat.Database</span></code></a>.</p>
 <table class="docutils align-default">
@@ -329,15 +328,15 @@ see <a class="reference internal" href="api-define.html#audformat.define.Usage" 
 </tr>
 </tbody>
 </table>
-<section id="minimal-example">
+<div class="section" id="minimal-example">
 <h3>Minimal example<a class="headerlink" href="#minimal-example" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">databasename</span>
 <span class="nt">source</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">URL</span>
 <span class="nt">usage</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">commercial</span>
 </pre></div>
 </div>
-</section>
-<section id="audformat-implementation">
+</div>
+<div class="section" id="audformat-implementation">
 <h3>audformat implementation<a class="headerlink" href="#audformat-implementation" title="Permalink to this headline">¶</a></h3>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
@@ -363,9 +362,9 @@ languages: []
 </div>
 </div>
 </div>
-</section>
-</section>
-<section id="rater">
+</div>
+</div>
+<div class="section" id="rater">
 <h2>Rater<a class="headerlink" href="#rater" title="Permalink to this headline">¶</a></h2>
 <p>This part of the header is represented by <a class="reference internal" href="api.html#audformat.Rater" title="audformat.Rater"><code class="xref py py-class docutils literal notranslate"><span class="pre">audformat.Rater</span></code></a>.</p>
 <table class="docutils align-default">
@@ -407,15 +406,15 @@ languages: []
 </tr>
 </tbody>
 </table>
-<section id="id1">
+<div class="section" id="id1">
 <h3>Minimal example<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">raters</span><span class="p">:</span>
     <span class="nt">raterid</span><span class="p">:</span>
         <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">human</span>
 </pre></div>
 </div>
-</section>
-<section id="id2">
+</div>
+<div class="section" id="id2">
 <h3>audformat implementation<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
@@ -437,9 +436,9 @@ languages: []
 </div>
 </div>
 </div>
-</section>
-</section>
-<section id="scheme">
+</div>
+</div>
+<div class="section" id="scheme">
 <h2>Scheme<a class="headerlink" href="#scheme" title="Permalink to this headline">¶</a></h2>
 <p>This part of the header is represented by <a class="reference internal" href="api.html#audformat.Scheme" title="audformat.Scheme"><code class="xref py py-class docutils literal notranslate"><span class="pre">audformat.Scheme</span></code></a>.</p>
 <table class="docutils align-default">
@@ -496,15 +495,15 @@ numeric)</p></td>
 </tr>
 </tbody>
 </table>
-<section id="id3">
+<div class="section" id="id3">
 <h3>Minimal example<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">schemes</span><span class="p">:</span>
     <span class="nt">schemeid</span><span class="p">:</span>
         <span class="nt">dtype</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">human</span>
 </pre></div>
 </div>
-</section>
-<section id="id4">
+</div>
+<div class="section" id="id4">
 <h3>audformat implementation<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
@@ -526,9 +525,9 @@ numeric)</p></td>
 </div>
 </div>
 </div>
-</section>
-</section>
-<section id="split">
+</div>
+</div>
+<div class="section" id="split">
 <h2>Split<a class="headerlink" href="#split" title="Permalink to this headline">¶</a></h2>
 <p>This part of the header is represented by <a class="reference internal" href="api.html#audformat.Split" title="audformat.Split"><code class="xref py py-class docutils literal notranslate"><span class="pre">audformat.Split</span></code></a>.</p>
 <table class="docutils align-default">
@@ -571,15 +570,15 @@ typically one of <a class="reference internal" href="api-define.html#audformat.d
 </tr>
 </tbody>
 </table>
-<section id="id5">
+<div class="section" id="id5">
 <h3>Minimal example<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">splits</span><span class="p">:</span>
     <span class="nt">splitid</span><span class="p">:</span>
         <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">test</span>
 </pre></div>
 </div>
-</section>
-<section id="id6">
+</div>
+<div class="section" id="id6">
 <h3>audformat implementation<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h3>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
@@ -601,9 +600,9 @@ typically one of <a class="reference internal" href="api-define.html#audformat.d
 </div>
 </div>
 </div>
-</section>
-</section>
-<section id="media">
+</div>
+</div>
+<div class="section" id="media">
 <h2>Media<a class="headerlink" href="#media" title="Permalink to this headline">¶</a></h2>
 <p>This part of the header is represented by <a class="reference internal" href="api.html#audformat.Media" title="audformat.Media"><code class="xref py py-class docutils literal notranslate"><span class="pre">audformat.Media</span></code></a>.</p>
 <p>To store media information use:</p>
@@ -678,15 +677,15 @@ typically one of <a class="reference internal" href="api-define.html#audformat.d
 </tr>
 </tbody>
 </table>
-<section id="id7">
+<div class="section" id="id7">
 <h3>Minimal example<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">media</span><span class="p">:</span>
     <span class="nt">mediaid</span><span class="p">:</span>
         <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">audio</span>
 </pre></div>
 </div>
-</section>
-<section id="id8">
+</div>
+<div class="section" id="id8">
 <h3>audformat implementation<a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h3>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
@@ -708,9 +707,9 @@ typically one of <a class="reference internal" href="api-define.html#audformat.d
 </div>
 </div>
 </div>
-</section>
-</section>
-<section id="table">
+</div>
+</div>
+<div class="section" id="table">
 <h2>Table<a class="headerlink" href="#table" title="Permalink to this headline">¶</a></h2>
 <p>This part of the header is represented by <a class="reference internal" href="api.html#audformat.Table" title="audformat.Table"><code class="xref py py-class docutils literal notranslate"><span class="pre">audformat.Table</span></code></a></p>
 <table class="docutils align-default">
@@ -764,15 +763,15 @@ typically one of <a class="reference internal" href="api-define.html#audformat.d
 </tr>
 </tbody>
 </table>
-<section id="id9">
+<div class="section" id="id9">
 <h3>Minimal example<a class="headerlink" href="#id9" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">tables</span><span class="p">:</span>
     <span class="nt">tableid</span><span class="p">:</span>
         <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">filewise</span>
 </pre></div>
 </div>
-</section>
-<section id="id10">
+</div>
+<div class="section" id="id10">
 <h3>audformat implementation<a class="headerlink" href="#id10" title="Permalink to this headline">¶</a></h3>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
@@ -798,9 +797,9 @@ typically one of <a class="reference internal" href="api-define.html#audformat.d
 </div>
 </div>
 </div>
-</section>
-</section>
-<section id="column">
+</div>
+</div>
+<div class="section" id="column">
 <h2>Column<a class="headerlink" href="#column" title="Permalink to this headline">¶</a></h2>
 <p>This part of the header is represented by <a class="reference internal" href="api.html#audformat.Column" title="audformat.Column"><code class="xref py py-class docutils literal notranslate"><span class="pre">audformat.Column</span></code></a></p>
 <table class="docutils align-default">
@@ -846,7 +845,7 @@ typically one of <a class="reference internal" href="api-define.html#audformat.d
 </tr>
 </tbody>
 </table>
-<section id="id11">
+<div class="section" id="id11">
 <h3>Minimal example<a class="headerlink" href="#id11" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">tables</span><span class="p">:</span>
     <span class="nt">tableid</span><span class="p">:</span>
@@ -855,8 +854,8 @@ typically one of <a class="reference internal" href="api-define.html#audformat.d
             <span class="nt">columnid</span><span class="p">:</span>
 </pre></div>
 </div>
-</section>
-<section id="id12">
+</div>
+<div class="section" id="id12">
 <h3>audformat implementation<a class="headerlink" href="#id12" title="Permalink to this headline">¶</a></h3>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
@@ -878,9 +877,9 @@ typically one of <a class="reference internal" href="api-define.html#audformat.d
 </div>
 </div>
 </div>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
 
 
            </div>
@@ -905,7 +904,7 @@ typically one of <a class="reference internal" href="api-define.html#audformat.d
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2021/06/10 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2021/08/05 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
