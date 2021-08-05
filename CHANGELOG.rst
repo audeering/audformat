@@ -7,6 +7,16 @@ The format is based on `Keep a Changelog`_,
 and this project adheres to `Semantic Versioning`_.
 
 
+Version 0.11.4 (2021-08-05)
+---------------------------
+
+* Added: custom ``BadKeyError`` when key is not found
+* Changed: limit to ``pandas <1.3``
+  until it works again for newer ``pandas`` versions
+* Changed: remove the ``<1.0.0`` limit for ``audiofile``
+  as a stable release is available and the API has not changed
+
+
 Version 0.11.3 (2021-06-10)
 ---------------------------
 
