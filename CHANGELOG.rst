@@ -7,6 +7,14 @@ The format is based on `Keep a Changelog`_,
 and this project adheres to `Semantic Versioning`_.
 
 
+Version 0.11.5 (2021-08-09)
+---------------------------
+
+* Removed: duration scheme and table
+  from conventions
+  and emodb example
+
+
 Version 0.11.4 (2021-08-05)
 ---------------------------
 
