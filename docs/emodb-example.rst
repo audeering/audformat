@@ -214,15 +214,6 @@ to the emotion table.
     }
     transcriptions = list(parse_names(names, from_i=2, to_i=5))
 
-    durations = audeer.run_tasks(
-        task_func=lambda x: pd.to_timedelta(
-            af.duration(os.path.join(src_dir, x)),
-            unit='s',
-        ),
-        params=[([f], {}) for f in files],
-        num_workers=12,
-    )
-
 
 Create audformat database
 -------------------------
@@ -280,14 +271,10 @@ and assign the information to it.
         labels=transcription_mapping,
         description='Sentence produced by actor.',
     )
-    db.schemes['duration'] = audformat.Scheme(dtype=audformat.define.DataType.TIME)
 
     # Tables
     index = audformat.filewise_index(files)
     db['files'] = audformat.Table(index)
-
-    db['files']['duration'] = audformat.Column(scheme_id='duration')
-    db['files']['duration'].set(durations, index=index)
 
     db['files']['speaker'] = audformat.Column(scheme_id='speaker')
     db['files']['speaker'].set(speakers)
