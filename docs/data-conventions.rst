@@ -277,6 +277,6 @@ should be stored as :class:`datetime.datetime`.
         scheme_id='time',
         rater_id='rater',
     )
-    db['files']['time'].set(pd.to_timedelta(times))
+    db['files']['time'].set(pd.to_timedelta(times, unit='s'))
 
     db['files'].get()
