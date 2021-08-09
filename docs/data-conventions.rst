@@ -252,25 +252,22 @@ Temporal data
 -------------
 
 Temporal duration data
-like response time of a rater,
+like response time of a rater
 should be stored as :class:`pd.Timedelta`.
 Temporal dates
-like time of rating,
+like time of rating
 should be stored as :class:`datetime.datetime`.
 
 .. jupyter-execute::
 
-    import datetime
     import pandas as pd
 
 
     times = [2.1, 0.1]  # in seconds
-    dates = ['2021/08/01', '2021/08/02']
 
     db = audformat.Database('mydata')
 
     db.schemes['time'] = audformat.Scheme(audformat.define.DataType.TIME)
-    db.schemes['date'] = audformat.Scheme(audformat.define.DataType.DATE)
     db.raters['rater'] = audformat.Rater()
 
     db['files'] = audformat.Table(
@@ -280,13 +277,6 @@ should be stored as :class:`datetime.datetime`.
         scheme_id='time',
         rater_id='rater',
     )
-    db['files']['date'] = audformat.Column(
-        scheme_id='date',
-        rater_id='rater',
-    )
     db['files']['time'].set(pd.to_timedelta(times))
-    db['files']['date'].set(
-        [datetime.date(*[int(a) for a in d.split('/')]) for d in dates]
-    )
 
     db['files'].get()
