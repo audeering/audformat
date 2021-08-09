@@ -37,7 +37,6 @@ emotion                        emotion categories
 arousal / valence / dominance  emotion dimensions
 speaker                        unique speaker id
 role                           the role a speaker has, e.g. agent vs. client
-duration                       file duration
 transcription                  transcriptions on word or phonetic level
                                accurate enough to be used for ASR
 text                           transcriptions that are not accurate enough
@@ -202,7 +201,7 @@ File and speaker information
 ----------------------------
 
 Meta information like speaker ID
-or file duration
+that is not included in another table
 should be collected in a table ``files``.
 If you have metadata
 belonging only to segments,
@@ -249,74 +248,35 @@ for an extended documentation.
     db['files'].get(map={'speaker': 'gender'})
 
 
-File duration and temporal data
--------------------------------
+Temporal data
+-------------
 
-It is recommended to store file durations
-for every database
-in a table ``files``.
-This information is in principle redundant
-as you can calculate the duration always on the fly,
-but if you have thousands of files
-this might take some time.
-
-Every temporal data
-like file durations
-should be stored as :class:`pandas.Timedelta`
-or :class:`datetime.datetime`.
-
-.. jupyter-execute::
-    :hide-code:
-    :hide-output:
-
-    import audiofile as af
-    import numpy as np
-
-
-    signal = np.ones([0, 1000])
-
+Temporal duration data
+like response time of a rater
+should be stored as :class:`pd.Timedelta`.
+Temporal dates
+like time of rating
+should be stored as :class:`datetime.datetime`.
 
 .. jupyter-execute::
 
-    import audeer
-    import audiofile as af
-    import numpy as np
     import pandas as pd
 
 
-    # Create dummy WAV files
-    sampling_rate = 1000
-    af.write('a.wav', np.ones([1, 1000]), sampling_rate)
-    af.write('b.wav', np.ones([1, 500]), sampling_rate)
+    times = [2.1, 0.1]  # in seconds
 
     db = audformat.Database('mydata')
 
-    db.schemes['duration'] = audformat.Scheme(dtype=audformat.define.DataType.TIME)
+    db.schemes['time'] = audformat.Scheme(audformat.define.DataType.TIME)
+    db.raters['rater'] = audformat.Rater()
+
     db['files'] = audformat.Table(
         index=audformat.filewise_index(['a.wav', 'b.wav'])
     )
-    db['files']['duration'] = audformat.Column(scheme_id='duration')
-    durations = audeer.run_tasks(
-        task_func=lambda x: pd.to_timedelta(af.duration(x), unit='s'),
-        params=[([f], {}) for f in db.files],
-        num_workers=12,
-        progress_bar=False,
+    db['files']['time'] = audformat.Column(
+        scheme_id='time',
+        rater_id='rater',
     )
-    db['files']['duration'].set(durations)
-
-    db
-
-.. jupyter-execute::
+    db['files']['time'].set(pd.to_timedelta(times, unit='s'))
 
     db['files'].get()
-
-
-.. Clean up
-.. jupyter-execute::
-    :hide-code:
-    :hide-output:
-
-    import os
-
-    os.remove('a.wav')
-    os.remove('b.wav')

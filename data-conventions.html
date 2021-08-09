@@ -76,7 +76,7 @@
             
             
               <div class="version">
-                v0.11.4
+                v0.11.5
               </div>
             
           
@@ -122,7 +122,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#gold-standard-annotation">Gold standard annotation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#confidence-values">Confidence values</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#file-and-speaker-information">File and speaker information</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#file-duration-and-temporal-data">File duration and temporal data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#temporal-data">Temporal data</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="data-header.html">Header</a></li>
@@ -194,7 +194,7 @@
         
             
             
-              <a href="https://github.com/audeering/audformat/blob/v0.11.4/docs/data-conventions.rst" class="fa fa-github"> Edit on GitHub</a>
+              <a href="https://github.com/audeering/audformat/blob/v0.11.5/docs/data-conventions.rst" class="fa fa-github"> Edit on GitHub</a>
             
           
         
@@ -265,14 +265,11 @@ languages: []
 <tr class="row-odd"><td><p>role</p></td>
 <td><p>the role a speaker has, e.g. agent vs. client</p></td>
 </tr>
-<tr class="row-even"><td><p>duration</p></td>
-<td><p>file duration</p></td>
-</tr>
-<tr class="row-odd"><td><p>transcription</p></td>
+<tr class="row-even"><td><p>transcription</p></td>
 <td><p>transcriptions on word or phonetic level
 accurate enough to be used for ASR</p></td>
 </tr>
-<tr class="row-even"><td><p>text</p></td>
+<tr class="row-odd"><td><p>text</p></td>
 <td><p>transcriptions that are not accurate enough
 for ASR</p></td>
 </tr>
@@ -523,7 +520,7 @@ tables:
 <div class="section" id="file-and-speaker-information">
 <h2>File and speaker information<a class="headerlink" href="#file-and-speaker-information" title="Permalink to this headline">¶</a></h2>
 <p>Meta information like speaker ID
-or file duration
+that is not included in another table
 should be collected in a table <code class="docutils literal notranslate"><span class="pre">files</span></code>.
 If you have metadata
 belonging only to segments,
@@ -670,74 +667,36 @@ for an extended documentation.</p>
 </div></div></div>
 </div>
 </div>
-<div class="section" id="file-duration-and-temporal-data">
-<h2>File duration and temporal data<a class="headerlink" href="#file-duration-and-temporal-data" title="Permalink to this headline">¶</a></h2>
-<p>It is recommended to store file durations
-for every database
-in a table <code class="docutils literal notranslate"><span class="pre">files</span></code>.
-This information is in principle redundant
-as you can calculate the duration always on the fly,
-but if you have thousands of files
-this might take some time.</p>
-<p>Every temporal data
-like file durations
-should be stored as <code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.Timedelta</span></code>
-or <a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">datetime.datetime</span></code></a>.</p>
-<div class="jupyter_cell docutils container">
-<div class="cell_output docutils container">
-</div>
-</div>
+<div class="section" id="temporal-data">
+<h2>Temporal data<a class="headerlink" href="#temporal-data" title="Permalink to this headline">¶</a></h2>
+<p>Temporal duration data
+like response time of a rater
+should be stored as <code class="xref py py-class docutils literal notranslate"><span class="pre">pd.Timedelta</span></code>.
+Temporal dates
+like time of rating
+should be stored as <a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">datetime.datetime</span></code></a>.</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">audeer</span>
-<span class="kn">import</span> <span class="nn">audiofile</span> <span class="k">as</span> <span class="nn">af</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 
 
-<span class="c1"># Create dummy WAV files</span>
-<span class="n">sampling_rate</span> <span class="o">=</span> <span class="mi">1000</span>
-<span class="n">af</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;a.wav&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1000</span><span class="p">]),</span> <span class="n">sampling_rate</span><span class="p">)</span>
-<span class="n">af</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;b.wav&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">500</span><span class="p">]),</span> <span class="n">sampling_rate</span><span class="p">)</span>
+<span class="n">times</span> <span class="o">=</span> <span class="p">[</span><span class="mf">2.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">]</span>  <span class="c1"># in seconds</span>
 
 <span class="n">db</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Database</span><span class="p">(</span><span class="s1">&#39;mydata&#39;</span><span class="p">)</span>
 
-<span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s1">&#39;duration&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Scheme</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">audformat</span><span class="o">.</span><span class="n">define</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">TIME</span><span class="p">)</span>
+<span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Scheme</span><span class="p">(</span><span class="n">audformat</span><span class="o">.</span><span class="n">define</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">TIME</span><span class="p">)</span>
+<span class="n">db</span><span class="o">.</span><span class="n">raters</span><span class="p">[</span><span class="s1">&#39;rater&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Rater</span><span class="p">()</span>
+
 <span class="n">db</span><span class="p">[</span><span class="s1">&#39;files&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Table</span><span class="p">(</span>
     <span class="n">index</span><span class="o">=</span><span class="n">audformat</span><span class="o">.</span><span class="n">filewise_index</span><span class="p">([</span><span class="s1">&#39;a.wav&#39;</span><span class="p">,</span> <span class="s1">&#39;b.wav&#39;</span><span class="p">])</span>
 <span class="p">)</span>
-<span class="n">db</span><span class="p">[</span><span class="s1">&#39;files&#39;</span><span class="p">][</span><span class="s1">&#39;duration&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">scheme_id</span><span class="o">=</span><span class="s1">&#39;duration&#39;</span><span class="p">)</span>
-<span class="n">durations</span> <span class="o">=</span> <span class="n">audeer</span><span class="o">.</span><span class="n">run_tasks</span><span class="p">(</span>
-    <span class="n">task_func</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_timedelta</span><span class="p">(</span><span class="n">af</span><span class="o">.</span><span class="n">duration</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;s&#39;</span><span class="p">),</span>
-    <span class="n">params</span><span class="o">=</span><span class="p">[([</span><span class="n">f</span><span class="p">],</span> <span class="p">{})</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">db</span><span class="o">.</span><span class="n">files</span><span class="p">],</span>
-    <span class="n">num_workers</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span>
-    <span class="n">progress_bar</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="n">db</span><span class="p">[</span><span class="s1">&#39;files&#39;</span><span class="p">][</span><span class="s1">&#39;time&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+    <span class="n">scheme_id</span><span class="o">=</span><span class="s1">&#39;time&#39;</span><span class="p">,</span>
+    <span class="n">rater_id</span><span class="o">=</span><span class="s1">&#39;rater&#39;</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="n">db</span><span class="p">[</span><span class="s1">&#39;files&#39;</span><span class="p">][</span><span class="s1">&#39;duration&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">durations</span><span class="p">)</span>
+<span class="n">db</span><span class="p">[</span><span class="s1">&#39;files&#39;</span><span class="p">][</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">to_timedelta</span><span class="p">(</span><span class="n">times</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;s&#39;</span><span class="p">))</span>
 
-<span class="n">db</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>name: mydata
-source: &#39;&#39;
-usage: unrestricted
-languages: []
-schemes:
-  duration: {dtype: time}
-tables:
-  files:
-    type: filewise
-    columns:
-      duration: {scheme_id: duration}
-</pre></div>
-</div>
-</div>
-</div>
-<div class="jupyter_cell jupyter_container docutils container">
-<div class="cell_input code_cell docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="p">[</span><span class="s1">&#39;files&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+<span class="n">db</span><span class="p">[</span><span class="s1">&#39;files&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -760,7 +719,7 @@ tables:
   <thead>
     <tr style="text-align: right;">
       <th></th>
-      <th>duration</th>
+      <th>time</th>
     </tr>
     <tr>
       <th>file</th>
@@ -770,19 +729,15 @@ tables:
   <tbody>
     <tr>
       <th>a.wav</th>
-      <td>0 days 00:00:01</td>
+      <td>0 days 00:00:02.100000</td>
     </tr>
     <tr>
       <th>b.wav</th>
-      <td>0 days 00:00:00.500000</td>
+      <td>0 days 00:00:00.100000</td>
     </tr>
   </tbody>
 </table>
 </div></div></div>
-</div>
-<div class="jupyter_cell docutils container">
-<div class="cell_output docutils container">
-</div>
 </div>
 </div>
 </div>
@@ -810,7 +765,7 @@ tables:
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2021/08/05 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2021/08/09 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
