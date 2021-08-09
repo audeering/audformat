@@ -10,7 +10,7 @@ and this project adheres to `Semantic Versioning`_.
 Version 0.11.5 (2021-08-09)
 ---------------------------
 
-* Removed: duration scheme and table
+* Removed: duration scheme and column
   from conventions
   and emodb example
 
