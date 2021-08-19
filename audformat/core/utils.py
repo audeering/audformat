@@ -872,9 +872,13 @@ def union(
     if len(set(types)) != 1:
         objs = [to_segmented_index(obj) for obj in objs]
 
-    index = objs[0]
-    for obj in objs[1:]:
-        index = index.union(obj)
+    # Combine all MultiIndex entries and drop duplicates afterwards,
+    # faster than using index.union(),
+    # compare https://github.com/audeering/audformat/issues/97
+    df = pd.concat([o.to_frame() for o in objs])
+    index = df.index
+    index = index.drop_duplicates()
+    index, _ = index.sortlevel()
 
     if isinstance(index, pd.MultiIndex) and len(index.levels) == 3:
         # asserts that start and end are of type 'timedelta64[ns]'
