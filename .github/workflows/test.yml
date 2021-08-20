@@ -17,7 +17,7 @@ jobs:
         include:
           - os: ubuntu-latest
             python-version: 3.7
-          - os: ubuntu-ltaest
+          - os: ubuntu-latest
             python-version: 3.8
           - os: ubuntu-latest
             python-version: 3.9
