@@ -6,7 +6,9 @@ class Rater(HeaderBase):
     r"""A rater is the author of an annotation.
 
     Args:
-        type: rater type
+        type: rater type,
+            see :class:`audformat.define.RaterType`
+            for available rater types
         description: rater description
         meta: additional meta fields
 
@@ -21,7 +23,7 @@ class Rater(HeaderBase):
     """
     def __init__(
             self,
-            type: define.RaterType = define.RaterType.HUMAN,
+            type: str = define.RaterType.HUMAN,
             *,
             description: str = None,
             meta: dict = None,

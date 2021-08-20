@@ -699,9 +699,7 @@ class Table(HeaderBase):
             self,
             path: str,
             *,
-            storage_format: define.TableStorageFormat = (
-                define.TableStorageFormat.CSV
-            ),
+            storage_format: str = define.TableStorageFormat.CSV,
             update_other_formats: bool = True,
     ):
         r"""Save table data to disk.

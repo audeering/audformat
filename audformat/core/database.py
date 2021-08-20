@@ -108,7 +108,7 @@ class Database(HeaderBase):
             self,
             name: str,
             source: str = '',
-            usage: define.Usage = define.Usage.UNRESTRICTED,
+            usage: str = define.Usage.UNRESTRICTED,
             *,
             expires: datetime.date = None,
             languages: typing.Union[str, typing.Sequence[str]] = None,
@@ -393,9 +393,7 @@ class Database(HeaderBase):
             *,
             name: str = 'db',
             indent: int = 2,
-            storage_format: define.TableStorageFormat = (
-                define.TableStorageFormat.CSV
-            ),
+            storage_format: str = define.TableStorageFormat.CSV,
             update_other_formats: bool = True,
             header_only: bool = False,
             num_workers: typing.Optional[int] = 1,

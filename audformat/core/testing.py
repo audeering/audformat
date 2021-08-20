@@ -32,7 +32,7 @@ from audformat.core.column import Column
 def add_table(
         db: Database,
         table_id: str,
-        index_type: define.IndexType,
+        index_type: str,
         *,
         columns: Union[
             str,
@@ -59,7 +59,9 @@ def add_table(
     Args:
         db: a database
         table_id: ID of table that will be created
-        index_type: the table type
+        index_type: the index type,
+            see :class:`audformat.define.IndexType`
+            for available index types
         columns: a list of scheme_ids or a dictionary with column names as
             keys and tuples of ``(scheme_id, rater_id)`` as values. ``None``
             values are allowed

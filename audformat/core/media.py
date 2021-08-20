@@ -10,7 +10,9 @@ class Media(HeaderBase):
     File ``format`` is always converted to lower case.
 
     Args:
-        type: media type
+        type: media type,
+            see :class:`audformat.define.MediaType`
+            for available media types
         format: file format (e.g. 'wav', 'flac', 'mp4')
         sampling_rate: audio sampling rate in Hz
         channels: number of audio channels
@@ -37,7 +39,7 @@ class Media(HeaderBase):
     """
     def __init__(
             self,
-            type: define.MediaType = define.MediaType.OTHER,
+            type: str = define.MediaType.OTHER,
             *,
             format: str = None,
             sampling_rate: int = None,
