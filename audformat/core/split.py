@@ -11,7 +11,9 @@ class Split(HeaderBase):
     development or testing.
 
     Args:
-        type: split type
+        type: split type,
+            see :class:`audformat.define.SplitType`
+            for available split types
         description: split description
         meta: additional meta fields
 
@@ -25,7 +27,7 @@ class Split(HeaderBase):
     """
     def __init__(
             self,
-            type: define.SplitType = define.SplitType.OTHER,
+            type: str = define.SplitType.OTHER,
             *,
             description: str = None,
             meta: dict = None,
