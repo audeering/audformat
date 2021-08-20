@@ -874,24 +874,10 @@ def union(
 
     # Combine all MultiIndex entries and drop duplicates afterwards,
     # faster than using index.union(),
-    # compare https://github.com/audeering/audformat/issues/97
+    # compare https://github.com/audeering/audformat/pull/98
     df = pd.concat([o.to_frame() for o in objs])
     index = df.index
     index = index.drop_duplicates()
     index, _ = index.sortlevel()
-
-    if isinstance(index, pd.MultiIndex) and len(index.levels) == 3:
-        # asserts that start and end are of type 'timedelta64[ns]'
-        if index.empty:
-            index = segmented_index()
-        elif index.levels[2].empty:
-            # If all end values are NaT, pandas stores an empty array and
-            # since pd.Index.union() in that case sets the type to
-            # DatetimeArray, we need to set it back to 'timedelta64[ns]'.
-            index.set_levels(
-                [pd.to_timedelta([])],
-                level=[2],
-                inplace=True,
-            )
 
     return index
