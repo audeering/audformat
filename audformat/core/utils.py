@@ -140,14 +140,13 @@ def concat(
         # if we already have a column with that name, we have to merge them
         if column.name in columns_reindex:
 
+            dtype_1 = columns_reindex[column.name].dtype
+            dtype_2 = column.dtype
+
             # assert same dtype
-            if not same_dtype(
-                    columns_reindex[column.name].dtype, column.dtype
-            ):
-                dtype_1 = columns_reindex[column.name].dtype
+            if not same_dtype(dtype_1, dtype_2):
                 if dtype_1.name == 'category':
                     dtype_1 = repr(dtype_1)
-                dtype_2 = column.dtype
                 if dtype_2.name == 'category':
                     dtype_2 = repr(dtype_2)
                 raise ValueError(
@@ -157,6 +156,12 @@ def concat(
                     f"{dtype_1} "
                     "!= "
                     f"{dtype_2}."
+                )
+
+            # Fix changed handling of float32/float64 in pandas>=1.3
+            if 'float64' in [dtype_1, dtype_2]:
+                columns_reindex[column.name] = (
+                    columns_reindex[column.name].astype('float64')
                 )
 
             # overlapping values must match or have to be nan in one column
