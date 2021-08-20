@@ -7,6 +7,16 @@ The format is based on `Keep a Changelog`_,
 and this project adheres to `Semantic Versioning`_.
 
 
+Version 0.11.6 (2021-08-20)
+---------------------------
+
+* Added: support for Python 3.9
+* Fixed: speed up ``audformat.utils.union()``
+* Fixed: ``audformat.Column.set()`` with ``pd.Series``
+  and ``np.array`` for a scheme with fixed labels
+  and containing ``NaN`` values
+
+
 Version 0.11.5 (2021-08-09)
 ---------------------------
 
