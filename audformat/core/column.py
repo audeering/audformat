@@ -37,10 +37,7 @@ def assert_values(
                         np.min(values),
                         np.max(values),
                     ]
-                else:
-                    values = np.unique(values)
-            else:
-                values = set(values)
+            values = list(set(values))
             ok = all([value in scheme for value in values])
 
     if not ok:

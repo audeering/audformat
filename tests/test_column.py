@@ -249,6 +249,32 @@ def test_segmented(num_files, num_segments_per_file, values):
     pd.testing.assert_series_equal(table.df[column_id], series)
 
 
+def test_set_labels():
+    # Ensure we handle NaN when setting labels
+    # from Series and ndarray,
+    # see https://github.com/audeering/audformat/issues/89
+    db = pytest.DB
+    scheme_id = 'label_test'
+    db.schemes[scheme_id] = audformat.Scheme(
+        labels={
+            'h': {'category': 'happy'},
+            'n': {'category': 'neutral'},
+            'b': {'category': 'bored'},
+            'a': {'category': 'angry'},
+        }
+    )
+    db[scheme_id] = audformat.Table(
+        audformat.filewise_index(['a', 'b', 'c', 'd', 'e'])
+    )
+    db[scheme_id][scheme_id] = audformat.Column(scheme_id=scheme_id)
+    y = pd.Series([np.NaN, 'b', 'h', 'a', 'n'])
+    db[scheme_id][scheme_id].set(y)  # Series
+    db[scheme_id][scheme_id].set(y.values)  # ndarray
+    # Clean up database
+    db.drop_tables(scheme_id)
+    db.schemes.pop(scheme_id, None)
+
+
 def test_set_invalid_values():
 
     db = pytest.DB
