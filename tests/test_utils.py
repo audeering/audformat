@@ -1257,7 +1257,7 @@ def test_to_filewise(output_folder, table_id, expected_file_names):
             audformat.segmented_index(
                 ['f1', 'f1', 'f2', 'f2', 'f3'],
                 [0, 0, 0, 0, 0],
-                [1, pd.NaT, 1, pd.NaT, 1],
+                [pd.NaT, 1, pd.NaT, 1, 1],
             ),
         ),
         (
@@ -1269,7 +1269,7 @@ def test_to_filewise(output_folder, table_id, expected_file_names):
             audformat.segmented_index(
                 ['f1', 'f1', 'f2', 'f3'],
                 [0, 0, 0, 0],
-                [1, pd.NaT, 1, 1],
+                [pd.NaT, 1, 1, 1],
             ),
         ),
         (
@@ -1281,7 +1281,7 @@ def test_to_filewise(output_folder, table_id, expected_file_names):
             audformat.segmented_index(
                 ['f1', 'f1', 'f2', 'f2', 'f3'],
                 [0, 0, 0, 0, 0],
-                [1, pd.NaT, 1, pd.NaT, pd.NaT],
+                [pd.NaT, 1, pd.NaT, 1, pd.NaT],
             ),
         ),
     ]
