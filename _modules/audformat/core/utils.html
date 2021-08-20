@@ -74,7 +74,7 @@
             
             
               <div class="version">
-                v0.11.5
+                v0.11.6
               </div>
             
           
@@ -1067,23 +1067,13 @@
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">types</span><span class="p">))</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
         <span class="n">objs</span> <span class="o">=</span> <span class="p">[</span><span class="n">to_segmented_index</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span> <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">objs</span><span class="p">]</span>
 
-    <span class="n">index</span> <span class="o">=</span> <span class="n">objs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">objs</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
-        <span class="n">index</span> <span class="o">=</span> <span class="n">index</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
-
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">MultiIndex</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">index</span><span class="o">.</span><span class="n">levels</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
-        <span class="c1"># asserts that start and end are of type &#39;timedelta64[ns]&#39;</span>
-        <span class="k">if</span> <span class="n">index</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
-            <span class="n">index</span> <span class="o">=</span> <span class="n">segmented_index</span><span class="p">()</span>
-        <span class="k">elif</span> <span class="n">index</span><span class="o">.</span><span class="n">levels</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
-            <span class="c1"># If all end values are NaT, pandas stores an empty array and</span>
-            <span class="c1"># since pd.Index.union() in that case sets the type to</span>
-            <span class="c1"># DatetimeArray, we need to set it back to &#39;timedelta64[ns]&#39;.</span>
-            <span class="n">index</span><span class="o">.</span><span class="n">set_levels</span><span class="p">(</span>
-                <span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">to_timedelta</span><span class="p">([])],</span>
-                <span class="n">level</span><span class="o">=</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
-                <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-            <span class="p">)</span>
+    <span class="c1"># Combine all MultiIndex entries and drop duplicates afterwards,</span>
+    <span class="c1"># faster than using index.union(),</span>
+    <span class="c1"># compare https://github.com/audeering/audformat/pull/98</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">o</span><span class="o">.</span><span class="n">to_frame</span><span class="p">()</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">objs</span><span class="p">])</span>
+    <span class="n">index</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">index</span>
+    <span class="n">index</span> <span class="o">=</span> <span class="n">index</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">()</span>
+    <span class="n">index</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">index</span><span class="o">.</span><span class="n">sortlevel</span><span class="p">()</span>
 
     <span class="k">return</span> <span class="n">index</span></div>
 </pre></div>
@@ -1101,7 +1091,7 @@
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2021/08/09 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2021/08/20 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>

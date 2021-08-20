@@ -76,7 +76,7 @@
             
             
               <div class="version">
-                v0.11.5
+                v0.11.6
               </div>
             
           
@@ -197,7 +197,7 @@
         
             
             
-              <a href="https://github.com/audeering/audformat/blob/v0.11.5/docs/api.rst" class="fa fa-github"> Edit on GitHub</a>
+              <a href="https://github.com/audeering/audformat/blob/v0.11.6/docs/api.rst" class="fa fa-github"> Edit on GitHub</a>
             
           
         
@@ -482,7 +482,7 @@ listing files and labels.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – name of database</p></li>
 <li><p><strong>source</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – data source (e.g. link to website)</p></li>
-<li><p><strong>usage</strong> (<a class="reference internal" href="api-define.html#audformat.define.Usage" title="audformat.core.define.Usage"><code class="xref py py-class docutils literal notranslate"><span class="pre">Usage</span></code></a>) – permission of usage, see <a class="reference internal" href="api-define.html#audformat.define.Usage" title="audformat.define.Usage"><code class="xref py py-class docutils literal notranslate"><span class="pre">audformat.define.Usage</span></code></a>.
+<li><p><strong>usage</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – permission of usage, see <a class="reference internal" href="api-define.html#audformat.define.Usage" title="audformat.define.Usage"><code class="xref py py-class docutils literal notranslate"><span class="pre">audformat.define.Usage</span></code></a>.
 Set to <code class="docutils literal notranslate"><span class="pre">'other'</span></code>
 if none of the other fields fit.</p></li>
 <li><p><strong>expires</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.date" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">date</span></code></a>]) – expiry date</p></li>
@@ -866,7 +866,7 @@ it will overwrite all existing files in others formats as well.</p>
 <li><p><strong>root</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – root directory (possibly created)</p></li>
 <li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – base name of files</p></li>
 <li><p><strong>indent</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – indent size</p></li>
-<li><p><strong>storage_format</strong> (<a class="reference internal" href="api-define.html#audformat.define.TableStorageFormat" title="audformat.core.define.TableStorageFormat"><code class="xref py py-class docutils literal notranslate"><span class="pre">TableStorageFormat</span></code></a>) – storage format of tables.
+<li><p><strong>storage_format</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – storage format of tables.
 See <a class="reference internal" href="api-define.html#audformat.define.TableStorageFormat" title="audformat.define.TableStorageFormat"><code class="xref py py-class docutils literal notranslate"><span class="pre">audformat.define.TableStorageFormat</span></code></a>
 for available formats</p></li>
 <li><p><strong>update_other_formats</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – if <code class="docutils literal notranslate"><span class="pre">True</span></code> it will not only save
@@ -1048,7 +1048,9 @@ associated with <code class="docutils literal notranslate"><span class="pre">oth
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>type</strong> (<a class="reference internal" href="api-define.html#audformat.define.MediaType" title="audformat.core.define.MediaType"><code class="xref py py-class docutils literal notranslate"><span class="pre">MediaType</span></code></a>) – media type</p></li>
+<li><p><strong>type</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – media type,
+see <a class="reference internal" href="api-define.html#audformat.define.MediaType" title="audformat.define.MediaType"><code class="xref py py-class docutils literal notranslate"><span class="pre">audformat.define.MediaType</span></code></a>
+for available media types</p></li>
 <li><p><strong>format</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]) – file format (e.g. ‘wav’, ‘flac’, ‘mp4’)</p></li>
 <li><p><strong>sampling_rate</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>]) – audio sampling rate in Hz</p></li>
 <li><p><strong>channels</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>]) – number of audio channels</p></li>
@@ -1141,7 +1143,9 @@ associated with <code class="docutils literal notranslate"><span class="pre">oth
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>type</strong> (<a class="reference internal" href="api-define.html#audformat.define.RaterType" title="audformat.core.define.RaterType"><code class="xref py py-class docutils literal notranslate"><span class="pre">RaterType</span></code></a>) – rater type</p></li>
+<li><p><strong>type</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – rater type,
+see <a class="reference internal" href="api-define.html#audformat.define.RaterType" title="audformat.define.RaterType"><code class="xref py py-class docutils literal notranslate"><span class="pre">audformat.define.RaterType</span></code></a>
+for available rater types</p></li>
 <li><p><strong>description</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]) – rater description</p></li>
 <li><p><strong>meta</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>]) – additional meta fields</p></li>
 </ul>
@@ -1355,7 +1359,9 @@ development or testing.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>type</strong> (<a class="reference internal" href="api-define.html#audformat.define.SplitType" title="audformat.core.define.SplitType"><code class="xref py py-class docutils literal notranslate"><span class="pre">SplitType</span></code></a>) – split type</p></li>
+<li><p><strong>type</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – split type,
+see <a class="reference internal" href="api-define.html#audformat.define.SplitType" title="audformat.define.SplitType"><code class="xref py py-class docutils literal notranslate"><span class="pre">audformat.define.SplitType</span></code></a>
+for available split types</p></li>
 <li><p><strong>description</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]) – split description</p></li>
 <li><p><strong>meta</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>]) – additional meta fields</p></li>
 </ul>
@@ -1923,7 +1929,7 @@ and ask to delete one of the files.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – file path without extension</p></li>
-<li><p><strong>storage_format</strong> (<a class="reference internal" href="api-define.html#audformat.define.TableStorageFormat" title="audformat.core.define.TableStorageFormat"><code class="xref py py-class docutils literal notranslate"><span class="pre">TableStorageFormat</span></code></a>) – storage format of table.
+<li><p><strong>storage_format</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – storage format of table.
 See <a class="reference internal" href="api-define.html#audformat.define.TableStorageFormat" title="audformat.define.TableStorageFormat"><code class="xref py py-class docutils literal notranslate"><span class="pre">audformat.define.TableStorageFormat</span></code></a>
 for available formats</p></li>
 <li><p><strong>update_other_formats</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – if <code class="docutils literal notranslate"><span class="pre">True</span></code> it will not only save
@@ -2071,7 +2077,7 @@ the value of the last table in the list is kept.</p>
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2021/08/09 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2021/08/20 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>

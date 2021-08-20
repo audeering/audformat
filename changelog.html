@@ -75,7 +75,7 @@
             
             
               <div class="version">
-                v0.11.5
+                v0.11.6
               </div>
             
           
@@ -131,6 +131,7 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Changelog</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#version-0-11-6-2021-08-20">Version 0.11.6 (2021-08-20)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#version-0-11-5-2021-08-09">Version 0.11.5 (2021-08-09)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#version-0-11-4-2021-08-05">Version 0.11.4 (2021-08-05)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#version-0-11-3-2021-06-10">Version 0.11.3 (2021-06-10)</a></li>
@@ -203,7 +204,7 @@
         
             
             
-              <a href="https://github.com/audeering/audformat/blob/v0.11.5/docs/changelog.rst" class="fa fa-github"> Edit on GitHub</a>
+              <a href="https://github.com/audeering/audformat/blob/v0.11.6/docs/changelog.rst" class="fa fa-github"> Edit on GitHub</a>
             
           
         
@@ -222,10 +223,20 @@
 <p>All notable changes to this project will be documented in this file.</p>
 <p>The format is based on <a class="reference external" href="https://keepachangelog.com/en/1.0.0/">Keep a Changelog</a>,
 and this project adheres to <a class="reference external" href="https://semver.org/spec/v2.0.0.html">Semantic Versioning</a>.</p>
+<div class="section" id="version-0-11-6-2021-08-20">
+<h2>Version 0.11.6 (2021-08-20)<a class="headerlink" href="#version-0-11-6-2021-08-20" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Added: support for Python 3.9</p></li>
+<li><p>Fixed: speed up <code class="docutils literal notranslate"><span class="pre">audformat.utils.union()</span></code></p></li>
+<li><p>Fixed: <code class="docutils literal notranslate"><span class="pre">audformat.Column.set()</span></code> with <code class="docutils literal notranslate"><span class="pre">pd.Series</span></code>
+and <code class="docutils literal notranslate"><span class="pre">np.array</span></code> for a scheme with fixed labels
+and containing <code class="docutils literal notranslate"><span class="pre">NaN</span></code> values</p></li>
+</ul>
+</div>
 <div class="section" id="version-0-11-5-2021-08-09">
 <h2>Version 0.11.5 (2021-08-09)<a class="headerlink" href="#version-0-11-5-2021-08-09" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li><p>Removed: duration scheme and table
+<li><p>Removed: duration scheme and column
 from conventions
 and emodb example</p></li>
 </ul>
@@ -402,7 +413,7 @@ and <code class="docutils literal notranslate"><span class="pre">audformat.Colum
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2021/08/09 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2021/08/20 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>

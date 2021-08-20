@@ -74,7 +74,7 @@
             
             
               <div class="version">
-                v0.11.5
+                v0.11.6
               </div>
             
           
@@ -205,7 +205,9 @@
 <span class="sd">    File ``format`` is always converted to lower case.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        type: media type</span>
+<span class="sd">        type: media type,</span>
+<span class="sd">            see :class:`audformat.define.MediaType`</span>
+<span class="sd">            for available media types</span>
 <span class="sd">        format: file format (e.g. &#39;wav&#39;, &#39;flac&#39;, &#39;mp4&#39;)</span>
 <span class="sd">        sampling_rate: audio sampling rate in Hz</span>
 <span class="sd">        channels: number of audio channels</span>
@@ -232,7 +234,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
-            <span class="nb">type</span><span class="p">:</span> <span class="n">define</span><span class="o">.</span><span class="n">MediaType</span> <span class="o">=</span> <span class="n">define</span><span class="o">.</span><span class="n">MediaType</span><span class="o">.</span><span class="n">OTHER</span><span class="p">,</span>
+            <span class="nb">type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">define</span><span class="o">.</span><span class="n">MediaType</span><span class="o">.</span><span class="n">OTHER</span><span class="p">,</span>
             <span class="o">*</span><span class="p">,</span>
             <span class="nb">format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
             <span class="n">sampling_rate</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -284,7 +286,7 @@
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2021/08/09 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2021/08/20 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
