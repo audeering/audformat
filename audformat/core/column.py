@@ -192,9 +192,9 @@ class Column(HeaderBase):
                     else:
                         raise ValueError(
                             f"Cannot map "
-                            f"'{map}' "
+                            f"'{self._id}' "
                             f"to "
-                            f"'{self._id}'. "
+                            f"'{map}'. "
                             f"Expected one of "
                             f"{list(value)}."
                         )
