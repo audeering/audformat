@@ -878,7 +878,7 @@ def test_segmented(num_files, num_segments_per_file, values):
     table = db['table']
 
     # empty table
-    df = pd.DataFrame(index=table._df.index)
+    df = pd.DataFrame(index=table.index)
     pd.testing.assert_frame_equal(table.get(), df)
 
     # no values

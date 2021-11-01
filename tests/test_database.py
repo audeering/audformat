@@ -220,31 +220,41 @@ def test_map_files(num_workers):
 
 
 @pytest.mark.parametrize(
-    'db, storage_format, num_workers',
+    'db, storage_format, load_data, num_workers',
     [
         (
             audformat.testing.create_db(minimal=True),
             audformat.define.TableStorageFormat.CSV,
+            False,
             1,
         ),
         (
             audformat.testing.create_db(minimal=True),
             audformat.define.TableStorageFormat.PICKLE,
+            False,
             1,
         ),
         (
             audformat.testing.create_db(),
             audformat.define.TableStorageFormat.CSV,
+            False,
             4,
         ),
         (
             audformat.testing.create_db(),
             audformat.define.TableStorageFormat.PICKLE,
+            False,
+            None,
+        ),
+        (
+            audformat.testing.create_db(),
+            audformat.define.TableStorageFormat.PICKLE,
+            True,
             None,
         ),
     ],
 )
-def test_save_and_load(tmpdir, db, storage_format, num_workers):
+def test_save_and_load(tmpdir, db, storage_format, load_data, num_workers):
 
     assert db.root is None
     db.save(
@@ -279,7 +289,10 @@ def test_save_and_load(tmpdir, db, storage_format, num_workers):
 
         # Load prefers PKL files over CSV files,
         # which means we are loading the second database here
-        db_load = audformat.Database.load(tmpdir)
+        db_load = audformat.Database.load(
+            tmpdir,
+            load_data=load_data,
+        )
         assert db_load.root == db2.root
         assert db_load == db2
         assert db_load != db
@@ -304,7 +317,11 @@ def test_save_and_load(tmpdir, db, storage_format, num_workers):
             "please delete the CSV file."
         )
         with pytest.raises(RuntimeError, match=error_msg):
-            db_load = audformat.Database.load(tmpdir)
+            db_load = audformat.Database.load(
+                tmpdir,
+                load_data=load_data,
+            )
+            db_load['files'].get()
 
         # Save and update PKL files
         db.save(
@@ -313,10 +330,16 @@ def test_save_and_load(tmpdir, db, storage_format, num_workers):
             num_workers=num_workers,
             update_other_formats=True,
         )
-        db_load = audformat.Database.load(tmpdir)
+        db_load = audformat.Database.load(
+            tmpdir,
+            load_data=load_data,
+        )
         assert db_load == db
 
-    db_load = audformat.Database.load(tmpdir)
+    db_load = audformat.Database.load(
+        tmpdir,
+        load_data=load_data,
+    )
     db_load.save(
         tmpdir,
         name='db-2',
@@ -339,12 +362,12 @@ def test_save_and_load(tmpdir, db, storage_format, num_workers):
     # Test load_data=False
     db_load = audformat.Database.load(
         tmpdir,
-        load_data=False,
+        load_data=load_data,
         num_workers=num_workers,
     )
     assert db_load.root == tmpdir
     for table_id, table in db_load.tables.items():
-        assert list(db_load.files) == []
+        pd.testing.assert_index_equal(db_load.files, db.files)
         assert table._id == table_id
         assert table._db == db_load
         assert str(db_load) == str(db)
@@ -367,7 +390,11 @@ def test_save_and_load(tmpdir, db, storage_format, num_workers):
             rf"'{table_path}.{{pkl|csv}}'"
         )
         with pytest.raises(RuntimeError, match=error_msg):
-            audformat.Database.load(tmpdir)
+            db = audformat.Database.load(
+                tmpdir,
+                load_data=load_data,
+            )
+            db[table_id].get()
 
 
 def test_string():
