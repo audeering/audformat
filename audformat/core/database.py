@@ -233,12 +233,14 @@ class Database(HeaderBase):
             segments
 
         """
-        index = segmented_index()
-        for table in self.tables.values():
-            if table.is_segmented:
-                index = index.union(table.df.index)
-        assert isinstance(index, pd.MultiIndex)
-        return index.drop_duplicates()
+        index = utils.union(
+            [
+                table.df.index
+                for table in self.tables.values()
+                if table.is_segmented
+            ]
+        )
+        return index
 
     def drop_files(
             self,
