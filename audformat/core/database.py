@@ -702,10 +702,16 @@ class Database(HeaderBase):
         Args:
             root: root directory
             name: base name of header and table files
-            load_data: if ``True`` :class:`audformat.Table`
-                will load all table data immediately.
-                Otherwise,
-                table data will be loaded on demand
+            load_data: by default,
+                :class:`audformat.Table`
+                data is only loaded on demand,
+                e.g. when
+                :meth:`audformat.Table.get`
+                is called for the first time.
+                Set to ``True`` to load all
+                :class:`audformat.Table`
+                data immediately
+
             num_workers: number of parallel jobs.
                 If ``None`` will be set to the number of processors
                 on the machine multiplied by 5
