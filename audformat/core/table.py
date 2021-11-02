@@ -197,7 +197,8 @@ class Table(HeaderBase):
             files
 
         """
-        if self.df.index.empty:
+        # We use len() here as self.df.index.empty takes a very long time
+        if len(self.df.index) == 0:
             return filewise_index()
         else:
             index = self.df.index.get_level_values(define.IndexField.FILE)

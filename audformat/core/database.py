@@ -178,10 +178,10 @@ class Database(HeaderBase):
             files
 
         """
-        index = pd.Index([], name=define.IndexField.FILE)
-        for table in self.tables.values():
-            index = index.union(table.files.drop_duplicates())
-        return index.drop_duplicates()
+        index = utils.union(
+            [table.files.drop_duplicates() for table in self.tables.values()]
+        )
+        return index
 
     @property
     def is_portable(
