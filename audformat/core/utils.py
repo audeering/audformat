@@ -355,7 +355,8 @@ def intersect(
             index_segmented.isin(index_filewise, 0)
         ]
 
-    if index.empty and index_type(index) == define.IndexType.SEGMENTED:
+    # We use len() here as index.empty takes a very long time
+    if len(index) == 0 and index_type(index) == define.IndexType.SEGMENTED:
         # asserts that start and end are of type 'timedelta64[ns]'
         index = segmented_index()
 
