@@ -166,6 +166,7 @@ class Database(HeaderBase):
         )
         r"""Dictionary of tables"""
 
+        self._name = None
         self._root = None
 
     @property
@@ -455,6 +456,7 @@ class Database(HeaderBase):
                 task_description='Save tables',
             )
 
+        self._name = name
         self._root = root
 
     def update(
@@ -687,7 +689,7 @@ class Database(HeaderBase):
             root: str,
             *,
             name: str = 'db',
-            load_data: bool = True,
+            load_data: bool = False,
             num_workers: typing.Optional[int] = 1,
             verbose: bool = False,
     ) -> 'Database':
@@ -700,8 +702,15 @@ class Database(HeaderBase):
         Args:
             root: root directory
             name: base name of header and table files
-            load_data: if ``False`` :class:`audformat.Table`
-                will contain empty tables
+            load_data: if ``False``,
+                :class:`audformat.Table`
+                data is only loaded on demand,
+                e.g. when
+                :meth:`audformat.Table.get`
+                is called for the first time.
+                Set to ``True`` to load all
+                :class:`audformat.Table`
+                data immediately
             num_workers: number of parallel jobs.
                 If ``None`` will be set to the number of processors
                 on the machine multiplied by 5
@@ -723,23 +732,34 @@ class Database(HeaderBase):
             header = yaml.load(fp, Loader=yaml.Loader)
             db = Database.load_header_from_yaml(header)
 
-            if 'tables' in header and header['tables'] and load_data:
+            if 'tables' in header and header['tables']:
 
-                def job(table_id):
-                    table = db[table_id]
-                    path = os.path.join(root, name + '.' + table_id)
-                    table.load(path)
+                if load_data:
 
-                audeer.run_tasks(
-                    job,
-                    params=[
-                        ([table_id], {}) for table_id in header['tables']
-                    ],
-                    num_workers=num_workers,
-                    progress_bar=verbose,
-                    task_description='Load tables',
-                )
+                    def job(table_id):
+                        table = db[table_id]
+                        path = os.path.join(root, name + '.' + table_id)
+                        table.load(path)
 
+                    # load all tables into memory
+                    audeer.run_tasks(
+                        job,
+                        params=[
+                            ([table_id], {}) for table_id in header['tables']
+                        ],
+                        num_workers=num_workers,
+                        progress_bar=verbose,
+                        task_description='Load tables',
+                    )
+
+                else:
+
+                    # signal that table data is not loaded
+                    # by setting the DataFrame to None
+                    for table_id in header['tables']:
+                        db[table_id]._df = None
+
+        db._name = name
         db._root = root
 
         return db

@@ -170,6 +170,11 @@ class Table(HeaderBase):
             data
 
         """
+        if self._df is None:
+            # if database was loaded with 'load_data=False'
+            # we have to load the table data now
+            path = os.path.join(self.db.root, f'{self.db._name}.{self._id}')
+            self.load(path)
         return self._df
 
     @property
@@ -213,7 +218,7 @@ class Table(HeaderBase):
             index
 
         """
-        return self._df.index
+        return self.df.index
 
     @property
     def is_filewise(self) -> bool:
@@ -282,7 +287,7 @@ class Table(HeaderBase):
 
         """
         table = Table(
-            self._df.index,
+            self.df.index,
             media_id=self.media_id,
             split_id=self.split_id,
         )
@@ -294,7 +299,7 @@ class Table(HeaderBase):
                 description=column.description,
                 meta=column.meta.copy()
             )
-        table._df = self._df.copy()
+        table._df = self.df.copy()
         return table
 
     def drop_columns(
@@ -356,11 +361,11 @@ class Table(HeaderBase):
             files = [files]
         if callable(files):
             sel = self.files.to_series().apply(files)
-            self._df = self._df[~sel.values]
+            self._df = self.df[~sel.values]
         else:
             index = self.files.intersection(files)
             index.name = define.IndexField.FILE
-            self._df.drop(index, inplace=True)
+            self.df.drop(index, inplace=True)
 
         return self
 
@@ -396,8 +401,8 @@ class Table(HeaderBase):
                 f'{self.type} '
                 'index'
             )
-        new_index = self._df.index.difference(index)
-        self._df = self._df.reindex(new_index)
+        new_index = self.df.index.difference(index)
+        self._df = self.df.reindex(new_index)
 
         return self
 
@@ -441,14 +446,14 @@ class Table(HeaderBase):
                 f'{input_type} '
                 f'index.'
             )
-        new_index = self._df.index.union(index)
-        self._df = self._df.reindex(new_index)
+        new_index = self.df.index.union(index)
+        self._df = self.df.reindex(new_index)
         if fill_values is not None:
             if isinstance(fill_values, dict):
                 for key, value in fill_values.items():
-                    self._df[key].fillna(value, inplace=True)
+                    self.df[key].fillna(value, inplace=True)
             else:
-                self._df.fillna(fill_values, inplace=True)
+                self.df.fillna(fill_values, inplace=True)
 
         return self
 
@@ -496,22 +501,22 @@ class Table(HeaderBase):
         result_is_copy = False
 
         if index is None:
-            result = self._df
+            result = self.df
         else:
             if index_type(self.index) == index_type(index):
-                result = self._df.loc[index]
+                result = self.df.loc[index]
             else:
                 files = index.get_level_values(define.IndexField.FILE)
                 if self.is_filewise:  # index is segmented
                     result = pd.DataFrame(
-                        self._df.loc[files].values,
+                        self.df.loc[files].values,
                         index,
                         columns=self.columns
                     )
                     result_is_copy = True  # to avoid another copy
                 else:  # index is filewise
                     files = list(dict.fromkeys(files))  # remove duplicates
-                    result = self._df.loc[files]
+                    result = self.df.loc[files]
 
         if map is not None:
 
@@ -654,8 +659,8 @@ class Table(HeaderBase):
                 f'{self.type} '
                 f'index'
             )
-        new_index = self._df.index.intersection(index)
-        self._df = self._df.reindex(new_index)
+        new_index = self.df.index.intersection(index)
+        self._df = self.df.reindex(new_index)
 
         return self
 
@@ -688,7 +693,7 @@ class Table(HeaderBase):
             files = [files]
         if callable(files):
             sel = self.files.to_series().apply(files)
-            self._df = self._df[sel.values]
+            self._df = self.df[sel.values]
         else:
             index = self.files.intersection(files)
             index.name = define.IndexField.FILE
@@ -976,7 +981,7 @@ class Table(HeaderBase):
             ValueError: if values in the same position do not match
 
         """
-        df = utils.concat([self._df, other._df])
+        df = utils.concat([self.df, other.df])
 
         table = Table(df.index)
         for column_id in df:
@@ -1003,7 +1008,7 @@ class Table(HeaderBase):
         return self.df.equals(other.df)
 
     def __len__(self) -> int:
-        return len(self._df)
+        return len(self.df)
 
     def __setitem__(self, column_id: str, column: Column) -> Column:
         r"""Add new column to table.
@@ -1103,7 +1108,7 @@ class Table(HeaderBase):
             self.df.to_csv(fp, encoding='utf-8')
 
     def _save_pickled(self, path: str):
-        self._df.to_pickle(path)
+        self.df.to_pickle(path)
 
     def _set_column(self, column_id: str, column: Column) -> Column:
         if column.scheme_id is not None and \
@@ -1117,14 +1122,14 @@ class Table(HeaderBase):
             dtype = self.db.schemes[column.scheme_id].to_pandas_dtype()
         else:
             dtype = object
-        self._df[column_id] = pd.Series(dtype=dtype)
+        self.df[column_id] = pd.Series(dtype=dtype)
 
         #  if table is empty we need to fix index names
-        if self._df.empty:
+        if self.df.empty:
             if self.is_filewise:
-                self._df.index.name = define.IndexField.FILE
+                self.df.index.name = define.IndexField.FILE
             elif self.is_segmented:
-                self._df.index.rename(
+                self.df.index.rename(
                     [
                         define.IndexField.FILE,
                         define.IndexField.START,
