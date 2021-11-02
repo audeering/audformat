@@ -56,7 +56,7 @@ def test_drop_files(files, num_workers):
     else:
         if isinstance(files, str):
             files = [files]
-    assert db.files.intersection(files).empty
+    assert len(db.files.intersection(files)) == 0
 
 
 @pytest.mark.parametrize(

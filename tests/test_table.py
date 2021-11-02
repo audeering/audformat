@@ -540,7 +540,7 @@ def test_drop_files(files, table):
         files = table.files.to_series().apply(files)
     elif isinstance(files, str):
         files = [files]
-    assert table.files.intersection(files).empty
+    assert len(table.files.intersection(files)) == 0
 
 
 @pytest.mark.parametrize(
@@ -597,7 +597,7 @@ def test_empty():
     db['table'] = audformat.Table()
 
     assert db['table'].type == audformat.define.IndexType.FILEWISE
-    assert db['table'].files.empty
+    assert len(db['table'].files) == 0
     assert len(db['table']) == 0
 
     db['table']['column'] = audformat.Column()
