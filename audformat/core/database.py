@@ -702,7 +702,7 @@ class Database(HeaderBase):
         Args:
             root: root directory
             name: base name of header and table files
-            load_data: by default,
+            load_data: if ``False``,
                 :class:`audformat.Table`
                 data is only loaded on demand,
                 e.g. when
@@ -711,7 +711,6 @@ class Database(HeaderBase):
                 Set to ``True`` to load all
                 :class:`audformat.Table`
                 data immediately
-
             num_workers: number of parallel jobs.
                 If ``None`` will be set to the number of processors
                 on the machine multiplied by 5
