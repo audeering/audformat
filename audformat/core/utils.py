@@ -172,7 +172,8 @@ def concat(
                         column.index,
                     ]
                 )
-                if not intersection.empty:
+                # We use len() here as index.empty takes a very long time
+                if len(intersection) > 0:
                     combine = pd.DataFrame(
                         {
                             'left': columns_reindex[column.name][intersection],
@@ -275,7 +276,8 @@ def duration(
     if not isinstance(obj, pd.MultiIndex):
         obj = obj.index
 
-    if obj.empty:
+    # We use len() here as index.empty takes a very long time
+    if len(obj) == 0:
         return pd.Timedelta(0, unit='s')
 
     starts = obj.get_level_values(define.IndexField.START)
