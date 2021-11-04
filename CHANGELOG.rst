@@ -7,6 +7,16 @@ The format is based on `Keep a Changelog`_,
 and this project adheres to `Semantic Versioning`_.
 
 
+Version 0.12.0 (2021-11-04)
+---------------------------
+
+* Changed: changed default value of ``load_data`` argument
+  in ``audformat.Database.load()`` to ``False``
+* Changed: speed up ``audformat.Database.files``
+  and ``audformat.Database.segments``
+* Fixed: re-add support for ``pandas>=1.3``
+
+
 Version 0.11.6 (2021-08-20)
 ---------------------------
 
