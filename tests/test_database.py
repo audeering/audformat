@@ -3,6 +3,7 @@ import filecmp
 import os
 
 import audeer
+import audiofile
 import pandas as pd
 import pytest
 
@@ -161,6 +162,28 @@ def test_drop_and_pick_tables():
     assert 'segments' in db
     db.drop_tables('segments')
     assert 'segments' not in db
+
+
+def test_file_duration():
+
+    db = pytest.DB
+
+    # duration of single file
+
+    file = db.files[0]
+    full_file = os.path.join(db.root, file)
+    dur = pd.to_timedelta(audiofile.duration(full_file), unit='s')
+    assert db.file_duration(file) == dur
+    assert db.file_duration(full_file) == dur
+
+    # duration of whole database
+
+    total_dur = pd.to_timedelta(0)
+    for file in db.files:
+        full_file = os.path.join(db.root, file)
+        dur = audiofile.duration(full_file)
+        total_dur += pd.to_timedelta(dur, unit='s')
+    assert db.file_duration() == total_dur
 
 
 @pytest.mark.parametrize(

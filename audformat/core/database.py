@@ -1,9 +1,11 @@
 import datetime
+import functools
 import itertools
 import os
 import shutil
 import typing
 
+import audiofile
 import oyaml as yaml
 import pandas as pd
 
@@ -11,7 +13,6 @@ import audeer
 
 from audformat.core import define
 from audformat.core import utils
-from audformat.core.index import segmented_index
 from audformat.core.column import Column
 from audformat.core.common import HeaderBase, HeaderDict
 from audformat.core.errors import BadIdError
@@ -166,6 +167,7 @@ class Database(HeaderBase):
         )
         r"""Dictionary of tables"""
 
+        self._file_duration = {}
         self._name = None
         self._root = None
 
@@ -288,6 +290,40 @@ class Database(HeaderBase):
             table_ids = [table_ids]
         for table_id in table_ids:
             self.tables.pop(table_id)
+
+    def file_duration(
+            self,
+            file: str = None,
+    ) -> pd.Timedelta:
+        r"""Duration of file or database.
+
+        Args:
+            file: if a file name is given,
+                returns duration of this file.
+                If ``None`` returns the summed duration
+                of all files in the database
+
+        Returns:
+            duration
+
+        """
+        if file is None:
+            return functools.reduce(
+                lambda d, f: d + self.file_duration(f),
+                self.files,
+                pd.to_timedelta(0),
+            )
+        elif file not in self._file_duration:
+            if not os.path.isabs(file) and self.root is not None:
+                path = os.path.join(self.root, file)
+            else:
+                path = file
+            dur = audiofile.duration(path)
+            dur = pd.to_timedelta(dur, unit='s')
+            self._file_duration[file] = dur
+            return dur
+        else:
+            return self._file_duration[file]
 
     def map_files(
             self,
