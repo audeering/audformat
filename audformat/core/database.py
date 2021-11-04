@@ -295,11 +295,11 @@ class Database(HeaderBase):
             self,
             file: str = None,
     ) -> pd.Timedelta:
-        r"""Duration of file or database.
+        r"""Duration of a single file or all files in the database.
 
         Args:
             file: if a file name is given,
-                returns duration of this file.
+                returns duration of the file.
                 If ``None`` returns the summed duration
                 of all files in the database
 
