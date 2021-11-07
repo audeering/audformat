@@ -166,7 +166,7 @@ class Database(HeaderBase):
         )
         r"""Dictionary of tables"""
 
-        self._file_duration = {}
+        self._files_duration = {}
         self._name = None
         self._root = None
 
@@ -319,17 +319,17 @@ class Database(HeaderBase):
         """
         if not isinstance(files, str):
             return pd.Series(files, index=files).map(self.files_duration)
-        elif files not in self._file_duration:
+        elif files not in self._files_duration:
             if not os.path.isabs(files) and self.root is not None:
                 path = os.path.join(self.root, files)
             else:
                 path = files
             dur = audiofile.duration(path)
             dur = pd.to_timedelta(dur, unit='s')
-            self._file_duration[files] = dur
+            self._files_duration[files] = dur
             return dur
         else:
-            return self._file_duration[files]
+            return self._files_duration[files]
 
     def map_files(
             self,
