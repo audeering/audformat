@@ -1,5 +1,4 @@
 import datetime
-import functools
 import itertools
 import os
 import shutil
@@ -291,39 +290,46 @@ class Database(HeaderBase):
         for table_id in table_ids:
             self.tables.pop(table_id)
 
-    def file_duration(
+    def files_duration(
             self,
-            file: str = None,
-    ) -> pd.Timedelta:
-        r"""Duration of a single file or all files in the database.
+            files: typing.Union[str, typing.Sequence[str]],
+    ) -> typing.Union[pd.Timedelta, pd.Series]:
+        r"""Duration of file(s) in the database.
+
+        Note that durations are cached,
+        i.e. changing the files on disk after calling
+        this function can lead to wrong results.
+        The cache is cleared when the
+        database is reloaded from disk.
+
+        Use ``db.files_duration(db.files).sum()``
+        to get the total duration of a database.
+        Or ``db.files_duration(db['table'].files).sum()``
+        to get the total duration of a table.
 
         Args:
-            file: if a file name is given,
-                returns duration of the file.
-                If ``None`` returns the summed duration
-                of all files in the database
+            files: for a single file name
+                returns the duration of the file.
+                For a sequence of file names
+                a mapping from file to duration
 
         Returns:
-            duration
+            duration(s)
 
         """
-        if file is None:
-            return functools.reduce(
-                lambda d, f: d + self.file_duration(f),
-                self.files,
-                pd.to_timedelta(0),
-            )
-        elif file not in self._file_duration:
-            if not os.path.isabs(file) and self.root is not None:
-                path = os.path.join(self.root, file)
+        if not isinstance(files, str):
+            return pd.Series(files, index=files).map(self.files_duration)
+        elif files not in self._file_duration:
+            if not os.path.isabs(files) and self.root is not None:
+                path = os.path.join(self.root, files)
             else:
-                path = file
+                path = files
             dur = audiofile.duration(path)
             dur = pd.to_timedelta(dur, unit='s')
-            self._file_duration[file] = dur
+            self._file_duration[files] = dur
             return dur
         else:
-            return self._file_duration[file]
+            return self._file_duration[files]
 
     def map_files(
             self,

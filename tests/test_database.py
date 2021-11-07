@@ -164,7 +164,7 @@ def test_drop_and_pick_tables():
     assert 'segments' not in db
 
 
-def test_file_duration():
+def test_files_duration():
 
     db = pytest.DB
 
@@ -173,10 +173,10 @@ def test_file_duration():
     file = db.files[0]
     full_file = os.path.join(db.root, file)
     dur = pd.to_timedelta(audiofile.duration(full_file), unit='s')
-    assert db.file_duration(file) == dur
-    assert db.file_duration(full_file) == dur
-    assert db.file_duration(file) == dur
-    assert db.file_duration(full_file) == dur
+    assert db.files_duration(file) == dur
+    assert db.files_duration(full_file) == dur
+    assert db.files_duration(file) == dur
+    assert db.files_duration(full_file) == dur
 
     # duration of whole database
 
@@ -185,8 +185,8 @@ def test_file_duration():
         full_file = os.path.join(db.root, file)
         dur = audiofile.duration(full_file)
         total_dur += pd.to_timedelta(dur, unit='s')
-    assert db.file_duration() == total_dur
-    assert db.file_duration() == total_dur
+    assert db.files_duration(db.files).sum() == total_dur
+    assert db.files_duration(db.files).sum() == total_dur
 
 
 @pytest.mark.parametrize(
