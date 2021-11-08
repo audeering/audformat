@@ -303,9 +303,9 @@ class Database(HeaderBase):
         database is reloaded from disk.
 
         Use ``db.files_duration(db.files).sum()``
-        to get the total duration of a database.
-        Or ``db.files_duration(db['table'].files).sum()``
-        to get the total duration of a table.
+        to get the total duration of all files in a database.
+        Or ``db.files_duration(db[table_id].files).sum()``
+        to get the total duration of all files assigned to a table.
 
         Args:
             files: file names
