@@ -204,14 +204,7 @@ def test_files_duration():
     root = db._root
     db._root = None
 
-    message = (
-        "Found relative file name "
-        f"{files_rel[0]}, "
-        f"but db.root is None. "
-        f"Please save database or "
-        f"provide a root folder."
-    )
-    with pytest.raises(ValueError, match=message):
+    with pytest.raises(ValueError):
         db.files_duration(files_rel)
 
     for _ in range(2):

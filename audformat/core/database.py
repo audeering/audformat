@@ -339,7 +339,7 @@ class Database(HeaderBase):
                 # expand file path
                 if root is None:
                     raise ValueError(
-                        "Found relative file name "
+                        f"Found relative file name "
                         f"{file}, "
                         f"but db.root is None. "
                         f"Please save database or "
