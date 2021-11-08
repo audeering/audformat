@@ -293,6 +293,8 @@ class Database(HeaderBase):
     def files_duration(
             self,
             files: typing.Union[str, typing.Sequence[str]],
+            *,
+            root: str = None,
     ) -> pd.Series:
         r"""Duration of files in the database.
 
@@ -309,24 +311,60 @@ class Database(HeaderBase):
 
         Args:
             files: file names
+            root: root directory under which the files are stored.
+                Provide if file names are relative and
+                database was not saved or loaded from disk
 
         Returns:
             mapping from file to duration
 
+        Raises:
+            ValueError: if ``root`` is not set
+                when using relative file names
+                with a database that was not saved
+                or loaded from disk
+
         """
+        root = root or self.root
+
         def duration(file: str) -> pd.Timedelta:
-            if file not in self._files_duration:
-                if not os.path.isabs(file) and self.root is not None:
-                    path = os.path.join(self.root, file)
-                else:
-                    path = file
-                dur = audiofile.duration(path)
-                dur = pd.to_timedelta(dur, unit='s')
-                self._files_duration[file] = dur
-            return self._files_duration[file]
+
+            # check cache
+            if file in self._files_duration:
+                return self._files_duration[file]
+
+            if os.path.isabs(file):
+                full_file = file
+            else:
+                # expand file path
+                if root is None:
+                    raise ValueError(
+                        "Found relative file name "
+                        f"{file}, "
+                        f"but db.root is None. "
+                        f"Please save database or "
+                        f"provide a root folder."
+                    )
+                full_file = os.path.join(root, file)
+                # check cache again with full path
+                if full_file in self._files_duration:
+                    return self._files_duration[full_file]
+
+            # calculate duration and cache it
+            dur = audiofile.duration(full_file)
+            dur = pd.to_timedelta(dur, unit='s')
+            self._files_duration[file] = dur
+
+            return dur
 
         files = audeer.to_list(files)
-        return pd.Series(files, index=files).map(duration)
+        y = pd.Series(
+            files,
+            index=files,
+            name=define.IndexField.FILE,
+        ).map(duration)
+
+        return y
 
     def map_files(
             self,

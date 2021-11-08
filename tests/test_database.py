@@ -168,25 +168,62 @@ def test_files_duration():
 
     db = pytest.DB
 
-    # duration of single file
+    # prepare file names
 
-    file = db.files[0]
-    full_file = os.path.join(db.root, file)
-    dur = pd.to_timedelta(audiofile.duration(full_file), unit='s')
-    assert db.files_duration(file)[file] == dur
-    assert db.files_duration(full_file)[full_file] == dur
-    assert db.files_duration(file)[file] == dur
-    assert db.files_duration(full_file)[full_file] == dur
+    files_rel = db.files
+    files_abs = [os.path.join(db.root, file) for file in files_rel]
+    durs = [
+        pd.to_timedelta(audiofile.duration(file), unit='s')
+        for file in files_abs
+    ]
 
-    # duration of whole database
+    # test with absolute file names
 
-    total_dur = pd.to_timedelta(0)
-    for file in db.files:
-        full_file = os.path.join(db.root, file)
-        dur = audiofile.duration(full_file)
-        total_dur += pd.to_timedelta(dur, unit='s')
-    assert db.files_duration(db.files).sum() == total_dur
-    assert db.files_duration(db.files).sum() == total_dur
+    expected_abs = pd.Series(
+        durs,
+        index=files_abs,
+        name=audformat.define.IndexField.FILE,
+    )
+    for _ in range(2):
+        y = db.files_duration(files_abs)
+        pd.testing.assert_series_equal(y, expected_abs)
+
+    # test with relative file names
+
+    expected_rel = pd.Series(
+        durs,
+        index=files_rel.tolist(),
+        name=audformat.define.IndexField.FILE,
+    )
+    for _ in range(2):
+        y = db.files_duration(files_rel)
+        pd.testing.assert_series_equal(y, expected_rel)
+
+    # simulate that we have not loaded db from disk
+
+    root = db._root
+    db._root = None
+
+    message = (
+        "Found relative file name "
+        f"{files_rel[0]}, "
+        f"but db.root is None. "
+        f"Please save database or "
+        f"provide a root folder."
+    )
+    with pytest.raises(ValueError, match=message):
+        db.files_duration(files_rel)
+
+    for _ in range(2):
+        y = db.files_duration(files_rel, root=root)
+        pd.testing.assert_series_equal(y, expected_rel)
+
+    # make sure we have only absolute file names in cache
+
+    expected_cache = {
+        file: dur for file, dur in zip(files_abs, durs)
+    }
+    assert db._files_duration == expected_cache
 
 
 @pytest.mark.parametrize(
