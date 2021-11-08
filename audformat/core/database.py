@@ -298,16 +298,16 @@ class Database(HeaderBase):
     ) -> pd.Series:
         r"""Duration of files in the database.
 
-        Note that durations are cached,
-        i.e. changing the files on disk after calling
-        this function can lead to wrong results.
-        The cache is cleared when the
-        database is reloaded from disk.
-
         Use ``db.files_duration(db.files).sum()``
         to get the total duration of all files in a database.
         Or ``db.files_duration(db[table_id].files).sum()``
         to get the total duration of all files assigned to a table.
+
+        .. note:: Durations are cached,
+            i.e. changing the files on disk after calling
+            this function can lead to wrong results.
+            The cache is cleared when the
+            database is reloaded from disk.
 
         Args:
             files: file names
