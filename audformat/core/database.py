@@ -293,8 +293,8 @@ class Database(HeaderBase):
     def files_duration(
             self,
             files: typing.Union[str, typing.Sequence[str]],
-    ) -> typing.Union[pd.Timedelta, pd.Series]:
-        r"""Duration of file(s) in the database.
+    ) -> pd.Series:
+        r"""Duration of files in the database.
 
         Note that durations are cached,
         i.e. changing the files on disk after calling
@@ -308,28 +308,25 @@ class Database(HeaderBase):
         to get the total duration of a table.
 
         Args:
-            files: for a single file name
-                returns the duration of the file.
-                For a sequence of file names
-                a mapping from file to duration
+            files: file names
 
         Returns:
-            duration(s)
+            mapping from file to duration
 
         """
-        if not isinstance(files, str):
-            return pd.Series(files, index=files).map(self.files_duration)
-        elif files not in self._files_duration:
-            if not os.path.isabs(files) and self.root is not None:
-                path = os.path.join(self.root, files)
-            else:
-                path = files
-            dur = audiofile.duration(path)
-            dur = pd.to_timedelta(dur, unit='s')
-            self._files_duration[files] = dur
-            return dur
-        else:
-            return self._files_duration[files]
+        def duration(file: str) -> pd.Timedelta:
+            if file not in self._files_duration:
+                if not os.path.isabs(file) and self.root is not None:
+                    path = os.path.join(self.root, file)
+                else:
+                    path = file
+                dur = audiofile.duration(path)
+                dur = pd.to_timedelta(dur, unit='s')
+                self._files_duration[file] = dur
+            return self._files_duration[file]
+
+        files = audeer.to_list(files)
+        return pd.Series(files, index=files).map(duration)
 
     def map_files(
             self,

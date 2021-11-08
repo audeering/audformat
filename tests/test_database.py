@@ -173,10 +173,10 @@ def test_files_duration():
     file = db.files[0]
     full_file = os.path.join(db.root, file)
     dur = pd.to_timedelta(audiofile.duration(full_file), unit='s')
-    assert db.files_duration(file) == dur
-    assert db.files_duration(full_file) == dur
-    assert db.files_duration(file) == dur
-    assert db.files_duration(full_file) == dur
+    assert db.files_duration(file)[file] == dur
+    assert db.files_duration(full_file)[full_file] == dur
+    assert db.files_duration(file)[file] == dur
+    assert db.files_duration(full_file)[full_file] == dur
 
     # duration of whole database
 
