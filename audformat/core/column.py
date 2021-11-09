@@ -131,6 +131,10 @@ class Column(HeaderBase):
             *,
             map: str = None,
             copy: bool = True,
+            as_segmented: bool = False,
+            allow_nat: bool = True,
+            num_workers: typing.Optional[int] = 1,
+            verbose: bool = False,
     ) -> pd.Series:
         r"""Get labels.
 
@@ -149,6 +153,13 @@ class Column(HeaderBase):
                 assigned to a scheme that contains a dict mapping
                 speaker IDs to age entries, ``map='age'``
                 will replace the ID values with the age of the speaker
+            as_segmented: always return with a ``segmented`` index
+            allow_nat: if set to ``False``,
+                ``end=NaT`` is replaced with file duration
+            num_workers: number of parallel jobs.
+                If ``None`` will be set to the number of processors
+                on the machine multiplied by 5
+            verbose: show progress bar
 
         Returns:
             labels
@@ -165,7 +176,14 @@ class Column(HeaderBase):
                 'Column is not assigned to a table.'
             )
 
-        result = self._table.get(index, copy=False)
+        result = self._table.get(
+            index,
+            copy=False,
+            as_segmented=as_segmented,
+            allow_nat=allow_nat,
+            num_workers=num_workers,
+            verbose=verbose,
+        )
         result = result[self._id]
 
         if map is not None:
