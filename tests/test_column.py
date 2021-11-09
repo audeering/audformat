@@ -115,6 +115,44 @@ def test_filewise(num_files, values):
         column.set([], index=index)
 
 
+def test_get_as_segmented():
+
+    db = pytest.DB
+    db._files_duration = {}
+
+    y = db['files']['bool'].get()
+    assert audformat.index_type(y) == audformat.define.IndexType.FILEWISE
+    assert not db._files_duration
+
+    # convert to segmented index
+
+    y = db['files']['bool'].get(
+        as_segmented=True,
+        allow_nat=True,
+    )
+    assert audformat.index_type(y) == audformat.define.IndexType.SEGMENTED
+    assert not db._files_duration
+    assert y.index.get_level_values(
+        audformat.define.IndexField.END
+    ).isna().all()
+
+    # replace NaT with file duration
+
+    y = db['files']['bool'].get(
+        as_segmented=True,
+        allow_nat=False,
+    )
+    assert audformat.index_type(y) == audformat.define.IndexType.SEGMENTED
+    assert db._files_duration
+    assert not y.index.get_level_values(
+        audformat.define.IndexField.END
+    ).isna().any()
+
+    # reset db
+
+    db._files_duration = {}
+
+
 @pytest.mark.parametrize(
     'column, map',
     [

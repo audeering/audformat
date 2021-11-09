@@ -2,6 +2,7 @@ from io import StringIO
 import os
 import shutil
 
+import audiofile
 import pytest
 import numpy as np
 import pandas as pd
@@ -1051,14 +1052,17 @@ def test_read_csv(csv, result):
     ]
 )
 def test_to_segmented_index(obj, allow_nat, root, expected):
-    result = audformat.utils.to_segmented_index(
-        obj,
-        allow_nat=allow_nat,
-        root=root,
-    )
-    if not isinstance(result, pd.Index):
-        result = result.index
-    pd.testing.assert_index_equal(result, expected)
+    files_duration = {}
+    for _ in range(2):
+        result = audformat.utils.to_segmented_index(
+            obj,
+            allow_nat=allow_nat,
+            files_duration=files_duration,
+            root=root,
+        )
+        if not isinstance(result, pd.Index):
+            result = result.index
+        pd.testing.assert_index_equal(result, expected)
 
 
 @pytest.mark.parametrize(

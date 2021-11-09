@@ -167,6 +167,7 @@ def test_drop_and_pick_tables():
 def test_files_duration():
 
     db = pytest.DB
+    db._files_duration = {}
 
     # prepare file names
 
@@ -217,6 +218,11 @@ def test_files_duration():
         file: dur for file, dur in zip(files_abs, durs)
     }
     assert db._files_duration == expected_cache
+
+    # reset db
+
+    db._files_duration = {}
+    db._root = root
 
 
 @pytest.mark.parametrize(
