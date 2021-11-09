@@ -742,7 +742,7 @@ def to_segmented_index(
             duration
         files_duration: mapping from file to duration.
             If not ``None``,
-            the function uses it to look up durations.
+            used to look up durations.
             If no entry is found for a file,
             it is added to the mapping.
             Expects absolute file names.

@@ -515,6 +515,7 @@ class Table(HeaderBase):
             labels
 
         Raises:
+            FileNotFoundError: if file is not found
             RuntimeError: if table is not assign to a database
             ValueError: if trying to map without a scheme
             ValueError: if trying to map from a scheme that has no labels
