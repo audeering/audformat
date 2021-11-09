@@ -177,17 +177,6 @@ def test_files_duration():
         for file in files_abs
     ]
 
-    # test with absolute file names
-
-    expected_abs = pd.Series(
-        durs,
-        index=files_abs,
-        name=audformat.define.IndexField.FILE,
-    )
-    for _ in range(2):
-        y = db.files_duration(files_abs)
-        pd.testing.assert_series_equal(y, expected_abs)
-
     # test with relative file names
 
     expected_rel = pd.Series(
@@ -198,6 +187,17 @@ def test_files_duration():
     for _ in range(2):
         y = db.files_duration(files_rel)
         pd.testing.assert_series_equal(y, expected_rel)
+
+    # test with absolute file names
+
+    expected_abs = pd.Series(
+        durs,
+        index=files_abs,
+        name=audformat.define.IndexField.FILE,
+    )
+    for _ in range(2):
+        y = db.files_duration(files_abs)
+        pd.testing.assert_series_equal(y, expected_abs)
 
     # simulate that we have not loaded db from disk
 
