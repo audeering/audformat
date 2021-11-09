@@ -313,7 +313,8 @@ class Database(HeaderBase):
             files: file names
             root: root directory under which the files are stored.
                 Provide if file names are relative and
-                database was not saved or loaded from disk
+                database was not saved or loaded from disk.
+                If ``None`` :attr:`audformat.Database.root` is used
 
         Returns:
             mapping from file to duration
