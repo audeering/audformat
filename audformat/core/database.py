@@ -4,6 +4,7 @@ import os
 import shutil
 import typing
 
+import audiofile
 import oyaml as yaml
 import pandas as pd
 
@@ -11,7 +12,6 @@ import audeer
 
 from audformat.core import define
 from audformat.core import utils
-from audformat.core.index import segmented_index
 from audformat.core.column import Column
 from audformat.core.common import HeaderBase, HeaderDict
 from audformat.core.errors import BadIdError
@@ -166,6 +166,7 @@ class Database(HeaderBase):
         )
         r"""Dictionary of tables"""
 
+        self._files_duration = {}
         self._name = None
         self._root = None
 
@@ -288,6 +289,83 @@ class Database(HeaderBase):
             table_ids = [table_ids]
         for table_id in table_ids:
             self.tables.pop(table_id)
+
+    def files_duration(
+            self,
+            files: typing.Union[str, typing.Sequence[str]],
+            *,
+            root: str = None,
+    ) -> pd.Series:
+        r"""Duration of files in the database.
+
+        Use ``db.files_duration(db.files).sum()``
+        to get the total duration of all files in a database.
+        Or ``db.files_duration(db[table_id].files).sum()``
+        to get the total duration of all files assigned to a table.
+
+        .. note:: Durations are cached,
+            i.e. changing the files on disk after calling
+            this function can lead to wrong results.
+            The cache is cleared when the
+            database is reloaded from disk.
+
+        Args:
+            files: file names
+            root: root directory under which the files are stored.
+                Provide if file names are relative and
+                database was not saved or loaded from disk.
+                If ``None`` :attr:`audformat.Database.root` is used
+
+        Returns:
+            mapping from file to duration
+
+        Raises:
+            ValueError: if ``root`` is not set
+                when using relative file names
+                with a database that was not saved
+                or loaded from disk
+
+        """
+        root = root or self.root
+
+        def duration(file: str) -> pd.Timedelta:
+
+            # check cache
+            if file in self._files_duration:
+                return self._files_duration[file]
+
+            if os.path.isabs(file):
+                full_file = file
+            else:
+                # expand file path
+                if root is None:
+                    raise ValueError(
+                        f"Found relative file name "
+                        f"{file}, "
+                        f"but db.root is None. "
+                        f"Please save database or "
+                        f"provide a root folder."
+                    )
+                full_file = os.path.join(root, file)
+                # check cache again with full path
+                if full_file in self._files_duration:
+                    return self._files_duration[full_file]
+
+            # calculate duration and cache it
+            dur = audiofile.duration(full_file)
+            dur = pd.to_timedelta(dur, unit='s')
+            self._files_duration[file] = dur
+
+            return dur
+
+        files = audeer.to_list(files)
+        y = pd.Series(
+            files,
+            index=files,
+            name=define.IndexField.FILE,
+        ).map(duration)
+
+        return y
 
     def map_files(
             self,

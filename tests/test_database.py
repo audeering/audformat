@@ -3,6 +3,7 @@ import filecmp
 import os
 
 import audeer
+import audiofile
 import pandas as pd
 import pytest
 
@@ -161,6 +162,61 @@ def test_drop_and_pick_tables():
     assert 'segments' in db
     db.drop_tables('segments')
     assert 'segments' not in db
+
+
+def test_files_duration():
+
+    db = pytest.DB
+
+    # prepare file names
+
+    files_rel = db.files
+    files_abs = [os.path.join(db.root, file) for file in files_rel]
+    durs = [
+        pd.to_timedelta(audiofile.duration(file), unit='s')
+        for file in files_abs
+    ]
+
+    # test with absolute file names
+
+    expected_abs = pd.Series(
+        durs,
+        index=files_abs,
+        name=audformat.define.IndexField.FILE,
+    )
+    for _ in range(2):
+        y = db.files_duration(files_abs)
+        pd.testing.assert_series_equal(y, expected_abs)
+
+    # test with relative file names
+
+    expected_rel = pd.Series(
+        durs,
+        index=files_rel.tolist(),
+        name=audformat.define.IndexField.FILE,
+    )
+    for _ in range(2):
+        y = db.files_duration(files_rel)
+        pd.testing.assert_series_equal(y, expected_rel)
+
+    # simulate that we have not loaded db from disk
+
+    root = db._root
+    db._root = None
+
+    with pytest.raises(ValueError):
+        db.files_duration(files_rel)
+
+    for _ in range(2):
+        y = db.files_duration(files_rel, root=root)
+        pd.testing.assert_series_equal(y, expected_rel)
+
+    # make sure we have only absolute file names in cache
+
+    expected_cache = {
+        file: dur for file, dur in zip(files_abs, durs)
+    }
+    assert db._files_duration == expected_cache
 
 
 @pytest.mark.parametrize(
