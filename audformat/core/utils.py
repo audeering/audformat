@@ -740,13 +740,13 @@ def to_segmented_index(
             :ref:`table specifications <data-tables:Tables>`
         allow_nat: if set to ``False``, ``end=NaT`` is replaced with file
             duration
-        files_duration: an optional mapping from file to duration.
-            Only relevant if ``allow_nat`` is set to ``False``.
+        files_duration: mapping from file to duration.
             If not ``None``,
-            the function will use it to look up durations.
+            the function uses it to look up durations.
             If no entry is found for a file,
-            if will be added to the mapping.
-            Expects absolute file names
+            it is added to the mapping.
+            Expects absolute file names.
+            Only relevant if ``allow_nat`` is set to ``False``
         root: root directory under which the files referenced in the index
             are stored
         num_workers: number of parallel jobs.
