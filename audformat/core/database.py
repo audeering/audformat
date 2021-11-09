@@ -330,14 +330,10 @@ class Database(HeaderBase):
 
         def duration(file: str) -> pd.Timedelta:
 
-            # check cache
-            if file in self._files_duration:
-                return self._files_duration[file]
-
+            # expand file path
             if os.path.isabs(file):
                 full_file = file
             else:
-                # expand file path
                 if root is None:
                     raise ValueError(
                         f"Found relative file name "
@@ -347,14 +343,15 @@ class Database(HeaderBase):
                         f"provide a root folder."
                     )
                 full_file = os.path.join(root, file)
-                # check cache again with full path
-                if full_file in self._files_duration:
-                    return self._files_duration[full_file]
+
+            # check cache
+            if full_file in self._files_duration:
+                return self._files_duration[full_file]
 
             # calculate duration and cache it
             dur = audiofile.duration(full_file)
             dur = pd.to_timedelta(dur, unit='s')
-            self._files_duration[file] = dur
+            self._files_duration[full_file] = dur
 
             return dur
 
