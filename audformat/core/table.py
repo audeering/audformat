@@ -80,6 +80,12 @@ class Table(HeaderBase):
         file
         f1        0
         f2        1
+        >>> table.get(as_segmented=True)
+                        values
+        file start  end
+        f1   0 days NaT      0
+        f2   0 days NaT      1
+        f3   0 days NaT      2
         >>> index_ex = filewise_index('f4')
         >>> table_ex = table.extend_index(
         ...     index_ex,

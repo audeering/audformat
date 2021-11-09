@@ -2,13 +2,11 @@ from io import StringIO
 import os
 import shutil
 
-import audiofile
 import pytest
 import numpy as np
 import pandas as pd
 
 import audformat
-from audformat import testing
 from audformat import utils
 from audformat import define
 
