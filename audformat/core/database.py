@@ -345,6 +345,7 @@ class Database(HeaderBase):
                 full_file = os.path.join(root, file)
 
             # check cache
+            full_file = audeer.safe_path(full_file)
             if full_file in self._files_duration:
                 return self._files_duration[full_file]
 
