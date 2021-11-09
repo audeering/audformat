@@ -465,6 +465,10 @@ class Table(HeaderBase):
                 str, typing.Union[str, typing.Sequence[str]]
             ] = None,
             copy: bool = True,
+            as_segmented: bool = False,
+            allow_nat: bool = True,
+            num_workers: typing.Optional[int] = 1,
+            verbose: bool = False,
     ) -> pd.DataFrame:
         r"""Get labels.
 
@@ -487,6 +491,13 @@ class Table(HeaderBase):
                 values to age and gender, respectively.
                 To also keep the original column with speaker IDS, you can do
                 ``map={'speaker': ['speaker', 'age', 'gender']}``
+            as_segmented: always return with a ``segmented`` index
+            allow_nat: if set to ``False``,
+                ``end=NaT`` is replaced with file duration
+            num_workers: number of parallel jobs.
+                If ``None`` will be set to the number of processors
+                on the machine multiplied by 5
+            verbose: show progress bar
 
         Returns:
             labels
@@ -544,6 +555,20 @@ class Table(HeaderBase):
                             )
                 if column not in mapped_columns:
                     result.drop(columns=column, inplace=True)
+
+        # if necessary, convert to segmented index and replace NaT
+        is_segmented = index_type(result.index) == define.IndexType.SEGMENTED
+        if (not is_segmented and as_segmented)\
+                or (is_segmented and not allow_nat):
+            files_duration = self.db._files_duration if self.db else None
+            new_index = utils.to_segmented_index(
+                result.index,
+                allow_nat=allow_nat,
+                files_duration=files_duration,
+                num_workers=num_workers,
+                verbose=verbose,
+            )
+            result = result.set_axis(new_index)
 
         return result.copy() if (copy and not result_is_copy) else result
 
