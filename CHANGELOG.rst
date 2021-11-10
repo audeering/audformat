@@ -10,6 +10,11 @@ and this project adheres to `Semantic Versioning`_.
 Version 0.12.0 (2021-11-04)
 ---------------------------
 
+* Added: ``as_segmented``, ``allow_nat``, ``root``, ``num_workers``
+  arguments to ``audformat.Table.get()``
+* Added: ``as_segmented``, ``allow_nat``, ``root``, ``num_workers``
+  arguments to ``audformat.Column.get()``
+* Added: ``audformat.Database.files_duration()``
 * Changed: changed default value of ``load_data`` argument
   in ``audformat.Database.load()`` to ``False``
 * Changed: speed up ``audformat.Database.files``
