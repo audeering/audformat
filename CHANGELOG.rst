@@ -7,6 +7,23 @@ The format is based on `Keep a Changelog`_,
 and this project adheres to `Semantic Versioning`_.
 
 
+Version 0.12.0 (2021-11-10)
+---------------------------
+
+* Added: ``as_segmented``, ``allow_nat``, ``root``, ``num_workers``
+  arguments to ``audformat.Table.get()``
+* Added: ``as_segmented``, ``allow_nat``, ``root``, ``num_workers``
+  arguments to ``audformat.Column.get()``
+* Added: ``files_duration`` argument
+  to ``audformat.utils.to_segmented_index()``
+* Added: ``audformat.Database.files_duration()``
+* Changed: changed default value of ``load_data`` argument
+  in ``audformat.Database.load()`` to ``False``
+* Changed: speed up ``audformat.Database.files``
+  and ``audformat.Database.segments``
+* Fixed: re-add support for ``pandas>=1.3``
+
+
 Version 0.11.6 (2021-08-20)
 ---------------------------
 
