@@ -154,7 +154,13 @@ class Column(HeaderBase):
                 assigned to a scheme that contains a dict mapping
                 speaker IDs to age entries, ``map='age'``
                 will replace the ID values with the age of the speaker
-            as_segmented: always return a segmented index
+            as_segmented: if set to ``True``
+                and column has a filewise index,
+                the index of the returned column
+                will be converted to a segmented index.
+                ``start`` will be set to ``0`` and
+                ``end`` to ``NaT`` or to the file duration
+                if ``allow_nat`` is set to ``False``
             allow_nat: if set to ``False``,
                 ``end=NaT`` is replaced with file duration
             root: root directory under which the files are stored.

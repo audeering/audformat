@@ -498,7 +498,13 @@ class Table(HeaderBase):
                 values to age and gender, respectively.
                 To also keep the original column with speaker IDS, you can do
                 ``map={'speaker': ['speaker', 'age', 'gender']}``
-            as_segmented: always return a segmented index
+            as_segmented: if set to ``True``
+                and table has a filewise index,
+                the index of the returned table
+                will be converted to a segmented index.
+                ``start`` will be set to ``0`` and
+                ``end`` to ``NaT`` or to the file duration
+                if ``allow_nat`` is set to ``False``
             allow_nat: if set to ``False``,
                 ``end=NaT`` is replaced with file duration
             root: root directory under which the files are stored.
