@@ -571,8 +571,10 @@ class Table(HeaderBase):
 
         # if necessary, convert to segmented index and replace NaT
         is_segmented = index_type(result.index) == define.IndexType.SEGMENTED
-        if (not is_segmented and as_segmented)\
-                or (is_segmented and not allow_nat):
+        if (
+                (not is_segmented and as_segmented)
+                or (is_segmented and not allow_nat)
+        ):
             files_duration = None
             if self.db is not None:
                 files_duration = self.db._files_duration
