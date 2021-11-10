@@ -63,7 +63,7 @@
 
           <a href="../../../index.html">
           
-            <img src="../../../_static/images/audeering.svg" class="logo" alt="audEERING"/>
+            <img src="../../../_static/images/audeering.png" class="logo" alt="audEERING"/>
           
           
             <span> audformat</span>
@@ -74,7 +74,7 @@
             
             
               <div class="version">
-                v0.11.6
+                v0.12.0
               </div>
             
           
@@ -153,40 +153,14 @@
         
         <div class="rst-content">
         
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
-      <li><a href="../../../index.html">Docs</a> &raquo;</li>
-        
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
           <li><a href="../../index.html">Module code</a> &raquo;</li>
-        
       <li>audformat.core.column</li>
-    
-    
       <li class="wy-breadcrumbs-aside">
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
@@ -326,6 +300,11 @@
             <span class="o">*</span><span class="p">,</span>
             <span class="nb">map</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
             <span class="n">copy</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="n">as_segmented</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+            <span class="n">allow_nat</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="n">root</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">num_workers</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+            <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">:</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Get labels.</span>
 
@@ -344,11 +323,30 @@
 <span class="sd">                assigned to a scheme that contains a dict mapping</span>
 <span class="sd">                speaker IDs to age entries, ``map=&#39;age&#39;``</span>
 <span class="sd">                will replace the ID values with the age of the speaker</span>
+<span class="sd">            as_segmented: if set to ``True``</span>
+<span class="sd">                and column has a filewise index,</span>
+<span class="sd">                the index of the returned column</span>
+<span class="sd">                will be converted to a segmented index.</span>
+<span class="sd">                ``start`` will be set to ``0`` and</span>
+<span class="sd">                ``end`` to ``NaT`` or to the file duration</span>
+<span class="sd">                if ``allow_nat`` is set to ``False``</span>
+<span class="sd">            allow_nat: if set to ``False``,</span>
+<span class="sd">                ``end=NaT`` is replaced with file duration</span>
+<span class="sd">            root: root directory under which the files are stored.</span>
+<span class="sd">                Provide if file names are relative and</span>
+<span class="sd">                database was not saved or loaded from disk.</span>
+<span class="sd">                If ``None`` :attr:`audformat.Database.root` is used.</span>
+<span class="sd">                Only relevant if ``allow_nat`` is set to ``False``</span>
+<span class="sd">            num_workers: number of parallel jobs.</span>
+<span class="sd">                If ``None`` will be set to the number of processors</span>
+<span class="sd">                on the machine multiplied by 5</span>
+<span class="sd">            verbose: show progress bar</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            labels</span>
 
 <span class="sd">        Raises:</span>
+<span class="sd">            FileNotFoundError: if file is not found</span>
 <span class="sd">            RuntimeError: if column is not assigned to a table</span>
 <span class="sd">            ValueError: if trying to map without a scheme</span>
 <span class="sd">            ValueError: if trying to map from a scheme that has no labels</span>
@@ -360,7 +358,15 @@
                 <span class="s1">&#39;Column is not assigned to a table.&#39;</span>
             <span class="p">)</span>
 
-        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_table</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_table</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+            <span class="n">index</span><span class="p">,</span>
+            <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">as_segmented</span><span class="o">=</span><span class="n">as_segmented</span><span class="p">,</span>
+            <span class="n">allow_nat</span><span class="o">=</span><span class="n">allow_nat</span><span class="p">,</span>
+            <span class="n">root</span><span class="o">=</span><span class="n">root</span><span class="p">,</span>
+            <span class="n">num_workers</span><span class="o">=</span><span class="n">num_workers</span><span class="p">,</span>
+            <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span>
+        <span class="p">)</span>
         <span class="n">result</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_id</span><span class="p">]</span>
 
         <span class="k">if</span> <span class="nb">map</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -387,9 +393,9 @@
                     <span class="k">else</span><span class="p">:</span>
                         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                             <span class="sa">f</span><span class="s2">&quot;Cannot map &quot;</span>
-                            <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">mapping</span><span class="si">}</span><span class="s2">&#39; &quot;</span>
+                            <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_id</span><span class="si">}</span><span class="s2">&#39; &quot;</span>
                             <span class="sa">f</span><span class="s2">&quot;to &quot;</span>
-                            <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_id</span><span class="si">}</span><span class="s2">&#39;. &quot;</span>
+                            <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="nb">map</span><span class="si">}</span><span class="s2">&#39;. &quot;</span>
                             <span class="sa">f</span><span class="s2">&quot;Expected one of &quot;</span>
                             <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="si">}</span><span class="s2">.&quot;</span>
                         <span class="p">)</span>
@@ -486,7 +492,7 @@
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2021/08/20 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2021/11/10 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>

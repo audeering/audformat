@@ -65,7 +65,7 @@
 
           <a href="index.html">
           
-            <img src="_static/images/audeering.svg" class="logo" alt="audEERING"/>
+            <img src="_static/images/audeering.png" class="logo" alt="audEERING"/>
           
           
             <span> audformat</span>
@@ -76,7 +76,7 @@
             
             
               <div class="version">
-                v0.11.6
+                v0.12.0
               </div>
             
           
@@ -165,44 +165,14 @@
         
         <div class="rst-content">
         
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
-      <li><a href="index.html">Docs</a> &raquo;</li>
-        
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
       <li>Tables</li>
-    
-    
       <li class="wy-breadcrumbs-aside">
-        
-            
-            
-              <a href="https://github.com/audeering/audformat/blob/v0.11.6/docs/data-tables.rst" class="fa fa-github"> Edit on GitHub</a>
-            
-          
-        
+              <a href="https://github.com/audeering/audformat/" class="fa fa-github"> GitHub</a>
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
@@ -432,6 +402,66 @@ columns:
     </tr>
     <tr>
       <th>f3</th>
+      <td>3</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<p>Access labels with a segmented index:</p>
+<div class="jupyter_cell jupyter_container docutils container">
+<div class="cell_input code_cell docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="p">[</span><span class="s1">&#39;filewise&#39;</span><span class="p">][</span><span class="s1">&#39;values&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">as_segmented</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th></th>
+      <th></th>
+      <th>values</th>
+    </tr>
+    <tr>
+      <th>file</th>
+      <th>start</th>
+      <th>end</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>f1</th>
+      <th>0 days</th>
+      <th>NaT</th>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>f2</th>
+      <th>0 days</th>
+      <th>NaT</th>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>f3</th>
+      <th>0 days</th>
+      <th>NaT</th>
       <td>3</td>
     </tr>
   </tbody>
@@ -1116,7 +1146,7 @@ columns:
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2021/08/20 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2021/11/10 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>

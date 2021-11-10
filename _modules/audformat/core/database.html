@@ -63,7 +63,7 @@
 
           <a href="../../../index.html">
           
-            <img src="../../../_static/images/audeering.svg" class="logo" alt="audEERING"/>
+            <img src="../../../_static/images/audeering.png" class="logo" alt="audEERING"/>
           
           
             <span> audformat</span>
@@ -74,7 +74,7 @@
             
             
               <div class="version">
-                v0.11.6
+                v0.12.0
               </div>
             
           
@@ -153,40 +153,14 @@
         
         <div class="rst-content">
         
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
-      <li><a href="../../../index.html">Docs</a> &raquo;</li>
-        
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
           <li><a href="../../index.html">Module code</a> &raquo;</li>
-        
       <li>audformat.core.database</li>
-    
-    
       <li class="wy-breadcrumbs-aside">
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
@@ -199,6 +173,7 @@
 <span class="kn">import</span> <span class="nn">shutil</span>
 <span class="kn">import</span> <span class="nn">typing</span>
 
+<span class="kn">import</span> <span class="nn">audiofile</span>
 <span class="kn">import</span> <span class="nn">oyaml</span> <span class="k">as</span> <span class="nn">yaml</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 
@@ -206,7 +181,6 @@
 
 <span class="kn">from</span> <span class="nn">audformat.core</span> <span class="kn">import</span> <span class="n">define</span>
 <span class="kn">from</span> <span class="nn">audformat.core</span> <span class="kn">import</span> <span class="n">utils</span>
-<span class="kn">from</span> <span class="nn">audformat.core.index</span> <span class="kn">import</span> <span class="n">segmented_index</span>
 <span class="kn">from</span> <span class="nn">audformat.core.column</span> <span class="kn">import</span> <span class="n">Column</span>
 <span class="kn">from</span> <span class="nn">audformat.core.common</span> <span class="kn">import</span> <span class="n">HeaderBase</span><span class="p">,</span> <span class="n">HeaderDict</span>
 <span class="kn">from</span> <span class="nn">audformat.core.errors</span> <span class="kn">import</span> <span class="n">BadIdError</span>
@@ -361,6 +335,8 @@
         <span class="p">)</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Dictionary of tables&quot;&quot;&quot;</span>
 
+        <span class="bp">self</span><span class="o">.</span><span class="n">_files_duration</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_root</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="nd">@property</span>
@@ -373,10 +349,10 @@
 <span class="sd">            files</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">index</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">([],</span> <span class="n">name</span><span class="o">=</span><span class="n">define</span><span class="o">.</span><span class="n">IndexField</span><span class="o">.</span><span class="n">FILE</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">table</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tables</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
-            <span class="n">index</span> <span class="o">=</span> <span class="n">index</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="n">table</span><span class="o">.</span><span class="n">files</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">())</span>
-        <span class="k">return</span> <span class="n">index</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">()</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">union</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">table</span><span class="o">.</span><span class="n">files</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">()</span> <span class="k">for</span> <span class="n">table</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tables</span><span class="o">.</span><span class="n">values</span><span class="p">()]</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">index</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">is_portable</span><span class="p">(</span>
@@ -428,12 +404,14 @@
 <span class="sd">            segments</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">index</span> <span class="o">=</span> <span class="n">segmented_index</span><span class="p">()</span>
-        <span class="k">for</span> <span class="n">table</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tables</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
-            <span class="k">if</span> <span class="n">table</span><span class="o">.</span><span class="n">is_segmented</span><span class="p">:</span>
-                <span class="n">index</span> <span class="o">=</span> <span class="n">index</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="n">table</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
-        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">MultiIndex</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">index</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">()</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">union</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="n">table</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">index</span>
+                <span class="k">for</span> <span class="n">table</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tables</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">table</span><span class="o">.</span><span class="n">is_segmented</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">index</span>
 
 <div class="viewcode-block" id="Database.drop_files"><a class="viewcode-back" href="../../../api.html#audformat.Database.drop_files">[docs]</a>    <span class="k">def</span> <span class="nf">drop_files</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
@@ -480,6 +458,81 @@
             <span class="n">table_ids</span> <span class="o">=</span> <span class="p">[</span><span class="n">table_ids</span><span class="p">]</span>
         <span class="k">for</span> <span class="n">table_id</span> <span class="ow">in</span> <span class="n">table_ids</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">tables</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">table_id</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Database.files_duration"><a class="viewcode-back" href="../../../api.html#audformat.Database.files_duration">[docs]</a>    <span class="k">def</span> <span class="nf">files_duration</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">files</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span>
+            <span class="o">*</span><span class="p">,</span>
+            <span class="n">root</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">:</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Duration of files in the database.</span>
+
+<span class="sd">        Use ``db.files_duration(db.files).sum()``</span>
+<span class="sd">        to get the total duration of all files in a database.</span>
+<span class="sd">        Or ``db.files_duration(db[table_id].files).sum()``</span>
+<span class="sd">        to get the total duration of all files assigned to a table.</span>
+
+<span class="sd">        .. note:: Durations are cached,</span>
+<span class="sd">            i.e. changing the files on disk after calling</span>
+<span class="sd">            this function can lead to wrong results.</span>
+<span class="sd">            The cache is cleared when the</span>
+<span class="sd">            database is reloaded from disk.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            files: file names</span>
+<span class="sd">            root: root directory under which the files are stored.</span>
+<span class="sd">                Provide if file names are relative and</span>
+<span class="sd">                database was not saved or loaded from disk.</span>
+<span class="sd">                If ``None`` :attr:`audformat.Database.root` is used</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            mapping from file to duration</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError: if ``root`` is not set</span>
+<span class="sd">                when using relative file names</span>
+<span class="sd">                with a database that was not saved</span>
+<span class="sd">                or loaded from disk</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">root</span> <span class="o">=</span> <span class="n">root</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">root</span>
+
+        <span class="k">def</span> <span class="nf">duration</span><span class="p">(</span><span class="n">file</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Timedelta</span><span class="p">:</span>
+
+            <span class="c1"># expand file path</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isabs</span><span class="p">(</span><span class="n">file</span><span class="p">):</span>
+                <span class="n">full_file</span> <span class="o">=</span> <span class="n">file</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">root</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;Found relative file name &quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">file</span><span class="si">}</span><span class="s2">, &quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot;but db.root is None. &quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot;Please save database or &quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot;provide a root folder.&quot;</span>
+                    <span class="p">)</span>
+                <span class="n">full_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">file</span><span class="p">)</span>
+
+            <span class="c1"># check cache</span>
+            <span class="n">full_file</span> <span class="o">=</span> <span class="n">audeer</span><span class="o">.</span><span class="n">safe_path</span><span class="p">(</span><span class="n">full_file</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">full_file</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_files_duration</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_files_duration</span><span class="p">[</span><span class="n">full_file</span><span class="p">]</span>
+
+            <span class="c1"># calculate duration and cache it</span>
+            <span class="n">dur</span> <span class="o">=</span> <span class="n">audiofile</span><span class="o">.</span><span class="n">duration</span><span class="p">(</span><span class="n">full_file</span><span class="p">)</span>
+            <span class="n">dur</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_timedelta</span><span class="p">(</span><span class="n">dur</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;s&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_files_duration</span><span class="p">[</span><span class="n">full_file</span><span class="p">]</span> <span class="o">=</span> <span class="n">dur</span>
+
+            <span class="k">return</span> <span class="n">dur</span>
+
+        <span class="n">files</span> <span class="o">=</span> <span class="n">audeer</span><span class="o">.</span><span class="n">to_list</span><span class="p">(</span><span class="n">files</span><span class="p">)</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span>
+            <span class="n">files</span><span class="p">,</span>
+            <span class="n">index</span><span class="o">=</span><span class="n">files</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="n">define</span><span class="o">.</span><span class="n">IndexField</span><span class="o">.</span><span class="n">FILE</span><span class="p">,</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">duration</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">y</span></div>
 
 <div class="viewcode-block" id="Database.map_files"><a class="viewcode-back" href="../../../api.html#audformat.Database.map_files">[docs]</a>    <span class="k">def</span> <span class="nf">map_files</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
@@ -648,6 +701,7 @@
                 <span class="n">task_description</span><span class="o">=</span><span class="s1">&#39;Save tables&#39;</span><span class="p">,</span>
             <span class="p">)</span>
 
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_root</span> <span class="o">=</span> <span class="n">root</span></div>
 
 <div class="viewcode-block" id="Database.update"><a class="viewcode-back" href="../../../api.html#audformat.Database.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span>
@@ -880,7 +934,7 @@
             <span class="n">root</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
             <span class="o">*</span><span class="p">,</span>
             <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;db&#39;</span><span class="p">,</span>
-            <span class="n">load_data</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="n">load_data</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
             <span class="n">num_workers</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
             <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Database&#39;</span><span class="p">:</span>
@@ -893,8 +947,15 @@
 <span class="sd">        Args:</span>
 <span class="sd">            root: root directory</span>
 <span class="sd">            name: base name of header and table files</span>
-<span class="sd">            load_data: if ``False`` :class:`audformat.Table`</span>
-<span class="sd">                will contain empty tables</span>
+<span class="sd">            load_data: if ``False``,</span>
+<span class="sd">                :class:`audformat.Table`</span>
+<span class="sd">                data is only loaded on demand,</span>
+<span class="sd">                e.g. when</span>
+<span class="sd">                :meth:`audformat.Table.get`</span>
+<span class="sd">                is called for the first time.</span>
+<span class="sd">                Set to ``True`` to load all</span>
+<span class="sd">                :class:`audformat.Table`</span>
+<span class="sd">                data immediately</span>
 <span class="sd">            num_workers: number of parallel jobs.</span>
 <span class="sd">                If ``None`` will be set to the number of processors</span>
 <span class="sd">                on the machine multiplied by 5</span>
@@ -916,23 +977,34 @@
             <span class="n">header</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="n">Loader</span><span class="o">=</span><span class="n">yaml</span><span class="o">.</span><span class="n">Loader</span><span class="p">)</span>
             <span class="n">db</span> <span class="o">=</span> <span class="n">Database</span><span class="o">.</span><span class="n">load_header_from_yaml</span><span class="p">(</span><span class="n">header</span><span class="p">)</span>
 
-            <span class="k">if</span> <span class="s1">&#39;tables&#39;</span> <span class="ow">in</span> <span class="n">header</span> <span class="ow">and</span> <span class="n">header</span><span class="p">[</span><span class="s1">&#39;tables&#39;</span><span class="p">]</span> <span class="ow">and</span> <span class="n">load_data</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s1">&#39;tables&#39;</span> <span class="ow">in</span> <span class="n">header</span> <span class="ow">and</span> <span class="n">header</span><span class="p">[</span><span class="s1">&#39;tables&#39;</span><span class="p">]:</span>
 
-                <span class="k">def</span> <span class="nf">job</span><span class="p">(</span><span class="n">table_id</span><span class="p">):</span>
-                    <span class="n">table</span> <span class="o">=</span> <span class="n">db</span><span class="p">[</span><span class="n">table_id</span><span class="p">]</span>
-                    <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">name</span> <span class="o">+</span> <span class="s1">&#39;.&#39;</span> <span class="o">+</span> <span class="n">table_id</span><span class="p">)</span>
-                    <span class="n">table</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">load_data</span><span class="p">:</span>
 
-                <span class="n">audeer</span><span class="o">.</span><span class="n">run_tasks</span><span class="p">(</span>
-                    <span class="n">job</span><span class="p">,</span>
-                    <span class="n">params</span><span class="o">=</span><span class="p">[</span>
-                        <span class="p">([</span><span class="n">table_id</span><span class="p">],</span> <span class="p">{})</span> <span class="k">for</span> <span class="n">table_id</span> <span class="ow">in</span> <span class="n">header</span><span class="p">[</span><span class="s1">&#39;tables&#39;</span><span class="p">]</span>
-                    <span class="p">],</span>
-                    <span class="n">num_workers</span><span class="o">=</span><span class="n">num_workers</span><span class="p">,</span>
-                    <span class="n">progress_bar</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span>
-                    <span class="n">task_description</span><span class="o">=</span><span class="s1">&#39;Load tables&#39;</span><span class="p">,</span>
-                <span class="p">)</span>
+                    <span class="k">def</span> <span class="nf">job</span><span class="p">(</span><span class="n">table_id</span><span class="p">):</span>
+                        <span class="n">table</span> <span class="o">=</span> <span class="n">db</span><span class="p">[</span><span class="n">table_id</span><span class="p">]</span>
+                        <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">name</span> <span class="o">+</span> <span class="s1">&#39;.&#39;</span> <span class="o">+</span> <span class="n">table_id</span><span class="p">)</span>
+                        <span class="n">table</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
 
+                    <span class="c1"># load all tables into memory</span>
+                    <span class="n">audeer</span><span class="o">.</span><span class="n">run_tasks</span><span class="p">(</span>
+                        <span class="n">job</span><span class="p">,</span>
+                        <span class="n">params</span><span class="o">=</span><span class="p">[</span>
+                            <span class="p">([</span><span class="n">table_id</span><span class="p">],</span> <span class="p">{})</span> <span class="k">for</span> <span class="n">table_id</span> <span class="ow">in</span> <span class="n">header</span><span class="p">[</span><span class="s1">&#39;tables&#39;</span><span class="p">]</span>
+                        <span class="p">],</span>
+                        <span class="n">num_workers</span><span class="o">=</span><span class="n">num_workers</span><span class="p">,</span>
+                        <span class="n">progress_bar</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span>
+                        <span class="n">task_description</span><span class="o">=</span><span class="s1">&#39;Load tables&#39;</span><span class="p">,</span>
+                    <span class="p">)</span>
+
+                <span class="k">else</span><span class="p">:</span>
+
+                    <span class="c1"># signal that table data is not loaded</span>
+                    <span class="c1"># by setting the DataFrame to None</span>
+                    <span class="k">for</span> <span class="n">table_id</span> <span class="ow">in</span> <span class="n">header</span><span class="p">[</span><span class="s1">&#39;tables&#39;</span><span class="p">]:</span>
+                        <span class="n">db</span><span class="p">[</span><span class="n">table_id</span><span class="p">]</span><span class="o">.</span><span class="n">_df</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="n">db</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
         <span class="n">db</span><span class="o">.</span><span class="n">_root</span> <span class="o">=</span> <span class="n">root</span>
 
         <span class="k">return</span> <span class="n">db</span></div>
@@ -1052,7 +1124,7 @@
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2021/08/20 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2021/11/10 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
