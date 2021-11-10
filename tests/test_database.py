@@ -167,7 +167,6 @@ def test_drop_and_pick_tables():
 def test_files_duration():
 
     db = pytest.DB
-    db._files_duration = {}
 
     # prepare file names
 

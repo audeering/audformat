@@ -118,7 +118,6 @@ def test_filewise(num_files, values):
 def test_get_as_segmented():
 
     db = pytest.DB
-    db._files_duration = {}
 
     y = db['files']['bool'].get()
     assert audformat.index_type(y) == audformat.define.IndexType.FILEWISE
