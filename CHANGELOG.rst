@@ -14,6 +14,8 @@ Version 0.12.0 (2021-11-04)
   arguments to ``audformat.Table.get()``
 * Added: ``as_segmented``, ``allow_nat``, ``root``, ``num_workers``
   arguments to ``audformat.Column.get()``
+* Added: ``files_duration`` argument
+  to ``audformat.utils.to_segmented_index()``
 * Added: ``audformat.Database.files_duration()``
 * Changed: changed default value of ``load_data`` argument
   in ``audformat.Database.load()`` to ``False``
