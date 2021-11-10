@@ -716,6 +716,7 @@ def to_segmented_index(
         obj: typing.Union[pd.Index, pd.Series, pd.DataFrame],
         *,
         allow_nat: bool = True,
+        files_duration: typing.MutableMapping[str, pd.Timedelta] = None,
         root: str = None,
         num_workers: typing.Optional[int] = 1,
         verbose: bool = False,
@@ -739,6 +740,13 @@ def to_segmented_index(
             :ref:`table specifications <data-tables:Tables>`
         allow_nat: if set to ``False``, ``end=NaT`` is replaced with file
             duration
+        files_duration: mapping from file to duration.
+            If not ``None``,
+            used to look up durations.
+            If no entry is found for a file,
+            it is added to the mapping.
+            Expects absolute file names.
+            Only relevant if ``allow_nat`` is set to ``False``
         root: root directory under which the files referenced in the index
             are stored
         num_workers: number of parallel jobs.
@@ -783,16 +791,26 @@ def to_segmented_index(
             files = index.get_level_values(define.IndexField.FILE)
             starts = index.get_level_values(define.IndexField.START)
 
-            def job(file: str) -> float:
+            def job(file: str) -> pd.Timedelta:
+
                 if root is not None and not os.path.isabs(file):
                     file = os.path.join(root, file)
+                if files_duration is not None and file in files_duration:
+                    return files_duration[file]
+
                 if not os.path.exists(file):
                     raise FileNotFoundError(
                         errno.ENOENT,
                         os.strerror(errno.ENOENT),
                         file,
                     )
-                return audiofile.duration(file)
+                dur = audiofile.duration(file)
+                dur = pd.to_timedelta(dur, unit='s')
+
+                if files_duration is not None:
+                    files_duration[file] = dur
+
+                return dur
 
             params = [([file], {}) for file in files[idx_nat]]
             durs = audeer.run_tasks(
@@ -802,7 +820,7 @@ def to_segmented_index(
                 progress_bar=verbose,
                 task_description='Read duration',
             )
-            ends.values[idx_nat] = pd.to_timedelta(durs, unit='s')
+            ends.values[idx_nat] = durs
 
             index = segmented_index(files, starts, ends)
 

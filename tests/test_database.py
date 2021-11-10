@@ -218,6 +218,11 @@ def test_files_duration():
     }
     assert db._files_duration == expected_cache
 
+    # reset db
+
+    db._files_duration = {}
+    db._root = root
+
 
 @pytest.mark.parametrize(
     'license, license_url, expected_license, expected_url',

@@ -86,6 +86,12 @@ Access labels as :class:`pandas.Series`
 
     db['filewise']['values'].get()
 
+Access labels with a segmented index:
+
+.. jupyter-execute::
+
+    db['filewise']['values'].get(as_segmented=True)
+
 Create a segmented index:
 
 .. jupyter-execute::

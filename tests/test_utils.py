@@ -7,7 +7,6 @@ import numpy as np
 import pandas as pd
 
 import audformat
-from audformat import testing
 from audformat import utils
 from audformat import define
 
@@ -932,18 +931,20 @@ def test_read_csv(csv, result):
 
 
 @pytest.mark.parametrize(
-    'obj, allow_nat, root, expected',
+    'obj, allow_nat, files_duration, root, expected',
     [
         # empty
         (
             audformat.filewise_index(),
             True,
             None,
+            None,
             audformat.segmented_index(),
         ),
         (
             audformat.filewise_index(),
             False,
+            None,
             None,
             audformat.segmented_index(),
         ),
@@ -951,11 +952,13 @@ def test_read_csv(csv, result):
             audformat.segmented_index(),
             True,
             None,
+            None,
             audformat.segmented_index(),
         ),
         (
             audformat.segmented_index(),
             False,
+            None,
             None,
             audformat.segmented_index(),
         ),
@@ -964,11 +967,13 @@ def test_read_csv(csv, result):
             audformat.filewise_index(pytest.DB.files[:2]),
             True,
             None,
+            None,
             audformat.segmented_index(pytest.DB.files[:2]),
         ),
         (
             audformat.segmented_index(pytest.DB.files[:2]),
             True,
+            None,
             None,
             audformat.segmented_index(pytest.DB.files[:2]),
         ),
@@ -979,6 +984,7 @@ def test_read_csv(csv, result):
                 [0.2, pd.NaT],
             ),
             True,
+            None,
             None,
             audformat.segmented_index(
                 pytest.DB.files[:2],
@@ -990,6 +996,7 @@ def test_read_csv(csv, result):
         (
             audformat.filewise_index(pytest.DB.files[:2]),
             False,
+            None,
             pytest.DB_ROOT,
             audformat.segmented_index(
                 pytest.DB.files[:2],
@@ -1000,6 +1007,7 @@ def test_read_csv(csv, result):
         (
             audformat.segmented_index(pytest.DB.files[:2]),
             False,
+            None,
             pytest.DB_ROOT,
             audformat.segmented_index(
                 pytest.DB.files[:2],
@@ -1014,6 +1022,7 @@ def test_read_csv(csv, result):
                 [0.2, pd.NaT],
             ),
             False,
+            None,
             pytest.DB_ROOT,
             audformat.segmented_index(
                 pytest.DB.files[:2],
@@ -1021,10 +1030,44 @@ def test_read_csv(csv, result):
                 [0.2, pytest.FILE_DUR],
             ),
         ),
+        # provide file durations
+        (
+            audformat.filewise_index(pytest.DB.files[:2]),
+            False,
+            {
+                os.path.join(pytest.DB_ROOT, pytest.DB.files[1]):
+                    pytest.FILE_DUR * 2,
+            },
+            pytest.DB_ROOT,
+            audformat.segmented_index(
+                pytest.DB.files[:2],
+                [0.0, 0.0],
+                [pytest.FILE_DUR, pytest.FILE_DUR * 2],
+            ),
+        ),
+        (
+            audformat.segmented_index(
+                pytest.DB.files[:2],
+                [0.1, 0.5],
+                [pd.NaT, pd.NaT],
+            ),
+            False,
+            {
+                os.path.join(pytest.DB_ROOT, pytest.DB.files[1]):
+                    pytest.FILE_DUR * 2,
+            },
+            pytest.DB_ROOT,
+            audformat.segmented_index(
+                pytest.DB.files[:2],
+                [0.1, 0.5],
+                [pytest.FILE_DUR, pytest.FILE_DUR * 2],
+            ),
+        ),
         # file not found
         pytest.param(
             audformat.filewise_index(pytest.DB.files[:2]),
             False,
+            None,
             None,
             None,
             marks=pytest.mark.xfail(raises=FileNotFoundError),
@@ -1037,6 +1080,7 @@ def test_read_csv(csv, result):
             ),
             True,
             None,
+            None,
             audformat.segmented_index(pytest.DB.files[:2]),
         ),
         (
@@ -1046,19 +1090,36 @@ def test_read_csv(csv, result):
             ),
             True,
             None,
+            None,
             audformat.segmented_index(pytest.DB.files[:2]),
         ),
     ]
 )
-def test_to_segmented_index(obj, allow_nat, root, expected):
+def test_to_segmented_index(obj, allow_nat, files_duration, root, expected):
+
     result = audformat.utils.to_segmented_index(
         obj,
         allow_nat=allow_nat,
+        files_duration=files_duration,
         root=root,
     )
     if not isinstance(result, pd.Index):
         result = result.index
+
     pd.testing.assert_index_equal(result, expected)
+
+    if files_duration and not allow_nat:
+        # for filewise tables we expect a duration for every file
+        # for segmented only where end == NaT
+        files = result.get_level_values(audformat.define.IndexField.FILE)
+        if audformat.index_type(obj) == audformat.define.IndexType.SEGMENTED:
+            mask = result.get_level_values(
+                audformat.define.IndexField.END
+            ) == pd.NaT
+            files = files[mask]
+        for file in files:
+            file = os.path.join(root, file)
+            assert file in files_duration
 
 
 @pytest.mark.parametrize(

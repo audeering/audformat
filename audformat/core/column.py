@@ -131,6 +131,11 @@ class Column(HeaderBase):
             *,
             map: str = None,
             copy: bool = True,
+            as_segmented: bool = False,
+            allow_nat: bool = True,
+            root: str = None,
+            num_workers: typing.Optional[int] = 1,
+            verbose: bool = False,
     ) -> pd.Series:
         r"""Get labels.
 
@@ -149,11 +154,30 @@ class Column(HeaderBase):
                 assigned to a scheme that contains a dict mapping
                 speaker IDs to age entries, ``map='age'``
                 will replace the ID values with the age of the speaker
+            as_segmented: if set to ``True``
+                and column has a filewise index,
+                the index of the returned column
+                will be converted to a segmented index.
+                ``start`` will be set to ``0`` and
+                ``end`` to ``NaT`` or to the file duration
+                if ``allow_nat`` is set to ``False``
+            allow_nat: if set to ``False``,
+                ``end=NaT`` is replaced with file duration
+            root: root directory under which the files are stored.
+                Provide if file names are relative and
+                database was not saved or loaded from disk.
+                If ``None`` :attr:`audformat.Database.root` is used.
+                Only relevant if ``allow_nat`` is set to ``False``
+            num_workers: number of parallel jobs.
+                If ``None`` will be set to the number of processors
+                on the machine multiplied by 5
+            verbose: show progress bar
 
         Returns:
             labels
 
         Raises:
+            FileNotFoundError: if file is not found
             RuntimeError: if column is not assigned to a table
             ValueError: if trying to map without a scheme
             ValueError: if trying to map from a scheme that has no labels
@@ -165,7 +189,15 @@ class Column(HeaderBase):
                 'Column is not assigned to a table.'
             )
 
-        result = self._table.get(index, copy=False)
+        result = self._table.get(
+            index,
+            copy=False,
+            as_segmented=as_segmented,
+            allow_nat=allow_nat,
+            root=root,
+            num_workers=num_workers,
+            verbose=verbose,
+        )
         result = result[self._id]
 
         if map is not None:

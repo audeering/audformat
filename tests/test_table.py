@@ -806,6 +806,43 @@ def test_filewise(num_files, values):
     pd.testing.assert_frame_equal(table.get(), df)
 
 
+def test_get_as_segmented():
+
+    db = pytest.DB
+
+    df = db['files'].get()
+    assert audformat.index_type(df) == audformat.define.IndexType.FILEWISE
+    assert not db._files_duration
+
+    # convert to segmented index
+
+    df = db['files'].get(
+        as_segmented=True,
+        allow_nat=True,
+    )
+    assert audformat.index_type(df) == audformat.define.IndexType.SEGMENTED
+    assert not db._files_duration
+    assert df.index.get_level_values(
+        audformat.define.IndexField.END
+    ).isna().all()
+
+    # replace NaT with file duration
+
+    df = db['files'].get(
+        as_segmented=True,
+        allow_nat=False,
+    )
+    assert audformat.index_type(df) == audformat.define.IndexType.SEGMENTED
+    assert db._files_duration
+    assert not df.index.get_level_values(
+        audformat.define.IndexField.END
+    ).isna().any()
+
+    # reset db
+
+    db._files_duration = {}
+
+
 def test_load(tmpdir):
     # Test backward compatibility
     table_file = os.path.join(tmpdir, 'db.table.pkl')
