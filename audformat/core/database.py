@@ -805,7 +805,7 @@ class Database(HeaderBase):
 
         with open(path, 'r') as fp:
 
-            header = yaml.load(fp, Loader=yaml.Loader)
+            header = yaml.load(fp, Loader=yaml.CLoader)
             db = Database.load_header_from_yaml(header)
 
             if 'tables' in header and header['tables']:
