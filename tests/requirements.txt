@@ -8,5 +8,5 @@ scipy
 pandas
 tqdm
 audiofile
-oyaml
+pyyaml >=3.4.1
 dohq-artifactory

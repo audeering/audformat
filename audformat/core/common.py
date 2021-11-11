@@ -1,5 +1,5 @@
 import inspect
-import oyaml as yaml
+import yaml
 from typing import Sequence, Callable
 import textwrap
 from collections import OrderedDict

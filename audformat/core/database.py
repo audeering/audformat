@@ -5,7 +5,7 @@ import shutil
 import typing
 
 import audiofile
-import oyaml as yaml
+import yaml
 import pandas as pd
 
 import audeer
