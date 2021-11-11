@@ -6,6 +6,10 @@ import typing
 
 import audiofile
 import oyaml as yaml
+try:
+    from yaml import CLoader as Loader
+except ImportError:  # pragma: nocover
+    from yaml import Loader
 import pandas as pd
 
 import audeer
@@ -805,7 +809,7 @@ class Database(HeaderBase):
 
         with open(path, 'r') as fp:
 
-            header = yaml.load(fp, Loader=yaml.Loader)
+            header = yaml.load(fp, Loader=Loader)
             db = Database.load_header_from_yaml(header)
 
             if 'tables' in header and header['tables']:
