@@ -1107,7 +1107,7 @@ def test_read_csv(csv, result):
         (
             audformat.filewise_index(['f1.wav', 'f2.wav']),
             '',
-            audformat.filewise_index(['f1.', 'f2.']),
+            audformat.filewise_index(['f1', 'f2']),
         ),
     ]
 )

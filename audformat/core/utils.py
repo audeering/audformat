@@ -687,14 +687,18 @@ def set_file_extension(
 ) -> pd.Index:
     r"""Change the file extension of index entries.
 
-    It replaces all existing file extension
+    It replaces all existing file extensions
     in the index file path
     by the new provided one.
+    The part after the last dot
+    is considered as current file extension.
 
     Args:
         index: index with file path
             conform to :ref:`table specifications <data-tables:Tables>`
-        extension: new file extension
+        extension: new file extension.
+            If set to ``''``,
+            the current file extension is removed
 
     Returns:
         updated index
@@ -703,13 +707,19 @@ def set_file_extension(
         >>> idx = filewise_index(['f1.wav', 'f2.flac'])
         >>> set_file_extension(idx, 'mp3')
         Index(['f1.mp3', 'f2.mp3'], dtype='object', name='file')
+        >>> idx = filewise_index(['f1.wav.gz', 'f2.wav.gz'])
+        >>> set_file_extension(idx, '')
+        Index(['f1.wav', 'f2.wav'], dtype='object', name='file')
 
     """
     if len(index) == 0:
         return index
 
     cur_ext = re.compile(r'\.[a-zA-Z0-9]+$')  # match file extension
-    new_ext = f'.{extension}'
+    if extension:
+        new_ext = f'.{extension}'
+    else:
+        new_ext = ''
     is_segmented = index_type(index) == define.IndexType.SEGMENTED
 
     if is_segmented:
