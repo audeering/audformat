@@ -529,6 +529,51 @@ def test_duration(obj, expected_duration):
 
 
 @pytest.mark.parametrize(
+    'obj, expected',
+    [
+        (
+            audformat.filewise_index(),
+            '0',
+        ),
+        (
+            audformat.segmented_index(),
+            '0',
+        ),
+        (
+            audformat.filewise_index(['f1', 'f2']),
+            '-4231615416436839963',
+        ),
+        (
+            audformat.segmented_index(['f1', 'f2']),
+            '-2363261461673824215',
+        ),
+        (
+            audformat.segmented_index(['f1', 'f2']),
+            '-2363261461673824215',
+        ),
+        (
+            audformat.segmented_index(['f1', 'f2'], [0, 0], [1, 1]),
+            '-3831446135233514455',
+        ),
+        (
+            pd.Series([0, 1], audformat.filewise_index(['f1', 'f2'])),
+            '-8245754232361677810',
+        ),
+        (
+            pd.DataFrame(
+                {'a': [0, 1], 'b': [2, 3]},
+                audformat.segmented_index(['f1', 'f2'], [0, 0], [1, 1]),
+            ),
+            '-103439349488189352',
+        ),
+    ]
+)
+def test_hash(obj, expected):
+    assert utils.hash(obj) == expected
+    assert utils.hash(obj[::-1]) == expected
+
+
+@pytest.mark.parametrize(
     'objs, expected',
     [
         (
