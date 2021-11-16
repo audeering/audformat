@@ -285,6 +285,29 @@ def duration(
     return (ends - starts).sum()
 
 
+def hash_index(
+        index: pd.Index,
+) -> str:
+    r"""Create hash from index.
+
+    Indices with same entries in a different order,
+    will produce the same hash string.
+
+    Args:
+        index: index object
+
+    Returns:
+        hash string
+
+    Example:
+        >>> index = filewise_index(['f1', 'f2'])
+        >>> hash_index(index)
+        '-4231615416436839963'
+
+    """
+    return str(pd.util.hash_pandas_object(index).sum())
+
+
 def intersect(
     objs: typing.Sequence[typing.Union[pd.Index]],
 ) -> pd.Index:
