@@ -290,8 +290,9 @@ def hash(
 ) -> str:
     r"""Create hash from object.
 
-    Objects with same entries in a different order,
-    will produce the same hash string.
+    Objects with the same elements
+    produce the same hash string
+    independent of the ordering of the elements.
 
     Args:
         obj: object
