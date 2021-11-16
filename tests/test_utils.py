@@ -2,11 +2,11 @@ from io import StringIO
 import os
 import shutil
 
-import audeer
-import pytest
 import numpy as np
 import pandas as pd
+import pytest
 
+import audeer
 import audformat
 from audformat import utils
 from audformat import define
