@@ -695,7 +695,7 @@ def set_file_extension(
         index: index with file path
             conform to :ref:`table specifications <data-tables:Tables>`
         extension: new file extension
-            
+
     Returns:
         updated index
 
