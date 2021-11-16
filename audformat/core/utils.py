@@ -19,6 +19,44 @@ from audformat.core.index import (
 from audformat.core.scheme import Scheme
 
 
+def add_root(
+        obj: typing.Union[pd.Index, pd.Series, pd.DataFrame],
+        root: str,
+) -> typing.Union[pd.Index, pd.Series, pd.DataFrame]:
+    r"""Add root to file path in index.
+
+    Args:
+        obj: object conform to
+            :ref:`table specifications <data-tables:Tables>`
+        root: root directory under which the files referenced in the index
+            are stored.
+            Only relevant when the duration of the files
+            needs to be detected from the file
+
+    Returns:
+        obj with updated index
+
+    Example:
+        >>> idx = filewise_index(['a.txt', 'b.txt'])
+        >>> add_root(idx, '/root')
+        Index(['a.txt', 'b.txt'], dtype='object', name='file')
+
+    """
+    root = os.path.normpath(root)
+    if isinstance(obj, (pd.Index, pd.MultiIndex)):
+        index = obj
+    else:
+        index = obj.index
+
+    if index_type(index) == define.IndexType.FILEWISE:
+        index = root + os.path.sep + index
+        # index.name = 'file'
+    elif len(obj) > 0:
+        index = index.set_levels(root + index.levels[0], level='file')
+
+    return obj
+
+
 def concat(
         objs: typing.Sequence[typing.Union[pd.Series, pd.DataFrame]],
         *,

@@ -4,6 +4,11 @@ audformat.utils
 .. automodule:: audformat.utils
 
 
+add_root
+--------
+
+.. autofunction:: add_root
+
 concat
 ------
 
