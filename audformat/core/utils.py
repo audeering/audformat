@@ -285,10 +285,10 @@ def duration(
     return (ends - starts).sum()
 
 
-def hash_index(
+def hash(
         obj: typing.Union[pd.Index, pd.Series, pd.DataFrame],
 ) -> str:
-    r"""Create hash from index.
+    r"""Create hash from object.
 
     Indices with same entries in a different order,
     will produce the same hash string.
@@ -301,15 +301,13 @@ def hash_index(
 
     Example:
         >>> index = filewise_index(['f1', 'f2'])
-        >>> hash_index(index)
+        >>> hash(index)
         '-4231615416436839963'
         >>> y = pd.Series(0, index)
-        >>> hash_index(y)
-        '-4231615416436839963'
+        >>> hash(y)
+        '5251663970176285425'
 
     """
-    if not isinstance(obj, pd.Index):
-        obj = obj.index
     return str(pd.util.hash_pandas_object(obj).sum())
 
 

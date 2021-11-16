@@ -14,10 +14,10 @@ duration
 
 .. autofunction:: duration
 
-hash_index
-----------
+hash
+----
 
-.. autofunction:: hash_index
+.. autofunction:: hash
 
 intersect
 ---------

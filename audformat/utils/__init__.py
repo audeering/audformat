@@ -1,7 +1,7 @@
 from audformat.core.utils import (
     concat,
     duration,
-    hash_index,
+    hash,
     intersect,
     join_labels,
     join_schemes,
