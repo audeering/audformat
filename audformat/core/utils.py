@@ -1,5 +1,6 @@
 import errno
 import os
+import re
 import typing as typing
 
 import iso639
@@ -678,6 +679,41 @@ def same_dtype(d1, d2) -> bool:
         # match only if categories are the same
         return d1 == d2
     return d1.name == d2.name
+
+
+def set_file_extension(
+        index: pd.Index,
+        extension: str,
+) -> pd.Index:
+    r"""Change the file extension of index entries.
+
+    Args:
+
+    Returns:
+        updated index
+
+    Example:
+        >>> idx = filewise_index(['f1.wav', 'f2.flac'])
+        >>> set_file_extension(idx, 'mp3')
+        Index(['f1.mp3', 'f2.mp3'], dtype='object', name='file')
+
+    """
+    if len(index) == 0:
+        return index
+
+    cur_ext = re.compile(r'\.[a-zA-Z0-9]+$')  # match file extension
+    new_ext = f'.{extension}'
+    is_segmented = index_type(index) == define.IndexType.SEGMENTED
+
+    if is_segmented:
+        index = index.set_levels(
+            index.levels[0].str.replace(cur_ext, new_ext, regex=True),
+            level='file',
+        )
+    else:
+        index = index.str.replace(cur_ext, new_ext, regex=True)
+
+    return index
 
 
 def to_filewise_index(
