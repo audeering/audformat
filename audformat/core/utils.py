@@ -314,14 +314,13 @@ def expand_file_path(
     if len(index) == 0:
         return index
 
-    root = audeer.safe_path(root)
+    root = audeer.safe_path(root) + os.path.sep
     is_segmented = index_type(index) == define.IndexType.SEGMENTED
 
     if is_segmented:
-        files = root + os.path.sep + index.levels[0]
-        index = index.set_levels(files, level=0)
+        index = index.set_levels(root + index.levels[0], level=0)
     else:
-        index = root + os.path.sep + index
+        index = root + index
 
     return index
 
