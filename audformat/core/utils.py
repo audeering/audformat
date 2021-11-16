@@ -290,7 +290,7 @@ def hash(
 ) -> str:
     r"""Create hash from object.
 
-    Indices with same entries in a different order,
+    Objects with same entries in a different order,
     will produce the same hash string.
 
     Args:
