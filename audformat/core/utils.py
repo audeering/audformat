@@ -285,6 +285,47 @@ def duration(
     return (ends - starts).sum()
 
 
+def expand_file_path(
+        index: pd.Index,
+        root: str,
+) -> pd.Index:
+    r"""Expand index with relative file path.
+
+    Args:
+        index: index with relative file path conform to
+            :ref:`table specifications <data-tables:Tables>`
+        root: directory expand the file path with
+
+    Returns:
+        index with absolute file path
+
+    Raises:
+        ValueError: if index is not conform to
+            :ref:`table specifications <data-tables:Tables>`
+
+    Example:
+        >>> index = filewise_index(['f1', 'f2'])
+        >>> index
+        Index(['f1', 'f2'], dtype='object', name='file')
+        >>> expand_file_path(index, '/some/where')  # doctest: +SKIP
+        Index(['/some/where/f1', '/some/where/f2'], dtype='object', name='file')
+
+    """  # noqa: E501
+    if len(index) == 0:
+        return index
+
+    root = audeer.safe_path(root)
+    is_segmented = index_type(index) == define.IndexType.SEGMENTED
+
+    if is_segmented:
+        files = root + os.path.sep + index.levels[0]
+        index = index.set_levels(files, level=0)
+    else:
+        index = root + os.path.sep + index
+
+    return index
+
+
 def hash(
         obj: typing.Union[pd.Index, pd.Series, pd.DataFrame],
 ) -> str:
@@ -313,7 +354,7 @@ def hash(
 
 
 def intersect(
-    objs: typing.Sequence[typing.Union[pd.Index]],
+        objs: typing.Sequence[typing.Union[pd.Index]],
 ) -> pd.Index:
     r"""Intersect index objects.
 

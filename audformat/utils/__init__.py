@@ -1,6 +1,7 @@
 from audformat.core.utils import (
     concat,
     duration,
+    expand_file_path,
     hash,
     intersect,
     join_labels,
