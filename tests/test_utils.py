@@ -1072,6 +1072,51 @@ def test_read_csv(csv, result):
 
 
 @pytest.mark.parametrize(
+    'index, extension, expected_index',
+    [
+        (
+            audformat.filewise_index(),
+            'mp3',
+            audformat.filewise_index(),
+        ),
+        (
+            audformat.segmented_index(),
+            'mp3',
+            audformat.segmented_index(),
+        ),
+        (
+            audformat.filewise_index(['f1.wav', 'f2.wav']),
+            'mp3',
+            audformat.filewise_index(['f1.mp3', 'f2.mp3']),
+        ),
+        (
+            audformat.segmented_index(['f1.wav', 'f2.wav']),
+            'mp3',
+            audformat.segmented_index(['f1.mp3', 'f2.mp3']),
+        ),
+        (
+            audformat.filewise_index(['f1.WAV', 'f2.WAV']),
+            'MP3',
+            audformat.filewise_index(['f1.MP3', 'f2.MP3']),
+        ),
+        (
+            audformat.filewise_index(['f1', 'f2.wv']),
+            'mp3',
+            audformat.filewise_index(['f1', 'f2.mp3']),
+        ),
+        (
+            audformat.filewise_index(['f1.wav', 'f2.wav']),
+            '',
+            audformat.filewise_index(['f1.', 'f2.']),
+        ),
+    ]
+)
+def test_set_file_extension(index, extension, expected_index):
+    index = audformat.utils.set_file_extension(index, extension)
+    pd.testing.assert_index_equal(index, expected_index)
+
+
+@pytest.mark.parametrize(
     'obj, allow_nat, files_duration, root, expected',
     [
         # empty
