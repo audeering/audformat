@@ -286,7 +286,7 @@ def duration(
 
 
 def hash_index(
-        index: pd.Index,
+        obj: typing.Union[pd.Index, pd.Series, pd.DataFrame],
 ) -> str:
     r"""Create hash from index.
 
@@ -294,7 +294,7 @@ def hash_index(
     will produce the same hash string.
 
     Args:
-        index: index object
+        obj: object
 
     Returns:
         hash string
@@ -303,9 +303,14 @@ def hash_index(
         >>> index = filewise_index(['f1', 'f2'])
         >>> hash_index(index)
         '-4231615416436839963'
+        >>> y = pd.Series(0, index)
+        >>> hash_index(y)
+        '-4231615416436839963'
 
     """
-    return str(pd.util.hash_pandas_object(index).sum())
+    if not isinstance(obj, pd.Index):
+        obj = obj.index
+    return str(pd.util.hash_pandas_object(obj).sum())
 
 
 def intersect(
