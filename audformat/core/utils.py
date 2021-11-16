@@ -687,8 +687,15 @@ def set_file_extension(
 ) -> pd.Index:
     r"""Change the file extension of index entries.
 
-    Args:
+    It replaces all existing file extension
+    in the index file path
+    by the new provided one.
 
+    Args:
+        index: index with file path
+            conform to :ref:`table specifications <data-tables:Tables>`
+        extension: new file extension
+            
     Returns:
         updated index
 
