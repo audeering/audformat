@@ -294,7 +294,7 @@ def expand_file_path(
     Args:
         index: index with relative file path conform to
             :ref:`table specifications <data-tables:Tables>`
-        root: directory expand the file path with
+        root: directory added in front of the relative file path
 
     Returns:
         index with absolute file path
