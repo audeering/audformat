@@ -592,12 +592,12 @@ def test_duration(obj, expected_duration):
             audeer.safe_path(os.path.join('some', 'where')),
             audformat.filewise_index(
                 [
-                    audeer.safe_path(os.path.join('some', 'where')) +
-                    os.path.sep +
-                    audeer.safe_path('f1'),
-                    audeer.safe_path(os.path.join('some', 'where')) +
-                    os.path.sep +
-                    audeer.safe_path('f2'),
+                    audeer.safe_path(os.path.join('some', 'where'))
+                    + os.path.sep
+                    + audeer.safe_path('f1'),
+                    audeer.safe_path(os.path.join('some', 'where'))
+                    + os.path.sep
+                    + audeer.safe_path('f2'),
                 ]
             ),
         ),
