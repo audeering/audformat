@@ -289,7 +289,7 @@ def expand_file_path(
         index: pd.Index,
         root: str,
 ) -> pd.Index:
-    r"""Expand index with relative file path.
+    r"""Expand relative path in index with root.
 
     Args:
         index: index with relative file path conform to
