@@ -35,13 +35,21 @@ def to_timedelta(times):
 
 
 def assert_index(
-    obj: typing.Union[pd.Index, pd.Series, pd.DataFrame]
+    obj: typing.Union[pd.Index, pd.Series, pd.DataFrame],
+    *,
+    allow_duplicates: bool = False,
 ):
     r"""Assert object is conform to :ref:`table specifications
     <data-tables:Tables>`.
 
     Args:
         obj: object
+        allow_duplicates: if ``True``
+            it will not check for duplicated entries,
+            which is faster,
+            but should only be used
+            if you know
+            that the index does not contain duplicates
 
     Raises:
         ValueError: if not conform to
@@ -51,7 +59,7 @@ def assert_index(
     if isinstance(obj, (pd.Series, pd.DataFrame)):
         obj = obj.index
 
-    if obj.has_duplicates:
+    if not allow_duplicates and obj.has_duplicates:
         max_display = 10
         duplicates = obj[obj.duplicated()]
         msg_tail = '\n...' if len(duplicates) > max_display else ''
@@ -183,7 +191,7 @@ def index_type(
     if isinstance(obj, (pd.Series, pd.DataFrame)):
         obj = obj.index
 
-    assert_index(obj)
+    assert_index(obj, allow_duplicates=True)
 
     if len(obj.names) == 1:
         return define.IndexType.FILEWISE

@@ -18,6 +18,7 @@ from audformat.core.errors import (
     BadIdError,
 )
 from audformat.core.index import (
+    assert_index,
     filewise_index,
     index_type,
 )
@@ -140,6 +141,8 @@ class Table(HeaderBase):
 
         if index is None:
             index = filewise_index()
+        else:
+            assert_index(index)
 
         self.type = index_type(index)
         r"""Table type"""
