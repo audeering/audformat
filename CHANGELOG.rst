@@ -7,6 +7,15 @@ The format is based on `Keep a Changelog`_,
 and this project adheres to `Semantic Versioning`_.
 
 
+Version 0.12.1 (2021-11-17)
+---------------------------
+
+* Added: ``audformat.utils.hash()``
+* Added: ``audformat.utils.expand_file_path()``
+* Added: ``audformat.utils.replace_file_extension()``
+* Changed: use ``yaml.CLoader`` for faster header reading
+
+
 Version 0.12.0 (2021-11-10)
 ---------------------------
 
