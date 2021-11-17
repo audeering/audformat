@@ -712,7 +712,7 @@ def set_file_extension(
         >>> index = filewise_index(['f1.wav.gz', 'f2.wav.gz'])
         >>> set_file_extension(index, '')
         Index(['f1.wav', 'f2.wav'], dtype='object', name='file')
-        >>> set_file_extension(index, 'flac', pattern=r'\.wav\.gz')
+        >>> set_file_extension(index, 'flac', pattern=r'\.wav\.gz$')
         Index(['f1.flac', 'f2.flac'], dtype='object', name='file')
 
     """
