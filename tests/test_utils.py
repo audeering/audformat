@@ -2,10 +2,11 @@ from io import StringIO
 import os
 import shutil
 
-import pytest
 import numpy as np
 import pandas as pd
+import pytest
 
+import audeer
 import audformat
 from audformat import utils
 from audformat import define
@@ -526,6 +527,101 @@ def test_duration(obj, expected_duration):
         assert pd.isnull(duration)
     else:
         assert duration == expected_duration
+
+
+@pytest.mark.parametrize(
+    'index, root, expected',
+    [
+        (
+            audformat.filewise_index(),
+            None,
+            audformat.filewise_index(),
+        ),
+        (
+            audformat.segmented_index(),
+            None,
+            audformat.segmented_index(),
+        ),
+        (
+            audformat.filewise_index(['f1', 'f2']),
+            '.',
+            audformat.filewise_index(
+                [
+                    audeer.safe_path('f1'),
+                    audeer.safe_path('f2'),
+                ]
+            ),
+        ),
+        (
+            audformat.filewise_index(['f1', 'f2']),
+            os.path.join('some', 'where'),
+            audformat.filewise_index(
+                [
+                    audeer.safe_path(os.path.join('some', 'where', 'f1')),
+                    audeer.safe_path(os.path.join('some', 'where', 'f2')),
+                ]
+            ),
+        ),
+        (
+            audformat.filewise_index(['f1', 'f2']),
+            os.path.join('some', 'where') + os.path.sep,
+            audformat.filewise_index(
+                [
+                    audeer.safe_path(os.path.join('some', 'where', 'f1')),
+                    audeer.safe_path(os.path.join('some', 'where', 'f2')),
+                ]
+            ),
+        ),
+        (
+            audformat.filewise_index(['f1', 'f2']),
+            audeer.safe_path(os.path.join('some', 'where')),
+            audformat.filewise_index(
+                [
+                    audeer.safe_path(os.path.join('some', 'where', 'f1')),
+                    audeer.safe_path(os.path.join('some', 'where', 'f2')),
+                ]
+            ),
+        ),
+        (
+            audformat.filewise_index(
+                [
+                    audeer.safe_path('f1'),
+                    audeer.safe_path('f2'),
+                ]
+            ),
+            audeer.safe_path(os.path.join('some', 'where')),
+            audformat.filewise_index(
+                [
+                    audeer.safe_path(os.path.join('some', 'where'))
+                    + os.path.sep
+                    + audeer.safe_path('f1'),
+                    audeer.safe_path(os.path.join('some', 'where'))
+                    + os.path.sep
+                    + audeer.safe_path('f2'),
+                ]
+            ),
+        ),
+        (
+            audformat.segmented_index(
+                ['f1', 'f2'],
+                ['1s', '3s'],
+                ['2s', '4s'],
+            ),
+            '.',
+            audformat.segmented_index(
+                [
+                    audeer.safe_path('f1'),
+                    audeer.safe_path('f2'),
+                ],
+                ['1s', '3s'],
+                ['2s', '4s'],
+            ),
+        )
+    ]
+)
+def test_expand_file_path(tmpdir, index, root, expected):
+    expanded_index = audformat.utils.expand_file_path(index, root)
+    pd.testing.assert_index_equal(expanded_index, expected)
 
 
 @pytest.mark.parametrize(

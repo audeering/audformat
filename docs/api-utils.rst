@@ -14,6 +14,11 @@ duration
 
 .. autofunction:: duration
 
+expand_file_path
+----------------
+
+.. autofunction:: expand_file_path
+
 hash
 ----
 
