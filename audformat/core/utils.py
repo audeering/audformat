@@ -684,7 +684,7 @@ def same_dtype(d1, d2) -> bool:
 def set_file_extension(
         index: pd.Index,
         extension: str,
-        pattern: str = r'\.[a-zA-Z0-9]+$',
+        pattern: str = None,
 ) -> pd.Index:
     r"""Change the file extension of index entries.
 
@@ -700,7 +700,8 @@ def set_file_extension(
             the current file extension is removed
         pattern: regexp pattern to match current extensions.
             In contrast to ``extension``,
-            you have to include ``'.'``
+            you have to include ``'.'``.
+            If ``None`` the default of ``r'\.[a-zA-Z0-9]+$'`` is used
 
     Returns:
         updated index
@@ -719,6 +720,8 @@ def set_file_extension(
     if len(index) == 0:
         return index
 
+    if pattern is None:
+        pattern = r'\.[a-zA-Z0-9]+$'
     cur_ext = re.compile(pattern)
     if extension:
         new_ext = f'.{extension}'

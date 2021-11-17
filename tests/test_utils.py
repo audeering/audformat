@@ -1125,14 +1125,11 @@ def test_read_csv(csv, result):
     ]
 )
 def test_set_file_extension(index, extension, pattern, expected_index):
-    if pattern is None:
-        index = audformat.utils.set_file_extension(index, extension)
-    else:
-        index = audformat.utils.set_file_extension(
-            index,
-            extension,
-            pattern=pattern,
-        )
+    index = audformat.utils.set_file_extension(
+        index,
+        extension,
+        pattern=pattern,
+    )
     pd.testing.assert_index_equal(index, expected_index)
 
 
