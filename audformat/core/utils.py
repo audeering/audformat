@@ -706,13 +706,13 @@ def set_file_extension(
         updated index
 
     Example:
-        >>> idx = filewise_index(['f1.wav', 'f2.flac'])
-        >>> set_file_extension(idx, 'mp3')
+        >>> index = filewise_index(['f1.wav', 'f2.flac'])
+        >>> set_file_extension(index, 'mp3')
         Index(['f1.mp3', 'f2.mp3'], dtype='object', name='file')
-        >>> idx = filewise_index(['f1.wav.gz', 'f2.wav.gz'])
-        >>> set_file_extension(idx, '')
+        >>> index = filewise_index(['f1.wav.gz', 'f2.wav.gz'])
+        >>> set_file_extension(index, '')
         Index(['f1.wav', 'f2.wav'], dtype='object', name='file')
-        >>> set_file_extension(idx, 'flac', pattern='.wav.gz')
+        >>> set_file_extension(index, 'flac', pattern='.wav.gz')
         Index(['f1.flac', 'f2.flac'], dtype='object', name='file')
 
     """
