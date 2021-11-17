@@ -1124,8 +1124,8 @@ def test_read_csv(csv, result):
         ),
     ]
 )
-def test_set_file_extension(index, extension, pattern, expected_index):
-    index = audformat.utils.set_file_extension(
+def test_replace_file_extension(index, extension, pattern, expected_index):
+    index = audformat.utils.replace_file_extension(
         index,
         extension,
         pattern=pattern,

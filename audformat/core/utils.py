@@ -681,7 +681,7 @@ def same_dtype(d1, d2) -> bool:
     return d1.name == d2.name
 
 
-def set_file_extension(
+def replace_file_extension(
         index: pd.Index,
         extension: str,
         pattern: str = None,
@@ -708,12 +708,12 @@ def set_file_extension(
 
     Example:
         >>> index = filewise_index(['f1.wav', 'f2.flac'])
-        >>> set_file_extension(index, 'mp3')
+        >>> replace_file_extension(index, 'mp3')
         Index(['f1.mp3', 'f2.mp3'], dtype='object', name='file')
         >>> index = filewise_index(['f1.wav.gz', 'f2.wav.gz'])
-        >>> set_file_extension(index, '')
+        >>> replace_file_extension(index, '')
         Index(['f1.wav', 'f2.wav'], dtype='object', name='file')
-        >>> set_file_extension(index, 'flac', pattern=r'\.wav\.gz$')
+        >>> replace_file_extension(index, 'flac', pattern=r'\.wav\.gz$')
         Index(['f1.flac', 'f2.flac'], dtype='object', name='file')
 
     """
