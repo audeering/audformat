@@ -8,6 +8,7 @@ from audformat.core.utils import (
     join_schemes,
     map_language,
     read_csv,
+    replace_file_extension,
     to_filewise_index,
     to_segmented_index,
     union,

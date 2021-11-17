@@ -1,5 +1,6 @@
 import errno
 import os
+import re
 import typing as typing
 
 import iso639
@@ -678,6 +679,65 @@ def same_dtype(d1, d2) -> bool:
         # match only if categories are the same
         return d1 == d2
     return d1.name == d2.name
+
+
+def replace_file_extension(
+        index: pd.Index,
+        extension: str,
+        pattern: str = None,
+) -> pd.Index:
+    r"""Change the file extension of index entries.
+
+    It replaces all existing file extensions
+    in the index file path
+    by the new provided one.
+
+    Args:
+        index: index with file path
+            conform to :ref:`table specifications <data-tables:Tables>`
+        extension: new file extension without ``'.'``.
+            If set to ``''``,
+            the current file extension is removed
+        pattern: regexp pattern to match current extensions.
+            In contrast to ``extension``,
+            you have to include ``'.'``.
+            If ``None`` the default of ``r'\.[a-zA-Z0-9]+$'`` is used
+
+    Returns:
+        updated index
+
+    Example:
+        >>> index = filewise_index(['f1.wav', 'f2.flac'])
+        >>> replace_file_extension(index, 'mp3')
+        Index(['f1.mp3', 'f2.mp3'], dtype='object', name='file')
+        >>> index = filewise_index(['f1.wav.gz', 'f2.wav.gz'])
+        >>> replace_file_extension(index, '')
+        Index(['f1.wav', 'f2.wav'], dtype='object', name='file')
+        >>> replace_file_extension(index, 'flac', pattern=r'\.wav\.gz$')
+        Index(['f1.flac', 'f2.flac'], dtype='object', name='file')
+
+    """
+    if len(index) == 0:
+        return index
+
+    if pattern is None:
+        pattern = r'\.[a-zA-Z0-9]+$'
+    cur_ext = re.compile(pattern)
+    if extension:
+        new_ext = f'.{extension}'
+    else:
+        new_ext = ''
+    is_segmented = index_type(index) == define.IndexType.SEGMENTED
+
+    if is_segmented:
+        index = index.set_levels(
+            index.levels[0].str.replace(cur_ext, new_ext, regex=True),
+            level='file',
+        )
+    else:
+        index = index.str.replace(cur_ext, new_ext, regex=True)
+
+    return index
 
 
 def to_filewise_index(

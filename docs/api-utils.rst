@@ -50,6 +50,11 @@ read_csv
 
 .. autofunction:: read_csv
 
+replace_file_extension
+----------------------
+
+.. autofunction:: replace_file_extension
+
 to_filewise_index
 -----------------
 
