@@ -256,12 +256,12 @@ def duration(
 
     Example:
 
-        >>> idx = segmented_index(
+        >>> index = segmented_index(
         ...     files=['a', 'b', 'c'],
         ...     starts=[0, 1, 3],
         ...     ends=[1, 2, 4],
         ... )
-        >>> duration(idx)
+        >>> duration(index)
         Timedelta('0 days 00:00:03')
 
     """
@@ -374,25 +374,25 @@ def intersect(
             :ref:`table specifications <data-tables:Tables>`
 
     Example:
-        >>> i1 = filewise_index(['f1', 'f2', 'f3'])
-        >>> i2 = filewise_index(['f2', 'f3', 'f4'])
-        >>> intersect([i1, i2])
+        >>> index1 = filewise_index(['f1', 'f2', 'f3'])
+        >>> index2 = filewise_index(['f2', 'f3', 'f4'])
+        >>> intersect([index1, index2])
         Index(['f2', 'f3'], dtype='object', name='file')
-        >>> i3 = segmented_index(
+        >>> index3 = segmented_index(
         ...     ['f1', 'f2', 'f3', 'f4'],
         ...     [0, 0, 0, 0],
         ...     [1, 1, 1, 1],
         ... )
-        >>> i4 = segmented_index(
+        >>> index4 = segmented_index(
         ...     ['f1', 'f2', 'f3'],
         ...     [0, 0, 1],
         ...     [1, 1, 2],
         ... )
-        >>> intersect([i3, i4])
+        >>> intersect([index3, index4])
         MultiIndex([('f1', '0 days', '0 days 00:00:01'),
                     ('f2', '0 days', '0 days 00:00:01')],
                    names=['file', 'start', 'end'])
-        >>> intersect([i1, i2, i3, i4])
+        >>> intersect([index1, index2, index3, index4])
         MultiIndex([('f2', '0 days', '0 days 00:00:01')],
                    names=['file', 'start', 'end'])
 
@@ -922,21 +922,21 @@ def union(
             :ref:`table specifications <data-tables:Tables>`
 
     Example:
-        >>> i1 = filewise_index(['f1', 'f2', 'f3'])
-        >>> i2 = filewise_index(['f2', 'f3', 'f4'])
-        >>> union([i1, i2])
+        >>> index1 = filewise_index(['f1', 'f2', 'f3'])
+        >>> index2 = filewise_index(['f2', 'f3', 'f4'])
+        >>> union([index1, index2])
         Index(['f1', 'f2', 'f3', 'f4'], dtype='object', name='file')
-        >>> i3 = segmented_index(
+        >>> index3 = segmented_index(
         ...     ['f1', 'f2', 'f3', 'f4'],
         ...     [0, 0, 0, 0],
         ...     [1, 1, 1, 1],
         ... )
-        >>> i4 = segmented_index(
+        >>> index4 = segmented_index(
         ...     ['f1', 'f2', 'f3'],
         ...     [0, 0, 1],
         ...     [1, 1, 2],
         ... )
-        >>> union([i3, i4])
+        >>> union([index3, index4])
         MultiIndex([('f1', '0 days 00:00:00', '0 days 00:00:01'),
                     ('f2', '0 days 00:00:00', '0 days 00:00:01'),
                     ('f3', '0 days 00:00:00', '0 days 00:00:01'),
@@ -944,7 +944,7 @@ def union(
                     ('f4', '0 days 00:00:00', '0 days 00:00:01')],
                    names=['file', 'start', 'end'])
 
-        >>> union([i1, i2, i3, i4])
+        >>> union([index1, index2, index3, index4])
         MultiIndex([('f1', '0 days 00:00:00',               NaT),
                     ('f1', '0 days 00:00:00', '0 days 00:00:01'),
                     ('f2', '0 days 00:00:00',               NaT),
