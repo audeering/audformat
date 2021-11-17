@@ -684,21 +684,23 @@ def same_dtype(d1, d2) -> bool:
 def set_file_extension(
         index: pd.Index,
         extension: str,
+        pattern: str = r'\.[a-zA-Z0-9]+$',
 ) -> pd.Index:
     r"""Change the file extension of index entries.
 
     It replaces all existing file extensions
     in the index file path
     by the new provided one.
-    The part after the last dot
-    is considered as current file extension.
 
     Args:
         index: index with file path
             conform to :ref:`table specifications <data-tables:Tables>`
-        extension: new file extension.
+        extension: new file extension without ``'.'``.
             If set to ``''``,
             the current file extension is removed
+        pattern: regexp pattern to match current extensions.
+            In contrast to ``extension``,
+            you have to include ``'.'``
 
     Returns:
         updated index
@@ -710,12 +712,14 @@ def set_file_extension(
         >>> idx = filewise_index(['f1.wav.gz', 'f2.wav.gz'])
         >>> set_file_extension(idx, '')
         Index(['f1.wav', 'f2.wav'], dtype='object', name='file')
+        >>> set_file_extension(idx, 'flac', pattern='.wav.gz')
+        Index(['f1.flac', 'f2.flac'], dtype='object', name='file')
 
     """
     if len(index) == 0:
         return index
 
-    cur_ext = re.compile(r'\.[a-zA-Z0-9]+$')  # match file extension
+    cur_ext = re.compile(pattern)
     if extension:
         new_ext = f'.{extension}'
     else:

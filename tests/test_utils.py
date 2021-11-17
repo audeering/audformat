@@ -1072,47 +1072,67 @@ def test_read_csv(csv, result):
 
 
 @pytest.mark.parametrize(
-    'index, extension, expected_index',
+    'index, extension, pattern, expected_index',
     [
         (
             audformat.filewise_index(),
             'mp3',
+            None,
             audformat.filewise_index(),
         ),
         (
             audformat.segmented_index(),
             'mp3',
+            None,
             audformat.segmented_index(),
         ),
         (
             audformat.filewise_index(['f1.wav', 'f2.wav']),
             'mp3',
+            None,
             audformat.filewise_index(['f1.mp3', 'f2.mp3']),
         ),
         (
             audformat.segmented_index(['f1.wav', 'f2.wav']),
             'mp3',
+            None,
             audformat.segmented_index(['f1.mp3', 'f2.mp3']),
         ),
         (
             audformat.filewise_index(['f1.WAV', 'f2.WAV']),
             'MP3',
+            None,
             audformat.filewise_index(['f1.MP3', 'f2.MP3']),
         ),
         (
             audformat.filewise_index(['f1', 'f2.wv']),
             'mp3',
+            None,
             audformat.filewise_index(['f1', 'f2.mp3']),
         ),
         (
             audformat.filewise_index(['f1.wav', 'f2.wav']),
             '',
+            None,
             audformat.filewise_index(['f1', 'f2']),
+        ),
+        (
+            audformat.filewise_index(['f1.ogg', 'f2.wav']),
+            'mp3',
+            '.ogg',
+            audformat.filewise_index(['f1.mp3', 'f2.wav']),
         ),
     ]
 )
-def test_set_file_extension(index, extension, expected_index):
-    index = audformat.utils.set_file_extension(index, extension)
+def test_set_file_extension(index, extension, pattern, expected_index):
+    if pattern is None:
+        index = audformat.utils.set_file_extension(index, extension)
+    else:
+        index = audformat.utils.set_file_extension(
+            index,
+            extension,
+            pattern=pattern,
+        )
     pd.testing.assert_index_equal(index, expected_index)
 
 
