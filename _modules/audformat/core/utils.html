@@ -74,7 +74,7 @@
             
             
               <div class="version">
-                v0.12.0
+                v0.12.1
               </div>
             
           
@@ -169,6 +169,7 @@
   <h1>Source code for audformat.core.utils</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">errno</span>
 <span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">typing</span> <span class="k">as</span> <span class="nn">typing</span>
 
 <span class="kn">import</span> <span class="nn">iso639</span>
@@ -425,12 +426,12 @@
 
 <span class="sd">    Example:</span>
 
-<span class="sd">        &gt;&gt;&gt; idx = segmented_index(</span>
+<span class="sd">        &gt;&gt;&gt; index = segmented_index(</span>
 <span class="sd">        ...     files=[&#39;a&#39;, &#39;b&#39;, &#39;c&#39;],</span>
 <span class="sd">        ...     starts=[0, 1, 3],</span>
 <span class="sd">        ...     ends=[1, 2, 4],</span>
 <span class="sd">        ... )</span>
-<span class="sd">        &gt;&gt;&gt; duration(idx)</span>
+<span class="sd">        &gt;&gt;&gt; duration(index)</span>
 <span class="sd">        Timedelta(&#39;0 days 00:00:03&#39;)</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -454,8 +455,75 @@
     <span class="k">return</span> <span class="p">(</span><span class="n">ends</span> <span class="o">-</span> <span class="n">starts</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span></div>
 
 
+<div class="viewcode-block" id="expand_file_path"><a class="viewcode-back" href="../../../api-utils.html#audformat.utils.expand_file_path">[docs]</a><span class="k">def</span> <span class="nf">expand_file_path</span><span class="p">(</span>
+        <span class="n">index</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">,</span>
+        <span class="n">root</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">:</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Expand relative path in index with root.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        index: index with relative file path conform to</span>
+<span class="sd">            :ref:`table specifications &lt;data-tables:Tables&gt;`</span>
+<span class="sd">        root: directory added in front of the relative file path</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        index with absolute file path</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        ValueError: if index is not conform to</span>
+<span class="sd">            :ref:`table specifications &lt;data-tables:Tables&gt;`</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; index = filewise_index([&#39;f1&#39;, &#39;f2&#39;])</span>
+<span class="sd">        &gt;&gt;&gt; index</span>
+<span class="sd">        Index([&#39;f1&#39;, &#39;f2&#39;], dtype=&#39;object&#39;, name=&#39;file&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; expand_file_path(index, &#39;/some/where&#39;)  # doctest: +SKIP</span>
+<span class="sd">        Index([&#39;/some/where/f1&#39;, &#39;/some/where/f2&#39;], dtype=&#39;object&#39;, name=&#39;file&#39;)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>  <span class="c1"># noqa: E501</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">index</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">index</span>
+
+    <span class="n">root</span> <span class="o">=</span> <span class="n">audeer</span><span class="o">.</span><span class="n">safe_path</span><span class="p">(</span><span class="n">root</span><span class="p">)</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">sep</span>
+    <span class="n">is_segmented</span> <span class="o">=</span> <span class="n">index_type</span><span class="p">(</span><span class="n">index</span><span class="p">)</span> <span class="o">==</span> <span class="n">define</span><span class="o">.</span><span class="n">IndexType</span><span class="o">.</span><span class="n">SEGMENTED</span>
+
+    <span class="k">if</span> <span class="n">is_segmented</span><span class="p">:</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="n">index</span><span class="o">.</span><span class="n">set_levels</span><span class="p">(</span><span class="n">root</span> <span class="o">+</span> <span class="n">index</span><span class="o">.</span><span class="n">levels</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">level</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="n">root</span> <span class="o">+</span> <span class="n">index</span>
+
+    <span class="k">return</span> <span class="n">index</span></div>
+
+
+<div class="viewcode-block" id="hash"><a class="viewcode-back" href="../../../api-utils.html#audformat.utils.hash">[docs]</a><span class="k">def</span> <span class="nf">hash</span><span class="p">(</span>
+        <span class="n">obj</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">],</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Create hash from object.</span>
+
+<span class="sd">    Objects with the same elements</span>
+<span class="sd">    produce the same hash string</span>
+<span class="sd">    independent of the ordering of the elements.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        obj: object</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        hash string</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; index = filewise_index([&#39;f1&#39;, &#39;f2&#39;])</span>
+<span class="sd">        &gt;&gt;&gt; hash(index)</span>
+<span class="sd">        &#39;-4231615416436839963&#39;</span>
+<span class="sd">        &gt;&gt;&gt; y = pd.Series(0, index)</span>
+<span class="sd">        &gt;&gt;&gt; hash(y)</span>
+<span class="sd">        &#39;5251663970176285425&#39;</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">hash_pandas_object</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span></div>
+
+
 <div class="viewcode-block" id="intersect"><a class="viewcode-back" href="../../../api-utils.html#audformat.utils.intersect">[docs]</a><span class="k">def</span> <span class="nf">intersect</span><span class="p">(</span>
-    <span class="n">objs</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">]],</span>
+        <span class="n">objs</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">]],</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">:</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Intersect index objects.</span>
 
@@ -476,25 +544,25 @@
 <span class="sd">            :ref:`table specifications &lt;data-tables:Tables&gt;`</span>
 
 <span class="sd">    Example:</span>
-<span class="sd">        &gt;&gt;&gt; i1 = filewise_index([&#39;f1&#39;, &#39;f2&#39;, &#39;f3&#39;])</span>
-<span class="sd">        &gt;&gt;&gt; i2 = filewise_index([&#39;f2&#39;, &#39;f3&#39;, &#39;f4&#39;])</span>
-<span class="sd">        &gt;&gt;&gt; intersect([i1, i2])</span>
+<span class="sd">        &gt;&gt;&gt; index1 = filewise_index([&#39;f1&#39;, &#39;f2&#39;, &#39;f3&#39;])</span>
+<span class="sd">        &gt;&gt;&gt; index2 = filewise_index([&#39;f2&#39;, &#39;f3&#39;, &#39;f4&#39;])</span>
+<span class="sd">        &gt;&gt;&gt; intersect([index1, index2])</span>
 <span class="sd">        Index([&#39;f2&#39;, &#39;f3&#39;], dtype=&#39;object&#39;, name=&#39;file&#39;)</span>
-<span class="sd">        &gt;&gt;&gt; i3 = segmented_index(</span>
+<span class="sd">        &gt;&gt;&gt; index3 = segmented_index(</span>
 <span class="sd">        ...     [&#39;f1&#39;, &#39;f2&#39;, &#39;f3&#39;, &#39;f4&#39;],</span>
 <span class="sd">        ...     [0, 0, 0, 0],</span>
 <span class="sd">        ...     [1, 1, 1, 1],</span>
 <span class="sd">        ... )</span>
-<span class="sd">        &gt;&gt;&gt; i4 = segmented_index(</span>
+<span class="sd">        &gt;&gt;&gt; index4 = segmented_index(</span>
 <span class="sd">        ...     [&#39;f1&#39;, &#39;f2&#39;, &#39;f3&#39;],</span>
 <span class="sd">        ...     [0, 0, 1],</span>
 <span class="sd">        ...     [1, 1, 2],</span>
 <span class="sd">        ... )</span>
-<span class="sd">        &gt;&gt;&gt; intersect([i3, i4])</span>
+<span class="sd">        &gt;&gt;&gt; intersect([index3, index4])</span>
 <span class="sd">        MultiIndex([(&#39;f1&#39;, &#39;0 days&#39;, &#39;0 days 00:00:01&#39;),</span>
 <span class="sd">                    (&#39;f2&#39;, &#39;0 days&#39;, &#39;0 days 00:00:01&#39;)],</span>
 <span class="sd">                   names=[&#39;file&#39;, &#39;start&#39;, &#39;end&#39;])</span>
-<span class="sd">        &gt;&gt;&gt; intersect([i1, i2, i3, i4])</span>
+<span class="sd">        &gt;&gt;&gt; intersect([index1, index2, index3, index4])</span>
 <span class="sd">        MultiIndex([(&#39;f2&#39;, &#39;0 days&#39;, &#39;0 days 00:00:01&#39;)],</span>
 <span class="sd">                   names=[&#39;file&#39;, &#39;start&#39;, &#39;end&#39;])</span>
 
@@ -782,6 +850,65 @@
     <span class="k">return</span> <span class="n">d1</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">d2</span><span class="o">.</span><span class="n">name</span>
 
 
+<div class="viewcode-block" id="replace_file_extension"><a class="viewcode-back" href="../../../api-utils.html#audformat.utils.replace_file_extension">[docs]</a><span class="k">def</span> <span class="nf">replace_file_extension</span><span class="p">(</span>
+        <span class="n">index</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">,</span>
+        <span class="n">extension</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">pattern</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">:</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Change the file extension of index entries.</span>
+
+<span class="sd">    It replaces all existing file extensions</span>
+<span class="sd">    in the index file path</span>
+<span class="sd">    by the new provided one.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        index: index with file path</span>
+<span class="sd">            conform to :ref:`table specifications &lt;data-tables:Tables&gt;`</span>
+<span class="sd">        extension: new file extension without ``&#39;.&#39;``.</span>
+<span class="sd">            If set to ``&#39;&#39;``,</span>
+<span class="sd">            the current file extension is removed</span>
+<span class="sd">        pattern: regexp pattern to match current extensions.</span>
+<span class="sd">            In contrast to ``extension``,</span>
+<span class="sd">            you have to include ``&#39;.&#39;``.</span>
+<span class="sd">            If ``None`` the default of ``r&#39;\.[a-zA-Z0-9]+$&#39;`` is used</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        updated index</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; index = filewise_index([&#39;f1.wav&#39;, &#39;f2.flac&#39;])</span>
+<span class="sd">        &gt;&gt;&gt; replace_file_extension(index, &#39;mp3&#39;)</span>
+<span class="sd">        Index([&#39;f1.mp3&#39;, &#39;f2.mp3&#39;], dtype=&#39;object&#39;, name=&#39;file&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; index = filewise_index([&#39;f1.wav.gz&#39;, &#39;f2.wav.gz&#39;])</span>
+<span class="sd">        &gt;&gt;&gt; replace_file_extension(index, &#39;&#39;)</span>
+<span class="sd">        Index([&#39;f1.wav&#39;, &#39;f2.wav&#39;], dtype=&#39;object&#39;, name=&#39;file&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; replace_file_extension(index, &#39;flac&#39;, pattern=r&#39;\.wav\.gz$&#39;)</span>
+<span class="sd">        Index([&#39;f1.flac&#39;, &#39;f2.flac&#39;], dtype=&#39;object&#39;, name=&#39;file&#39;)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">index</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">index</span>
+
+    <span class="k">if</span> <span class="n">pattern</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">pattern</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;\.[a-zA-Z0-9]+$&#39;</span>
+    <span class="n">cur_ext</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">pattern</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">extension</span><span class="p">:</span>
+        <span class="n">new_ext</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;.</span><span class="si">{</span><span class="n">extension</span><span class="si">}</span><span class="s1">&#39;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">new_ext</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="n">is_segmented</span> <span class="o">=</span> <span class="n">index_type</span><span class="p">(</span><span class="n">index</span><span class="p">)</span> <span class="o">==</span> <span class="n">define</span><span class="o">.</span><span class="n">IndexType</span><span class="o">.</span><span class="n">SEGMENTED</span>
+
+    <span class="k">if</span> <span class="n">is_segmented</span><span class="p">:</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="n">index</span><span class="o">.</span><span class="n">set_levels</span><span class="p">(</span>
+            <span class="n">index</span><span class="o">.</span><span class="n">levels</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">cur_ext</span><span class="p">,</span> <span class="n">new_ext</span><span class="p">,</span> <span class="n">regex</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+            <span class="n">level</span><span class="o">=</span><span class="s1">&#39;file&#39;</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="n">index</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">cur_ext</span><span class="p">,</span> <span class="n">new_ext</span><span class="p">,</span> <span class="n">regex</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">index</span></div>
+
+
 <div class="viewcode-block" id="to_filewise_index"><a class="viewcode-back" href="../../../api-utils.html#audformat.utils.to_filewise_index">[docs]</a><span class="k">def</span> <span class="nf">to_filewise_index</span><span class="p">(</span>
         <span class="n">obj</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">],</span>
         <span class="n">root</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -1024,21 +1151,21 @@
 <span class="sd">            :ref:`table specifications &lt;data-tables:Tables&gt;`</span>
 
 <span class="sd">    Example:</span>
-<span class="sd">        &gt;&gt;&gt; i1 = filewise_index([&#39;f1&#39;, &#39;f2&#39;, &#39;f3&#39;])</span>
-<span class="sd">        &gt;&gt;&gt; i2 = filewise_index([&#39;f2&#39;, &#39;f3&#39;, &#39;f4&#39;])</span>
-<span class="sd">        &gt;&gt;&gt; union([i1, i2])</span>
+<span class="sd">        &gt;&gt;&gt; index1 = filewise_index([&#39;f1&#39;, &#39;f2&#39;, &#39;f3&#39;])</span>
+<span class="sd">        &gt;&gt;&gt; index2 = filewise_index([&#39;f2&#39;, &#39;f3&#39;, &#39;f4&#39;])</span>
+<span class="sd">        &gt;&gt;&gt; union([index1, index2])</span>
 <span class="sd">        Index([&#39;f1&#39;, &#39;f2&#39;, &#39;f3&#39;, &#39;f4&#39;], dtype=&#39;object&#39;, name=&#39;file&#39;)</span>
-<span class="sd">        &gt;&gt;&gt; i3 = segmented_index(</span>
+<span class="sd">        &gt;&gt;&gt; index3 = segmented_index(</span>
 <span class="sd">        ...     [&#39;f1&#39;, &#39;f2&#39;, &#39;f3&#39;, &#39;f4&#39;],</span>
 <span class="sd">        ...     [0, 0, 0, 0],</span>
 <span class="sd">        ...     [1, 1, 1, 1],</span>
 <span class="sd">        ... )</span>
-<span class="sd">        &gt;&gt;&gt; i4 = segmented_index(</span>
+<span class="sd">        &gt;&gt;&gt; index4 = segmented_index(</span>
 <span class="sd">        ...     [&#39;f1&#39;, &#39;f2&#39;, &#39;f3&#39;],</span>
 <span class="sd">        ...     [0, 0, 1],</span>
 <span class="sd">        ...     [1, 1, 2],</span>
 <span class="sd">        ... )</span>
-<span class="sd">        &gt;&gt;&gt; union([i3, i4])</span>
+<span class="sd">        &gt;&gt;&gt; union([index3, index4])</span>
 <span class="sd">        MultiIndex([(&#39;f1&#39;, &#39;0 days 00:00:00&#39;, &#39;0 days 00:00:01&#39;),</span>
 <span class="sd">                    (&#39;f2&#39;, &#39;0 days 00:00:00&#39;, &#39;0 days 00:00:01&#39;),</span>
 <span class="sd">                    (&#39;f3&#39;, &#39;0 days 00:00:00&#39;, &#39;0 days 00:00:01&#39;),</span>
@@ -1046,7 +1173,7 @@
 <span class="sd">                    (&#39;f4&#39;, &#39;0 days 00:00:00&#39;, &#39;0 days 00:00:01&#39;)],</span>
 <span class="sd">                   names=[&#39;file&#39;, &#39;start&#39;, &#39;end&#39;])</span>
 
-<span class="sd">        &gt;&gt;&gt; union([i1, i2, i3, i4])</span>
+<span class="sd">        &gt;&gt;&gt; union([index1, index2, index3, index4])</span>
 <span class="sd">        MultiIndex([(&#39;f1&#39;, &#39;0 days 00:00:00&#39;,               NaT),</span>
 <span class="sd">                    (&#39;f1&#39;, &#39;0 days 00:00:00&#39;, &#39;0 days 00:00:01&#39;),</span>
 <span class="sd">                    (&#39;f2&#39;, &#39;0 days 00:00:00&#39;,               NaT),</span>
@@ -1091,7 +1218,7 @@
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2021/11/10 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2021/11/17 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
