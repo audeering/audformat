@@ -14,6 +14,11 @@ duration
 
 .. autofunction:: duration
 
+hash
+----
+
+.. autofunction:: hash
+
 intersect
 ---------
 

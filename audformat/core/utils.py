@@ -285,6 +285,33 @@ def duration(
     return (ends - starts).sum()
 
 
+def hash(
+        obj: typing.Union[pd.Index, pd.Series, pd.DataFrame],
+) -> str:
+    r"""Create hash from object.
+
+    Objects with the same elements
+    produce the same hash string
+    independent of the ordering of the elements.
+
+    Args:
+        obj: object
+
+    Returns:
+        hash string
+
+    Example:
+        >>> index = filewise_index(['f1', 'f2'])
+        >>> hash(index)
+        '-4231615416436839963'
+        >>> y = pd.Series(0, index)
+        >>> hash(y)
+        '5251663970176285425'
+
+    """
+    return str(pd.util.hash_pandas_object(obj).sum())
+
+
 def intersect(
     objs: typing.Sequence[typing.Union[pd.Index]],
 ) -> pd.Index:
