@@ -76,7 +76,7 @@
             
             
               <div class="version">
-                v0.12.1
+                v0.12.2
               </div>
             
           
@@ -123,6 +123,7 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">audformat</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#assert-index">assert_index</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#assert-no-duplicates">assert_no_duplicates</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#column">Column</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#filewise-index">filewise_index</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#segmented-index">segmented_index</a></li>
@@ -189,6 +190,9 @@
 <dt class="sig sig-object py" id="audformat.assert_index">
 <span class="sig-prename descclassname"><span class="pre">audformat.</span></span><span class="sig-name descname"><span class="pre">assert_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/index.html#assert_index"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.assert_index" title="Permalink to this definition">¶</a></dt>
 <dd><p>Assert object is conform to <a class="reference internal" href="data-tables.html#tables"><span class="std std-ref">table specifications</span></a>.</p>
+<p>This does not check for duplicates in the index.
+If you need that check
+use <a class="reference internal" href="#audformat.assert_no_duplicates" title="audformat.assert_no_duplicates"><code class="xref py py-func docutils literal notranslate"><span class="pre">audformat.assert_no_duplicates()</span></code></a> in addition.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>obj</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Index</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Series</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code>]) – object</p>
@@ -196,6 +200,27 @@
 <dt class="field-even">Raises</dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.10)"><strong>ValueError</strong></a> – if not conform to
     <a class="reference internal" href="data-tables.html#tables"><span class="std std-ref">table specifications</span></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="assert-no-duplicates">
+<h2>assert_no_duplicates<a class="headerlink" href="#assert-no-duplicates" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="audformat.assert_no_duplicates">
+<span class="sig-prename descclassname"><span class="pre">audformat.</span></span><span class="sig-name descname"><span class="pre">assert_no_duplicates</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/index.html#assert_no_duplicates"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.assert_no_duplicates" title="Permalink to this definition">¶</a></dt>
+<dd><p>Assert object contains no duplicates in its index.</p>
+<p>The <a class="reference internal" href="data-tables.html#tables"><span class="std std-ref">table specifications</span></a>
+allow no duplicated index entries.
+To save time we do not test for this
+in <a class="reference internal" href="#audformat.assert_index" title="audformat.assert_index"><code class="xref py py-func docutils literal notranslate"><span class="pre">audformat.assert_index()</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>obj</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Index</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Series</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code>]) – object</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.10)"><strong>ValueError</strong></a> – if duplicates are found</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2139,7 +2164,7 @@ the value of the last table in the list is kept.</p>
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2021/11/17 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2021/11/18 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>

@@ -74,7 +74,7 @@
             
             
               <div class="version">
-                v0.12.1
+                v0.12.2
               </div>
             
           
@@ -204,10 +204,14 @@
 
 
 <div class="viewcode-block" id="assert_index"><a class="viewcode-back" href="../../../api.html#audformat.assert_index">[docs]</a><span class="k">def</span> <span class="nf">assert_index</span><span class="p">(</span>
-    <span class="n">obj</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">]</span>
+    <span class="n">obj</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">],</span>
 <span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Assert object is conform to :ref:`table specifications</span>
 <span class="sd">    &lt;data-tables:Tables&gt;`.</span>
+
+<span class="sd">    This does not check for duplicates in the index.</span>
+<span class="sd">    If you need that check</span>
+<span class="sd">    use :func:`audformat.assert_no_duplicates` in addition.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        obj: object</span>
@@ -219,22 +223,6 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)):</span>
         <span class="n">obj</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">index</span>
-
-    <span class="k">if</span> <span class="n">obj</span><span class="o">.</span><span class="n">has_duplicates</span><span class="p">:</span>
-        <span class="n">max_display</span> <span class="o">=</span> <span class="mi">10</span>
-        <span class="n">duplicates</span> <span class="o">=</span> <span class="n">obj</span><span class="p">[</span><span class="n">obj</span><span class="o">.</span><span class="n">duplicated</span><span class="p">()]</span>
-        <span class="n">msg_tail</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">...&#39;</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">duplicates</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">max_display</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span>
-        <span class="n">msg_duplicates</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
-            <span class="p">[</span>
-                <span class="nb">str</span><span class="p">(</span><span class="n">duplicate</span><span class="p">)</span> <span class="k">for</span> <span class="n">duplicate</span>
-                <span class="ow">in</span> <span class="n">duplicates</span><span class="p">[:</span><span class="n">max_display</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
-            <span class="p">]</span>
-        <span class="p">)</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-            <span class="s1">&#39;Index not conform to audformat. &#39;</span>
-            <span class="s1">&#39;Found duplicates:</span><span class="se">\n</span><span class="s1">&#39;</span>
-            <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">msg_duplicates</span><span class="si">}{</span><span class="n">msg_tail</span><span class="si">}</span><span class="s1">&#39;</span>
-        <span class="p">)</span>
 
     <span class="n">num</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">names</span><span class="p">)</span>
 
@@ -293,6 +281,43 @@
                 <span class="s2">&quot;Index not conform to audformat. &quot;</span>
                 <span class="s2">&quot;Level &#39;end&#39; must contain values of type &#39;timedelta64[ns]&#39;.&quot;</span>
             <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="assert_no_duplicates"><a class="viewcode-back" href="../../../api.html#audformat.assert_no_duplicates">[docs]</a><span class="k">def</span> <span class="nf">assert_no_duplicates</span><span class="p">(</span>
+    <span class="n">obj</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">],</span>
+<span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Assert object contains no duplicates in its index.</span>
+
+<span class="sd">    The :ref:`table specifications &lt;data-tables:Tables&gt;`</span>
+<span class="sd">    allow no duplicated index entries.</span>
+<span class="sd">    To save time we do not test for this</span>
+<span class="sd">    in :func:`audformat.assert_index`.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        obj: object</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        ValueError: if duplicates are found</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)):</span>
+        <span class="n">obj</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">index</span>
+
+    <span class="k">if</span> <span class="n">obj</span><span class="o">.</span><span class="n">has_duplicates</span><span class="p">:</span>
+        <span class="n">max_display</span> <span class="o">=</span> <span class="mi">10</span>
+        <span class="n">duplicates</span> <span class="o">=</span> <span class="n">obj</span><span class="p">[</span><span class="n">obj</span><span class="o">.</span><span class="n">duplicated</span><span class="p">()]</span>
+        <span class="n">msg_tail</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">...&#39;</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">duplicates</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">max_display</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span>
+        <span class="n">msg_duplicates</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="nb">str</span><span class="p">(</span><span class="n">duplicate</span><span class="p">)</span> <span class="k">for</span> <span class="n">duplicate</span>
+                <span class="ow">in</span> <span class="n">duplicates</span><span class="p">[:</span><span class="n">max_display</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s1">&#39;Index not conform to audformat. &#39;</span>
+            <span class="s1">&#39;Found duplicates:</span><span class="se">\n</span><span class="s1">&#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">msg_duplicates</span><span class="si">}{</span><span class="n">msg_tail</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="filewise_index"><a class="viewcode-back" href="../../../api.html#audformat.filewise_index">[docs]</a><span class="k">def</span> <span class="nf">filewise_index</span><span class="p">(</span>
@@ -461,7 +486,7 @@
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2021/11/17 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2021/11/18 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
