@@ -7,6 +7,13 @@ The format is based on `Keep a Changelog`_,
 and this project adheres to `Semantic Versioning`_.
 
 
+Version 0.12.2 (2021-11-18)
+---------------------------
+
+* Added: ``audformat.assert_no_duplicates()``
+* Changed: ``audformat.assert_index()`` no longer checks for duplicates
+
+
 Version 0.12.1 (2021-11-17)
 ---------------------------
 
