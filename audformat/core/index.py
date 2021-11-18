@@ -117,14 +117,12 @@ def assert_index(
 def assert_no_duplicates(
     obj: typing.Union[pd.Index, pd.Series, pd.DataFrame],
 ):
-    r"""Assert object is contains no duplicates in its index.
+    r"""Assert object contains no duplicates in its index.
 
     The :ref:`table specifications <data-tables:Tables>`
     allow no duplicated index entries.
     To save time we do not test for this
-    when initializing :class:`audformat.Table`.
-    This function provides you the possibility
-    to manual check for it.
+    in :func:`audformat.assert_index`.
 
     Args:
         obj: object
