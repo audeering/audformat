@@ -9,6 +9,11 @@ assert_index
 
 .. autofunction:: assert_index
 
+assert_no_duplicates
+--------------------
+
+.. autofunction:: assert_no_duplicates
+
 Column
 ------
 

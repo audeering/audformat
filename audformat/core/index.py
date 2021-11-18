@@ -36,20 +36,16 @@ def to_timedelta(times):
 
 def assert_index(
     obj: typing.Union[pd.Index, pd.Series, pd.DataFrame],
-    *,
-    allow_duplicates: bool = False,
 ):
     r"""Assert object is conform to :ref:`table specifications
     <data-tables:Tables>`.
 
+    This does not check for duplicates in the index.
+    If you need that check
+    use :func:`audformat.assert_no_duplicates` in addition.
+
     Args:
         obj: object
-        allow_duplicates: if ``True``
-            it will not check for duplicated entries,
-            which is faster,
-            but should only be used
-            if you know
-            that the index does not contain duplicates
 
     Raises:
         ValueError: if not conform to
@@ -58,22 +54,6 @@ def assert_index(
     """
     if isinstance(obj, (pd.Series, pd.DataFrame)):
         obj = obj.index
-
-    if not allow_duplicates and obj.has_duplicates:
-        max_display = 10
-        duplicates = obj[obj.duplicated()]
-        msg_tail = '\n...' if len(duplicates) > max_display else ''
-        msg_duplicates = '\n'.join(
-            [
-                str(duplicate) for duplicate
-                in duplicates[:max_display].tolist()
-            ]
-        )
-        raise ValueError(
-            'Index not conform to audformat. '
-            'Found duplicates:\n'
-            f'{msg_duplicates}{msg_tail}'
-        )
 
     num = len(obj.names)
 
@@ -134,6 +114,45 @@ def assert_index(
             )
 
 
+def assert_no_duplicates(
+    obj: typing.Union[pd.Index, pd.Series, pd.DataFrame],
+):
+    r"""Assert object is contains no duplicates in its index.
+
+    The :ref:`table specifications <data-tables:Tables>`
+    allow no duplicated index entries.
+    To save time we do not test for this
+    when initializing :class:`audformat.Table`.
+    This function provides you the possibility
+    to manual check for it.
+
+    Args:
+        obj: object
+
+    Raises:
+        ValueError: if duplicates are found
+
+    """
+    if isinstance(obj, (pd.Series, pd.DataFrame)):
+        obj = obj.index
+
+    if obj.has_duplicates:
+        max_display = 10
+        duplicates = obj[obj.duplicated()]
+        msg_tail = '\n...' if len(duplicates) > max_display else ''
+        msg_duplicates = '\n'.join(
+            [
+                str(duplicate) for duplicate
+                in duplicates[:max_display].tolist()
+            ]
+        )
+        raise ValueError(
+            'Index not conform to audformat. '
+            'Found duplicates:\n'
+            f'{msg_duplicates}{msg_tail}'
+        )
+
+
 def filewise_index(
         files: Files = None,
 ) -> pd.Index:
@@ -191,7 +210,7 @@ def index_type(
     if isinstance(obj, (pd.Series, pd.DataFrame)):
         obj = obj.index
 
-    assert_index(obj, allow_duplicates=True)
+    assert_index(obj)
 
     if len(obj.names) == 1:
         return define.IndexType.FILEWISE
