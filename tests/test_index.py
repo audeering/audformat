@@ -105,6 +105,34 @@ def test_assert_index(obj):
 
 
 @pytest.mark.parametrize(
+    'obj',
+    [
+        audformat.filewise_index(),
+        audformat.filewise_index(['f1', 'f2']),
+        pd.Series(
+            index=audformat.filewise_index(['f1', 'f2']),
+            dtype=float,
+        ),
+        pd.DataFrame(
+            index=audformat.filewise_index(['f1', 'f2']),
+        ),
+        audformat.segmented_index(),
+        audformat.segmented_index(['f1', 'f2']),
+        pytest.param(  # duplicates
+            audformat.filewise_index(['f1', 'f1']),
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
+        pytest.param(  # duplicates
+            audformat.segmented_index(['f1', 'f1']),
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
+    ]
+)
+def test_assert_no_duplicates(obj):
+    audformat.assert_no_duplicates(obj)
+
+
+@pytest.mark.parametrize(
     'files',
     [
         None,
@@ -112,10 +140,7 @@ def test_assert_index(obj):
         '1.wav',
         ['1.wav', '2.wav'],
         pytest.DB['files'].files,
-        pytest.param(  # duplicates
-            ['f1', 'f2', 'f2'],
-            marks=pytest.mark.xfail(raises=ValueError),
-        )
+        ['f1', 'f2', 'f2'],  # duplicates
     ]
 )
 def test_create_filewise_index(files):
@@ -205,23 +230,10 @@ def test_create_filewise_index(files):
             [pd.Timedelta('1s'), pd.Timedelta('2s')],
             marks=pytest.mark.xfail(raises=ValueError),
         ),
-        pytest.param(  # duplicates
+        (  # duplicates
             ['f1', 'f1'],
             None,
             None,
-            marks=pytest.mark.xfail(raises=ValueError),
-        ),
-        pytest.param(  # duplicates
-            ['f1', 'f1'],
-            [0, 0],
-            [1, 1],
-            marks=pytest.mark.xfail(raises=ValueError),
-        ),
-        pytest.param(  # duplicates
-            ['f1', 'f1'],
-            [0, 0],
-            None,
-            marks=pytest.mark.xfail(raises=ValueError),
         ),
     ]
 )
