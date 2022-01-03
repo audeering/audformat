@@ -7,6 +7,12 @@ The format is based on `Keep a Changelog`_,
 and this project adheres to `Semantic Versioning`_.
 
 
+Version 0.12.3 (2022-01-03)
+---------------------------
+
+* Removed: Python 3.6 support
+
+
 Version 0.12.2 (2021-11-18)
 ---------------------------
 
