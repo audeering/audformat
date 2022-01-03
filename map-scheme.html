@@ -76,7 +76,7 @@
             
             
               <div class="version">
-                v0.12.2
+                v0.12.3
               </div>
             
           
@@ -255,15 +255,15 @@ we get a <code class="xref py py-class docutils literal notranslate"><span class
   <tbody>
     <tr>
       <th>audio/001.wav</th>
-      <td>1</td>
+      <td>0</td>
     </tr>
     <tr>
       <th>audio/002.wav</th>
-      <td>1</td>
+      <td>0</td>
     </tr>
     <tr>
       <th>audio/003.wav</th>
-      <td>1</td>
+      <td>0</td>
     </tr>
     <tr>
       <th>audio/004.wav</th>
@@ -271,7 +271,7 @@ we get a <code class="xref py py-class docutils literal notranslate"><span class
     </tr>
     <tr>
       <th>audio/005.wav</th>
-      <td>0</td>
+      <td>1</td>
     </tr>
   </tbody>
 </table>
@@ -314,15 +314,15 @@ we can use the <code class="docutils literal notranslate"><span class="pre">map<
   <tbody>
     <tr>
       <th>audio/001.wav</th>
-      <td>goodbye</td>
+      <td>hello</td>
     </tr>
     <tr>
       <th>audio/002.wav</th>
-      <td>goodbye</td>
+      <td>hello</td>
     </tr>
     <tr>
       <th>audio/003.wav</th>
-      <td>goodbye</td>
+      <td>hello</td>
     </tr>
     <tr>
       <th>audio/004.wav</th>
@@ -330,7 +330,7 @@ we can use the <code class="docutils literal notranslate"><span class="pre">map<
     </tr>
     <tr>
       <th>audio/005.wav</th>
-      <td>hello</td>
+      <td>goodbye</td>
     </tr>
   </tbody>
 </table>
@@ -374,15 +374,15 @@ the returned <code class="xref py py-class docutils literal notranslate"><span c
   <tbody>
     <tr>
       <th>audio/001.wav</th>
-      <td>goodbye</td>
+      <td>hello</td>
     </tr>
     <tr>
       <th>audio/002.wav</th>
-      <td>goodbye</td>
+      <td>hello</td>
     </tr>
     <tr>
       <th>audio/003.wav</th>
-      <td>goodbye</td>
+      <td>hello</td>
     </tr>
     <tr>
       <th>audio/004.wav</th>
@@ -390,7 +390,7 @@ the returned <code class="xref py py-class docutils literal notranslate"><span c
     </tr>
     <tr>
       <th>audio/005.wav</th>
-      <td>hello</td>
+      <td>goodbye</td>
     </tr>
   </tbody>
 </table>
@@ -433,11 +433,11 @@ a list of names is returned:</p>
   <tbody>
     <tr>
       <th>audio/001.wav</th>
-      <td>spk1</td>
+      <td>spk3</td>
     </tr>
     <tr>
       <th>audio/002.wav</th>
-      <td>spk3</td>
+      <td>spk1</td>
     </tr>
     <tr>
       <th>audio/003.wav</th>
@@ -445,11 +445,11 @@ a list of names is returned:</p>
     </tr>
     <tr>
       <th>audio/004.wav</th>
-      <td>spk2</td>
+      <td>spk1</td>
     </tr>
     <tr>
       <th>audio/005.wav</th>
-      <td>spk2</td>
+      <td>spk3</td>
     </tr>
   </tbody>
 </table>
@@ -491,11 +491,11 @@ a list of names is returned:</p>
   <tbody>
     <tr>
       <th>audio/001.wav</th>
-      <td>33</td>
+      <td>37</td>
     </tr>
     <tr>
       <th>audio/002.wav</th>
-      <td>37</td>
+      <td>33</td>
     </tr>
     <tr>
       <th>audio/003.wav</th>
@@ -503,11 +503,11 @@ a list of names is returned:</p>
     </tr>
     <tr>
       <th>audio/004.wav</th>
-      <td>30</td>
+      <td>33</td>
     </tr>
     <tr>
       <th>audio/005.wav</th>
-      <td>30</td>
+      <td>37</td>
     </tr>
   </tbody>
 </table>
@@ -556,28 +556,28 @@ as keys and scheme fields as values.</p>
   <tbody>
     <tr>
       <th>audio/001.wav</th>
-      <td>1</td>
-      <td>33</td>
-    </tr>
-    <tr>
-      <th>audio/002.wav</th>
-      <td>1</td>
+      <td>0</td>
       <td>37</td>
     </tr>
     <tr>
+      <th>audio/002.wav</th>
+      <td>0</td>
+      <td>33</td>
+    </tr>
+    <tr>
       <th>audio/003.wav</th>
-      <td>1</td>
+      <td>0</td>
       <td>30</td>
     </tr>
     <tr>
       <th>audio/004.wav</th>
       <td>0</td>
-      <td>30</td>
+      <td>33</td>
     </tr>
     <tr>
       <th>audio/005.wav</th>
-      <td>0</td>
-      <td>30</td>
+      <td>1</td>
+      <td>37</td>
     </tr>
   </tbody>
 </table>
@@ -628,33 +628,33 @@ and to map the same column to multiple fields.</p>
   <tbody>
     <tr>
       <th>audio/001.wav</th>
-      <td>goodbye</td>
-      <td>33</td>
-      <td>male</td>
-    </tr>
-    <tr>
-      <th>audio/002.wav</th>
-      <td>goodbye</td>
+      <td>hello</td>
       <td>37</td>
       <td>male</td>
     </tr>
     <tr>
+      <th>audio/002.wav</th>
+      <td>hello</td>
+      <td>33</td>
+      <td>male</td>
+    </tr>
+    <tr>
       <th>audio/003.wav</th>
-      <td>goodbye</td>
+      <td>hello</td>
       <td>30</td>
       <td>female</td>
     </tr>
     <tr>
       <th>audio/004.wav</th>
       <td>hello</td>
-      <td>30</td>
-      <td>female</td>
+      <td>33</td>
+      <td>male</td>
     </tr>
     <tr>
       <th>audio/005.wav</th>
-      <td>hello</td>
-      <td>30</td>
-      <td>female</td>
+      <td>goodbye</td>
+      <td>37</td>
+      <td>male</td>
     </tr>
   </tbody>
 </table>
@@ -709,43 +709,43 @@ we can include the column name in the list.</p>
   <tbody>
     <tr>
       <th>audio/001.wav</th>
-      <td>1</td>
-      <td>spk1</td>
-      <td>goodbye</td>
-      <td>33</td>
-      <td>male</td>
-    </tr>
-    <tr>
-      <th>audio/002.wav</th>
-      <td>1</td>
+      <td>0</td>
       <td>spk3</td>
-      <td>goodbye</td>
+      <td>hello</td>
       <td>37</td>
       <td>male</td>
     </tr>
     <tr>
+      <th>audio/002.wav</th>
+      <td>0</td>
+      <td>spk1</td>
+      <td>hello</td>
+      <td>33</td>
+      <td>male</td>
+    </tr>
+    <tr>
       <th>audio/003.wav</th>
-      <td>1</td>
+      <td>0</td>
       <td>spk2</td>
-      <td>goodbye</td>
+      <td>hello</td>
       <td>30</td>
       <td>female</td>
     </tr>
     <tr>
       <th>audio/004.wav</th>
       <td>0</td>
-      <td>spk2</td>
+      <td>spk1</td>
       <td>hello</td>
-      <td>30</td>
-      <td>female</td>
+      <td>33</td>
+      <td>male</td>
     </tr>
     <tr>
       <th>audio/005.wav</th>
-      <td>0</td>
-      <td>spk2</td>
-      <td>hello</td>
-      <td>30</td>
-      <td>female</td>
+      <td>1</td>
+      <td>spk3</td>
+      <td>goodbye</td>
+      <td>37</td>
+      <td>male</td>
     </tr>
   </tbody>
 </table>
@@ -776,7 +776,7 @@ we can include the column name in the list.</p>
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2021/11/18 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2022/01/03 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
@@ -784,7 +784,7 @@ we can include the column name in the list.</p>
   <div role="contentinfo">
     <p>
         
-      &copy; 2019-2021 audEERING GmbH
+      &copy; 2019-2022 audEERING GmbH
     </p>
   </div> 
 
