@@ -41,7 +41,9 @@ class Database(HeaderBase):
             Set to ``'other'``
             if none of the other fields fit.
         expires: expiry date
-        languages: list of languages
+        languages: list of languages.
+            Will be mapped to ISO 639-3 strings
+            with :func:`audformat.utils.map_language`
         description: database description
         author: database author(s)
         organization: organization(s) maintaining the database
