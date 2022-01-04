@@ -268,10 +268,10 @@ class Scheme(HeaderBase):
             for table in self._db.tables.values():
                 for column in table.columns.values():
                     if column.scheme_id == self._id:
-                        column.get(copy=False).cat.set_categories(
+                        y = column.get(copy=False)
+                        y.cat.set_categories(
                             new_categories=self.labels,
                             ordered=False,
-                            inplace=True,
                         )
 
     def _dtype_from_labels(
