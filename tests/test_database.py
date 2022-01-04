@@ -354,9 +354,20 @@ def test_save_and_load(tmpdir, db, storage_format, load_data, num_workers):
             tmpdir,
             load_data=load_data,
         )
+
+        # Ensure no data is loaded
+        if not load_data:
+            for table in list(db_load.tables):
+                assert db_load[table]._df is None
+
         assert db_load.root == db2.root
         assert db_load == db2
         assert db_load != db
+
+        # After comparing the databases, tables should be loaded
+        if not load_data:
+            for table in list(db_load.tables):
+                assert db_load[table]._df is not None
 
         # Save and not update PKL files,
         # now it should raise an error as CSV file is newer
@@ -395,6 +406,17 @@ def test_save_and_load(tmpdir, db, storage_format, load_data, num_workers):
             tmpdir,
             load_data=load_data,
         )
+        # Ensure saving the database works
+        # when loaded without tables before
+        # https://github.com/audeering/audformat/issues/131
+        if not load_data:
+            db_load.save(
+                tmpdir,
+                storage_format=audformat.define.TableStorageFormat.CSV,
+                num_workers=num_workers,
+                update_other_formats=True,
+            )
+
         assert db_load == db
 
     db_load = audformat.Database.load(

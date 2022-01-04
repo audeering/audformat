@@ -1154,8 +1154,12 @@ class Table(HeaderBase):
         self._df = df
 
     def _save_csv(self, path: str):
+        # Load table before opening CSV file
+        # to avoid creating a CSV file
+        # that is newer than the PKL file
+        df = self.df
         with open(path, 'w') as fp:
-            self.df.to_csv(fp, encoding='utf-8')
+            df.to_csv(fp, encoding='utf-8')
 
     def _save_pickled(self, path: str):
         self.df.to_pickle(path)
