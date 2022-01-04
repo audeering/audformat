@@ -1084,6 +1084,7 @@ class Table(HeaderBase):
 
         # index columns
 
+        dtypes[define.IndexField.FILE] = 'str'
         if self.type == define.IndexType.SEGMENTED:
             converters[define.IndexField.START] = \
                 lambda x: pd.to_timedelta(x)
