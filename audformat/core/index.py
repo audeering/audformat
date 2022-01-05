@@ -223,12 +223,7 @@ def index_type(
         ...             pd.to_timedelta([1], unit='s'),
         ...             [1],
         ...         ],
-        ...         names=[
-        ...             'file',
-        ...             'start',
-        ...             'end',
-        ...             'version',
-        ...         ],
+        ...         names=['file', 'start', 'end', 'version'],
         ...     )
         ... )
         'segmented'
