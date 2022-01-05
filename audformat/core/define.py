@@ -8,7 +8,7 @@ from audformat.core.common import DefineBase
 
 class DataType(DefineBase):
     r"""Data types of column content.
-    
+
     Use ``DATE``
     to handle time and date information,
     e.g. as provided by :class:`datetime.datetime`.
