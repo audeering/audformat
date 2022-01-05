@@ -44,6 +44,14 @@ def assert_index(
     If you need that check
     use :func:`audformat.assert_no_duplicates` in addition.
 
+    If the index is a :class:`pandas.MultiIndex`
+    the first level is considered
+    to have the name ``'file'``
+    and data type ``string``.
+    If the name of the second level is ``'start'``
+    and the name of the third level ``'end'``
+    both need to be of type ``timedelta64[ns]``.
+
     Args:
         obj: object
 
@@ -51,63 +59,55 @@ def assert_index(
         ValueError: if not conform to
             :ref:`table specifications <data-tables:Tables>`
 
+    Example:
+        >>> assert_index(pd.Index(['f1'], name='file'))
+        >>> assert_index(
+        ...     pd.MultiIndex.from_arrays(
+        ...         [
+        ...             ['f1'],
+        ...             pd.to_timedelta([0], unit='s'),
+        ...             pd.to_timedelta([1], unit='s'),
+        ...         ],
+        ...         names=['file', 'start', 'end'],
+        ...     )
+        ... )
+
     """
     if isinstance(obj, (pd.Series, pd.DataFrame)):
         obj = obj.index
 
-    num = len(obj.names)
-
-    if num != 1 and num != 3:
+    if obj.names[0] != define.IndexField.FILE:
         raise ValueError(
             'Index not conform to audformat. '
-            f'Found '
-            f'{num} '
-            f'levels, but expected 1 or 3 levels.'
+            'Found first level with name '
+            f'{obj.names[0]}, '
+            f'but expected name '
+            f"'{define.IndexField.FILE}'."
         )
 
-    if num == 1:
-        if obj.names[0] != define.IndexField.FILE:
-            raise ValueError(
-                'Index not conform to audformat. '
-                'Found single level with name '
-                f'{obj.names[0]}, '
-                f'but expected name '
-                f"'{define.IndexField.FILE}'."
-            )
-        if not pd.api.types.is_string_dtype(obj.dtype):
-            raise ValueError(
-                "Index not conform to audformat. "
-                "Level 'file' must contain values of type 'string'."
-            )
-    elif num == 3:
-        if not (
-                obj.names[0] == define.IndexField.FILE
-                and obj.names[1] == define.IndexField.START
-                and obj.names[2] == define.IndexField.END
+    if len(obj.names) == 1:
+        file_dtype = obj.dtype
+    else:
+        file_dtype = obj.levels[0].dtype
+    if not pd.api.types.is_string_dtype(file_dtype):
+        raise ValueError(
+            "Index not conform to audformat. "
+            "Level 'file' must contain values of type 'string'."
+        )
+
+    if len(obj.names) > 2:
+        if (
+                obj.names[1] == define.IndexField.START
+                and not pd.api.types.is_timedelta64_dtype(obj.levels[1].dtype)
         ):
-            expected_names = [
-                define.IndexField.FILE,
-                define.IndexField.START,
-                define.IndexField.END,
-            ]
-            raise ValueError(
-                'Index not conform to audformat. '
-                'Found three levels with names '
-                f'{obj.names}, '
-                f'but expected names '
-                f'{expected_names}.'
-            )
-        if not pd.api.types.is_string_dtype(obj.levels[0].dtype):
-            raise ValueError(
-                "Index not conform to audformat. "
-                "Level 'file' must contain values of type 'string'."
-            )
-        if not pd.api.types.is_timedelta64_dtype(obj.levels[1].dtype):
             raise ValueError(
                 "Index not conform to audformat. "
                 "Level 'start' must contain values of type 'timedelta64[ns]'."
             )
-        if not pd.api.types.is_timedelta64_dtype(obj.levels[2].dtype):
+        if (
+                obj.names[2] == define.IndexField.END
+                and not pd.api.types.is_timedelta64_dtype(obj.levels[2].dtype)
+        ):
             raise ValueError(
                 "Index not conform to audformat. "
                 "Level 'end' must contain values of type 'timedelta64[ns]'."
@@ -203,6 +203,35 @@ def index_type(
         'filewise'
         >>> index_type(segmented_index())
         'segmented'
+        >>> index_type(pd.Index(['f1'], name='file'))
+        'filewise'
+        >>> index_type(
+        ...     pd.MultiIndex.from_arrays(
+        ...         [
+        ...             ['f1'],
+        ...             ['f2'],
+        ...         ],
+        ...         names=['file', 'verification-file'],
+        ...     )
+        ... )
+        'filewise'
+        >>> index_type(
+        ...     pd.MultiIndex.from_arrays(
+        ...         [
+        ...             ['f1'],
+        ...             pd.to_timedelta([0], unit='s'),
+        ...             pd.to_timedelta([1], unit='s'),
+        ...             [1],
+        ...         ],
+        ...         names=[
+        ...             'file',
+        ...             'start',
+        ...             'end',
+        ...             'version',
+        ...         ],
+        ...     )
+        ... )
+        'segmented'
 
     """
     if isinstance(obj, (pd.Series, pd.DataFrame)):
@@ -210,7 +239,13 @@ def index_type(
 
     assert_index(obj)
 
-    if len(obj.names) == 1:
+    if (
+            len(obj.names) < 3
+            or (
+                obj.names[1] != define.IndexField.START
+                and obj.names[2] != define.IndexField.END
+            )
+    ):
         return define.IndexType.FILEWISE
     else:
         return define.IndexType.SEGMENTED

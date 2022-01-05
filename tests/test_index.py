@@ -27,6 +27,38 @@ def to_array(value):
         ),
         audformat.segmented_index(),
         audformat.segmented_index(['f1', 'f2']),
+        pd.MultiIndex.from_arrays(  # filewise with extra level
+            [
+                ['f1', 'f2'],
+                [0, 0],
+            ],
+            names=['file', 'a'],
+        ),
+        pd.MultiIndex.from_arrays(  # filewise with extra level
+            [
+                ['f1', 'f2'],
+                [0, 0],
+            ],
+            names=['file', 'start'],
+        ),
+        pd.MultiIndex.from_arrays(  # segmented with extra level
+            [
+                ['f1', 'f2'],
+                pd.to_timedelta([0, 0], unit='s'),
+                pd.to_timedelta([1, 1], unit='s'),
+                ['f2', 'f1'],
+                pd.to_timedelta([0, 0], unit='s'),
+                pd.to_timedelta([1, 1], unit='s'),
+            ],
+            names=[
+                'file',
+                'start',
+                'end',
+                'file2',
+                'start2',
+                'end2',
+            ],
+        ),
         pytest.param(  # missing names
             pd.Index(['f1', 'f2']),
             marks=pytest.mark.xfail(raises=ValueError),
@@ -41,23 +73,13 @@ def to_array(value):
             ),
             marks=pytest.mark.xfail(raises=ValueError),
         ),
-        pytest.param(  # invalid level number
+        pytest.param(  # wrong order of names
             pd.MultiIndex.from_arrays(
                 [
+                    [0, 0],
                     ['f1', 'f2'],
-                    [0, 0],
-                ]
-            ),
-            marks=pytest.mark.xfail(raises=ValueError),
-        ),
-        pytest.param(  # invalid level number
-            pd.MultiIndex.from_arrays(
-                [
-                    ['f1', 'f2'],
-                    [0, 0],
-                    [0, 0],
-                    [0, 0],
-                ]
+                ],
+                names=['start', 'file'],
             ),
             marks=pytest.mark.xfail(raises=ValueError),
         ),
@@ -273,8 +295,45 @@ def test_create_segmented_index(files, starts, ends):
 @pytest.mark.parametrize(
     'index, index_type',
     [
-        (pytest.DB['files'].index, audformat.define.IndexType.FILEWISE),
-        (pytest.DB['segments'].index, audformat.define.IndexType.SEGMENTED),
+        (
+            pytest.DB['files'].index,
+            audformat.define.IndexType.FILEWISE,
+        ),
+        (
+            pytest.DB['segments'].index,
+            audformat.define.IndexType.SEGMENTED,
+        ),
+        (
+            pd.MultiIndex.from_arrays(  # filewise with extra level
+                [
+                    ['f1', 'f2'],
+                    [0, 0],
+                ],
+                names=['file', 'start'],
+            ),
+            audformat.define.IndexType.FILEWISE,
+        ),
+        (
+            pd.MultiIndex.from_arrays(  # segmented with extra level
+                [
+                    ['f1', 'f2'],
+                    pd.to_timedelta([0, 0], unit='s'),
+                    pd.to_timedelta([1, 1], unit='s'),
+                    ['f2', 'f1'],
+                    pd.to_timedelta([0, 0], unit='s'),
+                    pd.to_timedelta([1, 1], unit='s'),
+                ],
+                names=[
+                    'file',
+                    'start',
+                    'end',
+                    'file2',
+                    'start2',
+                    'end2',
+                ],
+            ),
+            audformat.define.IndexType.SEGMENTED,
+        ),
     ]
 )
 def test_index_type(index, index_type):
