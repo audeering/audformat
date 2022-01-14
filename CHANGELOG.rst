@@ -7,6 +7,20 @@ The format is based on `Keep a Changelog`_,
 and this project adheres to `Semantic Versioning`_.
 
 
+Version 0.12.4 (2022-01-12)
+---------------------------
+
+* Changed: the API documentation on the ``language`` argument
+  of ``audformat.Database`` is more verbose now
+* Changed: the difference between
+  ``audformat.define.DataType.TIME``
+  and ``audformat.define.DataType.DATE``
+  is now discussed in the API documentation
+* Fixed: saving a not loaded table to CSV
+  when a PKL file is present
+* Fixed: ``pandas`` deprecation warnings
+
+
 Version 0.12.3 (2022-01-03)
 ---------------------------
 
