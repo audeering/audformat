@@ -74,7 +74,7 @@
             
             
               <div class="version">
-                v0.12.3
+                v0.12.4
               </div>
             
           
@@ -437,11 +437,12 @@
             <span class="k">for</span> <span class="n">table</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_db</span><span class="o">.</span><span class="n">tables</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
                 <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="n">table</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
                     <span class="k">if</span> <span class="n">column</span><span class="o">.</span><span class="n">scheme_id</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_id</span><span class="p">:</span>
-                        <span class="n">column</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">cat</span><span class="o">.</span><span class="n">set_categories</span><span class="p">(</span>
+                        <span class="n">y</span> <span class="o">=</span> <span class="n">column</span><span class="o">.</span><span class="n">_table</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">column</span><span class="o">.</span><span class="n">_id</span><span class="p">]</span>
+                        <span class="n">y</span> <span class="o">=</span> <span class="n">y</span><span class="o">.</span><span class="n">cat</span><span class="o">.</span><span class="n">set_categories</span><span class="p">(</span>
                             <span class="n">new_categories</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">labels</span><span class="p">,</span>
                             <span class="n">ordered</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                            <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                        <span class="p">)</span></div>
+                        <span class="p">)</span>
+                        <span class="n">column</span><span class="o">.</span><span class="n">_table</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">column</span><span class="o">.</span><span class="n">_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">y</span></div>
 
     <span class="k">def</span> <span class="nf">_dtype_from_labels</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
@@ -502,7 +503,7 @@
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2022/01/03 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2022/01/14 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
