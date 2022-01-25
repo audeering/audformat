@@ -844,18 +844,45 @@ def test_get_as_segmented():
 
 
 def test_load(tmpdir):
+
+    path_pkl = os.path.join(tmpdir, 'db.table.pkl')
+    path_no_ext = os.path.join(tmpdir, 'db.table')
+
     # Test backward compatibility
-    table_file = os.path.join(tmpdir, 'db.table.pkl')
     table = create_db_table(
         pd.Series(
             [1., 2.],
             index=audformat.filewise_index(['f1', 'f2']),
+            name='column',
         )
     )
-    table.df.to_pickle(table_file, compression='xz')
+    table.df.to_pickle(path_pkl, compression='xz')
     table_loaded = audformat.Table()
-    table_loaded.load(table_file[:-4])
+    table_loaded.load(path_no_ext)
     pd.testing.assert_frame_equal(table.df, table_loaded.df)
+
+    # corrupt pickle file
+    with open(path_pkl, 'wb'):
+        pass
+    with pytest.raises(EOFError):
+        table_loaded.load(path_no_ext)
+
+    # repeat with CSV file as fall back
+    table.save(
+        path_no_ext,
+        storage_format=audformat.define.TableStorageFormat.CSV,
+    )
+    with open(path_pkl, 'wb'):
+        pass
+    table_loaded = audformat.Table()
+    table_loaded.columns = table.columns
+    table_loaded._db = table._db
+    table_loaded.load(path_no_ext)
+    pd.testing.assert_frame_equal(table.df, table_loaded.df)
+
+    # check if pickle file was recovered from CSV
+    df = pd.read_pickle(path_pkl)
+    pd.testing.assert_frame_equal(table.df, df)
 
 
 @pytest.mark.parametrize(

@@ -647,7 +647,17 @@ class Table(HeaderBase):
             pickled = True
 
         if pickled:
-            self._load_pickled(pkl_file)
+            try:
+                self._load_pickled(pkl_file)
+            except Exception as ex:
+                # if exception is raised (e.g. unsupported pickle protocol)
+                # try to load from CSV and save it again
+                # otherwise raise error
+                if os.path.exists(csv_file):
+                    self._load_csv(csv_file)
+                    self._save_pickled(pkl_file)
+                else:
+                    raise ex
         else:
             self._load_csv(csv_file)
 
