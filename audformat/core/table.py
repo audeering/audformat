@@ -1161,8 +1161,11 @@ class Table(HeaderBase):
         with open(path, 'w') as fp:
             df.to_csv(fp, encoding='utf-8')
 
-    def _save_pickled(self, path: str):
-        self.df.to_pickle(path)
+    def _save_pickled(self, path: str):        
+        self.df.to_pickle(
+            path,
+            protocol=4,  # supported by Python >= 3.4 
+        )
 
     def _set_column(self, column_id: str, column: Column) -> Column:
         if column.scheme_id is not None and \
