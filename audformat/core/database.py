@@ -189,6 +189,8 @@ class Database(HeaderBase):
         index = utils.union(
             [table.files.drop_duplicates() for table in self.tables.values()]
         )
+        # Sort alphabetical
+        index, _ index.sortlevel()
         return index
 
     @property
@@ -248,6 +250,8 @@ class Database(HeaderBase):
                 if table.is_segmented
             ]
         )
+        # Sort alphabetical
+        index, _ index.sortlevel()
         return index
 
     def drop_files(
