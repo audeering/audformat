@@ -1,3 +1,4 @@
+import copy
 import datetime
 import filecmp
 import os
@@ -59,6 +60,14 @@ def test_drop_files(files, num_workers):
         if isinstance(files, str):
             files = [files]
     assert len(db.files.intersection(files)) == 0
+
+
+def test_files():
+    db = audformat.testing.create_db()
+    # Shuffle order of files
+    db['files']._df = db['files'].df.sample(frac=1, random_state=0)
+    # Check output is sorted
+    assert list(db.files) == sorted(list(db.files))
 
 
 @pytest.mark.parametrize(
@@ -479,6 +488,15 @@ def test_save_and_load(tmpdir, db, storage_format, load_data, num_workers):
                 load_data=load_data,
             )
             db[table_id].get()
+
+
+def test_segments():
+    db = audformat.testing.create_db()
+    df = pytest.DB['segments'].get()
+    # Shuffle order of segments
+    db['segments']._df = df.sample(frac=1, random_state=0)
+    # Check output is sorted
+    assert db.segments.equals(pytest.DB.segments)
 
 
 def test_string():
