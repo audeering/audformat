@@ -3,10 +3,3 @@ pytest-flake8
 pytest-doctestplus
 pytest-console-scripts
 pytest-cov
-numpy
-scipy
-pandas
-tqdm
-audiofile
-oyaml
-dohq-artifactory
