@@ -12,12 +12,8 @@ Version 0.13.0 (2022-01-26)
 
 * Changed: ``audformat.utils.union()`` no longer sorts levels
 * Changed: ``audformat.Table.save()`` forces pickle format 4
-* Changed: ``audformat.Table.save()`` loads table before saving it to CSV
 * Changed: clean up test requirements
-* Changed: improve documentation on time and date data types
-* Changed: improve documentation on language Database argument
 * Changed: require ``pandas < 1.4.0``
-* Fixed: remove deprecated pandas code
 
 
 Version 0.12.4 (2022-01-12)
