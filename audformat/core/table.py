@@ -647,7 +647,17 @@ class Table(HeaderBase):
             pickled = True
 
         if pickled:
-            self._load_pickled(pkl_file)
+            try:
+                self._load_pickled(pkl_file)
+            except (ValueError, EOFError) as ex:
+                # if exception is raised (e.g. unsupported pickle protocol)
+                # try to load from CSV and save it again
+                # otherwise raise error
+                if os.path.exists(csv_file):
+                    self._load_csv(csv_file)
+                    self._save_pickled(pkl_file)
+                else:
+                    raise ex
         else:
             self._load_csv(csv_file)
 
@@ -1162,7 +1172,10 @@ class Table(HeaderBase):
             df.to_csv(fp, encoding='utf-8')
 
     def _save_pickled(self, path: str):
-        self.df.to_pickle(path)
+        self.df.to_pickle(
+            path,
+            protocol=4,  # supported by Python >= 3.4
+        )
 
     def _set_column(self, column_id: str, column: Column) -> Column:
         if column.scheme_id is not None and \
