@@ -1005,15 +1005,15 @@ def union(
                    names=['file', 'start', 'end'])
         >>> union([index1, index2, index3, index4])
         MultiIndex([('f1', '0 days 00:00:00',               NaT),
-                ('f2', '0 days 00:00:00',               NaT),
-                ('f3', '0 days 00:00:00',               NaT),
-                ('f4', '0 days 00:00:00',               NaT),
-                ('f1', '0 days 00:00:00', '0 days 00:00:01'),
-                ('f2', '0 days 00:00:00', '0 days 00:00:01'),
-                ('f3', '0 days 00:00:00', '0 days 00:00:01'),
-                ('f4', '0 days 00:00:00', '0 days 00:00:01'),
-                ('f3', '0 days 00:00:01', '0 days 00:00:02')],
-               names=['file', 'start', 'end'])
+                    ('f2', '0 days 00:00:00',               NaT),
+                    ('f3', '0 days 00:00:00',               NaT),
+                    ('f4', '0 days 00:00:00',               NaT),
+                    ('f1', '0 days 00:00:00', '0 days 00:00:01'),
+                    ('f2', '0 days 00:00:00', '0 days 00:00:01'),
+                    ('f3', '0 days 00:00:00', '0 days 00:00:01'),
+                    ('f4', '0 days 00:00:00', '0 days 00:00:01'),
+                    ('f3', '0 days 00:00:01', '0 days 00:00:02')],
+                   names=['file', 'start', 'end'])
 
     """
     if not objs:
