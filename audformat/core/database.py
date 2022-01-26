@@ -190,7 +190,7 @@ class Database(HeaderBase):
             [table.files.drop_duplicates() for table in self.tables.values()]
         )
         # Sort alphabetical
-        index, _ index.sortlevel()
+        index, _ = index.sortlevel()
         return index
 
     @property
@@ -251,7 +251,7 @@ class Database(HeaderBase):
             ]
         )
         # Sort alphabetical
-        index, _ index.sortlevel()
+        index, _ = index.sortlevel()
         return index
 
     def drop_files(
