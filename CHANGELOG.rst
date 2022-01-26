@@ -7,6 +7,12 @@ The format is based on `Keep a Changelog`_,
 and this project adheres to `Semantic Versioning`_.
 
 
+Version 0.13.1 (2022-01-26)
+---------------------------
+
+* Fixed: changelog for 0.13.0
+
+
 Version 0.13.0 (2022-01-26)
 ---------------------------
 
