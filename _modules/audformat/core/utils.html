@@ -74,7 +74,7 @@
             
             
               <div class="version">
-                v0.12.4
+                v0.13.0
               </div>
             
           
@@ -1169,20 +1169,19 @@
 <span class="sd">        MultiIndex([(&#39;f1&#39;, &#39;0 days 00:00:00&#39;, &#39;0 days 00:00:01&#39;),</span>
 <span class="sd">                    (&#39;f2&#39;, &#39;0 days 00:00:00&#39;, &#39;0 days 00:00:01&#39;),</span>
 <span class="sd">                    (&#39;f3&#39;, &#39;0 days 00:00:00&#39;, &#39;0 days 00:00:01&#39;),</span>
-<span class="sd">                    (&#39;f3&#39;, &#39;0 days 00:00:01&#39;, &#39;0 days 00:00:02&#39;),</span>
-<span class="sd">                    (&#39;f4&#39;, &#39;0 days 00:00:00&#39;, &#39;0 days 00:00:01&#39;)],</span>
+<span class="sd">                    (&#39;f4&#39;, &#39;0 days 00:00:00&#39;, &#39;0 days 00:00:01&#39;),</span>
+<span class="sd">                    (&#39;f3&#39;, &#39;0 days 00:00:01&#39;, &#39;0 days 00:00:02&#39;)],</span>
 <span class="sd">                   names=[&#39;file&#39;, &#39;start&#39;, &#39;end&#39;])</span>
-
 <span class="sd">        &gt;&gt;&gt; union([index1, index2, index3, index4])</span>
 <span class="sd">        MultiIndex([(&#39;f1&#39;, &#39;0 days 00:00:00&#39;,               NaT),</span>
-<span class="sd">                    (&#39;f1&#39;, &#39;0 days 00:00:00&#39;, &#39;0 days 00:00:01&#39;),</span>
 <span class="sd">                    (&#39;f2&#39;, &#39;0 days 00:00:00&#39;,               NaT),</span>
-<span class="sd">                    (&#39;f2&#39;, &#39;0 days 00:00:00&#39;, &#39;0 days 00:00:01&#39;),</span>
 <span class="sd">                    (&#39;f3&#39;, &#39;0 days 00:00:00&#39;,               NaT),</span>
-<span class="sd">                    (&#39;f3&#39;, &#39;0 days 00:00:00&#39;, &#39;0 days 00:00:01&#39;),</span>
-<span class="sd">                    (&#39;f3&#39;, &#39;0 days 00:00:01&#39;, &#39;0 days 00:00:02&#39;),</span>
 <span class="sd">                    (&#39;f4&#39;, &#39;0 days 00:00:00&#39;,               NaT),</span>
-<span class="sd">                    (&#39;f4&#39;, &#39;0 days 00:00:00&#39;, &#39;0 days 00:00:01&#39;)],</span>
+<span class="sd">                    (&#39;f1&#39;, &#39;0 days 00:00:00&#39;, &#39;0 days 00:00:01&#39;),</span>
+<span class="sd">                    (&#39;f2&#39;, &#39;0 days 00:00:00&#39;, &#39;0 days 00:00:01&#39;),</span>
+<span class="sd">                    (&#39;f3&#39;, &#39;0 days 00:00:00&#39;, &#39;0 days 00:00:01&#39;),</span>
+<span class="sd">                    (&#39;f4&#39;, &#39;0 days 00:00:00&#39;, &#39;0 days 00:00:01&#39;),</span>
+<span class="sd">                    (&#39;f3&#39;, &#39;0 days 00:00:01&#39;, &#39;0 days 00:00:02&#39;)],</span>
 <span class="sd">                   names=[&#39;file&#39;, &#39;start&#39;, &#39;end&#39;])</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -1200,7 +1199,6 @@
     <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">o</span><span class="o">.</span><span class="n">to_frame</span><span class="p">()</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">objs</span><span class="p">])</span>
     <span class="n">index</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">index</span>
     <span class="n">index</span> <span class="o">=</span> <span class="n">index</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">()</span>
-    <span class="n">index</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">index</span><span class="o">.</span><span class="n">sortlevel</span><span class="p">()</span>
 
     <span class="k">return</span> <span class="n">index</span></div>
 </pre></div>
@@ -1218,7 +1216,7 @@
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2022/01/14 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2022/01/26 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
