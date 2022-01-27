@@ -7,6 +7,14 @@ The format is based on `Keep a Changelog`_,
 and this project adheres to `Semantic Versioning`_.
 
 
+Version 0.13.2 (2022-01-27)
+---------------------------
+
+* Fixed: reintroduce sorting the output of
+  ``audformat.Database.files`` and
+  ``audformat.Database.segments``
+
+
 Version 0.13.1 (2022-01-26)
 ---------------------------
 
