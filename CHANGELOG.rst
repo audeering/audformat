@@ -7,6 +7,13 @@ The format is based on `Keep a Changelog`_,
 and this project adheres to `Semantic Versioning`_.
 
 
+Version 0.13.3 (2022-02-07)
+---------------------------
+
+* Fixed: conversion of pickle protocol 5 files
+  to pickle protocol 4 in cache
+
+
 Version 0.13.2 (2022-01-27)
 ---------------------------
 
