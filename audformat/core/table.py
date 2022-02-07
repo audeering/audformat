@@ -649,7 +649,7 @@ class Table(HeaderBase):
         if pickled:
             try:
                 self._load_pickled(pkl_file)
-            except (ValueError, EOFError) as ex:
+            except (AttributeError, ValueError, EOFError) as ex:
                 # if exception is raised (e.g. unsupported pickle protocol)
                 # try to load from CSV and save it again
                 # otherwise raise error
