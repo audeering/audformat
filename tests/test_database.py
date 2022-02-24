@@ -94,27 +94,35 @@ def test_files():
             True,
         ),
         (
-            [os.path.join(os.path.sep, 'a', 'b', 'c', '.file.txt')],
+            ['/a/b/c/.file.txt'],
             False,
         ),
         (
-            [os.path.join('a', 'b', 'c', '.file.txt')],
+            ['a/b/c/.file.txt'],
             True,
         ),
         (
-            [os.path.join('.', 'file.txt')],
+            ['./file.txt'],
             False,
         ),
         (
-            [os.path.join('..', 'file.txt')],
+            ['../file.txt'],
             False,
         ),
         (
-            [os.path.join('a', 'b', 'c', '.', 'file.txt')],
+            ['a/b/c/./file.txt'],
             False,
         ),
         (
-            [os.path.join('a', 'b', 'c', '..', 'file.txt')],
+            ['a/b/c/../file.txt'],
+            False,
+        ),
+        (
+            ['D:\\absolute\\windows\\path'],
+            False,
+        ),
+        (
+            ['relative\\windows\\path'],
             False,
         ),
     ]

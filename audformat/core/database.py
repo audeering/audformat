@@ -201,7 +201,9 @@ class Database(HeaderBase):
 
         To be portable,
         media must not be referenced with an absolute path,
-        or contain ``.`` or ``..`` to specify a folder.
+        and not contain ``\``,
+        ``.``,
+        or ``..``.
         If a database is portable
         it can be moved to another folder
         or updated by another database.
@@ -215,10 +217,11 @@ class Database(HeaderBase):
         return not any(
             (
                 os.path.isabs(f)
-                or f.startswith(f'.{os.path.sep}')
-                or f'{os.path.sep}.{os.path.sep}' in f
-                or f.startswith(f'..{os.path.sep}')
-                or f'{os.path.sep}..{os.path.sep}' in f
+                or '\\' in f
+                or f.startswith('./')
+                or '/./' in f
+                or f.startswith('../')
+                or '/../' in f
             )
             for f in self.files
         )
