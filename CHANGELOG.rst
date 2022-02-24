@@ -7,6 +7,18 @@ The format is based on `Keep a Changelog`_,
 and this project adheres to `Semantic Versioning`_.
 
 
+Version 0.14.0 (2022-02-24)
+---------------------------
+
+* Changed: ensure ``audformat.testing.create_database()``
+  uses Unix path separators
+* Changed: don't allow ``\`` path entries
+  in a portable database
+* Changed: mark deprecated ``root`` argument
+  of ``audformat.testing.create_audio_files()``
+  to be removed in version 1.0.0
+
+
 Version 0.13.3 (2022-02-07)
 ---------------------------
 
