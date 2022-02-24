@@ -28,6 +28,11 @@ def full_path(
             )
 
 
+def test_create_db():
+    db = audformat.testing.create_db()
+    assert all(['\\' not in file for file in db.files])
+
+
 @pytest.mark.parametrize(
     'files, num_workers',
     [
