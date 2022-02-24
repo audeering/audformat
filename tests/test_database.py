@@ -228,7 +228,7 @@ def test_files_duration():
     # make sure we have only absolute file names in cache
 
     expected_cache = {
-        file: dur for os.path.normpath(file), dur in zip(files_abs, durs)
+        os.path.normpath(file): dur for file, dur in zip(files_abs, durs)
     }
     assert db._files_duration == expected_cache
 
