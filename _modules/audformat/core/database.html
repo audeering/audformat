@@ -74,7 +74,7 @@
             
             
               <div class="version">
-                v0.13.3
+                v0.14.0
               </div>
             
           
@@ -370,7 +370,9 @@
 
 <span class="sd">        To be portable,</span>
 <span class="sd">        media must not be referenced with an absolute path,</span>
-<span class="sd">        or contain ``.`` or ``..`` to specify a folder.</span>
+<span class="sd">        and not contain ``\``,</span>
+<span class="sd">        ``.``,</span>
+<span class="sd">        or ``..``.</span>
 <span class="sd">        If a database is portable</span>
 <span class="sd">        it can be moved to another folder</span>
 <span class="sd">        or updated by another database.</span>
@@ -384,10 +386,11 @@
         <span class="k">return</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span>
             <span class="p">(</span>
                 <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isabs</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
-                <span class="ow">or</span> <span class="n">f</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;.</span><span class="si">{</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">sep</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-                <span class="ow">or</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">sep</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">sep</span><span class="si">}</span><span class="s1">&#39;</span> <span class="ow">in</span> <span class="n">f</span>
-                <span class="ow">or</span> <span class="n">f</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;..</span><span class="si">{</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">sep</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-                <span class="ow">or</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">sep</span><span class="si">}</span><span class="s1">..</span><span class="si">{</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">sep</span><span class="si">}</span><span class="s1">&#39;</span> <span class="ow">in</span> <span class="n">f</span>
+                <span class="ow">or</span> <span class="s1">&#39;</span><span class="se">\\</span><span class="s1">&#39;</span> <span class="ow">in</span> <span class="n">f</span>
+                <span class="ow">or</span> <span class="n">f</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;./&#39;</span><span class="p">)</span>
+                <span class="ow">or</span> <span class="s1">&#39;/./&#39;</span> <span class="ow">in</span> <span class="n">f</span>
+                <span class="ow">or</span> <span class="n">f</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;../&#39;</span><span class="p">)</span>
+                <span class="ow">or</span> <span class="s1">&#39;/../&#39;</span> <span class="ow">in</span> <span class="n">f</span>
             <span class="p">)</span>
             <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">files</span>
         <span class="p">)</span>
@@ -1134,7 +1137,7 @@
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2022/02/07 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2022/02/24 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
