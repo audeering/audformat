@@ -180,7 +180,8 @@ def create_audio_files(
     if root is not None:  # pragma: no cover
         warnings.warn(
             "The argument 'root' is deprecated, "
-            "'db.root' will be used.'",
+            " and will be removed with version 1.0.0. "
+            "'db.root' will be used instead.'",
             category=UserWarning,
             stacklevel=2,
         )
