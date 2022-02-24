@@ -28,6 +28,11 @@ def full_path(
             )
 
 
+def test_create_db():
+    db = audformat.testing.create_db()
+    assert all(['\\' not in file for file in db.files])
+
+
 @pytest.mark.parametrize(
     'files, num_workers',
     [
@@ -223,7 +228,7 @@ def test_files_duration():
     # make sure we have only absolute file names in cache
 
     expected_cache = {
-        file: dur for file, dur in zip(files_abs, durs)
+        os.path.normpath(file): dur for file, dur in zip(files_abs, durs)
     }
     assert db._files_duration == expected_cache
 

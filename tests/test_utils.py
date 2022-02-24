@@ -1382,7 +1382,7 @@ def test_to_filewise(output_folder, table_id, expected_file_names):
         files = [os.path.join(pytest.DB_ROOT, f) for f in files]
     assert all(os.path.exists(f) for f in files)
 
-    file_names = [f.split(os.path.sep)[-1].rsplit('.', 1)[0] for f in files]
+    file_names = [f.split('/')[-1].rsplit('.', 1)[0] for f in files]
     assert file_names == expected_file_names
 
     # clean-up

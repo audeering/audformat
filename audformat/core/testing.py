@@ -96,12 +96,12 @@ def add_table(
 
     if isinstance(num_files, int):
         files = [
-            os.path.join(file_root, f'{idx + 1:03}.{audio_format}')
+            f'{file_root}/{idx + 1:03}.{audio_format}'
             for idx in range(num_files)
         ]
     else:
         files = [
-            os.path.join(file_root, f'{idx:03}.{audio_format}')
+            f'{file_root}/{idx:03}.{audio_format}'
             for idx in num_files
         ]
         num_files = len(num_files)
