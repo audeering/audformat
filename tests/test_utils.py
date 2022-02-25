@@ -947,7 +947,7 @@ def test_map_language(language, expected):
         ),
         (
             audformat.filewise_index(['a/f1', 'a/f2']),
-            audformat.filewise_index(['a\\f1', 'a\\2']),
+            audformat.filewise_index(['a\\f1', 'a\\f2']),
         ),
         (
             audformat.segmented_index(['a/f1'], [0], [1]),
