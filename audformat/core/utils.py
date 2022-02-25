@@ -593,6 +593,51 @@ def map_language(language: str) -> str:
     return result
 
 
+def norm_file_path(
+        index: pd.Index,
+) -> pd.Index:
+    r"""Norm file path in index for given operating system.
+
+    Applies :func:`os.path.normpath` to the file path
+    stored in the index.
+    Under Windows this replaces ``/`` with ``\``.
+
+    Args:
+        index: index with file path conform to
+            :ref:`table specifications <data-tables:Tables>`
+
+    Returns:
+        index with normalized file path
+
+    Raises:
+        ValueError: if index is not conform to
+            :ref:`table specifications <data-tables:Tables>`
+
+    Example:
+        >>> index = filewise_index(['a/f1', 'a/f2'])
+        >>> index
+        Index(['a/f1', 'a/f2'], dtype='object', name='file')
+        >>> if os.name == 'nt':
+        ...     norm_file_path(index)  # doctest: +SKIP
+        Index(['a\f1', 'a\f2'], dtype='object', name='file')
+
+    """
+    if len(index) == 0:
+        return index
+
+    is_segmented = index_type(index) == define.IndexType.SEGMENTED
+
+    if is_segmented:
+        index = index.set_levels(
+            index.levels[0].map(os.path.normpath),
+            level=0,
+        )
+    else:
+        index = index.map(os.path.normpath)
+
+    return index
+
+
 def read_csv(
         *args,
         **kwargs,

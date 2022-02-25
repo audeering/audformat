@@ -938,6 +938,32 @@ def test_map_language(language, expected):
     assert utils.map_language(language) == expected
 
 
+@pytest.mark.parametrize(
+    'index,expected_index_windows',
+    [
+        (
+            audformat.filewise_index(),
+            audformat.filewise_index(),
+        ),
+        (
+            audformat.filewise_index(['a/f1', 'a/f2']),
+            audformat.filewise_index(['a\\f1', 'a\\2']),
+        ),
+        (
+            audformat.segmented_index(['a/f1'], [0], [1]),
+            audformat.segmented_index(['a\\f1'], [0], [1]),
+        ),
+    ]
+)
+def test_norm_file_path(index, expected_index_windows):
+    normed_index = audformat.utils.norm_file_path(index)
+    if os.name == 'nt':
+        expected_index = expected_index_windows
+    else:
+        expected_index = index
+    pd.testing.assert_index_equal(normed_index, expected_index)
+
+
 @pytest.mark.parametrize('csv,result', [
     (
         StringIO('''file

@@ -45,6 +45,11 @@ map_language
 
 .. autofunction:: map_language
 
+norm_file_path
+--------------
+
+.. autofunction:: norm_file_path
+
 read_csv
 --------
 
