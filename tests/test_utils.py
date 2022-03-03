@@ -914,6 +914,36 @@ def test_join_schemes():
 
 
 @pytest.mark.parametrize(
+    'index, func, expected_index, expected_index_windows',
+    [
+        (
+            audformat.filewise_index(),
+            os.path.normpath,
+            audformat.filewise_index(),
+            audformat.filewise_index(),
+        ),
+        (
+            audformat.filewise_index(['a/f1', 'a/f2']),
+            os.path.normpath,
+            audformat.filewise_index(['a/f1', 'a/f2']),
+            audformat.filewise_index(['a\\f1', 'a\\f2']),
+        ),
+        (
+            audformat.segmented_index(['a/f1'], [0], [1]),
+            os.path.normpath,
+            audformat.segmented_index(['a/f1'], [0], [1]),
+            audformat.segmented_index(['a\\f1'], [0], [1]),
+        ),
+    ]
+)
+def test_map_file_path(index, func, expected_index, expected_index_windows):
+    mapped_index = audformat.utils.map_file_path(index, func)
+    if os.name == 'nt':
+        expected_index = expected_index_windows
+    pd.testing.assert_index_equal(mapped_index, expected_index)
+
+
+@pytest.mark.parametrize(
     'language, expected',
     [
         ('en', 'eng'),
@@ -936,32 +966,6 @@ def test_join_schemes():
 )
 def test_map_language(language, expected):
     assert utils.map_language(language) == expected
-
-
-@pytest.mark.parametrize(
-    'index,expected_index_windows',
-    [
-        (
-            audformat.filewise_index(),
-            audformat.filewise_index(),
-        ),
-        (
-            audformat.filewise_index(['a/f1', 'a/f2']),
-            audformat.filewise_index(['a\\f1', 'a\\f2']),
-        ),
-        (
-            audformat.segmented_index(['a/f1'], [0], [1]),
-            audformat.segmented_index(['a\\f1'], [0], [1]),
-        ),
-    ]
-)
-def test_norm_file_path(index, expected_index_windows):
-    normed_index = audformat.utils.norm_file_path(index)
-    if os.name == 'nt':
-        expected_index = expected_index_windows
-    else:
-        expected_index = index
-    pd.testing.assert_index_equal(normed_index, expected_index)
 
 
 @pytest.mark.parametrize('csv,result', [

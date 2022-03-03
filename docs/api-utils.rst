@@ -40,15 +40,15 @@ join_schemes
 
 .. autofunction:: join_schemes
 
+map_file_path
+-------------
+
+.. autofunction:: map_file_path
+
 map_language
 ------------
 
 .. autofunction:: map_language
-
-norm_file_path
---------------
-
-.. autofunction:: norm_file_path
 
 read_csv
 --------
