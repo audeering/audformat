@@ -7,6 +7,12 @@ The format is based on `Keep a Changelog`_,
 and this project adheres to `Semantic Versioning`_.
 
 
+Version 0.14.1 (2022-03-03)
+---------------------------
+
+* Added: ``audformat.utils.map_file_path()``
+
+
 Version 0.14.0 (2022-02-24)
 ---------------------------
 
