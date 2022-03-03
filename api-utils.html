@@ -76,7 +76,7 @@
             
             
               <div class="version">
-                v0.14.0
+                v0.14.1
               </div>
             
           
@@ -133,6 +133,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#intersect">intersect</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#join-labels">join_labels</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#join-schemes">join_schemes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#map-file-path">map_file_path</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#map-language">map_language</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#read-csv">read_csv</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#replace-file-extension">replace_file_extension</a></li>
@@ -530,6 +531,42 @@ that should be joined</p></li>
 </dd></dl>
 
 </div>
+<div class="section" id="map-file-path">
+<h2>map_file_path<a class="headerlink" href="#map-file-path" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="audformat.utils.map_file_path">
+<span class="sig-prename descclassname"><span class="pre">audformat.utils.</span></span><span class="sig-name descname"><span class="pre">map_file_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/utils.html#map_file_path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.utils.map_file_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply callable to file path in index.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>index</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Index</span></code>) – index with file path conform to
+<a class="reference internal" href="data-tables.html#tables"><span class="std std-ref">table specifications</span></a></p></li>
+<li><p><strong>func</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code></a>[[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>], <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]) – callable</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Index</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>index modified by <code class="docutils literal notranslate"><span class="pre">func</span></code></p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.10)"><strong>ValueError</strong></a> – if index is not conform to
+    <a class="reference internal" href="data-tables.html#tables"><span class="std std-ref">table specifications</span></a></p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">index</span> <span class="o">=</span> <span class="n">filewise_index</span><span class="p">([</span><span class="s1">&#39;a/f1&#39;</span><span class="p">,</span> <span class="s1">&#39;a/f2&#39;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">index</span>
+<span class="go">Index([&#39;a/f1&#39;, &#39;a/f2&#39;], dtype=&#39;object&#39;, name=&#39;file&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">map_file_path</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">))</span>
+<span class="go">Index([&#39;b/f1&#39;, &#39;b/f2&#39;], dtype=&#39;object&#39;, name=&#39;file&#39;)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
 <div class="section" id="map-language">
 <h2>map_language<a class="headerlink" href="#map-language" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
@@ -833,7 +870,7 @@ on the machine multiplied by 5</p></li>
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2022/02/24 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2022/03/03 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>

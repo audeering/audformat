@@ -74,7 +74,7 @@
             
             
               <div class="version">
-                v0.14.0
+                v0.14.1
               </div>
             
           
@@ -712,6 +712,48 @@
         <span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="n">scheme_id</span><span class="p">]</span><span class="o">.</span><span class="n">replace_labels</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span></div>
 
 
+<div class="viewcode-block" id="map_file_path"><a class="viewcode-back" href="../../../api-utils.html#audformat.utils.map_file_path">[docs]</a><span class="k">def</span> <span class="nf">map_file_path</span><span class="p">(</span>
+        <span class="n">index</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">,</span>
+        <span class="n">func</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Callable</span><span class="p">[[</span><span class="nb">str</span><span class="p">],</span> <span class="nb">str</span><span class="p">],</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">:</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Apply callable to file path in index.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        index: index with file path conform to</span>
+<span class="sd">            :ref:`table specifications &lt;data-tables:Tables&gt;`</span>
+<span class="sd">        func: callable</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        index modified by ``func``</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        ValueError: if index is not conform to</span>
+<span class="sd">            :ref:`table specifications &lt;data-tables:Tables&gt;`</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; index = filewise_index([&#39;a/f1&#39;, &#39;a/f2&#39;])</span>
+<span class="sd">        &gt;&gt;&gt; index</span>
+<span class="sd">        Index([&#39;a/f1&#39;, &#39;a/f2&#39;], dtype=&#39;object&#39;, name=&#39;file&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; map_file_path(index, lambda x: x.replace(&#39;a&#39;, &#39;b&#39;))</span>
+<span class="sd">        Index([&#39;b/f1&#39;, &#39;b/f2&#39;], dtype=&#39;object&#39;, name=&#39;file&#39;)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">index</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">index</span>
+
+    <span class="n">is_segmented</span> <span class="o">=</span> <span class="n">index_type</span><span class="p">(</span><span class="n">index</span><span class="p">)</span> <span class="o">==</span> <span class="n">define</span><span class="o">.</span><span class="n">IndexType</span><span class="o">.</span><span class="n">SEGMENTED</span>
+
+    <span class="k">if</span> <span class="n">is_segmented</span><span class="p">:</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="n">index</span><span class="o">.</span><span class="n">set_levels</span><span class="p">(</span>
+            <span class="n">index</span><span class="o">.</span><span class="n">levels</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">func</span><span class="p">),</span>
+            <span class="n">level</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="n">index</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">index</span></div>
+
+
 <div class="viewcode-block" id="map_language"><a class="viewcode-back" href="../../../api-utils.html#audformat.utils.map_language">[docs]</a><span class="k">def</span> <span class="nf">map_language</span><span class="p">(</span><span class="n">language</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Map language to ISO 639-3.</span>
 
@@ -1216,7 +1258,7 @@
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2022/02/24 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2022/03/03 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
