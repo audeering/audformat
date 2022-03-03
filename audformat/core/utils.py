@@ -543,6 +543,48 @@ def join_schemes(
         db.schemes[scheme_id].replace_labels(labels)
 
 
+def map_file_path(
+        index: pd.Index,
+        func: typing.Callable[[str], str],
+) -> pd.Index:
+    r"""Apply callable to file path in index.
+
+    Args:
+        index: index with file path conform to
+            :ref:`table specifications <data-tables:Tables>`
+        func: callable
+
+    Returns:
+        index modified by ``func``
+
+    Raises:
+        ValueError: if index is not conform to
+            :ref:`table specifications <data-tables:Tables>`
+
+    Example:
+        >>> index = filewise_index(['a/f1', 'a/f2'])
+        >>> index
+        Index(['a/f1', 'a/f2'], dtype='object', name='file')
+        >>> map_file_path(index, lambda x: x.replace('a', 'b'))
+        Index(['b/f1', 'b/f2'], dtype='object', name='file')
+
+    """
+    if len(index) == 0:
+        return index
+
+    is_segmented = index_type(index) == define.IndexType.SEGMENTED
+
+    if is_segmented:
+        index = index.set_levels(
+            index.levels[0].map(func),
+            level=0,
+        )
+    else:
+        index = index.map(func)
+
+    return index
+
+
 def map_language(language: str) -> str:
     r"""Map language to ISO 639-3.
 

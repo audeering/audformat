@@ -6,6 +6,7 @@ from audformat.core.utils import (
     intersect,
     join_labels,
     join_schemes,
+    map_file_path,
     map_language,
     read_csv,
     replace_file_extension,

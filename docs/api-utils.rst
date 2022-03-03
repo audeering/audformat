@@ -40,6 +40,11 @@ join_schemes
 
 .. autofunction:: join_schemes
 
+map_file_path
+-------------
+
+.. autofunction:: map_file_path
+
 map_language
 ------------
 
