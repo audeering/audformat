@@ -545,7 +545,7 @@ def join_schemes(
 
 def map_file_path(
         index: pd.Index,
-        func: typing.Callable,
+        func: typing.Callable[[str], str],
 ) -> pd.Index:
     r"""Apply callable to file path in index.
 
