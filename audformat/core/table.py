@@ -618,7 +618,7 @@ class Table(HeaderBase):
             RuntimeError: if CSV file is newer than PKL file
 
         """
-        path = audeer.safe_path(path)
+        path = audeer.path(path)
         pkl_file = f'{path}.{define.TableStorageFormat.PICKLE}'
         csv_file = f'{path}.{define.TableStorageFormat.CSV}'
 
@@ -782,7 +782,7 @@ class Table(HeaderBase):
                 but update all files stored in other storage formats as well
 
         """
-        path = audeer.safe_path(path)
+        path = audeer.path(path)
         define.TableStorageFormat.assert_has_attribute_value(storage_format)
 
         pickle_file = path + f'.{define.TableStorageFormat.PICKLE}'
