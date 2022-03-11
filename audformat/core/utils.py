@@ -1074,3 +1074,185 @@ def union(
     index = index.drop_duplicates()
 
     return index
+
+
+def explode_overlapping_segments(
+        obj: typing.Union[pd.Series, pd.DataFrame]
+) -> pd.DataFrame:
+    r"""Explodes overlapping segments.
+
+        Index objects must be conform to
+        :ref:`table specifications <data-tables:Tables>`.
+
+        If at least one object is segmented, the output is a segmented index.
+
+        Args:
+            objs: index objects conform to
+                :ref:`table specifications <data-tables:Tables>`
+
+        Returns:
+            union of index objects
+
+        Raises:
+            ValueError: if one or more objects are not conform to
+                :ref:`table specifications <data-tables:Tables>`
+
+        Example:
+    """
+    if isinstance(obj, pd.DataFrame) and len(obj.columns) > 1:
+        raise RuntimeError('The dataframe columns need to be packed in a '
+                           'tuple or list before exploding overlapping '
+                           'segments.')
+
+    # Start and end indexes should be of type pd.Timedelta
+    idx = obj.index
+    obj.index = obj.index.set_levels(
+        [idx.levels[0],
+         pd.to_timedelta(idx.levels[1]),
+         pd.to_timedelta(idx.levels[2])]
+    )
+    # If labels are of type string, convert them to tuple or list
+    if isinstance(obj, pd.DataFrame):
+        obj[obj.columns[0]] = obj[obj.columns[0]].apply(lambda x: eval(str(x)))
+    elif isinstance(obj, pd.Series):
+        obj = obj.apply(lambda x: eval(str(x))).to_frame()
+
+    for i in range(0, 4):
+        previous_index = None
+        fixed_obj_dict = dict()
+        idx = 0
+        for index, row in audeer.progress_bar(obj.iterrows()):
+            fixed_obj_dict[idx] = pd.Series(
+                name='labels',
+                index=pd.MultiIndex.from_tuples([],
+                                                names=('file', 'start', 'end'))
+            )
+            # If it's the first iteration, add the row as it is
+            if not previous_index:
+                fixed_obj_dict[idx].loc[
+                    index[0], index[1], index[2]
+                ] = row[obj.columns[0]]
+                was_overlap = None
+            else:
+                # If we detect overlap, e.g. start_current_seg < end_previous_seg  # noqa
+                if index[1] < previous_index[2]:
+                    # Drop the previously added row as the index will be 
+                    # modified and will be exploded so the end of the previous 
+                    # segment will be the start of the current segment
+                    if was_overlap == False:
+                        fixed_obj_dict.pop(idx - 1)
+                    was_overlap = True
+                    fixed_obj_dict[idx].loc[
+                        previous_index[0], previous_index[1], index[1]
+                    ] = obj.loc[previous_index][obj.columns[0]]
+                    # If the previous segment ends before the current segment
+                    if previous_index[2] < index[2]:
+                        fixed_obj_dict[idx].loc[
+                            index[0], index[1], previous_index[2]
+                        ] = tuple((i or j)
+                                  for i, j in zip(
+                            row[obj.columns[0]],
+                            obj.loc[previous_index][obj.columns[0]]
+                        )
+                                  )
+                        # Add the remaining of the current segment
+                        fixed_obj_dict[idx].loc[
+                            previous_index[0], previous_index[2], index[2]
+                        ] = obj.loc[index][obj.columns[0]]
+                    # Elif the previous segment ends after the current segment
+                    elif previous_index[2] > index[2]:
+                        fixed_obj_dict[idx].loc[
+                            index[0], index[1], index[2]
+                        ] = tuple((i or j)
+                                  for i, j in zip(
+                            row[obj.columns[0]],
+                            obj.loc[previous_index][obj.columns[0]]
+                        )
+                                  )
+                        # Add the remaining of the previous segment
+                        fixed_obj_dict[idx].loc[
+                            previous_index[0], index[2], previous_index[2]
+                        ] = obj.loc[previous_index][obj.columns[0]]
+                    # The previous and current segment end at the same time
+                    else:
+                        fixed_obj_dict[idx].loc[
+                            index[0], index[1], index[2]
+                        ] = tuple((i or j)
+                                  for i, j in zip(
+                            row[obj.columns[0]],
+                            obj.loc[previous_index][obj.columns[0]]
+                        )
+                                  )
+                else:
+                    # If there was no overlap, add it as it is
+                    was_overlap = False
+                    fixed_obj_dict[idx].loc[
+                        index[0], index[1], index[2]
+                    ] = row[obj.columns[0]]
+            previous_index = index
+            idx += 1
+
+        fixed_obj = None
+        # Concat the resulting series and sort it
+        for serie in fixed_obj_dict.values():
+            fixed_obj = pd.concat([fixed_obj, serie], axis=0)
+        fixed_obj.sort_index(inplace=True)
+
+        # Expand the segments that have the same start
+        for index, row in audeer.progress_bar(fixed_obj.iteritems()):
+            try:
+                if fixed_obj.index.get_level_values('start').value_counts()[index[1]] > 1:  # noqa
+                    rows_to_expand = fixed_obj[
+                        fixed_obj.index.get_level_values('start') == index[1]
+                        ]
+                    # Sort it based on segment end
+                    rows_to_expand.sort_index(inplace=True)
+                    # Drop the rows from the original Serie and add them
+                    # again with the right boundaries
+                    fixed_obj.drop(index=rows_to_expand.index, inplace=True)
+                    # The variable will help distinguish between the first
+                    # iteration and others
+                    start = None
+                    for index, row in rows_to_expand.iteritems():
+                        if not start:
+                            start = index[1]
+                        # There might be a segment with the same start and end
+                        # already existing, in that case apply logic or instead
+                        # of overriding it
+                        if (index[0], start, index[2]) in fixed_obj.index:
+                            fixed_obj.loc[
+                                index[0], start, index[2]
+                            ] = tuple((i or j)
+                                      for i, j in zip(
+                                row, fixed_obj.loc[index[0], start, index[2]]
+                            )
+                                      )
+                        else:
+                            # Remove the current row from the temporary serie
+                            # in order to avoid applying logical or on previous
+                            # segments in line 135
+                            rows_to_expand.drop(index=index, inplace=True)
+                            # First add the row as it is and then iterate over
+                            # all the segments that have the same start and
+                            # apply logical or
+                            fixed_obj.loc[index[0], start, index[2]] = row
+                            for next_index, next_row in rows_to_expand.iteritems():  # noqa
+                                fixed_obj.loc[
+                                    index[0], start, index[2]
+                                ] = tuple((i or j)
+                                          for i, j in zip(
+                                    fixed_obj.loc[index[0], start, index[2]],
+                                    next_row
+                                ))
+                        # Set the start of the next segment to be the end
+                        # of the current segment
+                        start = index[2]
+            # Index might be already dropped from line 114
+            except KeyError:
+                pass
+
+        fixed_obj.sort_index(inplace=True)
+        # Repeat the algorithm until there is no more overlapping segments
+        obj = fixed_obj.to_frame()
+
+    return fixed_obj
