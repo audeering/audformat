@@ -1078,31 +1078,63 @@ def union(
 
 def explode_overlapping_segments(
         obj: typing.Union[pd.Series, pd.DataFrame]
-) -> pd.DataFrame:
+) -> pd.Series:
     r"""Explodes overlapping segments.
 
-        Index objects must be conform to
-        :ref:`table specifications <data-tables:Tables>`.
+        This method assumes that labels are one hot encoded vectors in form
+        of tuples e.g (1, 0, 0) or lists [1, 0, 0].
 
-        If at least one object is segmented, the output is a segmented index.
+        The labels in the returned object will be one hot encoded in a tuple,
+        whether they were initially in a tuple or a list.
 
         Args:
-            objs: index objects conform to
-                :ref:`table specifications <data-tables:Tables>`
+            obj: Pandas Serie or Dataframe that index's conform to
+            :ref:`table specifications <data-tables:Tables>`.
 
         Returns:
-            union of index objects
+            Pandas Dataframe with overlapping segments exploded.
 
         Raises:
-            ValueError: if one or more objects are not conform to
-                :ref:`table specifications <data-tables:Tables>`
+            ValueError: if the dataframe columns aren't packed into a single
+            column.
 
         Example:
+            >>> obj = pd.Series(index=pd.MultiIndex.from_arrays([
+            ...     ['audio_file.wav',
+            ...     'audio_file.wav'],
+            ...     [pd.to_timedelta('0 days 00:00:00.861768592'),
+            ...     pd.to_timedelta('0 days 00:00:03.428162853')],
+            ...     [pd.to_timedelta('0 days 00:00:09.581768592'),
+            ...     pd.to_timedelta('0 days 00:00:04.488162853')]
+            ...     ], names=('file', 'start', 'end')), data=[(1, 0, 0, 0, 0)
+            ...     , (0, 0, 1, 0, 0)])
+            ...     )
+            file            start                      end
+            audio_file.wav  0 days 00:00:00.861768592  0 days 00:00:09.581768592    (1, 0, 0, 0, 0)  # noqa
+                            0 days 00:00:03.428162853  0 days 00:00:04.488162853    (0, 0, 1, 0, 0)  # noqa
+            >>> obj = explode_overlapping_segments(obj)
+            file            start                      end
+            audio_file.wav  0 days 00:00:00.861768592 0 days 00:00:03.428162853  (1, 0, 0, 0, 0)  # noqa
+                            0 days 00:00:03.428162853 0 days 00:00:04.488162853  (1, 0, 1, 0, 0)  # noqa
+                            0 days 00:00:04.488162853 0 days 00:00:09.581768592  (1, 0, 0, 0, 0)  # noqa
+
     """
     if isinstance(obj, pd.DataFrame) and len(obj.columns) > 1:
-        raise RuntimeError('The dataframe columns need to be packed in a '
-                           'tuple or list before exploding overlapping '
-                           'segments.')
+        raise ValueError('The dataframe columns need to be packed in a '
+                         'tuple or list before exploding overlapping '
+                         'segments.')
+
+    if isinstance(obj, pd.DataFrame) and not isinstance(
+            eval(str(obj.iloc[0][obj.columns[0]])), (list, tuple)
+    ):
+        raise ValueError('Labels should be one hot encoded vectors in '
+                         'form of tuples or lists.')
+
+    elif isinstance(obj, pd.Series) and not isinstance(
+            eval(str(obj.iloc[0])), (list, tuple)
+    ):
+        raise ValueError('Labels should be one hot encoded vectors in '
+                         'form of tuples or lists.')
 
     # Start and end indexes should be of type pd.Timedelta
     idx = obj.index
