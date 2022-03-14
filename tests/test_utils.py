@@ -547,8 +547,8 @@ def test_duration(obj, expected_duration):
             '.',
             audformat.filewise_index(
                 [
-                    audeer.safe_path('f1'),
-                    audeer.safe_path('f2'),
+                    audeer.path('f1'),
+                    audeer.path('f2'),
                 ]
             ),
         ),
@@ -557,8 +557,8 @@ def test_duration(obj, expected_duration):
             os.path.join('some', 'where'),
             audformat.filewise_index(
                 [
-                    audeer.safe_path(os.path.join('some', 'where', 'f1')),
-                    audeer.safe_path(os.path.join('some', 'where', 'f2')),
+                    audeer.path('some', 'where', 'f1'),
+                    audeer.path('some', 'where', 'f2'),
                 ]
             ),
         ),
@@ -567,37 +567,37 @@ def test_duration(obj, expected_duration):
             os.path.join('some', 'where') + os.path.sep,
             audformat.filewise_index(
                 [
-                    audeer.safe_path(os.path.join('some', 'where', 'f1')),
-                    audeer.safe_path(os.path.join('some', 'where', 'f2')),
+                    audeer.path('some', 'where', 'f1'),
+                    audeer.path('some', 'where', 'f2'),
                 ]
             ),
         ),
         (
             audformat.filewise_index(['f1', 'f2']),
-            audeer.safe_path(os.path.join('some', 'where')),
+            audeer.path('some', 'where'),
             audformat.filewise_index(
                 [
-                    audeer.safe_path(os.path.join('some', 'where', 'f1')),
-                    audeer.safe_path(os.path.join('some', 'where', 'f2')),
+                    audeer.path('some', 'where', 'f1'),
+                    audeer.path('some', 'where', 'f2'),
                 ]
             ),
         ),
         (
             audformat.filewise_index(
                 [
-                    audeer.safe_path('f1'),
-                    audeer.safe_path('f2'),
+                    audeer.path('f1'),
+                    audeer.path('f2'),
                 ]
             ),
-            audeer.safe_path(os.path.join('some', 'where')),
+            audeer.path('some', 'where'),
             audformat.filewise_index(
                 [
-                    audeer.safe_path(os.path.join('some', 'where'))
+                    audeer.path('some', 'where')
                     + os.path.sep
-                    + audeer.safe_path('f1'),
-                    audeer.safe_path(os.path.join('some', 'where'))
+                    + audeer.path('f1'),
+                    audeer.path('some', 'where')
                     + os.path.sep
-                    + audeer.safe_path('f2'),
+                    + audeer.path('f2'),
                 ]
             ),
         ),
@@ -610,8 +610,8 @@ def test_duration(obj, expected_duration):
             '.',
             audformat.segmented_index(
                 [
-                    audeer.safe_path('f1'),
-                    audeer.safe_path('f2'),
+                    audeer.path('f1'),
+                    audeer.path('f2'),
                 ],
                 ['1s', '3s'],
                 ['2s', '4s'],

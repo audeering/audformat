@@ -315,7 +315,7 @@ def expand_file_path(
     if len(index) == 0:
         return index
 
-    root = audeer.safe_path(root) + os.path.sep
+    root = audeer.path(root) + os.path.sep
     is_segmented = index_type(index) == define.IndexType.SEGMENTED
 
     if is_segmented:
@@ -822,13 +822,13 @@ def to_filewise_index(
 
     test_path = obj.index.get_level_values(define.IndexField.FILE)[0]
     is_abs = os.path.isabs(test_path)
-    test_path = audeer.safe_path(test_path)
+    test_path = audeer.path(test_path)
 
     # keep ``output_folder`` relative if it's relative
-    if audeer.safe_path(output_folder) in test_path:
+    if audeer.path(output_folder) in test_path:
         raise ValueError(
             f'``output_folder`` may not be contained in path to files of '
-            f'original data: {audeer.safe_path(output_folder)} != {test_path}')
+            f'original data: {audeer.path(output_folder)} != {test_path}')
 
     obj = obj.copy()
     original_files = obj.index.get_level_values(define.IndexField.FILE)

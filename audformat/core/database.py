@@ -358,7 +358,7 @@ class Database(HeaderBase):
                 full_file = os.path.join(root, file)
 
             # check cache
-            full_file = audeer.safe_path(full_file)
+            full_file = audeer.path(full_file)
             if full_file in self._files_duration:
                 return self._files_duration[full_file]
 
@@ -810,7 +810,7 @@ class Database(HeaderBase):
 
         """
         ext = '.yaml'
-        root = audeer.safe_path(root)
+        root = audeer.path(root)
         path = os.path.join(root, name + ext)
 
         if not os.path.exists(path):
