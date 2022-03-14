@@ -1,7 +1,7 @@
 import pytest
 import pandas as pd
 
-from audformat.core.utils import explode_overlapping_segments
+import audformat
 
 
 @pytest.mark.parametrize(
@@ -34,7 +34,7 @@ from audformat.core.utils import explode_overlapping_segments
     ]
 )
 def test_explode_overlapping_segments_case1(obj, expected):
-    exploded_obj = explode_overlapping_segments(obj)
+    exploded_obj = audformat.utils.explode_overlapping_segments(obj)
     assert expected.equals(exploded_obj)
 
 
@@ -69,7 +69,7 @@ def test_explode_overlapping_segments_case1(obj, expected):
     ]
 )
 def test_explode_overlapping_segments_case2(obj, expected):
-    exploded_obj = explode_overlapping_segments(obj)
+    exploded_obj = audformat.utils.explode_overlapping_segments(obj)
     assert expected.equals(exploded_obj)
 
 
@@ -93,7 +93,7 @@ def test_explode_overlapping_segments_case2(obj, expected):
 )
 def test_explode_overlapping_segments_case3(obj, expected):
     try:
-        exploded_obj = explode_overlapping_segments(obj)
+        exploded_obj = audformat.utils.explode_overlapping_segments(obj)
     except Exception as e:
         assert isinstance(e, ValueError)
 
@@ -110,7 +110,7 @@ def test_explode_overlapping_segments_case3(obj, expected):
 #                 [pd.to_timedelta('0 days 00:00:09.581768592'),
 #                  pd.to_timedelta('0 days 00:00:04.488162853')]
 #             ], names=('file', 'start', 'end')),
-#                 data=[('speech', 'other'), ('other', 'music')]),
+#                 data=[('speech', 'laughter'), ('other', 'music')]),
 #
 #             ValueError,
 #         )

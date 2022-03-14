@@ -1138,14 +1138,18 @@ def explode_overlapping_segments(
         raise ValueError('Labels should be one hot encoded vectors in '
                          'form of tuples or lists.')
 
-    # if isinstance(obj, pd.DataFrame) and \
-    #         not eval(str(obj.iloc[0][obj.columns[0]]))[0] in [0, 1]:
-    #     raise ValueError('The one hot-encoded vectors should contains '
-    #                      'binary values e.g 0s or 1s.')
-    # elif isinstance(obj, pd.Series) and \
-    #         not eval(str(obj.iloc[0]))[0] in [0, 1]:
-    #     raise ValueError('The one hot-encoded vectors should contains '
-    #                      'binary values e.g 0s or 1s.')
+²    # try:
+        # if isinstance(obj, pd.DataFrame) and \
+        #         not eval(str(obj.iloc[0][obj.columns[0]]))[0] in [0, 1]:
+        #     raise ValueError('The one hot-encoded vectors should contains '
+        #                      'binary values e.g 0s or 1s.')
+        # elif isinstance(obj, pd.Series) and \
+        #         not eval(str(obj.iloc[0]))[0] in [0, 1]:
+        #     raise ValueError('The one hot-encoded vectors should contains '
+        #                      'binary values e.g 0s or 1s.')
+    # except Exception as e:
+    #     print('Make sure to replace the NaN values with 0s.')
+    #     raise ValueError(e)
 
     # Start and end indexes should be of type pd.Timedelta
     idx = obj.index
