@@ -85,7 +85,7 @@ def test_explode_overlapping_segments_case2(obj, expected):
                 [pd.to_timedelta('0 days 00:00:09.581768592'),
                  pd.to_timedelta('0 days 00:00:04.488162853')]
             ], names=('file', 'start', 'end')),
-                data=['1', '2']),
+                data=[1, 2]),
 
             ValueError,
         )
@@ -96,3 +96,29 @@ def test_explode_overlapping_segments_case3(obj, expected):
         exploded_obj = explode_overlapping_segments(obj)
     except Exception as e:
         assert isinstance(e, ValueError)
+
+
+# @pytest.mark.parametrize(
+#     'obj, expected',
+#     [
+#         (
+#             pd.Series(index=pd.MultiIndex.from_arrays([
+#                 ['audio_file.wav',
+#                  'audio_file.wav'],
+#                 [pd.to_timedelta('0 days 00:00:00.861768592'),
+#                  pd.to_timedelta('0 days 00:00:03.428162853')],
+#                 [pd.to_timedelta('0 days 00:00:09.581768592'),
+#                  pd.to_timedelta('0 days 00:00:04.488162853')]
+#             ], names=('file', 'start', 'end')),
+#                 data=[('speech', 'other'), ('other', 'music')]),
+#
+#             ValueError,
+#         )
+#     ]
+# )
+# def test_explode_overlapping_segments_case4(obj, expected):
+#     try:
+#         exploded_obj = explode_overlapping_segments(obj)
+#     except Exception as e:
+#         print(e)
+#         assert isinstance(e, ValueError)

@@ -1097,6 +1097,8 @@ def explode_overlapping_segments(
         Raises:
             ValueError: if the dataframe columns aren't packed into a single
             column.
+            ValueError: If the labels are single classes and not one-hot
+            encoded vectors
 
         Example:
             >>> obj = pd.Series(index=pd.MultiIndex.from_arrays([
@@ -1135,6 +1137,15 @@ def explode_overlapping_segments(
     ):
         raise ValueError('Labels should be one hot encoded vectors in '
                          'form of tuples or lists.')
+
+    # if isinstance(obj, pd.DataFrame) and \
+    #         not eval(str(obj.iloc[0][obj.columns[0]]))[0] in [0, 1]:
+    #     raise ValueError('The one hot-encoded vectors should contains '
+    #                      'binary values e.g 0s or 1s.')
+    # elif isinstance(obj, pd.Series) and \
+    #         not eval(str(obj.iloc[0]))[0] in [0, 1]:
+    #     raise ValueError('The one hot-encoded vectors should contains '
+    #                      'binary values e.g 0s or 1s.')
 
     # Start and end indexes should be of type pd.Timedelta
     idx = obj.index
