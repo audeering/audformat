@@ -1198,7 +1198,7 @@ def explode_overlapping_segments(
                             row[obj.columns[0]],
                             obj.loc[previous_index][obj.columns[0]]
                         )
-                            )
+                        )
                         # Add the remaining of the current segment
                         fixed_obj_dict[idx].loc[
                             previous_index[0], previous_index[2], index[2]
@@ -1212,7 +1212,7 @@ def explode_overlapping_segments(
                             row[obj.columns[0]],
                             obj.loc[previous_index][obj.columns[0]]
                         )
-                            )
+                        )
                         # Add the remaining of the previous segment
                         fixed_obj_dict[idx].loc[
                             previous_index[0], index[2], previous_index[2]
@@ -1226,7 +1226,7 @@ def explode_overlapping_segments(
                             row[obj.columns[0]],
                             obj.loc[previous_index][obj.columns[0]]
                         )
-                            )
+                        )
                 else:
                     # If there was no overlap, add it as it is
                     was_overlap = False
@@ -1270,7 +1270,7 @@ def explode_overlapping_segments(
                                       for i, j in zip(
                                 row, fixed_obj.loc[index[0], start, index[2]]
                             )
-                                )
+                            )
                         else:
                             # Remove the current row from the temporary serie
                             # in order to avoid applying logical or on previous

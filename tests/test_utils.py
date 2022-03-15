@@ -1646,7 +1646,7 @@ def test_union(objs, expected):
                     [9.581768592, 4.488162853]
                 ),
                 data=[1, 2]
-                ),
+            ),
             ValueError
         ),
         (
@@ -1657,7 +1657,7 @@ def test_union(objs, expected):
                     [9.581768592, 4.488162853]
                 ),
                 data=[('speech', 'laughter'), ('other', 'music')]
-                ),
+            ),
             ValueError
         )
     ]
