@@ -1170,7 +1170,6 @@ def explode_overlapping_segments(
         idx = 0
         for index, row in audeer.progress_bar(obj.iterrows()):
             fixed_obj_dict[idx] = pd.Series(
-                name='labels',
                 index=pd.MultiIndex.from_tuples([],
                                                 names=('file', 'start', 'end'))
             )
