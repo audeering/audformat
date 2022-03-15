@@ -1118,7 +1118,7 @@ def explode_overlapping_segments(
                             0 days 00:00:03.428162853 0 days 00:00:04.488162853  (1, 0, 1, 0, 0)
                             0 days 00:00:04.488162853 0 days 00:00:09.581768592  (1, 0, 0, 0, 0)
 
-    """  noqa: E501
+    """  # noqa: E501
     if isinstance(obj, pd.DataFrame) and len(obj.columns) > 1:
         raise ValueError('The dataframe columns need to be packed in a '
                          'tuple or list before exploding overlapping '

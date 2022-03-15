@@ -7,6 +7,8 @@ import pandas as pd
 import pytest
 
 import audeer
+from audformat.core.index import segmented_index
+
 import audformat
 from audformat import utils
 from audformat import define
@@ -1603,76 +1605,59 @@ def test_union(objs, expected):
     'obj, expected',
     [
         (
-            pd.Series(index=pd.MultiIndex.from_arrays([
-                ['audio_file.wav',
-                 'audio_file.wav'],
-                [pd.to_timedelta('0 days 00:00:00.861768592'),
-                 pd.to_timedelta('0 days 00:00:03.428162853')],
-                [pd.to_timedelta('0 days 00:00:09.581768592'),
-                 pd.to_timedelta('0 days 00:00:04.488162853')]
-            ], names=('file', 'start', 'end')),
-                data=[(1, 0, 0, 0, 0), (0, 0, 1, 0, 0)]),
-
-            pd.Series(index=pd.MultiIndex.from_arrays([
-                ['audio_file.wav',
-                 'audio_file.wav',
-                 'audio_file.wav'],
-                [pd.to_timedelta('0 days 00:00:00.861768592'),
-                 pd.to_timedelta('0 days 00:00:03.428162853'),
-                 pd.to_timedelta('0 days 00:00:04.488162853')],
-                [pd.to_timedelta('0 days 00:00:03.428162853'),
-                 pd.to_timedelta('0 days 00:00:04.488162853'),
-                 pd.to_timedelta('0 days 00:00:09.581768592')]
-            ], names=('file', 'start', 'end')),
+            pd.Series(
+                index=segmented_index(
+                    ['audio_file.wav', 'audio_file.wav'],
+                    [0.861768592, 3.428162853],
+                    [9.581768592, 4.488162853]
+                ),
+                data=[(1, 0, 0, 0, 0), (0, 0, 1, 0, 0)]
+            ),
+            pd.Series(
+                index=segmented_index(
+                    ['audio_file.wav', 'audio_file.wav', 'audio_file.wav'],
+                    [0.861768592, 3.428162853, 4.488162853],
+                    [3.428162853, 4.488162853, 9.581768592]
+                ),
                 data=[(1, 0, 0, 0, 0), (1, 0, 1, 0, 0), (1, 0, 0, 0, 0)]),
         ),
         (
-            pd.DataFrame(index=pd.MultiIndex.from_arrays([
-                ['audio_file.wav',
-                 'audio_file.wav'],
-                [pd.to_timedelta('0 days 00:00:00.861768592'),
-                 pd.to_timedelta('0 days 00:00:03.428162853')],
-                [pd.to_timedelta('0 days 00:00:09.581768592'),
-                 pd.to_timedelta('0 days 00:00:04.488162853')]
-            ], names=('file', 'start', 'end')),
-                data=['[1, 0, 0, 0, 0]', '[0, 0, 1, 0, 0]'],
+            pd.DataFrame(
+                index=segmented_index(
+                    ['audio_file.wav', 'audio_file.wav'],
+                    [0.861768592, 3.428162853],
+                    [9.581768592, 4.488162853]
+                ),
+                data=['[1, 0, 0, 0, 0]', '[0, 0, 1, 0, 0]']
             ),
-
-            pd.Series(index=pd.MultiIndex.from_arrays([
-                ['audio_file.wav',
-                 'audio_file.wav',
-                 'audio_file.wav'],
-                [pd.to_timedelta('0 days 00:00:00.861768592'),
-                 pd.to_timedelta('0 days 00:00:03.428162853'),
-                 pd.to_timedelta('0 days 00:00:04.488162853')],
-                [pd.to_timedelta('0 days 00:00:03.428162853'),
-                 pd.to_timedelta('0 days 00:00:04.488162853'),
-                 pd.to_timedelta('0 days 00:00:09.581768592')]
-            ], names=('file', 'start', 'end')),
-                data=[(1, 0, 0, 0, 0), (1, 0, 1, 0, 0), (1, 0, 0, 0, 0)])
+            pd.Series(
+                index=segmented_index(
+                    ['audio_file.wav', 'audio_file.wav', 'audio_file.wav'],
+                    [0.861768592, 3.428162853, 4.488162853],
+                    [3.428162853, 4.488162853, 9.581768592]
+                ),
+                data=[(1, 0, 0, 0, 0), (1, 0, 1, 0, 0), (1, 0, 0, 0, 0)]),
         ),
         (
-            pd.Series(index=pd.MultiIndex.from_arrays([
-                ['audio_file.wav',
-                 'audio_file.wav'],
-                [pd.to_timedelta('0 days 00:00:00.861768592'),
-                 pd.to_timedelta('0 days 00:00:03.428162853')],
-                [pd.to_timedelta('0 days 00:00:09.581768592'),
-                 pd.to_timedelta('0 days 00:00:04.488162853')]
-                ], names=('file', 'start', 'end')),
-                    data=[1, 2]),
+            pd.Series(
+                index=segmented_index(
+                    ['audio_file.wav', 'audio_file.wav'],
+                    [0.861768592, 3.428162853],
+                    [9.581768592, 4.488162853]
+                ),
+                data=[1, 2]
+                ),
             ValueError
         ),
         (
-            pd.Series(index=pd.MultiIndex.from_arrays([
-                ['audio_file.wav',
-                 'audio_file.wav'],
-                [pd.to_timedelta('0 days 00:00:00.861768592'),
-                 pd.to_timedelta('0 days 00:00:03.428162853')],
-                [pd.to_timedelta('0 days 00:00:09.581768592'),
-                 pd.to_timedelta('0 days 00:00:04.488162853')]
-            ], names=('file', 'start', 'end')),
-                data=[('speech', 'laughter'), ('other', 'music')]),
+            pd.Series(
+                index=segmented_index(
+                    ['audio_file.wav', 'audio_file.wav'],
+                    [0.861768592, 3.428162853],
+                    [9.581768592, 4.488162853]
+                ),
+                data=[('speech', 'laughter'), ('other', 'music')]
+                ),
             ValueError
         )
     ]
@@ -1680,6 +1665,9 @@ def test_union(objs, expected):
 def test_explode_overlapping_segments(obj, expected):
     try:
         exploded_obj = audformat.utils.explode_overlapping_segments(obj)
+        print(exploded_obj.name)
+        print(expected.name)
+        print('aa')
         pd.testing.assert_series_equal(exploded_obj, expected)
     except Exception as e:
         print(e)
