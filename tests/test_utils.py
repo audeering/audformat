@@ -1625,17 +1625,7 @@ def test_union(objs, expected):
                  pd.to_timedelta('0 days 00:00:09.581768592')]
             ], names=('file', 'start', 'end')),
                 data=[(1, 0, 0, 0, 0), (1, 0, 1, 0, 0), (1, 0, 0, 0, 0)]),
-        )
-    ]
-)
-def test_explode_overlapping_segments_case1(obj, expected):
-    exploded_obj = utils.explode_overlapping_segments(obj)
-    assert expected.equals(exploded_obj)
-
-
-@pytest.mark.parametrize(
-    'obj, expected',
-    [
+        ),
         (
             pd.DataFrame(index=pd.MultiIndex.from_arrays([
                 ['audio_file.wav',
@@ -1659,18 +1649,8 @@ def test_explode_overlapping_segments_case1(obj, expected):
                  pd.to_timedelta('0 days 00:00:04.488162853'),
                  pd.to_timedelta('0 days 00:00:09.581768592')]
             ], names=('file', 'start', 'end')),
-                data=[(1, 0, 0, 0, 0), (1, 0, 1, 0, 0), (1, 0, 0, 0, 0)]),
-        )
-    ]
-)
-def test_explode_overlapping_segments_case2(obj, expected):
-    exploded_obj = utils.explode_overlapping_segments(obj)
-    assert expected.equals(exploded_obj)
-
-
-@pytest.mark.parametrize(
-    'obj, expected',
-    [
+                data=[(1, 0, 0, 0, 0), (1, 0, 1, 0, 0), (1, 0, 0, 0, 0)])
+        ),
         (
             pd.Series(index=pd.MultiIndex.from_arrays([
                 ['audio_file.wav',
@@ -1679,23 +1659,10 @@ def test_explode_overlapping_segments_case2(obj, expected):
                  pd.to_timedelta('0 days 00:00:03.428162853')],
                 [pd.to_timedelta('0 days 00:00:09.581768592'),
                  pd.to_timedelta('0 days 00:00:04.488162853')]
-            ], names=('file', 'start', 'end')),
-                data=[1, 2]),
-
-            ValueError,
-        )
-    ]
-)
-def test_explode_overlapping_segments_case3(obj, expected):
-    try:
-        exploded_obj = audformat.utils.explode_overlapping_segments(obj)
-    except Exception as e:
-        assert isinstance(e, ValueError)
-
-
-@pytest.mark.parametrize(
-    'obj, expected',
-    [
+                ], names=('file', 'start', 'end')),
+                    data=[1, 2]),
+            ValueError
+        ),
         (
             pd.Series(index=pd.MultiIndex.from_arrays([
                 ['audio_file.wav',
@@ -1706,14 +1673,14 @@ def test_explode_overlapping_segments_case3(obj, expected):
                  pd.to_timedelta('0 days 00:00:04.488162853')]
             ], names=('file', 'start', 'end')),
                 data=[('speech', 'laughter'), ('other', 'music')]),
-
-            ValueError,
+            ValueError
         )
     ]
 )
-def test_explode_overlapping_segments_case4(obj, expected):
+def test_explode_overlapping_segments(obj, expected):
     try:
-        exploded_obj = utils.explode_overlapping_segments(obj)
+        exploded_obj = audformat.utils.explode_overlapping_segments(obj)
+        pd.testing.assert_series_equal(exploded_obj, expected)
     except Exception as e:
         print(e)
         assert isinstance(e, ValueError)
