@@ -1103,11 +1103,11 @@ def explode_overlapping_segments(
         Example:
             >>> obj = pd.Series(
             ...     index=segmented_index(
-            ...         ['audio_file.wav', 'audio_file.wav'],
-            ...         [0.861768592, 3.428162853],
-            ...         [9.581768592, 4.488162853],
-            ...     ),
-            ...     data=[(1, 0, 0, 0, 0), (0, 0, 1, 0, 0)],
+            ...     ['audio_file.wav', 'audio_file.wav'],
+            ...     [0.861768592, 3.428162853],
+            ...     [9.581768592, 4.488162853],
+            ... ),
+            ... data=[(1, 0, 0, 0, 0), (0, 0, 1, 0, 0)],
             ... )
             file            start                      end
             audio_file.wav  0 days 00:00:00.861768592  0 days 00:00:09.581768592    (1, 0, 0, 0, 0)
@@ -1180,10 +1180,10 @@ def explode_overlapping_segments(
             else:
                 # If we detect overlap, e.g. start_current_seg < end_previous_seg  # noqa
                 if index[1] < previous_index[2]:
-                    # Drop the previously added row as the index will be 
-                    # modified and will be exploded so the end of the previous 
+                    # Drop the previously added row as the index will be
+                    # modified and will be exploded so the end of the previous
                     # segment will be the start of the current segment
-                    if was_overlap == False:
+                    if was_overlap is False:
                         fixed_obj_dict.pop(idx - 1)
                     was_overlap = True
                     fixed_obj_dict[idx].loc[
@@ -1198,7 +1198,7 @@ def explode_overlapping_segments(
                             row[obj.columns[0]],
                             obj.loc[previous_index][obj.columns[0]]
                         )
-                                  )
+                            )
                         # Add the remaining of the current segment
                         fixed_obj_dict[idx].loc[
                             previous_index[0], previous_index[2], index[2]
@@ -1212,7 +1212,7 @@ def explode_overlapping_segments(
                             row[obj.columns[0]],
                             obj.loc[previous_index][obj.columns[0]]
                         )
-                                  )
+                            )
                         # Add the remaining of the previous segment
                         fixed_obj_dict[idx].loc[
                             previous_index[0], index[2], previous_index[2]
@@ -1226,7 +1226,7 @@ def explode_overlapping_segments(
                             row[obj.columns[0]],
                             obj.loc[previous_index][obj.columns[0]]
                         )
-                                  )
+                            )
                 else:
                     # If there was no overlap, add it as it is
                     was_overlap = False
@@ -1248,7 +1248,7 @@ def explode_overlapping_segments(
                 if fixed_obj.index.get_level_values('start').value_counts()[index[1]] > 1:  # noqa
                     rows_to_expand = fixed_obj[
                         fixed_obj.index.get_level_values('start') == index[1]
-                        ]
+                    ]
                     # Sort it based on segment end
                     rows_to_expand.sort_index(inplace=True)
                     # Drop the rows from the original Serie and add them
@@ -1270,7 +1270,7 @@ def explode_overlapping_segments(
                                       for i, j in zip(
                                 row, fixed_obj.loc[index[0], start, index[2]]
                             )
-                                      )
+                                )
                         else:
                             # Remove the current row from the temporary serie
                             # in order to avoid applying logical or on previous

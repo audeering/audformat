@@ -1665,9 +1665,6 @@ def test_union(objs, expected):
 def test_explode_overlapping_segments(obj, expected):
     try:
         exploded_obj = audformat.utils.explode_overlapping_segments(obj)
-        print(exploded_obj.name)
-        print(expected.name)
-        print('aa')
         pd.testing.assert_series_equal(exploded_obj, expected)
     except Exception as e:
         print(e)
