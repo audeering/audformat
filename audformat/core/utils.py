@@ -1138,7 +1138,7 @@ def explode_overlapping_segments(
         raise ValueError('Labels should be one hot encoded vectors in '
                          'form of tuples or lists.')
 
-²    # try:
+    # try:
         # if isinstance(obj, pd.DataFrame) and \
         #         not eval(str(obj.iloc[0][obj.columns[0]]))[0] in [0, 1]:
         #     raise ValueError('The one hot-encoded vectors should contains '
