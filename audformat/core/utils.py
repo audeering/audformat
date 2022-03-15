@@ -1101,16 +1101,14 @@ def explode_overlapping_segments(
             encoded vectors
 
         Example:
-            >>> obj = pd.Series(index=pd.MultiIndex.from_arrays([
-            ...     ['audio_file.wav',
-            ...     'audio_file.wav'],
-            ...     [pd.to_timedelta('0 days 00:00:00.861768592'),
-            ...     pd.to_timedelta('0 days 00:00:03.428162853')],
-            ...     [pd.to_timedelta('0 days 00:00:09.581768592'),
-            ...     pd.to_timedelta('0 days 00:00:04.488162853')]
-            ...     ], names=('file', 'start', 'end')), data=[(1, 0, 0, 0, 0)
-            ...     , (0, 0, 1, 0, 0)])
-            ...     )
+            >>> obj = pd.Series(
+            ...     index=segmented_index(
+            ...         ['audio_file.wav', 'audio_file.wav'],
+            ...         [0.861768592, 3.428162853],
+            ...         [9.581768592, 4.488162853],
+            ...     ),
+            ...     data=[(1, 0, 0, 0, 0), (0, 0, 1, 0, 0)],
+            ... )
             file            start                      end
             audio_file.wav  0 days 00:00:00.861768592  0 days 00:00:09.581768592    (1, 0, 0, 0, 0)
                             0 days 00:00:03.428162853  0 days 00:00:04.488162853    (0, 0, 1, 0, 0)
