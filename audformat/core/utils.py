@@ -1101,7 +1101,7 @@ def explode_overlapping_segments(
             encoded vectors
 
         Example:
-            >>> obj = pd.Series(
+            >>> obj_with_overlap = pd.Series(
             ...     index=segmented_index(
             ...     ['audio_file.wav', 'audio_file.wav'],
             ...     [0.861768592, 3.428162853],
@@ -1112,7 +1112,7 @@ def explode_overlapping_segments(
             file            start                      end
             audio_file.wav  0 days 00:00:00.861768592  0 days 00:00:09.581768592    (1, 0, 0, 0, 0)
                             0 days 00:00:03.428162853  0 days 00:00:04.488162853    (0, 0, 1, 0, 0)
-            >>> obj = explode_overlapping_segments(obj)
+            >>> exploded_obj = explode_overlapping_segments(obj)
             file            start                      end
             audio_file.wav  0 days 00:00:00.861768592 0 days 00:00:03.428162853  (1, 0, 0, 0, 0)
                             0 days 00:00:03.428162853 0 days 00:00:04.488162853  (1, 0, 1, 0, 0)
