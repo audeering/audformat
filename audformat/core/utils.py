@@ -1099,6 +1099,8 @@ def explode_overlapping_segments(
             column.
             ValueError: If the labels are single classes and not one-hot
             encoded vectors
+            ValueError: If the one hot encoded vectors contains str instead
+            of 0s and 1s.
 
         Example:
             >>> obj_with_overlap = pd.Series(
@@ -1109,11 +1111,11 @@ def explode_overlapping_segments(
             ... ),
             ... data=[(1, 0, 0, 0, 0), (0, 0, 1, 0, 0)],
             ... )
-            ... print(obj_with_overlap)
+            >>> print(obj_with_overlap)
             file            start                      end
             audio_file.wav  0 days 00:00:00.861768592  0 days 00:00:09.581768592    (1, 0, 0, 0, 0)
                             0 days 00:00:03.428162853  0 days 00:00:04.488162853    (0, 0, 1, 0, 0)
-            >>> exploded_obj = explode_overlapping_segments(obj)
+            >>> explode_overlapping_segments(obj)
             file            start                      end
             audio_file.wav  0 days 00:00:00.861768592 0 days 00:00:03.428162853  (1, 0, 0, 0, 0)
                             0 days 00:00:03.428162853 0 days 00:00:04.488162853  (1, 0, 1, 0, 0)
