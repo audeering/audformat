@@ -1112,15 +1112,15 @@ def explode_overlapping_segments(
             ...     , (0, 0, 1, 0, 0)])
             ...     )
             file            start                      end
-            audio_file.wav  0 days 00:00:00.861768592  0 days 00:00:09.581768592    (1, 0, 0, 0, 0)  # noqa
-                            0 days 00:00:03.428162853  0 days 00:00:04.488162853    (0, 0, 1, 0, 0)  # noqa
+            audio_file.wav  0 days 00:00:00.861768592  0 days 00:00:09.581768592    (1, 0, 0, 0, 0)
+                            0 days 00:00:03.428162853  0 days 00:00:04.488162853    (0, 0, 1, 0, 0)
             >>> obj = explode_overlapping_segments(obj)
             file            start                      end
-            audio_file.wav  0 days 00:00:00.861768592 0 days 00:00:03.428162853  (1, 0, 0, 0, 0)  # noqa
-                            0 days 00:00:03.428162853 0 days 00:00:04.488162853  (1, 0, 1, 0, 0)  # noqa
-                            0 days 00:00:04.488162853 0 days 00:00:09.581768592  (1, 0, 0, 0, 0)  # noqa
+            audio_file.wav  0 days 00:00:00.861768592 0 days 00:00:03.428162853  (1, 0, 0, 0, 0)
+                            0 days 00:00:03.428162853 0 days 00:00:04.488162853  (1, 0, 1, 0, 0)
+                            0 days 00:00:04.488162853 0 days 00:00:09.581768592  (1, 0, 0, 0, 0)
 
-    """
+    """  noqa: E501
     if isinstance(obj, pd.DataFrame) and len(obj.columns) > 1:
         raise ValueError('The dataframe columns need to be packed in a '
                          'tuple or list before exploding overlapping '
