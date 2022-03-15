@@ -1111,11 +1111,12 @@ def explode_overlapping_segments(
             ... ),
             ... data=[(1, 0, 0, 0, 0), (0, 0, 1, 0, 0)],
             ... )
-            >>> explode_overlapping_segments(obj)
+            >>> explode_overlapping_segments(obj_with_overlap)
             file            start                      end
             audio_file.wav  0 days 00:00:00.861768592 0 days 00:00:03.428162853  (1, 0, 0, 0, 0)
                             0 days 00:00:03.428162853 0 days 00:00:04.488162853  (1, 0, 1, 0, 0)
                             0 days 00:00:04.488162853 0 days 00:00:09.581768592  (1, 0, 0, 0, 0)
+            dtype: object
 
     """  # noqa: E501
     if isinstance(obj, pd.DataFrame) and len(obj.columns) > 1:
