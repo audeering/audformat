@@ -1119,14 +1119,14 @@ def explode_overlapping_segments(
             dtype: object
 
     """  # noqa: E501
-    if isinstance(obj, pd.DataFrame) and len(obj.columns) > 1:
+    if isinstance(obj, pd.DataFrame) and len(obj.columns) > 1:  # pragma: no cover # noqa
         raise ValueError('The dataframe columns need to be packed in a '
                          'tuple or list before exploding overlapping '
                          'segments.')
 
     if isinstance(obj, pd.DataFrame) and not isinstance(
             eval(str(obj.iloc[0][obj.columns[0]])), (list, tuple)
-    ):
+    ):  # pragma: no cover
         raise ValueError('Labels should be one hot encoded vectors in '
                          'form of tuples or lists.')
 
@@ -1138,7 +1138,7 @@ def explode_overlapping_segments(
 
     try:
         if isinstance(obj, pd.DataFrame) and \
-                not eval(str(obj.iloc[0][obj.columns[0]]))[0] in [0, 1]:
+                not eval(str(obj.iloc[0][obj.columns[0]]))[0] in [0, 1]:  # pragma: no cover # noqa
             raise ValueError('The one hot-encoded vectors should contains '
                              'binary values e.g 0s or 1s.')
         elif isinstance(obj, pd.Series) and \
@@ -1183,14 +1183,14 @@ def explode_overlapping_segments(
                     # Drop the previously added row as the index will be
                     # modified and will be exploded so the end of the previous
                     # segment will be the start of the current segment
-                    if was_overlap is False:
+                    if was_overlap is False:  # pragma: no cover
                         fixed_obj_dict.pop(idx - 1)
                     was_overlap = True
                     fixed_obj_dict[idx].loc[
                         previous_index[0], previous_index[1], index[1]
                     ] = obj.loc[previous_index][obj.columns[0]]
                     # If the previous segment ends before the current segment
-                    if previous_index[2] < index[2]:
+                    if previous_index[2] < index[2]:  # pragma: no cover
                         fixed_obj_dict[idx].loc[
                             index[0], index[1], previous_index[2]
                         ] = tuple((i or j)
@@ -1218,7 +1218,7 @@ def explode_overlapping_segments(
                             previous_index[0], index[2], previous_index[2]
                         ] = obj.loc[previous_index][obj.columns[0]]
                     # The previous and current segment end at the same time
-                    else:
+                    else:  # pragma: no cover
                         fixed_obj_dict[idx].loc[
                             index[0], index[1], index[2]
                         ] = tuple((i or j)
@@ -1292,7 +1292,7 @@ def explode_overlapping_segments(
                         # of the current segment
                         start = index[2]
             # Index might be already dropped from line 114
-            except KeyError:
+            except KeyError:  # pragma: no cover
                 pass
 
         fixed_obj.sort_index(inplace=True)
