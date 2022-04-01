@@ -1091,8 +1091,8 @@ def iter_index_by_file(
         iterator in form of (file, sub_index)
 
     Examples
-        >>> i = segmented_index(['f1'] * 2, [0, 1], [2, 3])
-        >>> print(next(iter_index_by_file(i)))
+        >>> index = segmented_index(['f1', 'f1', 'f2'], [0, 1, 0], [2, 3, 1])
+        >>> print(next(iter_index_by_file(index)))
         ('f1', MultiIndex([('f1', '0 days 00:00:00', '0 days 00:00:02'),
             ('f1', '0 days 00:00:01', '0 days 00:00:03')],
            names=['file', 'start', 'end']))
