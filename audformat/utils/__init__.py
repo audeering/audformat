@@ -13,4 +13,5 @@ from audformat.core.utils import (
     to_filewise_index,
     to_segmented_index,
     union,
+    iter_index_by_file
 )
