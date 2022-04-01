@@ -1088,7 +1088,8 @@ def iter_index_by_file(
             :ref:`table specifications <data-tables:Tables>`
 
     Returns:
-        iterator in form of (file, sub_index)
+        iterator in form of (file, sub_index) if the index is segmentwise
+        otherwise (file, filewise_index(file))
 
     Examples
         >>> index = segmented_index(['f1', 'f1', 'f2'], [0, 1, 0], [2, 3, 1])
@@ -1096,9 +1097,15 @@ def iter_index_by_file(
         ('f1', MultiIndex([('f1', '0 days 00:00:00', '0 days 00:00:02'),
             ('f1', '0 days 00:00:01', '0 days 00:00:03')],
            names=['file', 'start', 'end']))
+        >>> index = filewise_index(['f1', 'f1', 'f2'])
+        >>> print(next(iter_index_by_file(index)))
+        ('f1', Index(['f1'], dtype='object', name='file'))
     """
-    index = to_segmented_index(index, allow_nat=False)
     files = index.get_level_values('file').drop_duplicates()
-    for file in files:
-        select = index[index.get_loc(file)]
-        yield file, select
+    if index_type(index) == 'filewise':
+        for file in files:
+            yield file, filewise_index(file)
+    else:
+        for file in files:
+            select = index[index.get_loc(file)]
+            yield file, select
