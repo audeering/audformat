@@ -29,6 +29,10 @@ intersect
 
 .. autofunction:: intersect
 
+iter_index_by_file
+__________________
+.. autofunction:: iter_index_by_file
+
 join_labels
 -----------
 
