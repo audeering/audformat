@@ -19,6 +19,11 @@ expand_file_path
 
 .. autofunction:: expand_file_path
 
+has_overlap
+___________
+
+.. autofunction:: has_overlap
+
 hash
 ----
 
