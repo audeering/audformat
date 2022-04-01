@@ -1074,3 +1074,24 @@ def union(
     index = index.drop_duplicates()
 
     return index
+
+
+def iter_index_by_file(
+        index: pd.Index
+) -> (str, typing.Iterator[pd.Index]):
+    r"""Iterate over index by file.
+
+    In each iteration return sub-index for one file.
+
+    Args:
+        index: index object conform to
+            :ref:`table specifications <data-tables:Tables>`
+
+    Returns:
+        iterator in form of (file, sub_index)
+    """
+    index = to_segmented_index(index, allow_nat=False)
+    files = index.get_level_values('file').drop_duplicates()
+    for file in files:
+        select = index[index.get_loc(file)]
+        yield file, select
