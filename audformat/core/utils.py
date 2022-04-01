@@ -1115,12 +1115,14 @@ def has_overlap(
         index: pd.Index,
 ) -> bool:
     r"""Check if one or more segments overlap.
+
     Args:
         index: index object conform to
             :ref:`table specifications <data-tables:Tables>`
 
     Returns:
         boolean
+
     """
 
     if index_type(index) == define.IndexType.FILEWISE:
