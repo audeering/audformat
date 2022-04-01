@@ -1102,7 +1102,7 @@ def iter_index_by_file(
         ('f1', Index(['f1'], dtype='object', name='file'))
     """
     files = index.get_level_values('file').drop_duplicates()
-    if index_type(index) == 'filewise':
+    if index_type(index) == define.IndexType.FILEWISE:
         for file in files:
             yield file, filewise_index(file)
     else:
