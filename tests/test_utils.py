@@ -1598,24 +1598,3 @@ def test_union(objs, expected):
         expected,
     )
 
-
-@pytest.mark.parametrize(
-    'index, expected',
-    [
-        (
-            audformat.segmented_index(['f1'] * 2, [0, 1], [2, 3]),
-            True
-        ),
-        (
-            audformat.segmented_index(['f1'] * 2, [0, 2], [2, 3]),
-            False
-        ),
-        (
-            audformat.filewise_index(['f1'] * 2),
-            False
-        ),
-    ]
-)
-def test_has_overlap(index, expected):
-    has_overlap = audformat.utils.has_overlap(index)
-    assert has_overlap == expected
