@@ -1076,7 +1076,7 @@ def union(
     return index
 
 
-def iter_index_by_file(
+def iter_by_file(
         obj: typing.Union[
             pd.Index,
             pd.Series,
