@@ -1100,12 +1100,12 @@ def iter_by_file(
 
     Examples
         >>> index = segmented_index(['f1', 'f1', 'f2'], [0, 1, 0], [2, 3, 1])
-        >>> print(next(iter_index_by_file(index)))
+        >>> print(next(iter_by_file(index)))
         ('f1', MultiIndex([('f1', '0 days 00:00:00', '0 days 00:00:02'),
             ('f1', '0 days 00:00:01', '0 days 00:00:03')],
            names=['file', 'start', 'end']))
         >>> index = filewise_index(['f1', 'f1', 'f2'])
-        >>> print(next(iter_index_by_file(index)))
+        >>> print(next(iter_by_file(index)))
         ('f1', Index(['f1'], dtype='object', name='file'))
     """
     is_index = isinstance(obj, pd.Index)
