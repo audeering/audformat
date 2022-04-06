@@ -1111,14 +1111,15 @@ def iter_by_file(
     is_index = isinstance(obj, pd.Index)
     index = obj if is_index else obj.index
 
-    files = index.get_level_values('file').drop_duplicates()
-    if index_type(index) == define.IndexType.FILEWISE:
-        for file in files:
-            sub_index = filewise_index(file)
-            sub_obj = sub_index if is_index else obj.loc[sub_index]
-            yield file, sub_obj
-    else:
-        for file in files:
-            sub_index = index[index.get_loc(file)]
-            sub_obj = sub_index if is_index else obj.loc[sub_index]
-            yield file, sub_obj
+    if not index.empty:
+        files = index.get_level_values('file').drop_duplicates()
+        if index_type(index) == define.IndexType.FILEWISE:
+            for file in files:
+                sub_index = filewise_index(file)
+                sub_obj = sub_index if is_index else obj.loc[sub_index]
+                yield file, sub_obj
+        else:
+            for file in files:
+                sub_index = index[index.get_loc(file)]
+                sub_obj = sub_index if is_index else obj.loc[sub_index]
+                yield file, sub_obj
