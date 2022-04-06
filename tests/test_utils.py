@@ -1597,3 +1597,37 @@ def test_union(objs, expected):
         audformat.utils.union(objs),
         expected,
     )
+
+
+
+@pytest.mark.parametrize(
+    'obj, expected',
+    [
+        (
+            None,
+            AttributeError
+        ),
+        (
+            audformat.segmented_index(['f1', 'f1', 'f2'], [0, 1, 0], [2, 3, 1]),
+            ('f1', audformat.segmented_index(['f1', 'f1'], [0, 1], [2, 3]))
+        ),
+        (
+            pd.Series(
+                index=audformat.segmented_index(['f1', 'f1', 'f2'], [0, 1, 0], [2, 3, 1]),
+            ),
+            ('f1', pd.Series(
+                index=audformat.segmented_index(['f1', 'f1'], [0, 1], [2, 3]))
+             )
+        ),
+        (
+            pd.DataFrame(
+                index=audformat.filewise_index(['f1', 'f1', 'f2'])
+            ),
+            ('f1', pd.DataFrame(
+                index=audformat.filewise_index(['f1', 'f1']))
+             )
+        ),
+    ]
+)
+def test_iter_by_file(obj, expected):
+    pass
