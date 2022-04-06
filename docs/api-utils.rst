@@ -30,7 +30,7 @@ intersect
 .. autofunction:: intersect
 
 iter_by_file
-__________________
+------------
 .. autofunction:: iter_by_file
 
 join_labels

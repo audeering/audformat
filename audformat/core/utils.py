@@ -1082,36 +1082,45 @@ def iter_by_file(
             pd.Series,
             pd.DataFrame,
         ],
-) -> (str, typing.Iterator[typing.Union[pd.Index, pd.Series, pd.DataFrame]]):
-    r"""Iterate over index by file.
+) -> typing.Iterator[
+    typing.Tuple[
+        str,
+        typing.Union[pd.Index, pd.Series, pd.DataFrame],
+    ],
+]:
+    r"""Iterate over object by file.
 
-    In each iteration return sub-index for one file.
+    Each iteration returns a sub-object per file.
 
     Args:
-        obj: Can be a DataFrame or Series that index is conform to
-            :ref:`table specifications <data-tables:Tables>`, or just
-            the index object itself.
+        obj: object conform to
+            :ref:`table specifications <data-tables:Tables>`.
 
     Returns:
-        If obj is an index, the return value will be an iterator in form of
-        (file, sub_index) if the index is segmentwise otherwise
-        (file, filewise_index(file)). If obj is a Series or a Dataframe, the
-        return value will be an iterator in form of (file, sub_obj).
+        iterator in form of (file, sub_obj)
 
-    Examples
+    Example:
+        >>> index = filewise_index(['f1', 'f1', 'f2'])
+        >>> next(iter_by_file(index))
+        ('f1', Index(['f1'], dtype='object', name='file'))
         >>> index = segmented_index(['f1', 'f1', 'f2'], [0, 1, 0], [2, 3, 1])
-        >>> print(next(iter_by_file(index)))
+        >>> next(iter_by_file(index))
         ('f1', MultiIndex([('f1', '0 days 00:00:00', '0 days 00:00:02'),
             ('f1', '0 days 00:00:01', '0 days 00:00:03')],
            names=['file', 'start', 'end']))
-        >>> index = filewise_index(['f1', 'f1', 'f2'])
-        >>> print(next(iter_by_file(index)))
-        ('f1', Index(['f1'], dtype='object', name='file'))
+        >>> obj = pd.Series(['a', 'b', 'b'], index)
+        >>> next(iter_by_file(obj))
+        ('f1', file  start            end
+        f1    0 days 00:00:00  0 days 00:00:02    a
+              0 days 00:00:01  0 days 00:00:03    b
+        dtype: object)
+
     """
     is_index = isinstance(obj, pd.Index)
     index = obj if is_index else obj.index
 
-    if not index.empty:
+    # We use len() here as index.empty takes a very long time
+    if len(index) != 0:
         files = index.get_level_values('file').drop_duplicates()
         if index_type(index) == define.IndexType.FILEWISE:
             for file in files:

@@ -4,6 +4,7 @@ from audformat.core.utils import (
     expand_file_path,
     hash,
     intersect,
+    iter_by_file,
     join_labels,
     join_schemes,
     map_file_path,
@@ -13,5 +14,4 @@ from audformat.core.utils import (
     to_filewise_index,
     to_segmented_index,
     union,
-    iter_by_file
 )
