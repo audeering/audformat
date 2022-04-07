@@ -438,6 +438,64 @@ def intersect(
     return index
 
 
+def iter_by_file(
+        obj: typing.Union[
+            pd.Index,
+            pd.Series,
+            pd.DataFrame,
+        ],
+) -> typing.Iterator[
+    typing.Tuple[
+        str,
+        typing.Union[pd.Index, pd.Series, pd.DataFrame],
+    ],
+]:
+    r"""Iterate over object by file.
+
+    Each iteration returns a file and the according sub-object.
+
+    Args:
+        obj: object conform to
+            :ref:`table specifications <data-tables:Tables>`.
+
+    Returns:
+        iterator in form of (file, sub_obj)
+
+    Example:
+        >>> index = filewise_index(['f1', 'f1', 'f2'])
+        >>> next(iter_by_file(index))
+        ('f1', Index(['f1'], dtype='object', name='file'))
+        >>> index = segmented_index(['f1', 'f1', 'f2'], [0, 1, 0], [2, 3, 1])
+        >>> next(iter_by_file(index))
+        ('f1', MultiIndex([('f1', '0 days 00:00:00', '0 days 00:00:02'),
+            ('f1', '0 days 00:00:01', '0 days 00:00:03')],
+           names=['file', 'start', 'end']))
+        >>> obj = pd.Series(['a', 'b', 'b'], index)
+        >>> next(iter_by_file(obj))
+        ('f1', file  start            end
+        f1    0 days 00:00:00  0 days 00:00:02    a
+              0 days 00:00:01  0 days 00:00:03    b
+        dtype: object)
+
+    """
+    is_index = isinstance(obj, pd.Index)
+    index = obj if is_index else obj.index
+
+    # We use len() here as index.empty takes a very long time
+    if len(index) != 0:
+        files = index.get_level_values('file').drop_duplicates()
+        if index_type(index) == define.IndexType.FILEWISE:
+            for file in files:
+                sub_index = filewise_index(file)
+                sub_obj = sub_index if is_index else obj.loc[sub_index]
+                yield file, sub_obj
+        else:
+            for file in files:
+                sub_index = index[index.get_loc(file)]
+                sub_obj = sub_index if is_index else obj.loc[sub_index]
+                yield file, sub_obj
+
+
 def join_labels(
         labels: typing.Sequence[typing.Union[typing.List, typing.Dict]],
 ):
@@ -1074,61 +1132,3 @@ def union(
     index = index.drop_duplicates()
 
     return index
-
-
-def iter_by_file(
-        obj: typing.Union[
-            pd.Index,
-            pd.Series,
-            pd.DataFrame,
-        ],
-) -> typing.Iterator[
-    typing.Tuple[
-        str,
-        typing.Union[pd.Index, pd.Series, pd.DataFrame],
-    ],
-]:
-    r"""Iterate over object by file.
-
-    Each iteration returns a sub-object per file.
-
-    Args:
-        obj: object conform to
-            :ref:`table specifications <data-tables:Tables>`.
-
-    Returns:
-        iterator in form of (file, sub_obj)
-
-    Example:
-        >>> index = filewise_index(['f1', 'f1', 'f2'])
-        >>> next(iter_by_file(index))
-        ('f1', Index(['f1'], dtype='object', name='file'))
-        >>> index = segmented_index(['f1', 'f1', 'f2'], [0, 1, 0], [2, 3, 1])
-        >>> next(iter_by_file(index))
-        ('f1', MultiIndex([('f1', '0 days 00:00:00', '0 days 00:00:02'),
-            ('f1', '0 days 00:00:01', '0 days 00:00:03')],
-           names=['file', 'start', 'end']))
-        >>> obj = pd.Series(['a', 'b', 'b'], index)
-        >>> next(iter_by_file(obj))
-        ('f1', file  start            end
-        f1    0 days 00:00:00  0 days 00:00:02    a
-              0 days 00:00:01  0 days 00:00:03    b
-        dtype: object)
-
-    """
-    is_index = isinstance(obj, pd.Index)
-    index = obj if is_index else obj.index
-
-    # We use len() here as index.empty takes a very long time
-    if len(index) != 0:
-        files = index.get_level_values('file').drop_duplicates()
-        if index_type(index) == define.IndexType.FILEWISE:
-            for file in files:
-                sub_index = filewise_index(file)
-                sub_obj = sub_index if is_index else obj.loc[sub_index]
-                yield file, sub_obj
-        else:
-            for file in files:
-                sub_index = index[index.get_loc(file)]
-                sub_obj = sub_index if is_index else obj.loc[sub_index]
-                yield file, sub_obj
