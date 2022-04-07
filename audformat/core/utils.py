@@ -456,7 +456,7 @@ def iter_by_file(
 
     Args:
         obj: object conform to
-            :ref:`table specifications <data-tables:Tables>`.
+            :ref:`table specifications <data-tables:Tables>`
 
     Returns:
         iterator in form of (file, sub_obj)
