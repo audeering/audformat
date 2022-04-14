@@ -1174,7 +1174,7 @@ class Table(HeaderBase):
         with open(path, 'w') as fp:
             # Since pandas 1.4.0 DataFrame.to_csv()
             # no longer works for categories with dtype Int64
-            # so we have to convert column to plain Int64
+            # we have to temporarily convert column to plain Int64
             tmp_cols = {}
             for column, dtype in zip(df, df.dtypes):
                 if dtype.name == 'category' and \
