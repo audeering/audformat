@@ -1147,7 +1147,10 @@ class Table(HeaderBase):
         except pickle.UnpicklingError:
             df = pd.read_pickle(path, compression='xz')
 
-        for column_id in df:
+        for column_id in df:  # pragma: no cover
+            # TODO: Fixed with pandas 1.4.0 and can be removed
+            #   once we drop support for Python 3.6
+
             # Categories of type Int64 are somehow converted to int64.
             # We have to change back to Int64 to make column nullable.
             if isinstance(df[column_id].dtype,
@@ -1169,7 +1172,18 @@ class Table(HeaderBase):
         # that is newer than the PKL file
         df = self.df
         with open(path, 'w') as fp:
+            # Since pandas 1.4.0 DataFrame.to_csv()
+            # no longer works for categories with dtype Int64
+            # so we have to convert column to plain Int64
+            tmp_cols = {}
+            for column, dtype in zip(df, df.dtypes):
+                if dtype.name == 'category' and \
+                        dtype.categories.dtype.name == 'Int64':
+                    tmp_cols[column] = df[column]
+                    df[column] = df[column].astype('Int64')
             df.to_csv(fp, encoding='utf-8')
+            for column, y in tmp_cols.items():
+                df[column] = y
 
     def _save_pickled(self, path: str):
         self.df.to_pickle(
