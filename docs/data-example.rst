@@ -21,7 +21,12 @@ and as CSV:
 .. jupyter-execute::
     :hide-code:
 
-    print(db['files'].get().to_csv())
+    df = db['files'].get()
+    # Since pandas 1.4.0 DataFrame.to_csv()
+    # no longer works for categories with dtype Int64
+    # we have to convert column to plain Int64
+    df['label_map_int'] = df['label_map_int'].astype('Int64')
+    print(df.to_csv())
 
 Segmented table as :class:`pd.DataFrame`:
 
@@ -34,4 +39,9 @@ and as CSV:
 .. jupyter-execute::
     :hide-code:
 
-    print(db['segments'].get().to_csv())
+    df = db['segments'].get()
+    # Since pandas 1.4.0 DataFrame.to_csv()
+    # no longer works for categories with dtype Int64
+    # we have to convert column to plain Int64
+    df['label_map_int'] = df['label_map_int'].astype('Int64')
+    print(df.to_csv())
