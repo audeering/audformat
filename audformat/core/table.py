@@ -1149,7 +1149,7 @@ class Table(HeaderBase):
 
         for column_id in df:  # pragma: no cover
             # TODO: Fixed with pandas 1.4.0 and can be removed
-            #   once we drop support for Python 3.6
+            #   once we drop support for < Python 3.8
 
             # Categories of type Int64 are somehow converted to int64.
             # We have to change back to Int64 to make column nullable.
@@ -1172,17 +1172,23 @@ class Table(HeaderBase):
         # that is newer than the PKL file
         df = self.df
         with open(path, 'w') as fp:
-            # Since pandas 1.4.0 DataFrame.to_csv()
-            # no longer works for categories with dtype Int64
-            # we have to temporarily convert column to plain Int64
+            # TODO: Include into code coverage
+            #   once we drop support for < Python 3.8
+
             tmp_cols = {}
-            for column, dtype in zip(df, df.dtypes):
+            for column, dtype in zip(df, df.dtypes):  # pragma: no cover
+                # Since pandas 1.4.0 DataFrame.to_csv()
+                # no longer works for categories with dtype Int64
+                # we have to temporarily convert column to plain Int64
                 if dtype.name == 'category' and \
                         dtype.categories.dtype.name == 'Int64':
                     tmp_cols[column] = df[column]
                     df[column] = df[column].astype('Int64')
+
             df.to_csv(fp, encoding='utf-8')
-            for column, y in tmp_cols.items():
+
+            for column, y in tmp_cols.items():  # pragma: no cover
+                # Revert changes to dtype
                 df[column] = y
 
     def _save_pickled(self, path: str):
