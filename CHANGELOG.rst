@@ -7,6 +7,12 @@ The format is based on `Keep a Changelog`_,
 and this project adheres to `Semantic Versioning`_.
 
 
+Version 0.14.2 (2022-04-19)
+---------------------------
+
+* Added: support ``pandas>=1.4.0``
+
+
 Version 0.14.1 (2022-03-03)
 ---------------------------
 
