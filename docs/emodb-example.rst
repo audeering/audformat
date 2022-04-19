@@ -171,8 +171,7 @@ to the emotion table.
         encoding='Latin-1',
         decimal=',',
         converters={'Satz': lambda x: os.path.join('wav', x)},
-        squeeze=True,
-    )
+    ).squeeze('columns')
     y = y.loc[files]
     y = y.replace(to_replace=u'\xa0', value='', regex=True)
     y = y.replace(to_replace=',', value='.', regex=True)
