@@ -1147,20 +1147,6 @@ class Table(HeaderBase):
         except pickle.UnpicklingError:
             df = pd.read_pickle(path, compression='xz')
 
-        for column_id in df:
-            # Categories of type Int64 are somehow converted to int64.
-            # We have to change back to Int64 to make column nullable.
-            if isinstance(df[column_id].dtype,
-                          pd.core.dtypes.dtypes.CategoricalDtype):
-                if isinstance(df[column_id].dtype.categories,
-                              pd.core.indexes.numeric.Int64Index):
-                    labels = df[column_id].dtype.categories.values
-                    labels = pd.array(labels, dtype=pd.Int64Dtype())
-                    dtype = pd.api.types.CategoricalDtype(
-                        categories=labels,
-                        ordered=False)
-                    df[column_id] = df[column_id].astype(dtype)
-
         self._df = df
 
     def _save_csv(self, path: str):
