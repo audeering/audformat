@@ -326,6 +326,34 @@ def expand_file_path(
     return index
 
 
+def has_overlap(
+        index: pd.Index,
+) -> bool:
+    r"""Check if one or more segments overlap.
+
+    Args:
+        index: index object conform to
+            :ref:`table specifications <data-tables:Tables>`
+
+    Returns:
+        boolean
+
+    """
+
+    if index_type(index) == define.IndexType.FILEWISE:
+        return False
+
+    index = to_segmented_index(index, allow_nat=False)
+    for _, sub_index in iter_by_file(index):
+        sub_index = sub_index.sortlevel(define.IndexField.START)[0]
+        starts = sub_index.get_level_values(define.IndexField.START)
+        ends = sub_index.get_level_values(define.IndexField.END)
+        if any(ends[:-1] > starts[1:]):
+            return True
+
+    return False
+
+
 def hash(
         obj: typing.Union[pd.Index, pd.Series, pd.DataFrame],
 ) -> str:
@@ -1132,66 +1160,3 @@ def union(
     index = index.drop_duplicates()
 
     return index
-
-
-def iter_index_by_file(
-        index: pd.Index
-) -> (str, typing.Iterator[pd.Index]):
-    r"""Iterate over index by file.
-
-    In each iteration return sub-index for one file.
-
-    Args:
-        index: index object conform to
-            :ref:`table specifications <data-tables:Tables>`
-
-    Returns:
-        iterator in form of (file, sub_index) if the index is segmentwise
-        otherwise (file, filewise_index(file))
-
-    Examples
-        >>> index = segmented_index(['f1', 'f1', 'f2'], [0, 1, 0], [2, 3, 1])
-        >>> print(next(iter_index_by_file(index)))
-        ('f1', MultiIndex([('f1', '0 days 00:00:00', '0 days 00:00:02'),
-            ('f1', '0 days 00:00:01', '0 days 00:00:03')],
-           names=['file', 'start', 'end']))
-        >>> index = filewise_index(['f1', 'f1', 'f2'])
-        >>> print(next(iter_index_by_file(index)))
-        ('f1', Index(['f1'], dtype='object', name='file'))
-    """
-    files = index.get_level_values('file').drop_duplicates()
-    if index_type(index) == define.IndexType.FILEWISE:
-        for file in files:
-            yield file, filewise_index(file)
-    else:
-        for file in files:
-            select = index[index.get_loc(file)]
-            yield file, select
-
-
-def has_overlap(
-        index: pd.Index,
-) -> bool:
-    r"""Check if one or more segments overlap.
-
-    Args:
-        index: index object conform to
-            :ref:`table specifications <data-tables:Tables>`
-
-    Returns:
-        boolean
-
-    """
-
-    if index_type(index) == define.IndexType.FILEWISE:
-        return False
-
-    index = to_segmented_index(index, allow_nat=False)
-    for _, sub_index in iter_index_by_file(index):
-        sub_index = sub_index.sortlevel(define.IndexField.START)[0]
-        starts = sub_index.get_level_values(define.IndexField.START)
-        ends = sub_index.get_level_values(define.IndexField.END)
-        if any(ends[:-1] > starts[1:]):
-            return True
-
-    return False

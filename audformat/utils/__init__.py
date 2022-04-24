@@ -2,6 +2,7 @@ from audformat.core.utils import (
     concat,
     duration,
     expand_file_path,
+    has_overlap,
     hash,
     intersect,
     iter_by_file,
@@ -13,7 +14,5 @@ from audformat.core.utils import (
     replace_file_extension,
     to_filewise_index,
     to_segmented_index,
-    union,
-    iter_index_by_file,
-    has_overlap
+    union
 )
