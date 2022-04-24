@@ -38,16 +38,8 @@ jobs:
     - name: Prepare Ubuntu
       run: |
         sudo apt-get update
-        sudo apt-get install --no-install-recommends --yes graphviz libsndfile1 sox
+        sudo apt-get install --no-install-recommends --yes graphviz libsndfile1
       if: matrix.os == 'ubuntu-latest' || matrix.os == 'ubuntu-20.04'
-
-    - name: Prepare Windows
-      run: choco install sox.portable
-      if: matrix.os == 'windows-latest'
-
-    - name: Prepare OSX
-      run: brew install sox
-      if: matrix.os == 'macOS-latest'
 
     - name: Install dependencies
       run: |

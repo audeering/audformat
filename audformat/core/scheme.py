@@ -188,7 +188,7 @@ class Scheme(HeaderBase):
             labels = list(self.labels)
             if len(labels) > 0 and isinstance(labels[0], int):
                 # allow nullable
-                labels = pd.array(labels, dtype=pd.Int64Dtype())
+                labels = pd.array(labels, dtype='int64')
             return pd.api.types.CategoricalDtype(
                 categories=labels,
                 ordered=False,

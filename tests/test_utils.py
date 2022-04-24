@@ -810,6 +810,108 @@ def test_intersect(objs, expected):
 
 
 @pytest.mark.parametrize(
+    'obj, expected',
+    [
+        (
+            audformat.filewise_index(),
+            [],
+        ),
+        (
+            pd.Series(),
+            [],
+        ),
+        (
+            pd.DataFrame(),
+            [],
+        ),
+        (
+            audformat.segmented_index(
+                ['f1', 'f1', 'f2'],
+                [0, 1, 0],
+                [2, 3, 1],
+            ),
+            [
+                (
+                    'f1',
+                    audformat.segmented_index(
+                        ['f1', 'f1'],
+                        [0, 1],
+                        [2, 3],
+                    ),
+                ),
+                (
+                    'f2',
+                    audformat.segmented_index(['f2'], [0], [1]),
+                ),
+            ],
+        ),
+        (
+            pd.Series(
+                index=audformat.segmented_index(
+                    ['f1', 'f1', 'f2'],
+                    [0, 1, 0],
+                    [2, 3, 1],
+                ),
+            ),
+            [
+                (
+                    'f1',
+                    pd.Series(
+                        index=audformat.segmented_index(
+                            ['f1', 'f1'],
+                            [0, 1],
+                            [2, 3],
+                        ),
+                    ),
+                ),
+                (
+                    'f2',
+                    pd.Series(
+                        index=audformat.segmented_index(
+                            ['f2'],
+                            [0],
+                            [1],
+                        ),
+                    ),
+                ),
+            ],
+        ),
+        (
+            pd.DataFrame(
+                index=audformat.filewise_index(['f1', 'f1', 'f2']),
+            ),
+            [
+                (
+                    'f1',
+                    pd.DataFrame(
+                        index=audformat.filewise_index(['f1', 'f1']),
+                    ),
+                ),
+                (
+                    'f2',
+                    pd.DataFrame(
+                        index=audformat.filewise_index(['f2']),
+                    ),
+                ),
+            ],
+        ),
+    ]
+)
+def test_iter_by_file(obj, expected):
+    result = list(audformat.utils.iter_by_file(obj))
+    if not expected:
+        assert not result
+    for iteration, iteration_expected in zip(result, expected):
+        assert iteration[0] == iteration_expected[0]
+        if isinstance(obj, pd.Index):
+            pd.testing.assert_index_equal(iteration[1], iteration_expected[1])
+        elif isinstance(obj, pd.Series):
+            pd.testing.assert_series_equal(iteration[1], iteration_expected[1])
+        elif isinstance(obj, pd.DataFrame):
+            pd.testing.assert_frame_equal(iteration[1], iteration_expected[1])
+
+
+@pytest.mark.parametrize(
     'labels, expected',
     [
         (
