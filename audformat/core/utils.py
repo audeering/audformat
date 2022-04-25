@@ -326,36 +326,6 @@ def expand_file_path(
     return index
 
 
-def has_overlap(
-        obj: typing.Union[pd.Index, pd.DataFrame, pd.Series],
-) -> bool:
-    r"""Check if one or more segments overlap.
-
-    Args:
-        obj: object conform to
-            :ref:`table specifications <data-tables:Tables>`
-
-    Returns:
-        ``True`` if overlap is detected, otherwise ``False``
-
-    """
-
-    index = obj if isinstance(obj, pd.Index) else obj.index
-
-    if index_type(index) == define.IndexType.FILEWISE:
-        return False
-
-    index = to_segmented_index(index, allow_nat=False)
-    for _, sub_index in iter_by_file(index):
-        sub_index = sub_index.sortlevel(define.IndexField.START)[0]
-        starts = sub_index.get_level_values(define.IndexField.START)
-        ends = sub_index.get_level_values(define.IndexField.END)
-        if any(ends[:-1] > starts[1:]):
-            return True
-
-    return False
-
-
 def hash(
         obj: typing.Union[pd.Index, pd.Series, pd.DataFrame],
 ) -> str:
@@ -381,6 +351,36 @@ def hash(
 
     """
     return str(pd.util.hash_pandas_object(obj).sum())
+
+
+def index_has_overlap(
+        obj: typing.Union[pd.Index, pd.DataFrame, pd.Series],
+) -> bool:
+    r"""Check if one or more segments in the index overlap.
+
+    Args:
+        obj: object conform to
+            :ref:`table specifications <data-tables:Tables>`
+
+    Returns:
+        ``True`` if overlap is detected, otherwise ``False``
+
+    """
+
+    index = obj if isinstance(obj, pd.Index) else obj.index
+
+    if index_type(index) == define.IndexType.FILEWISE:
+        return False
+
+    index = to_segmented_index(index, allow_nat=False)
+    for _, sub_index in iter_by_file(index):
+        sub_index = sub_index.sortlevel(define.IndexField.START)[0]
+        starts = sub_index.get_level_values(define.IndexField.START)
+        ends = sub_index.get_level_values(define.IndexField.END)
+        if any(ends[:-1] > starts[1:]):
+            return True
+
+    return False
 
 
 def intersect(
