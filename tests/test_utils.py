@@ -653,7 +653,7 @@ def test_expand_file_path(tmpdir, index, root, expected):
                     ['f1'] * 2,
                     [0, 2],
                     [2, 3],
-                )
+                ),
             ),
             False,
         ),
