@@ -336,7 +336,7 @@ def has_overlap(
             :ref:`table specifications <data-tables:Tables>`
 
     Returns:
-        boolean
+        ``True`` if overlap is detected, otherwise ``False``
 
     """
 
