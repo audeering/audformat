@@ -625,24 +625,48 @@ def test_expand_file_path(tmpdir, index, root, expected):
 
 
 @pytest.mark.parametrize(
-    'index, expected',
+    'obj, expected',
     [
         (
-            audformat.segmented_index(['f1'] * 2, [0, 1], [2, 3]),
-            True
+            audformat.segmented_index(),
+            False,
         ),
         (
-            audformat.segmented_index(['f1'] * 2, [0, 2], [2, 3]),
-            False
+            audformat.segmented_index(
+                ['f1'] * 2,
+                [0, 1],
+                [2, 3],
+            ),
+            True,
         ),
         (
-            audformat.filewise_index(['f1'] * 2),
-            False
+            audformat.segmented_index(
+                ['f1', 'f2'],
+                [0, 1],
+                [2, 3],
+            ),
+            False,
+        ),
+        (
+            pd.Series(
+                index=audformat.segmented_index(
+                    ['f1'] * 2,
+                    [0, 2],
+                    [2, 3],
+                )
+            ),
+            False,
+        ),
+        (
+            pd.DataFrame(
+                index=audformat.filewise_index(['f1'] * 2)
+            ),
+            False,
         ),
     ]
 )
-def test_has_overlap(index, expected):
-    has_overlap = audformat.utils.has_overlap(index)
+def test_has_overlap(obj, expected):
+    has_overlap = audformat.utils.has_overlap(obj)
     assert has_overlap == expected
 
 

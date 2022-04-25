@@ -327,18 +327,20 @@ def expand_file_path(
 
 
 def has_overlap(
-        index: pd.Index,
+        obj: typing.Union[pd.Index, pd.DataFrame, pd.Series],
 ) -> bool:
     r"""Check if one or more segments overlap.
 
     Args:
-        index: index object conform to
+        obj: object conform to
             :ref:`table specifications <data-tables:Tables>`
 
     Returns:
         ``True`` if overlap is detected, otherwise ``False``
 
     """
+
+    index = obj if isinstance(obj, pd.Index) else obj.index
 
     if index_type(index) == define.IndexType.FILEWISE:
         return False
