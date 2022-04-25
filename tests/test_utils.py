@@ -706,7 +706,7 @@ def test_hash(obj, expected):
                     ['f1'] * 2,
                     [0, 2],
                     [2, 3],
-                )
+                ),
             ),
             False,
         ),
