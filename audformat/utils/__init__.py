@@ -14,5 +14,5 @@ from audformat.core.utils import (
     replace_file_extension,
     to_filewise_index,
     to_segmented_index,
-    union
+    union,
 )
