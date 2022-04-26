@@ -367,6 +367,16 @@ def index_has_overlap(
         ``True`` if overlap is detected, otherwise ``False``
 
     Example:
+        >>> index = filewise_index(['f1', 'f2'])
+        >>> index_has_overlap(index)
+        False
+        >>> index = segmented_index(
+        ...        ['f1', 'f2'],
+        ...        [0, 1],
+        ...        [2, 3],
+        ...    )
+        >>> index_has_overlap(index)
+        False
         >>> index = segmented_index(
         ...        ['f1'] * 2,
         ...        [0, 1],
@@ -374,12 +384,8 @@ def index_has_overlap(
         ...    )
         >>> index_has_overlap(index)
         True
-        >>> index = filewise_index(['f1', 'f2'])
-        >>> index_has_overlap(index)
-        False
 
     """
-
     index = obj if isinstance(obj, pd.Index) else obj.index
 
     if index_type(index) == define.IndexType.FILEWISE:
