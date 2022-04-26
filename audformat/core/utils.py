@@ -373,7 +373,6 @@ def index_has_overlap(
     if index_type(index) == define.IndexType.FILEWISE:
         return False
 
-    index = to_segmented_index(index)
     for _, sub_index in iter_by_file(index):
         sub_index = sub_index.sortlevel(define.IndexField.START)[0]
         starts = sub_index.get_level_values(define.IndexField.START)

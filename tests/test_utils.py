@@ -7,7 +7,6 @@ import pandas as pd
 import pytest
 
 import audeer
-from pandas._libs.tslibs.nattype import NaT
 
 import audformat
 from audformat import utils
@@ -690,7 +689,7 @@ def test_hash(obj, expected):
             audformat.segmented_index(
                 ['f1'] * 2,
                 [0, 2],
-                [1, NaT],
+                [1, pd.NaT],
             ),
             False,
         ),
@@ -698,7 +697,7 @@ def test_hash(obj, expected):
             audformat.segmented_index(
                 ['f1'] * 2,
                 [0, 2],
-                [NaT, 3],
+                [pd.NaT, 3],
             ),
             True,
         ),
@@ -706,7 +705,7 @@ def test_hash(obj, expected):
             audformat.segmented_index(
                 ['f1'] * 2,
                 [0, 2],
-                [NaT, NaT],
+                [pd.NaT, pd.NaT],
             ),
             True,
         ),
