@@ -1,6 +1,7 @@
 import errno
 import os
 import re
+import sys
 import typing as typing
 
 import iso639
@@ -372,11 +373,12 @@ def index_has_overlap(
     if index_type(index) == define.IndexType.FILEWISE:
         return False
 
-    index = to_segmented_index(index, allow_nat=False)
+    index = to_segmented_index(index)
     for _, sub_index in iter_by_file(index):
         sub_index = sub_index.sortlevel(define.IndexField.START)[0]
         starts = sub_index.get_level_values(define.IndexField.START)
         ends = sub_index.get_level_values(define.IndexField.END)
+        ends = ends.fillna(pd.Timedelta(sys.maxsize))
         if any(ends[:-1] > starts[1:]):
             return True
 
