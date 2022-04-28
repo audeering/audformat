@@ -358,6 +358,7 @@ def index_has_overlap(
         obj: typing.Union[pd.Index, pd.DataFrame, pd.Series],
 ) -> bool:
     r"""Check if one or more segments in the index overlap.
+    If the index is filewise, the return value will always be False.
 
     Args:
         obj: object conform to
