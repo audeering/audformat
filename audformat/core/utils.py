@@ -359,7 +359,7 @@ def index_has_overlap(
 ) -> bool:
     r"""Check if one or more segments in the index overlap.
 
-    If the index is filewise, the return value will always be False.
+    If the index is filewise, the result will always be ``False``.
 
     Args:
         obj: object conform to
