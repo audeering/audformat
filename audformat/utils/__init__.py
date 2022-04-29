@@ -3,6 +3,7 @@ from audformat.core.utils import (
     duration,
     expand_file_path,
     hash,
+    index_has_overlap,
     intersect,
     iter_by_file,
     join_labels,

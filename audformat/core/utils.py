@@ -1,6 +1,7 @@
 import errno
 import os
 import re
+import sys
 import typing as typing
 
 import iso639
@@ -351,6 +352,56 @@ def hash(
 
     """
     return str(pd.util.hash_pandas_object(obj).sum())
+
+
+def index_has_overlap(
+        obj: typing.Union[pd.Index, pd.DataFrame, pd.Series],
+) -> bool:
+    r"""Check if one or more segments in the index overlap.
+
+    If the index is filewise, the result will always be ``False``.
+
+    Args:
+        obj: object conform to
+            :ref:`table specifications <data-tables:Tables>`
+
+    Returns:
+        ``True`` if overlap is detected, otherwise ``False``
+
+    Example:
+        >>> index = filewise_index(['f1', 'f2'])
+        >>> index_has_overlap(index)
+        False
+        >>> index = segmented_index(
+        ...        ['f1', 'f2'],
+        ...        [0, 1],
+        ...        [2, 3],
+        ...    )
+        >>> index_has_overlap(index)
+        False
+        >>> index = segmented_index(
+        ...        ['f1'] * 2,
+        ...        [0, 1],
+        ...        [2, 3],
+        ...    )
+        >>> index_has_overlap(index)
+        True
+
+    """
+    index = obj if isinstance(obj, pd.Index) else obj.index
+
+    if index_type(index) == define.IndexType.FILEWISE:
+        return False
+
+    for _, sub_index in iter_by_file(index):
+        sub_index = sub_index.sortlevel(define.IndexField.START)[0]
+        starts = sub_index.get_level_values(define.IndexField.START)
+        ends = sub_index.get_level_values(define.IndexField.END)
+        ends = ends.fillna(pd.Timedelta(sys.maxsize))
+        if any(ends[:-1] > starts[1:]):
+            return True
+
+    return False
 
 
 def intersect(

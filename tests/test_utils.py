@@ -7,6 +7,7 @@ import pandas as pd
 import pytest
 
 import audeer
+
 import audformat
 from audformat import utils
 from audformat import define
@@ -667,6 +668,84 @@ def test_expand_file_path(tmpdir, index, root, expected):
 def test_hash(obj, expected):
     assert utils.hash(obj) == expected
     assert utils.hash(obj[::-1]) == expected
+
+
+@pytest.mark.parametrize(
+    'obj, expected',
+    [
+        (
+            audformat.filewise_index(),
+            False,
+        ),
+        (
+            audformat.segmented_index(),
+            False,
+        ),
+        (
+            audformat.filewise_index(['f1'] * 2),
+            False,
+        ),
+        (
+            audformat.segmented_index(
+                ['f1'] * 2,
+                [0, 2],
+                [1, pd.NaT],
+            ),
+            False,
+        ),
+        (
+            audformat.segmented_index(
+                ['f1'] * 2,
+                [0, 2],
+                [pd.NaT, 3],
+            ),
+            True,
+        ),
+        (
+            audformat.segmented_index(
+                ['f1'] * 2,
+                [0, 2],
+                [pd.NaT, pd.NaT],
+            ),
+            True,
+        ),
+        (
+            audformat.segmented_index(
+                ['f1'] * 2,
+                [0, 1],
+                [2, 3],
+            ),
+            True,
+        ),
+        (
+            audformat.segmented_index(
+                ['f1', 'f2'],
+                [0, 1],
+                [2, 3],
+            ),
+            False,
+        ),
+        (
+            pd.Series(
+                index=audformat.segmented_index(
+                    ['f1'] * 2,
+                    [0, 2],
+                    [2, 3],
+                ),
+            ),
+            False,
+        ),
+        (
+            pd.DataFrame(
+                index=audformat.filewise_index(['f1', 'f2'])
+            ),
+            False,
+        ),
+    ]
+)
+def test_index_has_overlap(obj, expected):
+    has_overlap = audformat.utils.index_has_overlap(obj)
+    assert has_overlap == expected
 
 
 @pytest.mark.parametrize(

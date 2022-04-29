@@ -24,6 +24,11 @@ hash
 
 .. autofunction:: hash
 
+index_has_overlap
+-----------------
+
+.. autofunction:: index_has_overlap
+
 intersect
 ---------
 
