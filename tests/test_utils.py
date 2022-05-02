@@ -732,6 +732,7 @@ def test_hash(obj, expected):
                     [0, 2],
                     [2, 3],
                 ),
+                dtype='object',
             ),
             False,
         ),
@@ -896,7 +897,7 @@ def test_intersect(objs, expected):
             [],
         ),
         (
-            pd.Series(),
+            pd.Series(dtype='object'),
             [],
         ),
         (
@@ -931,6 +932,7 @@ def test_intersect(objs, expected):
                     [0, 1, 0],
                     [2, 3, 1],
                 ),
+                dtype='object',
             ),
             [
                 (
@@ -941,6 +943,7 @@ def test_intersect(objs, expected):
                             [0, 1],
                             [2, 3],
                         ),
+                        dtype='object',
                     ),
                 ),
                 (
@@ -951,6 +954,7 @@ def test_intersect(objs, expected):
                             [0],
                             [1],
                         ),
+                        dtype='object',
                     ),
                 ),
             ],
