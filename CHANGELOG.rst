@@ -7,6 +7,16 @@ The format is based on `Keep a Changelog`_,
 and this project adheres to `Semantic Versioning`_.
 
 
+Version 0.14.2 (2022-04-29)
+---------------------------
+
+* Added: ``audformat.utils.index_has_overlap()``
+* Added: ``audformat.utils.iter_index_by_file()``
+* Changed: store categories with integers as ``int64`` instead of ``Int64``
+* Changed: require ``audeer>=1.18.0``
+* Changed: support ``pandas>=1.4.0``
+
+
 Version 0.14.1 (2022-03-03)
 ---------------------------
 
