@@ -371,7 +371,11 @@ class Table(HeaderBase):
         else:
             index = self.files.intersection(files)
             index.name = define.IndexField.FILE
-            self.df.drop(index, inplace=True)
+            if self.is_segmented:
+                level = 'file'
+            else:
+                level = None
+            self.df.drop(index, inplace=True, level=level)
 
         return self
 
