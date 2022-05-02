@@ -24,10 +24,19 @@ hash
 
 .. autofunction:: hash
 
+index_has_overlap
+-----------------
+
+.. autofunction:: index_has_overlap
+
 intersect
 ---------
 
 .. autofunction:: intersect
+
+iter_by_file
+------------
+.. autofunction:: iter_by_file
 
 join_labels
 -----------

@@ -74,7 +74,7 @@
             
             
               <div class="version">
-                v0.14.1
+                v0.14.2
               </div>
             
           
@@ -170,6 +170,7 @@
 <span></span><span class="kn">import</span> <span class="nn">errno</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">typing</span> <span class="k">as</span> <span class="nn">typing</span>
 
 <span class="kn">import</span> <span class="nn">iso639</span>
@@ -484,7 +485,7 @@
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">index</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">index</span>
 
-    <span class="n">root</span> <span class="o">=</span> <span class="n">audeer</span><span class="o">.</span><span class="n">safe_path</span><span class="p">(</span><span class="n">root</span><span class="p">)</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">sep</span>
+    <span class="n">root</span> <span class="o">=</span> <span class="n">audeer</span><span class="o">.</span><span class="n">path</span><span class="p">(</span><span class="n">root</span><span class="p">)</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">sep</span>
     <span class="n">is_segmented</span> <span class="o">=</span> <span class="n">index_type</span><span class="p">(</span><span class="n">index</span><span class="p">)</span> <span class="o">==</span> <span class="n">define</span><span class="o">.</span><span class="n">IndexType</span><span class="o">.</span><span class="n">SEGMENTED</span>
 
     <span class="k">if</span> <span class="n">is_segmented</span><span class="p">:</span>
@@ -520,6 +521,56 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">hash_pandas_object</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span></div>
+
+
+<div class="viewcode-block" id="index_has_overlap"><a class="viewcode-back" href="../../../api-utils.html#audformat.utils.index_has_overlap">[docs]</a><span class="k">def</span> <span class="nf">index_has_overlap</span><span class="p">(</span>
+        <span class="n">obj</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">],</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Check if one or more segments in the index overlap.</span>
+
+<span class="sd">    If the index is filewise, the result will always be ``False``.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        obj: object conform to</span>
+<span class="sd">            :ref:`table specifications &lt;data-tables:Tables&gt;`</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        ``True`` if overlap is detected, otherwise ``False``</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; index = filewise_index([&#39;f1&#39;, &#39;f2&#39;])</span>
+<span class="sd">        &gt;&gt;&gt; index_has_overlap(index)</span>
+<span class="sd">        False</span>
+<span class="sd">        &gt;&gt;&gt; index = segmented_index(</span>
+<span class="sd">        ...        [&#39;f1&#39;, &#39;f2&#39;],</span>
+<span class="sd">        ...        [0, 1],</span>
+<span class="sd">        ...        [2, 3],</span>
+<span class="sd">        ...    )</span>
+<span class="sd">        &gt;&gt;&gt; index_has_overlap(index)</span>
+<span class="sd">        False</span>
+<span class="sd">        &gt;&gt;&gt; index = segmented_index(</span>
+<span class="sd">        ...        [&#39;f1&#39;] * 2,</span>
+<span class="sd">        ...        [0, 1],</span>
+<span class="sd">        ...        [2, 3],</span>
+<span class="sd">        ...    )</span>
+<span class="sd">        &gt;&gt;&gt; index_has_overlap(index)</span>
+<span class="sd">        True</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">index</span> <span class="o">=</span> <span class="n">obj</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">)</span> <span class="k">else</span> <span class="n">obj</span><span class="o">.</span><span class="n">index</span>
+
+    <span class="k">if</span> <span class="n">index_type</span><span class="p">(</span><span class="n">index</span><span class="p">)</span> <span class="o">==</span> <span class="n">define</span><span class="o">.</span><span class="n">IndexType</span><span class="o">.</span><span class="n">FILEWISE</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">sub_index</span> <span class="ow">in</span> <span class="n">iter_by_file</span><span class="p">(</span><span class="n">index</span><span class="p">):</span>
+        <span class="n">sub_index</span> <span class="o">=</span> <span class="n">sub_index</span><span class="o">.</span><span class="n">sortlevel</span><span class="p">(</span><span class="n">define</span><span class="o">.</span><span class="n">IndexField</span><span class="o">.</span><span class="n">START</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">starts</span> <span class="o">=</span> <span class="n">sub_index</span><span class="o">.</span><span class="n">get_level_values</span><span class="p">(</span><span class="n">define</span><span class="o">.</span><span class="n">IndexField</span><span class="o">.</span><span class="n">START</span><span class="p">)</span>
+        <span class="n">ends</span> <span class="o">=</span> <span class="n">sub_index</span><span class="o">.</span><span class="n">get_level_values</span><span class="p">(</span><span class="n">define</span><span class="o">.</span><span class="n">IndexField</span><span class="o">.</span><span class="n">END</span><span class="p">)</span>
+        <span class="n">ends</span> <span class="o">=</span> <span class="n">ends</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">Timedelta</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">maxsize</span><span class="p">))</span>
+        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">ends</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">starts</span><span class="p">[</span><span class="mi">1</span><span class="p">:]):</span>
+            <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="k">return</span> <span class="kc">False</span></div>
 
 
 <div class="viewcode-block" id="intersect"><a class="viewcode-back" href="../../../api-utils.html#audformat.utils.intersect">[docs]</a><span class="k">def</span> <span class="nf">intersect</span><span class="p">(</span>
@@ -605,6 +656,64 @@
         <span class="n">index</span> <span class="o">=</span> <span class="n">segmented_index</span><span class="p">()</span>
 
     <span class="k">return</span> <span class="n">index</span></div>
+
+
+<div class="viewcode-block" id="iter_by_file"><a class="viewcode-back" href="../../../api-utils.html#audformat.utils.iter_by_file">[docs]</a><span class="k">def</span> <span class="nf">iter_by_file</span><span class="p">(</span>
+        <span class="n">obj</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span>
+            <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">,</span>
+            <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span>
+            <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+        <span class="p">],</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Iterator</span><span class="p">[</span>
+    <span class="n">typing</span><span class="o">.</span><span class="n">Tuple</span><span class="p">[</span>
+        <span class="nb">str</span><span class="p">,</span>
+        <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">],</span>
+    <span class="p">],</span>
+<span class="p">]:</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Iterate over object by file.</span>
+
+<span class="sd">    Each iteration returns a file and the according sub-object.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        obj: object conform to</span>
+<span class="sd">            :ref:`table specifications &lt;data-tables:Tables&gt;`</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        iterator in form of (file, sub_obj)</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; index = filewise_index([&#39;f1&#39;, &#39;f1&#39;, &#39;f2&#39;])</span>
+<span class="sd">        &gt;&gt;&gt; next(iter_by_file(index))</span>
+<span class="sd">        (&#39;f1&#39;, Index([&#39;f1&#39;], dtype=&#39;object&#39;, name=&#39;file&#39;))</span>
+<span class="sd">        &gt;&gt;&gt; index = segmented_index([&#39;f1&#39;, &#39;f1&#39;, &#39;f2&#39;], [0, 1, 0], [2, 3, 1])</span>
+<span class="sd">        &gt;&gt;&gt; next(iter_by_file(index))</span>
+<span class="sd">        (&#39;f1&#39;, MultiIndex([(&#39;f1&#39;, &#39;0 days 00:00:00&#39;, &#39;0 days 00:00:02&#39;),</span>
+<span class="sd">            (&#39;f1&#39;, &#39;0 days 00:00:01&#39;, &#39;0 days 00:00:03&#39;)],</span>
+<span class="sd">           names=[&#39;file&#39;, &#39;start&#39;, &#39;end&#39;]))</span>
+<span class="sd">        &gt;&gt;&gt; obj = pd.Series([&#39;a&#39;, &#39;b&#39;, &#39;b&#39;], index)</span>
+<span class="sd">        &gt;&gt;&gt; next(iter_by_file(obj))</span>
+<span class="sd">        (&#39;f1&#39;, file  start            end</span>
+<span class="sd">        f1    0 days 00:00:00  0 days 00:00:02    a</span>
+<span class="sd">              0 days 00:00:01  0 days 00:00:03    b</span>
+<span class="sd">        dtype: object)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">is_index</span> <span class="o">=</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">)</span>
+    <span class="n">index</span> <span class="o">=</span> <span class="n">obj</span> <span class="k">if</span> <span class="n">is_index</span> <span class="k">else</span> <span class="n">obj</span><span class="o">.</span><span class="n">index</span>
+
+    <span class="c1"># We use len() here as index.empty takes a very long time</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">index</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">files</span> <span class="o">=</span> <span class="n">index</span><span class="o">.</span><span class="n">get_level_values</span><span class="p">(</span><span class="s1">&#39;file&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">index_type</span><span class="p">(</span><span class="n">index</span><span class="p">)</span> <span class="o">==</span> <span class="n">define</span><span class="o">.</span><span class="n">IndexType</span><span class="o">.</span><span class="n">FILEWISE</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
+                <span class="n">sub_index</span> <span class="o">=</span> <span class="n">filewise_index</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+                <span class="n">sub_obj</span> <span class="o">=</span> <span class="n">sub_index</span> <span class="k">if</span> <span class="n">is_index</span> <span class="k">else</span> <span class="n">obj</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">sub_index</span><span class="p">]</span>
+                <span class="k">yield</span> <span class="n">file</span><span class="p">,</span> <span class="n">sub_obj</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
+                <span class="n">sub_index</span> <span class="o">=</span> <span class="n">index</span><span class="p">[</span><span class="n">index</span><span class="o">.</span><span class="n">get_loc</span><span class="p">(</span><span class="n">file</span><span class="p">)]</span>
+                <span class="n">sub_obj</span> <span class="o">=</span> <span class="n">sub_index</span> <span class="k">if</span> <span class="n">is_index</span> <span class="k">else</span> <span class="n">obj</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">sub_index</span><span class="p">]</span>
+                <span class="k">yield</span> <span class="n">file</span><span class="p">,</span> <span class="n">sub_obj</span></div>
 
 
 <div class="viewcode-block" id="join_labels"><a class="viewcode-back" href="../../../api-utils.html#audformat.utils.join_labels">[docs]</a><span class="k">def</span> <span class="nf">join_labels</span><span class="p">(</span>
@@ -991,13 +1100,13 @@
 
     <span class="n">test_path</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">get_level_values</span><span class="p">(</span><span class="n">define</span><span class="o">.</span><span class="n">IndexField</span><span class="o">.</span><span class="n">FILE</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
     <span class="n">is_abs</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isabs</span><span class="p">(</span><span class="n">test_path</span><span class="p">)</span>
-    <span class="n">test_path</span> <span class="o">=</span> <span class="n">audeer</span><span class="o">.</span><span class="n">safe_path</span><span class="p">(</span><span class="n">test_path</span><span class="p">)</span>
+    <span class="n">test_path</span> <span class="o">=</span> <span class="n">audeer</span><span class="o">.</span><span class="n">path</span><span class="p">(</span><span class="n">test_path</span><span class="p">)</span>
 
     <span class="c1"># keep ``output_folder`` relative if it&#39;s relative</span>
-    <span class="k">if</span> <span class="n">audeer</span><span class="o">.</span><span class="n">safe_path</span><span class="p">(</span><span class="n">output_folder</span><span class="p">)</span> <span class="ow">in</span> <span class="n">test_path</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">audeer</span><span class="o">.</span><span class="n">path</span><span class="p">(</span><span class="n">output_folder</span><span class="p">)</span> <span class="ow">in</span> <span class="n">test_path</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
             <span class="sa">f</span><span class="s1">&#39;``output_folder`` may not be contained in path to files of &#39;</span>
-            <span class="sa">f</span><span class="s1">&#39;original data: </span><span class="si">{</span><span class="n">audeer</span><span class="o">.</span><span class="n">safe_path</span><span class="p">(</span><span class="n">output_folder</span><span class="p">)</span><span class="si">}</span><span class="s1"> != </span><span class="si">{</span><span class="n">test_path</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="sa">f</span><span class="s1">&#39;original data: </span><span class="si">{</span><span class="n">audeer</span><span class="o">.</span><span class="n">path</span><span class="p">(</span><span class="n">output_folder</span><span class="p">)</span><span class="si">}</span><span class="s1"> != </span><span class="si">{</span><span class="n">test_path</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
     <span class="n">obj</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
     <span class="n">original_files</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">get_level_values</span><span class="p">(</span><span class="n">define</span><span class="o">.</span><span class="n">IndexField</span><span class="o">.</span><span class="n">FILE</span><span class="p">)</span>
@@ -1258,7 +1367,7 @@
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2022/03/03 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2022/05/02 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
@@ -1301,7 +1410,7 @@
         <script src="https://cdn.jsdelivr.net/npm/katex@0.13.11/dist/contrib/auto-render.min.js"></script>
         <script src="../../../_static/katex_autorenderer.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
     
 
   

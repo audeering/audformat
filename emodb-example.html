@@ -76,7 +76,7 @@
             
             
               <div class="version">
-                v0.14.1
+                v0.14.2
               </div>
             
           
@@ -207,7 +207,7 @@ to the folder <code class="file docutils literal notranslate"><span class="pre">
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>[&#39;lablaut&#39;, &#39;erklaerung.txt&#39;, &#39;labsilb&#39;, &#39;wav&#39;, &#39;silb&#39;, &#39;erkennung.txt&#39;]
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>[&#39;lablaut&#39;, &#39;erkennung.txt&#39;, &#39;wav&#39;, &#39;labsilb&#39;, &#39;erklaerung.txt&#39;, &#39;silb&#39;]
 </pre></div>
 </div>
 </div>
@@ -227,7 +227,7 @@ of the database.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>[&#39;14b10Tc.wav&#39;, &#39;03b02Tb.wav&#39;, &#39;09a05Wc.wav&#39;]
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>[&#39;11a02Tc.wav&#39;, &#39;11b10Ae.wav&#39;, &#39;16b09Ab.wav&#39;]
 </pre></div>
 </div>
 </div>
@@ -458,8 +458,7 @@ to the emotion table.</p>
     <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;Latin-1&#39;</span><span class="p">,</span>
     <span class="n">decimal</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="p">,</span>
     <span class="n">converters</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;Satz&#39;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;wav&#39;</span><span class="p">,</span> <span class="n">x</span><span class="p">)},</span>
-    <span class="n">squeeze</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-<span class="p">)</span>
+<span class="p">)</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="s1">&#39;columns&#39;</span><span class="p">)</span>
 <span class="n">y</span> <span class="o">=</span> <span class="n">y</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">files</span><span class="p">]</span>
 <span class="n">y</span> <span class="o">=</span> <span class="n">y</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">to_replace</span><span class="o">=</span><span class="sa">u</span><span class="s1">&#39;</span><span class="se">\xa0</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">regex</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">y</span> <span class="o">=</span> <span class="n">y</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">to_replace</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="n">regex</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -999,7 +998,7 @@ that the media files are located at the correct position ourselves.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>[&#39;db.emotion.csv&#39;, &#39;db.files.csv&#39;, &#39;db.yaml&#39;, &#39;wav&#39;]
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>[&#39;wav&#39;, &#39;db.emotion.csv&#39;, &#39;db.files.csv&#39;, &#39;db.yaml&#39;]
 </pre></div>
 </div>
 </div>
@@ -1048,7 +1047,7 @@ that the media files are located at the correct position ourselves.</p>
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2022/03/03 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2022/05/02 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
@@ -1091,7 +1090,7 @@ that the media files are located at the correct position ourselves.</p>
         <script src="https://cdn.jsdelivr.net/npm/katex@0.13.11/dist/contrib/auto-render.min.js"></script>
         <script src="_static/katex_autorenderer.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
     
 
   
