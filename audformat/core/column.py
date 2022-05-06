@@ -272,14 +272,13 @@ class Column(HeaderBase):
         column_id = self._id
         df = self._table.df
 
-        if index is None:
-            index = df.index
-
         if self.scheme_id is not None:
             scheme = self._table._db.schemes[self.scheme_id]
             assert_values(values, scheme)
 
-        if index_type(df.index) == index_type(index):
+        if index is None:
+            df[column_id] = to_array(values)
+        elif index_type(df.index) == index_type(index):
             if is_scalar(values):
                 values = [values] * len(index)
             values = to_array(values)
