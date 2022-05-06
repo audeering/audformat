@@ -277,7 +277,10 @@ class Column(HeaderBase):
             assert_values(values, scheme)
 
         if index is None:
-            df[column_id] = to_array(values)
+            if is_scalar(values):
+                values = [values] * len(df)
+            values = to_array(values)
+            df[column_id] = values
         elif index_type(df.index) == index_type(index):
             if is_scalar(values):
                 values = [values] * len(index)
