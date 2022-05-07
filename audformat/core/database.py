@@ -157,6 +157,8 @@ class Database(HeaderBase):
         r"""URL of database license"""
         self.media = HeaderDict(value_type=Media)
         r"""Dictionary of media information"""
+        self.misc = HeaderDict()
+        r"""Miscellaneous data"""
         self.raters = HeaderDict(value_type=Rater)
         r"""Dictionary of raters"""
         self.schemes = HeaderDict(

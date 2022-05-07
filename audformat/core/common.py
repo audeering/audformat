@@ -139,6 +139,26 @@ class HeaderBase:
             return d
         elif HeaderBase in inspect.getmro(value.__class__):
             return value.to_dict()
+        elif isinstance(value, pd.Series):
+            if isinstance(value.index, pd.MultiIndex):
+                index = list(value.index.names)
+            else:
+                index = value.index.name
+            return {
+                'type': 'series',
+                'index': index,
+                'name': value.name,
+            }
+        elif isinstance(value, pd.DataFrame):
+            if isinstance(value.index, pd.MultiIndex):
+                index = list(value.index.names)
+            else:
+                index = [value.index.name]
+            return {
+                'type': 'frame',
+                'index': index,
+                'columns': list(value.columns),
+            }
         else:
             return value
 
