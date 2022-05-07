@@ -162,7 +162,7 @@ class Database(HeaderBase):
             value_type=Misc,
             set_callback=self._set_misc,
         )
-        r"""Miscellaneous data"""
+        r"""Miscellaneous objects"""
         self.raters = HeaderDict(value_type=Rater)
         r"""Dictionary of raters"""
         self.schemes = HeaderDict(
@@ -536,7 +536,7 @@ class Database(HeaderBase):
                 if isinstance(obj, Table):
                     path = audeer.path(root, name + '.' + obj_id)
                 else:
-                    path = audeer.path(root, 'misc', obj_id)
+                    path = audeer.path(root, define.MISC_FOLDER, obj_id)
                 obj.save(
                     path,
                     storage_format=storage_format,
@@ -544,7 +544,7 @@ class Database(HeaderBase):
                 )
 
             if len(self.misc) > 0:
-                audeer.mkdir(audeer.path(root, 'misc'))
+                audeer.mkdir(audeer.path(root, define.MISC_FOLDER))
 
             objs = {**self.tables, **self.misc}
             audeer.run_tasks(
@@ -856,7 +856,7 @@ class Database(HeaderBase):
 
                 for misc_id in header['misc']:
                     misc = db.misc[misc_id]
-                    misc_path = audeer.path(root, 'misc', misc_id)
+                    misc_path = audeer.path(root, define.MISC_FOLDER, misc_id)
                     params.append(([misc, misc_path], {}))
 
             if params:

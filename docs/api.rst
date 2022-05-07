@@ -48,6 +48,12 @@ Media
 .. autoclass:: Media
     :members:
 
+Misc
+----
+
+.. autoclass:: Misc
+    :members:
+
 Rater
 -----
 

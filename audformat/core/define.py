@@ -1,8 +1,3 @@
-import typing
-
-import numpy as np
-import pandas as pd
-
 from audformat.core.common import DefineBase
 
 
@@ -73,6 +68,9 @@ LICENSE_URLS = {
         'https://creativecommons.org/licenses/by-nc-sa/4.0/',
     License.CC_BY_SA_4_0: 'https://creativecommons.org/licenses/by-sa/4.0/',
 }
+
+
+MISC_FOLDER = 'misc'
 
 
 class RaterType(DefineBase):
