@@ -1,10 +1,13 @@
 import inspect
+import typing
+
 import oyaml as yaml
+import pandas as pd
 from typing import Sequence, Callable
 import textwrap
 from collections import OrderedDict
 
-import pandas as pd
+import audeer
 
 from audformat.core.errors import (
     BadKeyError,
@@ -53,7 +56,7 @@ class HeaderDict(OrderedDict):
             self,
             *args,
             sorted_iter: bool = True,
-            value_type: type = None,
+            value_type: typing.Union[type, typing.Sequence[type]] = None,
             get_callback: Callable = None,
             set_callback: Callable = None,
             **kwargs,
@@ -72,7 +75,7 @@ class HeaderDict(OrderedDict):
         if self.set_callback is not None:
             value = self.set_callback(key, value)
         if self.value_type is not None:
-            if not isinstance(value, self.value_type):
+            if not type(value) in audeer.to_list(self.value_type):
                 raise BadTypeError(value, self.value_type)
         super().__setitem__(key, value)
 

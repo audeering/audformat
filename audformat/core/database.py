@@ -20,6 +20,7 @@ from audformat.core.column import Column
 from audformat.core.common import HeaderBase, HeaderDict
 from audformat.core.errors import BadIdError
 from audformat.core.media import Media
+from audformat.core.misc import Misc
 from audformat.core.rater import Rater
 from audformat.core.scheme import Scheme
 from audformat.core.split import Split
@@ -157,7 +158,7 @@ class Database(HeaderBase):
         r"""URL of database license"""
         self.media = HeaderDict(value_type=Media)
         r"""Dictionary of media information"""
-        self.misc = HeaderDict()
+        self.misc = Misc()
         r"""Miscellaneous data"""
         self.raters = HeaderDict(value_type=Rater)
         r"""Dictionary of raters"""
@@ -547,6 +548,11 @@ class Database(HeaderBase):
                 task_description='Save tables',
             )
 
+            self.misc.save(
+                root,
+                storage_format=storage_format,
+            )
+
         self._name = name
         self._root = root
 
@@ -850,6 +856,9 @@ class Database(HeaderBase):
                     for table_id in header['tables']:
                         db[table_id]._df = None
 
+            elif 'misc' in header and header['misc'] and load_data:
+                db.misc.load(root, header['misc'])
+
         db._name = name
         db._root = root
 
@@ -876,7 +885,7 @@ class Database(HeaderBase):
             name=header['name'],
             source=header['source'],
             usage=header['usage'])
-        db.from_dict(header, ignore_keys=['media', 'raters', 'schemes',
+        db.from_dict(header, ignore_keys=['media', 'misc', 'raters', 'schemes',
                                           'tables', 'splits'])
 
         if 'media' in header and header['media']:
