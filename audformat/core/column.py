@@ -12,7 +12,7 @@ from audformat.core.index import (
 )
 from audformat.core.rater import Rater
 from audformat.core.scheme import Scheme
-from audformat.core.typing import Values
+from audformat.core.typehints import Values
 
 
 def assert_values(
