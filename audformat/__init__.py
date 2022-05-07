@@ -10,6 +10,7 @@ from audformat.core.index import (
     index_type,
 )
 from audformat.core.media import Media
+from audformat.core.misc import Misc
 from audformat.core.rater import Rater
 from audformat.core.scheme import Scheme
 from audformat.core.split import Split

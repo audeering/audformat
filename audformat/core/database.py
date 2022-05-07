@@ -158,7 +158,10 @@ class Database(HeaderBase):
         r"""URL of database license"""
         self.media = HeaderDict(value_type=Media)
         r"""Dictionary of media information"""
-        self.misc = Misc()
+        self.misc = HeaderDict(
+            value_type=Misc,
+            set_callback=self._set_misc,
+        )
         r"""Miscellaneous data"""
         self.raters = HeaderDict(value_type=Rater)
         r"""Dictionary of raters"""
@@ -529,28 +532,30 @@ class Database(HeaderBase):
 
         if not header_only:
 
-            def job(table_id, table):
-                table_path = os.path.join(root, name + '.' + table_id)
-                table.save(
-                    table_path,
+            def job(obj_id, obj):
+                if isinstance(obj, Table):
+                    path = audeer.path(root, name + '.' + obj_id)
+                else:
+                    path = audeer.path(root, 'misc', obj_id)
+                obj.save(
+                    path,
                     storage_format=storage_format,
                     update_other_formats=update_other_formats,
                 )
 
+            if len(self.misc) > 0:
+                audeer.mkdir(audeer.path(root, 'misc'))
+
+            objs = {**self.tables, **self.misc}
             audeer.run_tasks(
                 job,
                 params=[
-                    ([table_id, table], {})
-                    for table_id, table in self.tables.items()
+                    ([obj_id, obj], {})
+                    for obj_id, obj in objs.items()
                 ],
                 num_workers=num_workers,
                 progress_bar=verbose,
                 task_description='Save tables',
-            )
-
-            self.misc.save(
-                root,
-                storage_format=storage_format,
             )
 
         self._name = name
@@ -829,25 +834,16 @@ class Database(HeaderBase):
             header = yaml.load(fp, Loader=Loader)
             db = Database.load_header_from_yaml(header)
 
+            params = []
+
             if 'tables' in header and header['tables']:
 
                 if load_data:
 
-                    def job(table_id):
+                    for table_id in header['tables']:
                         table = db[table_id]
-                        path = os.path.join(root, name + '.' + table_id)
-                        table.load(path)
-
-                    # load all tables into memory
-                    audeer.run_tasks(
-                        job,
-                        params=[
-                            ([table_id], {}) for table_id in header['tables']
-                        ],
-                        num_workers=num_workers,
-                        progress_bar=verbose,
-                        task_description='Load tables',
-                    )
+                        table_path = audeer.path(root, name + '.' + table_id)
+                        params.append(([table, table_path], {}))
 
                 else:
 
@@ -857,7 +853,25 @@ class Database(HeaderBase):
                         db[table_id]._df = None
 
             elif 'misc' in header and header['misc'] and load_data:
-                db.misc.load(root, header['misc'])
+
+                for misc_id in header['misc']:
+                    misc = db.misc[misc_id]
+                    misc_path = audeer.path(root, 'misc', misc_id)
+                    params.append(([misc, misc_path], {}))
+
+            if params:
+
+                def job(obj, obj_path):
+                    obj.load(obj_path)
+
+                # load all objects into memory
+                audeer.run_tasks(
+                    job,
+                    params=params,
+                    num_workers=num_workers,
+                    progress_bar=verbose,
+                    task_description='Load tables',
+                )
 
         db._name = name
         db._root = root
@@ -893,6 +907,12 @@ class Database(HeaderBase):
                 media = Media()
                 media.from_dict(media_d)
                 db.media[media_id] = media
+
+        if 'misc' in header and header['misc']:
+            for misc_id, misc_d in header['misc'].items():
+                misc = Misc(None)
+                misc.from_dict(misc_d)
+                db.misc[misc_id] = misc
 
         if 'raters' in header and header['raters']:
             for rater_id, rater_d in header['raters'].items():
@@ -942,6 +962,15 @@ class Database(HeaderBase):
                 db[table_id] = table
 
         return db
+
+    def _set_misc(
+            self,
+            misc_id: str,
+            misc: Misc,
+    ) -> Misc:
+        misc._db = self
+        misc._id = misc_id
+        return misc
 
     def _set_scheme(
             self,

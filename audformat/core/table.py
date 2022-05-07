@@ -483,7 +483,7 @@ class Table(HeaderBase):
     ) -> pd.DataFrame:
         r"""Get labels.
 
-        By default all labels of the table are returned,
+        By default, all labels of the table are returned,
         use ``index`` to get a subset.
 
         Examples are provided with the

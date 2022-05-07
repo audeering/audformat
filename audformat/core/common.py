@@ -1,13 +1,10 @@
 import inspect
-import typing
-
 import oyaml as yaml
-import pandas as pd
 from typing import Sequence, Callable
 import textwrap
 from collections import OrderedDict
 
-import audeer
+import pandas as pd
 
 from audformat.core.errors import (
     BadKeyError,
@@ -56,7 +53,7 @@ class HeaderDict(OrderedDict):
             self,
             *args,
             sorted_iter: bool = True,
-            value_type: typing.Union[type, typing.Sequence[type]] = None,
+            value_type: type = None,
             get_callback: Callable = None,
             set_callback: Callable = None,
             **kwargs,
@@ -75,7 +72,7 @@ class HeaderDict(OrderedDict):
         if self.set_callback is not None:
             value = self.set_callback(key, value)
         if self.value_type is not None:
-            if not type(value) in audeer.to_list(self.value_type):
+            if not isinstance(value, self.value_type):
                 raise BadTypeError(value, self.value_type)
         super().__setitem__(key, value)
 
@@ -142,26 +139,6 @@ class HeaderBase:
             return d
         elif HeaderBase in inspect.getmro(value.__class__):
             return value.to_dict()
-        elif isinstance(value, pd.Series):
-            if isinstance(value.index, pd.MultiIndex):
-                index = list(value.index.names)
-            else:
-                index = value.index.name
-            return {
-                'type': 'series',
-                'index': index,
-                'name': value.name,
-            }
-        elif isinstance(value, pd.DataFrame):
-            if isinstance(value.index, pd.MultiIndex):
-                index = list(value.index.names)
-            else:
-                index = [value.index.name]
-            return {
-                'type': 'frame',
-                'index': index,
-                'columns': list(value.columns),
-            }
         else:
             return value
 
