@@ -59,7 +59,10 @@ class Misc(HeaderBase):
         if self._obj is None:
             # if database was loaded with 'load_data=False'
             # we have to load the object data now
-            path = audeer.path(self.db.root, 'misc', self._id)
+            path = audeer.path(
+                self.db.root,
+                f'{self.db._name}.{define.MISC_FILE_PREFIX}.{self._id}',
+            )
             self.load(path)
         return self._obj
 

@@ -534,17 +534,15 @@ class Database(HeaderBase):
 
             def job(obj_id, obj):
                 if isinstance(obj, Table):
-                    path = audeer.path(root, name + '.' + obj_id)
+                    prefix = name
                 else:
-                    path = audeer.path(root, define.MISC_FOLDER, obj_id)
+                    prefix = f'{name}.{define.MISC_FILE_PREFIX}'
+                path = audeer.path(root, f'{prefix}.{obj_id}')
                 obj.save(
                     path,
                     storage_format=storage_format,
                     update_other_formats=update_other_formats,
                 )
-
-            if len(self.misc) > 0:
-                audeer.mkdir(audeer.path(root, define.MISC_FOLDER))
 
             objs = {**self.tables, **self.misc}
             audeer.run_tasks(
@@ -856,7 +854,10 @@ class Database(HeaderBase):
 
                 for misc_id in header['misc']:
                     misc = db.misc[misc_id]
-                    misc_path = audeer.path(root, define.MISC_FOLDER, misc_id)
+                    misc_path = audeer.path(
+                        root,
+                        f'{name}.{define.MISC_FILE_PREFIX}.{misc_id}',
+                    )
                     params.append(([misc, misc_path], {}))
 
             if params:
@@ -986,6 +987,11 @@ class Database(HeaderBase):
             table_id: str,
             table: Table,
     ) -> Table:
+        if table_id.startswith(f'{define.MISC_FILE_PREFIX}.'):
+            raise ValueError(
+                f"Table ID must not start with "
+                f"'{define.MISC_FILE_PREFIX}.'."
+            )
         if table.split_id is not None and table.split_id not in self.splits:
             raise BadIdError('split', table.split_id, self.splits)
         if table.media_id is not None and table.media_id not in self.media:

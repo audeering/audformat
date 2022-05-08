@@ -70,7 +70,7 @@ LICENSE_URLS = {
 }
 
 
-MISC_FOLDER = 'misc'
+MISC_FILE_PREFIX = 'misc'
 
 
 class RaterType(DefineBase):
