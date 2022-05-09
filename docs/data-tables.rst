@@ -13,7 +13,7 @@ Tables
 
 
 A table links labels to media files.
-It consists of one or more index columns
+It consists of one or three index columns
 followed by an arbitrary number of label columns.
 Labels can either refer to whole files or part of files.
 An empty label means that no label has been assigned (yet).
