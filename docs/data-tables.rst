@@ -86,30 +86,21 @@ Access labels as :class:`pandas.Series`
 
     db['filewise']['values'].get()
 
-Access labels with a segmented index:
+Access labels and convert index to a segmented index:
 
 .. jupyter-execute::
 
     db['filewise']['values'].get(as_segmented=True)
 
-Create a segmented index:
-
-.. jupyter-execute::
-
-    import pandas as pd
-
-
-    segmented_index = audformat.segmented_index(
-        files=['f1', 'f1', 'f1', 'f2'],
-        starts=['0s', '1s', '2s', '0s'],
-        ends=['1s', '2s', '3s', pd.NaT],
-    )
-    segmented_index
-
 Access labels from a filewise table with a segmented index:
 
 .. jupyter-execute::
 
+    segmented_index = audformat.segmented_index(
+        files=['f1', 'f1', 'f1', 'f2'],
+        starts=['0s', '1s', '2s', '0s'],
+        ends=['1s', '2s', '3s', None],
+    )
     db['filewise'].get(segmented_index)
 
 Access labels from a filewise column with a segmented index:
@@ -142,7 +133,7 @@ Create a segmented index:
     segmented_index = audformat.segmented_index(
         files=['f1', 'f1', 'f1', 'f2', 'f3'],
         starts=['0s', '1s', '2s', '0s', '1m'],
-        ends=['1s', '2s', '3s', pd.NaT, '1h'],
+        ends=['1s', '2s', '3s', None, '1h'],
     )
     segmented_index
 
@@ -160,9 +151,7 @@ Assign labels to the whole table:
 
     values_list = [1, 2, 3, 4, 5]
     values_dict = {'values': values_list}
-    db['segmented'].set(
-        values_dict,
-    )
+    db['segmented'].set(values_dict)
 
 Access all labels as :class:`pandas.DataFrame`:
 
@@ -182,19 +171,13 @@ Access labels from a column as :class:`pandas.Series`:
 
     db['segmented']['values'].get()
 
-Create a filewise index:
+Access labels from a segmented table with a filewise index:
 
 .. jupyter-execute::
 
     filewise_index = audformat.filewise_index(
         ['f1', 'f2'],
     )
-    filewise_index
-
-Access labels from a segmented table with a filewise index:
-
-.. jupyter-execute::
-
     db['segmented'].get(filewise_index)
 
 Access labels from a segmented column with a filewise index:
