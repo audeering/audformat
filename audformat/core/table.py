@@ -43,7 +43,7 @@ class Table(HeaderBase):
             If ``None`` creates an empty filewise table
         split_id: split identifier (must exist)
         media_id: media identifier (must exist)
-        description: database description
+        description: table description
         meta: additional meta fields
 
     Raises:

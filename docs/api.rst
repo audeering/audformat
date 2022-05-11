@@ -53,6 +53,7 @@ Misc
 
 .. autoclass:: Misc
     :members:
+    :special-members:
 
 Rater
 -----

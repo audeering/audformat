@@ -1,5 +1,4 @@
 import os
-import typing
 
 import pandas as pd
 
@@ -10,33 +9,48 @@ import audformat.core.define as define
 
 
 class Misc(HeaderBase):
-    r"""Miscellaneous object.
+    r"""Miscellaneous table.
 
     Args:
-        obj: object
-        description: database description
+        df: table
+        description: table description
         meta: additional meta fields
 
     """
     def __init__(
             self,
-            obj: typing.Union[pd.Series, pd.DataFrame],
+            df: pd.DataFrame,
             *,
             description: str = None,
             meta: dict = None,
     ):
         super().__init__(description=description, meta=meta)
 
-        self.columns = None
-        self.index = None
-        self.name = None
-        self.type = None
+        if df is not None:
+            if isinstance(df.index, pd.MultiIndex):
+                index = list(df.index.names)
+            else:
+                index = [df.index.name]
+            self.levels = index
+            self.columns = list(df.columns)
+        else:
+            self.columns = None
+            self.levels = None
 
         self._db = None
+        self._df = df
         self._id = None
-        self._obj = obj
 
-        self._update_fields()
+    def __eq__(
+            self,
+            other: 'Misc',
+    ) -> bool:
+        if self.dump() != other.dump():
+            return False
+        return self.df.equals(other.df)
+
+    def __len__(self) -> int:
+        return len(self.df)
 
     @property
     def db(self):
@@ -49,30 +63,71 @@ class Misc(HeaderBase):
         return self._db
 
     @property
-    def obj(self) -> typing.Union[pd.Series, pd.DataFrame]:
-        r"""Object data.
+    def df(self) -> pd.DataFrame:
+        r"""Table data.
 
         Returns:
-            object
+            data
 
         """
-        if self._obj is None:
+        if self._df is None:
             # if database was loaded with 'load_data=False'
-            # we have to load the object data now
+            # we have to load the table data now
             path = audeer.path(
                 self.db.root,
                 f'{self.db._name}.{define.MISC_FILE_PREFIX}.{self._id}',
             )
             self.load(path)
-        return self._obj
+        return self._df
+
+    @property
+    def index(self) -> pd.Index:
+        r"""Table index.
+
+        Returns:
+            index
+
+        """
+        return self.df.index
+
+    def copy(self) -> 'Misc':
+        r"""Copy table.
+
+        Return:
+            new ``Misc`` object
+
+        """
+        misc = Misc(
+            self.df.copy(),
+            description=self.description,
+            meta=self.meta.copy(),
+        )
+        misc._db = self.db
+        return misc
+
+    def get(
+            self,
+            *,
+            copy: bool = True,
+    ) -> pd.DataFrame:
+        r"""Get table data.
+
+        Args:
+            copy: return a copy of the labels
+
+        Returns:
+            data
+
+        """
+        return self.df.copy() if copy else self.df
 
     def load(
             self,
             path: str,
     ):
-        r"""Load object data from disk.
+        r"""Load table data from disk.
 
-        Objects can be stored as PKL and/or CSV files to disk.
+        Tables can be stored as PKL and/or CSV files to disk.
         If both files are present
         it will load the PKL file
         as long as its modification date is newer,
@@ -101,8 +156,8 @@ class Misc(HeaderBase):
                     and os.path.getmtime(csv_file) > os.path.getmtime(pkl_file)
             ):
                 raise RuntimeError(
-                    f"The object CSV file '{csv_file}' is newer "
-                    f"than the object PKL file '{pkl_file}'. "
+                    f"The table CSV file '{csv_file}' is newer "
+                    f"than the table PKL file '{pkl_file}'. "
                     "If you want to load from the CSV file, "
                     "please delete the PKL file. "
                     "If you want to load from the PKL file, "
@@ -111,18 +166,15 @@ class Misc(HeaderBase):
             pickled = True
 
         if pickled:
-            obj = pd.read_pickle(pkl_file)
+            df = pd.read_pickle(pkl_file)
         else:
-            index_col = self.index
-            obj = pd.read_csv(
+            df = pd.read_csv(
                 csv_file,
-                index_col=index_col,
+                index_col=self.levels,
                 float_precision='round_trip',
             )
-            if self.type == 'series':
-                obj = obj[self.name]
 
-        self._obj = obj
+        self._df = df
 
     def save(
             self,
@@ -131,7 +183,7 @@ class Misc(HeaderBase):
             storage_format: str = define.TableStorageFormat.CSV,
             update_other_formats: bool = True,
     ):
-        r"""Save object data to disk.
+        r"""Save table data to disk.
 
         Existing files will be overwritten.
 
@@ -163,45 +215,16 @@ class Misc(HeaderBase):
             if update_other_formats and os.path.exists(pickle_file):
                 self._save_pickled(pickle_file)
 
-    def to_dict(self) -> dict:
-        r"""Serialize object to dictionary.
-
-        Returns:
-            dictionary with attributes
-
-        """
-        self._update_fields()
-        return super().to_dict()
-
     def _save_csv(self, path: str):
-        # Load object before opening CSV file
+        # Load table before opening CSV file
         # to avoid creating a CSV file
         # that is newer than the PKL file
-        obj = self.obj
+        obj = self.df
         with open(path, 'w') as fp:
             obj.to_csv(fp, encoding='utf-8')
 
     def _save_pickled(self, path: str):
-        self.obj.to_pickle(
+        self.df.to_pickle(
             path,
             protocol=4,  # supported by Python >= 3.4
         )
-
-    def _update_fields(self):
-        if self._obj is not None:
-            if isinstance(self.obj, pd.Series):
-                if isinstance(self.obj.index, pd.MultiIndex):
-                    index = list(self.obj.index.names)
-                else:
-                    index = self.obj.index.name
-                self.type = 'series'
-                self.index = index
-                self.name = self.obj.name
-            elif isinstance(self.obj, pd.DataFrame):
-                if isinstance(self.obj.index, pd.MultiIndex):
-                    index = list(self.obj.index.names)
-                else:
-                    index = [self.obj.index.name]
-                self.type = 'frame'
-                self.index = index
-                self.columns = list(self.obj.columns)
