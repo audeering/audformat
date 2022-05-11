@@ -256,9 +256,11 @@ def format_series_as_html():  # pragma: no cover (only used in documentation)
 
 
 def index_to_html(self):  # pragma: no cover
-    return self.to_frame(index=False)._repr_html_()
+    df = self.to_frame()
+    df = df.drop(columns=df.columns)
+    return df.to_html()
 
 
 def series_to_html(self):  # pragma: no cover
     df = self.to_frame()
-    return df._repr_html_()
+    return df.to_html()
