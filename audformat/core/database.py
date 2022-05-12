@@ -23,7 +23,10 @@ from audformat.core.media import Media
 from audformat.core.rater import Rater
 from audformat.core.scheme import Scheme
 from audformat.core.split import Split
-from audformat.core.table import Table
+from audformat.core.table import (
+    Misc,
+    Table,
+)
 
 
 class Database(HeaderBase):
@@ -156,6 +159,12 @@ class Database(HeaderBase):
         self.license_url = license_url
         r"""URL of database license"""
         self.media = HeaderDict(value_type=Media)
+        r"""Dictionary of media information"""
+        self.miscs = HeaderDict(
+            value_type=Misc,
+            set_callback=self._set_misc,
+        )
+        r"""Dictionary of tables"""
         r"""Dictionary of media information"""
         self.raters = HeaderDict(value_type=Rater)
         r"""Dictionary of raters"""
@@ -492,14 +501,11 @@ class Database(HeaderBase):
             verbose: bool = False,
     ):
         r"""Save database to disk.
-
         Creates a header ``<root>/<name>.yaml``
         and for every table a file ``<root>/<name>.<table-id>.[csv,pkl]``.
-
         Existing files will be overwritten.
         If ``update_other_formats`` is provided,
         it will overwrite all existing files in others formats as well.
-
         Args:
             root: root directory (possibly created)
             name: base name of files
@@ -515,7 +521,6 @@ class Database(HeaderBase):
                 If ``None`` will be set to the number of processors
                 on the machine multiplied by 5
             verbose: show progress bar
-
         """
         root = audeer.mkdir(root)
 
@@ -526,19 +531,24 @@ class Database(HeaderBase):
 
         if not header_only:
 
-            def job(table_id, table):
-                table_path = os.path.join(root, name + '.' + table_id)
-                table.save(
-                    table_path,
+            def job(obj_id, obj):
+                if isinstance(obj, Table):
+                    prefix = name
+                else:
+                    prefix = f'{name}.{define.MISC_FILE_PREFIX}'
+                path = audeer.path(root, f'{prefix}.{obj_id}')
+                obj.save(
+                    path,
                     storage_format=storage_format,
                     update_other_formats=update_other_formats,
                 )
 
+            objs = {**self.tables, **self.miscs}
             audeer.run_tasks(
                 job,
                 params=[
-                    ([table_id, table], {})
-                    for table_id, table in self.tables.items()
+                    ([obj_id, obj], {})
+                    for obj_id, obj in objs.items()
                 ],
                 num_workers=num_workers,
                 progress_bar=verbose,
@@ -783,11 +793,9 @@ class Database(HeaderBase):
             verbose: bool = False,
     ) -> 'Database':
         r"""Load database from disk.
-
         Expects a header ``<root>/<name>.yaml``
         and for every table a file ``<root>/<name>.<table-id>.[csv|pkl]``
         Media files should be located under ``root``.
-
         Args:
             root: root directory
             name: base name of header and table files
@@ -804,10 +812,8 @@ class Database(HeaderBase):
                 If ``None`` will be set to the number of processors
                 on the machine multiplied by 5
             verbose: show progress bar
-
         Returns:
             database object
-
         """
         ext = '.yaml'
         root = audeer.path(root)
@@ -821,32 +827,56 @@ class Database(HeaderBase):
             header = yaml.load(fp, Loader=Loader)
             db = Database.load_header_from_yaml(header)
 
+            params = []
+
             if 'tables' in header and header['tables']:
 
                 if load_data:
 
-                    def job(table_id):
+                    for table_id in header['tables']:
                         table = db[table_id]
-                        path = os.path.join(root, name + '.' + table_id)
-                        table.load(path)
-
-                    # load all tables into memory
-                    audeer.run_tasks(
-                        job,
-                        params=[
-                            ([table_id], {}) for table_id in header['tables']
-                        ],
-                        num_workers=num_workers,
-                        progress_bar=verbose,
-                        task_description='Load tables',
-                    )
+                        table_path = audeer.path(root, name + '.' + table_id)
+                        params.append(([table, table_path], {}))
 
                 else:
 
                     # signal that table data is not loaded
                     # by setting the DataFrame to None
                     for table_id in header['tables']:
-                        db[table_id]._df = None
+                        db.tables[table_id]._df = None
+
+            elif 'miscs' in header and header['miscs']:
+
+                if load_data:
+
+                    for misc_id in header['miscs']:
+
+                        misc = db.miscs[misc_id]
+                        misc_path = audeer.path(
+                            root,
+                            f'{name}.{define.MISC_FILE_PREFIX}.{misc_id}',
+                        )
+                        params.append(([misc, misc_path], {}))
+
+                else:
+
+                    # signal that table data is not loaded
+                    # by setting the DataFrame to None
+                    for misc_id in header['miscs']:
+                        db.miscs[misc_id]._df = None
+
+            if params:
+                def job(obj, obj_path):
+                    obj.load(obj_path)
+
+                # load all objects into memory
+                audeer.run_tasks(
+                    job,
+                    params=params,
+                    num_workers=num_workers,
+                    progress_bar=verbose,
+                    task_description='Load tables',
+                )
 
         db._name = name
         db._root = root
@@ -856,13 +886,10 @@ class Database(HeaderBase):
     @staticmethod
     def load_header_from_yaml(header: dict) -> 'Database':
         r"""Load database header from YAML.
-
         Args:
             header: YAML header definition
-
         Returns:
             database object
-
         """
         # for backward compatibility
         if len(header) == 1:  # pragma: no cover
@@ -874,14 +901,32 @@ class Database(HeaderBase):
             name=header['name'],
             source=header['source'],
             usage=header['usage'])
-        db.from_dict(header, ignore_keys=['media', 'raters', 'schemes',
-                                          'tables', 'splits'])
+        db.from_dict(header, ignore_keys=['media', 'miscs', 'raters',
+                                          'schemes', 'tables', 'splits'])
 
         if 'media' in header and header['media']:
             for media_id, media_d in header['media'].items():
                 media = Media()
                 media.from_dict(media_d)
                 db.media[media_id] = media
+
+        if 'miscs' in header and header['miscs']:
+            for misc_id, misc_d in header['miscs'].items():
+                misc = Misc(None)
+                misc.from_dict(misc_d, ignore_keys=['columns'])
+
+                if 'columns' in misc_d and misc_d['columns']:
+                    tmp_callback = misc.columns.set_callback
+                    misc.columns.set_callback = None
+                    for column_id, column_d in misc_d['columns'].items():
+                        column = Column()
+                        column.from_dict(column_d)
+                        column._id = column_id
+                        column._table = misc
+                        misc.columns[column_id] = column
+                    misc.columns.set_callback = tmp_callback
+
+                db.miscs[misc_id] = misc
 
         if 'raters' in header and header['raters']:
             for rater_id, rater_d in header['raters'].items():
@@ -932,6 +977,19 @@ class Database(HeaderBase):
 
         return db
 
+    def _set_misc(
+            self,
+            misc_id: str,
+            misc: Misc,
+    ) -> Misc:
+        if misc.split_id is not None and misc.split_id not in self.splits:
+            raise BadIdError('split', misc.split_id, self.splits)
+        if misc.media_id is not None and misc.media_id not in self.media:
+            raise BadIdError('media', misc.media_id, self.media)
+        misc._db = self
+        misc._id = misc_id
+        return misc
+
     def _set_scheme(
             self,
             scheme_id: str,
@@ -946,6 +1004,11 @@ class Database(HeaderBase):
             table_id: str,
             table: Table,
     ) -> Table:
+        if table_id.startswith(f'{define.MISC_FILE_PREFIX}.'):
+            raise ValueError(
+                f"Table ID must not start with "
+                f"'{define.MISC_FILE_PREFIX}.'."
+            )
         if table.split_id is not None and table.split_id not in self.splits:
             raise BadIdError('split', table.split_id, self.splits)
         if table.media_id is not None and table.media_id not in self.media:

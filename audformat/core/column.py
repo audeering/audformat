@@ -139,7 +139,7 @@ class Column(HeaderBase):
     ) -> pd.Series:
         r"""Get labels.
 
-        By default all labels of the column are returned,
+        By default, all labels of the column are returned,
         use ``index`` to get a subset.
 
         Examples are provided with the
@@ -244,7 +244,7 @@ class Column(HeaderBase):
     ):
         r"""Set labels.
 
-        By default all labels of the column are replaced,
+        By default, all labels of the column are replaced,
         use ``index`` to set a subset.
         If columns is assigned to a :class:`Scheme`
         values have to match its ``dtype``.
@@ -279,7 +279,27 @@ class Column(HeaderBase):
             scheme = self._table._db.schemes[self.scheme_id]
             assert_values(values, scheme)
 
-        if index_type(df.index) == index_type(index):
+        if hasattr(self._table, 'type'):
+            if index_type(df.index) == index_type(index):
+                if is_scalar(values):
+                    values = [values] * len(index)
+                values = to_array(values)
+                df.loc[index, column_id] = pd.Series(
+                    values,
+                    index=index,
+                    dtype=df[column_id].dtype,
+                )
+            else:
+                if not self._table.is_filewise:
+                    files = index.get_level_values(define.IndexField.FILE)
+                    index = df.loc[files].index
+                    return self.set(values, index=index)
+                else:
+                    raise ValueError(
+                        'Cannot set values of a filewise column '
+                        'using a segmented index.'
+                    )
+        else:
             if is_scalar(values):
                 values = [values] * len(index)
             values = to_array(values)
@@ -288,16 +308,6 @@ class Column(HeaderBase):
                 index=index,
                 dtype=df[column_id].dtype,
             )
-        else:
-            if not self._table.is_filewise:
-                files = index.get_level_values(define.IndexField.FILE)
-                index = df.loc[files].index
-                return self.set(values, index=index)
-            else:
-                raise ValueError(
-                    'Cannot set values of a filewise column '
-                    'using a segmented index.'
-                )
 
     def __eq__(
             self,
