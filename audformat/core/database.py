@@ -166,12 +166,6 @@ class Database(HeaderBase):
         r"""URL of database license"""
         self.media = HeaderDict(value_type=Media)
         r"""Dictionary of media information"""
-        self.misc_tables = HeaderDict(
-            value_type=MiscTable,
-            set_callback=self._set_table,
-        )
-        r"""Dictionary of tables"""
-        r"""Dictionary of media information"""
         self.raters = HeaderDict(value_type=Rater)
         r"""Dictionary of raters"""
         self.schemes = HeaderDict(
@@ -185,7 +179,12 @@ class Database(HeaderBase):
             value_type=Table,
             set_callback=self._set_table,
         )
-        r"""Dictionary of tables"""
+        r"""Dictionary of audformat tables"""
+        self.misc_tables = HeaderDict(
+            value_type=MiscTable,
+            set_callback=self._set_table,
+        )
+        r"""Dictionary of miscellaneous tables"""
 
         self._files_duration = {}
         self._name = None
