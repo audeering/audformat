@@ -506,11 +506,14 @@ class Database(HeaderBase):
             verbose: bool = False,
     ):
         r"""Save database to disk.
+
         Creates a header ``<root>/<name>.yaml``
         and for every table a file ``<root>/<name>.<table-id>.[csv,pkl]``.
+
         Existing files will be overwritten.
         If ``update_other_formats`` is provided,
         it will overwrite all existing files in others formats as well.
+
         Args:
             root: root directory (possibly created)
             name: base name of files
@@ -526,6 +529,7 @@ class Database(HeaderBase):
                 If ``None`` will be set to the number of processors
                 on the machine multiplied by 5
             verbose: show progress bar
+
         """
         root = audeer.mkdir(root)
 
@@ -805,9 +809,11 @@ class Database(HeaderBase):
             verbose: bool = False,
     ) -> 'Database':
         r"""Load database from disk.
+
         Expects a header ``<root>/<name>.yaml``
         and for every table a file ``<root>/<name>.<table-id>.[csv|pkl]``
         Media files should be located under ``root``.
+
         Args:
             root: root directory
             name: base name of header and table files
@@ -824,8 +830,10 @@ class Database(HeaderBase):
                 If ``None`` will be set to the number of processors
                 on the machine multiplied by 5
             verbose: show progress bar
+
         Returns:
             database object
+
         """
         ext = '.yaml'
         root = audeer.path(root)
@@ -879,10 +887,13 @@ class Database(HeaderBase):
     @staticmethod
     def load_header_from_yaml(header: dict) -> 'Database':
         r"""Load database header from YAML.
+
         Args:
             header: YAML header definition
+
         Returns:
             database object
+
         """
         # for backward compatibility
         if len(header) == 1:  # pragma: no cover
