@@ -23,7 +23,7 @@ from audformat.core.index import (
 )
 from audformat.core.media import Media
 from audformat.core.split import Split
-from audformat.core.typehints import (
+from audformat.core.typing import (
     Values,
 )
 
