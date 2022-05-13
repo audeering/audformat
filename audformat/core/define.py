@@ -75,9 +75,6 @@ LICENSE_URLS = {
 }
 
 
-MISC_FILE_PREFIX = 'misc'
-
-
 class RaterType(DefineBase):
     r"""Rater type of column."""
     HUMAN = 'human'

@@ -15,7 +15,7 @@ from audformat.core.rater import Rater
 from audformat.core.scheme import Scheme
 from audformat.core.split import Split
 from audformat.core.table import (
-    Misc,
+    MiscTable,
     Table,
 )
 
