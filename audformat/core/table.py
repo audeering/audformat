@@ -28,7 +28,150 @@ from audformat.core.typing import (
 )
 
 
-class Table(HeaderBase):
+class Base(HeaderBase):
+    r"""Table base class"""
+    def __init__(
+            self,
+            index: pd.Index = None,
+            *,
+            split_id: str = None,
+            media_id: str = None,
+            description: str = None,
+            meta: dict = None,
+    ):
+        super().__init__(description=description, meta=meta)
+
+        self.split_id = split_id
+        r"""Split ID"""
+        self.media_id = media_id
+        r"""Media ID"""
+        self.columns = HeaderDict(
+            sorted_iter=False,
+            value_type=Column,
+            set_callback=self._set_column,
+        )
+        r"""Table columns"""
+
+        self._df = pd.DataFrame(index=index)
+        self._db = None
+        self._id = None
+
+    def __getitem__(self, column_id: str) -> Column:
+        r"""Return view to a column.
+
+        Args:
+            column_id: column identifier
+
+        """
+        return self.columns[column_id]
+
+    def __eq__(
+            self,
+            other: 'Base',
+    ) -> bool:
+        if self.dump() != other.dump():
+            return False
+        return self.df.equals(other.df)
+
+    def __len__(self) -> int:
+        return len(self.df)
+
+    def __setitem__(self, column_id: str, column: Column) -> Column:
+        r"""Add new column to table.
+
+        Args:
+            column_id: column identifier
+            column: column
+
+        Raises:
+            BadIdError: if a column with a ``scheme_id`` or ``rater_id`` is
+                added that does not exist
+
+        """
+        self.columns[column_id] = column
+        return column
+
+    @property
+    def db(self):
+        r"""Database object.
+
+        Returns:
+            database object or ``None`` if not assigned yet
+
+        """
+        return self._db
+
+    @property
+    def df(self) -> pd.DataFrame:
+        r"""Table data.
+
+        Returns:
+            data
+
+        """
+        if self._df is None:
+            # if database was loaded with 'load_data=False'
+            # we have to load the table data now
+            path = os.path.join(self.db.root, f'{self.db._name}.{self._id}')
+            self.load(path)
+        return self._df
+
+    @property
+    def index(self) -> pd.Index:
+        r"""Table index.
+
+        Returns:
+            index
+
+        """
+        return self.df.index
+
+    @property
+    def media(self) -> typing.Optional[Media]:
+        r"""Media object.
+
+        Returns:
+            media object or ``None`` if not available
+
+        """
+        if self.media_id is not None and self.db is not None:
+            return self.db.media[self.media_id]
+
+    @property
+    def split(self) -> typing.Optional[Split]:
+        r"""Split object.
+
+        Returns:
+            split object or ``None`` if not available
+
+        """
+        if self.split_id is not None and self.db is not None:
+            return self.db.splits[self.split_id]
+
+    def _set_column(self, column_id: str, column: Column) -> Column:
+
+        if column.scheme_id is not None and \
+                column.scheme_id not in self.db.schemes:
+            raise BadIdError('column', column.scheme_id, self.db.schemes)
+
+        if column.rater_id is not None and \
+                column.rater_id not in self.db.raters:
+            raise BadIdError('rater', column.rater_id, self.db.raters)
+
+        if column.scheme_id is not None:
+            dtype = self.db.schemes[column.scheme_id].to_pandas_dtype()
+        else:
+            dtype = object
+
+        self.df[column_id] = pd.Series(dtype=dtype)
+
+        column._id = column_id
+        column._table = self
+
+        return column
+
+
+class Table(Base):
     r"""Table with annotation data.
 
     Consists of a list of file names to which it assigns
@@ -136,52 +279,56 @@ class Table(HeaderBase):
             description: str = None,
             meta: dict = None,
     ):
-        super().__init__(description=description, meta=meta)
-
         if index is None:
             index = filewise_index()
 
         self.type = index_type(index)
         r"""Table type"""
-        self.split_id = split_id
-        r"""Split ID"""
-        self.media_id = media_id
-        r"""Media ID"""
-        self.columns = HeaderDict(
-            sorted_iter=False,
-            value_type=Column,
-            set_callback=self._set_column,
+
+        super().__init__(
+            index,
+            split_id=split_id,
+            media_id=media_id,
+            description=description,
+            meta=meta,
         )
-        r"""Table columns"""
 
-        self._df = pd.DataFrame(index=index)
-        self._db = None
-        self._id = None
+    def __add__(self, other: 'Table') -> 'Table':
+        r"""Create new table by combining two tables.
 
-    @property
-    def db(self):
-        r"""Database object.
+        The new table contains index and columns of both tables.
+        Missing values will be set to ``NaN``.
+        If at least one table is segmented, the output has a segmented index.
 
-        Returns:
-            database object or ``None`` if not assigned yet
+        Columns with the same identifier are combined to a single column.
+        This requires that:
+
+        1. both columns have the same dtype
+        2. in places where the indices overlap the values of both columns
+           match or one column contains ``NaN``
+
+        Media and split information,
+        as well as,
+        references to schemes and raters are discarded.
+        If you intend to keep them,
+        use :meth:`audformat.Table.update`.
+
+        Args:
+            other: the other table
+
+        Raises:
+            ValueError: if columns with the same name have different dtypes
+            ValueError: if values in the same position do not match
 
         """
-        return self._db
+        df = utils.concat([self.df, other.df])
 
-    @property
-    def df(self) -> pd.DataFrame:
-        r"""Table data.
+        table = Table(df.index)
+        for column_id in df:
+            table[column_id] = Column()
+        table._df = df
 
-        Returns:
-            data
-
-        """
-        if self._df is None:
-            # if database was loaded with 'load_data=False'
-            # we have to load the table data now
-            path = os.path.join(self.db.root, f'{self.db._name}.{self._id}')
-            self.load(path)
-        return self._df
+        return table
 
     @property
     def ends(self) -> pd.Index:
@@ -217,16 +364,6 @@ class Table(HeaderBase):
             return index
 
     @property
-    def index(self) -> pd.Index:
-        r"""Table index.
-
-        Returns:
-            index
-
-        """
-        return self.df.index
-
-    @property
     def is_filewise(self) -> bool:
         r"""Check if filewise table.
 
@@ -245,28 +382,6 @@ class Table(HeaderBase):
 
         """
         return self.type == define.IndexType.SEGMENTED
-
-    @property
-    def media(self) -> typing.Optional[Media]:
-        r"""Media object.
-
-        Returns:
-            media object or ``None`` if not available
-
-        """
-        if self.media_id is not None and self.db is not None:
-            return self.db.media[self.media_id]
-
-    @property
-    def split(self) -> typing.Optional[Split]:
-        r"""Split object.
-
-        Returns:
-            split object or ``None`` if not available
-
-        """
-        if self.split_id is not None and self.db is not None:
-            return self.db.splits[self.split_id]
 
     @property
     def starts(self) -> pd.Index:
@@ -483,7 +598,7 @@ class Table(HeaderBase):
     ) -> pd.DataFrame:
         r"""Get labels.
 
-        By default all labels of the table are returned,
+        By default, all labels of the table are returned,
         use ``index`` to get a subset.
 
         Examples are provided with the
@@ -815,7 +930,7 @@ class Table(HeaderBase):
     ):
         r"""Set labels.
 
-        By default all labels of the table are replaced,
+        By default, all labels of the table are replaced,
         use ``index`` to select a subset.
         If a column is assigned to a :class:`Scheme`
         values have to match its ``dtype``.
@@ -1017,78 +1132,6 @@ class Table(HeaderBase):
 
         return self
 
-    def __add__(self, other: 'Table') -> 'Table':
-        r"""Create new table by combining two tables.
-
-        The new table contains index and columns of both tables.
-        Missing values will be set to ``NaN``.
-        If at least one table is segmented, the output has a segmented index.
-
-        Columns with the same identifier are combined to a single column.
-        This requires that:
-
-        1. both columns have the same dtype
-        2. in places where the indices overlap the values of both columns
-           match or one column contains ``NaN``
-
-        Media and split information,
-        as well as,
-        references to schemes and raters are discarded.
-        If you intend to keep them,
-        use :meth:`audformat.Table.update`.
-
-        Args:
-            other: the other table
-
-        Raises:
-            ValueError: if columns with the same name have different dtypes
-            ValueError: if values in the same position do not match
-
-        """
-        df = utils.concat([self.df, other.df])
-
-        table = Table(df.index)
-        for column_id in df:
-            table[column_id] = Column()
-        table._df = df
-
-        return table
-
-    def __getitem__(self, column_id: str) -> Column:
-        r"""Return view to a column.
-
-        Args:
-            column_id: column identifier
-
-        """
-        return self.columns[column_id]
-
-    def __eq__(
-            self,
-            other: 'Table',
-    ) -> bool:
-        if self.dump() != other.dump():
-            return False
-        return self.df.equals(other.df)
-
-    def __len__(self) -> int:
-        return len(self.df)
-
-    def __setitem__(self, column_id: str, column: Column) -> Column:
-        r"""Add new column to table.
-
-        Args:
-            column_id: column identifier
-            column: column
-
-        Raises:
-            BadIdError: if a column with a ``scheme_id`` or ``rater_id`` is
-                added that does not exist
-
-        """
-        self.columns[column_id] = column
-        return column
-
     def _load_csv(self, path: str):
 
         usecols = []
@@ -1166,35 +1209,3 @@ class Table(HeaderBase):
             path,
             protocol=4,  # supported by Python >= 3.4
         )
-
-    def _set_column(self, column_id: str, column: Column) -> Column:
-        if column.scheme_id is not None and \
-                column.scheme_id not in self.db.schemes:
-            raise BadIdError('column', column.scheme_id, self.db.schemes)
-        if column.rater_id is not None and \
-                column.rater_id not in self.db.raters:
-            raise BadIdError('rater', column.rater_id, self.db.raters)
-
-        if column.scheme_id is not None:
-            dtype = self.db.schemes[column.scheme_id].to_pandas_dtype()
-        else:
-            dtype = object
-        self.df[column_id] = pd.Series(dtype=dtype)
-
-        #  if table is empty we need to fix index names
-        if self.df.empty:
-            if self.is_filewise:
-                self.df.index.name = define.IndexField.FILE
-            elif self.is_segmented:
-                self.df.index.rename(
-                    [
-                        define.IndexField.FILE,
-                        define.IndexField.START,
-                        define.IndexField.END
-                    ],
-                    inplace=True,
-                )
-
-        column._id = column_id
-        column._table = self
-        return column
