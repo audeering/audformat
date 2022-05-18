@@ -84,4 +84,5 @@ There are two types of tables:
 
 .. autoclass:: Table
     :members:
-    :special-members:
+    :inherited-members:
+    :special-members: __add__, __getitem__, __setitem__
