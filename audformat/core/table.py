@@ -148,6 +148,83 @@ class Base(HeaderBase):
         if self.split_id is not None and self.db is not None:
             return self.db.splits[self.split_id]
 
+    def get(
+            self,
+            index: pd.Index = None,
+            *,
+            map: typing.Dict[
+                str, typing.Union[str, typing.Sequence[str]]
+            ] = None,
+            copy: bool = True,
+    ) -> pd.DataFrame:
+        r"""Get labels.
+
+        By default, all labels of the table are returned,
+        use ``index`` to get a subset.
+
+        Examples are provided with the
+        :ref:`table specifications <data-tables:Tables>`.
+
+        Args:
+            index: index
+            copy: return a copy of the labels
+            map: map scheme or scheme fields to column values.
+                For example if your table holds a column ``speaker`` with
+                speaker IDs, which is assigned to a scheme that contains a
+                dict mapping speaker IDs to age and gender entries,
+                ``map={'speaker': ['age', 'gender']}``
+                will replace the column with two new columns that map ID
+                values to age and gender, respectively.
+                To also keep the original column with speaker IDS, you can do
+                ``map={'speaker': ['speaker', 'age', 'gender']}``
+
+        Returns:
+            labels
+
+        Raises:
+            FileNotFoundError: if file is not found
+            RuntimeError: if table is not assign to a database
+            ValueError: if trying to map without a scheme
+            ValueError: if trying to map from a scheme that has no labels
+            ValueError: if trying to map to a non-existing field
+
+        """
+        result_is_copy = False
+
+        if index is None:
+            result = self.df
+        else:
+            result, result_is_copy = self._get_by_index(index)
+
+        if map is not None:
+
+            if self.db is None:
+                raise RuntimeError(
+                    'Cannot map schemes, '
+                    'table is not assigned to a database.'
+                )
+
+            if not result_is_copy:
+                result = result.copy()
+                result_is_copy = True  # to avoid another copy
+
+            for column, mapped_columns in map.items():
+                mapped_columns = audeer.to_list(mapped_columns)
+                if len(mapped_columns) == 1:
+                    result[mapped_columns[0]] = self.columns[column].get(
+                        index, map=mapped_columns[0],
+                    )
+                else:
+                    for mapped_column in mapped_columns:
+                        if mapped_column != column:
+                            result[mapped_column] = self.columns[column].get(
+                                index, map=mapped_column,
+                            )
+                if column not in mapped_columns:
+                    result.drop(columns=column, inplace=True)
+
+        return result.copy() if (copy and not result_is_copy) else result
+
     def load(
             self,
             path: str,
@@ -251,10 +328,46 @@ class Base(HeaderBase):
             if update_other_formats and os.path.exists(pickle_file):
                 self._save_pickled(pickle_file)
 
+    def set(
+            self,
+            values: typing.Union[
+                typing.Dict[str, Values],
+                pd.DataFrame,
+            ],
+            *,
+            index: pd.Index = None,
+    ):
+        r"""Set labels.
+
+        By default, all labels of the table are replaced,
+        use ``index`` to select a subset.
+        If a column is assigned to a :class:`Scheme`
+        values have to match its ``dtype``.
+
+        Examples are provided with the
+        :ref:`table specifications <data-tables:Tables>`.
+
+        Args:
+            values: dictionary of values with ``column_id`` as key
+            index: index
+
+        Raises:
+            ValueError: if values do not match scheme
+
+        """
+        for idx, data in values.items():
+            self.columns[idx].set(data, index=index)
+
+    def _get_by_index(
+            self,
+            index: pd.Index,
+    ) -> (pd.DataFrame, bool):  # pragma: no cover
+        raise NotImplementedError()
+
     def _index_levels_and_converters(self) -> typing.Tuple[
             typing.Sequence[str],
             typing.Dict[str, typing.Callable],
-    ]:  # pragma: no cover.
+    ]:  # pragma: no cover
         raise NotImplementedError()
 
     def _load_csv(self, path: str):
@@ -823,52 +936,7 @@ class Table(Base):
             ValueError: if trying to map to a non-existing field
 
         """
-        result_is_copy = False
-
-        if index is None:
-            result = self.df
-        else:
-            if index_type(self.index) == index_type(index):
-                result = self.df.loc[index]
-            else:
-                files = index.get_level_values(define.IndexField.FILE)
-                if self.is_filewise:  # index is segmented
-                    result = pd.DataFrame(
-                        self.df.loc[files].values,
-                        index,
-                        columns=self.columns
-                    )
-                    result_is_copy = True  # to avoid another copy
-                else:  # index is filewise
-                    files = list(dict.fromkeys(files))  # remove duplicates
-                    result = self.df.loc[files]
-
-        if map is not None:
-
-            if self.db is None:
-                raise RuntimeError(
-                    'Cannot map schemes, '
-                    'table is not assigned to a database.'
-                )
-
-            if not result_is_copy:
-                result = result.copy()
-                result_is_copy = True  # to avoid another copy
-
-            for column, mapped_columns in map.items():
-                mapped_columns = audeer.to_list(mapped_columns)
-                if len(mapped_columns) == 1:
-                    result[mapped_columns[0]] = self.columns[column].get(
-                        index, map=mapped_columns[0],
-                    )
-                else:
-                    for mapped_column in mapped_columns:
-                        if mapped_column != column:
-                            result[mapped_column] = self.columns[column].get(
-                                index, map=mapped_column,
-                            )
-                if column not in mapped_columns:
-                    result.drop(columns=column, inplace=True)
+        result = super().get(index, map=map, copy=copy)
 
         # if necessary, convert to segmented index and replace NaT
         is_segmented = index_type(result.index) == define.IndexType.SEGMENTED
@@ -890,7 +958,7 @@ class Table(Base):
             )
             result = result.set_axis(new_index)
 
-        return result.copy() if (copy and not result_is_copy) else result
+        return result
 
     def pick_columns(
             self,
@@ -991,37 +1059,6 @@ class Table(Base):
             self._df = self.get(index, copy=False)
 
         return self
-
-    def set(
-            self,
-            values: typing.Union[
-                typing.Dict[str, Values],
-                pd.DataFrame,
-            ],
-            *,
-            index: pd.Index = None,
-    ):
-        r"""Set labels.
-
-        By default, all labels of the table are replaced,
-        use ``index`` to select a subset.
-        If a column is assigned to a :class:`Scheme`
-        values have to match its ``dtype``.
-
-        Examples are provided with the
-        :ref:`table specifications <data-tables:Tables>`.
-
-        Args:
-            values: dictionary of values with ``column_id`` as key
-            index: index conform to
-                :ref:`table specifications <data-tables:Tables>`
-
-        Raises:
-            ValueError: if values do not match scheme
-
-        """
-        for idx, data in values.items():
-            self.columns[idx].set(data, index=index)
 
     def update(
             self,
@@ -1204,6 +1241,30 @@ class Table(Base):
         self._df = df
 
         return self
+
+    def _get_by_index(
+            self,
+            index: pd.Index,
+    ) -> (pd.DataFrame, bool):
+
+        result_is_copy = False
+
+        if index_type(self.index) == index_type(index):
+            result = self.df.loc[index]
+        else:
+            files = index.get_level_values(define.IndexField.FILE)
+            if self.is_filewise:  # index is segmented
+                result = pd.DataFrame(
+                    self.df.loc[files].values,
+                    index,
+                    columns=self.columns
+                )
+                result_is_copy = True  # to avoid another copy
+            else:  # index is filewise
+                files = list(dict.fromkeys(files))  # remove duplicates
+                result = self.df.loc[files]
+
+        return result, result_is_copy
 
     def _index_levels_and_converters(self) -> typing.Tuple[
         typing.Sequence[str],
