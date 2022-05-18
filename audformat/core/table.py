@@ -148,6 +148,182 @@ class Base(HeaderBase):
         if self.split_id is not None and self.db is not None:
             return self.db.splits[self.split_id]
 
+    def load(
+            self,
+            path: str,
+    ):
+        r"""Load table data from disk.
+
+        Tables can be stored as PKL and/or CSV files to disk.
+        If both files are present
+        it will load the PKL file
+        as long as its modification date is newer,
+        otherwise it will raise an error
+        and ask to delete one of the files.
+
+        Args:
+            path: file path without extension
+
+        Raises:
+            RuntimeError: if table file(s) are missing
+            RuntimeError: if CSV file is newer than PKL file
+
+        """
+        path = audeer.path(path)
+        pkl_file = f'{path}.{define.TableStorageFormat.PICKLE}'
+        csv_file = f'{path}.{define.TableStorageFormat.CSV}'
+
+        if not os.path.exists(pkl_file) and not os.path.exists(csv_file):
+            raise RuntimeError(
+                f"No file found for table with path '{path}.{{pkl|csv}}'"
+            )
+
+        # Load from PKL if file exists and is newer then CSV file.
+        # If both are written by Database.save() this is the case
+        # as it stores first the PKL file
+        pickled = False
+        if os.path.exists(pkl_file):
+            if (
+                    os.path.exists(csv_file)
+                    and os.path.getmtime(csv_file) > os.path.getmtime(pkl_file)
+            ):
+                raise RuntimeError(
+                    f"The table CSV file '{csv_file}' is newer "
+                    f"than the table PKL file '{pkl_file}'. "
+                    "If you want to load from the CSV file, "
+                    "please delete the PKL file. "
+                    "If you want to load from the PKL file, "
+                    "please delete the CSV file."
+                )
+            pickled = True
+
+        if pickled:
+            try:
+                self._load_pickled(pkl_file)
+            except (AttributeError, ValueError, EOFError) as ex:
+                # if exception is raised (e.g. unsupported pickle protocol)
+                # try to load from CSV and save it again
+                # otherwise raise error
+                if os.path.exists(csv_file):
+                    self._load_csv(csv_file)
+                    self._save_pickled(pkl_file)
+                else:
+                    raise ex
+        else:
+            self._load_csv(csv_file)
+
+    def save(
+            self,
+            path: str,
+            *,
+            storage_format: str = define.TableStorageFormat.CSV,
+            update_other_formats: bool = True,
+    ):
+        r"""Save table data to disk.
+
+        Existing files will be overwritten.
+
+        Args:
+            path: file path without extension
+            storage_format: storage format of table.
+                See :class:`audformat.define.TableStorageFormat`
+                for available formats
+            update_other_formats: if ``True`` it will not only save
+                to the given ``storage_format``,
+                but update all files stored in other storage formats as well
+
+        """
+        path = audeer.path(path)
+        define.TableStorageFormat.assert_has_attribute_value(storage_format)
+
+        pickle_file = path + f'.{define.TableStorageFormat.PICKLE}'
+        csv_file = path + f'.{define.TableStorageFormat.CSV}'
+
+        # Make sure the CSV file is always written first
+        # as it is expected to be older by load()
+        if storage_format == define.TableStorageFormat.PICKLE:
+            if update_other_formats and os.path.exists(csv_file):
+                self._save_csv(csv_file)
+            self._save_pickled(pickle_file)
+
+        if storage_format == define.TableStorageFormat.CSV:
+            self._save_csv(csv_file)
+            if update_other_formats and os.path.exists(pickle_file):
+                self._save_pickled(pickle_file)
+
+    def _index_levels_and_converters(self) -> typing.Tuple[
+            typing.Sequence[str],
+            typing.Dict[str, typing.Callable],
+    ]:  # pragma: no cover.
+        raise NotImplementedError()
+
+    def _load_csv(self, path: str):
+
+        usecols = []
+        dtypes = {}
+        schemes = self.db.schemes
+
+        # index columns
+
+        levels, converters = self._index_levels_and_converters()
+        usecols.extend(levels)
+
+        # other columns
+
+        for column_id, column in self.columns.items():
+            usecols.append(column_id)
+            if column.scheme_id is not None:
+                dtype = schemes[column.scheme_id].to_pandas_dtype()
+                # use converter if column contains dates or timestamps
+                if dtype == 'datetime64[ns]':
+                    converters[column_id] = lambda x: pd.to_datetime(x)
+                elif dtype == 'timedelta64[ns]':
+                    converters[column_id] = lambda x: pd.to_timedelta(x)
+                else:
+                    dtypes[column_id] = dtype
+            else:
+                dtypes[column_id] = 'str'
+
+        # read csv
+
+        df = pd.read_csv(
+            path,
+            usecols=usecols,
+            dtype=dtypes,
+            index_col=levels,
+            converters=converters,
+            float_precision='round_trip',
+        )
+
+        self._df = df
+
+    def _load_pickled(self, path: str):
+
+        # Older versions of audformat used xz compression
+        # which produced smaller files,
+        # but was slower.
+        # The try-except statement allows backward compatibility
+        try:
+            df = pd.read_pickle(path)
+        except pickle.UnpicklingError:
+            df = pd.read_pickle(path, compression='xz')
+
+        self._df = df
+
+    def _save_csv(self, path: str):
+        # Load table before opening CSV file
+        # to avoid creating a CSV file
+        # that is newer than the PKL file
+        df = self.df
+        with open(path, 'w') as fp:
+            df.to_csv(fp, encoding='utf-8')
+
+    def _save_pickled(self, path: str):
+        self.df.to_pickle(
+            path,
+            protocol=4,  # supported by Python >= 3.4
+        )
+
     def _set_column(self, column_id: str, column: Column) -> Column:
 
         if column.scheme_id is not None and \
@@ -716,70 +892,6 @@ class Table(Base):
 
         return result.copy() if (copy and not result_is_copy) else result
 
-    def load(
-            self,
-            path: str,
-    ):
-        r"""Load table data from disk.
-
-        Tables can be stored as PKL and/or CSV files to disk.
-        If both files are present
-        it will load the PKL file
-        as long as its modification date is newer,
-        otherwise it will raise an error
-        and ask to delete one of the files.
-
-        Args:
-            path: file path without extension
-
-        Raises:
-            RuntimeError: if table file(s) are missing
-            RuntimeError: if CSV file is newer than PKL file
-
-        """
-        path = audeer.path(path)
-        pkl_file = f'{path}.{define.TableStorageFormat.PICKLE}'
-        csv_file = f'{path}.{define.TableStorageFormat.CSV}'
-
-        if not os.path.exists(pkl_file) and not os.path.exists(csv_file):
-            raise RuntimeError(
-                f"No file found for table with path '{path}.{{pkl|csv}}'"
-            )
-
-        # Load from PKL if file exists and is newer then CSV file.
-        # If both are written by Database.save() this is the case
-        # as it stores first the PKL file
-        pickled = False
-        if os.path.exists(pkl_file):
-            if (
-                    os.path.exists(csv_file)
-                    and os.path.getmtime(csv_file) > os.path.getmtime(pkl_file)
-            ):
-                raise RuntimeError(
-                    f"The table CSV file '{csv_file}' is newer "
-                    f"than the table PKL file '{pkl_file}'. "
-                    "If you want to load from the CSV file, "
-                    "please delete the PKL file. "
-                    "If you want to load from the PKL file, "
-                    "please delete the CSV file."
-                )
-            pickled = True
-
-        if pickled:
-            try:
-                self._load_pickled(pkl_file)
-            except (AttributeError, ValueError, EOFError) as ex:
-                # if exception is raised (e.g. unsupported pickle protocol)
-                # try to load from CSV and save it again
-                # otherwise raise error
-                if os.path.exists(csv_file):
-                    self._load_csv(csv_file)
-                    self._save_pickled(pkl_file)
-                else:
-                    raise ex
-        else:
-            self._load_csv(csv_file)
-
     def pick_columns(
             self,
             column_ids: typing.Union[str, typing.Sequence[str]],
@@ -879,45 +991,6 @@ class Table(Base):
             self._df = self.get(index, copy=False)
 
         return self
-
-    def save(
-            self,
-            path: str,
-            *,
-            storage_format: str = define.TableStorageFormat.CSV,
-            update_other_formats: bool = True,
-    ):
-        r"""Save table data to disk.
-
-        Existing files will be overwritten.
-
-        Args:
-            path: file path without extension
-            storage_format: storage format of table.
-                See :class:`audformat.define.TableStorageFormat`
-                for available formats
-            update_other_formats: if ``True`` it will not only save
-                to the given ``storage_format``,
-                but update all files stored in other storage formats as well
-
-        """
-        path = audeer.path(path)
-        define.TableStorageFormat.assert_has_attribute_value(storage_format)
-
-        pickle_file = path + f'.{define.TableStorageFormat.PICKLE}'
-        csv_file = path + f'.{define.TableStorageFormat.CSV}'
-
-        # Make sure the CSV file is always written first
-        # as it is expected to be older by load()
-        if storage_format == define.TableStorageFormat.PICKLE:
-            if update_other_formats and os.path.exists(csv_file):
-                self._save_csv(csv_file)
-            self._save_pickled(pickle_file)
-
-        if storage_format == define.TableStorageFormat.CSV:
-            self._save_csv(csv_file)
-            if update_other_formats and os.path.exists(pickle_file):
-                self._save_pickled(pickle_file)
 
     def set(
             self,
@@ -1132,80 +1205,23 @@ class Table(Base):
 
         return self
 
-    def _load_csv(self, path: str):
-
-        usecols = []
-        dtypes = {}
+    def _index_levels_and_converters(self) -> typing.Tuple[
+        typing.Sequence[str],
+        typing.Dict[str, typing.Callable],
+    ]:
         converters = {}
-        schemes = self.db.schemes
-
-        # index columns
 
         if self.type == define.IndexType.SEGMENTED:
             converters[define.IndexField.START] = \
                 lambda x: pd.to_timedelta(x)
             converters[define.IndexField.END] = \
                 lambda x: pd.to_timedelta(x)
-            index_col = [define.IndexField.FILE,
-                         define.IndexField.START,
-                         define.IndexField.END]
+            levels = [
+                define.IndexField.FILE,
+                define.IndexField.START,
+                define.IndexField.END,
+            ]
         else:
-            index_col = [define.IndexField.FILE]
+            levels = [define.IndexField.FILE]
 
-        usecols.extend(index_col)
-
-        # other columns
-
-        for column_id, column in self.columns.items():
-            usecols.append(column_id)
-            if column.scheme_id is not None:
-                dtype = schemes[column.scheme_id].to_pandas_dtype()
-                # use converter if column contains dates or timestamps
-                if dtype == 'datetime64[ns]':
-                    converters[column_id] = lambda x: pd.to_datetime(x)
-                elif dtype == 'timedelta64[ns]':
-                    converters[column_id] = lambda x: pd.to_timedelta(x)
-                else:
-                    dtypes[column_id] = dtype
-            else:
-                dtypes[column_id] = 'str'
-
-        # read csv
-
-        df = pd.read_csv(
-            path,
-            usecols=usecols,
-            dtype=dtypes,
-            index_col=index_col,
-            converters=converters,
-            float_precision='round_trip',
-        )
-
-        self._df = df
-
-    def _load_pickled(self, path: str):
-
-        # Older versions of audformat used xz compression
-        # which produced smaller files,
-        # but was slower.
-        # The try-except statement allows backward compatibility
-        try:
-            df = pd.read_pickle(path)
-        except pickle.UnpicklingError:
-            df = pd.read_pickle(path, compression='xz')
-
-        self._df = df
-
-    def _save_csv(self, path: str):
-        # Load table before opening CSV file
-        # to avoid creating a CSV file
-        # that is newer than the PKL file
-        df = self.df
-        with open(path, 'w') as fp:
-            df.to_csv(fp, encoding='utf-8')
-
-    def _save_pickled(self, path: str):
-        self.df.to_pickle(
-            path,
-            protocol=4,  # supported by Python >= 3.4
-        )
+        return levels, converters
