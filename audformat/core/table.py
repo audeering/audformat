@@ -362,6 +362,8 @@ class Base(HeaderBase):
             self,
             index: pd.Index,
     ) -> (pd.DataFrame, bool):  # pragma: no cover
+        # Executed when calling `self.get(index=index)`.
+        # Returns `df, df_is_copy`
         raise NotImplementedError()
 
     def _index_levels_and_converters(self) -> typing.Tuple[
