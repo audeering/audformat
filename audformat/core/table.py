@@ -426,6 +426,8 @@ class Base(HeaderBase):
             typing.Sequence[str],
             typing.Dict[str, typing.Callable],
     ]:  # pragma: no cover
+        # Executed when loading table from CSV file.
+        # Returns: `index_levels, index_converters`
         raise NotImplementedError()
 
     def _load_csv(self, path: str):
