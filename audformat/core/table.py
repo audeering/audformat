@@ -148,6 +148,29 @@ class Base(HeaderBase):
         if self.split_id is not None and self.db is not None:
             return self.db.splits[self.split_id]
 
+    def copy(self) -> 'Base':
+        r"""Copy table.
+
+        Return:
+            new object
+
+        """
+        table = self.__class__(
+            self.df.index,
+            media_id=self.media_id,
+            split_id=self.split_id,
+        )
+        table._db = self.db
+        for column_id, column in self.columns.items():
+            table.columns[column_id] = Column(
+                scheme_id=column.scheme_id,
+                rater_id=column.rater_id,
+                description=column.description,
+                meta=column.meta.copy()
+            )
+        table._df = self.df.copy()
+        return table
+
     def drop_columns(
             self,
             column_ids: typing.Union[str, typing.Sequence[str]],
@@ -753,24 +776,10 @@ class Table(Base):
         r"""Copy table.
 
         Return:
-            new ``Table`` object
+            new object
 
         """
-        table = Table(
-            self.df.index,
-            media_id=self.media_id,
-            split_id=self.split_id,
-        )
-        table._db = self.db
-        for column_id, column in self.columns.items():
-            table.columns[column_id] = Column(
-                scheme_id=column.scheme_id,
-                rater_id=column.rater_id,
-                description=column.description,
-                meta=column.meta.copy()
-            )
-        table._df = self.df.copy()
-        return table
+        return super().copy()
 
     def drop_files(
             self,
