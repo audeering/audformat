@@ -152,7 +152,7 @@ class Base(HeaderBase):
         r"""Copy table.
 
         Return:
-            new object
+            new table object
 
         """
         table = self.__class__(
@@ -776,7 +776,7 @@ class Table(Base):
         r"""Copy table.
 
         Return:
-            new object
+            new table object
 
         """
         return super().copy()
