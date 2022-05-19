@@ -28,7 +28,522 @@ from audformat.core.typing import (
 )
 
 
-class Table(HeaderBase):
+class Base(HeaderBase):
+    r"""Table base class"""
+    def __init__(
+            self,
+            index: pd.Index = None,
+            *,
+            split_id: str = None,
+            media_id: str = None,
+            description: str = None,
+            meta: dict = None,
+    ):
+        super().__init__(description=description, meta=meta)
+
+        self.split_id = split_id
+        r"""Split ID"""
+        self.media_id = media_id
+        r"""Media ID"""
+        self.columns = HeaderDict(
+            sorted_iter=False,
+            value_type=Column,
+            set_callback=self._set_column,
+        )
+        r"""Table columns"""
+
+        self._df = pd.DataFrame(index=index)
+        self._db = None
+        self._id = None
+
+    def __getitem__(self, column_id: str) -> Column:
+        r"""Return view to a column.
+
+        Args:
+            column_id: column identifier
+
+        """
+        return self.columns[column_id]
+
+    def __eq__(
+            self,
+            other: 'Base',
+    ) -> bool:
+        if self.dump() != other.dump():
+            return False
+        return self.df.equals(other.df)
+
+    def __len__(self) -> int:
+        return len(self.df)
+
+    def __setitem__(self, column_id: str, column: Column) -> Column:
+        r"""Add new column to table.
+
+        Args:
+            column_id: column identifier
+            column: column
+
+        Raises:
+            BadIdError: if a column with a ``scheme_id`` or ``rater_id`` is
+                added that does not exist
+
+        """
+        self.columns[column_id] = column
+        return column
+
+    @property
+    def db(self):
+        r"""Database object.
+
+        Returns:
+            database object or ``None`` if not assigned yet
+
+        """
+        return self._db
+
+    @property
+    def df(self) -> pd.DataFrame:
+        r"""Table data.
+
+        Returns:
+            data
+
+        """
+        if self._df is None:
+            # if database was loaded with 'load_data=False'
+            # we have to load the table data now
+            path = os.path.join(self.db.root, f'{self.db._name}.{self._id}')
+            self.load(path)
+        return self._df
+
+    @property
+    def index(self) -> pd.Index:
+        r"""Table index.
+
+        Returns:
+            index
+
+        """
+        return self.df.index
+
+    @property
+    def media(self) -> typing.Optional[Media]:
+        r"""Media object.
+
+        Returns:
+            media object or ``None`` if not available
+
+        """
+        if self.media_id is not None and self.db is not None:
+            return self.db.media[self.media_id]
+
+    @property
+    def split(self) -> typing.Optional[Split]:
+        r"""Split object.
+
+        Returns:
+            split object or ``None`` if not available
+
+        """
+        if self.split_id is not None and self.db is not None:
+            return self.db.splits[self.split_id]
+
+    def copy(self) -> 'Base':
+        r"""Copy table.
+
+        Return:
+            new table object
+
+        """
+        table = self.__class__(
+            self.df.index,
+            media_id=self.media_id,
+            split_id=self.split_id,
+        )
+        table._db = self.db
+        for column_id, column in self.columns.items():
+            table.columns[column_id] = Column(
+                scheme_id=column.scheme_id,
+                rater_id=column.rater_id,
+                description=column.description,
+                meta=column.meta.copy()
+            )
+        table._df = self.df.copy()
+        return table
+
+    def drop_columns(
+            self,
+            column_ids: typing.Union[str, typing.Sequence[str]],
+            *,
+            inplace: bool = False,
+    ) -> 'Table':
+        r"""Drop columns by ID.
+
+        Args:
+            column_ids: column IDs
+            inplace: drop columns in place
+
+        Returns:
+            new ``Table`` if ``inplace=False``, otherwise ``self``
+
+        """
+        if not inplace:
+            return self.copy().drop_columns(column_ids, inplace=True)
+
+        if isinstance(column_ids, str):
+            column_ids = [column_ids]
+        column_ids_ = set()
+        for column_id in column_ids:
+            column_ids_.add(column_id)
+        self.df.drop(column_ids_, inplace=True, axis='columns')
+        for column_id in column_ids_:
+            self.columns.pop(column_id)
+
+        return self
+
+    def get(
+            self,
+            index: pd.Index = None,
+            *,
+            map: typing.Dict[
+                str, typing.Union[str, typing.Sequence[str]]
+            ] = None,
+            copy: bool = True,
+    ) -> pd.DataFrame:
+        r"""Get labels.
+
+        By default, all labels of the table are returned,
+        use ``index`` to get a subset.
+
+        Examples are provided with the
+        :ref:`table specifications <data-tables:Tables>`.
+
+        Args:
+            index: index
+            copy: return a copy of the labels
+            map: map scheme or scheme fields to column values.
+                For example if your table holds a column ``speaker`` with
+                speaker IDs, which is assigned to a scheme that contains a
+                dict mapping speaker IDs to age and gender entries,
+                ``map={'speaker': ['age', 'gender']}``
+                will replace the column with two new columns that map ID
+                values to age and gender, respectively.
+                To also keep the original column with speaker IDS, you can do
+                ``map={'speaker': ['speaker', 'age', 'gender']}``
+
+        Returns:
+            labels
+
+        Raises:
+            FileNotFoundError: if file is not found
+            RuntimeError: if table is not assign to a database
+            ValueError: if trying to map without a scheme
+            ValueError: if trying to map from a scheme that has no labels
+            ValueError: if trying to map to a non-existing field
+
+        """
+        result_is_copy = False
+
+        if index is None:
+            result = self.df
+        else:
+            result, result_is_copy = self._get_by_index(index)
+
+        if map is not None:
+
+            if self.db is None:
+                raise RuntimeError(
+                    'Cannot map schemes, '
+                    'table is not assigned to a database.'
+                )
+
+            if not result_is_copy:
+                result = result.copy()
+                result_is_copy = True  # to avoid another copy
+
+            for column, mapped_columns in map.items():
+                mapped_columns = audeer.to_list(mapped_columns)
+                if len(mapped_columns) == 1:
+                    result[mapped_columns[0]] = self.columns[column].get(
+                        index, map=mapped_columns[0],
+                    )
+                else:
+                    for mapped_column in mapped_columns:
+                        if mapped_column != column:
+                            result[mapped_column] = self.columns[column].get(
+                                index, map=mapped_column,
+                            )
+                if column not in mapped_columns:
+                    result.drop(columns=column, inplace=True)
+
+        return result.copy() if (copy and not result_is_copy) else result
+
+    def load(
+            self,
+            path: str,
+    ):
+        r"""Load table data from disk.
+
+        Tables can be stored as PKL and/or CSV files to disk.
+        If both files are present
+        it will load the PKL file
+        as long as its modification date is newer,
+        otherwise it will raise an error
+        and ask to delete one of the files.
+
+        Args:
+            path: file path without extension
+
+        Raises:
+            RuntimeError: if table file(s) are missing
+            RuntimeError: if CSV file is newer than PKL file
+
+        """
+        path = audeer.path(path)
+        pkl_file = f'{path}.{define.TableStorageFormat.PICKLE}'
+        csv_file = f'{path}.{define.TableStorageFormat.CSV}'
+
+        if not os.path.exists(pkl_file) and not os.path.exists(csv_file):
+            raise RuntimeError(
+                f"No file found for table with path '{path}.{{pkl|csv}}'"
+            )
+
+        # Load from PKL if file exists and is newer then CSV file.
+        # If both are written by Database.save() this is the case
+        # as it stores first the PKL file
+        pickled = False
+        if os.path.exists(pkl_file):
+            if (
+                    os.path.exists(csv_file)
+                    and os.path.getmtime(csv_file) > os.path.getmtime(pkl_file)
+            ):
+                raise RuntimeError(
+                    f"The table CSV file '{csv_file}' is newer "
+                    f"than the table PKL file '{pkl_file}'. "
+                    "If you want to load from the CSV file, "
+                    "please delete the PKL file. "
+                    "If you want to load from the PKL file, "
+                    "please delete the CSV file."
+                )
+            pickled = True
+
+        if pickled:
+            try:
+                self._load_pickled(pkl_file)
+            except (AttributeError, ValueError, EOFError) as ex:
+                # if exception is raised (e.g. unsupported pickle protocol)
+                # try to load from CSV and save it again
+                # otherwise raise error
+                if os.path.exists(csv_file):
+                    self._load_csv(csv_file)
+                    self._save_pickled(pkl_file)
+                else:
+                    raise ex
+        else:
+            self._load_csv(csv_file)
+
+    def pick_columns(
+            self,
+            column_ids: typing.Union[str, typing.Sequence[str]],
+            *,
+            inplace: bool = False,
+    ) -> 'Table':
+        r"""Pick columns by ID.
+
+        All other columns will be dropped.
+
+        Args:
+            column_ids: column IDs
+            inplace: pick columns in place
+
+        Returns:
+            new ``Table`` if ``inplace=False``, otherwise ``self``
+
+        """
+        if isinstance(column_ids, str):
+            column_ids = [column_ids]
+        drop_ids = set()
+        for column_id in list(self.columns):
+            if column_id not in column_ids:
+                drop_ids.add(column_id)
+        return self.drop_columns(list(drop_ids), inplace=inplace)
+
+    def save(
+            self,
+            path: str,
+            *,
+            storage_format: str = define.TableStorageFormat.CSV,
+            update_other_formats: bool = True,
+    ):
+        r"""Save table data to disk.
+
+        Existing files will be overwritten.
+
+        Args:
+            path: file path without extension
+            storage_format: storage format of table.
+                See :class:`audformat.define.TableStorageFormat`
+                for available formats
+            update_other_formats: if ``True`` it will not only save
+                to the given ``storage_format``,
+                but update all files stored in other storage formats as well
+
+        """
+        path = audeer.path(path)
+        define.TableStorageFormat.assert_has_attribute_value(storage_format)
+
+        pickle_file = path + f'.{define.TableStorageFormat.PICKLE}'
+        csv_file = path + f'.{define.TableStorageFormat.CSV}'
+
+        # Make sure the CSV file is always written first
+        # as it is expected to be older by load()
+        if storage_format == define.TableStorageFormat.PICKLE:
+            if update_other_formats and os.path.exists(csv_file):
+                self._save_csv(csv_file)
+            self._save_pickled(pickle_file)
+
+        if storage_format == define.TableStorageFormat.CSV:
+            self._save_csv(csv_file)
+            if update_other_formats and os.path.exists(pickle_file):
+                self._save_pickled(pickle_file)
+
+    def set(
+            self,
+            values: typing.Union[
+                typing.Dict[str, Values],
+                pd.DataFrame,
+            ],
+            *,
+            index: pd.Index = None,
+    ):
+        r"""Set labels.
+
+        By default, all labels of the table are replaced,
+        use ``index`` to select a subset.
+        If a column is assigned to a :class:`Scheme`
+        values have to match its ``dtype``.
+
+        Examples are provided with the
+        :ref:`table specifications <data-tables:Tables>`.
+
+        Args:
+            values: dictionary of values with ``column_id`` as key
+            index: index
+
+        Raises:
+            ValueError: if values do not match scheme
+
+        """
+        for idx, data in values.items():
+            self.columns[idx].set(data, index=index)
+
+    def _get_by_index(
+            self,
+            index: pd.Index,
+    ) -> (pd.DataFrame, bool):  # pragma: no cover
+        # Executed when calling `self.get(index=index)`.
+        # Returns `df, df_is_copy`
+        raise NotImplementedError()
+
+    def _index_levels_and_converters(self) -> typing.Tuple[
+            typing.Sequence[str],
+            typing.Dict[str, typing.Callable],
+    ]:  # pragma: no cover
+        # Executed when loading table from CSV file.
+        # Returns: `index_levels, index_converters`
+        raise NotImplementedError()
+
+    def _load_csv(self, path: str):
+
+        usecols = []
+        dtypes = {}
+        schemes = self.db.schemes
+
+        # index columns
+
+        levels, converters = self._index_levels_and_converters()
+        usecols.extend(levels)
+
+        # other columns
+
+        for column_id, column in self.columns.items():
+            usecols.append(column_id)
+            if column.scheme_id is not None:
+                dtype = schemes[column.scheme_id].to_pandas_dtype()
+                # use converter if column contains dates or timestamps
+                if dtype == 'datetime64[ns]':
+                    converters[column_id] = lambda x: pd.to_datetime(x)
+                elif dtype == 'timedelta64[ns]':
+                    converters[column_id] = lambda x: pd.to_timedelta(x)
+                else:
+                    dtypes[column_id] = dtype
+            else:
+                dtypes[column_id] = 'str'
+
+        # read csv
+
+        df = pd.read_csv(
+            path,
+            usecols=usecols,
+            dtype=dtypes,
+            index_col=levels,
+            converters=converters,
+            float_precision='round_trip',
+        )
+
+        self._df = df
+
+    def _load_pickled(self, path: str):
+
+        # Older versions of audformat used xz compression
+        # which produced smaller files,
+        # but was slower.
+        # The try-except statement allows backward compatibility
+        try:
+            df = pd.read_pickle(path)
+        except pickle.UnpicklingError:
+            df = pd.read_pickle(path, compression='xz')
+
+        self._df = df
+
+    def _save_csv(self, path: str):
+        # Load table before opening CSV file
+        # to avoid creating a CSV file
+        # that is newer than the PKL file
+        df = self.df
+        with open(path, 'w') as fp:
+            df.to_csv(fp, encoding='utf-8')
+
+    def _save_pickled(self, path: str):
+        self.df.to_pickle(
+            path,
+            protocol=4,  # supported by Python >= 3.4
+        )
+
+    def _set_column(self, column_id: str, column: Column) -> Column:
+
+        if column.scheme_id is not None and \
+                column.scheme_id not in self.db.schemes:
+            raise BadIdError('column', column.scheme_id, self.db.schemes)
+
+        if column.rater_id is not None and \
+                column.rater_id not in self.db.raters:
+            raise BadIdError('rater', column.rater_id, self.db.raters)
+
+        if column.scheme_id is not None:
+            dtype = self.db.schemes[column.scheme_id].to_pandas_dtype()
+        else:
+            dtype = object
+
+        self.df[column_id] = pd.Series(dtype=dtype)
+
+        column._id = column_id
+        column._table = self
+
+        return column
+
+
+class Table(Base):
     r"""Table with annotation data.
 
     Consists of a list of file names to which it assigns
@@ -136,52 +651,56 @@ class Table(HeaderBase):
             description: str = None,
             meta: dict = None,
     ):
-        super().__init__(description=description, meta=meta)
-
         if index is None:
             index = filewise_index()
 
         self.type = index_type(index)
         r"""Table type"""
-        self.split_id = split_id
-        r"""Split ID"""
-        self.media_id = media_id
-        r"""Media ID"""
-        self.columns = HeaderDict(
-            sorted_iter=False,
-            value_type=Column,
-            set_callback=self._set_column,
+
+        super().__init__(
+            index,
+            split_id=split_id,
+            media_id=media_id,
+            description=description,
+            meta=meta,
         )
-        r"""Table columns"""
 
-        self._df = pd.DataFrame(index=index)
-        self._db = None
-        self._id = None
+    def __add__(self, other: 'Table') -> 'Table':
+        r"""Create new table by combining two tables.
 
-    @property
-    def db(self):
-        r"""Database object.
+        The new table contains index and columns of both tables.
+        Missing values will be set to ``NaN``.
+        If at least one table is segmented, the output has a segmented index.
 
-        Returns:
-            database object or ``None`` if not assigned yet
+        Columns with the same identifier are combined to a single column.
+        This requires that:
+
+        1. both columns have the same dtype
+        2. in places where the indices overlap the values of both columns
+           match or one column contains ``NaN``
+
+        Media and split information,
+        as well as,
+        references to schemes and raters are discarded.
+        If you intend to keep them,
+        use :meth:`audformat.Table.update`.
+
+        Args:
+            other: the other table
+
+        Raises:
+            ValueError: if columns with the same name have different dtypes
+            ValueError: if values in the same position do not match
 
         """
-        return self._db
+        df = utils.concat([self.df, other.df])
 
-    @property
-    def df(self) -> pd.DataFrame:
-        r"""Table data.
+        table = Table(df.index)
+        for column_id in df:
+            table[column_id] = Column()
+        table._df = df
 
-        Returns:
-            data
-
-        """
-        if self._df is None:
-            # if database was loaded with 'load_data=False'
-            # we have to load the table data now
-            path = os.path.join(self.db.root, f'{self.db._name}.{self._id}')
-            self.load(path)
-        return self._df
+        return table
 
     @property
     def ends(self) -> pd.Index:
@@ -217,16 +736,6 @@ class Table(HeaderBase):
             return index
 
     @property
-    def index(self) -> pd.Index:
-        r"""Table index.
-
-        Returns:
-            index
-
-        """
-        return self.df.index
-
-    @property
     def is_filewise(self) -> bool:
         r"""Check if filewise table.
 
@@ -245,28 +754,6 @@ class Table(HeaderBase):
 
         """
         return self.type == define.IndexType.SEGMENTED
-
-    @property
-    def media(self) -> typing.Optional[Media]:
-        r"""Media object.
-
-        Returns:
-            media object or ``None`` if not available
-
-        """
-        if self.media_id is not None and self.db is not None:
-            return self.db.media[self.media_id]
-
-    @property
-    def split(self) -> typing.Optional[Split]:
-        r"""Split object.
-
-        Returns:
-            split object or ``None`` if not available
-
-        """
-        if self.split_id is not None and self.db is not None:
-            return self.db.splits[self.split_id]
 
     @property
     def starts(self) -> pd.Index:
@@ -289,54 +776,10 @@ class Table(HeaderBase):
         r"""Copy table.
 
         Return:
-            new ``Table`` object
+            new table object
 
         """
-        table = Table(
-            self.df.index,
-            media_id=self.media_id,
-            split_id=self.split_id,
-        )
-        table._db = self.db
-        for column_id, column in self.columns.items():
-            table.columns[column_id] = Column(
-                scheme_id=column.scheme_id,
-                rater_id=column.rater_id,
-                description=column.description,
-                meta=column.meta.copy()
-            )
-        table._df = self.df.copy()
-        return table
-
-    def drop_columns(
-            self,
-            column_ids: typing.Union[str, typing.Sequence[str]],
-            *,
-            inplace: bool = False,
-    ) -> 'Table':
-        r"""Drop columns by ID.
-
-        Args:
-            column_ids: column IDs
-            inplace: drop columns in place
-
-        Returns:
-            new ``Table`` if ``inplace=False``, otherwise ``self``
-
-        """
-        if not inplace:
-            return self.copy().drop_columns(column_ids, inplace=True)
-
-        if isinstance(column_ids, str):
-            column_ids = [column_ids]
-        column_ids_ = set()
-        for column_id in column_ids:
-            column_ids_.add(column_id)
-        self.df.drop(column_ids_, inplace=True, axis='columns')
-        for column_id in column_ids_:
-            self.columns.pop(column_id)
-
-        return self
+        return super().copy()
 
     def drop_files(
             self,
@@ -483,7 +926,7 @@ class Table(HeaderBase):
     ) -> pd.DataFrame:
         r"""Get labels.
 
-        By default all labels of the table are returned,
+        By default, all labels of the table are returned,
         use ``index`` to get a subset.
 
         Examples are provided with the
@@ -532,52 +975,7 @@ class Table(HeaderBase):
             ValueError: if trying to map to a non-existing field
 
         """
-        result_is_copy = False
-
-        if index is None:
-            result = self.df
-        else:
-            if index_type(self.index) == index_type(index):
-                result = self.df.loc[index]
-            else:
-                files = index.get_level_values(define.IndexField.FILE)
-                if self.is_filewise:  # index is segmented
-                    result = pd.DataFrame(
-                        self.df.loc[files].values,
-                        index,
-                        columns=self.columns
-                    )
-                    result_is_copy = True  # to avoid another copy
-                else:  # index is filewise
-                    files = list(dict.fromkeys(files))  # remove duplicates
-                    result = self.df.loc[files]
-
-        if map is not None:
-
-            if self.db is None:
-                raise RuntimeError(
-                    'Cannot map schemes, '
-                    'table is not assigned to a database.'
-                )
-
-            if not result_is_copy:
-                result = result.copy()
-                result_is_copy = True  # to avoid another copy
-
-            for column, mapped_columns in map.items():
-                mapped_columns = audeer.to_list(mapped_columns)
-                if len(mapped_columns) == 1:
-                    result[mapped_columns[0]] = self.columns[column].get(
-                        index, map=mapped_columns[0],
-                    )
-                else:
-                    for mapped_column in mapped_columns:
-                        if mapped_column != column:
-                            result[mapped_column] = self.columns[column].get(
-                                index, map=mapped_column,
-                            )
-                if column not in mapped_columns:
-                    result.drop(columns=column, inplace=True)
+        result = super().get(index, map=map, copy=copy)
 
         # if necessary, convert to segmented index and replace NaT
         is_segmented = index_type(result.index) == define.IndexType.SEGMENTED
@@ -599,97 +997,7 @@ class Table(HeaderBase):
             )
             result = result.set_axis(new_index)
 
-        return result.copy() if (copy and not result_is_copy) else result
-
-    def load(
-            self,
-            path: str,
-    ):
-        r"""Load table data from disk.
-
-        Tables can be stored as PKL and/or CSV files to disk.
-        If both files are present
-        it will load the PKL file
-        as long as its modification date is newer,
-        otherwise it will raise an error
-        and ask to delete one of the files.
-
-        Args:
-            path: file path without extension
-
-        Raises:
-            RuntimeError: if table file(s) are missing
-            RuntimeError: if CSV file is newer than PKL file
-
-        """
-        path = audeer.path(path)
-        pkl_file = f'{path}.{define.TableStorageFormat.PICKLE}'
-        csv_file = f'{path}.{define.TableStorageFormat.CSV}'
-
-        if not os.path.exists(pkl_file) and not os.path.exists(csv_file):
-            raise RuntimeError(
-                f"No file found for table with path '{path}.{{pkl|csv}}'"
-            )
-
-        # Load from PKL if file exists and is newer then CSV file.
-        # If both are written by Database.save() this is the case
-        # as it stores first the PKL file
-        pickled = False
-        if os.path.exists(pkl_file):
-            if (
-                    os.path.exists(csv_file)
-                    and os.path.getmtime(csv_file) > os.path.getmtime(pkl_file)
-            ):
-                raise RuntimeError(
-                    f"The table CSV file '{csv_file}' is newer "
-                    f"than the table PKL file '{pkl_file}'. "
-                    "If you want to load from the CSV file, "
-                    "please delete the PKL file. "
-                    "If you want to load from the PKL file, "
-                    "please delete the CSV file."
-                )
-            pickled = True
-
-        if pickled:
-            try:
-                self._load_pickled(pkl_file)
-            except (AttributeError, ValueError, EOFError) as ex:
-                # if exception is raised (e.g. unsupported pickle protocol)
-                # try to load from CSV and save it again
-                # otherwise raise error
-                if os.path.exists(csv_file):
-                    self._load_csv(csv_file)
-                    self._save_pickled(pkl_file)
-                else:
-                    raise ex
-        else:
-            self._load_csv(csv_file)
-
-    def pick_columns(
-            self,
-            column_ids: typing.Union[str, typing.Sequence[str]],
-            *,
-            inplace: bool = False,
-    ) -> 'Table':
-        r"""Pick columns by ID.
-
-        All other columns will be dropped.
-
-        Args:
-            column_ids: column IDs
-            inplace: pick columns in place
-
-        Returns:
-            new ``Table`` if ``inplace=False``, otherwise ``self``
-
-        """
-        if isinstance(column_ids, str):
-            column_ids = [column_ids]
-        drop_ids = set()
-        for column_id in list(self.columns):
-            if column_id not in column_ids:
-                drop_ids.add(column_id)
-        return self.drop_columns(list(drop_ids), inplace=inplace)
+        return result
 
     def pick_index(
             self,
@@ -764,76 +1072,6 @@ class Table(HeaderBase):
             self._df = self.get(index, copy=False)
 
         return self
-
-    def save(
-            self,
-            path: str,
-            *,
-            storage_format: str = define.TableStorageFormat.CSV,
-            update_other_formats: bool = True,
-    ):
-        r"""Save table data to disk.
-
-        Existing files will be overwritten.
-
-        Args:
-            path: file path without extension
-            storage_format: storage format of table.
-                See :class:`audformat.define.TableStorageFormat`
-                for available formats
-            update_other_formats: if ``True`` it will not only save
-                to the given ``storage_format``,
-                but update all files stored in other storage formats as well
-
-        """
-        path = audeer.path(path)
-        define.TableStorageFormat.assert_has_attribute_value(storage_format)
-
-        pickle_file = path + f'.{define.TableStorageFormat.PICKLE}'
-        csv_file = path + f'.{define.TableStorageFormat.CSV}'
-
-        # Make sure the CSV file is always written first
-        # as it is expected to be older by load()
-        if storage_format == define.TableStorageFormat.PICKLE:
-            if update_other_formats and os.path.exists(csv_file):
-                self._save_csv(csv_file)
-            self._save_pickled(pickle_file)
-
-        if storage_format == define.TableStorageFormat.CSV:
-            self._save_csv(csv_file)
-            if update_other_formats and os.path.exists(pickle_file):
-                self._save_pickled(pickle_file)
-
-    def set(
-            self,
-            values: typing.Union[
-                typing.Dict[str, Values],
-                pd.DataFrame,
-            ],
-            *,
-            index: pd.Index = None,
-    ):
-        r"""Set labels.
-
-        By default all labels of the table are replaced,
-        use ``index`` to select a subset.
-        If a column is assigned to a :class:`Scheme`
-        values have to match its ``dtype``.
-
-        Examples are provided with the
-        :ref:`table specifications <data-tables:Tables>`.
-
-        Args:
-            values: dictionary of values with ``column_id`` as key
-            index: index conform to
-                :ref:`table specifications <data-tables:Tables>`
-
-        Raises:
-            ValueError: if values do not match scheme
-
-        """
-        for idx, data in values.items():
-            self.columns[idx].set(data, index=index)
 
     def update(
             self,
@@ -1017,184 +1255,47 @@ class Table(HeaderBase):
 
         return self
 
-    def __add__(self, other: 'Table') -> 'Table':
-        r"""Create new table by combining two tables.
-
-        The new table contains index and columns of both tables.
-        Missing values will be set to ``NaN``.
-        If at least one table is segmented, the output has a segmented index.
-
-        Columns with the same identifier are combined to a single column.
-        This requires that:
-
-        1. both columns have the same dtype
-        2. in places where the indices overlap the values of both columns
-           match or one column contains ``NaN``
-
-        Media and split information,
-        as well as,
-        references to schemes and raters are discarded.
-        If you intend to keep them,
-        use :meth:`audformat.Table.update`.
-
-        Args:
-            other: the other table
-
-        Raises:
-            ValueError: if columns with the same name have different dtypes
-            ValueError: if values in the same position do not match
-
-        """
-        df = utils.concat([self.df, other.df])
-
-        table = Table(df.index)
-        for column_id in df:
-            table[column_id] = Column()
-        table._df = df
-
-        return table
-
-    def __getitem__(self, column_id: str) -> Column:
-        r"""Return view to a column.
-
-        Args:
-            column_id: column identifier
-
-        """
-        return self.columns[column_id]
-
-    def __eq__(
+    def _get_by_index(
             self,
-            other: 'Table',
-    ) -> bool:
-        if self.dump() != other.dump():
-            return False
-        return self.df.equals(other.df)
+            index: pd.Index,
+    ) -> (pd.DataFrame, bool):
 
-    def __len__(self) -> int:
-        return len(self.df)
+        result_is_copy = False
 
-    def __setitem__(self, column_id: str, column: Column) -> Column:
-        r"""Add new column to table.
+        if index_type(self.index) == index_type(index):
+            result = self.df.loc[index]
+        else:
+            files = index.get_level_values(define.IndexField.FILE)
+            if self.is_filewise:  # index is segmented
+                result = pd.DataFrame(
+                    self.df.loc[files].values,
+                    index,
+                    columns=self.columns
+                )
+                result_is_copy = True  # to avoid another copy
+            else:  # index is filewise
+                files = list(dict.fromkeys(files))  # remove duplicates
+                result = self.df.loc[files]
 
-        Args:
-            column_id: column identifier
-            column: column
+        return result, result_is_copy
 
-        Raises:
-            BadIdError: if a column with a ``scheme_id`` or ``rater_id`` is
-                added that does not exist
-
-        """
-        self.columns[column_id] = column
-        return column
-
-    def _load_csv(self, path: str):
-
-        usecols = []
-        dtypes = {}
+    def _index_levels_and_converters(self) -> typing.Tuple[
+        typing.Sequence[str],
+        typing.Dict[str, typing.Callable],
+    ]:
         converters = {}
-        schemes = self.db.schemes
-
-        # index columns
 
         if self.type == define.IndexType.SEGMENTED:
             converters[define.IndexField.START] = \
                 lambda x: pd.to_timedelta(x)
             converters[define.IndexField.END] = \
                 lambda x: pd.to_timedelta(x)
-            index_col = [define.IndexField.FILE,
-                         define.IndexField.START,
-                         define.IndexField.END]
+            levels = [
+                define.IndexField.FILE,
+                define.IndexField.START,
+                define.IndexField.END,
+            ]
         else:
-            index_col = [define.IndexField.FILE]
+            levels = [define.IndexField.FILE]
 
-        usecols.extend(index_col)
-
-        # other columns
-
-        for column_id, column in self.columns.items():
-            usecols.append(column_id)
-            if column.scheme_id is not None:
-                dtype = schemes[column.scheme_id].to_pandas_dtype()
-                # use converter if column contains dates or timestamps
-                if dtype == 'datetime64[ns]':
-                    converters[column_id] = lambda x: pd.to_datetime(x)
-                elif dtype == 'timedelta64[ns]':
-                    converters[column_id] = lambda x: pd.to_timedelta(x)
-                else:
-                    dtypes[column_id] = dtype
-            else:
-                dtypes[column_id] = 'str'
-
-        # read csv
-
-        df = pd.read_csv(
-            path,
-            usecols=usecols,
-            dtype=dtypes,
-            index_col=index_col,
-            converters=converters,
-            float_precision='round_trip',
-        )
-
-        self._df = df
-
-    def _load_pickled(self, path: str):
-
-        # Older versions of audformat used xz compression
-        # which produced smaller files,
-        # but was slower.
-        # The try-except statement allows backward compatibility
-        try:
-            df = pd.read_pickle(path)
-        except pickle.UnpicklingError:
-            df = pd.read_pickle(path, compression='xz')
-
-        self._df = df
-
-    def _save_csv(self, path: str):
-        # Load table before opening CSV file
-        # to avoid creating a CSV file
-        # that is newer than the PKL file
-        df = self.df
-        with open(path, 'w') as fp:
-            df.to_csv(fp, encoding='utf-8')
-
-    def _save_pickled(self, path: str):
-        self.df.to_pickle(
-            path,
-            protocol=4,  # supported by Python >= 3.4
-        )
-
-    def _set_column(self, column_id: str, column: Column) -> Column:
-        if column.scheme_id is not None and \
-                column.scheme_id not in self.db.schemes:
-            raise BadIdError('column', column.scheme_id, self.db.schemes)
-        if column.rater_id is not None and \
-                column.rater_id not in self.db.raters:
-            raise BadIdError('rater', column.rater_id, self.db.raters)
-
-        if column.scheme_id is not None:
-            dtype = self.db.schemes[column.scheme_id].to_pandas_dtype()
-        else:
-            dtype = object
-        self.df[column_id] = pd.Series(dtype=dtype)
-
-        #  if table is empty we need to fix index names
-        if self.df.empty:
-            if self.is_filewise:
-                self.df.index.name = define.IndexField.FILE
-            elif self.is_segmented:
-                self.df.index.rename(
-                    [
-                        define.IndexField.FILE,
-                        define.IndexField.START,
-                        define.IndexField.END
-                    ],
-                    inplace=True,
-                )
-
-        column._id = column_id
-        column._table = self
-        return column
+        return levels, converters
