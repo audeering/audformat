@@ -148,6 +148,36 @@ class Base(HeaderBase):
         if self.split_id is not None and self.db is not None:
             return self.db.splits[self.split_id]
 
+    def drop_columns(
+            self,
+            column_ids: typing.Union[str, typing.Sequence[str]],
+            *,
+            inplace: bool = False,
+    ) -> 'Table':
+        r"""Drop columns by ID.
+
+        Args:
+            column_ids: column IDs
+            inplace: drop columns in place
+
+        Returns:
+            new ``Table`` if ``inplace=False``, otherwise ``self``
+
+        """
+        if not inplace:
+            return self.copy().drop_columns(column_ids, inplace=True)
+
+        if isinstance(column_ids, str):
+            column_ids = [column_ids]
+        column_ids_ = set()
+        for column_id in column_ids:
+            column_ids_.add(column_id)
+        self.df.drop(column_ids_, inplace=True, axis='columns')
+        for column_id in column_ids_:
+            self.columns.pop(column_id)
+
+        return self
+
     def get(
             self,
             index: pd.Index = None,
@@ -288,6 +318,32 @@ class Base(HeaderBase):
                     raise ex
         else:
             self._load_csv(csv_file)
+
+    def pick_columns(
+            self,
+            column_ids: typing.Union[str, typing.Sequence[str]],
+            *,
+            inplace: bool = False,
+    ) -> 'Table':
+        r"""Pick columns by ID.
+
+        All other columns will be dropped.
+
+        Args:
+            column_ids: column IDs
+            inplace: pick columns in place
+
+        Returns:
+            new ``Table`` if ``inplace=False``, otherwise ``self``
+
+        """
+        if isinstance(column_ids, str):
+            column_ids = [column_ids]
+        drop_ids = set()
+        for column_id in list(self.columns):
+            if column_id not in column_ids:
+                drop_ids.add(column_id)
+        return self.drop_columns(list(drop_ids), inplace=inplace)
 
     def save(
             self,
@@ -714,36 +770,6 @@ class Table(Base):
         table._df = self.df.copy()
         return table
 
-    def drop_columns(
-            self,
-            column_ids: typing.Union[str, typing.Sequence[str]],
-            *,
-            inplace: bool = False,
-    ) -> 'Table':
-        r"""Drop columns by ID.
-
-        Args:
-            column_ids: column IDs
-            inplace: drop columns in place
-
-        Returns:
-            new ``Table`` if ``inplace=False``, otherwise ``self``
-
-        """
-        if not inplace:
-            return self.copy().drop_columns(column_ids, inplace=True)
-
-        if isinstance(column_ids, str):
-            column_ids = [column_ids]
-        column_ids_ = set()
-        for column_id in column_ids:
-            column_ids_.add(column_id)
-        self.df.drop(column_ids_, inplace=True, axis='columns')
-        for column_id in column_ids_:
-            self.columns.pop(column_id)
-
-        return self
-
     def drop_files(
             self,
             files: typing.Union[
@@ -961,32 +987,6 @@ class Table(Base):
             result = result.set_axis(new_index)
 
         return result
-
-    def pick_columns(
-            self,
-            column_ids: typing.Union[str, typing.Sequence[str]],
-            *,
-            inplace: bool = False,
-    ) -> 'Table':
-        r"""Pick columns by ID.
-
-        All other columns will be dropped.
-
-        Args:
-            column_ids: column IDs
-            inplace: pick columns in place
-
-        Returns:
-            new ``Table`` if ``inplace=False``, otherwise ``self``
-
-        """
-        if isinstance(column_ids, str):
-            column_ids = [column_ids]
-        drop_ids = set()
-        for column_id in list(self.columns):
-            if column_id not in column_ids:
-                drop_ids.add(column_id)
-        return self.drop_columns(list(drop_ids), inplace=inplace)
 
     def pick_index(
             self,
