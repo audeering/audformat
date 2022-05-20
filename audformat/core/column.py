@@ -279,16 +279,10 @@ class Column(HeaderBase):
             scheme = self._table._db.schemes[self.scheme_id]
             assert_values(values, scheme)
 
-        if index_type(df.index) == index_type(index):
-            if is_scalar(values):
-                values = [values] * len(index)
-            values = to_array(values)
-            df.loc[index, column_id] = pd.Series(
-                values,
-                index=index,
-                dtype=df[column_id].dtype,
-            )
-        else:
+        if hasattr(self._table, 'type') and \
+                self._table.type != index_type(index):
+            # special case where a filewise / segmented table
+            # is requested with an index of the other type
             if not self._table.is_filewise:
                 files = index.get_level_values(define.IndexField.FILE)
                 index = df.loc[files].index
@@ -298,6 +292,15 @@ class Column(HeaderBase):
                     'Cannot set values of a filewise column '
                     'using a segmented index.'
                 )
+        else:
+            if is_scalar(values):
+                values = [values] * len(index)
+            values = to_array(values)
+            df.loc[index, column_id] = pd.Series(
+                values,
+                index=index,
+                dtype=df[column_id].dtype,
+            )
 
     def __eq__(
             self,
