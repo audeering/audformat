@@ -678,7 +678,7 @@ def map_country(country: str) -> str:
         result = iso3166.countries.get(country.lower())
     except KeyError:
         raise ValueError(
-            f"'{country}' is not supported by ISO 3166."
+            f"'{country}' is not supported by ISO 3166-1."
         )
 
     return result.alpha3
