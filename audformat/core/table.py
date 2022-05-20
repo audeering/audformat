@@ -592,6 +592,15 @@ class MiscTable(Base):
                 levels = [index.name]
             self.levels = levels
 
+    def copy(self) -> 'MiscTable':
+        r"""Copy table.
+
+        Return:
+            new table object
+
+        """
+        return super().copy()
+
     def _get_by_index(self, index: pd.Index) -> (pd.DataFrame, bool):
         return self.df.loc[index]
 

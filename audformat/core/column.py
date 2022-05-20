@@ -139,7 +139,7 @@ class Column(HeaderBase):
     ) -> pd.Series:
         r"""Get labels.
 
-        By default all labels of the column are returned,
+        By default, all labels of the column are returned,
         use ``index`` to get a subset.
 
         Examples are provided with the
@@ -244,7 +244,7 @@ class Column(HeaderBase):
     ):
         r"""Set labels.
 
-        By default all labels of the column are replaced,
+        By default, all labels of the column are replaced,
         use ``index`` to set a subset.
         If columns is assigned to a :class:`Scheme`
         values have to match its ``dtype``.
