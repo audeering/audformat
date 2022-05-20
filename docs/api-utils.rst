@@ -49,6 +49,11 @@ join_schemes
 
 .. autofunction:: join_schemes
 
+map_country
+-----------
+
+.. autofunction:: map_country
+
 map_file_path
 -------------
 
