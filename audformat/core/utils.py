@@ -4,6 +4,7 @@ import re
 import sys
 import typing as typing
 
+import iso3166
 import iso639
 import numpy as np
 import pandas as pd
@@ -650,6 +651,37 @@ def join_schemes(
     labels = join_labels([db.schemes[scheme_id].labels for db in dbs])
     for db in dbs:
         db.schemes[scheme_id].replace_labels(labels)
+
+
+def map_country(country: str) -> str:
+    r"""Map country to ISO 3166-1.
+
+    Args:
+        country: country string
+
+    Returns:
+        mapped string
+
+    Raises:
+        ValueError: if country is not supported
+
+    Example:
+        >>> map_country('gb')
+        'GBR'
+        >>> map_country('gbr')
+        'GBR'
+        >>> map_country('United Kingdom of Great Britain and Northern Ireland')
+        'GBR'
+
+    """
+    try:
+        result = iso3166.countries.get(country.lower())
+    except KeyError:
+        raise ValueError(
+            f"'{country}' is not supported by ISO 3166-1."
+        )
+
+    return result.alpha3
 
 
 def map_file_path(

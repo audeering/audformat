@@ -1099,6 +1099,31 @@ def test_join_schemes():
 
 
 @pytest.mark.parametrize(
+    'country, expected',
+    [
+        ('uy', 'URY'),
+        ('uy', 'URY'),
+        ('uruguay', 'URY'),
+        ('Uruguay', 'URY'),
+        pytest.param(
+            'xx', None,
+            marks=pytest.mark.xfail(raises=ValueError)
+        ),
+        pytest.param(
+            'xxx', None,
+            marks=pytest.mark.xfail(raises=ValueError)
+        ),
+        pytest.param(
+            'Bad country', None,
+            marks=pytest.mark.xfail(raises=ValueError)
+        )
+    ]
+)
+def test_map_country(country, expected):
+    assert utils.map_country(country) == expected
+
+
+@pytest.mark.parametrize(
     'index, func, expected_index, expected_index_windows',
     [
         (
