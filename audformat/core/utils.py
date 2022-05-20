@@ -674,21 +674,14 @@ def map_country(country: str) -> str:
         'GBR'
 
     """
-    result = None
-
     try:
         result = iso3166.countries.get(country.lower())
     except KeyError:
-        pass
-
-    if result is not None:
-        result = result.alpha3
-    else:
         raise ValueError(
             f"'{country}' is not supported by ISO 3166."
         )
 
-    return result
+    return result.alpha3
 
 
 def map_file_path(
