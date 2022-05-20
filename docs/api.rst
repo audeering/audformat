@@ -48,6 +48,14 @@ Media
 .. autoclass:: Media
     :members:
 
+MiscTable
+---------
+
+.. autoclass:: MiscTable
+    :members:
+    :inherited-members: HeaderBase
+    :special-members: __add__, __getitem__, __setitem__
+
 Rater
 -----
 

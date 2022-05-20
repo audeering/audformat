@@ -2,6 +2,7 @@ from audformat import define
 from audformat import errors
 from audformat import utils
 from audformat.core.database import Database
+from audformat.core.column import Column
 from audformat.core.index import (
     assert_index,
     assert_no_duplicates,
@@ -14,7 +15,7 @@ from audformat.core.rater import Rater
 from audformat.core.scheme import Scheme
 from audformat.core.split import Split
 from audformat.core.table import (
-    Column,
+    MiscTable,
     Table,
 )
 

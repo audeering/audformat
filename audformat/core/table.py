@@ -543,13 +543,72 @@ class Base(HeaderBase):
         return column
 
 
+class MiscTable(Base):
+    r"""Miscellaneous table.
+
+    ..note:: Only use for tables
+        with an index that is not conform to
+        :ref:`table specifications <data-tables:Tables>`.
+        Otherwise, it is preferable to use
+        :class:`audformat.Table`.
+
+    To fill a table with labels,
+    add one or more :class:`audformat.Column`
+    and use :meth:`audformat.MiscTable.set` to set the values.
+
+    Args:
+        index: table index,
+            if ``None`` creates an empty table
+        split_id: split identifier (must exist)
+        media_id: media identifier (must exist)
+        description: database description
+        meta: additional meta fields
+
+    """
+    def __init__(
+            self,
+            index: pd.Index = None,
+            *,
+            split_id: str = None,
+            media_id: str = None,
+            description: str = None,
+            meta: dict = None,
+    ):
+        super().__init__(
+            index,
+            split_id=split_id,
+            media_id=media_id,
+            description=description,
+            meta=meta,
+        )
+
+        self.levels = None
+        r"""Index levels."""
+
+        if index is not None:
+            if isinstance(index, pd.MultiIndex):
+                levels = list(index.names)
+            else:
+                levels = [index.name]
+            self.levels = levels
+
+    def _get_by_index(self, index: pd.Index) -> (pd.DataFrame, bool):
+        return self.df.loc[index]
+
+    def _index_levels_and_converters(self) -> typing.Tuple[
+        typing.Sequence[str],
+        typing.Dict[str, typing.Callable],
+    ]:
+        return self.levels, {}
+
+
 class Table(Base):
-    r"""Table with annotation data.
+    r"""Table conform to :ref:`table specifications <data-tables:Tables>`.
 
     Consists of a list of file names to which it assigns
     numerical values or labels.
     To fill a table with labels,
-    add one ore more :class:`audformat.Column`
+    add one or more :class:`audformat.Column`
     and use :meth:`audformat.Table.set` to set the values.
 
     Args:
