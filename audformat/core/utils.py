@@ -654,7 +654,7 @@ def join_schemes(
 
 
 def map_country(country: str) -> str:
-    r"""Map country to ISO 3166.
+    r"""Map country to ISO 3166-1.
 
     Args:
         country: country string
