@@ -4,9 +4,9 @@ import re
 import sys
 import typing as typing
 
-import iso639
 import numpy as np
 import pandas as pd
+import pycountry
 
 import audeer
 import audiofile
@@ -715,28 +715,16 @@ def map_language(language: str) -> str:
         'eng'
 
     """
-    result = None
-
     if len(language) == 2:
-        try:
-            result = iso639.languages.get(alpha2=language.lower())
-        except KeyError:
-            pass
+        result = pycountry.languages.get(alpha_2=language.lower())
     elif len(language) == 3:
-        try:
-            result = iso639.languages.get(part3=language.lower())
-        except KeyError:
-            pass
+        result = pycountry.languages.get(alpha_3=language.lower())
     else:
-        try:
-            result = iso639.languages.get(name=language.title())
-        except KeyError:
-            pass
+        result = pycountry.languages.get(name=language.title())
 
     if result is not None:
-        result = result.part3
-
-    if not result:
+        result = result.alpha_3
+    else:
         raise ValueError(
             f"'{language}' is not supported by ISO 639-3."
         )
