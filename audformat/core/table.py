@@ -564,6 +564,44 @@ class MiscTable(Base):
         description: database description
         meta: additional meta fields
 
+    Example:
+        >>> index = pd.MultiIndex.from_tuples(
+        ...   [
+        ...     ('f1', 'f2'),
+        ...     ('f1', 'f3'),
+        ...     ('f2', 'f3'),
+        ...   ],
+        ...   names=['file', 'other'],
+        ... )
+        >>> table = MiscTable(
+        ...     index,
+        ...     split_id=define.SplitType.TEST,
+        ... )
+        >>> table['same speaker'] = Column()
+        >>> table
+        levels: [file, other]
+        split_id: test
+        columns:
+          same speaker: {}
+        >>> table.get()
+                   same speaker
+        file other
+        f1   f2             NaN
+             f3             NaN
+        f2   f3             NaN
+        >>> table.set({'same speaker': [True, False, True]})
+        >>> table.get()
+                   same speaker
+        file other
+        f1   f2            True
+             f3           False
+        f2   f3            True
+        >>> table.get(index[:2])
+                   same speaker
+        file other
+        f1   f2            True
+             f3           False
+
     """
     def __init__(
             self,
@@ -574,6 +612,9 @@ class MiscTable(Base):
             description: str = None,
             meta: dict = None,
     ):
+        self.levels = None
+        r"""Index levels."""
+
         super().__init__(
             index,
             split_id=split_id,
@@ -581,9 +622,6 @@ class MiscTable(Base):
             description=description,
             meta=meta,
         )
-
-        self.levels = None
-        r"""Index levels."""
 
         if index is not None:
             if isinstance(index, pd.MultiIndex):
@@ -602,7 +640,7 @@ class MiscTable(Base):
         return super().copy()
 
     def _get_by_index(self, index: pd.Index) -> (pd.DataFrame, bool):
-        return self.df.loc[index]
+        return self.df.loc[index], False
 
     def _index_levels_and_converters(self) -> typing.Tuple[
         typing.Sequence[str],
