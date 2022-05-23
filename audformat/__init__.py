@@ -1,14 +1,16 @@
 from audformat import define
 from audformat import errors
 from audformat import utils
-from audformat.core.database import Database
 from audformat.core.column import Column
+from audformat.core.database import Database
 from audformat.core.index import (
     assert_index,
     assert_no_duplicates,
     filewise_index,
-    segmented_index,
     index_type,
+    is_filewise_index,
+    is_segmented_index,
+    segmented_index,
 )
 from audformat.core.media import Media
 from audformat.core.rater import Rater
