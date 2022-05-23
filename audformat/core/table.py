@@ -546,8 +546,8 @@ class Base(HeaderBase):
 class MiscTable(Base):
     r"""Miscellaneous table.
 
-    ..note:: Only use for tables
-        with an index that is not conform to
+    ..note:: Intended for use with tables
+        that rquire an index that is not conform to
         :ref:`table specifications <data-tables:Tables>`.
         Otherwise, it is preferable to use
         :class:`audformat.Table`.
@@ -577,30 +577,30 @@ class MiscTable(Base):
         ...     index,
         ...     split_id=define.SplitType.TEST,
         ... )
-        >>> table['same speaker'] = Column()
+        >>> table['match'] = Column()
         >>> table
         levels: [file, other]
         split_id: test
         columns:
-          same speaker: {}
+          match: {}
         >>> table.get()
-                   same speaker
+                   match
         file other
-        f1   f2             NaN
-             f3             NaN
-        f2   f3             NaN
-        >>> table.set({'same speaker': [True, False, True]})
+        f1   f2      NaN
+             f3      NaN
+        f2   f3      NaN
+        >>> table.set({'match': [True, False, True]})
         >>> table.get()
-                   same speaker
+                   match
         file other
-        f1   f2            True
-             f3           False
-        f2   f3            True
+        f1   f2     True
+             f3    False
+        f2   f3     True
         >>> table.get(index[:2])
-                   same speaker
+                   match
         file other
-        f1   f2            True
-             f3           False
+        f1   f2     True
+             f3    False
 
     """
     def __init__(

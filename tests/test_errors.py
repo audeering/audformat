@@ -52,3 +52,21 @@ def test_errors():
 
     with pytest.raises(audformat.errors.BadKeyError):
         db['bad']
+
+    with pytest.raises(audformat.errors.BadKeyError):
+        db.media['bad']
+
+    with pytest.raises(audformat.errors.BadKeyError):
+        db.misc_tables['bad']
+
+    with pytest.raises(audformat.errors.BadKeyError):
+        db.raters['bad']
+
+    with pytest.raises(audformat.errors.BadKeyError):
+        db.schemes['bad']
+
+    with pytest.raises(audformat.errors.BadKeyError):
+        db.splits['bad']
+
+    with pytest.raises(audformat.errors.BadKeyError):
+        db.tables['bad']
