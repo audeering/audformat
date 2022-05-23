@@ -546,19 +546,17 @@ class Base(HeaderBase):
 class MiscTable(Base):
     r"""Miscellaneous table.
 
-    ..note:: Intended for use with tables
-        that rquire an index that is not conform to
+    .. note:: Intended for use with tables
+        that have an index that is not conform to
         :ref:`table specifications <data-tables:Tables>`.
-        Otherwise, it is preferable to use
-        :class:`audformat.Table`.
+        Otherwise, use :class:`audformat.Table`.
 
     To fill a table with labels,
     add one or more :class:`audformat.Column`
     and use :meth:`audformat.MiscTable.set` to set the values.
 
     Args:
-        index: table index,
-            if ``None`` creates an empty table
+        index: table index
         split_id: split identifier (must exist)
         media_id: media identifier (must exist)
         description: database description
@@ -605,7 +603,7 @@ class MiscTable(Base):
     """
     def __init__(
             self,
-            index: pd.Index = None,
+            index: pd.Index,
             *,
             split_id: str = None,
             media_id: str = None,

@@ -1,3 +1,4 @@
+import pandas as pd
 import pytest
 
 import audformat
@@ -70,3 +71,9 @@ def test_errors():
 
     with pytest.raises(audformat.errors.BadKeyError):
         db.tables['bad']
+
+    with pytest.raises(ValueError):
+        db['misc'] = audformat.Table()
+
+    with pytest.raises(ValueError):
+        db['files'] = audformat.MiscTable(pd.Index([]))
