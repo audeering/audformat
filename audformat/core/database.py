@@ -997,7 +997,7 @@ class Database(HeaderBase):
     ) -> typing.Union[MiscTable, Table]:
         if isinstance(table, MiscTable) and table_id in self.tables:
             raise ValueError(
-                f"There is already an audformat "
+                f"There is already a regular "
                 f"table with ID "
                 f"'{table_id}'."
             )

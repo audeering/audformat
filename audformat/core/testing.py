@@ -16,17 +16,22 @@ import pandas as pd
 import audiofile as af
 
 from audformat.core import define
+from audformat.core.column import Column
 from audformat.core.database import Database
 from audformat.core.index import (
     filewise_index,
+    is_filewise_index,
+    is_segmented_index,
     segmented_index,
 )
 from audformat.core.media import Media
 from audformat.core.rater import Rater
 from audformat.core.scheme import Scheme
 from audformat.core.split import Split
-from audformat.core.table import Table
-from audformat.core.column import Column
+from audformat.core.table import (
+    MiscTable,
+    Table,
+)
 
 
 def add_table(
@@ -263,7 +268,10 @@ def create_db(
         for table_id, obj in data.items():
             if isinstance(obj, pd.Series):
                 obj = obj.to_frame()
-            db[table_id] = Table(obj.index)
+            if is_filewise_index(obj) or is_segmented_index(obj):
+                db[table_id] = Table(obj.index)
+            else:
+                db[table_id] = MiscTable(obj.index)
             for column_id, column in obj.items():
                 dtype = to_scheme_type(column)
                 if dtype not in db.schemes:
@@ -360,5 +368,28 @@ def create_db(
     db['segments']['no_scheme'].set(
         db.schemes['string'].draw(100, p_none=0.25)
     )
+
+    #######################
+    # Miscellaneous Table #
+    #######################
+
+    db.schemes['age'] = Scheme(
+        dtype=define.DataType.INTEGER,
+        minimum=9,
+        maximum=99,
+    )
+    db.schemes['gender'] = Scheme(
+        labels=['female', 'male'],
+    )
+
+    index = pd.Index(
+        ['sp1', 'sp2', 'sp3'],
+        name='speaker',
+    )
+    db['misc'] = MiscTable(index)
+    db['misc']['age'] = Column(scheme_id='age')
+    db['misc']['age'].set(db.schemes['age'].draw(len(index)))
+    db['misc']['gender'] = Column(scheme_id='gender')
+    db['misc']['gender'].set(db.schemes['gender'].draw(len(index)))
 
     return db

@@ -256,10 +256,10 @@ def is_segmented_index(
         obj = obj.index
 
     return (
-            len(obj.names) == 3 and
-            obj.names[0] == define.IndexField.FILE and
-            obj.names[1] == define.IndexField.START and
-            obj.names[2] == define.IndexField.END
+        len(obj.names) == 3
+        and obj.names[0] == define.IndexField.FILE
+        and obj.names[1] == define.IndexField.START
+        and obj.names[2] == define.IndexField.END
     )
 
 
