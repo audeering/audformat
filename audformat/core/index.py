@@ -257,6 +257,12 @@ def is_segmented_index(
     Returns:
         ``True`` if index is segmented, otherwise ``False``
 
+    Example:
+        >>> is_segmented_index(segmented_index())
+        True
+        >>> is_segmented_index(pd.Index([]))
+        False
+        
     """
     if not isinstance(obj, pd.Index):
         obj = obj.index
