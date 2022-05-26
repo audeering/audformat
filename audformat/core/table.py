@@ -20,6 +20,7 @@ from audformat.core.errors import (
 from audformat.core.index import (
     filewise_index,
     index_type,
+    is_segmented_index,
 )
 from audformat.core.media import Media
 from audformat.core.split import Split
@@ -1082,7 +1083,7 @@ class Table(Base):
         result = super().get(index, map=map, copy=copy)
 
         # if necessary, convert to segmented index and replace NaT
-        is_segmented = index_type(result.index) == define.IndexType.SEGMENTED
+        is_segmented = is_segmented_index(result.index)
         if (
                 (not is_segmented and as_segmented)
                 or (is_segmented and not allow_nat)

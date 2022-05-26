@@ -235,7 +235,7 @@ def is_filewise_index(
         True
         >>> is_filewise_index(pd.Index([]))
         False
-        
+
     """
     if not isinstance(obj, pd.Index):
         obj = obj.index
