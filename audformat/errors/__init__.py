@@ -3,4 +3,5 @@ from audformat.core.errors import (
     BadKeyError,
     BadTypeError,
     BadValueError,
+    TableExistsError,
 )

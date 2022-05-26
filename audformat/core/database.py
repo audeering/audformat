@@ -24,6 +24,7 @@ from audformat.core.common import (
 from audformat.core.errors import (
     BadKeyError,
     BadIdError,
+    TableExistsError,
 )
 from audformat.core.media import Media
 from audformat.core.rater import Rater
@@ -755,6 +756,9 @@ class Database(HeaderBase):
         Args:
             table_id: table identifier
 
+        Raises:
+            BadKeyError: if table does not exist
+
         """
         if table_id in self.tables:
             return self.tables[table_id]
@@ -791,6 +795,9 @@ class Database(HeaderBase):
         Raises:
             BadIdError: if table has a ``split_id`` or ``media_id``,
                 which is not specified in the underlying database
+            TableExistsError: if setting a miscellaneous table
+                when a filewise or segmented table with the same ID exists
+                (or vice versa)
 
         """
         if isinstance(table, MiscTable):
@@ -996,17 +1003,9 @@ class Database(HeaderBase):
             table: typing.Union[MiscTable, Table],
     ) -> typing.Union[MiscTable, Table]:
         if isinstance(table, MiscTable) and table_id in self.tables:
-            raise ValueError(
-                f"There is already a regular "
-                f"table with ID "
-                f"'{table_id}'."
-            )
+            raise TableExistsError(self[table_id].type, table_id)
         elif isinstance(table, Table) and table_id in self.misc_tables:
-            raise ValueError(
-                f"There is already a miscellaneous "
-                f"table with ID "
-                f"'{table_id}'."
-            )
+            raise TableExistsError('miscellaneous', table_id)
         if table.split_id is not None and table.split_id not in self.splits:
             raise BadIdError('split', table.split_id, self.splits)
         if table.media_id is not None and table.media_id not in self.media:

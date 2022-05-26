@@ -70,3 +70,20 @@ class BadValueError(ValueError):
             f"expected one of {list(valid_values)}"
         )
         super().__init__(message)
+
+
+class TableExistsError(KeyError):
+    r"""If a table of another type with same ID exists already.
+
+    Args:
+        table_type: table type
+        table_id: table identifier
+
+    """
+    def __init__(self, table_type: str, table_id: str):
+        KeyError(
+            f"There is already a "
+            f"{table_type} "
+            f"table with ID "
+            f"'{table_id}'."
+        )

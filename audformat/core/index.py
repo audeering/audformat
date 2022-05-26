@@ -262,7 +262,7 @@ def is_segmented_index(
         True
         >>> is_segmented_index(pd.Index([]))
         False
-        
+
     """
     if not isinstance(obj, pd.Index):
         obj = obj.index

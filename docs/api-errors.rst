@@ -27,3 +27,9 @@ BadValueError
 
 .. autoclass:: BadValueError
     :members:
+
+TableExistsError
+----------------
+
+.. autoclass:: TableExistsError
+    :members:
