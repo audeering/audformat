@@ -7,6 +7,14 @@ The format is based on `Keep a Changelog`_,
 and this project adheres to `Semantic Versioning`_.
 
 
+Version 0.14.3 (2022-06-01)
+---------------------------
+
+* Added: ``audformat.utils.map_country()``
+* Changed: improve speed of ``audformat.Table.drop_files()``
+  for segmented tables
+
+
 Version 0.14.2 (2022-04-29)
 ---------------------------
 
