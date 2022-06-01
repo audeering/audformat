@@ -7,7 +7,7 @@ The format is based on `Keep a Changelog`_,
 and this project adheres to `Semantic Versioning`_.
 
 
-Version 0.14.3 (2022-05-31)
+Version 0.14.3 (2022-06-01)
 ---------------------------
 
 * Added: ``audformat.utils.map_country()``
