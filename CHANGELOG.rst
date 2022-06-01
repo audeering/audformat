@@ -12,7 +12,7 @@ Version 0.14.3 (2022-05-31)
 
 * Added: ``audformat.utils.map_country()``
 * Changed: improve speed of ``audformat.Table.drop_files()``
-  for a segmented table
+  for segmented tables
 
 
 Version 0.14.2 (2022-04-29)
