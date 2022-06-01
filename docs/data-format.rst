@@ -27,18 +27,16 @@ or a specific segment in a media file.
 The connection between the header and the tables
 is highlighted in the following sketch:
 
-.. figure:: pics/audformat.dot.svg
+.. graphviz:: pics/audformat.dot
     :alt: audformat
     :align: center
-
-    Connection between header definitions and table entries.
+    :caption: Connection between header definitions and table entries.
 
 The annotations stored in the tables
 can be accessed as :class:`pandas.DataFrame`.
 The following sketch shows an example instance of a database:
 
-.. figure:: pics/tables.dot.svg
+.. graphviz:: pics/tables.dot
     :alt: Header and Tables
     :align: center
-
-    Example content of tables and there connection to the header.
+    :caption: Example content of tables and there connection to the header.

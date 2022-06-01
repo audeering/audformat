@@ -3,8 +3,6 @@ from datetime import date
 import os
 import subprocess
 
-import graphviz
-
 
 config = configparser.ConfigParser()
 config.read(os.path.join('..', 'setup.cfg'))
@@ -72,6 +70,8 @@ linkcheck_ignore = [
     'https://www.isca-speech.org',
 ]
 
+# Graphviz figures
+graphviz_output_format = 'svg'
 
 # HTML --------------------------------------------------------------------
 html_theme = 'sphinx_audeering_theme'
@@ -85,13 +85,3 @@ html_context = {
     'display_github': True,
 }
 html_title = title
-
-
-# Graphviz figures --------------------------------------------------------
-dot_files = [
-    './pics/tables.dot',
-    './pics/audformat.dot',
-    './pics/workflow.dot',
-]
-for dot_file in dot_files:
-    graphviz.render('dot', 'svg', dot_file)
