@@ -76,7 +76,7 @@
             
             
               <div class="version">
-                v0.14.2
+                v0.14.3
               </div>
             
           
@@ -169,7 +169,7 @@
            <div itemprop="articleBody">
             
   <div class="section" id="update-a-database">
-<h1>Update a database<a class="headerlink" href="#update-a-database" title="Permalink to this headline">¶</a></h1>
+<h1>Update a database<a class="headerlink" href="#update-a-database" title="Permalink to this heading">¶</a></h1>
 <p>A feature that is especially useful for databases growing over time,
 is the possibility to update a <a class="reference internal" href="api.html#audformat.Database" title="audformat.Database"><code class="xref py py-class docutils literal notranslate"><span class="pre">audformat.Database</span></code></a>.
 For instance, consider the following database that contains
@@ -248,23 +248,23 @@ tables:
   <tbody>
     <tr>
       <th>audio/001.wav</th>
-      <td>39</td>
+      <td>20</td>
     </tr>
     <tr>
       <th>audio/002.wav</th>
-      <td>25</td>
+      <td>43</td>
     </tr>
     <tr>
       <th>audio/003.wav</th>
-      <td>33</td>
+      <td>20</td>
     </tr>
     <tr>
       <th>audio/004.wav</th>
-      <td>35</td>
+      <td>20</td>
     </tr>
     <tr>
       <th>audio/005.wav</th>
-      <td>47</td>
+      <td>34</td>
     </tr>
     <tr>
       <th>...</th>
@@ -272,23 +272,23 @@ tables:
     </tr>
     <tr>
       <th>audio/096.wav</th>
-      <td>21</td>
+      <td>34</td>
     </tr>
     <tr>
       <th>audio/097.wav</th>
-      <td>44</td>
+      <td>34</td>
     </tr>
     <tr>
       <th>audio/098.wav</th>
-      <td>26</td>
+      <td>44</td>
     </tr>
     <tr>
       <th>audio/099.wav</th>
-      <td>21</td>
+      <td>25</td>
     </tr>
     <tr>
       <th>audio/100.wav</th>
-      <td>39</td>
+      <td>37</td>
     </tr>
   </tbody>
 </table>
@@ -343,23 +343,23 @@ that is then added to the original database.</p>
   <tbody>
     <tr>
       <th>audio/001.wav</th>
-      <td>39</td>
+      <td>20</td>
     </tr>
     <tr>
       <th>audio/002.wav</th>
-      <td>25</td>
+      <td>43</td>
     </tr>
     <tr>
       <th>audio/003.wav</th>
-      <td>33</td>
+      <td>20</td>
     </tr>
     <tr>
       <th>audio/004.wav</th>
-      <td>35</td>
+      <td>20</td>
     </tr>
     <tr>
       <th>audio/005.wav</th>
-      <td>47</td>
+      <td>34</td>
     </tr>
     <tr>
       <th>...</th>
@@ -367,23 +367,23 @@ that is then added to the original database.</p>
     </tr>
     <tr>
       <th>audio/100.wav</th>
-      <td>39</td>
+      <td>37</td>
     </tr>
     <tr>
       <th>audio/101.wav</th>
-      <td>43</td>
+      <td>49</td>
     </tr>
     <tr>
       <th>audio/102.wav</th>
-      <td>22</td>
+      <td>29</td>
     </tr>
     <tr>
       <th>audio/103.wav</th>
-      <td>44</td>
+      <td>30</td>
     </tr>
     <tr>
       <th>audio/104.wav</th>
-      <td>25</td>
+      <td>31</td>
     </tr>
   </tbody>
 </table>
@@ -438,11 +438,11 @@ the critical files, relabel them and then update the original database.</p>
   <tbody>
     <tr>
       <th>audio/001.wav</th>
-      <td>44</td>
+      <td>41</td>
     </tr>
     <tr>
       <th>audio/002.wav</th>
-      <td>29</td>
+      <td>42</td>
     </tr>
     <tr>
       <th>audio/003.wav</th>
@@ -450,11 +450,11 @@ the critical files, relabel them and then update the original database.</p>
     </tr>
     <tr>
       <th>audio/004.wav</th>
-      <td>47</td>
+      <td>23</td>
     </tr>
     <tr>
       <th>audio/005.wav</th>
-      <td>39</td>
+      <td>37</td>
     </tr>
     <tr>
       <th>...</th>
@@ -462,23 +462,23 @@ the critical files, relabel them and then update the original database.</p>
     </tr>
     <tr>
       <th>audio/100.wav</th>
-      <td>39</td>
+      <td>37</td>
     </tr>
     <tr>
       <th>audio/101.wav</th>
-      <td>43</td>
+      <td>49</td>
     </tr>
     <tr>
       <th>audio/102.wav</th>
-      <td>22</td>
+      <td>29</td>
     </tr>
     <tr>
       <th>audio/103.wav</th>
-      <td>44</td>
+      <td>30</td>
     </tr>
     <tr>
       <th>audio/104.wav</th>
-      <td>25</td>
+      <td>31</td>
     </tr>
   </tbody>
 </table>
@@ -540,13 +540,13 @@ collect the new labels and only later merge it into our original database.</p>
   <tbody>
     <tr>
       <th>audio/001.wav</th>
-      <td>44</td>
-      <td>male</td>
+      <td>41</td>
+      <td>female</td>
     </tr>
     <tr>
       <th>audio/002.wav</th>
-      <td>29</td>
-      <td>male</td>
+      <td>42</td>
+      <td>female</td>
     </tr>
     <tr>
       <th>audio/003.wav</th>
@@ -555,13 +555,13 @@ collect the new labels and only later merge it into our original database.</p>
     </tr>
     <tr>
       <th>audio/004.wav</th>
-      <td>47</td>
+      <td>23</td>
       <td>male</td>
     </tr>
     <tr>
       <th>audio/005.wav</th>
-      <td>39</td>
-      <td>female</td>
+      <td>37</td>
+      <td>male</td>
     </tr>
     <tr>
       <th>...</th>
@@ -570,28 +570,28 @@ collect the new labels and only later merge it into our original database.</p>
     </tr>
     <tr>
       <th>audio/100.wav</th>
-      <td>39</td>
+      <td>37</td>
       <td>female</td>
     </tr>
     <tr>
       <th>audio/101.wav</th>
-      <td>43</td>
-      <td>female</td>
+      <td>49</td>
+      <td>male</td>
     </tr>
     <tr>
       <th>audio/102.wav</th>
-      <td>22</td>
+      <td>29</td>
       <td>male</td>
     </tr>
     <tr>
       <th>audio/103.wav</th>
-      <td>44</td>
-      <td>male</td>
+      <td>30</td>
+      <td>female</td>
     </tr>
     <tr>
       <th>audio/104.wav</th>
-      <td>25</td>
-      <td>female</td>
+      <td>31</td>
+      <td>male</td>
     </tr>
   </tbody>
 </table>
@@ -641,7 +641,7 @@ gender:
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2022/05/02 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2022/06/01 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
@@ -676,6 +676,7 @@ gender:
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
         <script src="_static/clipboard.min.js"></script>
         <script src="_static/copybutton.js"></script>

@@ -76,7 +76,7 @@
             
             
               <div class="version">
-                v0.14.2
+                v0.14.3
               </div>
             
           
@@ -179,13 +179,13 @@
            <div itemprop="articleBody">
             
   <div class="section" id="conventions">
-<h1>Conventions<a class="headerlink" href="#conventions" title="Permalink to this headline">¶</a></h1>
+<h1>Conventions<a class="headerlink" href="#conventions" title="Permalink to this heading">¶</a></h1>
 <div class="jupyter_cell docutils container">
 <div class="cell_output docutils container">
 </div>
 </div>
 <div class="section" id="database-name">
-<h2>Database name<a class="headerlink" href="#database-name" title="Permalink to this headline">¶</a></h2>
+<h2>Database name<a class="headerlink" href="#database-name" title="Permalink to this heading">¶</a></h2>
 <p>The name of a database should be lowercase
 and must not contain blanks or
 special characters.
@@ -209,7 +209,7 @@ languages: []
 </div>
 </div>
 <div class="section" id="table-and-scheme-names">
-<h2>Table and scheme names<a class="headerlink" href="#table-and-scheme-names" title="Permalink to this headline">¶</a></h2>
+<h2>Table and scheme names<a class="headerlink" href="#table-and-scheme-names" title="Permalink to this heading">¶</a></h2>
 <p>Use lower case for table and scheme names.</p>
 <p>Here’s a list of common scheme names:</p>
 <table class="docutils align-default">
@@ -253,7 +253,7 @@ if a database offers word
 <em>and</em> phoneme transcriptions.</p>
 </div>
 <div class="section" id="tables-schemes-and-raters">
-<h2>Tables, schemes, and raters<a class="headerlink" href="#tables-schemes-and-raters" title="Permalink to this headline">¶</a></h2>
+<h2>Tables, schemes, and raters<a class="headerlink" href="#tables-schemes-and-raters" title="Permalink to this heading">¶</a></h2>
 <p>Consider one table per scheme
 with the name of the scheme.
 Use lower case for table and scheme names.
@@ -309,7 +309,7 @@ tables:
 </div>
 </div>
 <div class="section" id="database-splits">
-<h2>Database splits<a class="headerlink" href="#database-splits" title="Permalink to this headline">¶</a></h2>
+<h2>Database splits<a class="headerlink" href="#database-splits" title="Permalink to this heading">¶</a></h2>
 <p>If an official split into training,
 development
 and test set
@@ -359,7 +359,7 @@ tables:
 </div>
 </div>
 <div class="section" id="gold-standard-annotation">
-<h2>Gold standard annotation<a class="headerlink" href="#gold-standard-annotation" title="Permalink to this headline">¶</a></h2>
+<h2>Gold standard annotation<a class="headerlink" href="#gold-standard-annotation" title="Permalink to this heading">¶</a></h2>
 <p>Annotations by several raters
 belonging to the same scheme
 should be stored in a single table,
@@ -429,7 +429,7 @@ tables:
 </div>
 </div>
 <div class="section" id="confidence-values">
-<h2>Confidence values<a class="headerlink" href="#confidence-values" title="Permalink to this headline">¶</a></h2>
+<h2>Confidence values<a class="headerlink" href="#confidence-values" title="Permalink to this heading">¶</a></h2>
 <p>Assume you have an annotation
 that does not only provide a value,
 but also a confidence of that value.
@@ -488,7 +488,7 @@ tables:
 </div>
 </div>
 <div class="section" id="file-and-speaker-information">
-<h2>File and speaker information<a class="headerlink" href="#file-and-speaker-information" title="Permalink to this headline">¶</a></h2>
+<h2>File and speaker information<a class="headerlink" href="#file-and-speaker-information" title="Permalink to this heading">¶</a></h2>
 <p>Meta information like speaker ID
 that is not included in another table
 should be collected in a table <code class="docutils literal notranslate"><span class="pre">files</span></code>.
@@ -638,7 +638,7 @@ for an extended documentation.</p>
 </div>
 </div>
 <div class="section" id="temporal-data">
-<h2>Temporal data<a class="headerlink" href="#temporal-data" title="Permalink to this headline">¶</a></h2>
+<h2>Temporal data<a class="headerlink" href="#temporal-data" title="Permalink to this heading">¶</a></h2>
 <p>Temporal duration data
 like response time of a rater
 should be stored as <code class="xref py py-class docutils literal notranslate"><span class="pre">pd.Timedelta</span></code>.
@@ -735,7 +735,7 @@ should be stored as <a class="reference external" href="https://docs.python.org/
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2022/05/02 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2022/06/01 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
@@ -770,6 +770,7 @@ should be stored as <a class="reference external" href="https://docs.python.org/
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
         <script src="_static/clipboard.min.js"></script>
         <script src="_static/copybutton.js"></script>

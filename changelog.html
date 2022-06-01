@@ -75,7 +75,7 @@
             
             
               <div class="version">
-                v0.14.2
+                v0.14.3
               </div>
             
           
@@ -131,6 +131,7 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Changelog</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#version-0-14-3-2022-06-01">Version 0.14.3 (2022-06-01)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#version-0-14-2-2022-04-29">Version 0.14.2 (2022-04-29)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#version-0-14-1-2022-03-03">Version 0.14.1 (2022-03-03)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#version-0-14-0-2022-02-24">Version 0.14.0 (2022-02-24)</a></li>
@@ -201,12 +202,20 @@
            <div itemprop="articleBody">
             
   <div class="section" id="changelog">
-<h1>Changelog<a class="headerlink" href="#changelog" title="Permalink to this headline">¶</a></h1>
+<h1>Changelog<a class="headerlink" href="#changelog" title="Permalink to this heading">¶</a></h1>
 <p>All notable changes to this project will be documented in this file.</p>
 <p>The format is based on <a class="reference external" href="https://keepachangelog.com/en/1.0.0/">Keep a Changelog</a>,
 and this project adheres to <a class="reference external" href="https://semver.org/spec/v2.0.0.html">Semantic Versioning</a>.</p>
+<div class="section" id="version-0-14-3-2022-06-01">
+<h2>Version 0.14.3 (2022-06-01)<a class="headerlink" href="#version-0-14-3-2022-06-01" title="Permalink to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Added: <code class="docutils literal notranslate"><span class="pre">audformat.utils.map_country()</span></code></p></li>
+<li><p>Changed: improve speed of <code class="docutils literal notranslate"><span class="pre">audformat.Table.drop_files()</span></code>
+for segmented tables</p></li>
+</ul>
+</div>
 <div class="section" id="version-0-14-2-2022-04-29">
-<h2>Version 0.14.2 (2022-04-29)<a class="headerlink" href="#version-0-14-2-2022-04-29" title="Permalink to this headline">¶</a></h2>
+<h2>Version 0.14.2 (2022-04-29)<a class="headerlink" href="#version-0-14-2-2022-04-29" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Added: <code class="docutils literal notranslate"><span class="pre">audformat.utils.index_has_overlap()</span></code></p></li>
 <li><p>Added: <code class="docutils literal notranslate"><span class="pre">audformat.utils.iter_index_by_file()</span></code></p></li>
@@ -216,13 +225,13 @@ and this project adheres to <a class="reference external" href="https://semver.o
 </ul>
 </div>
 <div class="section" id="version-0-14-1-2022-03-03">
-<h2>Version 0.14.1 (2022-03-03)<a class="headerlink" href="#version-0-14-1-2022-03-03" title="Permalink to this headline">¶</a></h2>
+<h2>Version 0.14.1 (2022-03-03)<a class="headerlink" href="#version-0-14-1-2022-03-03" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Added: <code class="docutils literal notranslate"><span class="pre">audformat.utils.map_file_path()</span></code></p></li>
 </ul>
 </div>
 <div class="section" id="version-0-14-0-2022-02-24">
-<h2>Version 0.14.0 (2022-02-24)<a class="headerlink" href="#version-0-14-0-2022-02-24" title="Permalink to this headline">¶</a></h2>
+<h2>Version 0.14.0 (2022-02-24)<a class="headerlink" href="#version-0-14-0-2022-02-24" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Changed: ensure <code class="docutils literal notranslate"><span class="pre">audformat.testing.create_database()</span></code>
 uses Unix path separators</p></li>
@@ -234,14 +243,14 @@ to be removed in version 1.0.0</p></li>
 </ul>
 </div>
 <div class="section" id="version-0-13-3-2022-02-07">
-<h2>Version 0.13.3 (2022-02-07)<a class="headerlink" href="#version-0-13-3-2022-02-07" title="Permalink to this headline">¶</a></h2>
+<h2>Version 0.13.3 (2022-02-07)<a class="headerlink" href="#version-0-13-3-2022-02-07" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Fixed: conversion of pickle protocol 5 files
 to pickle protocol 4 in cache</p></li>
 </ul>
 </div>
 <div class="section" id="version-0-13-2-2022-01-27">
-<h2>Version 0.13.2 (2022-01-27)<a class="headerlink" href="#version-0-13-2-2022-01-27" title="Permalink to this headline">¶</a></h2>
+<h2>Version 0.13.2 (2022-01-27)<a class="headerlink" href="#version-0-13-2-2022-01-27" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Fixed: reintroduce sorting the output of
 <code class="docutils literal notranslate"><span class="pre">audformat.Database.files</span></code> and
@@ -249,13 +258,13 @@ to pickle protocol 4 in cache</p></li>
 </ul>
 </div>
 <div class="section" id="version-0-13-1-2022-01-26">
-<h2>Version 0.13.1 (2022-01-26)<a class="headerlink" href="#version-0-13-1-2022-01-26" title="Permalink to this headline">¶</a></h2>
+<h2>Version 0.13.1 (2022-01-26)<a class="headerlink" href="#version-0-13-1-2022-01-26" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Fixed: changelog for 0.13.0</p></li>
 </ul>
 </div>
 <div class="section" id="version-0-13-0-2022-01-26">
-<h2>Version 0.13.0 (2022-01-26)<a class="headerlink" href="#version-0-13-0-2022-01-26" title="Permalink to this headline">¶</a></h2>
+<h2>Version 0.13.0 (2022-01-26)<a class="headerlink" href="#version-0-13-0-2022-01-26" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Changed: <code class="docutils literal notranslate"><span class="pre">audformat.utils.union()</span></code> no longer sorts levels</p></li>
 <li><p>Changed: <code class="docutils literal notranslate"><span class="pre">audformat.Table.save()</span></code> forces pickle format 4</p></li>
@@ -264,7 +273,7 @@ to pickle protocol 4 in cache</p></li>
 </ul>
 </div>
 <div class="section" id="version-0-12-4-2022-01-12">
-<h2>Version 0.12.4 (2022-01-12)<a class="headerlink" href="#version-0-12-4-2022-01-12" title="Permalink to this headline">¶</a></h2>
+<h2>Version 0.12.4 (2022-01-12)<a class="headerlink" href="#version-0-12-4-2022-01-12" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Changed: the API documentation on the <code class="docutils literal notranslate"><span class="pre">language</span></code> argument
 of <code class="docutils literal notranslate"><span class="pre">audformat.Database</span></code> is more verbose now</p></li>
@@ -278,20 +287,20 @@ when a PKL file is present</p></li>
 </ul>
 </div>
 <div class="section" id="version-0-12-3-2022-01-03">
-<h2>Version 0.12.3 (2022-01-03)<a class="headerlink" href="#version-0-12-3-2022-01-03" title="Permalink to this headline">¶</a></h2>
+<h2>Version 0.12.3 (2022-01-03)<a class="headerlink" href="#version-0-12-3-2022-01-03" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Removed: Python 3.6 support</p></li>
 </ul>
 </div>
 <div class="section" id="version-0-12-2-2021-11-18">
-<h2>Version 0.12.2 (2021-11-18)<a class="headerlink" href="#version-0-12-2-2021-11-18" title="Permalink to this headline">¶</a></h2>
+<h2>Version 0.12.2 (2021-11-18)<a class="headerlink" href="#version-0-12-2-2021-11-18" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Added: <code class="docutils literal notranslate"><span class="pre">audformat.assert_no_duplicates()</span></code></p></li>
 <li><p>Changed: <code class="docutils literal notranslate"><span class="pre">audformat.assert_index()</span></code> no longer checks for duplicates</p></li>
 </ul>
 </div>
 <div class="section" id="version-0-12-1-2021-11-17">
-<h2>Version 0.12.1 (2021-11-17)<a class="headerlink" href="#version-0-12-1-2021-11-17" title="Permalink to this headline">¶</a></h2>
+<h2>Version 0.12.1 (2021-11-17)<a class="headerlink" href="#version-0-12-1-2021-11-17" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Added: <code class="docutils literal notranslate"><span class="pre">audformat.utils.hash()</span></code></p></li>
 <li><p>Added: <code class="docutils literal notranslate"><span class="pre">audformat.utils.expand_file_path()</span></code></p></li>
@@ -300,7 +309,7 @@ when a PKL file is present</p></li>
 </ul>
 </div>
 <div class="section" id="version-0-12-0-2021-11-10">
-<h2>Version 0.12.0 (2021-11-10)<a class="headerlink" href="#version-0-12-0-2021-11-10" title="Permalink to this headline">¶</a></h2>
+<h2>Version 0.12.0 (2021-11-10)<a class="headerlink" href="#version-0-12-0-2021-11-10" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Added: <code class="docutils literal notranslate"><span class="pre">as_segmented</span></code>, <code class="docutils literal notranslate"><span class="pre">allow_nat</span></code>, <code class="docutils literal notranslate"><span class="pre">root</span></code>, <code class="docutils literal notranslate"><span class="pre">num_workers</span></code>
 arguments to <code class="docutils literal notranslate"><span class="pre">audformat.Table.get()</span></code></p></li>
@@ -317,7 +326,7 @@ and <code class="docutils literal notranslate"><span class="pre">audformat.Datab
 </ul>
 </div>
 <div class="section" id="version-0-11-6-2021-08-20">
-<h2>Version 0.11.6 (2021-08-20)<a class="headerlink" href="#version-0-11-6-2021-08-20" title="Permalink to this headline">¶</a></h2>
+<h2>Version 0.11.6 (2021-08-20)<a class="headerlink" href="#version-0-11-6-2021-08-20" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Added: support for Python 3.9</p></li>
 <li><p>Fixed: speed up <code class="docutils literal notranslate"><span class="pre">audformat.utils.union()</span></code></p></li>
@@ -327,7 +336,7 @@ and containing <code class="docutils literal notranslate"><span class="pre">NaN<
 </ul>
 </div>
 <div class="section" id="version-0-11-5-2021-08-09">
-<h2>Version 0.11.5 (2021-08-09)<a class="headerlink" href="#version-0-11-5-2021-08-09" title="Permalink to this headline">¶</a></h2>
+<h2>Version 0.11.5 (2021-08-09)<a class="headerlink" href="#version-0-11-5-2021-08-09" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Removed: duration scheme and column
 from conventions
@@ -335,7 +344,7 @@ and emodb example</p></li>
 </ul>
 </div>
 <div class="section" id="version-0-11-4-2021-08-05">
-<h2>Version 0.11.4 (2021-08-05)<a class="headerlink" href="#version-0-11-4-2021-08-05" title="Permalink to this headline">¶</a></h2>
+<h2>Version 0.11.4 (2021-08-05)<a class="headerlink" href="#version-0-11-4-2021-08-05" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Added: custom <code class="docutils literal notranslate"><span class="pre">BadKeyError</span></code> when key is not found</p></li>
 <li><p>Changed: limit to <code class="docutils literal notranslate"><span class="pre">pandas</span> <span class="pre">&lt;1.3</span></code>
@@ -345,7 +354,7 @@ as a stable release is available and the API has not changed</p></li>
 </ul>
 </div>
 <div class="section" id="version-0-11-3-2021-06-10">
-<h2>Version 0.11.3 (2021-06-10)<a class="headerlink" href="#version-0-11-3-2021-06-10" title="Permalink to this headline">¶</a></h2>
+<h2>Version 0.11.3 (2021-06-10)<a class="headerlink" href="#version-0-11-3-2021-06-10" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Added: <code class="docutils literal notranslate"><span class="pre">audformat.utils.duration</span></code></p></li>
 <li><p>Fixed: description of <code class="docutils literal notranslate"><span class="pre">audformat.Database.is_portable</span></code>
@@ -353,13 +362,13 @@ in documentation</p></li>
 </ul>
 </div>
 <div class="section" id="version-0-11-2-2021-05-12">
-<h2>Version 0.11.2 (2021-05-12)<a class="headerlink" href="#version-0-11-2-2021-05-12" title="Permalink to this headline">¶</a></h2>
+<h2>Version 0.11.2 (2021-05-12)<a class="headerlink" href="#version-0-11-2-2021-05-12" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Added: <code class="docutils literal notranslate"><span class="pre">audformat.utils.join_schemes</span></code></p></li>
 </ul>
 </div>
 <div class="section" id="version-0-11-1-2021-05-11">
-<h2>Version 0.11.1 (2021-05-11)<a class="headerlink" href="#version-0-11-1-2021-05-11" title="Permalink to this headline">¶</a></h2>
+<h2>Version 0.11.1 (2021-05-11)<a class="headerlink" href="#version-0-11-1-2021-05-11" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Added: <code class="docutils literal notranslate"><span class="pre">Database.is_portable</span></code></p></li>
 <li><p>Added: <code class="docutils literal notranslate"><span class="pre">copy_media</span></code> argument to <code class="docutils literal notranslate"><span class="pre">Database.update()</span></code></p></li>
@@ -369,7 +378,7 @@ in documentation</p></li>
 </ul>
 </div>
 <div class="section" id="version-0-11-0-2021-05-06">
-<h2>Version 0.11.0 (2021-05-06)<a class="headerlink" href="#version-0-11-0-2021-05-06" title="Permalink to this headline">¶</a></h2>
+<h2>Version 0.11.0 (2021-05-06)<a class="headerlink" href="#version-0-11-0-2021-05-06" title="Permalink to this heading">¶</a></h2>
 <p>Note: tables stored from this version upwards cannot be loaded with older versions</p>
 <ul class="simple">
 <li><p>Added: <code class="docutils literal notranslate"><span class="pre">Database.root</span></code></p></li>
@@ -380,19 +389,19 @@ in documentation</p></li>
 </ul>
 </div>
 <div class="section" id="version-0-10-2-2021-04-22">
-<h2>Version 0.10.2 (2021-04-22)<a class="headerlink" href="#version-0-10-2-2021-04-22" title="Permalink to this headline">¶</a></h2>
+<h2>Version 0.10.2 (2021-04-22)<a class="headerlink" href="#version-0-10-2-2021-04-22" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Changed: <code class="docutils literal notranslate"><span class="pre">allow_nat</span></code> argument to <code class="docutils literal notranslate"><span class="pre">utils.to_segmented_index()</span></code></p></li>
 </ul>
 </div>
 <div class="section" id="version-0-10-1-2021-03-31">
-<h2>Version 0.10.1 (2021-03-31)<a class="headerlink" href="#version-0-10-1-2021-03-31" title="Permalink to this headline">¶</a></h2>
+<h2>Version 0.10.1 (2021-03-31)<a class="headerlink" href="#version-0-10-1-2021-03-31" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Fixed: <code class="docutils literal notranslate"><span class="pre">audformat.assert_index()</span></code> checks for correct dtypes</p></li>
 </ul>
 </div>
 <div class="section" id="version-0-10-0-2021-03-18">
-<h2>Version 0.10.0 (2021-03-18)<a class="headerlink" href="#version-0-10-0-2021-03-18" title="Permalink to this headline">¶</a></h2>
+<h2>Version 0.10.0 (2021-03-18)<a class="headerlink" href="#version-0-10-0-2021-03-18" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Added: <code class="docutils literal notranslate"><span class="pre">audformat.Database.update()</span></code></p></li>
 <li><p>Added: <code class="docutils literal notranslate"><span class="pre">audformat.Table.update()</span></code></p></li>
@@ -401,7 +410,7 @@ in documentation</p></li>
 </ul>
 </div>
 <div class="section" id="version-0-9-8-2021-02-23">
-<h2>Version 0.9.8 (2021-02-23)<a class="headerlink" href="#version-0-9-8-2021-02-23" title="Permalink to this headline">¶</a></h2>
+<h2>Version 0.9.8 (2021-02-23)<a class="headerlink" href="#version-0-9-8-2021-02-23" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Added: <code class="docutils literal notranslate"><span class="pre">audformat.Database.license</span></code></p></li>
 <li><p>Added: <code class="docutils literal notranslate"><span class="pre">audformat.Database.license_url</span></code></p></li>
@@ -416,7 +425,7 @@ for some index combinations</p></li>
 </ul>
 </div>
 <div class="section" id="version-0-9-7-2021-02-01">
-<h2>Version 0.9.7 (2021-02-01)<a class="headerlink" href="#version-0-9-7-2021-02-01" title="Permalink to this headline">¶</a></h2>
+<h2>Version 0.9.7 (2021-02-01)<a class="headerlink" href="#version-0-9-7-2021-02-01" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Added: <code class="docutils literal notranslate"><span class="pre">update_other_formats</span></code> argument to <code class="docutils literal notranslate"><span class="pre">audformat.Table.save()</span></code>
 to make sure existing files in other formats are updated as well</p></li>
@@ -425,34 +434,34 @@ to ensure dataframes are equal after storing and loading again</p></li>
 </ul>
 </div>
 <div class="section" id="version-0-9-6-2021-01-28">
-<h2>Version 0.9.6 (2021-01-28)<a class="headerlink" href="#version-0-9-6-2021-01-28" title="Permalink to this headline">¶</a></h2>
+<h2>Version 0.9.6 (2021-01-28)<a class="headerlink" href="#version-0-9-6-2021-01-28" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Fixed: implemented <code class="docutils literal notranslate"><span class="pre">audformat.Database.__eq__</span></code> and return <code class="docutils literal notranslate"><span class="pre">True</span></code>
 for identical databases</p></li>
 </ul>
 </div>
 <div class="section" id="version-0-9-5-2021-01-14">
-<h2>Version 0.9.5 (2021-01-14)<a class="headerlink" href="#version-0-9-5-2021-01-14" title="Permalink to this headline">¶</a></h2>
+<h2>Version 0.9.5 (2021-01-14)<a class="headerlink" href="#version-0-9-5-2021-01-14" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Changed: use nullable Pandas’ type <code class="docutils literal notranslate"><span class="pre">'boolean'</span></code> for <code class="docutils literal notranslate"><span class="pre">bool</span></code> schemes</p></li>
 <li><p>Fixed: <code class="docutils literal notranslate"><span class="pre">Scheme.draw()</span></code> generates boolean values if scheme is <code class="docutils literal notranslate"><span class="pre">bool</span></code></p></li>
 </ul>
 </div>
 <div class="section" id="version-0-9-4-2021-01-11">
-<h2>Version 0.9.4 (2021-01-11)<a class="headerlink" href="#version-0-9-4-2021-01-11" title="Permalink to this headline">¶</a></h2>
+<h2>Version 0.9.4 (2021-01-11)<a class="headerlink" href="#version-0-9-4-2021-01-11" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Changed: add arguments <code class="docutils literal notranslate"><span class="pre">num_workers</span></code> and <code class="docutils literal notranslate"><span class="pre">verbose</span></code> to
 <code class="docutils literal notranslate"><span class="pre">audformat.Database.load()</span></code></p></li>
 </ul>
 </div>
 <div class="section" id="version-0-9-3-2021-01-07">
-<h2>Version 0.9.3 (2021-01-07)<a class="headerlink" href="#version-0-9-3-2021-01-07" title="Permalink to this headline">¶</a></h2>
+<h2>Version 0.9.3 (2021-01-07)<a class="headerlink" href="#version-0-9-3-2021-01-07" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Fixed: avoid sphinx syntax in CHANGELOG</p></li>
 </ul>
 </div>
 <div class="section" id="version-0-9-2-2021-01-07">
-<h2>Version 0.9.2 (2021-01-07)<a class="headerlink" href="#version-0-9-2-2021-01-07" title="Permalink to this headline">¶</a></h2>
+<h2>Version 0.9.2 (2021-01-07)<a class="headerlink" href="#version-0-9-2-2021-01-07" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Changed: add arguments <code class="docutils literal notranslate"><span class="pre">num_workers</span></code> and <code class="docutils literal notranslate"><span class="pre">verbose</span></code> to
 <code class="docutils literal notranslate"><span class="pre">audformat.Database.drop_files()</span></code>,
@@ -466,7 +475,7 @@ returns correct index type for <code class="docutils literal notranslate"><span 
 </ul>
 </div>
 <div class="section" id="version-0-9-1-2020-12-21">
-<h2>Version 0.9.1 (2020-12-21)<a class="headerlink" href="#version-0-9-1-2020-12-21" title="Permalink to this headline">¶</a></h2>
+<h2>Version 0.9.1 (2020-12-21)<a class="headerlink" href="#version-0-9-1-2020-12-21" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Fixed: add column name to HTML Series output in docs</p></li>
 <li><p>Fixed: removed mentioning of
@@ -478,7 +487,7 @@ and <code class="docutils literal notranslate"><span class="pre">audformat.Colum
 </ul>
 </div>
 <div class="section" id="version-0-9-0-2020-12-18">
-<h2>Version 0.9.0 (2020-12-18)<a class="headerlink" href="#version-0-9-0-2020-12-18" title="Permalink to this headline">¶</a></h2>
+<h2>Version 0.9.0 (2020-12-18)<a class="headerlink" href="#version-0-9-0-2020-12-18" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Added: initial release public release</p></li>
 </ul>
@@ -506,7 +515,7 @@ and <code class="docutils literal notranslate"><span class="pre">audformat.Colum
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2022/05/02 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2022/06/01 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
@@ -541,6 +550,7 @@ and <code class="docutils literal notranslate"><span class="pre">audformat.Colum
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
         <script src="_static/clipboard.min.js"></script>
         <script src="_static/copybutton.js"></script>

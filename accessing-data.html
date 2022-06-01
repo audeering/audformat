@@ -76,7 +76,7 @@
             
             
               <div class="version">
-                v0.14.2
+                v0.14.3
               </div>
             
           
@@ -173,13 +173,13 @@
            <div itemprop="articleBody">
             
   <div class="section" id="working-with-a-database">
-<h1>Working with a database<a class="headerlink" href="#working-with-a-database" title="Permalink to this headline">¶</a></h1>
+<h1>Working with a database<a class="headerlink" href="#working-with-a-database" title="Permalink to this heading">¶</a></h1>
 <div class="jupyter_cell docutils container">
 <div class="cell_output docutils container">
 </div>
 </div>
 <div class="section" id="accessing-data">
-<h2>Accessing data<a class="headerlink" href="#accessing-data" title="Permalink to this headline">¶</a></h2>
+<h2>Accessing data<a class="headerlink" href="#accessing-data" title="Permalink to this heading">¶</a></h2>
 <p>Annotation labels can be accessed
 by the <a class="reference internal" href="api.html#audformat.Table.get" title="audformat.Table.get"><code class="xref py py-meth docutils literal notranslate"><span class="pre">audformat.Table.get()</span></code></a> method:</p>
 <div class="jupyter_cell jupyter_container docutils container">
@@ -235,12 +235,12 @@ by the <a class="reference internal" href="api.html#audformat.Table.get" title="
   <tbody>
     <tr>
       <th>audio/001.wav</th>
-      <td>&lt;NA&gt;</td>
-      <td>NaT</td>
+      <td>False</td>
+      <td>1970-01-01 00:00:00.940</td>
     </tr>
     <tr>
       <th>audio/002.wav</th>
-      <td>&lt;NA&gt;</td>
+      <td>True</td>
       <td>NaT</td>
     </tr>
   </tbody>
@@ -267,21 +267,7 @@ by the <a class="reference internal" href="api.html#audformat.Table.get" title="
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_html"><div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
+<div class="output text_html"><table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
       <th></th>
@@ -295,22 +281,21 @@ by the <a class="reference internal" href="api.html#audformat.Table.get" title="
   <tbody>
     <tr>
       <th>audio/001.wav</th>
-      <td>oX2GFOEY7F</td>
+      <td>o07TscFKyt</td>
     </tr>
     <tr>
       <th>audio/002.wav</th>
-      <td>ULUXcyfiQN</td>
+      <td>lJcrlYXaQV</td>
     </tr>
   </tbody>
-</table>
-</div></div></div>
+</table></div></div>
 </div>
 <p>For more information on how to access or add data
 have a look at the code examples in the
 <a class="reference internal" href="data-tables.html#tables"><span class="std std-ref">table specification</span></a>.</p>
 </div>
 <div class="section" id="changing-referenced-files">
-<h2>Changing referenced files<a class="headerlink" href="#changing-referenced-files" title="Permalink to this headline">¶</a></h2>
+<h2>Changing referenced files<a class="headerlink" href="#changing-referenced-files" title="Permalink to this heading">¶</a></h2>
 <p>To convert to absolute file paths in all tables, do:</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
@@ -350,7 +335,7 @@ have a look at the code examples in the
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2022/05/02 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2022/06/01 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
@@ -385,6 +370,7 @@ have a look at the code examples in the
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
         <script src="_static/clipboard.min.js"></script>
         <script src="_static/copybutton.js"></script>

@@ -74,7 +74,7 @@
             
             
               <div class="version">
-                v0.14.2
+                v0.14.3
               </div>
             
           
@@ -173,6 +173,7 @@
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">typing</span> <span class="k">as</span> <span class="nn">typing</span>
 
+<span class="kn">import</span> <span class="nn">iso3166</span>
 <span class="kn">import</span> <span class="nn">iso639</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
@@ -821,6 +822,37 @@
         <span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="n">scheme_id</span><span class="p">]</span><span class="o">.</span><span class="n">replace_labels</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span></div>
 
 
+<div class="viewcode-block" id="map_country"><a class="viewcode-back" href="../../../api-utils.html#audformat.utils.map_country">[docs]</a><span class="k">def</span> <span class="nf">map_country</span><span class="p">(</span><span class="n">country</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Map country to ISO 3166-1.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        country: country string</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        mapped string</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        ValueError: if country is not supported</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; map_country(&#39;gb&#39;)</span>
+<span class="sd">        &#39;GBR&#39;</span>
+<span class="sd">        &gt;&gt;&gt; map_country(&#39;gbr&#39;)</span>
+<span class="sd">        &#39;GBR&#39;</span>
+<span class="sd">        &gt;&gt;&gt; map_country(&#39;United Kingdom of Great Britain and Northern Ireland&#39;)</span>
+<span class="sd">        &#39;GBR&#39;</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">iso3166</span><span class="o">.</span><span class="n">countries</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">country</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">country</span><span class="si">}</span><span class="s2">&#39; is not supported by ISO 3166-1.&quot;</span>
+        <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">result</span><span class="o">.</span><span class="n">alpha3</span></div>
+
+
 <div class="viewcode-block" id="map_file_path"><a class="viewcode-back" href="../../../api-utils.html#audformat.utils.map_file_path">[docs]</a><span class="k">def</span> <span class="nf">map_file_path</span><span class="p">(</span>
         <span class="n">index</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">,</span>
         <span class="n">func</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Callable</span><span class="p">[[</span><span class="nb">str</span><span class="p">],</span> <span class="nb">str</span><span class="p">],</span>
@@ -1367,7 +1399,7 @@
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2022/05/02 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2022/06/01 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
@@ -1402,6 +1434,7 @@
         <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../../_static/doctools.js"></script>
         <script src="../../../_static/clipboard.min.js"></script>
         <script src="../../../_static/copybutton.js"></script>

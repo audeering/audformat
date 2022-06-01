@@ -76,7 +76,7 @@
             
             
               <div class="version">
-                v0.14.2
+                v0.14.3
               </div>
             
           
@@ -206,7 +206,7 @@
            <div itemprop="articleBody">
             
   <div class="section" id="header">
-<h1>Header<a class="headerlink" href="#header" title="Permalink to this headline">¶</a></h1>
+<h1>Header<a class="headerlink" href="#header" title="Permalink to this heading">¶</a></h1>
 <p>The header of a database is organized in different parts:</p>
 <ul class="simple">
 <li><p>Core information about the database</p></li>
@@ -223,7 +223,7 @@ Optionally, every object can have an arbitrary number of <code class="docutils l
 These can be used to store additional information about the database.
 Fields set to <code class="docutils literal notranslate"><span class="pre">None</span></code> can be omitted.</p>
 <div class="section" id="database">
-<h2>Database<a class="headerlink" href="#database" title="Permalink to this headline">¶</a></h2>
+<h2>Database<a class="headerlink" href="#database" title="Permalink to this heading">¶</a></h2>
 <p>This part of the header is represented by <a class="reference internal" href="api.html#audformat.Database" title="audformat.Database"><code class="xref py py-class docutils literal notranslate"><span class="pre">audformat.Database</span></code></a>.</p>
 <table class="docutils align-default">
 <colgroup>
@@ -299,7 +299,7 @@ see <a class="reference internal" href="api-define.html#audformat.define.Usage" 
 </tbody>
 </table>
 <div class="section" id="minimal-example">
-<h3>Minimal example<a class="headerlink" href="#minimal-example" title="Permalink to this headline">¶</a></h3>
+<h3>Minimal example<a class="headerlink" href="#minimal-example" title="Permalink to this heading">¶</a></h3>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">databasename</span><span class="w"></span>
 <span class="nt">source</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">URL</span><span class="w"></span>
 <span class="nt">usage</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">commercial</span><span class="w"></span>
@@ -307,7 +307,7 @@ see <a class="reference internal" href="api-define.html#audformat.define.Usage" 
 </div>
 </div>
 <div class="section" id="audformat-implementation">
-<h3>audformat implementation<a class="headerlink" href="#audformat-implementation" title="Permalink to this headline">¶</a></h3>
+<h3>audformat implementation<a class="headerlink" href="#audformat-implementation" title="Permalink to this heading">¶</a></h3>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">audformat</span>
@@ -335,7 +335,7 @@ languages: []
 </div>
 </div>
 <div class="section" id="rater">
-<h2>Rater<a class="headerlink" href="#rater" title="Permalink to this headline">¶</a></h2>
+<h2>Rater<a class="headerlink" href="#rater" title="Permalink to this heading">¶</a></h2>
 <p>This part of the header is represented by <a class="reference internal" href="api.html#audformat.Rater" title="audformat.Rater"><code class="xref py py-class docutils literal notranslate"><span class="pre">audformat.Rater</span></code></a>.</p>
 <table class="docutils align-default">
 <colgroup>
@@ -377,7 +377,7 @@ languages: []
 </tbody>
 </table>
 <div class="section" id="id1">
-<h3>Minimal example<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<h3>Minimal example<a class="headerlink" href="#id1" title="Permalink to this heading">¶</a></h3>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">raters</span><span class="p">:</span><span class="w"></span>
 <span class="w">    </span><span class="nt">raterid</span><span class="p">:</span><span class="w"></span>
 <span class="w">        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">human</span><span class="w"></span>
@@ -385,7 +385,7 @@ languages: []
 </div>
 </div>
 <div class="section" id="id2">
-<h3>audformat implementation<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<h3>audformat implementation<a class="headerlink" href="#id2" title="Permalink to this heading">¶</a></h3>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create minimal Rater</span>
@@ -409,7 +409,7 @@ languages: []
 </div>
 </div>
 <div class="section" id="scheme">
-<h2>Scheme<a class="headerlink" href="#scheme" title="Permalink to this headline">¶</a></h2>
+<h2>Scheme<a class="headerlink" href="#scheme" title="Permalink to this heading">¶</a></h2>
 <p>This part of the header is represented by <a class="reference internal" href="api.html#audformat.Scheme" title="audformat.Scheme"><code class="xref py py-class docutils literal notranslate"><span class="pre">audformat.Scheme</span></code></a>.</p>
 <table class="docutils align-default">
 <colgroup>
@@ -466,7 +466,7 @@ numeric)</p></td>
 </tbody>
 </table>
 <div class="section" id="id3">
-<h3>Minimal example<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+<h3>Minimal example<a class="headerlink" href="#id3" title="Permalink to this heading">¶</a></h3>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">schemes</span><span class="p">:</span><span class="w"></span>
 <span class="w">    </span><span class="nt">schemeid</span><span class="p">:</span><span class="w"></span>
 <span class="w">        </span><span class="nt">dtype</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">human</span><span class="w"></span>
@@ -474,7 +474,7 @@ numeric)</p></td>
 </div>
 </div>
 <div class="section" id="id4">
-<h3>audformat implementation<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
+<h3>audformat implementation<a class="headerlink" href="#id4" title="Permalink to this heading">¶</a></h3>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create minimal Scheme</span>
@@ -498,7 +498,7 @@ numeric)</p></td>
 </div>
 </div>
 <div class="section" id="split">
-<h2>Split<a class="headerlink" href="#split" title="Permalink to this headline">¶</a></h2>
+<h2>Split<a class="headerlink" href="#split" title="Permalink to this heading">¶</a></h2>
 <p>This part of the header is represented by <a class="reference internal" href="api.html#audformat.Split" title="audformat.Split"><code class="xref py py-class docutils literal notranslate"><span class="pre">audformat.Split</span></code></a>.</p>
 <table class="docutils align-default">
 <colgroup>
@@ -541,7 +541,7 @@ typically one of <a class="reference internal" href="api-define.html#audformat.d
 </tbody>
 </table>
 <div class="section" id="id5">
-<h3>Minimal example<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h3>
+<h3>Minimal example<a class="headerlink" href="#id5" title="Permalink to this heading">¶</a></h3>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">splits</span><span class="p">:</span><span class="w"></span>
 <span class="w">    </span><span class="nt">splitid</span><span class="p">:</span><span class="w"></span>
 <span class="w">        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">test</span><span class="w"></span>
@@ -549,7 +549,7 @@ typically one of <a class="reference internal" href="api-define.html#audformat.d
 </div>
 </div>
 <div class="section" id="id6">
-<h3>audformat implementation<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h3>
+<h3>audformat implementation<a class="headerlink" href="#id6" title="Permalink to this heading">¶</a></h3>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create minimal Split</span>
@@ -573,7 +573,7 @@ typically one of <a class="reference internal" href="api-define.html#audformat.d
 </div>
 </div>
 <div class="section" id="media">
-<h2>Media<a class="headerlink" href="#media" title="Permalink to this headline">¶</a></h2>
+<h2>Media<a class="headerlink" href="#media" title="Permalink to this heading">¶</a></h2>
 <p>This part of the header is represented by <a class="reference internal" href="api.html#audformat.Media" title="audformat.Media"><code class="xref py py-class docutils literal notranslate"><span class="pre">audformat.Media</span></code></a>.</p>
 <p>To store media information use:</p>
 <table class="docutils align-default">
@@ -648,7 +648,7 @@ typically one of <a class="reference internal" href="api-define.html#audformat.d
 </tbody>
 </table>
 <div class="section" id="id7">
-<h3>Minimal example<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h3>
+<h3>Minimal example<a class="headerlink" href="#id7" title="Permalink to this heading">¶</a></h3>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">media</span><span class="p">:</span><span class="w"></span>
 <span class="w">    </span><span class="nt">mediaid</span><span class="p">:</span><span class="w"></span>
 <span class="w">        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">audio</span><span class="w"></span>
@@ -656,7 +656,7 @@ typically one of <a class="reference internal" href="api-define.html#audformat.d
 </div>
 </div>
 <div class="section" id="id8">
-<h3>audformat implementation<a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h3>
+<h3>audformat implementation<a class="headerlink" href="#id8" title="Permalink to this heading">¶</a></h3>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create minimal media information</span>
@@ -680,7 +680,7 @@ typically one of <a class="reference internal" href="api-define.html#audformat.d
 </div>
 </div>
 <div class="section" id="table">
-<h2>Table<a class="headerlink" href="#table" title="Permalink to this headline">¶</a></h2>
+<h2>Table<a class="headerlink" href="#table" title="Permalink to this heading">¶</a></h2>
 <p>This part of the header is represented by <a class="reference internal" href="api.html#audformat.Table" title="audformat.Table"><code class="xref py py-class docutils literal notranslate"><span class="pre">audformat.Table</span></code></a></p>
 <table class="docutils align-default">
 <colgroup>
@@ -734,7 +734,7 @@ typically one of <a class="reference internal" href="api-define.html#audformat.d
 </tbody>
 </table>
 <div class="section" id="id9">
-<h3>Minimal example<a class="headerlink" href="#id9" title="Permalink to this headline">¶</a></h3>
+<h3>Minimal example<a class="headerlink" href="#id9" title="Permalink to this heading">¶</a></h3>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">tables</span><span class="p">:</span><span class="w"></span>
 <span class="w">    </span><span class="nt">tableid</span><span class="p">:</span><span class="w"></span>
 <span class="w">        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">filewise</span><span class="w"></span>
@@ -742,7 +742,7 @@ typically one of <a class="reference internal" href="api-define.html#audformat.d
 </div>
 </div>
 <div class="section" id="id10">
-<h3>audformat implementation<a class="headerlink" href="#id10" title="Permalink to this headline">¶</a></h3>
+<h3>audformat implementation<a class="headerlink" href="#id10" title="Permalink to this heading">¶</a></h3>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create minimal Table</span>
@@ -770,7 +770,7 @@ typically one of <a class="reference internal" href="api-define.html#audformat.d
 </div>
 </div>
 <div class="section" id="column">
-<h2>Column<a class="headerlink" href="#column" title="Permalink to this headline">¶</a></h2>
+<h2>Column<a class="headerlink" href="#column" title="Permalink to this heading">¶</a></h2>
 <p>This part of the header is represented by <a class="reference internal" href="api.html#audformat.Column" title="audformat.Column"><code class="xref py py-class docutils literal notranslate"><span class="pre">audformat.Column</span></code></a></p>
 <table class="docutils align-default">
 <colgroup>
@@ -816,7 +816,7 @@ typically one of <a class="reference internal" href="api-define.html#audformat.d
 </tbody>
 </table>
 <div class="section" id="id11">
-<h3>Minimal example<a class="headerlink" href="#id11" title="Permalink to this headline">¶</a></h3>
+<h3>Minimal example<a class="headerlink" href="#id11" title="Permalink to this heading">¶</a></h3>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">tables</span><span class="p">:</span><span class="w"></span>
 <span class="w">    </span><span class="nt">tableid</span><span class="p">:</span><span class="w"></span>
 <span class="w">        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">filewise</span><span class="w"></span>
@@ -826,7 +826,7 @@ typically one of <a class="reference internal" href="api-define.html#audformat.d
 </div>
 </div>
 <div class="section" id="id12">
-<h3>audformat implementation<a class="headerlink" href="#id12" title="Permalink to this headline">¶</a></h3>
+<h3>audformat implementation<a class="headerlink" href="#id12" title="Permalink to this heading">¶</a></h3>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create minimal Column</span>
@@ -874,7 +874,7 @@ typically one of <a class="reference internal" href="api-define.html#audformat.d
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2022/05/02 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2022/06/01 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
@@ -909,6 +909,7 @@ typically one of <a class="reference internal" href="api-define.html#audformat.d
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
         <script src="_static/clipboard.min.js"></script>
         <script src="_static/copybutton.js"></script>

@@ -76,7 +76,7 @@
             
             
               <div class="version">
-                v0.14.2
+                v0.14.3
               </div>
             
           
@@ -177,14 +177,14 @@
            <div itemprop="articleBody">
             
   <div class="section" id="emodb-example">
-<h1>Emodb example<a class="headerlink" href="#emodb-example" title="Permalink to this headline">¶</a></h1>
+<h1>Emodb example<a class="headerlink" href="#emodb-example" title="Permalink to this heading">¶</a></h1>
 <p>In this example we download the small <a class="reference external" href="http://emodb.bilderbar.info">emodb</a> database,
 that contains sentences
 spoken with different emotions
 by different actors.
 The audio is stored as WAV files.</p>
 <div class="section" id="get-source-database">
-<h2>Get source database<a class="headerlink" href="#get-source-database" title="Permalink to this headline">¶</a></h2>
+<h2>Get source database<a class="headerlink" href="#get-source-database" title="Permalink to this heading">¶</a></h2>
 <p>First we download the source <a class="reference external" href="http://emodb.bilderbar.info">emodb</a> database
 to the folder <code class="file docutils literal notranslate"><span class="pre">emodb-src</span></code>.</p>
 <div class="jupyter_cell jupyter_container docutils container">
@@ -207,14 +207,14 @@ to the folder <code class="file docutils literal notranslate"><span class="pre">
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>[&#39;lablaut&#39;, &#39;erkennung.txt&#39;, &#39;wav&#39;, &#39;labsilb&#39;, &#39;erklaerung.txt&#39;, &#39;silb&#39;]
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>[&#39;labsilb&#39;, &#39;erkennung.txt&#39;, &#39;wav&#39;, &#39;lablaut&#39;, &#39;erklaerung.txt&#39;, &#39;silb&#39;]
 </pre></div>
 </div>
 </div>
 </div>
 </div>
 <div class="section" id="gather-metadata-and-annotations">
-<h2>Gather metadata and annotations<a class="headerlink" href="#gather-metadata-and-annotations" title="Permalink to this headline">¶</a></h2>
+<h2>Gather metadata and annotations<a class="headerlink" href="#gather-metadata-and-annotations" title="Permalink to this heading">¶</a></h2>
 <p>Afterwards we collect all metadata
 and annotations
 that we would like to store in the audformat version
@@ -227,7 +227,7 @@ of the database.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>[&#39;11a02Tc.wav&#39;, &#39;11b10Ae.wav&#39;, &#39;16b09Ab.wav&#39;]
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>[&#39;09b02Na.wav&#39;, &#39;16b10Td.wav&#39;, &#39;03a02Fc.wav&#39;]
 </pre></div>
 </div>
 </div>
@@ -507,7 +507,7 @@ to the emotion table.</p>
 </div>
 </div>
 <div class="section" id="create-audformat-database">
-<h2>Create audformat database<a class="headerlink" href="#create-audformat-database" title="Permalink to this headline">¶</a></h2>
+<h2>Create audformat database<a class="headerlink" href="#create-audformat-database" title="Permalink to this heading">¶</a></h2>
 <p>Now we create the database object
 and assign the information to it.</p>
 <div class="jupyter_cell jupyter_container docutils container">
@@ -590,7 +590,7 @@ and assign the information to it.</p>
 </div>
 </div>
 <div class="section" id="inspect-database-header">
-<h2>Inspect database header<a class="headerlink" href="#inspect-database-header" title="Permalink to this headline">¶</a></h2>
+<h2>Inspect database header<a class="headerlink" href="#inspect-database-header" title="Permalink to this heading">¶</a></h2>
 <p>Before storing the database,
 we can inspect its header.</p>
 <div class="jupyter_cell jupyter_container docutils container">
@@ -665,7 +665,7 @@ pdf: http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.130.8506&amp;rep=r
 </div>
 </div>
 <div class="section" id="inspect-database-tables">
-<h2>Inspect database tables<a class="headerlink" href="#inspect-database-tables" title="Permalink to this headline">¶</a></h2>
+<h2>Inspect database tables<a class="headerlink" href="#inspect-database-tables" title="Permalink to this heading">¶</a></h2>
 <p>First check which tables are available.</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
@@ -977,7 +977,7 @@ for an extended documentation.</p>
 </div>
 </div>
 <div class="section" id="store-database-to-disk">
-<h2>Store database to disk<a class="headerlink" href="#store-database-to-disk" title="Permalink to this headline">¶</a></h2>
+<h2>Store database to disk<a class="headerlink" href="#store-database-to-disk" title="Permalink to this heading">¶</a></h2>
 <p>Now we store the database in the folder <code class="docutils literal notranslate"><span class="pre">emodb</span></code>.
 Note, that we have to make sure
 that the media files are located at the correct position ourselves.</p>
@@ -998,7 +998,7 @@ that the media files are located at the correct position ourselves.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>[&#39;wav&#39;, &#39;db.emotion.csv&#39;, &#39;db.files.csv&#39;, &#39;db.yaml&#39;]
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>[&#39;wav&#39;, &#39;db.files.csv&#39;, &#39;db.emotion.csv&#39;, &#39;db.yaml&#39;]
 </pre></div>
 </div>
 </div>
@@ -1047,7 +1047,7 @@ that the media files are located at the correct position ourselves.</p>
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2022/05/02 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2022/06/01 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
@@ -1082,6 +1082,7 @@ that the media files are located at the correct position ourselves.</p>
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
         <script src="_static/clipboard.min.js"></script>
         <script src="_static/copybutton.js"></script>

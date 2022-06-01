@@ -76,7 +76,7 @@
             
             
               <div class="version">
-                v0.14.2
+                v0.14.3
               </div>
             
           
@@ -169,7 +169,7 @@
            <div itemprop="articleBody">
             
   <div class="section" id="map-scheme-labels">
-<span id="id1"></span><h1>Map scheme labels<a class="headerlink" href="#map-scheme-labels" title="Permalink to this headline">¶</a></h1>
+<span id="id1"></span><h1>Map scheme labels<a class="headerlink" href="#map-scheme-labels" title="Permalink to this heading">¶</a></h1>
 <div class="jupyter_cell docutils container">
 <div class="cell_output docutils container">
 </div>
@@ -227,21 +227,7 @@ we get a <code class="xref py py-class docutils literal notranslate"><span class
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_html"><div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
+<div class="output text_html"><table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
       <th></th>
@@ -255,7 +241,7 @@ we get a <code class="xref py py-class docutils literal notranslate"><span class
   <tbody>
     <tr>
       <th>audio/001.wav</th>
-      <td>1</td>
+      <td>0</td>
     </tr>
     <tr>
       <th>audio/002.wav</th>
@@ -263,19 +249,18 @@ we get a <code class="xref py py-class docutils literal notranslate"><span class
     </tr>
     <tr>
       <th>audio/003.wav</th>
-      <td>0</td>
-    </tr>
-    <tr>
-      <th>audio/004.wav</th>
       <td>1</td>
     </tr>
     <tr>
-      <th>audio/005.wav</th>
+      <th>audio/004.wav</th>
       <td>0</td>
     </tr>
+    <tr>
+      <th>audio/005.wav</th>
+      <td>1</td>
+    </tr>
   </tbody>
-</table>
-</div></div></div>
+</table></div></div>
 </div>
 <p>But if we are interested in the actual transcribed words,
 we can use the <code class="docutils literal notranslate"><span class="pre">map</span></code> argument to request them.</p>
@@ -286,21 +271,7 @@ we can use the <code class="docutils literal notranslate"><span class="pre">map<
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_html"><div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
+<div class="output text_html"><table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
       <th></th>
@@ -314,7 +285,7 @@ we can use the <code class="docutils literal notranslate"><span class="pre">map<
   <tbody>
     <tr>
       <th>audio/001.wav</th>
-      <td>goodbye</td>
+      <td>hello</td>
     </tr>
     <tr>
       <th>audio/002.wav</th>
@@ -322,19 +293,18 @@ we can use the <code class="docutils literal notranslate"><span class="pre">map<
     </tr>
     <tr>
       <th>audio/003.wav</th>
-      <td>hello</td>
-    </tr>
-    <tr>
-      <th>audio/004.wav</th>
       <td>goodbye</td>
     </tr>
     <tr>
-      <th>audio/005.wav</th>
+      <th>audio/004.wav</th>
       <td>hello</td>
     </tr>
+    <tr>
+      <th>audio/005.wav</th>
+      <td>goodbye</td>
+    </tr>
   </tbody>
-</table>
-</div></div></div>
+</table></div></div>
 </div>
 <p>Note that we can pass any string to <code class="docutils literal notranslate"><span class="pre">map</span></code>.
 It will be used as the name of
@@ -346,21 +316,7 @@ the returned <code class="xref py py-class docutils literal notranslate"><span c
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_html"><div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
+<div class="output text_html"><table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
       <th></th>
@@ -374,7 +330,7 @@ the returned <code class="xref py py-class docutils literal notranslate"><span c
   <tbody>
     <tr>
       <th>audio/001.wav</th>
-      <td>goodbye</td>
+      <td>hello</td>
     </tr>
     <tr>
       <th>audio/002.wav</th>
@@ -382,19 +338,18 @@ the returned <code class="xref py py-class docutils literal notranslate"><span c
     </tr>
     <tr>
       <th>audio/003.wav</th>
-      <td>hello</td>
-    </tr>
-    <tr>
-      <th>audio/004.wav</th>
       <td>goodbye</td>
     </tr>
     <tr>
-      <th>audio/005.wav</th>
+      <th>audio/004.wav</th>
       <td>hello</td>
     </tr>
+    <tr>
+      <th>audio/005.wav</th>
+      <td>goodbye</td>
+    </tr>
   </tbody>
-</table>
-</div></div></div>
+</table></div></div>
 </div>
 <p>Likewise, if we request the speaker column,
 a list of names is returned:</p>
@@ -405,21 +360,7 @@ a list of names is returned:</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_html"><div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
+<div class="output text_html"><table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
       <th></th>
@@ -433,27 +374,26 @@ a list of names is returned:</p>
   <tbody>
     <tr>
       <th>audio/001.wav</th>
-      <td>spk3</td>
-    </tr>
-    <tr>
-      <th>audio/002.wav</th>
-      <td>spk1</td>
-    </tr>
-    <tr>
-      <th>audio/003.wav</th>
       <td>spk2</td>
     </tr>
     <tr>
+      <th>audio/002.wav</th>
+      <td>spk2</td>
+    </tr>
+    <tr>
+      <th>audio/003.wav</th>
+      <td>spk3</td>
+    </tr>
+    <tr>
       <th>audio/004.wav</th>
-      <td>spk1</td>
+      <td>spk2</td>
     </tr>
     <tr>
       <th>audio/005.wav</th>
-      <td>spk1</td>
+      <td>spk2</td>
     </tr>
   </tbody>
-</table>
-</div></div></div>
+</table></div></div>
 </div>
 <p>If we are interested in the the age of the speakers, we can do:</p>
 <div class="jupyter_cell jupyter_container docutils container">
@@ -463,21 +403,7 @@ a list of names is returned:</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_html"><div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
+<div class="output text_html"><table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
       <th></th>
@@ -491,27 +417,26 @@ a list of names is returned:</p>
   <tbody>
     <tr>
       <th>audio/001.wav</th>
-      <td>37</td>
-    </tr>
-    <tr>
-      <th>audio/002.wav</th>
-      <td>33</td>
-    </tr>
-    <tr>
-      <th>audio/003.wav</th>
       <td>30</td>
     </tr>
     <tr>
+      <th>audio/002.wav</th>
+      <td>30</td>
+    </tr>
+    <tr>
+      <th>audio/003.wav</th>
+      <td>37</td>
+    </tr>
+    <tr>
       <th>audio/004.wav</th>
-      <td>33</td>
+      <td>30</td>
     </tr>
     <tr>
       <th>audio/005.wav</th>
-      <td>33</td>
+      <td>30</td>
     </tr>
   </tbody>
-</table>
-</div></div></div>
+</table></div></div>
 </div>
 <p>This also works for tables.
 Here we pass a dictionary with column names
@@ -556,28 +481,28 @@ as keys and scheme fields as values.</p>
   <tbody>
     <tr>
       <th>audio/001.wav</th>
-      <td>1</td>
-      <td>37</td>
-    </tr>
-    <tr>
-      <th>audio/002.wav</th>
-      <td>1</td>
-      <td>33</td>
-    </tr>
-    <tr>
-      <th>audio/003.wav</th>
       <td>0</td>
       <td>30</td>
     </tr>
     <tr>
-      <th>audio/004.wav</th>
+      <th>audio/002.wav</th>
       <td>1</td>
-      <td>33</td>
+      <td>30</td>
+    </tr>
+    <tr>
+      <th>audio/003.wav</th>
+      <td>1</td>
+      <td>37</td>
+    </tr>
+    <tr>
+      <th>audio/004.wav</th>
+      <td>0</td>
+      <td>30</td>
     </tr>
     <tr>
       <th>audio/005.wav</th>
-      <td>0</td>
-      <td>33</td>
+      <td>1</td>
+      <td>30</td>
     </tr>
   </tbody>
 </table>
@@ -628,33 +553,33 @@ and to map the same column to multiple fields.</p>
   <tbody>
     <tr>
       <th>audio/001.wav</th>
-      <td>goodbye</td>
-      <td>37</td>
-      <td>male</td>
-    </tr>
-    <tr>
-      <th>audio/002.wav</th>
-      <td>goodbye</td>
-      <td>33</td>
-      <td>male</td>
-    </tr>
-    <tr>
-      <th>audio/003.wav</th>
       <td>hello</td>
       <td>30</td>
       <td>female</td>
     </tr>
     <tr>
-      <th>audio/004.wav</th>
+      <th>audio/002.wav</th>
       <td>goodbye</td>
-      <td>33</td>
+      <td>30</td>
+      <td>female</td>
+    </tr>
+    <tr>
+      <th>audio/003.wav</th>
+      <td>goodbye</td>
+      <td>37</td>
       <td>male</td>
     </tr>
     <tr>
-      <th>audio/005.wav</th>
+      <th>audio/004.wav</th>
       <td>hello</td>
-      <td>33</td>
-      <td>male</td>
+      <td>30</td>
+      <td>female</td>
+    </tr>
+    <tr>
+      <th>audio/005.wav</th>
+      <td>goodbye</td>
+      <td>30</td>
+      <td>female</td>
     </tr>
   </tbody>
 </table>
@@ -709,22 +634,6 @@ we can include the column name in the list.</p>
   <tbody>
     <tr>
       <th>audio/001.wav</th>
-      <td>1</td>
-      <td>spk3</td>
-      <td>goodbye</td>
-      <td>37</td>
-      <td>male</td>
-    </tr>
-    <tr>
-      <th>audio/002.wav</th>
-      <td>1</td>
-      <td>spk1</td>
-      <td>goodbye</td>
-      <td>33</td>
-      <td>male</td>
-    </tr>
-    <tr>
-      <th>audio/003.wav</th>
       <td>0</td>
       <td>spk2</td>
       <td>hello</td>
@@ -732,20 +641,36 @@ we can include the column name in the list.</p>
       <td>female</td>
     </tr>
     <tr>
-      <th>audio/004.wav</th>
+      <th>audio/002.wav</th>
       <td>1</td>
-      <td>spk1</td>
+      <td>spk2</td>
       <td>goodbye</td>
-      <td>33</td>
+      <td>30</td>
+      <td>female</td>
+    </tr>
+    <tr>
+      <th>audio/003.wav</th>
+      <td>1</td>
+      <td>spk3</td>
+      <td>goodbye</td>
+      <td>37</td>
       <td>male</td>
     </tr>
     <tr>
-      <th>audio/005.wav</th>
+      <th>audio/004.wav</th>
       <td>0</td>
-      <td>spk1</td>
+      <td>spk2</td>
       <td>hello</td>
-      <td>33</td>
-      <td>male</td>
+      <td>30</td>
+      <td>female</td>
+    </tr>
+    <tr>
+      <th>audio/005.wav</th>
+      <td>1</td>
+      <td>spk2</td>
+      <td>goodbye</td>
+      <td>30</td>
+      <td>female</td>
     </tr>
   </tbody>
 </table>
@@ -776,7 +701,7 @@ we can include the column name in the list.</p>
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2022/05/02 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2022/06/01 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
@@ -811,6 +736,7 @@ we can include the column name in the list.</p>
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
         <script src="_static/clipboard.min.js"></script>
         <script src="_static/copybutton.js"></script>
