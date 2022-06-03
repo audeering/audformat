@@ -75,7 +75,7 @@ Access labels as :class:`pandas.Series`
 
 .. jupyter-execute::
 
-    db['misc']['values'].get()
+    # db['misc']['values'].get()
 
 Access labels from a misc table with an index:
 
