@@ -1,4 +1,4 @@
-Miac Tables
+Misc Tables
 ===========
 
 .. Enforce HTML output for pd.Series
