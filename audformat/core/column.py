@@ -160,7 +160,9 @@ class Column(HeaderBase):
                 will be converted to a segmented index.
                 ``start`` will be set to ``0`` and
                 ``end`` to ``NaT`` or to the file duration
-                if ``allow_nat`` is set to ``False``
+                if ``allow_nat`` is set to ``False``.
+                If column belongs to a miscellaneous table,
+                this and the following arguments have no effect
             allow_nat: if set to ``False``,
                 ``end=NaT`` is replaced with file duration
             root: root directory under which the files are stored.
