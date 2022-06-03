@@ -24,6 +24,7 @@
     data-conventions
     data-header
     data-tables
+    data-misc-tables
     data-example
 
 .. Warning: then usage of genindex is a hack to get a TOC entry, see

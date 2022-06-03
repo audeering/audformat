@@ -1,15 +1,20 @@
 Database
 ========
 
-audformat is implemented in the :class:`audformat.Database`.
-Written to hard disk it is converted to a YAML file (*Header*),
-which contains information about the raters,
-annotation schemes and meta information.
-Actual annotations are stored
-across (possibly) multiple CSV files (*Tables* or *Miscellaneous Tables*).
+An audformat database consists of a **header**,
+several **tables**,
+and **media** files.
+On hard disc all of them are stored inside a single folder.
+The header is stored as a YAML file,
+the tables contain labels stored in (possibly) multiple CSV files,
+and the media files are usually stored in sub-folders.
 Each table column is linked to a scheme and/or to a rater.
 Each table row is linked to a media file,
 or a specific segment in a media file.
+If no links to media files are given,
+the table is called miscellaneous table,
+or short **misc table**.
+The database is implemented as :class:`audformat.Database`.
 
 .. table:: Parts of a database stored in audformat on the hard disk.
 
@@ -19,33 +24,32 @@ or a specific segment in a media file.
     ``db.yaml``                 Meta information, schemes, list of raters
     ``db.<table_id>.csv``       Table with files or file segments as index
                                 and columns holding annotations
-    ``db.<misc_table_id>.csv``  Miscellaneous table with unspecified index
+    ``db.<misc_table_id>.csv``  Misc table with unspecified index
                                 and columns holding annotations
     ``<folder(s)/file(s)>``     Audio/Video files referenced in the tables
     ==========================  ==========================================
 
-The connection between the header and the tables
+The connection between the header, media file a table
 is highlighted in the following sketch:
 
-.. graphviz:: pics/audformat.dot
-    :alt: audformat
+.. graphviz:: pics/audformat-table.dot
+    :alt: audformat table
     :align: center
     :caption: Connection between header definitions and table entries.
 
-The connection between the header and the miscellaneous tables
+The connection between the header and a misc table
 is highlighted in the following sketch:
 
-.. figure:: pics/audformat-misc-table.dot.svg
-    :alt: audformat
+.. graphviz:: pics/audformat-misc-table.dot
+    :alt: audformat misc table
     :align: center
-
-    Connection between header definitions and miscellaneous table entries.
+    :caption: Connection between header definitions and misc table entries.
 
 The annotations stored in the tables
 can be accessed as :class:`pandas.DataFrame`.
 The following sketch shows an example instance of a database:
 
-.. graphviz:: pics/tables.dot
+.. graphviz:: pics/audformat-database.dot
     :alt: Header and Tables
     :align: center
     :caption: Example content of tables and there connection to the header.
