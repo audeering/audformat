@@ -189,15 +189,21 @@ class Column(HeaderBase):
                 'Column is not assigned to a table.'
             )
 
-        result = self._table.get(
-            index,
-            copy=False,
-            as_segmented=as_segmented,
-            allow_nat=allow_nat,
-            root=root,
-            num_workers=num_workers,
-            verbose=verbose,
-        )
+        if hasattr(self._table, 'type'):
+            result = self._table.get(
+                index,
+                copy=False,
+                as_segmented=as_segmented,
+                allow_nat=allow_nat,
+                root=root,
+                num_workers=num_workers,
+                verbose=verbose,
+            )
+        else:
+            result = self._table.get(
+                index,
+                copy=False,
+            )
         result = result[self._id]
 
         if map is not None:

@@ -20,3 +20,17 @@ def test_copy(table):
     table_copy = table.copy()
     assert str(table_copy) == str(table)
     pd.testing.assert_frame_equal(table_copy.df, table.df)
+
+
+@pytest.mark.parametrize(
+    'table, column, expected',
+    [
+        (
+            pytest.DB['misc'],
+            'age',
+            pytest.DB['misc'].df['age'],
+        ),
+    ]
+)
+def test_get_column(table, column, expected):
+    pd.testing.assert_series_equal(table[column].get(), expected)
