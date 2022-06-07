@@ -4,7 +4,7 @@ Database
 An audformat database consists of a **header**,
 several **tables**,
 and **media** files.
-On hard disc all of them are stored inside a single folder.
+On hard disk all of them are stored inside a single folder.
 The header is stored as a YAML file,
 the tables contain labels stored in (possibly) multiple CSV files,
 and the media files are usually stored in sub-folders.
