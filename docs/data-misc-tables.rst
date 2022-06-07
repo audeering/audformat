@@ -16,7 +16,7 @@ A misc table or miscellaneous table links labels to an index.
 The index has no restrictions,
 but should not contain duplicated entries.
 The arbitrary number of index columns of a misc table
-are followed by an arbitrary number of label columns.
+is followed by an arbitrary number of label columns.
 An empty label means that no label has been assigned (yet).
 
 
