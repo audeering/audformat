@@ -557,14 +557,14 @@ class MiscTable(Base):
     and use :meth:`audformat.MiscTable.set` to set the values.
 
     Args:
-        index: table index
+        index: table index with non-empty and unique level names
         split_id: split identifier (must exist)
         media_id: media identifier (must exist)
         description: database description
         meta: additional meta fields
 
     Raises:
-        ValueError: if level names are not non-empty and unique
+        ValueError: if level names are empty or not unique
 
     Example:
         >>> index = pd.MultiIndex.from_tuples(
