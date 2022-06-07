@@ -319,7 +319,7 @@ Minimal example
 
     misc_tables:
         misctableid:
-            levels: [null]
+            levels: [idx]
 
 audformat implementation
 ^^^^^^^^^^^^^^^^^^^^^^^^
@@ -328,7 +328,7 @@ audformat implementation
 
     # Create minimal Misc Table
     import pandas as pd
-    misc_table = audformat.MiscTable(pd.Index([]))
+    misc_table = audformat.MiscTable(pd.Index([], name='idx'))
     # Add Misc Table to Database
     db.misc_tables['misctableid'] = misc_table
     # Access dataframe of Misc Table

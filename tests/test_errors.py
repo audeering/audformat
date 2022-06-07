@@ -78,8 +78,8 @@ def test_errors():
 
     with pytest.raises(audformat.errors.TableExistsError):
         # a filewise table with same ID exists already
-        db['files'] = audformat.MiscTable(pd.Index([]))
+        db['files'] = audformat.MiscTable(pd.Index([], name='idx'))
 
     with pytest.raises(audformat.errors.TableExistsError):
         # a segmented table with same ID exists already
-        db['segments'] = audformat.MiscTable(pd.Index([]))
+        db['segments'] = audformat.MiscTable(pd.Index([], name='idx'))
