@@ -13,10 +13,11 @@ Misc Tables
 
 
 A misc table or miscellaneous table links labels to an index.
-The index has no restrictions,
+The index has no restrictions
+and can contain an arbitrary number of columns (called levels),
 but should not contain duplicated entries.
-The arbitrary number of index columns of a misc table
-is followed by an arbitrary number of label columns.
+In the CSV file of the misc table,
+the index columns are stored in front of the label columns.
 An empty label means that no label has been assigned (yet).
 
 
