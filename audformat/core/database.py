@@ -17,13 +17,23 @@ import audeer
 from audformat.core import define
 from audformat.core import utils
 from audformat.core.column import Column
-from audformat.core.common import HeaderBase, HeaderDict
-from audformat.core.errors import BadIdError
+from audformat.core.common import (
+    HeaderBase,
+    HeaderDict,
+)
+from audformat.core.errors import (
+    BadKeyError,
+    BadIdError,
+    TableExistsError,
+)
 from audformat.core.media import Media
 from audformat.core.rater import Rater
 from audformat.core.scheme import Scheme
 from audformat.core.split import Split
-from audformat.core.table import Table
+from audformat.core.table import (
+    MiscTable,
+    Table,
+)
 
 
 class Database(HeaderBase):
@@ -31,7 +41,7 @@ class Database(HeaderBase):
 
     A database consists of a header holding raters,
     schemes, splits, and other meta information.
-    In addition it links to a number of tables
+    In addition, it links to a number of tables
     listing files and labels.
 
     Args:
@@ -170,7 +180,12 @@ class Database(HeaderBase):
             value_type=Table,
             set_callback=self._set_table,
         )
-        r"""Dictionary of tables"""
+        r"""Dictionary of audformat tables"""
+        self.misc_tables = HeaderDict(
+            value_type=MiscTable,
+            set_callback=self._set_table,
+        )
+        r"""Dictionary of miscellaneous tables"""
 
         self._files_duration = {}
         self._name = None
@@ -526,19 +541,20 @@ class Database(HeaderBase):
 
         if not header_only:
 
-            def job(table_id, table):
-                table_path = os.path.join(root, name + '.' + table_id)
-                table.save(
-                    table_path,
+            def job(obj_id, obj):
+                path = audeer.path(root, f'{name}.{obj_id}')
+                obj.save(
+                    path,
                     storage_format=storage_format,
                     update_other_formats=update_other_formats,
                 )
 
+            objs = {**self.tables, **self.misc_tables}
             audeer.run_tasks(
                 job,
                 params=[
-                    ([table_id, table], {})
-                    for table_id, table in self.tables.items()
+                    ([obj_id, obj], {})
+                    for obj_id, obj in objs.items()
                 ],
                 num_workers=num_workers,
                 progress_bar=verbose,
@@ -723,25 +739,36 @@ class Database(HeaderBase):
             self,
             table_id: str,
     ) -> bool:
-        r"""Check if table exists.
+        r"""Check if (miscellaneous) table exists.
 
         Args:
             table_id: table identifier
 
         """
-        return table_id in self.tables
+        return table_id in self.tables or table_id in self.misc_tables
 
     def __getitem__(
             self,
             table_id: str,
-    ) -> Table:
-        r"""Get table from database.
+    ) -> typing.Union[MiscTable, Table]:
+        r"""Get (miscellaneous) table from database.
 
         Args:
             table_id: table identifier
 
+        Raises:
+            BadKeyError: if table does not exist
+
         """
-        return self.tables[table_id]
+        if table_id in self.tables:
+            return self.tables[table_id]
+        elif table_id in self.misc_tables:
+            return self.misc_tables[table_id]
+
+        raise BadKeyError(
+            table_id,
+            list(self.tables) + list(self.misc_tables),
+        )
 
     def __eq__(
             self,
@@ -749,7 +776,7 @@ class Database(HeaderBase):
     ) -> bool:
         if self.dump() != other.dump():
             return False
-        for table_id in self.tables:
+        for table_id in list(self.tables) + list(self.misc_tables):
             if self[table_id] != other[table_id]:
                 return False
         return True
@@ -757,8 +784,8 @@ class Database(HeaderBase):
     def __setitem__(
             self,
             table_id: str,
-            table: Table,
-    ) -> Table:
+            table: typing.Union[MiscTable, Table],
+    ) -> typing.Union[MiscTable, Table]:
         r"""Add table to database.
 
         Args:
@@ -768,9 +795,15 @@ class Database(HeaderBase):
         Raises:
             BadIdError: if table has a ``split_id`` or ``media_id``,
                 which is not specified in the underlying database
+            TableExistsError: if setting a miscellaneous table
+                when a filewise or segmented table with the same ID exists
+                (or vice versa)
 
         """
-        self.tables[table_id] = table
+        if isinstance(table, MiscTable):
+            self.misc_tables[table_id] = table
+        else:
+            self.tables[table_id] = table
         return table
 
     @staticmethod
@@ -821,32 +854,37 @@ class Database(HeaderBase):
             header = yaml.load(fp, Loader=Loader)
             db = Database.load_header_from_yaml(header)
 
+            params = []
+            table_ids = []
+
             if 'tables' in header and header['tables']:
+                for table_id in header['tables']:
+                    table_ids.append(table_id)
 
+            if 'misc_tables' in header and header['misc_tables']:
+                for table_id in header['misc_tables']:
+                    table_ids.append(table_id)
+
+            for table_id in table_ids:
+                table = db[table_id]
                 if load_data:
-
-                    def job(table_id):
-                        table = db[table_id]
-                        path = os.path.join(root, name + '.' + table_id)
-                        table.load(path)
-
-                    # load all tables into memory
-                    audeer.run_tasks(
-                        job,
-                        params=[
-                            ([table_id], {}) for table_id in header['tables']
-                        ],
-                        num_workers=num_workers,
-                        progress_bar=verbose,
-                        task_description='Load tables',
-                    )
-
+                    table_path = audeer.path(root, name + '.' + table_id)
+                    params.append(([table, table_path], {}))
                 else:
+                    table._df = None
 
-                    # signal that table data is not loaded
-                    # by setting the DataFrame to None
-                    for table_id in header['tables']:
-                        db[table_id]._df = None
+            if params:
+                def job(obj, obj_path):
+                    obj.load(obj_path)
+
+                # load all objects into memory
+                audeer.run_tasks(
+                    job,
+                    params=params,
+                    num_workers=num_workers,
+                    progress_bar=verbose,
+                    task_description='Load tables',
+                )
 
         db._name = name
         db._root = root
@@ -874,14 +912,32 @@ class Database(HeaderBase):
             name=header['name'],
             source=header['source'],
             usage=header['usage'])
-        db.from_dict(header, ignore_keys=['media', 'raters', 'schemes',
-                                          'tables', 'splits'])
+        db.from_dict(header, ignore_keys=['media', 'misc_tables', 'raters',
+                                          'schemes', 'tables', 'splits'])
 
         if 'media' in header and header['media']:
             for media_id, media_d in header['media'].items():
                 media = Media()
                 media.from_dict(media_d)
                 db.media[media_id] = media
+
+        if 'misc_tables' in header and header['misc_tables']:
+            for table_id, table_d in header['misc_tables'].items():
+                table = MiscTable(None)
+                table.from_dict(table_d, ignore_keys=['columns'])
+
+                if 'columns' in table_d and table_d['columns']:
+                    tmp_callback = table.columns.set_callback
+                    table.columns.set_callback = None
+                    for column_id, column_d in table_d['columns'].items():
+                        column = Column()
+                        column.from_dict(column_d)
+                        column._id = column_id
+                        column._table = table
+                        table.columns[column_id] = column
+                    table.columns.set_callback = tmp_callback
+
+                db.misc_tables[table_id] = table
 
         if 'raters' in header and header['raters']:
             for rater_id, rater_d in header['raters'].items():
@@ -944,8 +1000,12 @@ class Database(HeaderBase):
     def _set_table(
             self,
             table_id: str,
-            table: Table,
-    ) -> Table:
+            table: typing.Union[MiscTable, Table],
+    ) -> typing.Union[MiscTable, Table]:
+        if isinstance(table, MiscTable) and table_id in self.tables:
+            raise TableExistsError(self[table_id].type, table_id)
+        elif isinstance(table, Table) and table_id in self.misc_tables:
+            raise TableExistsError('miscellaneous', table_id)
         if table.split_id is not None and table.split_id not in self.splits:
             raise BadIdError('split', table.split_id, self.splits)
         if table.media_id is not None and table.media_id not in self.media:

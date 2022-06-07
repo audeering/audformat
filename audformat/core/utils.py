@@ -17,6 +17,8 @@ from audformat.core.database import Database
 from audformat.core.index import index_type
 from audformat.core.index import (
     filewise_index,
+    is_filewise_index,
+    is_segmented_index,
     segmented_index,
 )
 from audformat.core.scheme import Scheme
@@ -120,7 +122,6 @@ def concat(
 
     # the new index is a union of the individual objects
     index = union([obj.index for obj in objs])
-    as_segmented = index_type(index) == define.IndexType.SEGMENTED
 
     # list with all columns we need to concatenate
     columns = []
@@ -137,7 +138,7 @@ def concat(
     columns_reindex = {}
     for column in columns:
 
-        if as_segmented:
+        if is_segmented_index(index):
             column = to_segmented_index(column)
 
         # if we already have a column with that name, we have to merge them
@@ -318,9 +319,8 @@ def expand_file_path(
         return index
 
     root = audeer.path(root) + os.path.sep
-    is_segmented = index_type(index) == define.IndexType.SEGMENTED
 
-    if is_segmented:
+    if is_segmented_index(index):
         index = index.set_levels(root + index.levels[0], level=0)
     else:
         index = root + index
@@ -391,7 +391,7 @@ def index_has_overlap(
     """
     index = obj if isinstance(obj, pd.Index) else obj.index
 
-    if index_type(index) == define.IndexType.FILEWISE:
+    if is_filewise_index(index):
         return False
 
     for _, sub_index in iter_by_file(index):
@@ -483,7 +483,7 @@ def intersect(
         ]
 
     # We use len() here as index.empty takes a very long time
-    if len(index) == 0 and index_type(index) == define.IndexType.SEGMENTED:
+    if len(index) == 0 and is_segmented_index(index):
         # asserts that start and end are of type 'timedelta64[ns]'
         index = segmented_index()
 
@@ -536,7 +536,7 @@ def iter_by_file(
     # We use len() here as index.empty takes a very long time
     if len(index) != 0:
         files = index.get_level_values('file').drop_duplicates()
-        if index_type(index) == define.IndexType.FILEWISE:
+        if is_filewise_index(index):
             for file in files:
                 sub_index = filewise_index(file)
                 sub_obj = sub_index if is_index else obj.loc[sub_index]
@@ -713,9 +713,7 @@ def map_file_path(
     if len(index) == 0:
         return index
 
-    is_segmented = index_type(index) == define.IndexType.SEGMENTED
-
-    if is_segmented:
+    if is_segmented_index(index):
         index = index.set_levels(
             index.levels[0].map(func),
             level=0,
@@ -910,9 +908,8 @@ def replace_file_extension(
         new_ext = f'.{extension}'
     else:
         new_ext = ''
-    is_segmented = index_type(index) == define.IndexType.SEGMENTED
 
-    if is_segmented:
+    if is_segmented_index(index):
         index = index.set_levels(
             index.levels[0].str.replace(cur_ext, new_ext, regex=True),
             level='file',
@@ -958,7 +955,7 @@ def to_filewise_index(
             original data
 
     """
-    if index_type(obj) == define.IndexType.FILEWISE:
+    if is_filewise_index(obj):
         return obj
 
     test_path = obj.index.get_level_values(define.IndexField.FILE)[0]
@@ -1073,7 +1070,7 @@ def to_segmented_index(
         FileNotFoundError: if file is not found
 
     """
-    is_segmented = index_type(obj) == define.IndexType.SEGMENTED
+    is_segmented = is_segmented_index(obj)
 
     if is_segmented and allow_nat:
         return obj

@@ -183,7 +183,7 @@ def filewise_index(
 
 
 def index_type(
-        obj: typing.Union[pd.Index, pd.Series, pd.DataFrame]
+        obj: typing.Union[pd.Index, pd.Series, pd.DataFrame],
 ) -> define.IndexType:
     r"""Derive index type.
 
@@ -214,6 +214,65 @@ def index_type(
         return define.IndexType.FILEWISE
     else:
         return define.IndexType.SEGMENTED
+
+
+def is_filewise_index(
+        obj: typing.Union[pd.Index, pd.Series, pd.DataFrame],
+) -> bool:
+    r"""Check if object has a filewise index.
+
+    Returns ``True`` if index is a filewise index conform to
+    :ref:`table specifications <data-tables:Tables>`.
+
+    Args:
+        obj: object
+
+    Returns:
+        ``True`` if index is filewise, otherwise ``False``
+
+    Example:
+        >>> is_filewise_index(filewise_index())
+        True
+        >>> is_filewise_index(pd.Index([]))
+        False
+
+    """
+    if not isinstance(obj, pd.Index):
+        obj = obj.index
+
+    return len(obj.names) == 1 and obj.names[0] == define.IndexField.FILE
+
+
+def is_segmented_index(
+        obj: typing.Union[pd.Index, pd.Series, pd.DataFrame],
+) -> bool:
+    r"""Check if object has a segmented index.
+
+    Returns ``True`` if index is a segmented index conform to
+    :ref:`table specifications <data-tables:Tables>`.
+
+    Args:
+        obj: object
+
+    Returns:
+        ``True`` if index is segmented, otherwise ``False``
+
+    Example:
+        >>> is_segmented_index(segmented_index())
+        True
+        >>> is_segmented_index(pd.Index([]))
+        False
+
+    """
+    if not isinstance(obj, pd.Index):
+        obj = obj.index
+
+    return (
+        len(obj.names) == 3
+        and obj.names[0] == define.IndexField.FILE
+        and obj.names[1] == define.IndexField.START
+        and obj.names[2] == define.IndexField.END
+    )
 
 
 def segmented_index(

@@ -20,6 +20,7 @@ from audformat.core.errors import (
 from audformat.core.index import (
     filewise_index,
     index_type,
+    is_segmented_index,
 )
 from audformat.core.media import Media
 from audformat.core.split import Split
@@ -543,13 +544,117 @@ class Base(HeaderBase):
         return column
 
 
+class MiscTable(Base):
+    r"""Miscellaneous table.
+
+    .. note:: Intended for use with tables
+        that have an index that is not conform to
+        :ref:`table specifications <data-tables:Tables>`.
+        Otherwise, use :class:`audformat.Table`.
+
+    To fill a table with labels,
+    add one or more :class:`audformat.Column`
+    and use :meth:`audformat.MiscTable.set` to set the values.
+
+    Args:
+        index: table index
+        split_id: split identifier (must exist)
+        media_id: media identifier (must exist)
+        description: database description
+        meta: additional meta fields
+
+    Example:
+        >>> index = pd.MultiIndex.from_tuples(
+        ...   [
+        ...     ('f1', 'f2'),
+        ...     ('f1', 'f3'),
+        ...     ('f2', 'f3'),
+        ...   ],
+        ...   names=['file', 'other'],
+        ... )
+        >>> table = MiscTable(
+        ...     index,
+        ...     split_id=define.SplitType.TEST,
+        ... )
+        >>> table['match'] = Column()
+        >>> table
+        levels: [file, other]
+        split_id: test
+        columns:
+          match: {}
+        >>> table.get()
+                   match
+        file other
+        f1   f2      NaN
+             f3      NaN
+        f2   f3      NaN
+        >>> table.set({'match': [True, False, True]})
+        >>> table.get()
+                   match
+        file other
+        f1   f2     True
+             f3    False
+        f2   f3     True
+        >>> table.get(index[:2])
+                   match
+        file other
+        f1   f2     True
+             f3    False
+
+    """
+    def __init__(
+            self,
+            index: pd.Index,
+            *,
+            split_id: str = None,
+            media_id: str = None,
+            description: str = None,
+            meta: dict = None,
+    ):
+        self.levels = None
+        r"""Index levels."""
+
+        super().__init__(
+            index,
+            split_id=split_id,
+            media_id=media_id,
+            description=description,
+            meta=meta,
+        )
+
+        if index is not None:
+            if isinstance(index, pd.MultiIndex):
+                levels = list(index.names)
+            else:
+                levels = [index.name]
+            self.levels = levels
+
+    def copy(self) -> 'MiscTable':
+        r"""Copy table.
+
+        Return:
+            new table object
+
+        """
+        return super().copy()
+
+    def _get_by_index(self, index: pd.Index) -> (pd.DataFrame, bool):
+        return self.df.loc[index], False
+
+    def _index_levels_and_converters(self) -> typing.Tuple[
+        typing.Sequence[str],
+        typing.Dict[str, typing.Callable],
+    ]:
+        return self.levels, {}
+
+
 class Table(Base):
-    r"""Table with annotation data.
+    r"""Table conform to :ref:`table specifications <data-tables:Tables>`.
 
     Consists of a list of file names to which it assigns
     numerical values or labels.
     To fill a table with labels,
-    add one ore more :class:`audformat.Column`
+    add one or more :class:`audformat.Column`
     and use :meth:`audformat.Table.set` to set the values.
 
     Args:
@@ -978,7 +1083,7 @@ class Table(Base):
         result = super().get(index, map=map, copy=copy)
 
         # if necessary, convert to segmented index and replace NaT
-        is_segmented = index_type(result.index) == define.IndexType.SEGMENTED
+        is_segmented = is_segmented_index(result.index)
         if (
                 (not is_segmented and as_segmented)
                 or (is_segmented and not allow_nat)

@@ -139,7 +139,7 @@ class Column(HeaderBase):
     ) -> pd.Series:
         r"""Get labels.
 
-        By default all labels of the column are returned,
+        By default, all labels of the column are returned,
         use ``index`` to get a subset.
 
         Examples are provided with the
@@ -160,7 +160,9 @@ class Column(HeaderBase):
                 will be converted to a segmented index.
                 ``start`` will be set to ``0`` and
                 ``end`` to ``NaT`` or to the file duration
-                if ``allow_nat`` is set to ``False``
+                if ``allow_nat`` is set to ``False``.
+                If column belongs to a miscellaneous table,
+                this and the following arguments have no effect
             allow_nat: if set to ``False``,
                 ``end=NaT`` is replaced with file duration
             root: root directory under which the files are stored.
@@ -189,15 +191,21 @@ class Column(HeaderBase):
                 'Column is not assigned to a table.'
             )
 
-        result = self._table.get(
-            index,
-            copy=False,
-            as_segmented=as_segmented,
-            allow_nat=allow_nat,
-            root=root,
-            num_workers=num_workers,
-            verbose=verbose,
-        )
+        if hasattr(self._table, 'type'):
+            result = self._table.get(
+                index,
+                copy=False,
+                as_segmented=as_segmented,
+                allow_nat=allow_nat,
+                root=root,
+                num_workers=num_workers,
+                verbose=verbose,
+            )
+        else:
+            result = self._table.get(
+                index,
+                copy=False,
+            )
         result = result[self._id]
 
         if map is not None:
@@ -244,7 +252,7 @@ class Column(HeaderBase):
     ):
         r"""Set labels.
 
-        By default all labels of the column are replaced,
+        By default, all labels of the column are replaced,
         use ``index`` to set a subset.
         If columns is assigned to a :class:`Scheme`
         values have to match its ``dtype``.
@@ -279,16 +287,10 @@ class Column(HeaderBase):
             scheme = self._table._db.schemes[self.scheme_id]
             assert_values(values, scheme)
 
-        if index_type(df.index) == index_type(index):
-            if is_scalar(values):
-                values = [values] * len(index)
-            values = to_array(values)
-            df.loc[index, column_id] = pd.Series(
-                values,
-                index=index,
-                dtype=df[column_id].dtype,
-            )
-        else:
+        if hasattr(self._table, 'type') and \
+                self._table.type != index_type(index):
+            # special case where a filewise / segmented table
+            # is requested with an index of the other type
             if not self._table.is_filewise:
                 files = index.get_level_values(define.IndexField.FILE)
                 index = df.loc[files].index
@@ -298,6 +300,15 @@ class Column(HeaderBase):
                     'Cannot set values of a filewise column '
                     'using a segmented index.'
                 )
+        else:
+            if is_scalar(values):
+                values = [values] * len(index)
+            values = to_array(values)
+            df.loc[index, column_id] = pd.Series(
+                values,
+                index=index,
+                dtype=df[column_id].dtype,
+            )
 
     def __eq__(
             self,

@@ -16,17 +16,22 @@ import pandas as pd
 import audiofile as af
 
 from audformat.core import define
+from audformat.core.column import Column
 from audformat.core.database import Database
 from audformat.core.index import (
     filewise_index,
+    is_filewise_index,
+    is_segmented_index,
     segmented_index,
 )
 from audformat.core.media import Media
 from audformat.core.rater import Rater
 from audformat.core.scheme import Scheme
 from audformat.core.split import Split
-from audformat.core.table import Table
-from audformat.core.column import Column
+from audformat.core.table import (
+    MiscTable,
+    Table,
+)
 
 
 def add_table(
@@ -51,10 +56,10 @@ def add_table(
 ) -> Table:
     r"""Adds a table with random values.
 
-    By default adds one column for every scheme in the database.
+    By default, adds one column for every scheme in the database.
     To create a specific set of columns use ``columns``.
     If a ``media_id`` is passed, the file format will be
-    determined from there. Otherwise WAV is used.
+    determined from there. Otherwise, WAV is used.
 
     Args:
         db: a database
@@ -69,7 +74,7 @@ def add_table(
             the number of files. For a different ordering a sequence of
             integers can be passed
         num_segments_per_file: number of segments per file (only applies to
-            to segmented table)
+            segmented table)
         file_duration: the file duration
         file_root: file sub directory
         p_none: probability to draw invalid values
@@ -161,7 +166,7 @@ def create_audio_files(
 ):
     r"""Create audio files for a database.
 
-    By default empty files are created. A sample generator function can be
+    By default, empty files are created. A sample generator function can be
     passed to generate the samples. The function gets as input a time stamp
     and should create a sample in the amplitude range ``[-1..1]``.
 
@@ -218,8 +223,10 @@ def create_db(
 ) -> Database:
     r"""Create test database.
 
-    Creates a test database called ``unittest`` with a filewise
-    and segmented table.
+    Creates a test database called ``unittest`` with a
+    filewise,
+    segmented,
+    and miscellaneous table.
 
     Args:
         minimal: create minimal database without tables
@@ -256,12 +263,15 @@ def create_db(
                 return define.DataType.INTEGER
             if series.dtype.name.startswith('float'):
                 return define.DataType.FLOAT
-            return 'str'
+            return define.DataType.STRING
 
         for table_id, obj in data.items():
             if isinstance(obj, pd.Series):
                 obj = obj.to_frame()
-            db[table_id] = Table(obj.index)
+            if is_filewise_index(obj) or is_segmented_index(obj):
+                db[table_id] = Table(obj.index)
+            else:
+                db[table_id] = MiscTable(obj.index)
             for column_id, column in obj.items():
                 dtype = to_scheme_type(column)
                 if dtype not in db.schemes:
@@ -358,5 +368,28 @@ def create_db(
     db['segments']['no_scheme'].set(
         db.schemes['string'].draw(100, p_none=0.25)
     )
+
+    #######################
+    # Miscellaneous Table #
+    #######################
+
+    db.schemes['age'] = Scheme(
+        dtype=define.DataType.INTEGER,
+        minimum=9,
+        maximum=99,
+    )
+    db.schemes['gender'] = Scheme(
+        labels=['female', 'male'],
+    )
+
+    index = pd.Index(
+        ['sp1', 'sp2', 'sp3'],
+        name='speaker',
+    )
+    db['misc'] = MiscTable(index)
+    db['misc']['age'] = Column(scheme_id='age')
+    db['misc']['age'].set(db.schemes['age'].draw(len(index)))
+    db['misc']['gender'] = Column(scheme_id='gender')
+    db['misc']['gender'].set(db.schemes['gender'].draw(len(index)))
 
     return db

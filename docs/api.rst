@@ -42,11 +42,29 @@ index_type
 
 .. autofunction:: index_type
 
+is_filewise_index
+-----------------
+
+.. autofunction:: is_filewise_index
+
+is_segmented_index
+------------------
+
+.. autofunction:: is_segmented_index
+
 Media
 ---------
 
 .. autoclass:: Media
     :members:
+
+MiscTable
+---------
+
+.. autoclass:: MiscTable
+    :members:
+    :inherited-members: HeaderBase
+    :special-members: __add__, __getitem__, __setitem__
 
 Rater
 -----

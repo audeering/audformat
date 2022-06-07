@@ -1,3 +1,4 @@
+import pandas as pd
 import pytest
 
 import audformat
@@ -52,3 +53,33 @@ def test_errors():
 
     with pytest.raises(audformat.errors.BadKeyError):
         db['bad']
+
+    with pytest.raises(audformat.errors.BadKeyError):
+        db.media['bad']
+
+    with pytest.raises(audformat.errors.BadKeyError):
+        db.misc_tables['bad']
+
+    with pytest.raises(audformat.errors.BadKeyError):
+        db.raters['bad']
+
+    with pytest.raises(audformat.errors.BadKeyError):
+        db.schemes['bad']
+
+    with pytest.raises(audformat.errors.BadKeyError):
+        db.splits['bad']
+
+    with pytest.raises(audformat.errors.BadKeyError):
+        db.tables['bad']
+
+    with pytest.raises(audformat.errors.TableExistsError):
+        # a miscellaneous table with same ID exists already
+        db['misc'] = audformat.Table()
+
+    with pytest.raises(audformat.errors.TableExistsError):
+        # a filewise table with same ID exists already
+        db['files'] = audformat.MiscTable(pd.Index([]))
+
+    with pytest.raises(audformat.errors.TableExistsError):
+        # a segmented table with same ID exists already
+        db['segments'] = audformat.MiscTable(pd.Index([]))
