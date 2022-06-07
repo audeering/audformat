@@ -564,7 +564,7 @@ class MiscTable(Base):
         meta: additional meta fields
 
     Raises:
-        ValueError: if level names are empty or not unique
+        ValueError: if level names of index are empty or not unique
 
     Example:
         >>> index = pd.MultiIndex.from_tuples(
