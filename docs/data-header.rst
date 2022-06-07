@@ -319,7 +319,7 @@ Minimal example
 
     misc_tables:
         misctableid:
-            levels: ['idx']
+            levels: [idx]
 
 audformat implementation
 ^^^^^^^^^^^^^^^^^^^^^^^^
