@@ -23,7 +23,7 @@ An empty label means that no label has been assigned (yet).
 audformat implementation
 ------------------------
 
-Create a filewise index:
+Create an index with the levels `file` and `other`:
 
 .. jupyter-execute::
 
