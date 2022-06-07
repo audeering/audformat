@@ -563,6 +563,9 @@ class MiscTable(Base):
         description: database description
         meta: additional meta fields
 
+    Raises:
+        ValueError: if level names are not non-empty and unique
+
     Example:
         >>> index = pd.MultiIndex.from_tuples(
         ...   [
@@ -627,6 +630,14 @@ class MiscTable(Base):
                 levels = list(index.names)
             else:
                 levels = [index.name]
+
+            if not all(levels) or len(levels) > len(set(levels)):
+                raise ValueError(
+                    f'Got index with levels '
+                    f'{levels}, '
+                    f'but names must be non-empty and unique.'
+                )
+
             self.levels = levels
 
     def copy(self) -> 'MiscTable':
