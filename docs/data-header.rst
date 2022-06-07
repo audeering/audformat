@@ -318,7 +318,7 @@ Minimal example
 .. code-block:: yaml
 
     misc_tables:
-        tableid:
+        misctableid:
             levels: [null]
 
 audformat implementation
