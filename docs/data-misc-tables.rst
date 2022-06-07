@@ -12,7 +12,7 @@ Misc Tables
     audformat.core.common.format_series_as_html()
 
 
-A misc table or miscellaneous table links labels to an index.
+A miscellaneous (misc) table links labels to an index.
 The index has no restrictions
 and can contain an arbitrary number of columns (called levels),
 but should not contain duplicated entries.
