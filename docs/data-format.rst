@@ -29,7 +29,7 @@ The database is implemented as :class:`audformat.Database`.
     ``<folder(s)/file(s)>``     Audio/Video files referenced in the tables
     ==========================  ==========================================
 
-The connection between the header, media file a table
+The connection between the header, media files and a table
 is highlighted in the following sketch:
 
 .. graphviz:: pics/audformat-table.dot
