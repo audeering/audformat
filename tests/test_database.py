@@ -246,6 +246,13 @@ def test_files_duration():
     db._root = root
 
 
+def test_iter():
+    db = audformat.testing.create_db(minimal=True)
+    assert list(db) == []
+    db = audformat.testing.create_db()
+    assert list(db) == ['files', 'misc', 'segments']
+
+
 @pytest.mark.parametrize(
     'license, license_url, expected_license, expected_url',
     [

@@ -83,22 +83,21 @@ class Database(HeaderBase):
         usage: commercial
         languages: [eng, deu]
         >>> labels = ['positive', 'neutral', 'negative']
-        >>> db.schemes['emotion'] = Scheme(
-        ...     labels=labels,
-        ... )
+        >>> db.schemes['emotion'] = Scheme(labels=labels)
+        >>> db.schemes['match'] = Scheme(dtype='bool')
         >>> db.raters['rater'] = Rater()
         >>> db.media['audio'] = Media(
         ...     define.MediaType.AUDIO,
         ...     format='wav',
         ...     sampling_rate=16000,
         ... )
-        >>> db['table'] = Table(
-        ...     media_id='audio',
-        ... )
+        >>> db['table'] = Table(media_id='audio')
         >>> db['table']['column'] = Column(
         ...     scheme_id='emotion',
         ...     rater_id='rater',
         ... )
+        >>> db['misc-table'] = MiscTable(pd.Index([], name='idx'))
+        >>> db['misc-table']['column'] = Column(scheme_id='match')
         >>> db
         name: mydb
         source: https://www.audeering.com/
@@ -112,12 +111,20 @@ class Database(HeaderBase):
           emotion:
             dtype: str
             labels: [positive, neutral, negative]
+          match: {dtype: bool}
         tables:
           table:
             type: filewise
             media_id: audio
             columns:
               column: {scheme_id: emotion, rater_id: rater}
+        misc_tables:
+          misc-table:
+            levels: [idx]
+            columns:
+              column: {scheme_id: match}
+        >>> list(db)
+        ['misc-table', 'table']
 
     """
     def __init__(
@@ -780,6 +787,11 @@ class Database(HeaderBase):
             if self[table_id] != other[table_id]:
                 return False
         return True
+
+    def __iter__(
+            self,
+    ) -> typing.Union[MiscTable, Table]:
+        yield from sorted(list(self.tables) + list(self.misc_tables))
 
     def __setitem__(
             self,
