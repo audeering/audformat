@@ -118,6 +118,8 @@ class Database(HeaderBase):
             media_id: audio
             columns:
               column: {scheme_id: emotion, rater_id: rater}
+        >>> list(db)
+        ['table']
 
     """
     def __init__(
@@ -780,6 +782,11 @@ class Database(HeaderBase):
             if self[table_id] != other[table_id]:
                 return False
         return True
+
+    def __iter__(
+            self,
+    ) -> typing.Union[MiscTable, Table]:
+        yield from sorted(list(self.tables) + list(self.misc_tables))
 
     def __setitem__(
             self,
