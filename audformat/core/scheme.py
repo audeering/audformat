@@ -7,6 +7,7 @@ import pandas as pd
 
 from audformat.core import define
 from audformat.core.common import HeaderBase
+from audformat.core.table import MiscTable
 
 
 class Scheme(HeaderBase):
@@ -22,7 +23,8 @@ class Scheme(HeaderBase):
 
     Args:
         dtype: if ``None`` derived from ``labels``, otherwise set to ``'str'``
-        labels: list or dictionary with valid labels.
+        labels: list or dictionary with valid labels,
+            or name of misc table containing labels as index
         minimum: minimum value
         maximum: maximum value
         description: scheme description
@@ -32,6 +34,7 @@ class Scheme(HeaderBase):
         BadValueError: if an invalid ``dtype`` is passed
         ValueError: if ``labels`` are not passed as list or dictionary
         ValueError: if ``labels`` are not of same data type
+        ValueError: if ``labels`` is a misc table not assigned to any database
         ValueError: ``dtype`` does not match type of ``labels``
 
     Example:
@@ -65,7 +68,7 @@ class Scheme(HeaderBase):
             self,
             dtype: typing.Union[typing.Type, define.DataType] = None,
             *,
-            labels: typing.Union[dict, list] = None,
+            labels: typing.Union[dict, list, MiscTable] = None,
             minimum: typing.Union[int, float] = None,
             maximum: typing.Union[int, float] = None,
             description: str = None,
@@ -82,6 +85,7 @@ class Scheme(HeaderBase):
             dtype = define.DataType.STRING
 
         if labels is not None:
+
             dtype_labels = self._dtype_from_labels(labels)
             if dtype is not None and dtype != dtype_labels:
                 raise ValueError(
@@ -156,6 +160,8 @@ class Scheme(HeaderBase):
                 seq = string.ascii_letters + string.digits
                 x = [''.join([random.choice(seq) for _ in range(str_len)])
                      for _ in range(n)]
+        elif isinstance(self.labels, MiscTable):
+            x = [random.choice(list(self.labels.index)) for _ in range(n)]
         elif type(self.labels) in (list, dict):
             x = [random.choice(list(self.labels)) for _ in range(n)]
 
@@ -185,7 +191,10 @@ class Scheme(HeaderBase):
 
         """
         if self.labels is not None:
-            labels = list(self.labels)
+            if isinstance(self.labels, MiscTable):
+                labels = list(self.labels.index)
+            else:
+                labels = list(self.labels)
             if len(labels) > 0 and isinstance(labels[0], int):
                 # allow nullable
                 labels = pd.array(labels, dtype='int64')
@@ -205,7 +214,7 @@ class Scheme(HeaderBase):
 
     def replace_labels(
             self,
-            labels: typing.Union[dict, list],
+            labels: typing.Union[dict, list, MiscTable],
     ):
         r"""Replace labels.
 
@@ -277,11 +286,18 @@ class Scheme(HeaderBase):
 
     def _dtype_from_labels(
             self,
-            labels: typing.Union[dict, list],
+            labels: typing.Union[dict, list, str],
     ) -> str:
         r"""Derive dtype from labels."""
 
-        if not isinstance(labels, (dict, list)):
+        if isinstance(labels, MiscTable):
+            if labels.db is None:
+                raise ValueError(
+                    'The given table needs to be assigned '
+                    'to a database.'
+                )
+            labels = list(labels.index)
+        elif not isinstance(labels, (dict, list)):
             raise ValueError(
                 'Labels must be passed as a dictionary or a list.'
             )
