@@ -16,15 +16,16 @@ class Scheme(HeaderBase):
     Allowed values for ``dtype`` are:
     ``'bool'``, ``'str'``, ``'int'``, ``'float'``, ``'time'``, and ``'date'``
     (see :class:`audformat.define.DataType`).
-    Values can be restricted to a set of labels provided by a
-    list or a dictionary.
+    Values can be restricted to a set of labels
+    provided by a list, dictionary or a :class:`audformat.MiscTable`,
+    for which the labels are given by the index.
     A continuous range can be limited by a minimum and
     maximum value.
 
     Args:
         dtype: if ``None`` derived from ``labels``, otherwise set to ``'str'``
-        labels: list or dictionary with valid labels,
-            or name of misc table containing labels as index
+        labels: list, dictionary or :class:`audformat.MiscTable`
+            with valid labels
         minimum: minimum value
         maximum: maximum value
         description: scheme description
@@ -35,6 +36,8 @@ class Scheme(HeaderBase):
         ValueError: if ``labels`` are not passed as list or dictionary
         ValueError: if ``labels`` are not of same data type
         ValueError: if ``labels`` is a misc table not assigned to any database
+        ValueError: if ``labels`` is a misc table contain duplicates
+        ValueError: if ``labels`` is a misc table with a multi-dimensional index
         ValueError: ``dtype`` does not match type of ``labels``
 
     Example:
