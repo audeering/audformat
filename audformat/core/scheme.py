@@ -51,6 +51,21 @@ class Scheme(HeaderBase):
         {dtype: int}
         >>> Scheme(float, minimum=0, maximum=1)
         {dtype: float, minimum: 0, maximum: 1}
+        >>> # Misc Table as Scheme
+        >>> import audformat
+        >>> db = audformat.Database('mydb')
+        >>> db.schemes['age'] = Scheme('int')
+        >>> db['speaker'] = audformat.MiscTable(
+        ...     pd.Index(['spk1', 'spk2'], name='speaker')
+        ... )
+        >>> db['speaker']['age'] = audformat.Column(scheme_id='age')
+        >>> db['speaker']['age'].set([31, 46])
+        >>> Scheme(labels=db['speaker'])
+        dtype: str
+        labels:
+          levels: [speaker]
+          columns:
+            age: {scheme_id: age}
 
     """
     _dtypes = {
