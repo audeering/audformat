@@ -35,9 +35,10 @@ class Scheme(HeaderBase):
         BadValueError: if an invalid ``dtype`` is passed
         ValueError: if ``labels`` are not passed as list or dictionary
         ValueError: if ``labels`` are not of same data type
-        ValueError: if ``labels`` is a misc table not assigned to any database
-        ValueError: if ``labels`` is a misc table contain duplicates
-        ValueError: if ``labels`` is a misc table with a multi-dimensional index
+        ValueError: if ``labels`` is a misc table,
+            but the misc table is not assigned to any database,
+            or its index is multi-dimensional,
+            or its index contains duplicates
         ValueError: ``dtype`` does not match type of ``labels``
 
     Example:
