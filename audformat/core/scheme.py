@@ -302,48 +302,34 @@ class Scheme(HeaderBase):
 
     def _check_labels(
             self,
-            labels: typing.Union[dict, list, MiscTable],
+            labels: typing.Union[dict, list, str],
     ):
         r"""Raise label related errors."""
 
-        if not isinstance(labels, (dict, list, MiscTable)):
+        if not isinstance(labels, (dict, list, str)):
             raise ValueError(
                 'Labels must be passed '
-                'as a dictionary, list or misc table.'
+                'as a dictionary, list or ID of a misced table.'
             )
-        if isinstance(labels, MiscTable):
-            if labels.db is None:
-                raise ValueError(
-                    'The given table needs to be assigned '
-                    'to a database.'
-                )
-            if labels.index.nlevels > 1:
-                raise ValueError(
-                    'Index of misc table used for scheme labels '
-                    'is only allowed to have a single level.'
-                )
-            if sum(labels.index.duplicated()) > 0:
-                raise ValueError(
-                    'Index of misc table used for scheme labels '
-                    'is not allowed to contain duplicates.'
-                )
 
     def _dtype_from_labels(
             self,
-            labels: typing.Union[dict, list, MiscTable],
+            labels: typing.Union[dict, list, str],
     ) -> str:
         r"""Derive dtype from labels."""
 
-        labels = self._labels_to_list(labels)
-
-        if len(labels) > 0:
-            dtype = type(labels[0])
+        if isinstance(labels, str):
+            dtype = 'misc-table'
         else:
-            dtype = 'str'
-        if not all(isinstance(x, dtype) for x in labels):
-            raise ValueError(
-                'All labels must be of the same data type.'
-            )
+            labels = list(labels)
+            if len(labels) > 0:
+                dtype = type(labels[0])
+            else:
+                dtype = 'str'
+            if not all(isinstance(x, dtype) for x in labels):
+                raise ValueError(
+                    'All labels must be of the same data type.'
+                )
 
         if dtype in self._dtypes:
             dtype = self._dtypes[dtype]

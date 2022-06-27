@@ -1007,6 +1007,25 @@ class Database(HeaderBase):
     ) -> Scheme:
         scheme._db = self
         scheme._id = scheme_id
+
+        if scheme.dtype == 'misc-table':
+            table_id = Scheme.label
+            if table_id not in self:
+                raise ValueError(
+                    f"The misc table '{table_id}' used as scheme labels "
+                    "needs to be assigned to the database."
+                )
+            if self[table_id].index.nlevels > 1:
+                raise ValueError(
+                    f"Index of misc table '{table_id}' used as scheme labels "
+                    'is only allowed to have a single level.'
+                )
+            if sum(self[table_id].index.duplicated()) > 0:
+                raise ValueError(
+                    f"Index of misc table '{table_id}' used as scheme labels "
+                    'is not allowed to contain duplicates.'
+                )
+
         return scheme
 
     def _set_table(
