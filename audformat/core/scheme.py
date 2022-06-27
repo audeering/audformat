@@ -85,7 +85,7 @@ class Scheme(HeaderBase):
             dtype = define.DataType.STRING
 
         if labels is not None:
-
+            self._check_labels(labels)
             dtype_labels = self._dtype_from_labels(labels)
             if dtype is not None and dtype != dtype_labels:
                 raise ValueError(
@@ -160,10 +160,9 @@ class Scheme(HeaderBase):
                 seq = string.ascii_letters + string.digits
                 x = [''.join([random.choice(seq) for _ in range(str_len)])
                      for _ in range(n)]
-        elif isinstance(self.labels, MiscTable):
-            x = [random.choice(list(self.labels.index)) for _ in range(n)]
-        elif type(self.labels) in (list, dict):
-            x = [random.choice(list(self.labels)) for _ in range(n)]
+        else:
+            labels = self._labels_to_list(self.labels)
+            x = [random.choice(labels) for _ in range(n)]
 
         if p_none is not None:
             for idx in range(len(x)):
@@ -191,10 +190,7 @@ class Scheme(HeaderBase):
 
         """
         if self.labels is not None:
-            if isinstance(self.labels, MiscTable):
-                labels = list(self.labels.index)
-            else:
-                labels = list(self.labels)
+            labels = self._labels_to_list(self.labels)
             if len(labels) > 0 and isinstance(labels[0], int):
                 # allow nullable
                 labels = pd.array(labels, dtype='int64')
@@ -261,6 +257,7 @@ class Scheme(HeaderBase):
                 'Cannot replace labels when '
                 'scheme does not define labels.'
             )
+        self._check_labels(self.labels)
 
         dtype_labels = self._dtype_from_labels(labels)
         if dtype_labels != self.dtype:
@@ -284,29 +281,47 @@ class Scheme(HeaderBase):
                         )
                         column._table.df[column._id] = y
 
-    def _dtype_from_labels(
+    def _check_labels(
             self,
-            labels: typing.Union[dict, list, str],
-    ) -> str:
-        r"""Derive dtype from labels."""
+            labels: typing.Union[dict, list, MiscTable],
+    ):
+        r"""Raise label related errors."""
 
+        if not isinstance(labels, (dict, list, MiscTable)):
+            raise ValueError(
+                'Labels must be passed '
+                'as a dictionary, list or misc table.'
+            )
         if isinstance(labels, MiscTable):
             if labels.db is None:
                 raise ValueError(
                     'The given table needs to be assigned '
                     'to a database.'
                 )
-            labels = list(labels.index)
-        elif not isinstance(labels, (dict, list)):
-            raise ValueError(
-                'Labels must be passed as a dictionary or a list.'
-            )
+            if labels.index.nlevels > 1:
+                raise ValueError(
+                    'Index of misc table used for scheme labels '
+                    'is only allowed to have a single level.'
+                )
+            if sum(labels.index.duplicated()) > 0:
+                raise ValueError(
+                    'Index of misc table used for scheme labels '
+                    'is not allowed to contain duplicates.'
+                )
+
+    def _dtype_from_labels(
+            self,
+            labels: typing.Union[dict, list, MiscTable],
+    ) -> str:
+        r"""Derive dtype from labels."""
+
+        labels = self._labels_to_list(labels)
 
         if len(labels) > 0:
-            dtype = type(list(labels)[0])
+            dtype = type(labels[0])
         else:
             dtype = 'str'
-        if not all(isinstance(x, dtype) for x in list(labels)):
+        if not all(isinstance(x, dtype) for x in labels):
             raise ValueError(
                 'All labels must be of the same data type.'
             )
@@ -316,6 +331,17 @@ class Scheme(HeaderBase):
         define.DataType.assert_has_attribute_value(dtype)
 
         return dtype
+
+    def _labels_to_list(
+            self,
+            labels: typing.Union[dict, list, MiscTable],
+    ) -> typing.List:
+        r"""Return list of labels."""
+        if isinstance(labels, MiscTable):
+            labels = list(labels.index)
+        else:
+            labels = list(labels)
+        return labels
 
     def __contains__(self, item: typing.Any) -> bool:
         r"""Check if scheme contains data type of item.

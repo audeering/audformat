@@ -47,6 +47,33 @@ def test_scheme_errors():
         scheme = audformat.Scheme(audformat.define.DataType.INTEGER)
         scheme.replace_labels(['a', 'b'])
 
+    # misc table not assigned to a database
+    table = audformat.MiscTable(pd.Index([], name='misc'))
+    error_msg = 'table needs to be assigned'
+    with pytest.raises(ValueError, match=error_msg):
+        audformat.Scheme(labels=table)
+
+    # misc table should only contain an one-dimensional index
+    db = pytest.DB
+    db['misc-multi-dim'] = audformat.MiscTable(
+        pd.MultiIndex.from_arrays(
+            [
+                [1, 2],
+                ['a', 'b'],
+            ],
+            names=['misc-1', 'misc-2'],
+        )
+    )
+    error_msg = 'allowed to have a single level'
+    with pytest.raises(ValueError, match=error_msg):
+        audformat.Scheme(labels=db['misc-multi-dim'])
+
+    # misc table should not contain duplicates
+    db['misc-duplicate'] = audformat.MiscTable(pd.Index([0, 0], name='misc'))
+    error_msg = 'not allowed to contain duplicates'
+    with pytest.raises(ValueError, match=error_msg):
+        audformat.Scheme(labels=db['misc-duplicate'])
+
 
 @pytest.mark.parametrize(
     'values, labels, new_labels, expected',

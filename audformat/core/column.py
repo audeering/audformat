@@ -1,3 +1,5 @@
+from __future__ import annotations  # allow typing without string
+
 import typing
 
 import numpy as np
@@ -11,8 +13,13 @@ from audformat.core.index import (
     to_array,
 )
 from audformat.core.rater import Rater
-from audformat.core.scheme import Scheme
 from audformat.core.typing import Values
+
+if typing.TYPE_CHECKING:
+    # Fix to make mypy work without circular imports,
+    # compare
+    # https://adamj.eu/tech/2021/05/13/python-type-hints-how-to-fix-circular-imports/
+    from audformat.core.scheme import Scheme  # pragma: nocover
 
 
 def assert_values(
