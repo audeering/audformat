@@ -399,6 +399,6 @@ def create_db(
     # Schemes from Misc Tables #
     ############################
 
-    db.schemes['speaker'] = Scheme(labels=db['misc'])
+    db.schemes['speaker'] = Scheme(labels='misc', dtype='str')
 
     return db

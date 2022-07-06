@@ -1008,8 +1008,11 @@ class Database(HeaderBase):
         scheme._db = self
         scheme._id = scheme_id
 
-        if scheme.dtype == 'misc-table':
-            table_id = Scheme.label
+        # If a misc table is used as a database
+        # we check for errors
+        # when assigning the scheme a database
+        if hasattr(scheme, 'labels') and isinstance(scheme.labels, str):
+            table_id = scheme.labels
             if table_id not in self:
                 raise ValueError(
                     f"The misc table '{table_id}' used as scheme labels "
@@ -1024,6 +1027,15 @@ class Database(HeaderBase):
                 raise ValueError(
                     f"Index of misc table '{table_id}' used as scheme labels "
                     'is not allowed to contain duplicates.'
+                )
+            labels = list(self[table_id].index)
+            dtype_labels = scheme._dtype_from_labels(labels)
+            if scheme.dtype != dtype_labels:
+                raise ValueError(
+                    "Data type is set to "
+                    f"'{scheme.dtype}', "
+                    "but data type of labels in misc table is "
+                    f"'{dtype_labels}'."
                 )
 
         return scheme

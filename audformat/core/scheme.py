@@ -7,7 +7,6 @@ import pandas as pd
 
 from audformat.core import define
 from audformat.core.common import HeaderBase
-from audformat.core.table import MiscTable
 
 
 class Scheme(HeaderBase):
@@ -17,15 +16,21 @@ class Scheme(HeaderBase):
     ``'bool'``, ``'str'``, ``'int'``, ``'float'``, ``'time'``, and ``'date'``
     (see :class:`audformat.define.DataType`).
     Values can be restricted to a set of labels
-    provided by a list, dictionary or a :class:`audformat.MiscTable`,
+    provided by a list,
+    dictionary
+    or a table ID of a :class:`audformat.MiscTable`,
     for which the labels are given by the index.
     A continuous range can be limited by a minimum and
     maximum value.
 
     Args:
-        dtype: if ``None`` derived from ``labels``, otherwise set to ``'str'``
-        labels: list, dictionary or :class:`audformat.MiscTable`
-            with valid labels
+        dtype: if ``None`` derived from ``labels``,
+            otherwise set to ``'str'``
+        labels: list, dictionary or table ID
+            of a corresponding :class:`audformat.MiscTable`
+            containing labels as index.
+            If a table ID is provided,
+            ``dtype`` has to be specified
         minimum: minimum value
         maximum: maximum value
         description: scheme description
@@ -33,13 +38,20 @@ class Scheme(HeaderBase):
 
     Raises:
         BadValueError: if an invalid ``dtype`` is passed
-        ValueError: if ``labels`` are not passed as list or dictionary
+        ValueError: if ``labels`` are not passed as string, list, or dictionary
+        ValueError: if ``labels`` is a table ID,
+            but ``dtype`` is not specified
         ValueError: if ``labels`` are not of same data type
-        ValueError: if ``labels`` is a misc table,
-            but the misc table is not assigned to any database,
-            or its index is multi-dimensional,
-            or its index contains duplicates
         ValueError: ``dtype`` does not match type of ``labels``
+            if ``labels`` is a list or dictionary
+        ValueError: when assigning a scheme,
+            that contains a table ID as ``lables``,
+            to a database,
+            but the corresponding misc table is not part of the database,
+            or its index is multi-dimensional,
+            or its index contains duplicates,
+            or ``dtype`` doe snot match type of labels
+            from misc table
 
     Example:
         >>> Scheme()
@@ -60,12 +72,8 @@ class Scheme(HeaderBase):
         ... )
         >>> db['speaker']['age'] = audformat.Column(scheme_id='age')
         >>> db['speaker']['age'].set([31, 46])
-        >>> Scheme(labels=db['speaker'])
-        dtype: str
-        labels:
-          levels: [speaker]
-          columns:
-            age: {scheme_id: age}
+        >>> Scheme(labels='speaker', dtype='str')
+        {dtype: str, labels: speaker}
 
     """
     _dtypes = {
@@ -87,7 +95,7 @@ class Scheme(HeaderBase):
             self,
             dtype: typing.Union[typing.Type, define.DataType] = None,
             *,
-            labels: typing.Union[dict, list, MiscTable] = None,
+            labels: typing.Union[dict, list, str] = None,
             minimum: typing.Union[int, float] = None,
             maximum: typing.Union[int, float] = None,
             description: str = None,
@@ -105,15 +113,27 @@ class Scheme(HeaderBase):
 
         if labels is not None:
             self._check_labels(labels)
-            dtype_labels = self._dtype_from_labels(labels)
-            if dtype is not None and dtype != dtype_labels:
-                raise ValueError(
-                    "Data type is set to "
-                    f"'{dtype}', "
-                    "but data type of labels is "
-                    f"'{dtype_labels}'."
-                )
-            dtype = dtype_labels
+
+            if isinstance(labels, str):
+
+                # Labels from misc table
+                if dtype is None:
+                    raise ValueError(
+                        "'dtype' has to be provided "
+                        "when using a misc table as labels."
+                    )
+            else:
+
+                # Labels from list or dictionary
+                dtype_labels = self._dtype_from_labels(labels)
+                if dtype is not None and dtype != dtype_labels:
+                    raise ValueError(
+                        "Data type is set to "
+                        f"'{dtype}', "
+                        "but data type of labels is "
+                        f"'{dtype_labels}'."
+                    )
+                dtype = dtype_labels
 
         self.dtype = dtype
         r"""Data type"""
@@ -229,7 +249,7 @@ class Scheme(HeaderBase):
 
     def replace_labels(
             self,
-            labels: typing.Union[dict, list, MiscTable],
+            labels: typing.Union[dict, list, str],
     ):
         r"""Replace labels.
 
@@ -276,7 +296,7 @@ class Scheme(HeaderBase):
                 'Cannot replace labels when '
                 'scheme does not define labels.'
             )
-        self._check_labels(self.labels)
+        self._check_labels(labels)
 
         dtype_labels = self._dtype_from_labels(labels)
         if dtype_labels != self.dtype:
@@ -290,12 +310,13 @@ class Scheme(HeaderBase):
         self.labels = labels
 
         if self._db is not None and self._id is not None:
+            labels = self._labels_to_list(labels)
             for table in self._db.tables.values():
                 for column in table.columns.values():
                     if column.scheme_id == self._id:
                         y = column._table.df[column._id]
                         y = y.cat.set_categories(
-                            new_categories=self.labels,
+                            new_categories=labels,
                             ordered=False,
                         )
                         column._table.df[column._id] = y
@@ -318,18 +339,16 @@ class Scheme(HeaderBase):
     ) -> str:
         r"""Derive dtype from labels."""
 
-        if isinstance(labels, str):
-            dtype = 'misc-table'
+        labels = self._labels_to_list(labels)
+
+        if len(labels) > 0:
+            dtype = type(labels[0])
         else:
-            labels = list(labels)
-            if len(labels) > 0:
-                dtype = type(labels[0])
-            else:
-                dtype = 'str'
-            if not all(isinstance(x, dtype) for x in labels):
-                raise ValueError(
-                    'All labels must be of the same data type.'
-                )
+            dtype = 'str'
+        if not all(isinstance(x, dtype) for x in labels):
+            raise ValueError(
+                'All labels must be of the same data type.'
+            )
 
         if dtype in self._dtypes:
             dtype = self._dtypes[dtype]
@@ -339,11 +358,14 @@ class Scheme(HeaderBase):
 
     def _labels_to_list(
             self,
-            labels: typing.Union[dict, list, MiscTable],
+            labels: typing.Union[dict, list, str],
     ) -> typing.List:
         r"""Return list of labels."""
-        if isinstance(labels, MiscTable):
-            labels = list(labels.index)
+        if isinstance(labels, str):
+            if self._db is None or labels not in self._db:
+                labels = []
+            else:
+                labels = list(self._db[labels].index)
         else:
             labels = list(labels)
         return labels
@@ -359,7 +381,11 @@ class Scheme(HeaderBase):
         """
         if item is not None and not pd.isna(item):
             if self.labels is not None:
-                return item in self.labels
+                if isinstance(self.labels, str):
+                    labels = self._labels_to_list(self.labels)
+                else:
+                    labels = self.labels
+                return item in labels
             if self.is_numeric:
                 if self.minimum and not item >= self.minimum:
                     return False

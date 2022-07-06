@@ -47,11 +47,31 @@ def test_scheme_errors():
         scheme = audformat.Scheme(audformat.define.DataType.INTEGER)
         scheme.replace_labels(['a', 'b'])
 
-    # misc table not assigned to a database
-    table = audformat.MiscTable(pd.Index([], name='misc'))
-    error_msg = 'table needs to be assigned'
+    # misc table needs to define data type
+    error_msg = "'dtype' has to be provided"
     with pytest.raises(ValueError, match=error_msg):
-        audformat.Scheme(labels=table)
+        audformat.Scheme(labels='misc')
+
+    # misc table not assigned to a database
+    db = pytest.DB
+    scheme = audformat.Scheme(labels='missing-misc', dtype='str')
+    error_msg = (
+        "misc table 'missing-misc' used as scheme labels "
+        "needs to be assigned to the database"
+    )
+    with pytest.raises(ValueError, match=error_msg):
+        db.schemes['missing-misc'] = scheme
+
+    # misc table has different dtype
+    db = pytest.DB
+    db['misc-dtype'] = audformat.MiscTable(pd.Index([0], name='misc'))
+    scheme = audformat.Scheme(labels='misc-dtype', dtype='str')
+    error_msg = (
+        "Data type is set to 'str', "
+        "but data type of labels in misc table is 'int'."
+    )
+    with pytest.raises(ValueError, match=error_msg):
+        db.schemes['misc-dtype'] = scheme
 
     # misc table should only contain an one-dimensional index
     db = pytest.DB
@@ -64,15 +84,18 @@ def test_scheme_errors():
             names=['misc-1', 'misc-2'],
         )
     )
+    scheme = audformat.Scheme(labels='misc-multi-dim', dtype='str')
     error_msg = 'allowed to have a single level'
     with pytest.raises(ValueError, match=error_msg):
-        audformat.Scheme(labels=db['misc-multi-dim'])
+        db.schemes['misc'] = scheme
 
     # misc table should not contain duplicates
+    db = pytest.DB
     db['misc-duplicate'] = audformat.MiscTable(pd.Index([0, 0], name='misc'))
+    scheme = audformat.Scheme(labels='misc-duplicate', dtype='int')
     error_msg = 'not allowed to contain duplicates'
     with pytest.raises(ValueError, match=error_msg):
-        audformat.Scheme(labels=db['misc-duplicate'])
+        db.schemes['misc-duplicate'] = scheme
 
 
 @pytest.mark.parametrize(
@@ -215,3 +238,24 @@ def test_replace_labels(values, labels, new_labels, expected):
         expected,
         check_names=False,
     )
+
+
+def test_replace_labels_misc_table():
+
+    db = audformat.testing.create_db(minimal=True)
+    db['misc'] = audformat.MiscTable(
+        pd.Index(['spk1', 'spk2'], name='speaker')
+    )
+    scheme = audformat.Scheme(labels='misc', dtype='str')
+    db.schemes['scheme'] = scheme
+    db['table'] = audformat.Table(index=audformat.filewise_index(['f1', 'f2']))
+    db['table']['columns'] = audformat.Column(scheme_id='scheme')
+    db['table']['columns'].set(['spk1', 'spk2'])
+
+    db['misc-new'] = audformat.MiscTable(
+        pd.Index(['spk1', 'spk2', 'spk3'], name='speaker')
+    )
+    db.schemes['scheme'].replace_labels('misc-new')
+
+    # Using not assigned scheme
+    scheme.replace_labels('misc-not-assigned')
