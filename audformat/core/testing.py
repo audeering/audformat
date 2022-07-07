@@ -334,8 +334,8 @@ def create_db(
     ##############
 
     index = pd.Index(
-        ['spk1', 'spk2', 'spk3'],
-        name='speaker',
+        ['label1', 'label2', 'label3'],
+        name='labels',
     )
     db['misc'] = MiscTable(index)
     db['misc']['int'] = Column(scheme_id='int')
