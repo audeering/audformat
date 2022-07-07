@@ -188,9 +188,10 @@ class Column(HeaderBase):
         Raises:
             FileNotFoundError: if file is not found
             RuntimeError: if column is not assigned to a table
-            ValueError: if trying to map without a scheme
-            ValueError: if trying to map from a scheme that has no labels
-            ValueError: if trying to map to a non-existing field
+            ValueError: if trying to map without a scheme,
+                or from a scheme that has no labels,
+                or from a scheme that has only a list of labels,
+                or to a non-existing field
 
         """
         if self._table is None:
@@ -230,6 +231,12 @@ class Column(HeaderBase):
             if labels is None:
                 raise ValueError(
                     f"Scheme '{self.scheme_id}' has no labels."
+                )
+
+            if isinstance(labels, list):
+                raise ValueError(
+                    f"Scheme '{self.scheme_id}' has no mappings "
+                    "for its labels."
                 )
 
             mapping = {}
