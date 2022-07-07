@@ -5,7 +5,21 @@ import audformat
 import audformat.testing
 
 
-def test_scheme():
+def test_scheme_assign_values():
+
+    db = audformat.testing.create_db(minimal=True)
+    speakers = ['spk1', 'spk2', 'spk3']
+    index = pd.Index(speakers, name='speaker')
+    db['misc'] = audformat.MiscTable(index)
+    db.schemes['scheme'] = audformat.Scheme(labels='misc', dtype='str')
+    db['table'] = audformat.Table(audformat.filewise_index(['f1', 'f2', 'f3']))
+    db['table']['speaker'] = audformat.Column(scheme_id='scheme')
+    db['table']['speaker'].set(speakers)
+
+    assert list(db['table']['speaker'].get()) == speakers
+
+
+def test_scheme_contains():
 
     db = pytest.DB
 
