@@ -45,7 +45,7 @@ class Scheme(HeaderBase):
         ValueError: ``dtype`` does not match type of ``labels``
             if ``labels`` is a list or dictionary
         ValueError: when assigning a scheme,
-            that contains a table ID as ``lables``,
+            that contains a table ID as ``labels``,
             to a database,
             but the corresponding misc table is not part of the database,
             or the given table ID is not a misc table,
