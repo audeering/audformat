@@ -34,6 +34,35 @@ def test_create_db():
 
 
 @pytest.mark.parametrize(
+    'db, table_id, expected',
+    [
+        (
+            audformat.Database('test'),
+            'non-existing',
+            False,
+        ),
+        (
+            audformat.testing.create_db(),
+            'non-existing',
+            False,
+        ),
+        (
+            audformat.testing.create_db(),
+            'misc',
+            True,
+        ),
+        (
+            audformat.testing.create_db(),
+            'files',
+            True,
+        ),
+    ]
+)
+def test_contains(db, table_id, expected):
+    assert (table_id in db) == expected
+
+
+@pytest.mark.parametrize(
     'files, num_workers',
     [
         (
