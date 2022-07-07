@@ -51,7 +51,7 @@ class Scheme(HeaderBase):
             or the given table ID is not a misc table,
             or its index is multi-dimensional,
             or its index contains duplicates,
-            or ``dtype`` doe snot match type of labels
+            or ``dtype`` does not match type of labels
             from misc table
 
     Example:
