@@ -68,12 +68,9 @@ class Scheme(HeaderBase):
         >>> # Use index of misc table as labels
         >>> import audformat
         >>> db = audformat.Database('mydb')
-        >>> db.schemes['age'] = Scheme('int')
         >>> db['speaker'] = audformat.MiscTable(
         ...     pd.Index(['spk1', 'spk2'], name='speaker')
         ... )
-        >>> db['speaker']['age'] = audformat.Column(scheme_id='age')
-        >>> db['speaker']['age'].set([31, 46])
         >>> Scheme(labels='speaker', dtype='str')
         {dtype: str, labels: speaker}
 
