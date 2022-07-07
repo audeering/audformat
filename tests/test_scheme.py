@@ -22,10 +22,10 @@ def test_scheme():
 
     # Misc table
     # assigned scheme
-    assert 'sp1' in db.schemes['speaker']
+    assert 'spk1' in db.schemes['speaker']
     # unassigned scheme
     scheme = audformat.Scheme(labels='misc', dtype='str')
-    assert 'sp1' not in scheme
+    assert 'spk1' not in scheme
 
 
 def test_scheme_errors():
