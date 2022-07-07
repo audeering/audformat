@@ -23,6 +23,8 @@ def test_scheme():
 
 def test_scheme_errors():
 
+    db = audformat.Database('test')
+
     # dtype mismatch
     with pytest.raises(ValueError):
         audformat.Scheme(
@@ -53,29 +55,36 @@ def test_scheme_errors():
         audformat.Scheme(labels='misc')
 
     # misc table not assigned to a database
-    db = pytest.DB
-    scheme = audformat.Scheme(labels='missing-misc', dtype='str')
+    scheme = audformat.Scheme(labels='misc', dtype='str')
     error_msg = (
-        "misc table 'missing-misc' used as scheme labels "
+        "misc table 'misc' used as scheme labels "
         "needs to be assigned to the database"
     )
     with pytest.raises(ValueError, match=error_msg):
-        db.schemes['missing-misc'] = scheme
+        db.schemes['misc'] = scheme
+
+    # filewise table used instead of misc table
+    db['table'] = audformat.Table(audformat.filewise_index(['f1']))
+    scheme = audformat.Scheme(labels='table', dtype='str')
+    error_msg = (
+        "The table 'table' used as scheme labels "
+        "needs to be a misc table."
+    )
+    with pytest.raises(ValueError, match=error_msg):
+        db.schemes['misc'] = scheme
 
     # misc table has different dtype
-    db = pytest.DB
-    db['misc-dtype'] = audformat.MiscTable(pd.Index([0], name='misc'))
-    scheme = audformat.Scheme(labels='misc-dtype', dtype='str')
+    db['misc'] = audformat.MiscTable(pd.Index([0], name='misc'))
+    scheme = audformat.Scheme(labels='misc', dtype='str')
     error_msg = (
         "Data type is set to 'str', "
         "but data type of labels in misc table is 'int'."
     )
     with pytest.raises(ValueError, match=error_msg):
-        db.schemes['misc-dtype'] = scheme
+        db.schemes['misc'] = scheme
 
     # misc table should only contain an one-dimensional index
-    db = pytest.DB
-    db['misc-multi-dim'] = audformat.MiscTable(
+    db['misc'] = audformat.MiscTable(
         pd.MultiIndex.from_arrays(
             [
                 [1, 2],
@@ -84,18 +93,17 @@ def test_scheme_errors():
             names=['misc-1', 'misc-2'],
         )
     )
-    scheme = audformat.Scheme(labels='misc-multi-dim', dtype='str')
+    scheme = audformat.Scheme(labels='misc', dtype='str')
     error_msg = 'allowed to have a single level'
     with pytest.raises(ValueError, match=error_msg):
         db.schemes['misc'] = scheme
 
     # misc table should not contain duplicates
-    db = pytest.DB
-    db['misc-duplicate'] = audformat.MiscTable(pd.Index([0, 0], name='misc'))
-    scheme = audformat.Scheme(labels='misc-duplicate', dtype='int')
+    db['misc'] = audformat.MiscTable(pd.Index([0, 0], name='misc'))
+    scheme = audformat.Scheme(labels='misc', dtype='int')
     error_msg = 'not allowed to contain duplicates'
     with pytest.raises(ValueError, match=error_msg):
-        db.schemes['misc-duplicate'] = scheme
+        db.schemes['misc'] = scheme
 
 
 @pytest.mark.parametrize(

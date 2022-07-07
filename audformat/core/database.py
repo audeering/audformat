@@ -1018,6 +1018,11 @@ class Database(HeaderBase):
                     f"The misc table '{table_id}' used as scheme labels "
                     "needs to be assigned to the database."
                 )
+            if table_id not in self.misc_tables:
+                raise ValueError(
+                    f"The table '{table_id}' used as scheme labels "
+                    "needs to be a misc table."
+                )
             if self[table_id].index.nlevels > 1:
                 raise ValueError(
                     f"Index of misc table '{table_id}' used as scheme labels "

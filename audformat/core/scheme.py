@@ -48,6 +48,7 @@ class Scheme(HeaderBase):
             that contains a table ID as ``lables``,
             to a database,
             but the corresponding misc table is not part of the database,
+            or the given table ID is not a misc table,
             or its index is multi-dimensional,
             or its index contains duplicates,
             or ``dtype`` doe snot match type of labels
