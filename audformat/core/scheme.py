@@ -331,7 +331,7 @@ class Scheme(HeaderBase):
         if not isinstance(labels, (dict, list, str)):
             raise ValueError(
                 'Labels must be passed '
-                'as a dictionary, list or ID of a misced table.'
+                'as a dictionary, list or ID of a misc table.'
             )
 
     def _dtype_from_labels(
