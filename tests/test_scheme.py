@@ -20,6 +20,13 @@ def test_scheme():
     assert 'label1' in db.schemes['label_map_str']
     assert 1 in db.schemes['label_map_int']
 
+    # Misc table
+    # assigned scheme
+    assert 'sp1' in db.schemes['speaker']
+    # unassigned scheme
+    scheme = audformat.Scheme(labels='misc', dtype='str')
+    assert 'sp1' not in scheme
+
 
 def test_scheme_errors():
 
