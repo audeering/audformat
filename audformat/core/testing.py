@@ -328,14 +328,6 @@ def create_db(
     )
     db.schemes['string'] = Scheme()
     db.schemes['time'] = Scheme(dtype=define.DataType.TIME)
-    db.schemes['age'] = Scheme(
-        dtype=define.DataType.INTEGER,
-        minimum=9,
-        maximum=99,
-    )
-    db.schemes['gender'] = Scheme(
-        labels=['female', 'male'],
-    )
 
     ##############
     # Misc Table #
@@ -346,16 +338,16 @@ def create_db(
         name='speaker',
     )
     db['misc'] = MiscTable(index)
-    db['misc']['age'] = Column(scheme_id='age')
-    db['misc']['age'].set(db.schemes['age'].draw(len(index)))
-    db['misc']['gender'] = Column(scheme_id='gender')
-    db['misc']['gender'].set(db.schemes['gender'].draw(len(index)))
+    db['misc']['int'] = Column(scheme_id='int')
+    db['misc']['int'].set(db.schemes['int'].draw(len(index)))
+    db['misc']['label'] = Column(scheme_id='label')
+    db['misc']['label'].set(db.schemes['label'].draw(len(index)))
 
     ############################
     # Schemes from Misc Tables #
     ############################
 
-    db.schemes['speaker'] = Scheme(labels='misc', dtype='str')
+    db.schemes['label_map_misc'] = Scheme(labels='misc', dtype='str')
 
     ##########
     # Splits #
@@ -369,13 +361,12 @@ def create_db(
     # Tables #
     ##########
 
-    schemes = [s for s in db.schemes if s not in ['age', 'gender']]
     add_table(
         db,
         'files',
         define.IndexType.FILEWISE,
         columns={
-            scheme: (scheme, 'gold') for scheme in schemes
+            scheme: (scheme, 'gold') for scheme in db.schemes
         },
         num_files=100, p_none=0.25, split_id='train',
         media_id='microphone'
@@ -390,7 +381,7 @@ def create_db(
         'segments',
         define.IndexType.SEGMENTED,
         columns={
-            scheme: (scheme, 'gold') for scheme in schemes
+            scheme: (scheme, 'gold') for scheme in db.schemes
         },
         num_files=10, num_segments_per_file=10,
         file_duration='60s', p_none=0.25, split_id='dev',
