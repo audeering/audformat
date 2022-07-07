@@ -235,7 +235,7 @@ class Column(HeaderBase):
 
             if isinstance(labels, list):
                 raise ValueError(
-                    f"Scheme '{self.scheme_id}' has no mappings "
+                    f"Scheme '{self.scheme_id}' provides no mapping "
                     "for its labels."
                 )
 
