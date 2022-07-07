@@ -224,7 +224,8 @@ class Column(HeaderBase):
                     f"Column '{self._id}' is not assigned to a scheme."
                 )
 
-            labels = self._table._db.schemes[self.scheme_id].labels
+            scheme = self._table._db.schemes[self.scheme_id]
+            labels = scheme._get_labels()
 
             if labels is None:
                 raise ValueError(

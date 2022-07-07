@@ -201,7 +201,7 @@ class Scheme(HeaderBase):
                 x = [''.join([random.choice(seq) for _ in range(str_len)])
                      for _ in range(n)]
         else:
-            labels = self._labels_to_list(self.labels)
+            labels = list(self._get_labels())
             x = [random.choice(labels) for _ in range(n)]
 
         if p_none is not None:
@@ -230,7 +230,7 @@ class Scheme(HeaderBase):
 
         """
         if self.labels is not None:
-            labels = self._labels_to_list(self.labels)
+            labels = list(self._get_labels())
             if len(labels) > 0 and isinstance(labels[0], int):
                 # allow nullable
                 labels = pd.array(labels, dtype='int64')
@@ -357,11 +357,24 @@ class Scheme(HeaderBase):
 
         return dtype
 
+    def _get_labels(
+            self,
+    ) -> typing.Union[typing.List, typing.Dict]:
+        r"""Return actual labels as list or dict."""
+        if isinstance(self.labels, str):
+            if self._db is None or self.labels not in self._db:
+                labels = {}
+            else:
+                labels = self._db[self.labels].df.to_dict('index')
+        else:
+            labels = self.labels
+        return labels
+
     def _labels_to_list(
             self,
             labels: typing.Union[dict, list, str],
     ) -> typing.List:
-        r"""Return list of labels."""
+        r"""Convert labels to actual labels as list."""
         if isinstance(labels, str):
             if self._db is None or labels not in self._db:
                 labels = []
@@ -383,7 +396,7 @@ class Scheme(HeaderBase):
         if item is not None and not pd.isna(item):
             if self.labels is not None:
                 if isinstance(self.labels, str):
-                    labels = self._labels_to_list(self.labels)
+                    labels = self._get_labels()
                 else:
                     labels = self.labels
                 return item in labels
