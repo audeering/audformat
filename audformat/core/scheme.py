@@ -19,7 +19,7 @@ class Scheme(HeaderBase):
     provided by a list,
     dictionary
     or a table ID of a :class:`audformat.MiscTable`,
-    for which the labels are given by the index.
+    where the values of the index are used as labels.
     A continuous range can be limited by a minimum and
     maximum value.
 
