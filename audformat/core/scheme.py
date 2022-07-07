@@ -65,7 +65,7 @@ class Scheme(HeaderBase):
         {dtype: int}
         >>> Scheme(float, minimum=0, maximum=1)
         {dtype: float, minimum: 0, maximum: 1}
-        >>> # Misc Table as Scheme
+        >>> # Use index of misc table as labels
         >>> import audformat
         >>> db = audformat.Database('mydb')
         >>> db.schemes['age'] = Scheme('int')
