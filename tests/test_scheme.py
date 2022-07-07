@@ -37,6 +37,10 @@ def test_scheme_contains():
     # Misc table
     # assigned scheme
     assert 'spk1' in db.schemes['speaker']
+    # remove table
+    # db.drop_tables(['misc'])
+    db.misc_tables.pop('misc')
+    assert 'spk1' not in db.schemes['speaker']
     # unassigned scheme
     scheme = audformat.Scheme(labels='misc', dtype='str')
     assert 'spk1' not in scheme
