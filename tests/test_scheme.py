@@ -90,7 +90,6 @@ def test_scheme_dtypes(dtype, values):
     db['table']['labels'] = audformat.Column(scheme_id='scheme')
     db['table']['labels'].set(values)
 
-    print(list(db['table']['labels'].get()))
     assert set(db['table']['labels'].get()) == set(values)
 
 

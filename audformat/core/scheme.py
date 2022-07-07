@@ -91,6 +91,7 @@ class Scheme(HeaderBase):
         pd.Timedelta: define.DataType.TIME,
         'date': define.DataType.DATE,
         datetime.datetime: define.DataType.DATE,
+        pd.Timestamp: define.DataType.DATE,
     }
 
     def __init__(
