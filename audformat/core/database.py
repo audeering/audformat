@@ -314,16 +314,18 @@ class Database(HeaderBase):
             self,
             table_ids: typing.Union[str, typing.Sequence[str]],
     ):
-        r"""Drop tables by ID.
+        r"""Drop (miscellaneous) tables by ID.
 
         Args:
             table_ids: table IDs to drop
 
         """
-        if isinstance(table_ids, str):
-            table_ids = [table_ids]
+        table_ids = audeer.to_list(table_ids)
         for table_id in table_ids:
-            self.tables.pop(table_id)
+            if table_id in self.tables:
+                self.tables.pop(table_id)
+            elif table_id in self.misc_tables:
+                self.misc_tables.pop(table_id)
 
     def files_duration(
             self,
@@ -487,18 +489,14 @@ class Database(HeaderBase):
             self,
             table_ids: typing.Union[str, typing.Sequence[str]],
     ):
-        r"""Pick tables by ID.
+        r"""Pick (miscellaneous) tables by ID.
 
         Args:
             table_ids: table IDs to pick
 
         """
-        if isinstance(table_ids, str):
-            table_ids = [table_ids]
-        drop_ids = []
-        for table_id in list(self.tables):
-            if table_id not in table_ids:
-                drop_ids.append(table_id)
+        table_ids = audeer.to_list(table_ids)
+        drop_ids = [t for t in list(self) if t not in table_ids]
         self.drop_tables(drop_ids)
 
     def save(

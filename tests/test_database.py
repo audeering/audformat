@@ -171,19 +171,76 @@ def test_pick_files(files, num_workers):
     )
 
 
-def test_drop_and_pick_tables():
+@pytest.mark.parametrize(
+    'db, tables, expected_tables',
+    [
+        (
+            audformat.testing.create_db(),
+            'segments',
+            ['files', 'misc'],
+        ),
+        (
+            audformat.testing.create_db(),
+            'misc',
+            ['files', 'segments'],
+        ),
+        (
+            audformat.testing.create_db(),
+            ['segments'],
+            ['files', 'misc'],
+        ),
+        (
+            audformat.testing.create_db(),
+            ['segments', 'misc'],
+            ['files'],
+        ),
+        (
+            audformat.testing.create_db(),
+            ['segments', 'misc', 'non-existing'],
+            ['files'],
+        ),
+    ]
+)
+def test_drop_tables(db, tables, expected_tables):
 
-    db = audformat.testing.create_db()
+    db.drop_tables(tables)
+    assert list(db) == expected_tables
 
-    assert 'segments' in db
-    db.pick_tables('files')
-    assert 'segments' not in db
 
-    db = audformat.testing.create_db()
+@pytest.mark.parametrize(
+    'db, tables, expected_tables',
+    [
+        (
+            audformat.testing.create_db(),
+            'segments',
+            ['segments'],
+        ),
+        (
+            audformat.testing.create_db(),
+            'misc',
+            ['misc'],
+        ),
+        (
+            audformat.testing.create_db(),
+            ['segments'],
+            ['segments'],
+        ),
+        (
+            audformat.testing.create_db(),
+            ['segments', 'misc'],
+            ['misc', 'segments'],
+        ),
+        (
+            audformat.testing.create_db(),
+            ['segments', 'misc', 'non-existing'],
+            ['misc', 'segments'],
+        ),
+    ]
+)
+def test_pick_tables(db, tables, expected_tables):
 
-    assert 'segments' in db
-    db.drop_tables('segments')
-    assert 'segments' not in db
+    db.pick_tables(tables)
+    assert list(db) == expected_tables
 
 
 def test_files_duration():
