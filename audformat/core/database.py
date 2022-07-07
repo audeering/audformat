@@ -1008,9 +1008,9 @@ class Database(HeaderBase):
         scheme._db = self
         scheme._id = scheme_id
 
-        # If a misc table is used as a database
+        # If a misc table is used as a scheme
         # we check for errors
-        # when assigning the scheme a database
+        # when assigning the scheme to a database
         if hasattr(scheme, 'labels') and isinstance(scheme.labels, str):
             table_id = scheme.labels
             if table_id not in self:
