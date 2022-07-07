@@ -328,54 +328,6 @@ def create_db(
     )
     db.schemes['string'] = Scheme()
     db.schemes['time'] = Scheme(dtype=define.DataType.TIME)
-
-    ##########
-    # Splits #
-    ##########
-
-    db.splits['dev'] = Split(type=define.SplitType.DEVELOP)
-    db.splits['test'] = Split(type=define.SplitType.TEST)
-    db.splits['train'] = Split(type=define.SplitType.TRAIN)
-
-    ##########
-    # Tables #
-    ##########
-
-    add_table(
-        db,
-        'files',
-        define.IndexType.FILEWISE,
-        columns={
-            scheme: (scheme, 'gold') for scheme in db.schemes
-        },
-        num_files=100, p_none=0.25, split_id='train',
-        media_id='microphone'
-    )
-    db['files']['no_scheme'] = Column()
-    db['files']['no_scheme'].set(
-        db.schemes['string'].draw(100, p_none=0.25)
-    )
-
-    add_table(
-        db,
-        'segments',
-        define.IndexType.SEGMENTED,
-        columns={
-            scheme: (scheme, 'gold') for scheme in db.schemes
-        },
-        num_files=10, num_segments_per_file=10,
-        file_duration='60s', p_none=0.25, split_id='dev',
-        media_id='microphone',
-    )
-    db['segments']['no_scheme'] = Column()
-    db['segments']['no_scheme'].set(
-        db.schemes['string'].draw(100, p_none=0.25)
-    )
-
-    ##############
-    # Misc Table #
-    ##############
-
     db.schemes['age'] = Scheme(
         dtype=define.DataType.INTEGER,
         minimum=9,
@@ -384,6 +336,10 @@ def create_db(
     db.schemes['gender'] = Scheme(
         labels=['female', 'male'],
     )
+
+    ##############
+    # Misc Table #
+    ##############
 
     index = pd.Index(
         ['spk1', 'spk2', 'spk3'],
@@ -400,5 +356,49 @@ def create_db(
     ############################
 
     db.schemes['speaker'] = Scheme(labels='misc', dtype='str')
+
+    ##########
+    # Splits #
+    ##########
+
+    db.splits['dev'] = Split(type=define.SplitType.DEVELOP)
+    db.splits['test'] = Split(type=define.SplitType.TEST)
+    db.splits['train'] = Split(type=define.SplitType.TRAIN)
+
+    ##########
+    # Tables #
+    ##########
+
+    schemes = [s for s in db.schemes if s not in ['age', 'gender']]
+    add_table(
+        db,
+        'files',
+        define.IndexType.FILEWISE,
+        columns={
+            scheme: (scheme, 'gold') for scheme in schemes
+        },
+        num_files=100, p_none=0.25, split_id='train',
+        media_id='microphone'
+    )
+    db['files']['no_scheme'] = Column()
+    db['files']['no_scheme'].set(
+        db.schemes['string'].draw(100, p_none=0.25)
+    )
+
+    add_table(
+        db,
+        'segments',
+        define.IndexType.SEGMENTED,
+        columns={
+            scheme: (scheme, 'gold') for scheme in schemes
+        },
+        num_files=10, num_segments_per_file=10,
+        file_duration='60s', p_none=0.25, split_id='dev',
+        media_id='microphone',
+    )
+    db['segments']['no_scheme'] = Column()
+    db['segments']['no_scheme'].set(
+        db.schemes['string'].draw(100, p_none=0.25)
+    )
 
     return db
