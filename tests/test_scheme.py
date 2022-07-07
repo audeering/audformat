@@ -50,6 +50,49 @@ def test_scheme_contains():
     assert 'label1' not in scheme
 
 
+@pytest.mark.parametrize(
+    'dtype, values',
+    [
+        (
+            audformat.define.DataType.BOOL,
+            [True, False],
+        ),
+        (
+            audformat.define.DataType.DATE,
+            pd.to_datetime(['3/11/2000', '3/12/2000', '3/13/2000']),
+        ),
+        (
+            audformat.define.DataType.INTEGER,
+            [1, 2, 3],
+        ),
+        (
+            audformat.define.DataType.FLOAT,
+            [1.0, 2.0, 3.0],
+        ),
+        (
+            audformat.define.DataType.STRING,
+            ['a', 'b', 'c'],
+        ),
+        (
+            audformat.define.DataType.TIME,
+            pd.to_timedelta(['1s', '2s', '3s']),
+        ),
+    ]
+)
+def test_scheme_dtypes(dtype, values):
+    db = audformat.Database('test')
+    index = pd.Index(values, name='labels')
+    db['misc'] = audformat.MiscTable(index)
+    index = audformat.filewise_index([f'f{idx}' for idx in range(len(values))])
+    db.schemes['scheme'] = audformat.Scheme(dtype=dtype, labels='misc')
+    db['table'] = audformat.Table(index)
+    db['table']['labels'] = audformat.Column(scheme_id='scheme')
+    db['table']['labels'].set(values)
+
+    print(list(db['table']['labels'].get()))
+    assert set(db['table']['labels'].get()) == set(values)
+
+
 def test_scheme_errors():
 
     db = audformat.Database('test')
