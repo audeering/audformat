@@ -53,9 +53,10 @@ def test_scheme_contains():
 @pytest.mark.parametrize(
     'dtype, values',
     [
-        (
+        pytest.param(  # bool not supported
             audformat.define.DataType.BOOL,
             [True, False],
+            marks=pytest.mark.xfail(raises=ValueError),
         ),
         (
             audformat.define.DataType.DATE,

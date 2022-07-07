@@ -52,7 +52,8 @@ class Scheme(HeaderBase):
             or its index is multi-dimensional,
             or its index contains duplicates,
             or ``dtype`` does not match type of labels
-            from misc table
+            from misc table,
+            or ``dtype`` is set to ``bool``
 
     Example:
         >>> Scheme()
@@ -121,6 +122,11 @@ class Scheme(HeaderBase):
                 if dtype is None:
                     raise ValueError(
                         "'dtype' has to be provided "
+                        "when using a misc table as labels."
+                    )
+                if dtype == define.DataType.BOOL:
+                    raise ValueError(
+                        "'dtype' cannot be 'bool' "
                         "when using a misc table as labels."
                     )
             else:
