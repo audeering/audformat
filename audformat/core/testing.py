@@ -320,11 +320,34 @@ def create_db(
         labels={1: 'a', 2: 'b', 3: 'c'}
     )
     db.schemes['label_map_str'] = Scheme(
-        labels={'label1': {'prop1': 1, 'prop2': 'a'},
-                'label2': {'prop1': 2, 'prop2': 'b'},
-                'label3': {'prop1': 3, 'prop2': 'c'}})
+        labels={
+            'label1': {'prop1': 1, 'prop2': 'a'},
+            'label2': {'prop1': 2, 'prop2': 'b'},
+            'label3': {'prop1': 3, 'prop2': 'c'},
+        }
+    )
     db.schemes['string'] = Scheme()
     db.schemes['time'] = Scheme(dtype=define.DataType.TIME)
+
+    ##############
+    # Misc Table #
+    ##############
+
+    index = pd.Index(
+        ['label1', 'label2', 'label3'],
+        name='labels',
+    )
+    db['misc'] = MiscTable(index)
+    db['misc']['int'] = Column(scheme_id='int')
+    db['misc']['int'].set(db.schemes['int'].draw(len(index)))
+    db['misc']['label'] = Column(scheme_id='label')
+    db['misc']['label'].set(db.schemes['label'].draw(len(index)))
+
+    ############################
+    # Schemes from Misc Tables #
+    ############################
+
+    db.schemes['label_map_misc'] = Scheme(labels='misc', dtype='str')
 
     ##########
     # Splits #
@@ -368,28 +391,5 @@ def create_db(
     db['segments']['no_scheme'].set(
         db.schemes['string'].draw(100, p_none=0.25)
     )
-
-    #######################
-    # Miscellaneous Table #
-    #######################
-
-    db.schemes['age'] = Scheme(
-        dtype=define.DataType.INTEGER,
-        minimum=9,
-        maximum=99,
-    )
-    db.schemes['gender'] = Scheme(
-        labels=['female', 'male'],
-    )
-
-    index = pd.Index(
-        ['sp1', 'sp2', 'sp3'],
-        name='speaker',
-    )
-    db['misc'] = MiscTable(index)
-    db['misc']['age'] = Column(scheme_id='age')
-    db['misc']['age'].set(db.schemes['age'].draw(len(index)))
-    db['misc']['gender'] = Column(scheme_id='gender')
-    db['misc']['gender'].set(db.schemes['gender'].draw(len(index)))
 
     return db

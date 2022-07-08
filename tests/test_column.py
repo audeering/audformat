@@ -159,6 +159,10 @@ def test_get_as_segmented():
         (pytest.DB['files']['label_map_int'], 'label_map_int'),
         (pytest.DB['files']['label_map_str'], 'prop1'),
         (pytest.DB['segments']['label_map_str'], 'prop2'),
+        pytest.param(  # no mappings
+            pytest.DB['files']['label'], 'label1',
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
         pytest.param(  # no schemes
             pytest.DB['files']['no_scheme'], 'map',
             marks=pytest.mark.xfail(raises=ValueError),

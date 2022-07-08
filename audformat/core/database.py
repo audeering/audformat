@@ -1007,6 +1007,8 @@ class Database(HeaderBase):
     ) -> Scheme:
         scheme._db = self
         scheme._id = scheme_id
+        if hasattr(scheme, 'labels') and scheme.labels is not None:
+            scheme._check_labels(scheme.labels)
         return scheme
 
     def _set_table(

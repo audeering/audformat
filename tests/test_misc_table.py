@@ -37,8 +37,8 @@ def test_copy(table):
     [
         (
             pytest.DB['misc'],
-            'age',
-            pytest.DB['misc'].df['age'],
+            'int',
+            pytest.DB['misc'].df['int'],
         ),
     ]
 )

@@ -1,3 +1,5 @@
+from __future__ import annotations  # allow typing without string
+
 import typing
 
 import numpy as np
@@ -11,8 +13,13 @@ from audformat.core.index import (
     to_array,
 )
 from audformat.core.rater import Rater
-from audformat.core.scheme import Scheme
 from audformat.core.typing import Values
+
+if typing.TYPE_CHECKING:
+    # Fix to make mypy work without circular imports,
+    # compare
+    # https://adamj.eu/tech/2021/05/13/python-type-hints-how-to-fix-circular-imports/
+    from audformat.core.scheme import Scheme  # pragma: nocover
 
 
 def assert_values(
@@ -181,9 +188,10 @@ class Column(HeaderBase):
         Raises:
             FileNotFoundError: if file is not found
             RuntimeError: if column is not assigned to a table
-            ValueError: if trying to map without a scheme
-            ValueError: if trying to map from a scheme that has no labels
-            ValueError: if trying to map to a non-existing field
+            ValueError: if trying to map without a scheme,
+                or from a scheme that has no labels,
+                or from a scheme that has only a list of labels,
+                or to a non-existing field
 
         """
         if self._table is None:
@@ -217,11 +225,18 @@ class Column(HeaderBase):
                     f"Column '{self._id}' is not assigned to a scheme."
                 )
 
-            labels = self._table._db.schemes[self.scheme_id].labels
+            scheme = self._table._db.schemes[self.scheme_id]
+            labels = scheme._labels_to_dict()
 
             if labels is None:
                 raise ValueError(
                     f"Scheme '{self.scheme_id}' has no labels."
+                )
+
+            if not any(labels.values()):
+                raise ValueError(
+                    f"Scheme '{self.scheme_id}' provides no mapping "
+                    "for its labels."
                 )
 
             mapping = {}
