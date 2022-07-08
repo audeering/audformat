@@ -22,6 +22,7 @@ def test_scheme_assign_values():
 
     assert list(db['table']['speaker'].get()) == speakers
     assert list(db['table']['speaker'].get(map='age')) == ages
+    assert list(db['table'].get(map={'speaker': 'age'})['age']) == ages
 
 
 def test_scheme_contains():
