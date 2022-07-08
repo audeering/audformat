@@ -386,7 +386,7 @@ def test_replace_labels_misc_table():
     assert scheme._get_labels() == {'spk1': {}}
     assert list(db['table']['columns'].get().values) == ['spk1', np.NaN]
 
-    # replace again with mis table
+    # replace again with misc table
     scheme.replace_labels('misc')
     assert scheme.labels == 'misc'
     assert scheme._get_labels() == {'spk1': {}, 'spk2': {}}
