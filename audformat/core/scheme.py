@@ -103,6 +103,9 @@ class Scheme(HeaderBase):
     ):
         super().__init__(description=description, meta=meta)
 
+        self._db = None
+        self._id = None
+
         if dtype is not None:
             if dtype in self._dtypes:
                 dtype = self._dtypes[dtype]
@@ -148,9 +151,6 @@ class Scheme(HeaderBase):
         r"""Minimum value"""
         self.maximum = maximum if self.is_numeric else None
         r"""Maximum value"""
-
-        self._db = None
-        self._id = None
 
     @property
     def is_numeric(self) -> bool:
@@ -270,6 +270,12 @@ class Scheme(HeaderBase):
             ValueError: if scheme does not define labels
             ValueError: if dtype of new labels does not match dtype of
                 scheme
+            ValueError: if ``labels`` is a misc table ID
+                and the scheme is already assigned to a database,
+                but the corresponding misc table is not part of the database,
+                or the given table ID is not a misc table,
+                or its index is multi-dimensional,
+                or its index contains duplicates
 
         Example:
             >>> speaker = Scheme(
@@ -303,14 +309,17 @@ class Scheme(HeaderBase):
             )
         self._check_labels(labels)
 
-        dtype_labels = self._dtype_from_labels(labels)
-        if dtype_labels != self.dtype:
-            raise ValueError(
-                "Data type of labels must not change: \n"
-                f"'{self.dtype}' \n"
-                f"!=\n"
-                f"'{dtype_labels}'"
-            )
+        if not isinstance(labels, str) or self._db is not None:
+            # Check change of data type
+            # for list, dict and assigned misc table
+            dtype_labels = self._dtype_from_labels(labels)
+            if dtype_labels != self.dtype:
+                raise ValueError(
+                    "Data type of labels must not change: \n"
+                    f"'{self.dtype}' \n"
+                    f"!=\n"
+                    f"'{dtype_labels}'"
+                )
 
         self.labels = labels
 
@@ -337,6 +346,39 @@ class Scheme(HeaderBase):
                 'Labels must be passed '
                 'as a dictionary, list or ID of a misc table.'
             )
+
+        if self._db is not None and isinstance(labels, str):
+
+            table_id = labels
+            if table_id not in self._db:
+                raise ValueError(
+                    f"The misc table '{table_id}' used as scheme labels "
+                    "needs to be assigned to the database."
+                )
+            if table_id not in self._db.misc_tables:
+                raise ValueError(
+                    f"The table '{table_id}' used as scheme labels "
+                    "needs to be a misc table."
+                )
+            if self._db[table_id].index.nlevels > 1:
+                raise ValueError(
+                    f"Index of misc table '{table_id}' used as scheme labels "
+                    'is only allowed to have a single level.'
+                )
+            if sum(self._db[table_id].index.duplicated()) > 0:
+                raise ValueError(
+                    f"Index of misc table '{table_id}' used as scheme labels "
+                    'is not allowed to contain duplicates.'
+                )
+            labels = list(self._db[table_id].index)
+            dtype_labels = self._dtype_from_labels(labels)
+            if self.dtype != dtype_labels:
+                raise ValueError(
+                    "Data type is set to "
+                    f"'{self.dtype}', "
+                    "but data type of labels in misc table is "
+                    f"'{dtype_labels}'."
+                )
 
     def _dtype_from_labels(
             self,
@@ -380,10 +422,7 @@ class Scheme(HeaderBase):
     ) -> typing.List:
         r"""Convert labels to actual labels as list."""
         if isinstance(labels, str):
-            if self._db is None or labels not in self._db:
-                labels = []
-            else:
-                labels = list(self._db[labels].index)
+            labels = list(self._db[labels].index)
         else:
             labels = list(labels)
         return labels

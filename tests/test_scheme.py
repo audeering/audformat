@@ -362,6 +362,11 @@ def test_replace_labels_misc_table():
     assert scheme.labels == 'misc'
     assert scheme._get_labels() == {}
 
+    # replace with non-existing misc table scheme
+    # and back again
+    scheme.replace_labels('misc-non-existing')
+    scheme.replace_labels('misc')
+
     # assigned scheme
     db.schemes['scheme'] = scheme
     assert scheme.labels == 'misc'
@@ -397,6 +402,9 @@ def test_replace_labels_misc_table():
     assert scheme._get_labels() == ['spk1', 'spk2']
 
     # replace with non-existing misc table scheme
-    scheme.replace_labels('misc-non-existing')
-    assert scheme.labels == 'misc-non-existing'
-    assert scheme._get_labels() == {}
+    error_msg = (
+        "The misc table 'misc-non-existing' used as scheme labels "
+        "needs to be assigned to the database."
+    )
+    with pytest.raises(ValueError, match=error_msg):
+        scheme.replace_labels('misc-non-existing')

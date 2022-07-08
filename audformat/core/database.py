@@ -1007,42 +1007,8 @@ class Database(HeaderBase):
     ) -> Scheme:
         scheme._db = self
         scheme._id = scheme_id
-
-        # If a misc table is used as a scheme
-        # we check for errors
-        # when assigning the scheme to a database
-        if hasattr(scheme, 'labels') and isinstance(scheme.labels, str):
-            table_id = scheme.labels
-            if table_id not in self:
-                raise ValueError(
-                    f"The misc table '{table_id}' used as scheme labels "
-                    "needs to be assigned to the database."
-                )
-            if table_id not in self.misc_tables:
-                raise ValueError(
-                    f"The table '{table_id}' used as scheme labels "
-                    "needs to be a misc table."
-                )
-            if self[table_id].index.nlevels > 1:
-                raise ValueError(
-                    f"Index of misc table '{table_id}' used as scheme labels "
-                    'is only allowed to have a single level.'
-                )
-            if sum(self[table_id].index.duplicated()) > 0:
-                raise ValueError(
-                    f"Index of misc table '{table_id}' used as scheme labels "
-                    'is not allowed to contain duplicates.'
-                )
-            labels = list(self[table_id].index)
-            dtype_labels = scheme._dtype_from_labels(labels)
-            if scheme.dtype != dtype_labels:
-                raise ValueError(
-                    "Data type is set to "
-                    f"'{scheme.dtype}', "
-                    "but data type of labels in misc table is "
-                    f"'{dtype_labels}'."
-                )
-
+        if hasattr(scheme, 'labels') and scheme.labels is not None:
+            scheme._check_labels(scheme.labels)
         return scheme
 
     def _set_table(
