@@ -205,7 +205,7 @@ class Scheme(HeaderBase):
                 x = [''.join([random.choice(seq) for _ in range(str_len)])
                      for _ in range(n)]
         else:
-            labels = list(self._get_labels())
+            labels = self._labels_to_list()
             x = [random.choice(labels) for _ in range(n)]
 
         if p_none is not None:
@@ -234,7 +234,7 @@ class Scheme(HeaderBase):
 
         """
         if self.labels is not None:
-            labels = list(self._get_labels())
+            labels = self._labels_to_list()
             if len(labels) > 0 and isinstance(labels[0], int):
                 # allow nullable
                 labels = pd.array(labels, dtype='int64')
@@ -403,29 +403,28 @@ class Scheme(HeaderBase):
 
         return dtype
 
-    def _get_labels(
+    def _labels_to_dict(
             self,
-    ) -> typing.Union[typing.List, typing.Dict]:
+            labels: typing.Union[dict, list, str] = None,
+    ) -> typing.Dict:
         r"""Return actual labels as list or dict."""
-        if isinstance(self.labels, str):
-            if self._db is None or self.labels not in self._db:
+        if labels is None:
+            labels = self.labels
+        if isinstance(labels, str):
+            if self._db is None or labels not in self._db:
                 labels = {}
             else:
-                labels = self._db[self.labels].df.to_dict('index')
-        else:
-            labels = self.labels
+                labels = self._db[labels].df.to_dict('index')
+        elif isinstance(labels, list):
+            labels = {label: {} for label in labels}
         return labels
 
     def _labels_to_list(
             self,
-            labels: typing.Union[dict, list, str],
+            labels: typing.Union[dict, list, str] = None,
     ) -> typing.List:
         r"""Convert labels to actual labels as list."""
-        if isinstance(labels, str):
-            labels = list(self._db[labels].index)
-        else:
-            labels = list(labels)
-        return labels
+        return list(self._labels_to_dict(labels))
 
     def __contains__(self, item: typing.Any) -> bool:
         r"""Check if scheme contains data type of item.
@@ -438,10 +437,7 @@ class Scheme(HeaderBase):
         """
         if item is not None and not pd.isna(item):
             if self.labels is not None:
-                if isinstance(self.labels, str):
-                    labels = self._get_labels()
-                else:
-                    labels = self.labels
+                labels = self._labels_to_dict()
                 return item in labels
             if self.is_numeric:
                 if self.minimum and not item >= self.minimum:

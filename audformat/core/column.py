@@ -226,14 +226,14 @@ class Column(HeaderBase):
                 )
 
             scheme = self._table._db.schemes[self.scheme_id]
-            labels = scheme._get_labels()
+            labels = scheme._labels_to_dict()
 
             if labels is None:
                 raise ValueError(
                     f"Scheme '{self.scheme_id}' has no labels."
                 )
 
-            if isinstance(labels, list):
+            if not any(labels.values()):
                 raise ValueError(
                     f"Scheme '{self.scheme_id}' provides no mapping "
                     "for its labels."
