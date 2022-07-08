@@ -71,7 +71,7 @@ class Scheme(HeaderBase):
         >>> db['speaker'] = audformat.MiscTable(
         ...     pd.Index(['spk1', 'spk2'], name='speaker')
         ... )
-        >>> Scheme(str, labels='speaker')
+        >>> Scheme('str', labels='speaker')
         {dtype: str, labels: speaker}
 
     """
