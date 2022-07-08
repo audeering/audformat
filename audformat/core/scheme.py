@@ -407,7 +407,7 @@ class Scheme(HeaderBase):
             self,
             labels: typing.Union[dict, list, str] = None,
     ) -> typing.Dict:
-        r"""Return actual labels as list or dict."""
+        r"""Return actual labels as dict."""
         if labels is None:
             labels = self.labels
         if isinstance(labels, str):
