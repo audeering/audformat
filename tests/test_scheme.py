@@ -357,7 +357,7 @@ def test_replace_labels_misc_table():
     )
 
     # non-assigned scheme
-    scheme = audformat.Scheme(labels='misc', dtype='str')
+    scheme = audformat.Scheme('str', labels='misc')
     assert scheme.labels == 'misc'
     assert scheme._get_labels() == {}
 
@@ -384,6 +384,11 @@ def test_replace_labels_misc_table():
     assert scheme.labels == {'spk1': {}}
     assert scheme._get_labels() == {'spk1': {}}
     assert list(db['table']['columns'].get().values) == ['spk1', np.NaN]
+
+    # replace again with mis table
+    scheme.replace_labels('misc')
+    assert scheme.labels == 'misc'
+    assert scheme._get_labels() == {'spk1': {}, 'spk2': {}}
 
     # replace with list
     scheme.replace_labels(['spk1', 'spk2'])
