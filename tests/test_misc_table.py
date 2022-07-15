@@ -1,6 +1,8 @@
+import numpy as np
 import pandas as pd
 import pytest
 
+import audformat
 import audformat.testing
 
 
@@ -30,6 +32,64 @@ def test_copy(table):
     table_copy = table.copy()
     assert str(table_copy) == str(table)
     pd.testing.assert_frame_equal(table_copy.df, table.df)
+
+
+@pytest.mark.parametrize(
+    'index, expected',
+    [
+        (
+            pd.Index([], name='idx'),
+            [audformat.define.DataType.STRING],
+        ),
+        (
+            pd.DatetimeIndex([], name='idx'),
+            [audformat.define.DataType.DATE],
+        ),
+        (
+            pd.Index([], name='idx', dtype=float),
+            [audformat.define.DataType.FLOAT],
+        ),
+        (
+            pd.Index([], name='idx', dtype=int),
+            [audformat.define.DataType.INTEGER],
+        ),
+        (
+            pd.Index([], name='idx', dtype=str),
+            [audformat.define.DataType.STRING],
+        ),
+        (
+            pd.TimedeltaIndex([], name='idx'),
+            [audformat.define.DataType.TIME],
+        ),
+        (
+            pd.DatetimeIndex([0], name='idx'),
+            [audformat.define.DataType.DATE],
+        ),
+        (
+            pd.Index([0.0], name='idx'),
+            [audformat.define.DataType.FLOAT],
+        ),
+        (
+            pd.Index([0], name='idx'),
+            [audformat.define.DataType.INTEGER],
+        ),
+        (
+            pd.Index([np.NaN], name='idx', dtype='Int64'),
+            [audformat.define.DataType.INTEGER],
+        ),
+        (
+            pd.Index(['0'], name='idx'),
+            [audformat.define.DataType.STRING],
+        ),
+        (
+            pd.TimedeltaIndex([0], name='idx'),
+            [audformat.define.DataType.TIME],
+        ),
+    ]
+)
+def test_dtype(index, expected):
+    table = audformat.MiscTable(index)
+    assert table.dtypes == expected
 
 
 @pytest.mark.parametrize(

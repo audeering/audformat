@@ -275,10 +275,8 @@ def to_audformat_dtype(dtype):
         return define.DataType.DATE
     elif dtype == 'float':
         return define.DataType.FLOAT
-    elif dtype == 'Int64':
+    elif dtype in ['Int64', 'int64', 'int', 'int8']:
         return define.DataType.INTEGER
-    elif dtype == 'str':
-        return define.DataType.STRING
     elif dtype == 'timedelta64[ns]':
         return define.DataType.TIME
     else:
