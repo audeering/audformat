@@ -269,15 +269,15 @@ def series_to_html(self):  # pragma: no cover
 
 def to_audformat_dtype(dtype):
     r"""Convert pandas to audformat dtype."""
-    if dtype == 'boolean':
+    if pd.api.types.is_bool_dtype(dtype):
         return define.DataType.BOOL
-    elif dtype == 'datetime64[ns]':
+    elif pd.api.types.is_datetime64_dtype(dtype):
         return define.DataType.DATE
-    elif dtype == 'float':
+    elif pd.api.types.is_float_dtype(dtype):
         return define.DataType.FLOAT
-    elif dtype in ['Int64', 'int64', 'int', 'int8']:
+    elif pd.api.types.is_integer_dtype(dtype):
         return define.DataType.INTEGER
-    elif dtype == 'timedelta64[ns]':
+    elif pd.api.types.is_timedelta64_dtype(dtype):
         return define.DataType.TIME
     else:
         # default to str
