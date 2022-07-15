@@ -13,7 +13,7 @@ def compatible_index(
     and share the same level names and dtypes.
 
     Args:
-        objs: index objects
+        objs: objects
 
     Returns:
         ``True`` if index objects are compatible, otherwise ``False``
