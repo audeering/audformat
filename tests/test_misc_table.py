@@ -114,10 +114,19 @@ def test_copy(table):
         ),
     ]
 )
-def test_dtype(index_object, index_values, index_dtype, expected):
+def test_dtype(tmpdir, index_object, index_values, index_dtype, expected):
     index = index_object(index_values, dtype=index_dtype, name='idx')
     table = audformat.MiscTable(index)
     assert table.dtypes == expected
+
+    # Store and load table
+    db = audformat.testing.create_db(minimal=True)
+    db['misc'] = table
+    db_root = tmpdir.join('db')
+    db.save(db_root, storage_format='csv')
+    db_new = audformat.Database.load(db_root)
+    assert db_new['misc'].dtypes == db['misc'].dtypes
+    assert db_new['misc'].index.dtype == db_new['misc'].dtypes[0]
 
 
 @pytest.mark.parametrize(
