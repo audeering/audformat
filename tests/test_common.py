@@ -45,7 +45,6 @@ import audformat
     ]
 )
 def test_to_audformat_dtype(dtype, expected):
-    print(dtype)
     dtype = audformat.core.common.to_audformat_dtype(dtype)
     assert dtype == expected
 
