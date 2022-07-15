@@ -454,7 +454,10 @@ class Base(HeaderBase):
         converters = {}
 
         # index columns
-        dtypes = self._index_dtypes
+        dtypes = {
+            level: to_audformat_dtype(dtype)
+            for level, dtype in self._index_dtypes.items()
+        }
         levels = list(self._index_dtypes)
 
         # other columns
