@@ -6,6 +6,7 @@ from collections import OrderedDict
 
 import pandas as pd
 
+from audformat import define
 from audformat.core.errors import (
     BadKeyError,
     BadTypeError,
@@ -264,3 +265,38 @@ def index_to_html(self):  # pragma: no cover
 def series_to_html(self):  # pragma: no cover
     df = self.to_frame()
     return df.to_html()
+
+
+def to_audformat_dtype(dtype):
+    r"""Convert pandas to audformat dtype."""
+    if dtype == 'boolean':
+        return define.DataType.BOOL
+    elif dtype == 'datetime64[ns]':
+        return define.DataType.DATE
+    elif dtype == 'float':
+        return define.DataType.FLOAT
+    elif dtype == 'Int64':
+        return define.DataType.INTEGER
+    elif dtype == 'str':
+        return define.DataType.STRING
+    elif dtype == 'timedelta64[ns]':
+        return define.DataType.TIME
+    else:
+        # default to str
+        return define.DataType.STRING
+
+
+def to_pandas_dtype(dtype):
+    r"""Convert audformat to pandas dtype."""
+    if dtype == define.DataType.BOOL:
+        return 'boolean'
+    elif dtype == define.DataType.DATE:
+        return 'datetime64[ns]'
+    elif dtype == define.DataType.FLOAT:
+        return 'float'
+    elif dtype == define.DataType.INTEGER:
+        return 'Int64'
+    elif dtype == define.DataType.STRING:
+        return 'str'
+    elif dtype == define.DataType.TIME:
+        return 'timedelta64[ns]'

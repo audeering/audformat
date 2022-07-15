@@ -13,6 +13,7 @@ from audformat.core.column import Column
 from audformat.core.common import (
     HeaderBase,
     HeaderDict,
+    to_audformat_dtype,
 )
 from audformat.core.errors import (
     BadIdError,
@@ -581,6 +582,7 @@ class MiscTable(Base):
         ... )
         >>> table['match'] = Column()
         >>> table
+        dtypes: [str, str]
         levels: [file, other]
         split_id: test
         columns:
@@ -614,6 +616,9 @@ class MiscTable(Base):
             description: str = None,
             meta: dict = None,
     ):
+
+        self.dtypes = None
+        r"""Index dtype."""
         self.levels = None
         r"""Index levels."""
 
@@ -628,8 +633,12 @@ class MiscTable(Base):
         if index is not None:
             if isinstance(index, pd.MultiIndex):
                 levels = list(index.names)
+                dtypes = list(index.dtypes)
             else:
                 levels = [index.name]
+                dtypes = [index.dtype]
+
+            dtypes = [to_audformat_dtype(dtype) for dtype in dtypes]
 
             if not all(levels) or len(levels) > len(set(levels)):
                 raise ValueError(
@@ -639,6 +648,7 @@ class MiscTable(Base):
                 )
 
             self.levels = levels
+            self.dtypes = dtypes
 
     def copy(self) -> 'MiscTable':
         r"""Copy table.
@@ -657,28 +667,6 @@ class MiscTable(Base):
         typing.Dict[str, typing.Callable],
     ]:
         return self.levels, {}
-
-    def _load_csv(self, path: str):
-
-        super()._load_csv(path)
-
-        # dtype was stored together with index name
-        name, dtype = self._df.index.name.split('::')
-        self._df.index.name = name
-        self._df.index.dtype = dtype
-
-
-    def _save_csv(self, path: str):
-        # Load table before opening CSV file
-        # to avoid creating a CSV file
-        # that is newer than the PKL file
-        df = self.df
-        # Save dtype of index together with index name
-        # as we need to store dtype in CSV
-        # for a misc table
-        index_label = f'{self.index.name}::{self.index.dtype}'
-        with open(path, 'w') as fp:
-            df.to_csv(fp, index_label=index_label, encoding='utf-8')
 
 
 class Table(Base):

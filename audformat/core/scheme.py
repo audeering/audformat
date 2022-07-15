@@ -5,11 +5,13 @@ import typing
 
 import pandas as pd
 
-from audformat.core import define
-from audformat.core.common import HeaderBase
+from audformat.core import (
+    common,
+    define,
+)
 
 
-class Scheme(HeaderBase):
+class Scheme(common.HeaderBase):
     r"""A scheme defines valid values of an annotation.
 
     Allowed values for ``dtype`` are:
@@ -242,15 +244,7 @@ class Scheme(HeaderBase):
                 categories=labels,
                 ordered=False,
             )
-        elif self.dtype == define.DataType.BOOL:
-            return 'boolean'
-        elif self.dtype == define.DataType.DATE:
-            return 'datetime64[ns]'
-        elif self.dtype == define.DataType.INTEGER:
-            return 'Int64'
-        elif self.dtype == define.DataType.TIME:
-            return 'timedelta64[ns]'
-        return self.dtype
+        return common.to_pandas_dtype(self.dtype)
 
     def replace_labels(
             self,
