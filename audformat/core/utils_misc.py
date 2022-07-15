@@ -4,7 +4,7 @@ import pandas as pd
 
 
 def compatible_index(
-        objs: typing.Sequence[pd.Index],
+        objs: typing.Sequence[typing.Union[pd.Index, pd.Series, pd.DataFrame]],
 ) -> bool:
     r"""Check if index objects are compatible.
 
@@ -23,6 +23,8 @@ def compatible_index(
         >>> idx2 = pd.MultiIndex.from_arrays([[10, 20]], names=['l'])
         >>> compatible_index([idx1, idx2])
         True
+        >>> compatible_index([idx1, pd.Series(['a', 'b'], index=idx2)])
+        True
         >>> idx3 = idx2.set_names(['L'])
         >>> compatible_index([idx2, idx3])
         False
@@ -37,6 +39,7 @@ def compatible_index(
         False
 
     """
+    objs = [obj if isinstance(obj, pd.Index) else obj.index for obj in objs]
 
     # check names
     levels = set([obj.names for obj in objs])
