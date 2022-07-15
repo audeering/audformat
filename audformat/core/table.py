@@ -658,6 +658,58 @@ class MiscTable(Base):
     ]:
         return self.levels, {}
 
+    def _load_csv(self, path: str):
+
+        usecols = []
+        dtypes = {}
+        schemes = self.db.schemes
+
+        # index columns
+        levels, converters = self._index_levels_and_converters()
+        usecols.extend(levels)
+
+        # other columns
+        for column_id, column in self.columns.items():
+            usecols.append(column_id)
+            if column.scheme_id is not None:
+                dtype = schemes[column.scheme_id].to_pandas_dtype()
+                # use converter if column contains dates or timestamps
+                if dtype == 'datetime64[ns]':
+                    converters[column_id] = lambda x: pd.to_datetime(x)
+                elif dtype == 'timedelta64[ns]':
+                    converters[column_id] = lambda x: pd.to_timedelta(x)
+                else:
+                    dtypes[column_id] = dtype
+            else:
+                dtypes[column_id] = 'str'
+
+        # read csv
+        df = pd.read_csv(
+            path,
+            usecols=usecols,
+            dtype=dtypes,
+            index_col=levels,
+            converters=converters,
+            float_precision='round_trip',
+        )
+
+        # dtype was stored together with index name
+        df.index.name, df.index.dtype = df.index.name.split('::')
+
+        self._df = df
+
+    def _save_csv(self, path: str):
+        # Load table before opening CSV file
+        # to avoid creating a CSV file
+        # that is newer than the PKL file
+        df = self.df
+        # Save dtype of index together with index name
+        # as we need to store dtype in CSV
+        # for a misc table
+        index_label = f'{self.index.name}::{self.index.dtype}'
+        with open(path, 'w') as fp:
+            df.to_csv(fp, index_label=index_label, encoding='utf-8')
+
 
 class Table(Base):
     r"""Table conform to :ref:`table specifications <data-tables:Tables>`.
