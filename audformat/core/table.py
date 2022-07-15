@@ -57,6 +57,7 @@ class Base(HeaderBase):
         self._df = pd.DataFrame(index=index)
         self._db = None
         self._id = None
+        self._index_dtypes = {}
 
     def __getitem__(self, column_id: str) -> Column:
         r"""Return view to a column.
@@ -447,43 +448,39 @@ class Base(HeaderBase):
         # Returns `df, df_is_copy`
         raise NotImplementedError()
 
-    def _index_levels_and_converters(self) -> typing.Tuple[
-            typing.Sequence[str],
-            typing.Dict[str, typing.Callable],
-    ]:  # pragma: no cover
-        # Executed when loading table from CSV file.
-        # Returns: `index_levels, index_converters`
-        raise NotImplementedError()
-
     def _load_csv(self, path: str):
 
-        usecols = []
-        dtypes = {}
         schemes = self.db.schemes
+        converters = {}
 
         # index columns
-
-        levels, converters = self._index_levels_and_converters()
-        usecols.extend(levels)
+        dtypes = self._index_dtypes
+        levels = list(self._index_dtypes)
 
         # other columns
-
         for column_id, column in self.columns.items():
-            usecols.append(column_id)
             if column.scheme_id is not None:
-                dtype = schemes[column.scheme_id].to_pandas_dtype()
-                # use converter if column contains dates or timestamps
-                if dtype == 'datetime64[ns]':
-                    converters[column_id] = lambda x: pd.to_datetime(x)
-                elif dtype == 'timedelta64[ns]':
-                    converters[column_id] = lambda x: pd.to_timedelta(x)
-                else:
-                    dtypes[column_id] = dtype
+                dtypes[column_id] = schemes[column.scheme_id].to_pandas_dtype()
             else:
                 dtypes[column_id] = 'str'
 
-        # read csv
+        # all columns
+        usecols = list(dtypes)
 
+        # replace dtype with converter for dates or timestamps
+        dtype_columns = []
+        for column_id, dtype in dtypes.items():
+            if dtype == 'datetime64[ns]':
+                converters[column_id] = lambda x: pd.to_datetime(x)
+            elif dtype == 'timedelta64[ns]':
+                converters[column_id] = lambda x: pd.to_timedelta(x)
+            else:
+                dtype_columns.append(column_id)
+        converter_columns = set(dtypes) - set(dtype_columns)
+        for column_id in converter_columns:
+            dtypes.pop(column_id, None)
+
+        # read csv
         df = pd.read_csv(
             path,
             usecols=usecols,
@@ -582,8 +579,7 @@ class MiscTable(Base):
         ... )
         >>> table['match'] = Column()
         >>> table
-        dtypes: [str, str]
-        levels: [file, other]
+        levels: {file: str, other: str}
         split_id: test
         columns:
           match: {}
@@ -617,8 +613,6 @@ class MiscTable(Base):
             meta: dict = None,
     ):
 
-        self.dtypes = None
-        r"""Index dtype."""
         self.levels = None
         r"""Index levels."""
 
@@ -647,8 +641,10 @@ class MiscTable(Base):
                     f'but names must be non-empty and unique.'
                 )
 
-            self.levels = levels
-            self.dtypes = dtypes
+            self.levels = {
+                level: dtype for level, dtype in zip(levels, dtypes)
+            }
+            self._index_dtypes = self.levels
 
     def copy(self) -> 'MiscTable':
         r"""Copy table.
@@ -661,12 +657,6 @@ class MiscTable(Base):
 
     def _get_by_index(self, index: pd.Index) -> (pd.DataFrame, bool):
         return self.df.loc[index], False
-
-    def _index_levels_and_converters(self) -> typing.Tuple[
-        typing.Sequence[str],
-        typing.Dict[str, typing.Callable],
-    ]:
-        return self.levels, {}
 
 
 class Table(Base):
@@ -790,6 +780,12 @@ class Table(Base):
             description=description,
             meta=meta,
         )
+
+        # Data type mappings for index
+        self._index_dtypes[define.IndexField.FILE] = define.DataType.STRING
+        if self.type == define.IndexType.SEGMENTED:
+            self._index_dtypes[define.IndexField.START] = define.DataType.TIME
+            self._index_dtypes[define.IndexField.END] = define.DataType.TIME
 
     def __add__(self, other: 'Table') -> 'Table':
         r"""Create new table by combining two tables.
@@ -1404,24 +1400,3 @@ class Table(Base):
                 result = self.df.loc[files]
 
         return result, result_is_copy
-
-    def _index_levels_and_converters(self) -> typing.Tuple[
-        typing.Sequence[str],
-        typing.Dict[str, typing.Callable],
-    ]:
-        converters = {}
-
-        if self.type == define.IndexType.SEGMENTED:
-            converters[define.IndexField.START] = \
-                lambda x: pd.to_timedelta(x)
-            converters[define.IndexField.END] = \
-                lambda x: pd.to_timedelta(x)
-            levels = [
-                define.IndexField.FILE,
-                define.IndexField.START,
-                define.IndexField.END,
-            ]
-        else:
-            levels = [define.IndexField.FILE]
-
-        return levels, converters

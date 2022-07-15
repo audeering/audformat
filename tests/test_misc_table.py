@@ -41,55 +41,55 @@ def test_copy(table):
             pd.Index,
             [],
             None,
-            [audformat.define.DataType.STRING],
+            audformat.define.DataType.STRING,
         ),
         (
             pd.DatetimeIndex,
             [],
             'datetime64[ns]',
-            [audformat.define.DataType.DATE],
+            audformat.define.DataType.DATE,
         ),
         (
             pd.Index,
             [],
             float,
-            [audformat.define.DataType.FLOAT],
+            audformat.define.DataType.FLOAT,
         ),
         (
             pd.Index,
             [],
             int,
-            [audformat.define.DataType.INTEGER],
+            audformat.define.DataType.INTEGER,
         ),
         (
             pd.Index,
             [],
             str,
-            [audformat.define.DataType.STRING],
+            audformat.define.DataType.STRING,
         ),
         (
             pd.TimedeltaIndex,
             [],
             'timedelta64[ns]',
-            [audformat.define.DataType.TIME],
+            audformat.define.DataType.TIME,
         ),
         (
             pd.DatetimeIndex,
             [0],
             'datetime64[ns]',
-            [audformat.define.DataType.DATE],
+            audformat.define.DataType.DATE,
         ),
         (
             pd.Index,
             [0.0],
             None,
-            [audformat.define.DataType.FLOAT],
+            audformat.define.DataType.FLOAT,
         ),
         (
             pd.Index,
             [0],
             None,
-            [audformat.define.DataType.INTEGER],
+            audformat.define.DataType.INTEGER,
         ),
         # The following test does not work under Python 3.7
         # as the index has dtype object
@@ -104,20 +104,21 @@ def test_copy(table):
             pd.Index,
             ['0'],
             None,
-            [audformat.define.DataType.STRING],
+            audformat.define.DataType.STRING,
         ),
         (
             pd.TimedeltaIndex,
             [0],
             'timedelta64[ns]',
-            [audformat.define.DataType.TIME],
+            audformat.define.DataType.TIME,
         ),
     ]
 )
 def test_dtype(tmpdir, index_object, index_values, index_dtype, expected):
-    index = index_object(index_values, dtype=index_dtype, name='idx')
+    name = 'idx'
+    index = index_object(index_values, dtype=index_dtype, name=name)
     table = audformat.MiscTable(index)
-    assert table.dtypes == expected
+    assert table.levels[name] == expected
 
     # Store and load table
     db = audformat.testing.create_db(minimal=True)
@@ -125,8 +126,8 @@ def test_dtype(tmpdir, index_object, index_values, index_dtype, expected):
     db_root = tmpdir.join('db')
     db.save(db_root, storage_format='csv')
     db_new = audformat.Database.load(db_root)
-    assert db_new['misc'].dtypes == db['misc'].dtypes
-    assert db_new['misc'].index.dtype == db_new['misc'].dtypes[0]
+    assert db_new['misc'].levels == db['misc'].levels
+    assert db_new['misc'].index.dtype == db_new['misc'].levels[name]
 
 
 @pytest.mark.parametrize(
