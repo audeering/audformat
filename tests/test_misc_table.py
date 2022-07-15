@@ -35,62 +35,87 @@ def test_copy(table):
 
 
 @pytest.mark.parametrize(
-    'index, expected',
+    'index_object, index_values, index_dtype, expected',
     [
         (
-            pd.Index([], name='idx'),
+            pd.Index,
+            [],
+            None,
             [audformat.define.DataType.STRING],
         ),
         (
-            pd.DatetimeIndex([], name='idx'),
+            pd.DatetimeIndex,
+            [],
+            'datetime64[ns]',
             [audformat.define.DataType.DATE],
         ),
         (
-            pd.Index([], name='idx', dtype=float),
+            pd.Index,
+            [],
+            float,
             [audformat.define.DataType.FLOAT],
         ),
         (
-            pd.Index([], name='idx', dtype=int),
+            pd.Index,
+            [],
+            int,
             [audformat.define.DataType.INTEGER],
         ),
         (
-            pd.Index([], name='idx', dtype=str),
+            pd.Index,
+            [],
+            str,
             [audformat.define.DataType.STRING],
         ),
         (
-            pd.TimedeltaIndex([], name='idx'),
+            pd.TimedeltaIndex,
+            [],
+            'timedelta64[ns]',
             [audformat.define.DataType.TIME],
         ),
         (
-            pd.DatetimeIndex([0], name='idx'),
+            pd.DatetimeIndex,
+            [0],
+            'datetime64[ns]',
             [audformat.define.DataType.DATE],
         ),
         (
-            pd.Index([0.0], name='idx'),
+            pd.Index,
+            [0.0],
+            None,
             [audformat.define.DataType.FLOAT],
         ),
         (
-            pd.Index([0], name='idx'),
+            pd.Index,
+            [0],
+            None,
             [audformat.define.DataType.INTEGER],
         ),
         # The following test does not work under Python 3.7
         # as the index has dtype object
         # instead of Int64
         # (
-        #     pd.Index([np.NaN], name='idx', dtype='Int64'),
+        #     pd.Index,
+        #     [np.NaN],
+        #     'Int64',
         #     [audformat.define.DataType.INTEGER],
         # ),
         (
-            pd.Index(['0'], name='idx'),
+            pd.Index,
+            ['0'],
+            None,
             [audformat.define.DataType.STRING],
         ),
         (
-            pd.TimedeltaIndex([0], name='idx'),
+            pd.TimedeltaIndex,
+            [0],
+            'timedelta64[ns]',
             [audformat.define.DataType.TIME],
         ),
     ]
 )
-def test_dtype(index, expected):
+def test_dtype(index_object, index_values, index_dtype, expected):
+    index = index_object(index_values, dtype=index_dtype, name='idx')
     table = audformat.MiscTable(index)
     assert table.dtypes == expected
 
