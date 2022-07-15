@@ -1,3 +1,4 @@
+from audformat.utils import misc
 from audformat.core.utils import (
     concat,
     duration,
