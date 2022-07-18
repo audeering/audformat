@@ -14,6 +14,7 @@ from audformat.core.common import (
     HeaderBase,
     HeaderDict,
     to_audformat_dtype,
+    to_pandas_dtype,
 )
 from audformat.core.errors import (
     BadIdError,
@@ -465,7 +466,7 @@ class Base(HeaderBase):
 
         # index columns
         dtypes = {
-            level: to_audformat_dtype(dtype)
+            level: to_pandas_dtype(dtype)
             for level, dtype in dtypes.items()
         }
         levels = list(dtypes)
@@ -489,9 +490,6 @@ class Base(HeaderBase):
                 converters[column_id] = lambda x: pd.to_timedelta(x)
             else:
                 dtype_columns.append(column_id)
-        converter_columns = set(dtypes) - set(dtype_columns)
-        for column_id in converter_columns:
-            dtypes.pop(column_id, None)
 
         # read csv
         df = pd.read_csv(

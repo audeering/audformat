@@ -35,17 +35,20 @@ def test_copy(table):
 
 
 @pytest.mark.parametrize(
-    'index_object, index_values, index_dtype, expected',
+    'index_object, index_values, index_dtype, '
+    'expected_pandas_dtype, expected_audformat_dtype',
     [
         (
             pd.Index,
             [],
             None,
+            'object',
             audformat.define.DataType.STRING,
         ),
         (
             pd.DatetimeIndex,
             [],
+            'datetime64[ns]',
             'datetime64[ns]',
             audformat.define.DataType.DATE,
         ),
@@ -53,23 +56,27 @@ def test_copy(table):
             pd.Index,
             [],
             float,
+            'float64',
             audformat.define.DataType.FLOAT,
         ),
         (
             pd.Index,
             [],
             int,
+            'int64',
             audformat.define.DataType.INTEGER,
         ),
         (
             pd.Index,
             [],
             str,
+            'object',
             audformat.define.DataType.STRING,
         ),
         (
             pd.TimedeltaIndex,
             [],
+            'timedelta64[ns]',
             'timedelta64[ns]',
             audformat.define.DataType.TIME,
         ),
@@ -77,18 +84,21 @@ def test_copy(table):
             pd.DatetimeIndex,
             [0],
             'datetime64[ns]',
+            'datetime64[ns]',
             audformat.define.DataType.DATE,
         ),
         (
             pd.Index,
             [0.0],
             None,
+            'float64',
             audformat.define.DataType.FLOAT,
         ),
         (
             pd.Index,
             [0],
             None,
+            'Int64',
             audformat.define.DataType.INTEGER,
         ),
         # The following test does not work under Python 3.7
@@ -104,30 +114,45 @@ def test_copy(table):
             pd.Index,
             ['0'],
             None,
+            'object',
             audformat.define.DataType.STRING,
         ),
         (
             pd.TimedeltaIndex,
             [0],
             'timedelta64[ns]',
+            'timedelta64[ns]',
             audformat.define.DataType.TIME,
         ),
     ]
 )
-def test_dtype(tmpdir, index_object, index_values, index_dtype, expected):
+def test_dtype(
+        tmpdir,
+        index_object,
+        index_values,
+        index_dtype,
+        expected_pandas_dtype,
+        expected_audformat_dtype,
+):
+
     name = 'idx'
     index = index_object(index_values, dtype=index_dtype, name=name)
     table = audformat.MiscTable(index)
-    assert table.levels[name] == expected
+
+    assert table.levels[name] == expected_audformat_dtype
+    assert table.index.dtype == expected_pandas_dtype
 
     # Store and load table
     db = audformat.testing.create_db(minimal=True)
     db['misc'] = table
+    assert db['misc'].levels[name] == expected_audformat_dtype
+    assert db['misc'].index.dtype == expected_pandas_dtype
+
     db_root = tmpdir.join('db')
     db.save(db_root, storage_format='csv')
     db_new = audformat.Database.load(db_root)
-    assert db_new['misc'].levels == db['misc'].levels
-    assert db_new['misc'].index.dtype == db_new['misc'].levels[name]
+    assert db_new['misc'].levels[name] == expected_audformat_dtype
+    assert db_new['misc'].index.dtype == expected_pandas_dtype
 
 
 @pytest.mark.parametrize(
