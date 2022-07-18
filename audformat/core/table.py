@@ -57,7 +57,6 @@ class Base(HeaderBase):
         self._df = pd.DataFrame(index=index)
         self._db = None
         self._id = None
-        self._index_dtypes = {}
 
     def __getitem__(self, column_id: str) -> Column:
         r"""Return view to a column.
@@ -452,13 +451,24 @@ class Base(HeaderBase):
 
         schemes = self.db.schemes
         converters = {}
+        dtypes = {}
+
+        if hasattr(self, 'type'):
+            # filewise or segmented table
+            dtypes[define.IndexField.FILE] = define.DataType.STRING
+            if self.type == define.IndexType.SEGMENTED:
+                dtypes[define.IndexField.START] = define.DataType.TIME
+                dtypes[define.IndexField.END] = define.DataType.TIME
+        else:
+            # misc table
+            dtypes = self.levels
 
         # index columns
         dtypes = {
             level: to_audformat_dtype(dtype)
-            for level, dtype in self._index_dtypes.items()
+            for level, dtype in dtypes.items()
         }
-        levels = list(self._index_dtypes)
+        levels = list(dtypes)
 
         # other columns
         for column_id, column in self.columns.items():
@@ -647,7 +657,6 @@ class MiscTable(Base):
             self.levels = {
                 level: dtype for level, dtype in zip(levels, dtypes)
             }
-            self._index_dtypes = self.levels
 
     def copy(self) -> 'MiscTable':
         r"""Copy table.
@@ -783,12 +792,6 @@ class Table(Base):
             description=description,
             meta=meta,
         )
-
-        # Data type mappings for index
-        self._index_dtypes[define.IndexField.FILE] = define.DataType.STRING
-        if self.type == define.IndexType.SEGMENTED:
-            self._index_dtypes[define.IndexField.START] = define.DataType.TIME
-            self._index_dtypes[define.IndexField.END] = define.DataType.TIME
 
     def __add__(self, other: 'Table') -> 'Table':
         r"""Create new table by combining two tables.
