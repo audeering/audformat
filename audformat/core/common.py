@@ -267,7 +267,7 @@ def series_to_html(self):  # pragma: no cover
     return df.to_html()
 
 
-def to_audformat_dtype(dtype):
+def to_audformat_dtype(dtype: str) -> str:
     r"""Convert pandas to audformat dtype."""
     if pd.api.types.is_bool_dtype(dtype):
         return define.DataType.BOOL
@@ -284,7 +284,7 @@ def to_audformat_dtype(dtype):
         return define.DataType.STRING
 
 
-def to_pandas_dtype(dtype):
+def to_pandas_dtype(dtype: str) -> str:
     r"""Convert audformat to pandas dtype."""
     if dtype == define.DataType.BOOL:
         return 'boolean'
