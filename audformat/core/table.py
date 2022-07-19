@@ -481,15 +481,12 @@ class Base(HeaderBase):
         # all columns
         usecols = list(dtypes)
 
-        # replace dtype with converter for dates or timestamps
-        dtype_columns = []
+        # extend dtype with converter for dates or timestamps
         for column_id, dtype in dtypes.items():
             if dtype == 'datetime64[ns]':
                 converters[column_id] = lambda x: pd.to_datetime(x)
             elif dtype == 'timedelta64[ns]':
                 converters[column_id] = lambda x: pd.to_timedelta(x)
-            else:
-                dtype_columns.append(column_id)
 
         # read csv
         df = pd.read_csv(
