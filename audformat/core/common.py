@@ -1,3 +1,4 @@
+import datetime
 import inspect
 import oyaml as yaml
 from typing import Sequence, Callable
@@ -271,13 +272,19 @@ def to_audformat_dtype(dtype):
     r"""Convert pandas to audformat dtype."""
     if pd.api.types.is_bool_dtype(dtype):
         return define.DataType.BOOL
-    elif pd.api.types.is_datetime64_dtype(dtype):
+    elif (
+            pd.api.types.is_datetime64_dtype(dtype)
+            or isinstance(dtype, (datetime.datetime, pd.Timestamp))
+    ):
         return define.DataType.DATE
     elif pd.api.types.is_float_dtype(dtype):
         return define.DataType.FLOAT
     elif pd.api.types.is_integer_dtype(dtype):
         return define.DataType.INTEGER
-    elif pd.api.types.is_timedelta64_dtype(dtype):
+    elif (
+            pd.api.types.is_timedelta64_dtype(dtype)
+            or isinstance(dtype, pd.Timedelta)
+    ):
         return define.DataType.TIME
     else:
         # default to str

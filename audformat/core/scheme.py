@@ -364,7 +364,6 @@ class Scheme(common.HeaderBase):
                     f"Index of misc table '{table_id}' used as scheme labels "
                     'is not allowed to contain duplicates.'
                 )
-            labels = list(self._db[table_id].index)
             dtype_labels = self._dtype_from_labels(labels)
             if self.dtype != dtype_labels:
                 raise ValueError(
@@ -378,21 +377,29 @@ class Scheme(common.HeaderBase):
             self,
             labels: typing.Union[dict, list, str],
     ) -> str:
-        r"""Derive dtype from labels."""
+        r"""Derive audformat dtype from labels."""
 
-        labels = self._labels_to_list(labels)
-
-        if len(labels) > 0:
-            dtype = type(labels[0])
+        if isinstance(labels, str):
+            # misc table
+            # dtype is stored in the levels dictionary
+            # as audformat dtypes.
+            # In addition, a misc table used as labels
+            # is only allowed to have an one dimensional index,
+            # so we need to get only the first entry of the dict.
+            levels = self._db[labels].levels
+            dtype = next(iter(levels.values()))
         else:
-            dtype = 'str'
-        if not all(isinstance(x, dtype) for x in labels):
-            raise ValueError(
-                'All labels must be of the same data type.'
-            )
-
-        if dtype in self._dtypes:
-            dtype = self._dtypes[dtype]
+            # dict or list
+            labels = self._labels_to_list(labels)
+            if len(labels) > 0:
+                dtype = type(labels[0])
+            else:
+                dtype = 'str'
+            if not all(isinstance(x, dtype) for x in labels):
+                raise ValueError(
+                    'All labels must be of the same data type.'
+                )
+            dtype = common.to_audformat_dtype(dtype)
         define.DataType.assert_has_attribute_value(dtype)
 
         return dtype

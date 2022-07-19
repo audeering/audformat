@@ -627,14 +627,6 @@ class MiscTable(Base):
         self.levels = None
         r"""Index levels."""
 
-        super().__init__(
-            index,
-            split_id=split_id,
-            media_id=media_id,
-            description=description,
-            meta=meta,
-        )
-
         if index is not None:
             if isinstance(index, pd.MultiIndex):
                 levels = list(index.names)
@@ -644,6 +636,17 @@ class MiscTable(Base):
                 dtypes = [index.dtype]
 
             dtypes = [to_audformat_dtype(dtype) for dtype in dtypes]
+
+            # Ensure integers are always stored as Int64
+            for level, dtype in zip(levels, dtypes):
+                if pd.api.types.is_integer_dtype(dtype):
+                    if len(levels) > 1:
+                        index = index.set_levels(
+                            index.get_level_values(level).astype('Int64'),
+                            level=level,
+                        )
+                    else:
+                        index = index.astype('Int64')
 
             if not all(levels) or len(levels) > len(set(levels)):
                 raise ValueError(
@@ -655,6 +658,14 @@ class MiscTable(Base):
             self.levels = {
                 level: dtype for level, dtype in zip(levels, dtypes)
             }
+
+        super().__init__(
+            index,
+            split_id=split_id,
+            media_id=media_id,
+            description=description,
+            meta=meta,
+        )
 
     def copy(self) -> 'MiscTable':
         r"""Copy table.

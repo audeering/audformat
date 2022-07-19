@@ -63,7 +63,7 @@ def test_copy(table):
             pd.Index,
             [],
             int,
-            'int64',
+            'Int64',
             audformat.define.DataType.INTEGER,
         ),
         (
