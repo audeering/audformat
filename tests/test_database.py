@@ -223,10 +223,11 @@ def test_pick_files(files, num_workers):
             ['segments', 'misc'],
             ['files'],
         ),
-        (
+        pytest.param(  # non-existent table ID
             audformat.testing.create_db(),
             ['segments', 'misc', 'non-existing'],
-            ['files'],
+            None,
+            marks=pytest.mark.xfail(raises=audformat.errors.BadIdError),
         ),
     ]
 )
@@ -259,10 +260,11 @@ def test_drop_tables(db, tables, expected_tables):
             ['segments', 'misc'],
             ['misc', 'segments'],
         ),
-        (
+        pytest.param(  # non-existent table ID
             audformat.testing.create_db(),
             ['segments', 'misc', 'non-existing'],
-            ['misc', 'segments'],
+            None,
+            marks=pytest.mark.xfail(raises=audformat.errors.BadIdError),
         ),
     ]
 )

@@ -319,6 +319,10 @@ class Database(HeaderBase):
         Args:
             table_ids: table IDs to drop
 
+        Raises:
+            audformat.errors.BadIdError: if a table with provided ID
+                does not exist in the database
+
         """
         table_ids = audeer.to_list(table_ids)
         for table_id in table_ids:
@@ -326,6 +330,9 @@ class Database(HeaderBase):
                 self.tables.pop(table_id)
             elif table_id in self.misc_tables:
                 self.misc_tables.pop(table_id)
+            else:
+                available_tables = {**self.tables, **self.misc_tables}
+                raise BadIdError('table', table_id, available_tables)
 
     def files_duration(
             self,
@@ -494,8 +501,16 @@ class Database(HeaderBase):
         Args:
             table_ids: table IDs to pick
 
+        Raises:
+            audformat.errors.BadIdError: if a table with provided ID
+                does not exist in the database
+
         """
         table_ids = audeer.to_list(table_ids)
+        available_tables = {**self.tables, **self.misc_tables}
+        for table_id in table_ids:
+            if table_id not in available_tables:
+                raise BadIdError('table', table_id, available_tables)
         drop_ids = [t for t in list(self) if t not in table_ids]
         self.drop_tables(drop_ids)
 
