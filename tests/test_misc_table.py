@@ -117,20 +117,25 @@ def test_copy(table):
         ),
         (
             pd.Index,
+            [np.NaN],
+            'Int64',
+            'Int64',
+            audformat.define.DataType.INTEGER,
+        ),
+        (
+            pd.Index,
             [0, np.NaN],
             'Int64',
             'Int64',
             audformat.define.DataType.INTEGER,
         ),
-        # The following test does not work under Python 3.7
-        # as the index has dtype object
-        # instead of Int64
-        # (
-        #     pd.Index,
-        #     [np.NaN],
-        #     'Int64',
-        #     [audformat.define.DataType.INTEGER],
-        # ),
+        (
+            pd.Index,
+            [np.NaN],
+            'Int64',
+            'Int64',
+            audformat.define.DataType.INTEGER,
+        ),
         (
             pd.Index,
             ['0'],
