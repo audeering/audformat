@@ -240,11 +240,13 @@ class Scheme(common.HeaderBase):
             if len(labels) > 0 and isinstance(labels[0], int):
                 # allow nullable
                 labels = pd.array(labels, dtype='int64')
-            return pd.api.types.CategoricalDtype(
+            dtype = pd.api.types.CategoricalDtype(
                 categories=labels,
                 ordered=False,
             )
-        return common.to_pandas_dtype(self.dtype)
+        else:
+            dtype = common.to_pandas_dtype(self.dtype)
+        return dtype
 
     def replace_labels(
             self,
