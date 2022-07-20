@@ -275,7 +275,7 @@ def set_index_dtype(
     if len(dtypes) == 0:
         return index
 
-    if len(index.names) > 1:
+    if isinstance(index, pd.MultiIndex):
         # MultiIndex
         if len(index) == 0:
             # set_levels() does not work for an empty index
