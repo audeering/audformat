@@ -41,7 +41,7 @@ def test_copy(table):
             [],
             None,
             'object',
-            audformat.define.DataType.STRING,
+            audformat.define.DataType.OBJECT,
         ),
         (
             [],
@@ -76,7 +76,7 @@ def test_copy(table):
         (
             [],
             str,
-            'object',
+            'string',
             audformat.define.DataType.STRING,
         ),
         (
@@ -125,7 +125,7 @@ def test_copy(table):
             ['0'],
             None,
             'object',
-            audformat.define.DataType.STRING,
+            audformat.define.DataType.OBJECT,
         ),
         (
             [0],

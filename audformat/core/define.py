@@ -20,6 +20,7 @@ class DataType(DefineBase):
     DATE = 'date'
     INTEGER = 'int'
     FLOAT = 'float'
+    OBJECT = 'object'
     STRING = 'str'
     TIME = 'time'
 

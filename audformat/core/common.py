@@ -310,9 +310,13 @@ def to_audformat_dtype(dtype: typing.Union[str, typing.Type]) -> str:
         return define.DataType.INTEGER
     elif pd.api.types.is_timedelta64_dtype(dtype):
         return define.DataType.TIME
-    else:
-        # default to str
+    # We cannot use pd.api.types.is_string_dtype()
+    # as it returns `True` for list, object, etc.
+    elif dtype in [str, 'str', 'string']:
         return define.DataType.STRING
+    else:
+        # default to object
+        return define.DataType.OBJECT
 
 
 def to_pandas_dtype(dtype: str) -> str:
@@ -325,6 +329,8 @@ def to_pandas_dtype(dtype: str) -> str:
         return 'float'
     elif dtype == define.DataType.INTEGER:
         return 'Int64'
+    elif dtype == define.DataType.OBJECT:
+        return 'object'
     elif dtype == define.DataType.STRING:
         return 'str'
     elif dtype == define.DataType.TIME:

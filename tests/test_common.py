@@ -40,7 +40,7 @@ import audformat
         ),
         (
             'object',
-            audformat.define.DataType.STRING,
+            audformat.define.DataType.OBJECT,
         ),
     ]
 )
@@ -68,6 +68,9 @@ def test_to_audformat_dtype(dtype, expected):
             audformat.define.DataType.INTEGER,
             'Int64',
         ),
+        (
+            audformat.define.DataType.OBJECT,
+            'object',
         (
             audformat.define.DataType.STRING,
             'str',
