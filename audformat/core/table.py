@@ -481,22 +481,46 @@ class Base(HeaderBase):
         # all columns
         usecols = list(dtypes)
 
-        # extend dtype with converter for dates or timestamps
+        # replace dtype with converter for dates or timestamps
+        dtypes_wo_converters = {}
         for column_id, dtype in dtypes.items():
             if dtype == 'datetime64[ns]':
                 converters[column_id] = lambda x: pd.to_datetime(x)
             elif dtype == 'timedelta64[ns]':
                 converters[column_id] = lambda x: pd.to_timedelta(x)
+            else:
+                dtypes_wo_converters[column_id] = dtype
 
         # read csv
         df = pd.read_csv(
             path,
             usecols=usecols,
-            dtype=dtypes,
+            dtype=dtypes_wo_converters,
             index_col=levels,
             converters=converters,
             float_precision='round_trip',
         )
+
+        # For an empty CSV file
+        # converters will not set the correct dtype
+        # and we need to correct it manually
+        if len(df) == 0:
+            # fix index
+            for level in levels:
+                if level in converters:
+                    dtype = dtypes[level]
+                    if len(levels) > 1:
+                        df.index = df.index.set_level_values(
+                            df.index.get_level_values(level).astype(dtype),
+                            level=level,
+                        )
+                    else:
+                        df.index = df.index.astype(dtype)
+            # fix columns
+            for column_id in self.columns:
+                if column_id in converters:
+                    dtype = dtypes[level]
+                    df[column_id] = df[column_id].astype(dtype)
 
         self._df = df
 
