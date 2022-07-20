@@ -1,6 +1,6 @@
 import inspect
 import oyaml as yaml
-from typing import Sequence, Callable
+import typing
 import textwrap
 from collections import OrderedDict
 
@@ -55,8 +55,8 @@ class HeaderDict(OrderedDict):
             *args,
             sorted_iter: bool = True,
             value_type: type = None,
-            get_callback: Callable = None,
-            set_callback: Callable = None,
+            get_callback: typing.Callable = None,
+            set_callback: typing.Callable = None,
             **kwargs,
     ):
         self.sorted_iter = sorted_iter
@@ -174,7 +174,7 @@ class HeaderBase:
     def from_dict(
             self,
             d: dict,
-            ignore_keys: Sequence[str] = None,
+            ignore_keys: typing.Sequence[str] = None,
     ):
         r"""Deserialize object from dictionary.
 
@@ -267,7 +267,7 @@ def series_to_html(self):  # pragma: no cover
     return df.to_html()
 
 
-def to_audformat_dtype(dtype: str) -> str:
+def to_audformat_dtype(dtype: typing.Union[str, typing.Type]) -> str:
     r"""Convert pandas to audformat dtype."""
     if pd.api.types.is_bool_dtype(dtype):
         return define.DataType.BOOL
