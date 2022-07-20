@@ -162,4 +162,4 @@ import audformat
     ]
 )
 def test_compatible_index(objs, expected):
-    assert audformat.utils.misc.compatible_index(objs) == expected
+    assert audformat.utils.misc.is_index_alike(objs) == expected

@@ -4,7 +4,7 @@ audformat.utils.misc
 .. automodule:: audformat.utils.misc
 
 
-compatible_index
-----------------
+is_index_alike
+--------------
 
-.. autofunction:: compatible_index
+.. autofunction:: is_index_alike

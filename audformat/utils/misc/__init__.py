@@ -1,3 +1,3 @@
 from audformat.core.utils_misc import (
-    compatible_index,
+    is_index_alike,
 )
