@@ -447,6 +447,135 @@ def test_dtype_multiindex(
 
 
 @pytest.mark.parametrize(
+    'index_values, index_dtype, '
+    'expected_pandas_dtype, expected_audformat_dtype',
+    [
+        (
+            [],
+            'datetime64[ns]',
+            'datetime64[ns]',
+            audformat.define.DataType.DATE,
+        ),
+        (
+            [],
+            float,
+            'float64',
+            audformat.define.DataType.FLOAT,
+        ),
+        (
+            [],
+            int,
+            'Int64',
+            audformat.define.DataType.INTEGER,
+        ),
+        (
+            [],
+            'int64',
+            'Int64',
+            audformat.define.DataType.INTEGER,
+        ),
+        (
+            [],
+            'Int64',
+            'Int64',
+            audformat.define.DataType.INTEGER,
+        ),
+        (
+            [],
+            str,
+            'object',
+            audformat.define.DataType.STRING,
+        ),
+        (
+            [],
+            'timedelta64[ns]',
+            'timedelta64[ns]',
+            audformat.define.DataType.TIME,
+        ),
+        (
+            [0],
+            'datetime64[ns]',
+            'datetime64[ns]',
+            audformat.define.DataType.DATE,
+        ),
+        (
+            [0.0],
+            None,
+            'float64',
+            audformat.define.DataType.FLOAT,
+        ),
+        (
+            [0],
+            None,
+            'Int64',
+            audformat.define.DataType.INTEGER,
+        ),
+        (
+            [np.NaN],
+            'Int64',
+            'Int64',
+            audformat.define.DataType.INTEGER,
+        ),
+        (
+            [0, np.NaN],
+            'Int64',
+            'Int64',
+            audformat.define.DataType.INTEGER,
+        ),
+        (
+            [np.NaN],
+            'Int64',
+            'Int64',
+            audformat.define.DataType.INTEGER,
+        ),
+        (
+            ['0'],
+            None,
+            'object',
+            audformat.define.DataType.STRING,
+        ),
+        (
+            [0],
+            'timedelta64[ns]',
+            'timedelta64[ns]',
+            audformat.define.DataType.TIME,
+        ),
+    ]
+)
+def test_dtype_multiindex_single_level(
+        tmpdir,
+        index_values,
+        index_dtype,
+        expected_pandas_dtype,
+        expected_audformat_dtype,
+):
+    name = 'idx'
+    index = pd.MultiIndex.from_arrays(
+        [
+            pd.Series(index_values, dtype=index_dtype),
+        ],
+        names=[name],
+
+    )
+    table = audformat.MiscTable(index)
+    assert table.levels[name] == expected_audformat_dtype
+    assert table.index.dtypes[name] == expected_pandas_dtype
+
+    # Store and load table
+    db = audformat.testing.create_db(minimal=True)
+    db['misc'] = table
+    assert db['misc'].levels[name] == expected_audformat_dtype
+    assert db['misc'].index.dtypes[name] == expected_pandas_dtype
+
+    db_root = tmpdir.join('db')
+    db.save(db_root, storage_format='csv')
+    db_new = audformat.Database.load(db_root)
+    # After loading we now longer have a MultiIndex
+    assert db_new['misc'].levels[name] == expected_audformat_dtype
+    assert db_new['misc'].index.dtype == expected_pandas_dtype
+
+
+@pytest.mark.parametrize(
     'table, column, expected',
     [
         (
