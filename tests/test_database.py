@@ -1,6 +1,7 @@
 import datetime
 import filecmp
 import os
+import re
 
 import audeer
 import audiofile
@@ -233,6 +234,16 @@ def test_pick_files(files, num_workers):
 )
 def test_drop_tables(db, tables, expected_tables):
 
+    misc_id = 'misc'
+    if misc_id in audeer.to_list(tables):
+        error_msg = (
+            f"Misc table '{misc_id}' is used as scheme(s): 'label_map_misc', "
+            "and cannot be removed."
+        )
+        with pytest.raises(RuntimeError, match=re.escape(error_msg)):
+            db.drop_tables(misc_id)
+        del db.schemes['label_map_misc']
+
     db.drop_tables(tables)
     assert list(db) == expected_tables
 
@@ -240,7 +251,7 @@ def test_drop_tables(db, tables, expected_tables):
 @pytest.mark.parametrize(
     'db, tables, expected_tables',
     [
-        (
+        pytest.param(
             audformat.testing.create_db(),
             'segments',
             ['segments'],
@@ -269,6 +280,15 @@ def test_drop_tables(db, tables, expected_tables):
     ]
 )
 def test_pick_tables(db, tables, expected_tables):
+
+    if expected_tables is not None and 'misc' not in expected_tables:
+        error_msg = (
+            "Misc table 'misc' is used as scheme(s): 'label_map_misc', "
+            "and cannot be removed."
+        )
+        with pytest.raises(RuntimeError, match=re.escape(error_msg)):
+            db.pick_tables(tables)
+        del db.schemes['label_map_misc']
 
     db.pick_tables(tables)
     assert list(db) == expected_tables

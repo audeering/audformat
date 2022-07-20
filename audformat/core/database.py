@@ -337,7 +337,7 @@ class Database(HeaderBase):
                     raise RuntimeError(
                         f"Misc table '{table_id}' is used "
                         "as scheme(s): "
-                        f"{schemes.join(', ')}, "
+                        f"{', '.join(schemes)}, "
                         "and cannot be removed."
                     )
                 self.misc_tables.pop(table_id)
@@ -515,6 +515,9 @@ class Database(HeaderBase):
         Raises:
             audformat.errors.BadIdError: if a table with provided ID
                 does not exist in the database
+            RuntimeError: if a misc table
+                that is used as scheme(s)
+                is part of the non-picked tables
 
         """
         table_ids = audeer.to_list(table_ids)
