@@ -13,6 +13,7 @@ from audformat.core.column import Column
 from audformat.core.common import (
     HeaderBase,
     HeaderDict,
+    set_index_dtype,
     to_audformat_dtype,
     to_pandas_dtype,
 )
@@ -465,21 +466,19 @@ class Base(HeaderBase):
             dtypes = self.levels
 
         # index columns
+        levels = list(dtypes)
         dtypes = {
             level: to_pandas_dtype(dtype)
             for level, dtype in dtypes.items()
         }
-        levels = list(dtypes)
 
         # other columns
+        columns = list(self.columns)
         for column_id, column in self.columns.items():
             if column.scheme_id is not None:
                 dtypes[column_id] = schemes[column.scheme_id].to_pandas_dtype()
             else:
                 dtypes[column_id] = 'str'
-
-        # all columns
-        usecols = list(dtypes)
 
         # replace dtype with converter for dates or timestamps
         dtypes_wo_converters = {}
@@ -494,7 +493,7 @@ class Base(HeaderBase):
         # read csv
         df = pd.read_csv(
             path,
-            usecols=usecols,
+            usecols=levels + columns,
             dtype=dtypes_wo_converters,
             index_col=levels,
             converters=converters,
@@ -506,20 +505,15 @@ class Base(HeaderBase):
         # and we need to correct it manually
         if len(df) == 0:
             # fix index
-            for level in levels:
-                if level in converters:
-                    dtype = dtypes[level]
-                    if len(levels) > 1:
-                        df.index = df.index.set_level_values(
-                            df.index.get_level_values(level).astype(dtype),
-                            level=level,
-                        )
-                    else:
-                        df.index = df.index.astype(dtype)
+            converter_dtypes = {
+                level: dtype for level, dtype in dtypes.items()
+                if level in converters
+            }
+            df.index = set_index_dtype(df.index, converter_dtypes)
             # fix columns
-            for column_id in self.columns:
+            for column_id in columns:
                 if column_id in converters:
-                    dtype = dtypes[level]
+                    dtype = dtypes[column_id]
                     df[column_id] = df[column_id].astype(dtype)
 
         self._df = df
@@ -659,15 +653,11 @@ class MiscTable(Base):
             dtypes = [to_audformat_dtype(dtype) for dtype in dtypes]
 
             # Ensure integers are always stored as Int64
-            for level, dtype in zip(levels, dtypes):
-                if pd.api.types.is_integer_dtype(dtype):
-                    if len(levels) > 1:
-                        index = index.set_levels(
-                            index.get_level_values(level).astype('Int64'),
-                            level=level,
-                        )
-                    else:
-                        index = index.astype('Int64')
+            int_dtypes = {
+                level: 'Int64' for level, dtype in zip(levels, dtypes)
+                if pd.api.types.is_integer_dtype(dtype)
+            }
+            index = set_index_dtype(index, int_dtypes)
 
             if not all(levels) or len(levels) > len(set(levels)):
                 raise ValueError(
