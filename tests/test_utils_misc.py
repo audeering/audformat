@@ -44,6 +44,20 @@ import audformat
         ),
         (
             [
+                pd.Index(
+                    [1, 2, 3],
+                    dtype='Int64',
+                    name='l',
+                ),
+                pd.MultiIndex.from_arrays(
+                    [[10, 20]],
+                    names=['l'],
+                ),
+            ],
+            True,
+        ),
+        (
+            [
                 pd.Index([1, 2, 3], name='l'),
                 pd.MultiIndex.from_arrays([[10, 20]], names=['L']),
             ],

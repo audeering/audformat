@@ -2,6 +2,8 @@ import typing
 
 import pandas as pd
 
+from audformat.core import common
+
 
 def compatible_index(
         objs: typing.Sequence[typing.Union[pd.Index, pd.Series, pd.DataFrame]],
@@ -50,9 +52,10 @@ def compatible_index(
     dtypes = set()
     for obj in objs:
         if isinstance(obj, pd.MultiIndex):
-            dtypes.add(tuple(obj.dtypes))
+            ds = [common.to_audformat_dtype(dtype) for dtype in obj.dtypes]
         else:
-            dtypes.add(tuple([obj.dtype]))
+            ds = [common.to_audformat_dtype(obj.dtype)]
+        dtypes.add(tuple(ds))
     if len(dtypes) > 1:
         return False
 
