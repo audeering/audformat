@@ -202,9 +202,9 @@ def concat(
             # drop NaN to avoid overwriting values from other column
             column = column.dropna()
         else:
-            if column.dtype.name.startswith('int'):
+            if pd.api.types.is_integer_dtype(column.dtype):
                 dtype = 'Int64'
-            elif column.dtype.name == 'bool':
+            elif pd.api.types.is_bool_dtype(column.dtype):
                 dtype = 'boolean'
             else:
                 dtype = column.dtype

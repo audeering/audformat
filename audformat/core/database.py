@@ -120,7 +120,7 @@ class Database(HeaderBase):
               column: {scheme_id: emotion, rater_id: rater}
         misc_tables:
           misc-table:
-            levels: [idx]
+            levels: {idx: str}
             columns:
               column: {scheme_id: match}
         >>> list(db)

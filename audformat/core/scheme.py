@@ -5,11 +5,13 @@ import typing
 
 import pandas as pd
 
-from audformat.core import define
-from audformat.core.common import HeaderBase
+from audformat.core import (
+    common,
+    define,
+)
 
 
-class Scheme(HeaderBase):
+class Scheme(common.HeaderBase):
     r"""A scheme defines valid values of an annotation.
 
     Allowed values for ``dtype`` are:
@@ -242,19 +244,13 @@ class Scheme(HeaderBase):
             if len(labels) > 0 and isinstance(labels[0], int):
                 # allow nullable
                 labels = pd.array(labels, dtype='int64')
-            return pd.api.types.CategoricalDtype(
+            dtype = pd.api.types.CategoricalDtype(
                 categories=labels,
                 ordered=False,
             )
-        elif self.dtype == define.DataType.BOOL:
-            return 'boolean'
-        elif self.dtype == define.DataType.DATE:
-            return 'datetime64[ns]'
-        elif self.dtype == define.DataType.INTEGER:
-            return 'Int64'
-        elif self.dtype == define.DataType.TIME:
-            return 'timedelta64[ns]'
-        return self.dtype
+        else:
+            dtype = common.to_pandas_dtype(self.dtype)
+        return dtype
 
     def replace_labels(
             self,
@@ -374,7 +370,6 @@ class Scheme(HeaderBase):
                     f"Index of misc table '{table_id}' used as scheme labels "
                     'is not allowed to contain duplicates.'
                 )
-            labels = list(self._db[table_id].index)
             dtype_labels = self._dtype_from_labels(labels)
             if self.dtype != dtype_labels:
                 raise ValueError(
@@ -388,21 +383,29 @@ class Scheme(HeaderBase):
             self,
             labels: typing.Union[dict, list, str],
     ) -> str:
-        r"""Derive dtype from labels."""
+        r"""Derive audformat dtype from labels."""
 
-        labels = self._labels_to_list(labels)
-
-        if len(labels) > 0:
-            dtype = type(labels[0])
+        if isinstance(labels, str):
+            # misc table
+            # dtype is stored in the levels dictionary
+            # as audformat dtypes.
+            # In addition, a misc table used as labels
+            # is only allowed to have an one dimensional index,
+            # so we need to get only the first entry of the dict.
+            levels = self._db[labels].levels
+            dtype = next(iter(levels.values()))
         else:
-            dtype = 'str'
-        if not all(isinstance(x, dtype) for x in labels):
-            raise ValueError(
-                'All labels must be of the same data type.'
-            )
-
-        if dtype in self._dtypes:
-            dtype = self._dtypes[dtype]
+            # dict or list
+            labels = self._labels_to_list(labels)
+            if len(labels) > 0:
+                dtype = type(labels[0])
+            else:
+                dtype = 'str'
+            if not all(isinstance(x, dtype) for x in labels):
+                raise ValueError(
+                    'All labels must be of the same data type.'
+                )
+            dtype = common.to_audformat_dtype(dtype)
         define.DataType.assert_has_attribute_value(dtype)
 
         return dtype

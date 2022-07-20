@@ -1,11 +1,12 @@
 import inspect
 import oyaml as yaml
-from typing import Sequence, Callable
+import typing
 import textwrap
 from collections import OrderedDict
 
 import pandas as pd
 
+from audformat import define
 from audformat.core.errors import (
     BadKeyError,
     BadTypeError,
@@ -54,8 +55,8 @@ class HeaderDict(OrderedDict):
             *args,
             sorted_iter: bool = True,
             value_type: type = None,
-            get_callback: Callable = None,
-            set_callback: Callable = None,
+            get_callback: typing.Callable = None,
+            set_callback: typing.Callable = None,
             **kwargs,
     ):
         self.sorted_iter = sorted_iter
@@ -173,7 +174,7 @@ class HeaderBase:
     def from_dict(
             self,
             d: dict,
-            ignore_keys: Sequence[str] = None,
+            ignore_keys: typing.Sequence[str] = None,
     ):
         r"""Deserialize object from dictionary.
 
@@ -264,3 +265,67 @@ def index_to_html(self):  # pragma: no cover
 def series_to_html(self):  # pragma: no cover
     df = self.to_frame()
     return df.to_html()
+
+
+def set_index_dtype(
+        index: pd.Index,
+        dtypes: typing.Dict[str, str],
+) -> pd.Index:
+    r"""Set the dtypes of an index for the given levels."""
+    if len(dtypes) == 0:
+        return index
+
+    if isinstance(index, pd.MultiIndex):
+        # MultiIndex
+        if len(index) == 0:
+            # set_levels() does not work for an empty index
+            # so we convert to a dataframe instead
+            df = index.to_frame()
+            for level, dtype in dtypes.items():
+                df[level] = df[level].astype(dtype)
+            index = pd.MultiIndex.from_frame(df)
+        else:
+            for level, dtype in dtypes.items():
+                index = index.set_levels(
+                    index.get_level_values(level).astype(dtype),
+                    level=level,
+                )
+    else:
+        # Index
+        dtype = next(iter(dtypes.values()))
+        index = index.astype(dtype)
+
+    return index
+
+
+def to_audformat_dtype(dtype: typing.Union[str, typing.Type]) -> str:
+    r"""Convert pandas to audformat dtype."""
+    if pd.api.types.is_bool_dtype(dtype):
+        return define.DataType.BOOL
+    elif pd.api.types.is_datetime64_dtype(dtype):
+        return define.DataType.DATE
+    elif pd.api.types.is_float_dtype(dtype):
+        return define.DataType.FLOAT
+    elif pd.api.types.is_integer_dtype(dtype):
+        return define.DataType.INTEGER
+    elif pd.api.types.is_timedelta64_dtype(dtype):
+        return define.DataType.TIME
+    else:
+        # default to str
+        return define.DataType.STRING
+
+
+def to_pandas_dtype(dtype: str) -> str:
+    r"""Convert audformat to pandas dtype."""
+    if dtype == define.DataType.BOOL:
+        return 'boolean'
+    elif dtype == define.DataType.DATE:
+        return 'datetime64[ns]'
+    elif dtype == define.DataType.FLOAT:
+        return 'float'
+    elif dtype == define.DataType.INTEGER:
+        return 'Int64'
+    elif dtype == define.DataType.STRING:
+        return 'str'
+    elif dtype == define.DataType.TIME:
+        return 'timedelta64[ns]'
