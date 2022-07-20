@@ -285,6 +285,13 @@ def test_dtype_column(
             'timedelta64[ns]',
             audformat.define.DataType.TIME,
         ),
+        (  # list as index -> converted to str
+            pd.Index,
+            [[0]],
+            'object',
+            'object',
+            audformat.define.DataType.STRING,
+        ),
     ]
 )
 def test_dtype_index(
