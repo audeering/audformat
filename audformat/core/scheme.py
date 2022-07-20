@@ -75,6 +75,10 @@ class Scheme(HeaderBase):
         {dtype: str, labels: speaker}
 
     """
+    # Mapping for dtype input argument,
+    # e.g. to allow `str` besides `'str'`.
+    # This behavior is only for convenience
+    # and not mentioned in the docstring
     _dtypes = {
         'bool': define.DataType.BOOL,
         bool: define.DataType.BOOL,
