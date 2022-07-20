@@ -690,6 +690,15 @@ class MiscTable(Base):
     def _get_by_index(self, index: pd.Index) -> (pd.DataFrame, bool):
         return self.df.loc[index], False
 
+    def _used_in_schemes(self) -> typing.List:
+        schemes = []
+        if self._db is not None:
+            for scheme_id in self._db.schemes:
+                labels = getattr(self._db.schemes[scheme_id], 'labels', None)
+                if isinstance(labels, str):
+                    schemes.append(scheme_id)
+        return schemes
+
 
 class Table(Base):
     r"""Table conform to :ref:`table specifications <data-tables:Tables>`.
