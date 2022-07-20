@@ -39,7 +39,6 @@
     api-errors
     api-testing
     api-utils
-    api-utils-misc
     genindex
 
 .. toctree::

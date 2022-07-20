@@ -1,4 +1,3 @@
-from audformat.utils import misc
 from audformat.core.utils import (
     concat,
     duration,
@@ -6,6 +5,7 @@ from audformat.core.utils import (
     hash,
     index_has_overlap,
     intersect,
+    is_index_alike,
     iter_by_file,
     join_labels,
     join_schemes,
