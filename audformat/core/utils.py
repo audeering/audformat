@@ -1206,10 +1206,11 @@ def union(
 ) -> pd.Index:
     r"""Create union of index objects.
 
-    Index objects must be conform to
-    :ref:`table specifications <data-tables:Tables>`.
+    Filewise indices will be first converted to segmented indeces
+    if a segmented index is given as well.
 
-    If at least one object is segmented, the output is a segmented index.
+    If ``objs`` is an empty list,
+    an empty filewise index is returned.
 
     Args:
         objs: index objects conform to
@@ -1255,21 +1256,38 @@ def union(
                     ('f4', '0 days 00:00:00', '0 days 00:00:01'),
                     ('f3', '0 days 00:00:01', '0 days 00:00:02')],
                    names=['file', 'start', 'end'])
+        >>> union(
+        ...     [
+        ...         pd.Index(['spk1'], name='speaker'),
+        ...         pd.MultiIndex.from_arrays([['spk2']], names=['speaker']),
+        ...     ]
+        ... )
+        Index(['spk1', 'spk2'], dtype='object', name='speaker')
 
     """
     if not objs:
         return filewise_index()
 
-    types = [index_type(obj) for obj in objs]
+    objs = [obj if isinstance(obj, pd.Index) else obj.index for obj in objs]
 
-    if len(set(types)) != 1:
-        objs = [to_segmented_index(obj) for obj in objs]
+    if len(objs) == 1:
+        return objs[0]
+
+    # Convert filewise index to segmented
+    # if a segmented index is present
+    if any([is_segmented_index(obj) for obj in objs]):
+        for n, obj in enumerate(objs):
+            if is_filewise_index(obj):
+                objs[n] = to_segmented_index(obj)
 
     # Combine all MultiIndex entries and drop duplicates afterwards,
     # faster than using index.union(),
     # compare https://github.com/audeering/audformat/pull/98
     df = pd.concat([o.to_frame() for o in objs])
-    index = df.index
+    if len(df.columns) > 1:
+        index = pd.MultiIndex.from_frame(df)
+    else:
+        index = pd.Index(df.iloc[:, 0])
     index = index.drop_duplicates()
 
     return index
