@@ -624,7 +624,7 @@ class MiscTable(Base):
         ... )
         >>> table['match'] = Column()
         >>> table
-        levels: {file: str, other: str}
+        levels: {file: object, other: object}
         split_id: test
         columns:
           match: {}

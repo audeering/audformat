@@ -6,7 +6,10 @@ import numpy as np
 import pandas as pd
 
 from audformat.core import define
-from audformat.core.common import HeaderBase
+from audformat.core.common import (
+    HeaderBase,
+    to_pandas_dtype,
+)
 from audformat.core.index import (
     index_type,
     is_scalar,
@@ -301,6 +304,9 @@ class Column(HeaderBase):
         if self.scheme_id is not None:
             scheme = self._table._db.schemes[self.scheme_id]
             assert_values(values, scheme)
+            dtype = scheme.to_pandas_dtype()
+        else:
+            dtype = df[column_id].dtype
 
         if hasattr(self._table, 'type') and \
                 self._table.type != index_type(index):
@@ -322,7 +328,7 @@ class Column(HeaderBase):
             df.loc[index, column_id] = pd.Series(
                 values,
                 index=index,
-                dtype=df[column_id].dtype,
+                dtype=dtype,
             )
 
     def __eq__(

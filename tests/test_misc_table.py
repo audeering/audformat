@@ -76,6 +76,12 @@ def test_copy(table):
         (
             [],
             str,
+            'object',
+            audformat.define.DataType.OBJECT,
+        ),
+        (
+            [],
+            'string',
             'string',
             audformat.define.DataType.STRING,
         ),
@@ -177,7 +183,7 @@ def test_dtype_column(
             [],
             None,
             'object',
-            audformat.define.DataType.STRING,
+            audformat.define.DataType.OBJECT,
         ),
         (
             pd.DatetimeIndex,
@@ -219,6 +225,13 @@ def test_dtype_column(
             [],
             str,
             'object',
+            audformat.define.DataType.OBJECT,
+        ),
+        (
+            pd.Index,
+            [],
+            'string',
+            'string',
             audformat.define.DataType.STRING,
         ),
         (
@@ -275,7 +288,7 @@ def test_dtype_column(
             ['0'],
             None,
             'object',
-            audformat.define.DataType.STRING,
+            audformat.define.DataType.OBJECT,
         ),
         (
             pd.TimedeltaIndex,
@@ -284,12 +297,12 @@ def test_dtype_column(
             'timedelta64[ns]',
             audformat.define.DataType.TIME,
         ),
-        (  # list as index -> converted to str
+        (
             pd.Index,
             [[0]],
             'object',
             'object',
-            audformat.define.DataType.STRING,
+            audformat.define.DataType.OBJECT,
         ),
     ]
 )
@@ -360,6 +373,12 @@ def test_dtype_index(
             [],
             str,
             'object',
+            audformat.define.DataType.OBJECT,
+        ),
+        (
+            [],
+            'string',
+            'string',
             audformat.define.DataType.STRING,
         ),
         (
@@ -408,7 +427,7 @@ def test_dtype_index(
             ['0'],
             None,
             'object',
-            audformat.define.DataType.STRING,
+            audformat.define.DataType.OBJECT,
         ),
         (
             [0],
@@ -490,6 +509,12 @@ def test_dtype_multiindex(
             [],
             str,
             'object',
+            audformat.define.DataType.OBJECT,
+        ),
+        (
+            [],
+            'string',
+            'string',
             audformat.define.DataType.STRING,
         ),
         (
@@ -538,7 +563,7 @@ def test_dtype_multiindex(
             ['0'],
             None,
             'object',
-            audformat.define.DataType.STRING,
+            audformat.define.DataType.OBJECT,
         ),
         (
             [0],

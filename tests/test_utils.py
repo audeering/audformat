@@ -1365,10 +1365,7 @@ def test_map_language(language, expected):
 f1
 f2
 f3'''),
-        pd.Index(
-            ['f1', 'f2', 'f3'],
-            name='file',
-        ),
+        audformat.filewise_index(['f1', 'f2', 'f3']),
     ),
     (
         StringIO('''file,value
@@ -1430,13 +1427,10 @@ f2,00:00:03,2.0'''),
 f1,00:00:00,00:00:01
 f1,00:00:01,00:00:02
 f2,00:00:02,00:00:03'''),
-        pd.MultiIndex.from_arrays(
-            [
-                ['f1', 'f1', 'f2'],
-                pd.to_timedelta(['0s', '1s', '2s']),
-                pd.to_timedelta(['1s', '2s', '3s']),
-            ],
-            names=['file', 'start', 'end'],
+        audformat.segmented_index(
+            ['f1', 'f1', 'f2'],
+            ['0s', '1s', '2s'],
+            ['1s', '2s', '3s'],
         ),
     ),
     (

@@ -4,6 +4,7 @@ import numpy as np
 import pandas as pd
 
 from audformat.core import define
+from audformat.core.common import set_index_dtype
 from audformat.core.typing import (
     Files,
     Timestamps,
@@ -169,14 +170,18 @@ def filewise_index(
 
     Example:
         >>> filewise_index(['a.wav', 'b.wav'])
-        Index(['a.wav', 'b.wav'], dtype='object', name='file')
+        Index(['a.wav', 'b.wav'], dtype='string', name='file')
 
     """
     if files is None:
         files = []
 
     files = to_array(files)
-    index = pd.Index(files, name=define.IndexField.FILE)
+    index = pd.Index(
+        files,
+        name=define.IndexField.FILE,
+        dtype='string',
+    )
     assert_index(index)
 
     return index
@@ -358,6 +363,7 @@ def segmented_index(
             define.IndexField.START,
             define.IndexField.END,
         ])
+    index = set_index_dtype(index, {define.IndexField.FILE: 'string'})
     assert_index(index)
 
     return index
