@@ -331,7 +331,10 @@ class Database(HeaderBase):
             if table_id in self.tables:
                 self.tables.pop(table_id)
             elif table_id in self.misc_tables:
-                schemes = self.misc_tables[table_id]._used_in_schemes()
+                schemes = [
+                    scheme._id for scheme in self.schemes.values()
+                    if scheme.labels == table_id
+                ]
                 if len(schemes) > 0:
                     schemes = [f"'{scheme}'" for scheme in schemes]
                     raise RuntimeError(
