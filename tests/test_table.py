@@ -648,6 +648,32 @@ def test_exceptions():
         )
         db['table']['column'] = audformat.Column(rater_id='invalid')
 
+    # level and column names must be unique
+
+    with pytest.raises(ValueError):
+        db['table'] = audformat.Table(
+            audformat.filewise_index(),
+        )
+        db['table'][audformat.define.IndexField.FILE] = audformat.Column()
+
+    with pytest.raises(ValueError):
+        db['table'] = audformat.Table(
+            audformat.segmented_index(),
+        )
+        db['table'][audformat.define.IndexField.FILE] = audformat.Column()
+
+    with pytest.raises(ValueError):
+        db['table'] = audformat.Table(
+            audformat.segmented_index(),
+        )
+        db['table'][audformat.define.IndexField.START] = audformat.Column()
+
+    with pytest.raises(ValueError):
+        db['table'] = audformat.Table(
+            audformat.segmented_index(),
+        )
+        db['table'][audformat.define.IndexField.END] = audformat.Column()
+
 
 def test_extend_index():
 

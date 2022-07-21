@@ -631,3 +631,32 @@ def test_get_column(table, column, expected):
 )
 def test_level_names(index):
     audformat.MiscTable(index)
+
+
+@pytest.mark.parametrize(
+    'index, columns',
+    [
+        (
+            pd.Index([], name='idx'),
+            ['column'],
+        ),
+        (
+            pd.MultiIndex([[], []], [[], []], names=['idx1', 'idx2']),
+            ['column'],
+        ),
+        pytest.param(
+            pd.Index([], name='idx'),
+            ['idx'],
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
+        pytest.param(
+            pd.MultiIndex([[], []], [[], []], names=['idx1', 'idx2']),
+            ['column', 'idx2'],
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
+    ]
+)
+def test_level_and_column_names(index, columns):
+    misc = audformat.MiscTable(index)
+    for column in columns:
+        misc[column] = audformat.Column()
