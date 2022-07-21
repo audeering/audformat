@@ -90,6 +90,7 @@ class Base(HeaderBase):
         Raises:
             BadIdError: if a column with a ``scheme_id`` or ``rater_id`` is
                 added that does not exist
+            ValueError: if column ID is not different from level names
 
         """
         self.columns[column_id] = column
@@ -547,6 +548,21 @@ class Base(HeaderBase):
 
     def _set_column(self, column_id: str, column: Column) -> Column:
 
+        levels = (
+            self.index.names
+            if isinstance(self.index, pd.MultiIndex)
+            else [self.index.name]
+        )
+        if column_id in levels:
+            raise ValueError(
+                f"Cannot add column with ID "
+                f"'{column_id}' "
+                f"when there is an "
+                f"index level with same name. "
+                f"Level names are: "
+                f"{levels}."
+            )
+
         if column.scheme_id is not None and \
                 column.scheme_id not in self.db.schemes:
             raise BadIdError('column', column.scheme_id, self.db.schemes)
@@ -579,6 +595,9 @@ class MiscTable(Base):
     To fill a table with labels,
     add one or more :class:`audformat.Column`
     and use :meth:`audformat.MiscTable.set` to set the values.
+    When adding a column,
+    the column ID must be different
+    from the index level names.
 
     Args:
         index: table index with non-empty and unique level names
@@ -699,6 +718,13 @@ class Table(Base):
     To fill a table with labels,
     add one or more :class:`audformat.Column`
     and use :meth:`audformat.Table.set` to set the values.
+    When adding a column,
+    the column ID must be different
+    from the index level names,
+    which are ``'file'``
+    in case of a ``filewise`` table
+    and ``'file'``, ``'start'`` and ``'end'``
+    in case of ``segmented`` table.
 
     Args:
         index: index conform to
