@@ -236,13 +236,27 @@ def test_drop_tables(db, tables, expected_tables):
 
     misc_id = 'misc'
     if misc_id in audeer.to_list(tables):
-        error_msg = (
-            f"Misc table '{misc_id}' is used as scheme(s): 'label_map_misc', "
-            "and cannot be removed."
-        )
-        with pytest.raises(RuntimeError, match=re.escape(error_msg)):
-            db.drop_tables(misc_id)
+
+        def error_msg(table_id):
+            return re.escape(
+                f"Misc table '{table_id}' is used as scheme(s): "
+                "'label_map_misc', "
+                "and cannot be removed."
+            )
+
+        with pytest.raises(RuntimeError, match=error_msg('misc')):
+            db.drop_tables('misc')
+
+        # Replace scheme with other misc table
+        db['misc_copy'] = db['misc'].copy()
+        db.schemes['label_map_misc'].replace_labels('misc_copy')
+        db.drop_tables(misc_id)
+        with pytest.raises(RuntimeError, match=error_msg('misc_copy')):
+            db.drop_tables('misc_copy')
+
+        # Delete scheme and remove copied table as well
         del db.schemes['label_map_misc']
+        db.drop_tables('misc_copy')
 
     db.drop_tables(tables)
     assert list(db) == expected_tables
