@@ -1427,11 +1427,11 @@ def union_misc(
 
     """
     if not objs:
-        return pd.Index()
+        return pd.Index([])
 
     if not is_index_alike(objs):
         raise ValueError(
-            'To combine indices levels and dtypes must match, '
+            'Levels and dtypes of all objects must match, '
             'see audformat.utils.is_index_alike().'
         )
 
