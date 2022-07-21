@@ -234,8 +234,7 @@ def test_pick_files(files, num_workers):
 )
 def test_drop_tables(db, tables, expected_tables):
 
-    misc_id = 'misc'
-    if misc_id in audeer.to_list(tables):
+    if 'misc' in audeer.to_list(tables):
 
         def error_msg(table_id):
             return re.escape(
@@ -250,13 +249,15 @@ def test_drop_tables(db, tables, expected_tables):
         # Replace scheme with other misc table
         db['misc_copy'] = db['misc'].copy()
         db.schemes['label_map_misc'].replace_labels('misc_copy')
-        db.drop_tables(misc_id)
+        db.drop_tables('misc')
         with pytest.raises(RuntimeError, match=error_msg('misc_copy')):
             db.drop_tables('misc_copy')
 
         # Delete scheme and remove copied table as well
         del db.schemes['label_map_misc']
         db.drop_tables('misc_copy')
+
+        tables = [t for t in audeer.to_list(tables) if t != 'misc']
 
     db.drop_tables(tables)
     assert list(db) == expected_tables
