@@ -34,15 +34,20 @@ intersect
 
 .. autofunction:: intersect
 
+is_index_alike
+--------------
+
+.. autofunction:: is_index_alike
+
 iter_by_file
 ------------
+
 .. autofunction:: iter_by_file
 
 join_labels
 -----------
 
 .. autofunction:: join_labels
-
 
 join_schemes
 ------------
