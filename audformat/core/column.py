@@ -6,10 +6,7 @@ import numpy as np
 import pandas as pd
 
 from audformat.core import define
-from audformat.core.common import (
-    HeaderBase,
-    to_pandas_dtype,
-)
+from audformat.core.common import HeaderBase
 from audformat.core.index import (
     index_type,
     is_scalar,
