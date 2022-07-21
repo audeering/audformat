@@ -6,8 +6,6 @@ from collections import OrderedDict
 
 import pandas as pd
 
-import audeer
-
 from audformat import define
 from audformat.core.errors import (
     BadKeyError,
