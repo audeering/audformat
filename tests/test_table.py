@@ -650,25 +650,25 @@ def test_exceptions():
 
     # level and column names must be unique
 
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match='index level with same name'):
         db['table'] = audformat.Table(
             audformat.filewise_index(),
         )
         db['table'][audformat.define.IndexField.FILE] = audformat.Column()
 
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match='index level with same name'):
         db['table'] = audformat.Table(
             audformat.segmented_index(),
         )
         db['table'][audformat.define.IndexField.FILE] = audformat.Column()
 
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match='index level with same name'):
         db['table'] = audformat.Table(
             audformat.segmented_index(),
         )
         db['table'][audformat.define.IndexField.START] = audformat.Column()
 
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match='index level with same name'):
         db['table'] = audformat.Table(
             audformat.segmented_index(),
         )
