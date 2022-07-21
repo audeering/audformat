@@ -498,7 +498,10 @@ def is_index_alike(
 
     Two index objects are alike
     if they have the same number of levels
-    and share the same level names and dtypes.
+    and share the same level names.
+    In addition,
+    the dtypes have to match the the same audformat dtypes category,
+    compare :class:`audformat.define.DataType`.
 
     Args:
         objs: objects
