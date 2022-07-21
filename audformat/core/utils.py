@@ -1206,9 +1206,8 @@ def union(
 ) -> pd.Index:
     r"""Create union of index objects.
 
-    Filewise indices will be first converted to segmented indeces
-    if a segmented index is given as well.
-
+    Filewise indices will be converted to segmented indeces
+    if any segmented index is present.
     If ``objs`` is an empty list,
     an empty filewise index is returned.
 
