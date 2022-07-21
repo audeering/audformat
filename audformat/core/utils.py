@@ -12,8 +12,8 @@ import pandas as pd
 import audeer
 import audiofile
 
-from audformat.core import common
 from audformat.core import define
+from audformat.core.common import to_audformat_dtype
 from audformat.core.database import Database
 from audformat.core.index import (
     filewise_index,
@@ -538,9 +538,9 @@ def is_index_alike(
     dtypes = set()
     for obj in objs:
         if isinstance(obj, pd.MultiIndex):
-            ds = [common.to_audformat_dtype(dtype) for dtype in obj.dtypes]
+            ds = [to_audformat_dtype(dtype) for dtype in obj.dtypes]
         else:
-            ds = [common.to_audformat_dtype(obj.dtype)]
+            ds = [to_audformat_dtype(obj.dtype)]
         dtypes.add(tuple(ds))
     if len(dtypes) > 1:
         return False
