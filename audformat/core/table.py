@@ -557,7 +557,7 @@ class Base(HeaderBase):
             raise ValueError(
                 f"Cannot add column with ID "
                 f"'{column_id}' "
-                f"when there is already an "
+                f"when there is an "
                 f"index level with same name. "
                 f"Level names are: "
                 f"{levels}."
