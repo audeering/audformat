@@ -1322,6 +1322,8 @@ def union(
 
     Index objects must be conform to
     :ref:`table specifications <data-tables:Tables>`.
+    Otherwise use
+    :func:`audformat.utils.union_misc`.
 
     If at least one object is segmented, the output is a segmented index.
 
@@ -1378,6 +1380,60 @@ def union(
 
     if len(set(types)) != 1:
         objs = [to_segmented_index(obj) for obj in objs]
+
+    return union_misc(objs)
+
+
+def union_misc(
+    objs: typing.Sequence[pd.Index],
+) -> pd.Index:
+    r"""Create union of index objects.
+
+    Requires that levels and dtypes
+    of all objects match,
+    see :func:`audformat.utils.is_index_alike`.
+    Unlike :func:`audformat.utils.union`
+    index objects must not be conform to
+    :ref:`table specifications <data-tables:Tables>`.
+
+    Args:
+        objs: index objects
+
+    Returns:
+        union of index objects
+
+    Raises:
+        ValueError: if level and dtypes of objects do not match
+
+    Example:
+        >>> index1 = pd.Index([0, 1], name='idx')
+        >>> index2 = pd.Index([1, 2], dtype='Int64', name='idx')
+        >>> union_misc([index1, index2])
+        Index([0, 1, 2], dtype='Int64', name='idx')
+        >>> index3 = pd.MultiIndex.from_arrays(
+        ...     [['a', 'b', 'c'], [0, 1, 2]],
+        ...     names=['idx1', 'idx2'],
+        ... )
+        >>> index4 = pd.MultiIndex.from_arrays(
+        ...     [['b', 'c'], [1, 3]],
+        ...     names=['idx1', 'idx2'],
+        ... )
+        >>> union_misc([index3, index4])
+        MultiIndex([('a', 0),
+                    ('b', 1),
+                    ('c', 2),
+                    ('c', 3)],
+                   names=['idx1', 'idx2'])
+
+    """
+    if not objs:
+        return pd.Index()
+
+    if not is_index_alike(objs):
+        raise ValueError(
+            'To combine indices levels and dtypes must match, '
+            'see audformat.utils.is_index_alike().'
+        )
 
     # Combine all MultiIndex entries and drop duplicates afterwards,
     # faster than using index.union(),
