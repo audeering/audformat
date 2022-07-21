@@ -1213,15 +1213,10 @@ def union(
     an empty filewise index is returned.
 
     Args:
-        objs: index objects conform to
-            :ref:`table specifications <data-tables:Tables>`
+        objs: index objects
 
     Returns:
         union of index objects
-
-    Raises:
-        ValueError: if one or more objects are not conform to
-            :ref:`table specifications <data-tables:Tables>`
 
     Example:
         >>> index1 = filewise_index(['f1', 'f2', 'f3'])
