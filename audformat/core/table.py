@@ -478,7 +478,7 @@ class Base(HeaderBase):
             if column.scheme_id is not None:
                 dtypes[column_id] = schemes[column.scheme_id].to_pandas_dtype()
             else:
-                dtypes[column_id] = object
+                dtypes[column_id] = 'object'
 
         # replace dtype with converter for dates or timestamps
         dtypes_wo_converters = {}
