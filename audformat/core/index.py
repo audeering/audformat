@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 
 from audformat.core import define
-from audformat.core.common import set_index_dtype
+from audformat.core import utils
 from audformat.core.typing import (
     Files,
     Timestamps,
@@ -363,7 +363,7 @@ def segmented_index(
             define.IndexField.START,
             define.IndexField.END,
         ])
-    index = set_index_dtype(index, {define.IndexField.FILE: 'string'})
+    index = utils.set_index_dtype(index, {define.IndexField.FILE: 'string'})
     assert_index(index)
 
     return index

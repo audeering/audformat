@@ -13,10 +13,7 @@ import audeer
 import audiofile
 
 from audformat.core import define
-from audformat.core.common import (
-    set_index_dtype,
-    to_audformat_dtype,
-)
+from audformat.core.common import to_audformat_dtype
 from audformat.core.database import Database
 from audformat.core.index import (
     filewise_index,
@@ -917,23 +914,6 @@ def read_csv(
         return frame
 
 
-def same_dtype(d1, d2) -> bool:
-    r"""Helper function to compare pandas dtype."""
-    if d1.name.startswith('bool') and d2.name.startswith('bool'):
-        # match different bool types, i.e. bool and boolean
-        return True
-    if d1.name.lower().startswith('int') and d2.name.lower().startswith('int'):
-        # match different int types, e.g. int64 and Int64
-        return True
-    if d1.name.startswith('float') and d2.name.startswith('float'):
-        # match different float types, e.g. float32 and float64
-        return True
-    if d1.name == 'category' and d2.name == 'category':
-        # match only if categories are the same
-        return d1 == d2
-    return d1.name == d2.name
-
-
 def replace_file_extension(
         index: pd.Index,
         extension: str,
@@ -988,6 +968,60 @@ def replace_file_extension(
         )
     else:
         index = index.str.replace(cur_ext, new_ext, regex=True)
+
+    return index
+
+
+def same_dtype(d1, d2) -> bool:
+    r"""Helper function to compare pandas dtype."""
+    if d1.name.startswith('bool') and d2.name.startswith('bool'):
+        # match different bool types, i.e. bool and boolean
+        return True
+    if d1.name.lower().startswith('int') and d2.name.lower().startswith('int'):
+        # match different int types, e.g. int64 and Int64
+        return True
+    if d1.name.startswith('float') and d2.name.startswith('float'):
+        # match different float types, e.g. float32 and float64
+        return True
+    if d1.name == 'category' and d2.name == 'category':
+        # match only if categories are the same
+        return d1 == d2
+    return d1.name == d2.name
+
+
+def set_index_dtype(
+        index: pd.Index,
+        dtypes: typing.Dict[str, str],
+) -> pd.Index:
+    r"""Set the dtypes of an index for the given levels."""
+    if len(dtypes) == 0:
+        return index
+
+    if isinstance(index, pd.MultiIndex):
+        # MultiIndex
+        if all([len(level) == 0 for level in index.levels]):
+            # set_levels() does not work
+            # in the case the levels are something like `[[], []]`,
+            # so we convert to a dataframe instead
+            df = index.to_frame()
+            for level, dtype in dtypes.items():
+                df[level] = df[level].astype(dtype)
+            index = pd.MultiIndex.from_frame(df)
+        else:
+            for level, dtype in dtypes.items():
+                # get_level_values() does not work
+                # for levels containing non-unique entries,
+                # hence we acces the data directly with
+                # index.levels[idx]
+                idx = index.names.index(level)
+                index = index.set_levels(
+                    index.levels[idx].astype(dtype),
+                    level=level,
+                )
+    else:
+        # Index
+        dtype = next(iter(dtypes.values()))
+        index = index.astype(dtype)
 
     return index
 

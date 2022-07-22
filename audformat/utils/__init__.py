@@ -14,6 +14,7 @@ from audformat.core.utils import (
     map_language,
     read_csv,
     replace_file_extension,
+    set_index_dtype,
     to_filewise_index,
     to_segmented_index,
     union,
