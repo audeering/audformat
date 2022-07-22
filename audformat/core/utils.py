@@ -1209,7 +1209,7 @@ def union(
     Filewise indices will be converted to segmented indeces
     if any segmented index is present.
     If ``objs`` is an empty list,
-    an empty filewise index is returned.
+    an empty :class:`pandas.Index`` object is returned.
 
     Args:
         objs: index objects
@@ -1221,9 +1221,12 @@ def union(
         ValueError: if level and dtypes of objects do not match
 
     Example:
-        >>> index1 = filewise_index(['f1', 'f2', 'f3'])
-        >>> index2 = filewise_index(['f2', 'f3', 'f4'])
-        >>> union([index1, index2])
+        >>> union(
+        ...     [
+        ...         filewise_index(['f1', 'f2', 'f3']),
+        ...         filewise_index(['f2', 'f3', 'f4']),
+        ...     ]
+        ... )
         Index(['f1', 'f2', 'f3', 'f4'], dtype='object', name='file')
         >>> index3 = segmented_index(
         ...     ['f1', 'f2', 'f3', 'f4'],
@@ -1235,24 +1238,51 @@ def union(
         ...     [0, 0, 1],
         ...     [1, 1, 2],
         ... )
-        >>> union([index3, index4])
-        MultiIndex([('f1', '0 days 00:00:00', '0 days 00:00:01'),
-                    ('f2', '0 days 00:00:00', '0 days 00:00:01'),
-                    ('f3', '0 days 00:00:00', '0 days 00:00:01'),
-                    ('f4', '0 days 00:00:00', '0 days 00:00:01'),
-                    ('f3', '0 days 00:00:01', '0 days 00:00:02')],
-                   names=['file', 'start', 'end'])
-        >>> union([index1, index2, index3, index4])
-        MultiIndex([('f1', '0 days 00:00:00',               NaT),
-                    ('f2', '0 days 00:00:00',               NaT),
-                    ('f3', '0 days 00:00:00',               NaT),
-                    ('f4', '0 days 00:00:00',               NaT),
+        >>> union(
+        ...     [
+        ...         segmented_index(['f2'], [0], [1]),
+        ...         segmented_index(['f1', 'f2'], [0, 1], [1, 2]),
+        ...     ]
+        ... )
+        MultiIndex([('f2', '0 days 00:00:00', '0 days 00:00:01'),
                     ('f1', '0 days 00:00:00', '0 days 00:00:01'),
-                    ('f2', '0 days 00:00:00', '0 days 00:00:01'),
-                    ('f3', '0 days 00:00:00', '0 days 00:00:01'),
-                    ('f4', '0 days 00:00:00', '0 days 00:00:01'),
-                    ('f3', '0 days 00:00:01', '0 days 00:00:02')],
+                    ('f2', '0 days 00:00:01', '0 days 00:00:02')],
                    names=['file', 'start', 'end'])
+        >>> union(
+        ...     [
+        ...         filewise_index(['f1', 'f2']),
+        ...         segmented_index(['f1', 'f2'], [0, 0], [1, 1]),
+        ...     ]
+        ... )
+        MultiIndex([('f1', '0 days',               NaT),
+                    ('f2', '0 days',               NaT),
+                    ('f1', '0 days', '0 days 00:00:01'),
+                    ('f2', '0 days', '0 days 00:00:01')],
+                   names=['file', 'start', 'end'])
+        >>> union(
+        ...     [
+        ...         pd.Index([0, 1], name='idx'),
+        ...         pd.Index([1, 2], dtype='Int64', name='idx'),
+        ...     ]
+        ... )
+        Index([0, 1, 2], dtype='Int64', name='idx')
+        >>> union(
+        ...     [
+        ...         pd.MultiIndex.from_arrays(
+        ...             [['a', 'b', 'c'], [0, 1, 2]],
+        ...             names=['idx1', 'idx2'],
+        ...         ),
+        ...         pd.MultiIndex.from_arrays(
+        ...             [['b', 'c'], [1, 3]],
+        ...             names=['idx1', 'idx2'],
+        ...         ),
+        ...    ]
+        ... )
+        MultiIndex([('a', 0),
+                    ('b', 1),
+                    ('c', 2),
+                    ('c', 3)],
+                   names=['idx1', 'idx2'])
         >>> union(
         ...     [
         ...         pd.Index(['spk1'], name='speaker'),
@@ -1263,7 +1293,7 @@ def union(
 
     """
     if not objs:
-        return filewise_index()
+        return pd.Index([])
 
     objs = [obj if isinstance(obj, pd.Index) else obj.index for obj in objs]
 

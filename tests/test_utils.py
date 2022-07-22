@@ -1823,7 +1823,7 @@ def test_to_filewise(output_folder, table_id, expected_file_names):
     [
         (
             [],
-            audformat.filewise_index(),
+            pd.Index([]),
         ),
         (
             [
