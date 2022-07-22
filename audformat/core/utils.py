@@ -520,27 +520,27 @@ def is_index_alike(
     Returns:
         ``True`` if index objects are alike, otherwise ``False``
 
-    Examples:
-        >>> idx1 = pd.Index([1, 2, 3], dtype='Int64', name='l')
-        >>> idx2 = pd.MultiIndex.from_arrays([[10, 20]], names=['l'])
-        >>> is_index_alike([idx1, idx2])
+    Example:
+        >>> index1 = pd.Index([1, 2, 3], dtype='Int64', name='l')
+        >>> index2 = pd.MultiIndex.from_arrays([[10, 20]], names=['l'])
+        >>> is_index_alike([index1, index2])
         True
-        >>> is_index_alike([idx1, pd.Series(['a', 'b'], index=idx2)])
+        >>> is_index_alike([index1, pd.Series(['a', 'b'], index=index2)])
         True
-        >>> idx3 = idx2.set_names(['L'])
-        >>> is_index_alike([idx2, idx3])
+        >>> index3 = index2.set_names(['L'])
+        >>> is_index_alike([index2, index3])
         False
-        >>> idx4 = idx2.set_levels([['10', '20']])
-        >>> is_index_alike([idx2, idx4])
+        >>> index4 = index2.set_levels([['10', '20']])
+        >>> is_index_alike([index2, index4])
         False
-        >>> idx5 = pd.MultiIndex.from_arrays([[1], ['a']], names=['l1', 'l2'])
-        >>> is_index_alike([idx2, idx5])
+        >>> index5 = pd.MultiIndex.from_arrays([[1], ['a']], names=['l1', 'l2'])
+        >>> is_index_alike([index2, index5])
         False
-        >>> idx6 = pd.MultiIndex.from_arrays([['a'], [1]], names=['l2', 'l1'])
-        >>> is_index_alike([idx5, idx6])
+        >>> index6 = pd.MultiIndex.from_arrays([['a'], [1]], names=['l2', 'l1'])
+        >>> is_index_alike([index5, index6])
         False
 
-    """
+    """  # noqa: E501
     objs = [obj if isinstance(obj, pd.Index) else obj.index for obj in objs]
 
     # check names
