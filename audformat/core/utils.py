@@ -586,7 +586,6 @@ def intersect_misc(
     # index.intersection() does not preserve string dtype
     # for MultiIndex
     if isinstance(index, pd.MultiIndex):
-        obj = objs[0]
         dtypes = {
             name: dtype for name, dtype in zip(objs[0].names, objs[0].dtypes)
             if dtype == 'string'
