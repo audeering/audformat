@@ -1981,6 +1981,59 @@ def test_to_filewise(output_folder, table_id, expected_file_names):
                 [pd.NaT, pd.NaT, 1, 1, pd.NaT],
             ),
         ),
+        # Non audformat conform indices
+        (
+            [
+                pd.Index([]),
+            ],
+            pd.Index([]),
+        ),
+        (
+            [
+                pd.Index([]),
+                pd.Index([]),
+            ],
+            pd.Index([]),
+        ),
+        (
+            [
+                pd.Index([0, 1], name='idx'),
+                pd.Index([1, 2], name='idx'),
+            ],
+            pd.Index([0, 1, 2], name='idx'),
+        ),
+        (
+            [
+                pd.Index([0, 1], name='idx'),
+                pd.Index([1, 2], dtype='Int64', name='idx'),
+            ],
+            pd.Index([0, 1, 2], dtype='Int64', name='idx'),
+        ),
+        (
+            [
+                pd.MultiIndex.from_arrays(
+                    [['a', 'b', 'c'], [0, 1, 2]],
+                    names=['idx1', 'idx2'],
+                ),
+                pd.MultiIndex.from_arrays(
+                    [['b', 'c'], [1, 3]],
+                    names=['idx1', 'idx2'],
+                ),
+            ],
+            pd.MultiIndex.from_arrays(
+                [['a', 'b', 'c', 'c'], [0, 1, 2, 3]],
+                names=['idx1', 'idx2'],
+            ),
+        ),
+        pytest.param(
+            [
+                pd.Index([], name='idx1'),
+                pd.Index([], name='idx2'),
+            ],
+            None,
+            marks=pytest.mark.xfail(raises=ValueError),
+        )
+
     ]
 )
 def test_union(objs, expected):
