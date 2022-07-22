@@ -1339,37 +1339,33 @@ def union(
             :ref:`table specifications <data-tables:Tables>`
 
     Example:
-        >>> index1 = filewise_index(['f1', 'f2', 'f3'])
-        >>> index2 = filewise_index(['f2', 'f3', 'f4'])
-        >>> union([index1, index2])
-        Index(['f1', 'f2', 'f3', 'f4'], dtype='string', name='file')
-        >>> index3 = segmented_index(
-        ...     ['f1', 'f2', 'f3', 'f4'],
-        ...     [0, 0, 0, 0],
-        ...     [1, 1, 1, 1],
+        >>> union(
+        ...     [
+        ...         filewise_index(['f1', 'f2', 'f3']),
+        ...         filewise_index(['f2', 'f3', 'f4']),
+        ...     ]
         ... )
-        >>> index4 = segmented_index(
-        ...     ['f1', 'f2', 'f3'],
-        ...     [0, 0, 1],
-        ...     [1, 1, 2],
+        Index(['f1', 'f2', 'f3', 'f4'], dtype='object', name='file')
+        >>> union(
+        ...     [
+        ...         segmented_index(['f2'], [0], [1]),
+        ...         segmented_index(['f1', 'f2'], [0, 1], [1, 2]),
+        ...     ]
         ... )
-        >>> union([index3, index4])
-        MultiIndex([('f1', '0 days 00:00:00', '0 days 00:00:01'),
-                    ('f2', '0 days 00:00:00', '0 days 00:00:01'),
-                    ('f3', '0 days 00:00:00', '0 days 00:00:01'),
-                    ('f4', '0 days 00:00:00', '0 days 00:00:01'),
-                    ('f3', '0 days 00:00:01', '0 days 00:00:02')],
-                   names=['file', 'start', 'end'])
-        >>> union([index1, index2, index3, index4])
-        MultiIndex([('f1', '0 days 00:00:00',               NaT),
-                    ('f2', '0 days 00:00:00',               NaT),
-                    ('f3', '0 days 00:00:00',               NaT),
-                    ('f4', '0 days 00:00:00',               NaT),
+        MultiIndex([('f2', '0 days 00:00:00', '0 days 00:00:01'),
                     ('f1', '0 days 00:00:00', '0 days 00:00:01'),
-                    ('f2', '0 days 00:00:00', '0 days 00:00:01'),
-                    ('f3', '0 days 00:00:00', '0 days 00:00:01'),
-                    ('f4', '0 days 00:00:00', '0 days 00:00:01'),
-                    ('f3', '0 days 00:00:01', '0 days 00:00:02')],
+                    ('f2', '0 days 00:00:01', '0 days 00:00:02')],
+                   names=['file', 'start', 'end'])
+        >>> union(
+        ...     [
+        ...         filewise_index(['f1', 'f2']),
+        ...         segmented_index(['f1', 'f2'], [0, 0], [1, 1]),
+        ...     ]
+        ... )
+        MultiIndex([('f1', '0 days',               NaT),
+                    ('f2', '0 days',               NaT),
+                    ('f1', '0 days', '0 days 00:00:01'),
+                    ('f2', '0 days', '0 days 00:00:01')],
                    names=['file', 'start', 'end'])
 
     """
@@ -1406,24 +1402,37 @@ def union_misc(
         ValueError: if level and dtypes of objects do not match
 
     Example:
-        >>> index1 = pd.Index([0, 1], name='idx')
-        >>> index2 = pd.Index([1, 2], dtype='Int64', name='idx')
-        >>> union_misc([index1, index2])
+        >>> union_misc(
+        ...     [
+        ...         pd.Index([0, 1], name='idx'),
+        ...         pd.Index([1, 2], dtype='Int64', name='idx'),
+        ...     ]
+        ... )
         Index([0, 1, 2], dtype='Int64', name='idx')
-        >>> index3 = pd.MultiIndex.from_arrays(
-        ...     [['a', 'b', 'c'], [0, 1, 2]],
-        ...     names=['idx1', 'idx2'],
+        >>> union_misc(
+        ...     [
+        ...         pd.MultiIndex.from_arrays(
+        ...             [['a', 'b', 'c'], [0, 1, 2]],
+        ...             names=['idx1', 'idx2'],
+        ...         ),
+        ...         pd.MultiIndex.from_arrays(
+        ...             [['b', 'c'], [1, 3]],
+        ...             names=['idx1', 'idx2'],
+        ...         ),
+        ...    ]
         ... )
-        >>> index4 = pd.MultiIndex.from_arrays(
-        ...     [['b', 'c'], [1, 3]],
-        ...     names=['idx1', 'idx2'],
-        ... )
-        >>> union_misc([index3, index4])
         MultiIndex([('a', 0),
                     ('b', 1),
                     ('c', 2),
                     ('c', 3)],
                    names=['idx1', 'idx2'])
+        >>> union_misc(
+        ...     [
+        ...         pd.Index(['spk1'], name='speaker'),
+        ...         pd.MultiIndex.from_arrays([['spk2']], names=['speaker']),
+        ...     ]
+        ... )
+        Index(['spk1', 'spk2'], dtype='object', name='speaker')
 
     """
     if not objs:
