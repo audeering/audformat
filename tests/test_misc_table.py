@@ -41,7 +41,7 @@ def test_copy(table):
             [],
             None,
             'object',
-            audformat.define.DataType.STRING,
+            audformat.define.DataType.OBJECT,
         ),
         (
             [],
@@ -77,6 +77,12 @@ def test_copy(table):
             [],
             str,
             'object',
+            audformat.define.DataType.OBJECT,
+        ),
+        (
+            [],
+            'string',
+            'string',
             audformat.define.DataType.STRING,
         ),
         (
@@ -125,7 +131,7 @@ def test_copy(table):
             ['0'],
             None,
             'object',
-            audformat.define.DataType.STRING,
+            audformat.define.DataType.OBJECT,
         ),
         (
             [0],
@@ -177,7 +183,7 @@ def test_dtype_column(
             [],
             None,
             'object',
-            audformat.define.DataType.STRING,
+            audformat.define.DataType.OBJECT,
         ),
         (
             pd.DatetimeIndex,
@@ -219,6 +225,13 @@ def test_dtype_column(
             [],
             str,
             'object',
+            audformat.define.DataType.OBJECT,
+        ),
+        (
+            pd.Index,
+            [],
+            'string',
+            'string',
             audformat.define.DataType.STRING,
         ),
         (
@@ -275,7 +288,7 @@ def test_dtype_column(
             ['0'],
             None,
             'object',
-            audformat.define.DataType.STRING,
+            audformat.define.DataType.OBJECT,
         ),
         (
             pd.TimedeltaIndex,
@@ -284,12 +297,12 @@ def test_dtype_column(
             'timedelta64[ns]',
             audformat.define.DataType.TIME,
         ),
-        (  # list as index -> converted to str
+        (
             pd.Index,
             [[0]],
             'object',
             'object',
-            audformat.define.DataType.STRING,
+            audformat.define.DataType.OBJECT,
         ),
     ]
 )
@@ -360,6 +373,12 @@ def test_dtype_index(
             [],
             str,
             'object',
+            audformat.define.DataType.OBJECT,
+        ),
+        (
+            [],
+            'string',
+            'string',
             audformat.define.DataType.STRING,
         ),
         (
@@ -408,7 +427,7 @@ def test_dtype_index(
             ['0'],
             None,
             'object',
-            audformat.define.DataType.STRING,
+            audformat.define.DataType.OBJECT,
         ),
         (
             [0],
@@ -490,6 +509,12 @@ def test_dtype_multiindex(
             [],
             str,
             'object',
+            audformat.define.DataType.OBJECT,
+        ),
+        (
+            [],
+            'string',
+            'string',
             audformat.define.DataType.STRING,
         ),
         (
@@ -538,7 +563,7 @@ def test_dtype_multiindex(
             ['0'],
             None,
             'object',
-            audformat.define.DataType.STRING,
+            audformat.define.DataType.OBJECT,
         ),
         (
             [0],
@@ -660,3 +685,31 @@ def test_level_and_column_names(index, columns):
     misc = audformat.MiscTable(index)
     for column in columns:
         misc[column] = audformat.Column()
+
+
+def test_load_old_pickle(tmpdir):
+    # We have stored string dtype as object dtype before
+    # and have to fix this when loading old PKL files from cache.
+    # This does only affect columns
+    # as there was no MiscTable available.
+
+    # Create PKL file containing strings as object
+    y = pd.Series(['c'], dtype='object', name='column')
+    index = pd.Index(['i'], dtype='object', name='idx')
+
+    db = audformat.testing.create_db(minimal=True)
+    db['misc'] = audformat.MiscTable(index)
+    db.schemes['column'] = audformat.Scheme(audformat.define.DataType.OBJECT)
+    db['misc']['column'] = audformat.Column(scheme_id='column')
+    db['misc']['column'].set(y.values)
+    db_root = tmpdir.join('db')
+    db.save(db_root, storage_format='pkl')
+
+    # Change scheme dtype to string and store header again
+    db.schemes['column'] = audformat.Scheme(audformat.define.DataType.STRING)
+    db.save(db_root, header_only=True)
+
+    # Load and check that dtype is string
+    db_new = audformat.Database.load(db_root)
+    assert db_new.schemes['column'].dtype == audformat.define.DataType.STRING
+    assert db_new['misc'].df['column'].dtype == 'string'

@@ -96,7 +96,8 @@ class Database(HeaderBase):
         ...     scheme_id='emotion',
         ...     rater_id='rater',
         ... )
-        >>> db['misc-table'] = MiscTable(pd.Index([], name='idx'))
+        >>> index = pd.Index([], dtype='string', name='idx')
+        >>> db['misc-table'] = MiscTable(index)
         >>> db['misc-table']['column'] = Column(scheme_id='match')
         >>> db
         name: mydb

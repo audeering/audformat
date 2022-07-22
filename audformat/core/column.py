@@ -301,6 +301,9 @@ class Column(HeaderBase):
         if self.scheme_id is not None:
             scheme = self._table._db.schemes[self.scheme_id]
             assert_values(values, scheme)
+            dtype = scheme.to_pandas_dtype()
+        else:
+            dtype = df[column_id].dtype
 
         if hasattr(self._table, 'type') and \
                 self._table.type != index_type(index):
@@ -322,7 +325,7 @@ class Column(HeaderBase):
             df.loc[index, column_id] = pd.Series(
                 values,
                 index=index,
-                dtype=df[column_id].dtype,
+                dtype=dtype,
             )
 
     def __eq__(

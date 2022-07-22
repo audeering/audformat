@@ -11,7 +11,7 @@ def test_scheme_assign_values():
     db = audformat.testing.create_db(minimal=True)
     speakers = ['spk1', 'spk2', 'spk3']
     ages = [33, 44, 55]
-    index = pd.Index(speakers, name='speaker')
+    index = pd.Index(speakers, name='speaker', dtype='string')
     db['misc'] = audformat.MiscTable(index)
     db['misc']['age'] = audformat.Column()
     db['misc']['age'].set(ages)
@@ -84,7 +84,8 @@ def test_scheme_contains():
 )
 def test_scheme_dtypes(dtype, values):
     db = audformat.Database('test')
-    index = pd.Index(values, name='labels')
+    pandas_dtype = audformat.core.common.to_pandas_dtype(dtype)
+    index = pd.Index(values, name='labels', dtype=pandas_dtype)
     db['misc'] = audformat.MiscTable(index)
     index = audformat.filewise_index([f'f{idx}' for idx in range(len(values))])
     db.schemes['scheme'] = audformat.Scheme(dtype=dtype, labels='misc')
@@ -113,7 +114,8 @@ def test_scheme_errors():
     # unknown type
     error_msg = (
         "Bad value 'bad', "
-        "expected one of \\['bool', 'date', 'float', 'int', 'str', 'time'\\]"
+        "expected one of "
+        "\\['bool', 'date', 'float', 'int', 'object', 'str', 'time'\\]"
     )
     with pytest.raises(ValueError, match=error_msg):
         audformat.Scheme('bad')
@@ -354,7 +356,7 @@ def test_replace_labels_misc_table():
 
     db = audformat.testing.create_db(minimal=True)
     db['misc'] = audformat.MiscTable(
-        pd.Index(['spk1', 'spk2'], name='speaker')
+        pd.Index(['spk1', 'spk2'], name='speaker', dtype='string')
     )
 
     # non-assigned scheme
@@ -379,7 +381,7 @@ def test_replace_labels_misc_table():
 
     # replace with new misc table scheme
     db['misc-new'] = audformat.MiscTable(
-        pd.Index(['spk1', 'spk2', 'spk3'], name='speaker')
+        pd.Index(['spk1', 'spk2', 'spk3'], name='speaker', dtype='string')
     )
     scheme.replace_labels('misc-new')
     assert scheme.labels == 'misc-new'

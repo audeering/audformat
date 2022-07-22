@@ -31,7 +31,7 @@ import audformat
             audformat.define.DataType.INTEGER,
         ),
         (
-            'str',
+            'string',
             audformat.define.DataType.STRING,
         ),
         (
@@ -40,7 +40,7 @@ import audformat
         ),
         (
             'object',
-            audformat.define.DataType.STRING,
+            audformat.define.DataType.OBJECT,
         ),
     ]
 )
@@ -69,8 +69,12 @@ def test_to_audformat_dtype(dtype, expected):
             'Int64',
         ),
         (
+            audformat.define.DataType.OBJECT,
+            'object',
+        ),
+        (
             audformat.define.DataType.STRING,
-            'str',
+            'string',
         ),
         (
             audformat.define.DataType.TIME,

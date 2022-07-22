@@ -15,7 +15,13 @@ class Scheme(common.HeaderBase):
     r"""A scheme defines valid values of an annotation.
 
     Allowed values for ``dtype`` are:
-    ``'bool'``, ``'str'``, ``'int'``, ``'float'``, ``'time'``, and ``'date'``
+    ``'bool'``,
+    ``'int'``,
+    ``'float'``,
+    ``'object'``,
+    ``'str'``,
+    ``'time'``,
+    and ``'date'``
     (see :class:`audformat.define.DataType`).
     Values can be restricted to a set of labels
     provided by a list,

@@ -13,7 +13,10 @@ import audeer
 import audiofile
 
 from audformat.core import define
-from audformat.core.common import to_audformat_dtype
+from audformat.core.common import (
+    set_index_dtype,
+    to_audformat_dtype,
+)
 from audformat.core.database import Database
 from audformat.core.index import (
     filewise_index,
@@ -311,9 +314,9 @@ def expand_file_path(
     Example:
         >>> index = filewise_index(['f1', 'f2'])
         >>> index
-        Index(['f1', 'f2'], dtype='object', name='file')
+        Index(['f1', 'f2'], dtype='string', name='file')
         >>> expand_file_path(index, '/some/where')  # doctest: +SKIP
-        Index(['/some/where/f1', '/some/where/f2'], dtype='object', name='file')
+        Index(['/some/where/f1', '/some/where/f2'], dtype='string', name='file')
 
     """  # noqa: E501
     if len(index) == 0:
@@ -431,7 +434,7 @@ def intersect(
         >>> index1 = filewise_index(['f1', 'f2', 'f3'])
         >>> index2 = filewise_index(['f2', 'f3', 'f4'])
         >>> intersect([index1, index2])
-        Index(['f2', 'f3'], dtype='object', name='file')
+        Index(['f2', 'f3'], dtype='string', name='file')
         >>> index3 = segmented_index(
         ...     ['f1', 'f2', 'f3', 'f4'],
         ...     [0, 0, 0, 0],
@@ -461,6 +464,14 @@ def intersect(
         index = objs[0]
         for obj in objs[1:]:
             index = index.intersection(obj)
+
+        # index.intersection() does not preserve string dtype
+        # for MultiIndex
+        if isinstance(index, pd.MultiIndex):
+            index = set_index_dtype(
+                index,
+                {define.IndexField.FILE: 'string'},
+            )
 
     else:
 
@@ -577,7 +588,7 @@ def iter_by_file(
     Example:
         >>> index = filewise_index(['f1', 'f1', 'f2'])
         >>> next(iter_by_file(index))
-        ('f1', Index(['f1'], dtype='object', name='file'))
+        ('f1', Index(['f1'], dtype='string', name='file'))
         >>> index = segmented_index(['f1', 'f1', 'f2'], [0, 1, 0], [2, 3, 1])
         >>> next(iter_by_file(index))
         ('f1', MultiIndex([('f1', '0 days 00:00:00', '0 days 00:00:02'),
@@ -766,9 +777,9 @@ def map_file_path(
     Example:
         >>> index = filewise_index(['a/f1', 'a/f2'])
         >>> index
-        Index(['a/f1', 'a/f2'], dtype='object', name='file')
+        Index(['a/f1', 'a/f2'], dtype='string', name='file')
         >>> map_file_path(index, lambda x: x.replace('a', 'b'))
-        Index(['b/f1', 'b/f2'], dtype='object', name='file')
+        Index(['b/f1', 'b/f2'], dtype='string', name='file')
 
     """
     if len(index) == 0:
@@ -876,7 +887,7 @@ def read_csv(
 
     drop = [define.IndexField.FILE]
     if define.IndexField.FILE in frame.columns:
-        files = frame[define.IndexField.FILE].astype(str)
+        files = frame[define.IndexField.FILE].astype('string')
     else:
         raise ValueError('Index not conform to audformat.')
 
@@ -951,12 +962,12 @@ def replace_file_extension(
     Example:
         >>> index = filewise_index(['f1.wav', 'f2.flac'])
         >>> replace_file_extension(index, 'mp3')
-        Index(['f1.mp3', 'f2.mp3'], dtype='object', name='file')
+        Index(['f1.mp3', 'f2.mp3'], dtype='string', name='file')
         >>> index = filewise_index(['f1.wav.gz', 'f2.wav.gz'])
         >>> replace_file_extension(index, '')
-        Index(['f1.wav', 'f2.wav'], dtype='object', name='file')
+        Index(['f1.wav', 'f2.wav'], dtype='string', name='file')
         >>> replace_file_extension(index, 'flac', pattern=r'\.wav\.gz$')
-        Index(['f1.flac', 'f2.flac'], dtype='object', name='file')
+        Index(['f1.flac', 'f2.flac'], dtype='string', name='file')
 
     """
     if len(index) == 0:
@@ -1226,7 +1237,7 @@ def union(
         >>> index1 = filewise_index(['f1', 'f2', 'f3'])
         >>> index2 = filewise_index(['f2', 'f3', 'f4'])
         >>> union([index1, index2])
-        Index(['f1', 'f2', 'f3', 'f4'], dtype='object', name='file')
+        Index(['f1', 'f2', 'f3', 'f4'], dtype='string', name='file')
         >>> index3 = segmented_index(
         ...     ['f1', 'f2', 'f3', 'f4'],
         ...     [0, 0, 0, 0],

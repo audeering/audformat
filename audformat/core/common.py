@@ -277,8 +277,9 @@ def set_index_dtype(
 
     if isinstance(index, pd.MultiIndex):
         # MultiIndex
-        if len(index) == 0:
-            # set_levels() does not work for an empty index
+        if all([len(level) == 0 for level in index.levels]):
+            # set_levels() does not work
+            # in the case the levels are something like `[[], []]`,
             # so we convert to a dataframe instead
             df = index.to_frame()
             for level, dtype in dtypes.items():
@@ -286,8 +287,13 @@ def set_index_dtype(
             index = pd.MultiIndex.from_frame(df)
         else:
             for level, dtype in dtypes.items():
+                # get_level_values() does not work
+                # for levels containing non-unique entries,
+                # hence we acces the data directly with
+                # index.levels[idx]
+                idx = index.names.index(level)
                 index = index.set_levels(
-                    index.get_level_values(level).astype(dtype),
+                    index.levels[idx].astype(dtype),
                     level=level,
                 )
     else:
@@ -310,9 +316,13 @@ def to_audformat_dtype(dtype: typing.Union[str, typing.Type]) -> str:
         return define.DataType.INTEGER
     elif pd.api.types.is_timedelta64_dtype(dtype):
         return define.DataType.TIME
-    else:
-        # default to str
+    # We cannot use pd.api.types.is_string_dtype()
+    # as it returns `True` for list, object, etc.
+    elif dtype in [str, 'str', 'string']:
         return define.DataType.STRING
+    else:
+        # default to object
+        return define.DataType.OBJECT
 
 
 def to_pandas_dtype(dtype: str) -> str:
@@ -325,7 +335,9 @@ def to_pandas_dtype(dtype: str) -> str:
         return 'float'
     elif dtype == define.DataType.INTEGER:
         return 'Int64'
+    elif dtype == define.DataType.OBJECT:
+        return 'object'
     elif dtype == define.DataType.STRING:
-        return 'str'
+        return 'string'
     elif dtype == define.DataType.TIME:
         return 'timedelta64[ns]'
