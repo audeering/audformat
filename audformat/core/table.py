@@ -631,13 +631,14 @@ class MiscTable(Base):
         ...   ],
         ...   names=['file', 'other'],
         ... )
+        >>> index = utils.set_index_dtypes(index, 'string')
         >>> table = MiscTable(
         ...     index,
         ...     split_id=define.SplitType.TEST,
         ... )
         >>> table['match'] = Column()
         >>> table
-        levels: {file: object, other: object}
+        levels: {file: str, other: str}
         split_id: test
         columns:
           match: {}

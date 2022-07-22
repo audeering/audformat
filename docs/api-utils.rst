@@ -79,6 +79,11 @@ replace_file_extension
 
 .. autofunction:: replace_file_extension
 
+set_index_dtypes
+----------------
+
+.. autofunction:: set_index_dtypes
+
 to_filewise_index
 -----------------
 
