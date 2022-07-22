@@ -499,6 +499,105 @@ def intersect(
     return index
 
 
+def intersect_misc(
+        objs: typing.Sequence[typing.Union[pd.Index]],
+) -> pd.Index:
+    r"""Intersect index objects.
+
+    Index objects must be conform to
+    :ref:`table specifications <data-tables:Tables>`.
+
+    If at least one object is segmented, the output is a segmented index.
+
+    Args:
+        objs: index objects conform to
+            :ref:`table specifications <data-tables:Tables>`
+
+    Returns:
+        intersection of index objects
+
+    Raises:
+        ValueError: if one or more objects are not conform to
+            :ref:`table specifications <data-tables:Tables>`
+
+    Example:
+        >>> intersect_misc(
+        ...     [
+        ...         pd.Index([0, 1], name='idx'),
+        ...         pd.Index([1, 2], dtype='Int64', name='idx'),
+        ...     ]
+        ... )
+        Index([1], dtype='Int64', name='idx')
+        >>> intersect_misc(
+        ...     [
+        ...         pd.Index([0, 1], name='idx'),
+        ...         pd.MultiIndex.from_arrays([[1, 2]], names=['idx']),
+        ...     ]
+        ... )
+        MultiIndex([(1,)], names='idx')
+        >>> intersect_misc(
+        ...     [
+        ...         pd.MultiIndex.from_arrays(
+        ...             [['a', 'b', 'c'], [0, 1, 2]],
+        ...             names=['idx1', 'idx2'],
+        ...         ),
+        ...         pd.MultiIndex.from_arrays(
+        ...             [['b', 'c'], [1, 3]],
+        ...             names=['idx1', 'idx2'],
+        ...         ),
+        ...     ]
+        ... )
+        MultiIndex([('b', 1)], names=['idx1', 'idx2'])
+
+    """
+    if not objs:
+        return pd.Index([])
+
+    types = [index_type(obj) for obj in objs]
+
+    if len(set(types)) == 1:
+
+        index = objs[0]
+        for obj in objs[1:]:
+            index = index.intersection(obj)
+
+        # index.intersection() does not preserve string dtype
+        # for MultiIndex
+        if isinstance(index, pd.MultiIndex):
+            index = set_index_dtypes(
+                index,
+                {define.IndexField.FILE: 'string'},
+            )
+
+    else:
+
+        # intersect only filewise
+        objs_filewise = [
+            obj for obj, type in zip(objs, types)
+            if type == define.IndexType.FILEWISE
+        ]
+        index_filewise = intersect(objs_filewise)
+
+        # intersect only segmented
+        objs_segmented = [
+            obj for obj, type in zip(objs, types)
+            if type == define.IndexType.SEGMENTED
+        ]
+        index_segmented = intersect(objs_segmented)
+
+        # intersect segmented and filewise
+        index = index_segmented[
+            index_segmented.isin(index_filewise, 0)
+        ]
+
+    # We use len() here as index.empty takes a very long time
+    if len(index) == 0 and is_segmented_index(index):
+        # asserts that start and end are of type 'timedelta64[ns]'
+        index = segmented_index()
+
+    return index
+
+
 def is_index_alike(
         objs: typing.Sequence[typing.Union[pd.Index, pd.Series, pd.DataFrame]],
 ) -> bool:
