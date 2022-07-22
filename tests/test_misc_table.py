@@ -685,3 +685,31 @@ def test_level_and_column_names(index, columns):
     misc = audformat.MiscTable(index)
     for column in columns:
         misc[column] = audformat.Column()
+
+
+def test_load_old_pickle(tmpdir):
+    # We have stored string dtype as object dtype before
+    # and have to fix this when loading old PKL files from cache.
+    # This does only affect columns
+    # as there was no MiscTable available.
+
+    # Create PKL file containing strings as object
+    y = pd.Series(['c'], dtype='object', name='column')
+    index = pd.Index(['i'], dtype='object', name='idx')
+
+    db = audformat.testing.create_db(minimal=True)
+    db['misc'] = audformat.MiscTable(index)
+    db.schemes['column'] = audformat.Scheme(audformat.define.DataType.OBJECT)
+    db['misc']['column'] = audformat.Column(scheme_id='column')
+    db['misc']['column'].set(y.values)
+    db_root = tmpdir.join('db')
+    db.save(db_root, storage_format='pkl')
+
+    # Change scheme to dtype to string and store header again
+    db.schemes['column'] = audformat.Scheme(audformat.define.DataType.STRING)
+    db.save(db_root, header_only=True)
+
+    # Load and check that dtype is string
+    db_new = audformat.Database.load(db_root)
+    assert db_new.schemes['column'].dtype == audformat.define.DataType.STRING
+    assert db_new['misc'].df['column'].dtype == 'string'
