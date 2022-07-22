@@ -1059,7 +1059,7 @@ def set_index_dtypes(
                 f"A level with name "
                 f"'{name}' "
                 f"does not exist. "
-                f"Must be on one of "
+                f"Level names are: "
                 f"{levels}."
             )
 
