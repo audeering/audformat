@@ -705,7 +705,7 @@ def test_load_old_pickle(tmpdir):
     db_root = tmpdir.join('db')
     db.save(db_root, storage_format='pkl')
 
-    # Change scheme to dtype to string and store header again
+    # Change scheme dtype to string and store header again
     db.schemes['column'] = audformat.Scheme(audformat.define.DataType.STRING)
     db.save(db_root, header_only=True)
 
