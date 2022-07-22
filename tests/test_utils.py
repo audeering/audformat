@@ -2106,3 +2106,84 @@ def test_union(objs, expected):
         audformat.utils.union(objs),
         expected,
     )
+
+
+@pytest.mark.parametrize(
+    'objs, expected',
+    [
+        (
+            [],
+            pd.Index([]),
+        ),
+        (
+            [
+                pd.Index([]),
+            ],
+            pd.Index([]),
+        ),
+        (
+            [
+                pd.Index([]),
+                pd.Index([]),
+            ],
+            pd.Index([]),
+        ),
+        (
+            [
+                pd.Index([0, 1], name='idx'),
+                pd.Index([1, 2], name='idx'),
+            ],
+            pd.Index([0, 1, 2], name='idx'),
+        ),
+        (
+            [
+                pd.Index([0, 1], name='idx'),
+                pd.Index([1, 2], dtype='Int64', name='idx'),
+            ],
+            pd.Index([0, 1, 2], dtype='Int64', name='idx'),
+        ),
+        (
+            [
+                pd.Index([0, 1], name='idx'),
+                pd.MultiIndex.from_arrays([[1, 2]], names=['idx']),
+            ],
+            pd.MultiIndex.from_arrays([[0, 1, 2]], names=['idx']),
+        ),
+        (
+            [
+                pd.MultiIndex.from_arrays([[0, 1]], names=['idx']),
+                pd.MultiIndex.from_arrays([[1, 2]], names=['idx']),
+            ],
+            pd.MultiIndex.from_arrays([[0, 1, 2]], names=['idx']),
+        ),
+        (
+            [
+                pd.MultiIndex.from_arrays(
+                    [['a', 'b', 'c'], [0, 1, 2]],
+                    names=['idx1', 'idx2'],
+                ),
+                pd.MultiIndex.from_arrays(
+                    [['b', 'c'], [1, 3]],
+                    names=['idx1', 'idx2'],
+                ),
+            ],
+            pd.MultiIndex.from_arrays(
+                [['a', 'b', 'c', 'c'], [0, 1, 2, 3]],
+                names=['idx1', 'idx2'],
+            ),
+        ),
+        pytest.param(
+            [
+                pd.Index([], name='idx1'),
+                pd.Index([], name='idx2'),
+            ],
+            None,
+            marks=pytest.mark.xfail(raises=ValueError),
+        )
+    ]
+)
+def test_union_misc(objs, expected):
+    pd.testing.assert_index_equal(
+        audformat.utils.union_misc(objs),
+        expected,
+    )

@@ -13,10 +13,7 @@ import audeer
 import audiofile
 
 from audformat.core import define
-from audformat.core.common import (
-    to_audformat_dtype,
-    to_pandas_dtype,
-)
+from audformat.core.common import to_audformat_dtype
 from audformat.core.database import Database
 from audformat.core.index import (
     filewise_index,
@@ -520,27 +517,27 @@ def is_index_alike(
     Returns:
         ``True`` if index objects are alike, otherwise ``False``
 
-    Examples:
-        >>> idx1 = pd.Index([1, 2, 3], dtype='Int64', name='l')
-        >>> idx2 = pd.MultiIndex.from_arrays([[10, 20]], names=['l'])
-        >>> is_index_alike([idx1, idx2])
+    Example:
+        >>> index1 = pd.Index([1, 2, 3], dtype='Int64', name='l')
+        >>> index2 = pd.MultiIndex.from_arrays([[10, 20]], names=['l'])
+        >>> is_index_alike([index1, index2])
         True
-        >>> is_index_alike([idx1, pd.Series(['a', 'b'], index=idx2)])
+        >>> is_index_alike([index1, pd.Series(['a', 'b'], index=index2)])
         True
-        >>> idx3 = idx2.set_names(['L'])
-        >>> is_index_alike([idx2, idx3])
+        >>> index3 = index2.set_names(['L'])
+        >>> is_index_alike([index2, index3])
         False
-        >>> idx4 = idx2.set_levels([['10', '20']])
-        >>> is_index_alike([idx2, idx4])
+        >>> index4 = index2.set_levels([['10', '20']])
+        >>> is_index_alike([index2, index4])
         False
-        >>> idx5 = pd.MultiIndex.from_arrays([[1], ['a']], names=['l1', 'l2'])
-        >>> is_index_alike([idx2, idx5])
+        >>> index5 = pd.MultiIndex.from_arrays([[1], ['a']], names=['l1', 'l2'])
+        >>> is_index_alike([index2, index5])
         False
-        >>> idx6 = pd.MultiIndex.from_arrays([['a'], [1]], names=['l2', 'l1'])
-        >>> is_index_alike([idx5, idx6])
+        >>> index6 = pd.MultiIndex.from_arrays([['a'], [1]], names=['l2', 'l1'])
+        >>> is_index_alike([index5, index6])
         False
 
-    """
+    """  # noqa: E501
     objs = [obj if isinstance(obj, pd.Index) else obj.index for obj in objs]
 
     # check names
@@ -1322,6 +1319,8 @@ def union(
 
     Index objects must be conform to
     :ref:`table specifications <data-tables:Tables>`.
+    Otherwise use
+    :func:`audformat.utils.union_misc`.
 
     If at least one object is segmented, the output is a segmented index.
 
@@ -1337,37 +1336,33 @@ def union(
             :ref:`table specifications <data-tables:Tables>`
 
     Example:
-        >>> index1 = filewise_index(['f1', 'f2', 'f3'])
-        >>> index2 = filewise_index(['f2', 'f3', 'f4'])
-        >>> union([index1, index2])
+        >>> union(
+        ...     [
+        ...         filewise_index(['f1', 'f2', 'f3']),
+        ...         filewise_index(['f2', 'f3', 'f4']),
+        ...     ]
+        ... )
         Index(['f1', 'f2', 'f3', 'f4'], dtype='string', name='file')
-        >>> index3 = segmented_index(
-        ...     ['f1', 'f2', 'f3', 'f4'],
-        ...     [0, 0, 0, 0],
-        ...     [1, 1, 1, 1],
+        >>> union(
+        ...     [
+        ...         segmented_index(['f2'], [0], [1]),
+        ...         segmented_index(['f1', 'f2'], [0, 1], [1, 2]),
+        ...     ]
         ... )
-        >>> index4 = segmented_index(
-        ...     ['f1', 'f2', 'f3'],
-        ...     [0, 0, 1],
-        ...     [1, 1, 2],
-        ... )
-        >>> union([index3, index4])
-        MultiIndex([('f1', '0 days 00:00:00', '0 days 00:00:01'),
-                    ('f2', '0 days 00:00:00', '0 days 00:00:01'),
-                    ('f3', '0 days 00:00:00', '0 days 00:00:01'),
-                    ('f4', '0 days 00:00:00', '0 days 00:00:01'),
-                    ('f3', '0 days 00:00:01', '0 days 00:00:02')],
-                   names=['file', 'start', 'end'])
-        >>> union([index1, index2, index3, index4])
-        MultiIndex([('f1', '0 days 00:00:00',               NaT),
-                    ('f2', '0 days 00:00:00',               NaT),
-                    ('f3', '0 days 00:00:00',               NaT),
-                    ('f4', '0 days 00:00:00',               NaT),
+        MultiIndex([('f2', '0 days 00:00:00', '0 days 00:00:01'),
                     ('f1', '0 days 00:00:00', '0 days 00:00:01'),
-                    ('f2', '0 days 00:00:00', '0 days 00:00:01'),
-                    ('f3', '0 days 00:00:00', '0 days 00:00:01'),
-                    ('f4', '0 days 00:00:00', '0 days 00:00:01'),
-                    ('f3', '0 days 00:00:01', '0 days 00:00:02')],
+                    ('f2', '0 days 00:00:01', '0 days 00:00:02')],
+                   names=['file', 'start', 'end'])
+        >>> union(
+        ...     [
+        ...         filewise_index(['f1', 'f2']),
+        ...         segmented_index(['f1', 'f2'], [0, 0], [1, 1]),
+        ...     ]
+        ... )
+        MultiIndex([('f1', '0 days',               NaT),
+                    ('f2', '0 days',               NaT),
+                    ('f1', '0 days', '0 days 00:00:01'),
+                    ('f2', '0 days', '0 days 00:00:01')],
                    names=['file', 'start', 'end'])
 
     """
@@ -1378,6 +1373,99 @@ def union(
 
     if len(set(types)) != 1:
         objs = [to_segmented_index(obj) for obj in objs]
+
+    return union_misc(objs)
+
+
+def union_misc(
+    objs: typing.Sequence[pd.Index],
+) -> pd.Index:
+    r"""Create union of index objects.
+
+    Requires that levels and dtypes
+    of all objects match,
+    see :func:`audformat.utils.is_index_alike`.
+    Unlike :func:`audformat.utils.union`
+    index objects must not be conform to
+    :ref:`table specifications <data-tables:Tables>`.
+
+    When combining
+    :class:`pd.Index`
+    objects with single-level
+    :class:`pd.MultiIndex`
+    objects the results will be a
+    :class:`pd.MultiIndex`.
+
+    Args:
+        objs: index objects
+
+    Returns:
+        union of index objects
+
+    Raises:
+        ValueError: if level and dtypes of objects do not match
+
+    Example:
+        >>> union_misc(
+        ...     [
+        ...         pd.Index([0, 1], name='idx'),
+        ...         pd.Index([1, 2], dtype='Int64', name='idx'),
+        ...     ]
+        ... )
+        Index([0, 1, 2], dtype='Int64', name='idx')
+        >>> union_misc(
+        ...     [
+        ...         pd.Index([0, 1], name='idx'),
+        ...         pd.MultiIndex.from_arrays([[1, 2]], names=['idx']),
+        ...     ]
+        ... )
+        MultiIndex([(0,),
+                    (1,),
+                    (2,)],
+                   names=['idx'])
+        >>> union_misc(
+        ...     [
+        ...         pd.MultiIndex.from_arrays(
+        ...             [['a', 'b', 'c'], [0, 1, 2]],
+        ...             names=['idx1', 'idx2'],
+        ...         ),
+        ...         pd.MultiIndex.from_arrays(
+        ...             [['b', 'c'], [1, 3]],
+        ...             names=['idx1', 'idx2'],
+        ...         ),
+        ...    ]
+        ... )
+        MultiIndex([('a', 0),
+                    ('b', 1),
+                    ('c', 2),
+                    ('c', 3)],
+                   names=['idx1', 'idx2'])
+
+    """
+    if not objs:
+        return pd.Index([])
+
+    if len(objs) == 1:
+        return objs[0]
+
+    if not is_index_alike(objs):
+        raise ValueError(
+            'Levels and dtypes of all objects must match, '
+            'see audformat.utils.is_index_alike().'
+        )
+
+    # if we have a mixture
+    # of pd.Index and pd.MultiIndex
+    # convert all to pd.MultiIndex
+    if (
+        objs[0].nlevels == 1
+        and len(set(isinstance(obj, pd.MultiIndex) for obj in objs)) == 2
+    ):
+        objs = [
+            obj if isinstance(obj, pd.MultiIndex)
+            else pd.MultiIndex.from_arrays([obj.to_list()], names=[obj.name])
+            for obj in objs
+        ]
 
     # Combine all MultiIndex entries and drop duplicates afterwards,
     # faster than using index.union(),

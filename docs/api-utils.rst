@@ -98,3 +98,8 @@ union
 -----
 
 .. autofunction:: union
+
+union_misc
+----------
+
+.. autofunction:: union_misc
