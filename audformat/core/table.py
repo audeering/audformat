@@ -507,7 +507,7 @@ class Base(HeaderBase):
             # fix index
             converter_dtypes = {
                 level: dtype for level, dtype in dtypes.items()
-                if level in converters
+                if level in converters and level in levels
             }
             df.index = utils.set_index_dtypes(df.index, converter_dtypes)
             # fix columns
