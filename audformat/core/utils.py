@@ -14,8 +14,8 @@ import audiofile
 
 from audformat.core import define
 from audformat.core.common import (
-    set_index_dtype,
     to_audformat_dtype,
+    to_pandas_dtype,
 )
 from audformat.core.database import Database
 from audformat.core.index import (
@@ -468,7 +468,7 @@ def intersect(
         # index.intersection() does not preserve string dtype
         # for MultiIndex
         if isinstance(index, pd.MultiIndex):
-            index = set_index_dtype(
+            index = set_index_dtypes(
                 index,
                 {define.IndexField.FILE: 'string'},
             )
@@ -917,23 +917,6 @@ def read_csv(
         return frame
 
 
-def same_dtype(d1, d2) -> bool:
-    r"""Helper function to compare pandas dtype."""
-    if d1.name.startswith('bool') and d2.name.startswith('bool'):
-        # match different bool types, i.e. bool and boolean
-        return True
-    if d1.name.lower().startswith('int') and d2.name.lower().startswith('int'):
-        # match different int types, e.g. int64 and Int64
-        return True
-    if d1.name.startswith('float') and d2.name.startswith('float'):
-        # match different float types, e.g. float32 and float64
-        return True
-    if d1.name == 'category' and d2.name == 'category':
-        # match only if categories are the same
-        return d1 == d2
-    return d1.name == d2.name
-
-
 def replace_file_extension(
         index: pd.Index,
         extension: str,
@@ -988,6 +971,126 @@ def replace_file_extension(
         )
     else:
         index = index.str.replace(cur_ext, new_ext, regex=True)
+
+    return index
+
+
+def same_dtype(d1, d2) -> bool:
+    r"""Helper function to compare pandas dtype."""
+    if d1.name.startswith('bool') and d2.name.startswith('bool'):
+        # match different bool types, i.e. bool and boolean
+        return True
+    if d1.name.lower().startswith('int') and d2.name.lower().startswith('int'):
+        # match different int types, e.g. int64 and Int64
+        return True
+    if d1.name.startswith('float') and d2.name.startswith('float'):
+        # match different float types, e.g. float32 and float64
+        return True
+    if d1.name == 'category' and d2.name == 'category':
+        # match only if categories are the same
+        return d1 == d2
+    return d1.name == d2.name
+
+
+def set_index_dtypes(
+        index: pd.Index,
+        dtypes: typing.Union[
+            str,
+            typing.Dict[str, str],
+        ],
+) -> pd.Index:
+    r"""Set the dtypes of an index for the given level names.
+
+    Args:
+        index: index object
+        dtypes: dictionary mapping level names to new dtype.
+            If a single dtype is given,
+            it will be applied to all levels
+
+    Raises:
+        ValueError: if level names are not unique
+        ValueError: if level does not exist
+
+    Returns:
+        index with new dtypes
+
+    Examples:
+        >>> index1 = pd.Index(['a', 'b'])
+        >>> index1
+        Index(['a', 'b'], dtype='object')
+        >>> index2 = set_index_dtypes(index1, 'string')
+        >>> index2
+        Index(['a', 'b'], dtype='string')
+        >>> index3 = pd.MultiIndex.from_arrays(
+        ...     [['a', 'b'], [1, 2]],
+        ...     names=['level1', 'level2'],
+        ... )
+        >>> index3.dtypes
+        level1    object
+        level2     int64
+        dtype: object
+        >>> index4 = set_index_dtypes(index3, {'level2': 'float'})
+        >>> index4.dtypes
+        level1    object
+        level2   float64
+        dtype: object
+        >>> index5 = set_index_dtypes(index3, 'string')
+        >>> index5.dtypes
+        level1    string
+        level2    string
+        dtype: object
+
+    """
+    levels = index.names if isinstance(index, pd.MultiIndex) else [index.name]
+
+    if len(set(levels)) != len(levels):
+        raise ValueError(
+            f'Got index with levels '
+            f'{levels}, '
+            f'but names must be unique.'
+        )
+
+    if not isinstance(dtypes, dict):
+        dtypes = {level: dtypes for level in levels}
+
+    for name in dtypes:
+        if name not in levels:
+            raise ValueError(
+                f"A level with name "
+                f"'{name}' "
+                f"does not exist. "
+                f"Level names are: "
+                f"{levels}."
+            )
+
+    if len(dtypes) == 0:
+        return index
+
+    if isinstance(index, pd.MultiIndex):
+        # MultiIndex
+        if all([len(level) == 0 for level in index.levels]):
+            # set_levels() does not work
+            # in the case the levels are something like `[[], []]`,
+            # so we convert to a dataframe instead
+            df = index.to_frame()
+            for level, dtype in dtypes.items():
+                df[level] = df[level].astype(dtype)
+            index = pd.MultiIndex.from_frame(df)
+        else:
+            for level, dtype in dtypes.items():
+                # get_level_values() does not work
+                # for levels containing non-unique entries,
+                # hence we access the data directly with
+                # index.levels[idx]
+                idx = index.names.index(level)
+                index = index.set_levels(
+                    index.levels[idx].astype(dtype),
+                    level=level,
+                )
+    else:
+        # Index
+        dtype = next(iter(dtypes.values()))
+        index = index.astype(dtype)
 
     return index
 

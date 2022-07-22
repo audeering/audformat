@@ -13,7 +13,6 @@ from audformat.core.column import Column
 from audformat.core.common import (
     HeaderBase,
     HeaderDict,
-    set_index_dtype,
     to_audformat_dtype,
     to_pandas_dtype,
 )
@@ -479,7 +478,7 @@ class Base(HeaderBase):
             if column.scheme_id is not None:
                 dtypes[column_id] = schemes[column.scheme_id].to_pandas_dtype()
             else:
-                dtypes[column_id] = 'str'
+                dtypes[column_id] = 'object'
 
         # replace dtype with converter for dates or timestamps
         dtypes_wo_converters = {}
@@ -508,9 +507,9 @@ class Base(HeaderBase):
             # fix index
             converter_dtypes = {
                 level: dtype for level, dtype in dtypes.items()
-                if level in converters
+                if level in converters and level in levels
             }
-            df.index = set_index_dtype(df.index, converter_dtypes)
+            df.index = utils.set_index_dtypes(df.index, converter_dtypes)
             # fix columns
             for column_id in columns:
                 if column_id in converters:
@@ -632,13 +631,14 @@ class MiscTable(Base):
         ...   ],
         ...   names=['file', 'other'],
         ... )
+        >>> index = utils.set_index_dtypes(index, 'string')
         >>> table = MiscTable(
         ...     index,
         ...     split_id=define.SplitType.TEST,
         ... )
         >>> table['match'] = Column()
         >>> table
-        levels: {file: object, other: object}
+        levels: {file: str, other: str}
         split_id: test
         columns:
           match: {}
@@ -690,7 +690,7 @@ class MiscTable(Base):
                 level: 'Int64' for level, dtype in zip(levels, dtypes)
                 if pd.api.types.is_integer_dtype(dtype)
             }
-            index = set_index_dtype(index, int_dtypes)
+            index = utils.set_index_dtypes(index, int_dtypes)
 
             if not all(levels) or len(levels) > len(set(levels)):
                 raise ValueError(

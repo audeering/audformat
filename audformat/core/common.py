@@ -267,43 +267,6 @@ def series_to_html(self):  # pragma: no cover
     return df.to_html()
 
 
-def set_index_dtype(
-        index: pd.Index,
-        dtypes: typing.Dict[str, str],
-) -> pd.Index:
-    r"""Set the dtypes of an index for the given levels."""
-    if len(dtypes) == 0:
-        return index
-
-    if isinstance(index, pd.MultiIndex):
-        # MultiIndex
-        if all([len(level) == 0 for level in index.levels]):
-            # set_levels() does not work
-            # in the case the levels are something like `[[], []]`,
-            # so we convert to a dataframe instead
-            df = index.to_frame()
-            for level, dtype in dtypes.items():
-                df[level] = df[level].astype(dtype)
-            index = pd.MultiIndex.from_frame(df)
-        else:
-            for level, dtype in dtypes.items():
-                # get_level_values() does not work
-                # for levels containing non-unique entries,
-                # hence we acces the data directly with
-                # index.levels[idx]
-                idx = index.names.index(level)
-                index = index.set_levels(
-                    index.levels[idx].astype(dtype),
-                    level=level,
-                )
-    else:
-        # Index
-        dtype = next(iter(dtypes.values()))
-        index = index.astype(dtype)
-
-    return index
-
-
 def to_audformat_dtype(dtype: typing.Union[str, typing.Type]) -> str:
     r"""Convert pandas to audformat dtype."""
     if pd.api.types.is_bool_dtype(dtype):

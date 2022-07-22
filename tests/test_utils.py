@@ -1549,6 +1549,130 @@ def test_replace_file_extension(index, extension, pattern, expected_index):
 
 
 @pytest.mark.parametrize(
+    'index, dtypes, expected',
+    [
+        (
+            pd.Index([]),
+            'string',
+            pd.Index([], dtype='string'),
+        ),
+        (
+            pd.Index([]),
+            {},
+            pd.Index([]),
+        ),
+        (
+            pd.Index(['a', 'b']),
+            'string',
+            pd.Index(['a', 'b'], dtype='string'),
+        ),
+        (
+            pd.Index(['a', 'b'], dtype='string'),
+            'string',
+            pd.Index(['a', 'b'], dtype='string'),
+        ),
+        (
+            pd.Index(['a', 'b'], name='idx'),
+            {'idx': 'string'},
+            pd.Index(['a', 'b'], name='idx', dtype='string'),
+        ),
+        (
+            pd.MultiIndex.from_arrays(
+                [
+                    [0, 1],
+                    [2, 3],
+                ],
+                names=['idx1', 'idx2'],
+            ),
+            'str',
+            pd.MultiIndex.from_arrays(
+                [
+                    ['0', '1'],
+                    ['2', '3'],
+                ],
+                names=['idx1', 'idx2'],
+            ),
+        ),
+        (
+            pd.MultiIndex.from_arrays(
+                [
+                    [0, 1],
+                    [2, 3],
+                ],
+                names=['idx1', 'idx2'],
+            ),
+            {
+                'idx2': 'str',
+                'idx1': 'str',
+            },
+            pd.MultiIndex.from_arrays(
+                [
+                    ['0', '1'],
+                    ['2', '3'],
+                ],
+                names=['idx1', 'idx2'],
+            ),
+        ),
+        (
+            pd.MultiIndex.from_arrays(
+                [
+                    [0, 1],
+                    [2, 3],
+                ],
+                names=['idx1', 'idx2'],
+            ),
+            {
+                'idx2': 'str',
+            },
+            pd.MultiIndex.from_arrays(
+                [
+                    [0, 1],
+                    ['2', '3'],
+                ],
+                names=['idx1', 'idx2'],
+            ),
+        ),
+        pytest.param(
+            pd.MultiIndex.from_arrays(
+                [
+                    [0, 1],
+                    [2, 3],
+                ],
+                names=['idx', 'idx'],
+            ),
+            'str',
+            None,
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
+        pytest.param(
+            pd.MultiIndex.from_arrays(
+                [
+                    [0, 1],
+                    [2, 3],
+                ],
+                names=['idx1', 'idx2'],
+            ),
+            {
+                'idx1': 'string',
+                'bad': 'string',
+            },
+            None,
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
+        pytest.param(
+            pd.Index([0], name='idx'),
+            {'bad': 'string'},
+            None,
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
+    ]
+)
+def test_set_index_dtypes(index, dtypes, expected):
+    index = audformat.utils.set_index_dtypes(index, dtypes)
+    pd.testing.assert_index_equal(index, expected)
+
+
+@pytest.mark.parametrize(
     'obj, allow_nat, files_duration, root, expected',
     [
         # empty
