@@ -1009,6 +1009,7 @@ def set_index_dtypes(
 
     Raises:
         ValueError: if level names are not unique
+        ValueError: if level does not exist
 
     Returns:
         index with new dtypes
