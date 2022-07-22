@@ -1438,6 +1438,9 @@ def union_misc(
     if not objs:
         return pd.Index([])
 
+    if len(objs) == 1:
+        return objs[0]
+
     if not is_index_alike(objs):
         raise ValueError(
             'Levels and dtypes of all objects must match, '
