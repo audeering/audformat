@@ -1228,16 +1228,6 @@ def union(
         ...     ]
         ... )
         Index(['f1', 'f2', 'f3', 'f4'], dtype='object', name='file')
-        >>> index3 = segmented_index(
-        ...     ['f1', 'f2', 'f3', 'f4'],
-        ...     [0, 0, 0, 0],
-        ...     [1, 1, 1, 1],
-        ... )
-        >>> index4 = segmented_index(
-        ...     ['f1', 'f2', 'f3'],
-        ...     [0, 0, 1],
-        ...     [1, 1, 2],
-        ... )
         >>> union(
         ...     [
         ...         segmented_index(['f2'], [0], [1]),
