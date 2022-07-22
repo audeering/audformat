@@ -423,10 +423,11 @@ class Base(HeaderBase):
     ):
         r"""Set labels.
 
-        By default, all labels of the table are replaced,
+        By default all labels of the table are replaced,
         use ``index`` to select a subset.
         If a column is assigned to a :class:`Scheme`
-        values have to match its ``dtype``.
+        values will be automatically converted
+        to match its dtype.
 
         Examples are provided with the
         :ref:`table specifications <data-tables:Tables>`.
@@ -436,7 +437,8 @@ class Base(HeaderBase):
             index: index
 
         Raises:
-            ValueError: if values do not match scheme
+            ValueError: if values cannot be converted
+                to match the schemes dtype
 
         """
         for idx, data in values.items():

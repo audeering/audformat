@@ -270,7 +270,8 @@ class Column(HeaderBase):
         By default, all labels of the column are replaced,
         use ``index`` to set a subset.
         If columns is assigned to a :class:`Scheme`
-        values have to match its ``dtype``.
+        values will be automatically converted
+        to match its dtype.
 
         Examples are provided with the
         :ref:`table specifications <data-tables:Tables>`.
@@ -284,7 +285,8 @@ class Column(HeaderBase):
             RuntimeError: if column is not assign to a table
             ValueError: if trying to set values of a filewise column
                 using a segmented index
-            ValueError: if values do not match scheme
+            ValueError: if values cannot be converted
+                to match the schemes dtype
 
         """
         if self._table is None:
