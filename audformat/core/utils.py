@@ -1217,6 +1217,9 @@ def union(
     Returns:
         union of index objects
 
+    Raises:
+        ValueError: if level and dtypes of objects do not match
+
     Example:
         >>> index1 = filewise_index(['f1', 'f2', 'f3'])
         >>> index2 = filewise_index(['f2', 'f3', 'f4'])
@@ -1274,14 +1277,25 @@ def union(
             if is_filewise_index(obj):
                 objs[n] = to_segmented_index(obj)
 
+    if not is_index_alike(objs):
+        raise ValueError(
+            'Levels and dtypes of all objects must match, '
+            'see audformat.utils.is_index_alike().'
+        )
+
+    # Convert MultiIndex with single level to Index
+    for n, obj in enumerate(objs):
+        if (
+                isinstance(obj, pd.MultiIndex)
+                and obj.nlevels == 1
+        ):
+            objs[n] = obj.levels[0]
+
     # Combine all MultiIndex entries and drop duplicates afterwards,
     # faster than using index.union(),
     # compare https://github.com/audeering/audformat/pull/98
     df = pd.concat([o.to_frame() for o in objs])
-    if len(df.columns) > 1:
-        index = pd.MultiIndex.from_frame(df)
-    else:
-        index = pd.Index(df.iloc[:, 0])
+    index = df.index
     index = index.drop_duplicates()
 
     return index
