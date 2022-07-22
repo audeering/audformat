@@ -34,6 +34,11 @@ intersect
 
 .. autofunction:: intersect
 
+intersect_misc
+--------------
+
+.. autofunction:: intersect_misc
+
 is_index_alike
 --------------
 

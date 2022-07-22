@@ -5,6 +5,7 @@ from audformat.core.utils import (
     hash,
     index_has_overlap,
     intersect,
+    intersect_misc,
     is_index_alike,
     iter_by_file,
     join_labels,

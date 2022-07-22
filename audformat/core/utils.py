@@ -458,17 +458,7 @@ def intersect(
 
     if len(set(types)) == 1:
 
-        index = objs[0]
-        for obj in objs[1:]:
-            index = index.intersection(obj)
-
-        # index.intersection() does not preserve string dtype
-        # for MultiIndex
-        if isinstance(index, pd.MultiIndex):
-            index = set_index_dtypes(
-                index,
-                {define.IndexField.FILE: 'string'},
-            )
+        index = intersect_misc(objs)
 
     else:
 
@@ -477,14 +467,14 @@ def intersect(
             obj for obj, type in zip(objs, types)
             if type == define.IndexType.FILEWISE
         ]
-        index_filewise = intersect(objs_filewise)
+        index_filewise = intersect_misc(objs_filewise)
 
         # intersect only segmented
         objs_segmented = [
             obj for obj, type in zip(objs, types)
             if type == define.IndexType.SEGMENTED
         ]
-        index_segmented = intersect(objs_segmented)
+        index_segmented = intersect_misc(objs_segmented)
 
         # intersect segmented and filewise
         index = index_segmented[
@@ -534,7 +524,8 @@ def intersect_misc(
         ...         pd.MultiIndex.from_arrays([[1, 2]], names=['idx']),
         ...     ]
         ... )
-        MultiIndex([(1,)], names='idx')
+        MultiIndex([(1,)],
+                   names=['idx'])
         >>> intersect_misc(
         ...     [
         ...         pd.MultiIndex.from_arrays(
@@ -547,53 +538,48 @@ def intersect_misc(
         ...         ),
         ...     ]
         ... )
-        MultiIndex([('b', 1)], names=['idx1', 'idx2'])
+        MultiIndex([('b', 1)],
+                   names=['idx1', 'idx2'])
 
     """
     if not objs:
         return pd.Index([])
 
-    types = [index_type(obj) for obj in objs]
+    if len(objs) == 1:
+        return objs[0]
 
-    if len(set(types)) == 1:
+    if not is_index_alike(objs):
+        raise ValueError(
+            'Levels and dtypes of all objects must match, '
+            'see audformat.utils.is_index_alike().'
+        )
 
-        index = objs[0]
-        for obj in objs[1:]:
-            index = index.intersection(obj)
-
-        # index.intersection() does not preserve string dtype
-        # for MultiIndex
-        if isinstance(index, pd.MultiIndex):
-            index = set_index_dtypes(
-                index,
-                {define.IndexField.FILE: 'string'},
-            )
-
-    else:
-
-        # intersect only filewise
-        objs_filewise = [
-            obj for obj, type in zip(objs, types)
-            if type == define.IndexType.FILEWISE
-        ]
-        index_filewise = intersect(objs_filewise)
-
-        # intersect only segmented
-        objs_segmented = [
-            obj for obj, type in zip(objs, types)
-            if type == define.IndexType.SEGMENTED
-        ]
-        index_segmented = intersect(objs_segmented)
-
-        # intersect segmented and filewise
-        index = index_segmented[
-            index_segmented.isin(index_filewise, 0)
+    # if we have a mixture
+    # of pd.Index and pd.MultiIndex
+    # convert all to pd.MultiIndex
+    if (
+        objs[0].nlevels == 1
+        and len(set(isinstance(obj, pd.MultiIndex) for obj in objs)) == 2
+    ):
+        objs = [
+            obj if isinstance(obj, pd.MultiIndex)
+            else pd.MultiIndex.from_arrays([obj.to_list()], names=[obj.name])
+            for obj in objs
         ]
 
-    # We use len() here as index.empty takes a very long time
-    if len(index) == 0 and is_segmented_index(index):
-        # asserts that start and end are of type 'timedelta64[ns]'
-        index = segmented_index()
+    index = objs[0]
+    for obj in objs[1:]:
+        index = index.intersection(obj)
+
+    # index.intersection() does not preserve string dtype
+    # for MultiIndex
+    if isinstance(index, pd.MultiIndex):
+        obj = objs[0]
+        dtypes = {
+            name: dtype for name, dtype in zip(objs[0].names, objs[0].dtypes)
+            if dtype == 'string'
+        }
+        index = set_index_dtypes(index, dtypes)
 
     return index
 
