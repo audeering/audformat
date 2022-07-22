@@ -428,26 +428,29 @@ def intersect(
             :ref:`table specifications <data-tables:Tables>`
 
     Example:
-        >>> index1 = filewise_index(['f1', 'f2', 'f3'])
-        >>> index2 = filewise_index(['f2', 'f3', 'f4'])
-        >>> intersect([index1, index2])
+        >>> intersect(
+        ...     [
+        ...         filewise_index(['f1', 'f2', 'f3']),
+        ...         filewise_index(['f2', 'f3', 'f4']),
+        ...     ]
+        ... )
         Index(['f2', 'f3'], dtype='string', name='file')
-        >>> index3 = segmented_index(
-        ...     ['f1', 'f2', 'f3', 'f4'],
-        ...     [0, 0, 0, 0],
-        ...     [1, 1, 1, 1],
+        >>> intersect(
+        ...     [
+        ...         segmented_index(['f1'], [0], [1]),
+        ...         segmented_index(['f1', 'f2'], [0, 1], [1, 2]),
+        ...     ]
         ... )
-        >>> index4 = segmented_index(
-        ...     ['f1', 'f2', 'f3'],
-        ...     [0, 0, 1],
-        ...     [1, 1, 2],
+        MultiIndex([('f1', '0 days', '0 days 00:00:01')],
+                   names=['file', 'start', 'end'])
+        >>> intersect(
+        ...     [
+        ...         filewise_index(['f1', 'f2']),
+        ...         segmented_index(['f1', 'f2'], [0, 0], [1, 1]),
+        ...     ]
         ... )
-        >>> intersect([index3, index4])
         MultiIndex([('f1', '0 days', '0 days 00:00:01'),
                     ('f2', '0 days', '0 days 00:00:01')],
-                   names=['file', 'start', 'end'])
-        >>> intersect([index1, index2, index3, index4])
-        MultiIndex([('f2', '0 days', '0 days 00:00:01')],
                    names=['file', 'start', 'end'])
 
     """
