@@ -150,7 +150,7 @@ def test_dtype_column(
 ):
 
     name = 'column'
-    y = pd.Series(column_values, dtype=column_dtype, name=name)
+    y = pd.Series(column_values, dtype=column_dtype or 'object', name=name)
 
     name = 'idx'
     index_values = [f'f{n}' for n in range(len(column_values))]

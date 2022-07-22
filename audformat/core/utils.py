@@ -13,10 +13,7 @@ import audeer
 import audiofile
 
 from audformat.core import define
-from audformat.core.common import (
-    to_audformat_dtype,
-    to_pandas_dtype,
-)
+from audformat.core.common import to_audformat_dtype
 from audformat.core.database import Database
 from audformat.core.index import (
     filewise_index,
@@ -1345,7 +1342,7 @@ def union(
         ...         filewise_index(['f2', 'f3', 'f4']),
         ...     ]
         ... )
-        Index(['f1', 'f2', 'f3', 'f4'], dtype='object', name='file')
+        Index(['f1', 'f2', 'f3', 'f4'], dtype='string', name='file')
         >>> union(
         ...     [
         ...         segmented_index(['f2'], [0], [1]),

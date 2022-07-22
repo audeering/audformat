@@ -6,6 +6,9 @@ import typing
 
 import audiofile
 import oyaml as yaml
+
+import audformat.utils
+
 try:
     from yaml import CLoader as Loader
 except ImportError:  # pragma: nocover
@@ -463,9 +466,14 @@ class Database(HeaderBase):
         """
         def job(table):
             if table.is_segmented:
-                table.df.index = table.df.index.map(
+                index = table.df.index.map(
                     lambda x: (func(x[0]), x[1], x[2])
                 )
+                index = utils.set_index_dtypes(
+                    index,
+                    {define.IndexField.FILE: 'string'},
+                )
+                table.df.index = index
             else:
                 table.df.index = table.df.index.map(lambda x: func(x))
 
