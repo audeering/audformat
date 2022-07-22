@@ -999,7 +999,7 @@ def set_index_dtypes(
             typing.Dict[str, str],
         ],
 ) -> pd.Index:
-    r"""Set the dtypes of an index for the given levels.
+    r"""Set the dtypes of an index for the given level names.
 
     Args:
         index: index object
