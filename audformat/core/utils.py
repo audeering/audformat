@@ -1444,6 +1444,15 @@ def union_misc(
             'see audformat.utils.is_index_alike().'
         )
 
+    # if objects have a single level
+    # convert all objects to pd.Index
+    if objs[0].nlevels == 1:
+        objs = [
+            pd.Index(obj.get_level_values(0))
+            if isinstance(obj, pd.MultiIndex) else obj
+            for obj in objs
+        ]
+
     # Combine all MultiIndex entries and drop duplicates afterwards,
     # faster than using index.union(),
     # compare https://github.com/audeering/audformat/pull/98

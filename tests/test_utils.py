@@ -2144,6 +2144,20 @@ def test_union(objs, expected):
         ),
         (
             [
+                pd.Index([0, 1], name='idx'),
+                pd.MultiIndex.from_arrays([[1, 2]], names=['idx']),
+            ],
+            pd.Index([0, 1, 2], name='idx'),
+        ),
+        (
+            [
+                pd.MultiIndex.from_arrays([[0, 1]], names=['idx']),
+                pd.MultiIndex.from_arrays([[1, 2]], names=['idx']),
+            ],
+            pd.Index([0, 1, 2], name='idx'),
+        ),
+        (
+            [
                 pd.MultiIndex.from_arrays(
                     [['a', 'b', 'c'], [0, 1, 2]],
                     names=['idx1', 'idx2'],
