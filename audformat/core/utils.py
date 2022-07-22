@@ -1392,6 +1392,13 @@ def union_misc(
     index objects must not be conform to
     :ref:`table specifications <data-tables:Tables>`.
 
+    When combining
+    :class:`pd.Index`
+    objects with single-level
+    :class:`pd.MultiIndex`
+    objects the results will be a
+    :class:`pd.MultiIndex`.
+
     Args:
         objs: index objects
 
@@ -1411,6 +1418,16 @@ def union_misc(
         Index([0, 1, 2], dtype='Int64', name='idx')
         >>> union_misc(
         ...     [
+        ...         pd.Index([0, 1], name='idx'),
+        ...         pd.MultiIndex.from_arrays([[1, 2]], names=['idx']),
+        ...     ]
+        ... )
+        MultiIndex([(0,),
+                    (1,),
+                    (2,)],
+                   names=['idx'])
+        >>> union_misc(
+        ...     [
         ...         pd.MultiIndex.from_arrays(
         ...             [['a', 'b', 'c'], [0, 1, 2]],
         ...             names=['idx1', 'idx2'],
@@ -1426,13 +1443,6 @@ def union_misc(
                     ('c', 2),
                     ('c', 3)],
                    names=['idx1', 'idx2'])
-        >>> union_misc(
-        ...     [
-        ...         pd.Index(['spk1'], name='speaker'),
-        ...         pd.MultiIndex.from_arrays([['spk2']], names=['speaker']),
-        ...     ]
-        ... )
-        Index(['spk1', 'spk2'], dtype='object', name='speaker')
 
     """
     if not objs:
@@ -1447,12 +1457,16 @@ def union_misc(
             'see audformat.utils.is_index_alike().'
         )
 
-    # if objects have a single level
-    # convert all objects to pd.Index
-    if objs[0].nlevels == 1:
+    # if we have a mixture
+    # of pd.Index and pd.MultiIndex
+    # convert all to pd.MultiIndex
+    if (
+        objs[0].nlevels == 1
+        and len(set(isinstance(obj, pd.MultiIndex) for obj in objs)) == 2
+    ):
         objs = [
-            pd.Index(obj.get_level_values(0))
-            if isinstance(obj, pd.MultiIndex) else obj
+            obj if isinstance(obj, pd.MultiIndex)
+            else pd.MultiIndex.from_arrays([obj.to_list()], names=[obj.name])
             for obj in objs
         ]
 
