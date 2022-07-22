@@ -1,6 +1,7 @@
 import datetime
 import filecmp
 import os
+import re
 
 import audeer
 import audiofile
@@ -31,6 +32,35 @@ def full_path(
 def test_create_db():
     db = audformat.testing.create_db()
     assert all(['\\' not in file for file in db.files])
+
+
+@pytest.mark.parametrize(
+    'db, table_id, expected',
+    [
+        (
+            audformat.Database('test'),
+            'non-existing',
+            False,
+        ),
+        (
+            audformat.testing.create_db(),
+            'non-existing',
+            False,
+        ),
+        (
+            audformat.testing.create_db(),
+            'misc',
+            True,
+        ),
+        (
+            audformat.testing.create_db(),
+            'files',
+            True,
+        ),
+    ]
+)
+def test_contains(db, table_id, expected):
+    assert (table_id in db) == expected
 
 
 @pytest.mark.parametrize(
@@ -171,19 +201,112 @@ def test_pick_files(files, num_workers):
     )
 
 
-def test_drop_and_pick_tables():
+@pytest.mark.parametrize(
+    'db, tables, expected_tables',
+    [
+        (
+            audformat.testing.create_db(),
+            'segments',
+            ['files', 'misc'],
+        ),
+        (
+            audformat.testing.create_db(),
+            'misc',
+            ['files', 'segments'],
+        ),
+        (
+            audformat.testing.create_db(),
+            ['segments'],
+            ['files', 'misc'],
+        ),
+        (
+            audformat.testing.create_db(),
+            ['segments', 'misc'],
+            ['files'],
+        ),
+        pytest.param(  # non-existent table ID
+            audformat.testing.create_db(),
+            ['segments', 'misc', 'non-existing'],
+            None,
+            marks=pytest.mark.xfail(raises=audformat.errors.BadIdError),
+        ),
+    ]
+)
+def test_drop_tables(db, tables, expected_tables):
 
-    db = audformat.testing.create_db()
+    if 'misc' in audeer.to_list(tables):
 
-    assert 'segments' in db
-    db.pick_tables('files')
-    assert 'segments' not in db
+        def error_msg(table_id):
+            return re.escape(
+                f"Misc table '{table_id}' is used as scheme(s): "
+                "'label_map_misc', "
+                "and cannot be removed."
+            )
 
-    db = audformat.testing.create_db()
+        with pytest.raises(RuntimeError, match=error_msg('misc')):
+            db.drop_tables('misc')
 
-    assert 'segments' in db
-    db.drop_tables('segments')
-    assert 'segments' not in db
+        # Replace scheme with other misc table
+        db['misc_copy'] = db['misc'].copy()
+        db.schemes['label_map_misc'].replace_labels('misc_copy')
+        db.drop_tables('misc')
+        with pytest.raises(RuntimeError, match=error_msg('misc_copy')):
+            db.drop_tables('misc_copy')
+
+        # Delete scheme and remove copied table as well
+        del db.schemes['label_map_misc']
+        db.drop_tables('misc_copy')
+
+        tables = [t for t in audeer.to_list(tables) if t != 'misc']
+
+    db.drop_tables(tables)
+    assert list(db) == expected_tables
+
+
+@pytest.mark.parametrize(
+    'db, tables, expected_tables',
+    [
+        pytest.param(
+            audformat.testing.create_db(),
+            'segments',
+            ['segments'],
+        ),
+        (
+            audformat.testing.create_db(),
+            'misc',
+            ['misc'],
+        ),
+        (
+            audformat.testing.create_db(),
+            ['segments'],
+            ['segments'],
+        ),
+        (
+            audformat.testing.create_db(),
+            ['segments', 'misc'],
+            ['misc', 'segments'],
+        ),
+        pytest.param(  # non-existent table ID
+            audformat.testing.create_db(),
+            ['segments', 'misc', 'non-existing'],
+            None,
+            marks=pytest.mark.xfail(raises=audformat.errors.BadIdError),
+        ),
+    ]
+)
+def test_pick_tables(db, tables, expected_tables):
+
+    if expected_tables is not None and 'misc' not in expected_tables:
+        error_msg = (
+            "Misc table 'misc' is used as scheme(s): 'label_map_misc', "
+            "and cannot be removed."
+        )
+        with pytest.raises(RuntimeError, match=re.escape(error_msg)):
+            db.pick_tables(tables)
+        del db.schemes['label_map_misc']
+
+    db.pick_tables(tables)
+    assert list(db) == expected_tables
 
 
 def test_files_duration():
