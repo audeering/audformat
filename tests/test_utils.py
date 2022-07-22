@@ -1659,6 +1659,12 @@ def test_replace_file_extension(index, extension, pattern, expected_index):
             None,
             marks=pytest.mark.xfail(raises=ValueError),
         ),
+        pytest.param(
+            pd.Index([0], name='idx'),
+            {'bad': 'string'},
+            None,
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
     ]
 )
 def test_set_index_dtypes(index, dtypes, expected):
