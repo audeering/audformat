@@ -453,6 +453,7 @@ class Scheme(common.HeaderBase):
                 labels = self._labels_to_dict()
                 return item in labels
             if self.is_numeric:
+                item = float(item)
                 if self.minimum and not item >= self.minimum:
                     return False
                 if self.maximum and not item <= self.maximum:
