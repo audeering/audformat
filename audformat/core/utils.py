@@ -13,7 +13,10 @@ import audeer
 import audiofile
 
 from audformat.core import define
-from audformat.core.common import to_audformat_dtype
+from audformat.core.common import (
+    to_audformat_dtype,
+    to_pandas_dtype,
+)
 from audformat.core.database import Database
 from audformat.core.index import (
     filewise_index,
@@ -465,7 +468,7 @@ def intersect(
         # index.intersection() does not preserve string dtype
         # for MultiIndex
         if isinstance(index, pd.MultiIndex):
-            index = set_index_dtype(
+            index = set_index_dtypes(
                 index,
                 {define.IndexField.FILE: 'string'},
             )
@@ -989,11 +992,56 @@ def same_dtype(d1, d2) -> bool:
     return d1.name == d2.name
 
 
-def set_index_dtype(
+def set_index_dtypes(
         index: pd.Index,
-        dtypes: typing.Dict[str, str],
+        dtypes: typing.Union[
+            str,
+            typing.Dict[str, str],
+        ],
 ) -> pd.Index:
-    r"""Set the dtypes of an index for the given levels."""
+    r"""Set the dtypes of an index for the given levels.
+
+    Args:
+        index: index object
+        dtypes: dictionary mapping level names to new dtype.
+            If a single dtype is given,
+            it will be applied to all levels
+
+    Returns:
+        index with new dtypes
+
+    Examples:
+        >>> idx1 = pd.Index(['a', 'b'])
+        >>> idx1
+        Index(['a', 'b'], dtype='object')
+        >>> idx2 = set_index_dtypes(idx1, 'string')
+        >>> idx2
+        Index(['a', 'b'], dtype='string')
+        >>> idx3 = pd.MultiIndex.from_arrays(
+        ...     [['a', 'b'], [1, 2]],
+        ...     names=['level1', 'level2'],
+        ... )
+        >>> idx3.dtypes
+        level1    object
+        level2     int64
+        dtype: object
+        >>> idx4 = set_index_dtypes(idx3, {'level2': 'float'})
+        >>> idx4.dtypes
+        level1    object
+        level2   float64
+        dtype: object
+        >>> idx5 = set_index_dtypes(idx3, 'string')
+        >>> idx5.dtypes
+        level1    string
+        level2    string
+        dtype: object
+
+    """
+    levels = index.names if isinstance(index, pd.MultiIndex) else [index.name]
+
+    if not isinstance(dtypes, dict):
+        dtypes = {level: dtypes for level in levels}
+
     if len(dtypes) == 0:
         return index
 
@@ -1011,7 +1059,7 @@ def set_index_dtype(
             for level, dtype in dtypes.items():
                 # get_level_values() does not work
                 # for levels containing non-unique entries,
-                # hence we acces the data directly with
+                # hence we access the data directly with
                 # index.levels[idx]
                 idx = index.names.index(level)
                 index = index.set_levels(

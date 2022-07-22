@@ -478,7 +478,7 @@ class Base(HeaderBase):
             if column.scheme_id is not None:
                 dtypes[column_id] = schemes[column.scheme_id].to_pandas_dtype()
             else:
-                dtypes[column_id] = 'str'
+                dtypes[column_id] = object
 
         # replace dtype with converter for dates or timestamps
         dtypes_wo_converters = {}
@@ -509,7 +509,7 @@ class Base(HeaderBase):
                 level: dtype for level, dtype in dtypes.items()
                 if level in converters
             }
-            df.index = utils.set_index_dtype(df.index, converter_dtypes)
+            df.index = utils.set_index_dtypes(df.index, converter_dtypes)
             # fix columns
             for column_id in columns:
                 if column_id in converters:
@@ -689,7 +689,7 @@ class MiscTable(Base):
                 level: 'Int64' for level, dtype in zip(levels, dtypes)
                 if pd.api.types.is_integer_dtype(dtype)
             }
-            index = utils.set_index_dtype(index, int_dtypes)
+            index = utils.set_index_dtypes(index, int_dtypes)
 
             if not all(levels) or len(levels) > len(set(levels)):
                 raise ValueError(

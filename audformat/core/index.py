@@ -363,7 +363,7 @@ def segmented_index(
             define.IndexField.START,
             define.IndexField.END,
         ])
-    index = utils.set_index_dtype(index, {define.IndexField.FILE: 'string'})
+    index = utils.set_index_dtypes(index, {define.IndexField.FILE: 'string'})
     assert_index(index)
 
     return index
