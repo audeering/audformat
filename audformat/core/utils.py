@@ -413,6 +413,8 @@ def intersect(
 
     Index objects must be conform to
     :ref:`table specifications <data-tables:Tables>`.
+    Otherwise use
+    :func:`audformat.utils.intersect_misc`.
 
     If at least one object is segmented, the output is a segmented index.
 
@@ -497,21 +499,28 @@ def intersect_misc(
 ) -> pd.Index:
     r"""Intersect index objects.
 
-    Index objects must be conform to
+    Requires that levels and dtypes
+    of all objects match,
+    see :func:`audformat.utils.is_index_alike`.
+    Unlike :func:`audformat.utils.intersect`
+    index objects must not be conform to
     :ref:`table specifications <data-tables:Tables>`.
 
-    If at least one object is segmented, the output is a segmented index.
+    When intersecting
+    :class:`pd.Index`
+    objects with single-level
+    :class:`pd.MultiIndex`
+    objects the results will be a
+    :class:`pd.MultiIndex`.
 
     Args:
-        objs: index objects conform to
-            :ref:`table specifications <data-tables:Tables>`
+        objs: index objects
 
     Returns:
         intersection of index objects
 
     Raises:
-        ValueError: if one or more objects are not conform to
-            :ref:`table specifications <data-tables:Tables>`
+        ValueError: if level and dtypes of objects do not match
 
     Example:
         >>> intersect_misc(
