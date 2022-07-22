@@ -1,3 +1,5 @@
+import re
+
 import pytest
 import numpy as np
 import pandas as pd
@@ -320,6 +322,19 @@ def test_set_invalid_values():
 
     db = pytest.DB
     num = len(db['files'])
+
+    # Values that do match scheme are converted if possible
+    table = db['files'].copy()  # use copy as we change values here
+    # string -> float
+    table['float'].set(['-1.0'] * num)
+    error_msg = re.escape("could not convert string to float: 'a'")
+    with pytest.raises(ValueError, match=error_msg):
+        table['float'].set('a')
+    # float -> string
+    table['string'].set(1.0)
+    error_msg = re.escape('Some value(s) do not match scheme')
+    with pytest.raises(ValueError, match=error_msg):
+        db['files']['label'].set(1.0)
 
     with pytest.raises(ValueError):
         db['files']['float'].set(-2.0)
