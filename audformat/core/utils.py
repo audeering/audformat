@@ -1007,6 +1007,9 @@ def set_index_dtypes(
             If a single dtype is given,
             it will be applied to all levels
 
+    Raises:
+        ValueError: if level names are not unique
+
     Returns:
         index with new dtypes
 
@@ -1039,8 +1042,25 @@ def set_index_dtypes(
     """
     levels = index.names if isinstance(index, pd.MultiIndex) else [index.name]
 
+    if len(set(levels)) != len(levels):
+        raise ValueError(
+            f'Got index with levels '
+            f'{levels}, '
+            f'but names must be unique.'
+        )
+
     if not isinstance(dtypes, dict):
         dtypes = {level: dtypes for level in levels}
+
+    for name in dtypes:
+        if name not in levels:
+            raise ValueError(
+                f"A level with name "
+                f"'{name}' "
+                f"does not exist. "
+                f"Must be on one of "
+                f"{levels}."
+            )
 
     if len(dtypes) == 0:
         return index
