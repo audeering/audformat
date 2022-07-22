@@ -519,8 +519,8 @@ class Database(HeaderBase):
             audformat.errors.BadIdError: if a table with provided ID
                 does not exist in the database
             RuntimeError: if a misc table
-                that is used as scheme(s)
-                is part of the non-picked tables
+                that is used in a scheme
+                would be removed
 
         """
         table_ids = audeer.to_list(table_ids)
