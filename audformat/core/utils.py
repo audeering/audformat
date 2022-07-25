@@ -32,12 +32,17 @@ def concat(
 ) -> typing.Union[pd.Series, pd.DataFrame]:
     r"""Concatenate objects.
 
-    Objects must be conform to
-    :ref:`table specifications <data-tables:Tables>`.
+    If all objects are conform to
+    :ref:`table specifications <data-tables:Tables>`
+    and at least one object is segmented,
+    the output has a segmented index.
+    Otherwise,
+    requires that levels and dtypes
+    of all objects match,
+    see :func:`audformat.utils.is_index_alike`.
 
     The new object contains index and columns of both objects.
     Missing values will be set to ``NaN``.
-    If at least one object is segmented, the output has a segmented index.
 
     Columns with the same identifier are combined to a single column.
     This requires that both columns have the same dtype
@@ -48,69 +53,93 @@ def concat(
     the value of the last object in the list is kept.
 
     Args:
-        objs: objects conform to
-            :ref:`table specifications <data-tables:Tables>`
+        objs: objects
         overwrite: overwrite values where indices overlap
 
     Returns:
         concatenated objects
 
     Raises:
-        ValueError: if one or more objects are not conform to
-            :ref:`table specifications <data-tables:Tables>`
+        ValueError: if level and dtypes of object indices do not match
         ValueError: if columns with the same name have different dtypes
         ValueError: if values in the same position do not match
 
     Example:
-        >>> obj1 = pd.Series(
-        ...     [0., 1.],
-        ...     index=filewise_index(['f1', 'f2']),
-        ...     name='float',
+        >>> concat(
+        ...     [
+        ...         pd.Series([0], index=pd.Index([0])),
+        ...         pd.Series([1], index=pd.Index([1])),
+        ...     ]
         ... )
-        >>> obj2 = pd.DataFrame(
-        ...     {
-        ...         'float': [1., 2.],
-        ...         'string': ['a', 'b'],
-        ...     },
-        ...     index=segmented_index(['f2', 'f3']),
+        0    0
+        1    1
+        dtype: Int64
+        >>> concat(
+        ...     [
+        ...         pd.Series(
+        ...             [0., 1.],
+        ...             index=pd.Index(
+        ...                 [0, 1],
+        ...                 dtype='int',
+        ...                 name='idx',
+        ...             ),
+        ...             name='float',
+        ...         ),
+        ...         pd.DataFrame(
+        ...             {
+        ...                 'float': [np.nan, 2.],
+        ...                 'string': ['a', 'b'],
+        ...             },
+        ...             index=pd.MultiIndex.from_arrays(
+        ...                 [[0, 2]],
+        ...                 names=['idx'],
+        ...             ),
+        ...         ),
+        ...     ]
         ... )
-        >>> concat([obj1, obj2])
+             float string
+        idx
+        0      0.0      a
+        1      1.0    NaN
+        2      2.0      b
+        >>> concat(
+        ...     [
+        ...         pd.Series(
+        ...             [0., 1.],
+        ...             index=filewise_index(['f1', 'f2']),
+        ...             name='float',
+        ...         ),
+        ...         pd.DataFrame(
+        ...             {
+        ...                 'float': [1., 2.],
+        ...                 'string': ['a', 'b'],
+        ...             },
+        ...             index=segmented_index(['f2', 'f3']),
+        ...         ),
+        ...     ]
+        ... )
                          float string
         file start  end
         f1   0 days NaT    0.0    NaN
         f2   0 days NaT    1.0      a
         f3   0 days NaT    2.0      b
-        >>> obj1 = pd.Series(
-        ...     [0., 1.],
-        ...     index=filewise_index(['f1', 'f2']),
-        ...     name='float',
+        >>> concat(
+        ...     [
+        ...         pd.Series(
+        ...             [0., 0.],
+        ...             index=filewise_index(['f1', 'f2']),
+        ...             name='float',
+        ...         ),
+        ...         pd.DataFrame(
+        ...             {
+        ...                 'float': [1., 2.],
+        ...                 'string': ['a', 'b'],
+        ...             },
+        ...             index=segmented_index(['f2', 'f3']),
+        ...         ),
+        ...     ],
+        ...     overwrite=True,
         ... )
-        >>> obj2 = pd.DataFrame(
-        ...     {
-        ...         'float': [np.nan, 2.],
-        ...         'string': ['a', 'b'],
-        ...     },
-        ...     index=filewise_index(['f2', 'f3']),
-        ... )
-        >>> concat([obj1, obj2])
-              float string
-        file
-        f1      0.0    NaN
-        f2      1.0      a
-        f3      2.0      b
-        >>> obj1 = pd.Series(
-        ...     [0., 0.],
-        ...     index=filewise_index(['f1', 'f2']),
-        ...     name='float',
-        ... )
-        >>> obj2 = pd.DataFrame(
-        ...     {
-        ...         'float': [1., 2.],
-        ...         'string': ['a', 'b'],
-        ...     },
-        ...     index=segmented_index(['f2', 'f3']),
-        ... )
-        >>> concat([obj1, obj2], overwrite=True)
                          float string
         file start  end
         f1   0 days NaT    0.0    NaN
@@ -119,7 +148,38 @@ def concat(
 
     """
     if not objs:
-        return pd.Series([], index=filewise_index(), dtype='object')
+        return pd.Series([], index=pd.Index([]), dtype='object')
+
+    if len(objs) == 1:
+        return objs[0]
+
+    # check if all objects are either filewise or segmented,
+    # if this is the case possibly convert filewise to segmented indices
+    filewise = np.array([is_filewise_index(obj) for obj in objs])
+    segmented = np.array([is_segmented_index(obj) for obj in objs])
+    if (filewise | segmented).all():
+        if not filewise.all():
+            objs = [to_segmented_index(obj) for obj in objs]
+    else:
+        if not is_index_alike(objs):
+            raise ValueError(
+                'Levels and dtypes of all objects must match, '
+                'see audformat.utils.is_index_alike().'
+            )
+
+    # if we have a mixture
+    # of pd.Index and pd.MultiIndex
+    # convert all to pd.MultiIndex
+    if (
+        objs[0].index.nlevels == 1
+        and len(set(isinstance(obj.index, pd.MultiIndex) for obj in objs)) == 2
+    ):
+        for n, obj in enumerate(objs):
+            if not isinstance(obj.index, pd.MultiIndex):
+                objs[n].index = pd.MultiIndex.from_arrays(
+                    [obj.index.to_list()],
+                    names=[obj.index.name],
+                )
 
     # the new index is a union of the individual objects
     index = union([obj.index for obj in objs])
@@ -138,9 +198,6 @@ def concat(
     # reindex all columns to the new index
     columns_reindex = {}
     for column in columns:
-
-        if is_segmented_index(index):
-            column = to_segmented_index(column)
 
         # if we already have a column with that name, we have to merge them
         if column.name in columns_reindex:
