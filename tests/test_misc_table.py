@@ -604,18 +604,26 @@ def test_dtype_multiindex_single_level(
     assert db_new['misc'].index.dtype == expected_pandas_dtype
 
 
-@pytest.mark.parametrize(
-    'table, column, expected',
-    [
-        (
-            pytest.DB['misc'],
-            'int',
-            pytest.DB['misc'].df['int'],
-        ),
-    ]
-)
-def test_get_column(table, column, expected):
-    pd.testing.assert_series_equal(table[column].get(), expected)
+def test_drop_and_pick_index():
+
+    table_id = 'misc'
+    index = pytest.DB[table_id].index[:5]
+    df_pick = pytest.DB[table_id].pick_index(index).get()
+    index = pytest.DB[table_id].index[5:]
+    df_drop = pytest.DB[table_id].drop_index(index).get()
+    pd.testing.assert_frame_equal(df_pick, df_drop)
+
+    index = pytest.DB['segments'].index[:5]
+    with pytest.raises(
+            ValueError,
+            match='Levels and dtypes of all objects must match',
+    ):
+        pytest.DB[table_id].drop_index(index).get()
+    with pytest.raises(
+            ValueError,
+            match='Levels and dtypes of all objects must match',
+    ):
+        pytest.DB[table_id].pick_index(index).get()
 
 
 def test_extend_index():
@@ -661,6 +669,20 @@ def test_extend_index():
     )
 
     db.drop_tables('misc')
+
+
+@pytest.mark.parametrize(
+    'table, column, expected',
+    [
+        (
+            pytest.DB['misc'],
+            'int',
+            pytest.DB['misc'].df['int'],
+        ),
+    ]
+)
+def test_get_column(table, column, expected):
+    pd.testing.assert_series_equal(table[column].get(), expected)
 
 
 @pytest.mark.parametrize(
