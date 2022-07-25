@@ -1488,7 +1488,7 @@ def _assert_table_index(
         raise ValueError(
             f'Cannot '
             f'{operation} '
-            f'table if levels and dtypes of index do not match.\n'
+            f'table if input index and table index are not alike.\n'
             f'Expected index:\n'
             f'\t{want}'
             f'\nbut yours is:\n'
