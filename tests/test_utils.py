@@ -949,7 +949,7 @@ def test_index_has_overlap(obj, expected):
 )
 def test_intersect(objs, expected):
     pd.testing.assert_index_equal(
-        audformat.utils.intersect_misc(objs),
+        audformat.utils.intersect(objs),
         expected,
     )
 

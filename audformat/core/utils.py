@@ -491,54 +491,59 @@ def intersect(
     if len(objs) == 1:
         return objs[0]
 
-    # check if all objects are either filewise or segmented,
-    # if this is the case possibly convert filewise to segmented indices
-    filewise = np.array([is_filewise_index(obj) for obj in objs])
-    segmented = np.array([is_segmented_index(obj) for obj in objs])
-    if (filewise | segmented).all():
-        if not filewise.all():
-            filewise_index = intersect(objs[filewise]
+    objs_filewise = [obj for obj in objs if is_filewise_index(obj)]
+    objs_segmented = [obj for obj in objs if is_segmented_index(obj)]
 
-    objs_filewise = [is_filewise_index(obj) for obj in objs]
-    objs_segmented = [is_segmented_index(obj) for obj in objs]
+    if (
+            len(objs_filewise) > 0
+            and len(objs_segmented) > 0
+            and len(objs_filewise + objs_segmented) == len(objs)
+    ):
 
-    if len(objs_filewise + objs_segmented) != len(objs):
+        # if we have a mixture of segmented and filewise
+        # intersect separately,
+        # and find segments that are part of the files
+        index_filewise = intersect(objs_filewise)
+        index_segmented = intersect(objs_segmented)
+        index = index_segmented[index_segmented.isin(index_filewise, 0)]
+
+    else:
+
         if not is_index_alike(objs):
             raise ValueError(
                 'Levels and dtypes of all objects must match, '
                 'see audformat.utils.is_index_alike().'
             )
-    elif len(objs_filewise) > 0 and len(objs_segmented) > 0:
-        # intersect segmented and filewise
-        index_filewise = intersect(objs_filewise)
-        index_segmented = intersect(objs_segmented)
-        index = index_segmented[index_segmented.isin(index_filewise, 0)]
 
-    # if we have a mixture
-    # of pd.Index and pd.MultiIndex
-    # convert all to pd.MultiIndex
-    if (
-        objs[0].nlevels == 1
-        and len(set(isinstance(obj, pd.MultiIndex) for obj in objs)) == 2
-    ):
-        objs = [
-            obj if isinstance(obj, pd.MultiIndex)
-            else pd.MultiIndex.from_arrays([obj.to_list()], names=[obj.name])
-            for obj in objs
-        ]
+        # if we have a mixture
+        # of pd.Index and pd.MultiIndex
+        # convert all to pd.MultiIndex
+        if (
+            objs[0].nlevels == 1
+            and len(set(isinstance(obj, pd.MultiIndex) for obj in objs)) == 2
+        ):
+            objs = [
+                obj if isinstance(obj, pd.MultiIndex)
+                else pd.MultiIndex.from_arrays(
+                    [obj.to_list()],
+                    names=[obj.name],
+                )
+                for obj in objs
+            ]
 
-    index = objs[0]
-    for obj in objs[1:]:
-        index = index.intersection(obj)
+        index = objs[0]
+        for obj in objs[1:]:
+            index = index.intersection(obj)
 
-    # index.intersection() does not preserve string dtype
-    # for MultiIndex
-    if isinstance(index, pd.MultiIndex):
-        dtypes = {
-            name: dtype for name, dtype in zip(objs[0].names, objs[0].dtypes)
-            if dtype == 'string'
-        }
-        index = set_index_dtypes(index, dtypes)
+        # index.intersection() does not preserve string dtype
+        # for MultiIndex
+        if isinstance(index, pd.MultiIndex):
+            obj = objs[0]
+            dtypes = {
+                name: dtype for name, dtype in zip(obj.names, obj.dtypes)
+                if dtype == 'string'
+            }
+            index = set_index_dtypes(index, dtypes)
 
     # We use len() here as index.empty takes a very long time
     if len(index) == 0 and is_segmented_index(index):
