@@ -76,6 +76,14 @@ def concat(
         dtype: Int64
         >>> concat(
         ...     [
+        ...         pd.Series([0], index=pd.Index([0]), name='col1'),
+        ...         pd.Series([1], index=pd.Index([0]), name='col2'),
+        ...     ]
+        ... )
+           col1  col2
+        0     0     1
+        >>> concat(
+        ...     [
         ...         pd.Series(
         ...             [0., 1.],
         ...             index=pd.Index(
