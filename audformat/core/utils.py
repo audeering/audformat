@@ -424,7 +424,7 @@ def intersect(
         objs: index objects
 
     Returns:
-        union of index objects
+        intersection of index objects
 
     Raises:
         ValueError: if level and dtypes of objects do not match
