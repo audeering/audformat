@@ -754,7 +754,7 @@ def test_index_has_overlap(obj, expected):
     [
         (
             [],
-            audformat.filewise_index(),
+            pd.Index([]),
         ),
         (
             [
@@ -880,22 +880,6 @@ def test_index_has_overlap(obj, expected):
             ],
             audformat.segmented_index('f2', 0, 1),
         ),
-    ]
-)
-def test_intersect(objs, expected):
-    pd.testing.assert_index_equal(
-        audformat.utils.intersect(objs),
-        expected,
-    )
-
-
-@pytest.mark.parametrize(
-    'objs, expected',
-    [
-        (
-            [],
-            pd.Index([]),
-        ),
         (
             [
                 pd.Index([]),
@@ -963,7 +947,7 @@ def test_intersect(objs, expected):
         )
     ]
 )
-def test_intersect_misc(objs, expected):
+def test_intersect(objs, expected):
     pd.testing.assert_index_equal(
         audformat.utils.intersect_misc(objs),
         expected,

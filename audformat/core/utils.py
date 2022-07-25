@@ -432,6 +432,35 @@ def intersect(
     Example:
         >>> intersect(
         ...     [
+        ...         pd.Index([0, 1], name='idx'),
+        ...         pd.Index([1, 2], dtype='Int64', name='idx'),
+        ...     ]
+        ... )
+        Index([1], dtype='Int64', name='idx')
+        >>> intersect(
+        ...     [
+        ...         pd.Index([0, 1], name='idx'),
+        ...         pd.MultiIndex.from_arrays([[1, 2]], names=['idx']),
+        ...     ]
+        ... )
+        MultiIndex([(1,)],
+                   names=['idx'])
+        >>> intersect(
+        ...     [
+        ...         pd.MultiIndex.from_arrays(
+        ...             [['a', 'b', 'c'], [0, 1, 2]],
+        ...             names=['idx1', 'idx2'],
+        ...         ),
+        ...         pd.MultiIndex.from_arrays(
+        ...             [['b', 'c'], [1, 3]],
+        ...             names=['idx1', 'idx2'],
+        ...         ),
+        ...     ]
+        ... )
+        MultiIndex([('b', 1)],
+                   names=['idx1', 'idx2'])
+        >>> intersect(
+        ...     [
         ...         filewise_index(['f1', 'f2', 'f3']),
         ...         filewise_index(['f2', 'f3', 'f4']),
         ...     ]
@@ -454,165 +483,6 @@ def intersect(
         MultiIndex([('f1', '0 days', '0 days 00:00:01'),
                     ('f2', '0 days', '0 days 00:00:01')],
                    names=['file', 'start', 'end'])
-        >>> intersect(
-        ...     [
-        ...         pd.Index([0, 1], name='idx'),
-        ...         pd.Index([1, 2], dtype='Int64', name='idx'),
-        ...     ]
-        ... )
-        Index([1], dtype='Int64', name='idx')
-        >>> intersect(
-        ...     [
-        ...         pd.Index([0, 1], name='idx'),
-        ...         pd.MultiIndex.from_arrays([[1, 2]], names=['idx']),
-        ...     ]
-        ... )
-        MultiIndex([(1,)],
-                   names=['idx'])
-        >>> intersect(
-        ...     [
-        ...         pd.MultiIndex.from_arrays(
-        ...             [['a', 'b', 'c'], [0, 1, 2]],
-        ...             names=['idx1', 'idx2'],
-        ...         ),
-        ...         pd.MultiIndex.from_arrays(
-        ...             [['b', 'c'], [1, 3]],
-        ...             names=['idx1', 'idx2'],
-        ...         ),
-        ...     ]
-        ... )
-        MultiIndex([('b', 1)],
-                   names=['idx1', 'idx2'])
-
-
-    """
-    if not objs:
-        return pd.Index([])
-
-    def intersect_objs(objs):
-
-        if not is_index_alike(objs):
-            raise ValueError(
-                'Levels and dtypes of all objects must match, '
-                'see audformat.utils.is_index_alike().'
-            )
-
-        # if we have a mixture
-        # of pd.Index and pd.MultiIndex
-        # convert all to pd.MultiIndex
-        if (
-            objs[0].nlevels == 1
-            and len(set(isinstance(obj, pd.MultiIndex) for obj in objs)) == 2
-        ):
-            objs = [
-                obj if isinstance(obj, pd.MultiIndex)
-                else pd.MultiIndex.from_arrays([obj.to_list()], names=[obj.name])
-                for obj in objs
-            ]
-
-        index = objs[0]
-        for obj in objs[1:]:
-            index = index.intersection(obj)
-
-        # index.intersection() does not preserve string dtype
-        # for MultiIndex
-        if isinstance(index, pd.MultiIndex):
-            dtypes = {
-                name: dtype for name, dtype in zip(objs[0].names, objs[0].dtypes)
-                if dtype == 'string'
-            }
-            index = set_index_dtypes(index, dtypes)
-
-        return index
-
-    objs_filewise = [is_filewise_index(obj) for obj in objs]
-    objs_other = [obj for obj in objs if obj not in objs_filewise]
-
-    index_filewise = intersect_objs(objs_filewise)
-    index_other = intersect_objs(objs_other)
-
-
-    if (
-            len(objs_filewise) > 0
-            and len(objs_other) > 0
-    ):
-        # intersect segmented + misc and filewise
-        index = index_other[
-            index_other.isin(index_filewise, 0)
-        ]
-
-    elif len(objs_filewise) > 0:
-        index = index_filewise
-
-    else:
-        index = index_other
-
-    # We use len() here as index.empty takes a very long time
-    if len(index) == 0 and is_segmented_index(index):
-        # asserts that start and end are of type 'timedelta64[ns]'
-        index = segmented_index()
-
-    return index
-
-
-def intersect_misc(
-        objs: typing.Sequence[typing.Union[pd.Index]],
-) -> pd.Index:
-    r"""Intersect index objects.
-
-    Requires that levels and dtypes
-    of all objects match,
-    see :func:`audformat.utils.is_index_alike`.
-    Unlike :func:`audformat.utils.intersect`
-    index objects must not be conform to
-    :ref:`table specifications <data-tables:Tables>`.
-
-    When intersecting
-    :class:`pd.Index`
-    objects with single-level
-    :class:`pd.MultiIndex`
-    objects the results will be a
-    :class:`pd.MultiIndex`.
-
-    Args:
-        objs: index objects
-
-    Returns:
-        intersection of index objects
-
-    Raises:
-        ValueError: if level and dtypes of objects do not match
-
-    Example:
-        >>> intersect_misc(
-        ...     [
-        ...         pd.Index([0, 1], name='idx'),
-        ...         pd.Index([1, 2], dtype='Int64', name='idx'),
-        ...     ]
-        ... )
-        Index([1], dtype='Int64', name='idx')
-        >>> intersect_misc(
-        ...     [
-        ...         pd.Index([0, 1], name='idx'),
-        ...         pd.MultiIndex.from_arrays([[1, 2]], names=['idx']),
-        ...     ]
-        ... )
-        MultiIndex([(1,)],
-                   names=['idx'])
-        >>> intersect_misc(
-        ...     [
-        ...         pd.MultiIndex.from_arrays(
-        ...             [['a', 'b', 'c'], [0, 1, 2]],
-        ...             names=['idx1', 'idx2'],
-        ...         ),
-        ...         pd.MultiIndex.from_arrays(
-        ...             [['b', 'c'], [1, 3]],
-        ...             names=['idx1', 'idx2'],
-        ...         ),
-        ...     ]
-        ... )
-        MultiIndex([('b', 1)],
-                   names=['idx1', 'idx2'])
 
     """
     if not objs:
@@ -621,11 +491,28 @@ def intersect_misc(
     if len(objs) == 1:
         return objs[0]
 
-    if not is_index_alike(objs):
-        raise ValueError(
-            'Levels and dtypes of all objects must match, '
-            'see audformat.utils.is_index_alike().'
-        )
+    # check if all objects are either filewise or segmented,
+    # if this is the case possibly convert filewise to segmented indices
+    filewise = np.array([is_filewise_index(obj) for obj in objs])
+    segmented = np.array([is_segmented_index(obj) for obj in objs])
+    if (filewise | segmented).all():
+        if not filewise.all():
+            filewise_index = intersect(objs[filewise]
+
+    objs_filewise = [is_filewise_index(obj) for obj in objs]
+    objs_segmented = [is_segmented_index(obj) for obj in objs]
+
+    if len(objs_filewise + objs_segmented) != len(objs):
+        if not is_index_alike(objs):
+            raise ValueError(
+                'Levels and dtypes of all objects must match, '
+                'see audformat.utils.is_index_alike().'
+            )
+    elif len(objs_filewise) > 0 and len(objs_segmented) > 0:
+        # intersect segmented and filewise
+        index_filewise = intersect(objs_filewise)
+        index_segmented = intersect(objs_segmented)
+        index = index_segmented[index_segmented.isin(index_filewise, 0)]
 
     # if we have a mixture
     # of pd.Index and pd.MultiIndex
@@ -652,6 +539,11 @@ def intersect_misc(
             if dtype == 'string'
         }
         index = set_index_dtypes(index, dtypes)
+
+    # We use len() here as index.empty takes a very long time
+    if len(index) == 0 and is_segmented_index(index):
+        # asserts that start and end are of type 'timedelta64[ns]'
+        index = segmented_index()
 
     return index
 
