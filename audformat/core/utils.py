@@ -1317,25 +1317,59 @@ def union(
 ) -> pd.Index:
     r"""Create union of index objects.
 
-    Index objects must be conform to
-    :ref:`table specifications <data-tables:Tables>`.
-    Otherwise use
-    :func:`audformat.utils.union_misc`.
-
-    If at least one object is segmented, the output is a segmented index.
+    If all index objects are conform to
+    :ref:`table specifications <data-tables:Tables>`
+    and at least one object is segmented,
+    the output is a segmented index.
+    Otherwise,
+    requires that levels and dtypes
+    of all objects match,
+    see :func:`audformat.utils.is_index_alike`.
 
     Args:
-        objs: index objects conform to
-            :ref:`table specifications <data-tables:Tables>`
+        objs: index objects
 
     Returns:
         union of index objects
 
     Raises:
-        ValueError: if one or more objects are not conform to
-            :ref:`table specifications <data-tables:Tables>`
+        ValueError: if level and dtypes of objects do not match
 
     Example:
+        >>> union(
+        ...     [
+        ...         pd.Index([0, 1], name='idx'),
+        ...         pd.Index([1, 2], dtype='Int64', name='idx'),
+        ...     ]
+        ... )
+        Index([0, 1, 2], dtype='Int64', name='idx')
+        >>> union(
+        ...     [
+        ...         pd.Index([0, 1], name='idx'),
+        ...         pd.MultiIndex.from_arrays([[1, 2]], names=['idx']),
+        ...     ]
+        ... )
+        MultiIndex([(0,),
+                    (1,),
+                    (2,)],
+                   names=['idx'])
+        >>> union(
+        ...     [
+        ...         pd.MultiIndex.from_arrays(
+        ...             [['a', 'b', 'c'], [0, 1, 2]],
+        ...             names=['idx1', 'idx2'],
+        ...         ),
+        ...         pd.MultiIndex.from_arrays(
+        ...             [['b', 'c'], [1, 3]],
+        ...             names=['idx1', 'idx2'],
+        ...         ),
+        ...    ]
+        ... )
+        MultiIndex([('a', 0),
+                    ('b', 1),
+                    ('c', 2),
+                    ('c', 3)],
+                   names=['idx1', 'idx2'])
         >>> union(
         ...     [
         ...         filewise_index(['f1', 'f2', 'f3']),
@@ -1367,92 +1401,24 @@ def union(
 
     """
     if not objs:
-        return filewise_index()
-
-    types = [index_type(obj) for obj in objs]
-
-    if len(set(types)) != 1:
-        objs = [to_segmented_index(obj) for obj in objs]
-
-    return union_misc(objs)
-
-
-def union_misc(
-    objs: typing.Sequence[pd.Index],
-) -> pd.Index:
-    r"""Create union of index objects.
-
-    Requires that levels and dtypes
-    of all objects match,
-    see :func:`audformat.utils.is_index_alike`.
-    Unlike :func:`audformat.utils.union`
-    index objects must not be conform to
-    :ref:`table specifications <data-tables:Tables>`.
-
-    When combining
-    :class:`pd.Index`
-    objects with single-level
-    :class:`pd.MultiIndex`
-    objects the results will be a
-    :class:`pd.MultiIndex`.
-
-    Args:
-        objs: index objects
-
-    Returns:
-        union of index objects
-
-    Raises:
-        ValueError: if level and dtypes of objects do not match
-
-    Example:
-        >>> union_misc(
-        ...     [
-        ...         pd.Index([0, 1], name='idx'),
-        ...         pd.Index([1, 2], dtype='Int64', name='idx'),
-        ...     ]
-        ... )
-        Index([0, 1, 2], dtype='Int64', name='idx')
-        >>> union_misc(
-        ...     [
-        ...         pd.Index([0, 1], name='idx'),
-        ...         pd.MultiIndex.from_arrays([[1, 2]], names=['idx']),
-        ...     ]
-        ... )
-        MultiIndex([(0,),
-                    (1,),
-                    (2,)],
-                   names=['idx'])
-        >>> union_misc(
-        ...     [
-        ...         pd.MultiIndex.from_arrays(
-        ...             [['a', 'b', 'c'], [0, 1, 2]],
-        ...             names=['idx1', 'idx2'],
-        ...         ),
-        ...         pd.MultiIndex.from_arrays(
-        ...             [['b', 'c'], [1, 3]],
-        ...             names=['idx1', 'idx2'],
-        ...         ),
-        ...    ]
-        ... )
-        MultiIndex([('a', 0),
-                    ('b', 1),
-                    ('c', 2),
-                    ('c', 3)],
-                   names=['idx1', 'idx2'])
-
-    """
-    if not objs:
         return pd.Index([])
 
     if len(objs) == 1:
         return objs[0]
 
-    if not is_index_alike(objs):
-        raise ValueError(
-            'Levels and dtypes of all objects must match, '
-            'see audformat.utils.is_index_alike().'
-        )
+    # check if all objects are either filewise or segmented,
+    # if this is the case possibly convert filewise to segmented indices
+    filewise = np.array([is_filewise_index(obj) for obj in objs])
+    segmented = np.array([is_segmented_index(obj) for obj in objs])
+    if (filewise | segmented).all():
+        if not filewise.all():
+            objs = [to_segmented_index(obj) for obj in objs]
+    else:
+        if not is_index_alike(objs):
+            raise ValueError(
+                'Levels and dtypes of all objects must match, '
+                'see audformat.utils.is_index_alike().'
+            )
 
     # if we have a mixture
     # of pd.Index and pd.MultiIndex

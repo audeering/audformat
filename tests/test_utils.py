@@ -1939,10 +1939,12 @@ def test_to_filewise(output_folder, table_id, expected_file_names):
 @pytest.mark.parametrize(
     'objs, expected',
     [
+        # empty
         (
             [],
-            audformat.filewise_index(),
+            pd.Index([]),
         ),
+        # conform to audformat
         (
             [
                 audformat.filewise_index(),
@@ -2099,22 +2101,7 @@ def test_to_filewise(output_folder, table_id, expected_file_names):
                 [pd.NaT, pd.NaT, 1, 1, pd.NaT],
             ),
         ),
-    ]
-)
-def test_union(objs, expected):
-    pd.testing.assert_index_equal(
-        audformat.utils.union(objs),
-        expected,
-    )
-
-
-@pytest.mark.parametrize(
-    'objs, expected',
-    [
-        (
-            [],
-            pd.Index([]),
-        ),
+        # other
         (
             [
                 pd.Index([]),
@@ -2179,11 +2166,11 @@ def test_union(objs, expected):
             ],
             None,
             marks=pytest.mark.xfail(raises=ValueError),
-        )
+        ),
     ]
 )
-def test_union_misc(objs, expected):
+def test_union(objs, expected):
     pd.testing.assert_index_equal(
-        audformat.utils.union_misc(objs),
+        audformat.utils.union(objs),
         expected,
     )
