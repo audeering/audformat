@@ -227,7 +227,7 @@ class Base(HeaderBase):
         if not inplace:
             return self.copy().drop_index(index, inplace=True)
 
-        _assert_table_index(self, index, 'drop from')
+        _assert_table_index(self, index, 'drop rows from')
 
         new_index = self.df.index.difference(index)
         self._df = self.df.reindex(new_index)
@@ -467,7 +467,7 @@ class Base(HeaderBase):
         if not inplace:
             return self.copy().pick_index(index, inplace=True)
 
-        _assert_table_index(self, index, 'pick from')
+        _assert_table_index(self, index, 'pick rows from')
 
         new_index = self.df.index.intersection(index)
         self._df = self.df.reindex(new_index)

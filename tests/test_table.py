@@ -529,12 +529,12 @@ def test_drop_and_pick_index():
     index = pytest.DB['segments'].index[:5]
     with pytest.raises(
         ValueError,
-        match='Cannot drop'
+        match='Cannot drop rows'
     ):
         pytest.DB['files'].drop_index(index).get()
     with pytest.raises(
         ValueError,
-        match='Cannot pick',
+        match='Cannot pick rows',
     ):
         pytest.DB['files'].pick_index(index).get()
 
