@@ -41,7 +41,7 @@ def concat(
     of all objects match,
     see :func:`audformat.utils.is_index_alike`.
 
-    The new object contains index and columns of both objects.
+    The new object contains index and columns of all objects.
     Missing values will be set to ``NaN``.
 
     Columns with the same identifier are combined to a single column.
