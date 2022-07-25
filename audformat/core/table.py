@@ -959,7 +959,7 @@ class Table(Base):
             meta=meta,
         )
 
-    def __add__(self, other: 'Table') -> 'Table':
+    def __add__(self, other: Table) -> Table:
         r"""Create new table by combining two tables.
 
         The new table contains index and columns of both tables.
@@ -1235,7 +1235,7 @@ class Table(Base):
 
     def update(
             self,
-            others: typing.Union['Table', typing.Sequence['Table']],
+            others: typing.Union[Table, typing.Sequence[Table]],
             *,
             overwrite: bool = False,
     ) -> Table:
