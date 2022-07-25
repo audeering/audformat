@@ -20,7 +20,12 @@ from audformat import define
         (
             [],
             False,
-            pd.Series([], audformat.filewise_index(), dtype='object'),
+            pd.Series([], pd.Index([]), dtype='object'),
+        ),
+        (
+            [pd.Series([], pd.Index([]), dtype='object')],
+            False,
+            pd.Series([], pd.Index([]), dtype='object')
         ),
         (
             [pd.Series([], audformat.filewise_index(), dtype='object')],
@@ -48,11 +53,11 @@ from audformat import define
         ),
         (
             [
-                pd.Series([1., 2.], audformat.filewise_index(['f1', 'f2'])),
-                pd.Series([1., 2.], audformat.filewise_index(['f1', 'f2'])),
+                pd.Series([1., 2.], pd.Index(['f1', 'f2'])),
+                pd.Series([1., 2.], pd.Index(['f1', 'f2'])),
             ],
             False,
-            pd.Series([1., 2.], audformat.filewise_index(['f1', 'f2'])),
+            pd.Series([1., 2.], pd.Index(['f1', 'f2'])),
         ),
         (
             [
@@ -77,6 +82,34 @@ from audformat import define
             ],
             False,
             pd.Series([1., 2.], audformat.segmented_index(['f1', 'f2'])),
+        ),
+        (
+            [
+                pd.Series([1.], pd.Index(['f1'])),
+                pd.Series(
+                    [2.],
+                    pd.MultiIndex.from_arrays([['f2']]),
+                ),
+            ],
+            False,
+            pd.Series(
+                [1., 2.],
+                pd.MultiIndex.from_arrays([['f1', 'f2']]),
+            ),
+        ),
+        (
+            [
+                pd.Series([1.], pd.Index(['f1'], name='idx')),
+                pd.Series(
+                    [2.],
+                    pd.MultiIndex.from_arrays([['f2']], names=['idx']),
+                ),
+            ],
+            False,
+            pd.Series(
+                [1., 2.],
+                pd.MultiIndex.from_arrays([['f1', 'f2']], names=['idx']),
+            ),
         ),
         # combine values in same location
         (
@@ -458,11 +491,60 @@ from audformat import define
             None,
             marks=pytest.mark.xfail(raises=ValueError),
         ),
+        pytest.param(
+            [
+                pd.Series(
+                    [1.],
+                    pd.Index(['f1'], name='idx', dtype='string'),
+                ),
+                pd.Series(  # default dtype is object
+                    [2.],
+                    pd.MultiIndex.from_arrays([['f1']], names=['idx']),
+                ),
+            ],
+            False,
+            None,
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
         # error: values do not match
         pytest.param(
             [
                 pd.Series([1.], audformat.filewise_index('f1')),
                 pd.Series([2.], audformat.filewise_index('f1')),
+            ],
+            False,
+            None,
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
+        pytest.param(
+            [
+                pd.Series([1.], pd.Index(['f1'], name='idx')),
+                pd.Series(
+                    [2.],
+                    pd.MultiIndex.from_arrays([['f1']], names=['idx']),
+                ),
+            ],
+            False,
+            None,
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
+        # error: index names do not match
+        pytest.param(
+            [
+                pd.Series([], index=pd.Index([], name='idx1')),
+                pd.Series([], index=pd.Index([], name='idx2')),
+            ],
+            False,
+            None,
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
+        pytest.param(
+            [
+                pd.Series([1.], pd.Index(['f1'], name='idx1')),
+                pd.Series(
+                    [2.],
+                    pd.MultiIndex.from_arrays([['f2']], names=['idx2']),
+                ),
             ],
             False,
             None,
