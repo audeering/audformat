@@ -754,7 +754,7 @@ def test_index_has_overlap(obj, expected):
     [
         (
             [],
-            audformat.filewise_index(),
+            pd.Index([]),
         ),
         (
             [
@@ -880,6 +880,71 @@ def test_index_has_overlap(obj, expected):
             ],
             audformat.segmented_index('f2', 0, 1),
         ),
+        (
+            [
+                pd.Index([]),
+            ],
+            pd.Index([]),
+        ),
+        (
+            [
+                pd.Index([]),
+                pd.Index([]),
+            ],
+            pd.Index([]),
+        ),
+        (
+            [
+                pd.Index([0, 1], name='idx'),
+                pd.Index([1, 2], name='idx'),
+            ],
+            pd.Index([1], name='idx'),
+        ),
+        (
+            [
+                pd.Index([0, 1], name='idx'),
+                pd.Index([1, 2], dtype='Int64', name='idx'),
+            ],
+            pd.Index([1], dtype='Int64', name='idx'),
+        ),
+        (
+            [
+                pd.Index([0, 1], name='idx'),
+                pd.MultiIndex.from_arrays([[1, 2]], names=['idx']),
+            ],
+            pd.MultiIndex.from_arrays([[1]], names=['idx']),
+        ),
+        (
+            [
+                pd.MultiIndex.from_arrays([[0, 1]], names=['idx']),
+                pd.MultiIndex.from_arrays([[1, 2]], names=['idx']),
+            ],
+            pd.MultiIndex.from_arrays([[1]], names=['idx']),
+        ),
+        (
+            [
+                pd.MultiIndex.from_arrays(
+                    [['a', 'b', 'c'], [0, 1, 2]],
+                    names=['idx1', 'idx2'],
+                ),
+                pd.MultiIndex.from_arrays(
+                    [['b', 'c'], [1, 3]],
+                    names=['idx1', 'idx2'],
+                ),
+            ],
+            pd.MultiIndex.from_arrays(
+                [['b'], [1]],
+                names=['idx1', 'idx2'],
+            ),
+        ),
+        pytest.param(
+            [
+                pd.Index([], name='idx1'),
+                pd.Index([], name='idx2'),
+            ],
+            None,
+            marks=pytest.mark.xfail(raises=ValueError),
+        )
     ]
 )
 def test_intersect(objs, expected):
