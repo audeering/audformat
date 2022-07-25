@@ -527,9 +527,15 @@ def test_drop_and_pick_index():
         pd.testing.assert_frame_equal(df_pick, df_drop)
 
     index = pytest.DB['segments'].index[:5]
-    with pytest.raises(ValueError):
+    with pytest.raises(
+        ValueError,
+        match='Cannot drop'
+    ):
         pytest.DB['files'].drop_index(index).get()
-    with pytest.raises(ValueError):
+    with pytest.raises(
+        ValueError,
+        match='Cannot pick',
+    ):
         pytest.DB['files'].pick_index(index).get()
 
 
@@ -653,7 +659,10 @@ def test_extend_index():
     db['table'] = audformat.Table()
     db['table'].extend_index(audformat.filewise_index())
     assert db['table'].get().empty
-    with pytest.raises(ValueError):
+    with pytest.raises(
+        ValueError,
+        match='Cannot extend',
+    ):
         db['table'].extend_index(
             audformat.segmented_index(
                 files=['1.wav', '2.wav'],

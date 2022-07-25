@@ -210,7 +210,7 @@ class Base(HeaderBase):
             index: pd.Index,
             *,
             inplace: bool = False,
-    ) -> 'Table':
+    ) -> 'Base':
         r"""Drop rows from index.
 
         Args:
@@ -221,29 +221,13 @@ class Base(HeaderBase):
             new object if ``inplace=False``, otherwise ``self``
 
         Raises:
-            ValueError: if level and dtype of index does not match table
+            ValueError: if index is not conform to table index
 
         """
         if not inplace:
             return self.copy().drop_index(index, inplace=True)
 
-        if hasattr(self, 'type'):
-            input_type = index_type(index)
-            if self.type != input_type:
-                raise ValueError(
-                    f'Cannot extend a '
-                    f'{self.type} '
-                    f'table with a '
-                    f'{input_type} '
-                    f'index.'
-                )
-        else:
-            if not utils.is_index_alike([self.index, index]):
-                # TODO: add utils.assert_index_alike()
-                raise ValueError(
-                    'Levels and dtypes of all objects must match, '
-                    'see audformat.utils.is_index_alike().'
-                )
+        _assert_table_index(self, index, 'drop from')
 
         new_index = self.df.index.difference(index)
         self._df = self.df.reindex(new_index)
@@ -273,7 +257,7 @@ class Base(HeaderBase):
             new object if ``inplace=False``, otherwise ``self``
 
         Raises:
-            ValueError: if level and dtype of index does not match table
+            ValueError: if index is not conform to table index
 
         """
         if not inplace:
@@ -281,23 +265,7 @@ class Base(HeaderBase):
                 index, fill_values=fill_values, inplace=True,
             )
 
-        if hasattr(self, 'type'):
-            input_type = index_type(index)
-            if self.type != input_type:
-                raise ValueError(
-                    f'Cannot extend a '
-                    f'{self.type} '
-                    f'table with a '
-                    f'{input_type} '
-                    f'index.'
-                )
-        else:
-            if not utils.is_index_alike([self.index, index]):
-                # TODO: add utils.assert_index_alike()
-                raise ValueError(
-                    'Levels and dtypes of all objects must match, '
-                    'see audformat.utils.is_index_alike().'
-                )
+        _assert_table_index(self, index, 'extend')
 
         new_index = self.df.index.union(index)
         self._df = self.df.reindex(new_index)
@@ -493,29 +461,13 @@ class Base(HeaderBase):
             new object if ``inplace=False``, otherwise ``self``
 
         Raises:
-            ValueError: if level and dtype of index does not match table
+            ValueError: if index is not conform to table index
 
         """
         if not inplace:
             return self.copy().pick_index(index, inplace=True)
 
-        if hasattr(self, 'type'):
-            input_type = index_type(index)
-            if self.type != input_type:
-                raise ValueError(
-                    'It is not possible to pick a '
-                    f'{input_type} '
-                    'index from a '
-                    f'{self.type} '
-                    f'index'
-                )
-        else:
-            if not utils.is_index_alike([self.index, index]):
-                # TODO: add utils.assert_index_alike()
-                raise ValueError(
-                    'Levels and dtypes of all objects must match, '
-                    'see audformat.utils.is_index_alike().'
-                )
+        _assert_table_index(self, index, 'pick from')
 
         new_index = self.df.index.intersection(index)
         self._df = self.df.reindex(new_index)
@@ -1502,3 +1454,43 @@ class Table(Base):
                 result = self.df.loc[files]
 
         return result, result_is_copy
+
+
+def _assert_table_index(
+        table: Base,
+        index: pd.Index,
+        operation: str,
+):
+    r"""Raise error if index does not match table."""
+
+    if isinstance(table, Table):
+        input_type = index_type(index)
+        if table.type != input_type:
+            raise ValueError(
+                f'Cannot '
+                f'{operation} '
+                f'a '
+                f'{table.type} '
+                f'table with a '
+                f'{input_type} '
+                f'index.'
+            )
+    elif not utils.is_index_alike([table.index, index]):
+
+        want = index.dtypes if isinstance(index, pd.MultiIndex)\
+            else pd.Series(index.dtype, pd.Index([index.name]))
+        want = '\n\t'.join(want.to_string().split('\n'))
+
+        got = table.index.dtypes if isinstance(table.index, pd.MultiIndex)\
+            else pd.Series(table.index.dtype, pd.Index([table.index.name]))
+        got = '\n\t'.join(got.to_string().split('\n'))
+
+        raise ValueError(
+            f'Cannot '
+            f'{operation} '
+            f'table if levels and dtypes of index do not match.\n'
+            f'Expected index:\n'
+            f'\t{want}'
+            f'\nbut yours is:\n'
+            f'\t{got}'
+        )

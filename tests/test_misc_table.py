@@ -615,13 +615,13 @@ def test_drop_and_pick_index():
 
     index = pytest.DB['segments'].index[:5]
     with pytest.raises(
-            ValueError,
-            match='Levels and dtypes of all objects must match',
+        ValueError,
+        match='Cannot drop',
     ):
         pytest.DB[table_id].drop_index(index).get()
     with pytest.raises(
-            ValueError,
-            match='Levels and dtypes of all objects must match',
+        ValueError,
+        match='Cannot pick',
     ):
         pytest.DB[table_id].pick_index(index).get()
 
@@ -637,8 +637,8 @@ def test_extend_index():
     db['misc'].extend_index(pd.Index([], name='idx'))
     assert db['misc'].get().empty
     with pytest.raises(
-            ValueError,
-            match='Levels and dtypes of all objects must match',
+        ValueError,
+        match='Cannot extend',
     ):
         db['misc'].extend_index(pd.Index([], name='other'))
 
