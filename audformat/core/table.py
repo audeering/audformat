@@ -1,3 +1,5 @@
+from __future__ import annotations  # allow typing without string
+
 import copy
 import os
 import pickle
@@ -70,7 +72,7 @@ class Base(HeaderBase):
 
     def __eq__(
             self,
-            other: 'Base',
+            other: Base,
     ) -> bool:
         if self.dump() != other.dump():
             return False
@@ -152,7 +154,7 @@ class Base(HeaderBase):
         if self.split_id is not None and self.db is not None:
             return self.db.splits[self.split_id]
 
-    def copy(self) -> 'Base':
+    def copy(self) -> typing.Self:
         r"""Copy table.
 
         Return:
@@ -180,7 +182,7 @@ class Base(HeaderBase):
             column_ids: typing.Union[str, typing.Sequence[str]],
             *,
             inplace: bool = False,
-    ) -> 'Table':
+    ) -> typing.Self:
         r"""Drop columns by ID.
 
         Args:
@@ -210,7 +212,7 @@ class Base(HeaderBase):
             index: pd.Index,
             *,
             inplace: bool = False,
-    ) -> 'Base':
+    ) -> typing.Self:
         r"""Drop rows from index.
 
         Args:
@@ -243,8 +245,8 @@ class Base(HeaderBase):
                 typing.Dict[str, typing.Any]
             ] = None,
             inplace: bool = False,
-    ) -> 'Base':
-        r"""Extend table by new rows.
+    ) -> typing.Self:
+        r"""Extend table with new rows.
 
         Args:
             index: index object
@@ -424,7 +426,7 @@ class Base(HeaderBase):
             column_ids: typing.Union[str, typing.Sequence[str]],
             *,
             inplace: bool = False,
-    ) -> 'Base':
+    ) -> typing.Self:
         r"""Pick columns by ID.
 
         All other columns will be dropped.
@@ -450,7 +452,7 @@ class Base(HeaderBase):
             index: pd.Index,
             *,
             inplace: bool = False,
-    ) -> 'Base':
+    ) -> typing.Self:
         r"""Pick rows from index.
 
         Args:
@@ -824,15 +826,6 @@ class MiscTable(Base):
             meta=meta,
         )
 
-    def copy(self) -> 'MiscTable':
-        r"""Copy table.
-
-        Return:
-            new table object
-
-        """
-        return super().copy()
-
     def _get_by_index(self, index: pd.Index) -> (pd.DataFrame, bool):
         return self.df.loc[index], False
 
@@ -1073,15 +1066,6 @@ class Table(Base):
                 define.IndexField.START
             )
 
-    def copy(self) -> 'Table':
-        r"""Copy table.
-
-        Return:
-            new table object
-
-        """
-        return super().copy()
-
     def drop_files(
             self,
             files: typing.Union[
@@ -1091,7 +1075,7 @@ class Table(Base):
             ],
             *,
             inplace: bool = False,
-    ) -> 'Table':
+    ) -> Table:
         r"""Drop files.
 
         Remove rows with a reference to listed or matching files.
@@ -1221,7 +1205,7 @@ class Table(Base):
             ],
             *,
             inplace: bool = False,
-    ) -> 'Table':
+    ) -> Table:
         r"""Pick files.
 
         Keep only rows with a reference to listed files or matching files.
@@ -1254,7 +1238,7 @@ class Table(Base):
             others: typing.Union['Table', typing.Sequence['Table']],
             *,
             overwrite: bool = False,
-    ) -> 'Table':
+    ) -> Table:
         r"""Update table with other table(s).
 
         Table which calls ``update()`` must be assigned to a database.
