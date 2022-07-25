@@ -459,6 +459,36 @@ def intersect(
     if not objs:
         return filewise_index()
 
+    def intersect_objs(objs):
+
+        # if we have a mixture
+        # of pd.Index and pd.MultiIndex
+        # convert all to pd.MultiIndex
+        if (
+            objs[0].nlevels == 1
+            and len(set(isinstance(obj, pd.MultiIndex) for obj in objs)) == 2
+        ):
+            objs = [
+                obj if isinstance(obj, pd.MultiIndex)
+                else pd.MultiIndex.from_arrays([obj.to_list()], names=[obj.name])
+                for obj in objs
+            ]
+
+        index = objs[0]
+        for obj in objs[1:]:
+            index = index.intersection(obj)
+
+        # index.intersection() does not preserve string dtype
+        # for MultiIndex
+        if isinstance(index, pd.MultiIndex):
+            dtypes = {
+                name: dtype for name, dtype in zip(objs[0].names, objs[0].dtypes)
+                if dtype == 'string'
+            }
+            index = set_index_dtypes(index, dtypes)
+
+        return index
+
     types = [index_type(obj) for obj in objs]
 
     if len(set(types)) == 1:
