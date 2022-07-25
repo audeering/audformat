@@ -205,6 +205,111 @@ class Base(HeaderBase):
 
         return self
 
+    def drop_index(
+            self,
+            index: pd.Index,
+            *,
+            inplace: bool = False,
+    ) -> 'Table':
+        r"""Drop rows from index.
+
+        Args:
+            index: index object
+            inplace: drop index in place
+
+        Returns:
+            new object if ``inplace=False``, otherwise ``self``
+
+        Raises:
+            ValueError: if level and dtype of index does not match table
+
+        """
+        if not inplace:
+            return self.copy().drop_index(index, inplace=True)
+
+        if hasattr(self, 'type'):
+            input_type = index_type(index)
+            if self.type != input_type:
+                raise ValueError(
+                    f'Cannot extend a '
+                    f'{self.type} '
+                    f'table with a '
+                    f'{input_type} '
+                    f'index.'
+                )
+        else:
+            if not utils.is_index_alike([self.index, index]):
+                # TODO: add utils.assert_index_alike()
+                raise ValueError(
+                    'Levels and dtypes of all objects must match, '
+                    'see audformat.utils.is_index_alike().'
+                )
+
+        new_index = self.df.index.difference(index)
+        self._df = self.df.reindex(new_index)
+
+        return self
+
+    def extend_index(
+            self,
+            index: pd.Index,
+            *,
+            fill_values: typing.Union[
+                typing.Any,
+                typing.Dict[str, typing.Any]
+            ] = None,
+            inplace: bool = False,
+    ) -> 'Base':
+        r"""Extend table by new rows.
+
+        Args:
+            index: index object
+            fill_values: replace NaN with these values (either a scalar
+                applied to all columns or a dictionary with column name as
+                key)
+            inplace: extend index in place
+
+        Returns:
+            new object if ``inplace=False``, otherwise ``self``
+
+        Raises:
+            ValueError: if level and dtype of index does not match table
+
+        """
+        if not inplace:
+            return self.copy().extend_index(
+                index, fill_values=fill_values, inplace=True,
+            )
+
+        if hasattr(self, 'type'):
+            input_type = index_type(index)
+            if self.type != input_type:
+                raise ValueError(
+                    f'Cannot extend a '
+                    f'{self.type} '
+                    f'table with a '
+                    f'{input_type} '
+                    f'index.'
+                )
+        else:
+            if not utils.is_index_alike([self.index, index]):
+                # TODO: add utils.assert_index_alike()
+                raise ValueError(
+                    'Levels and dtypes of all objects must match, '
+                    'see audformat.utils.is_index_alike().'
+                )
+
+        new_index = self.df.index.union(index)
+        self._df = self.df.reindex(new_index)
+        if fill_values is not None:
+            if isinstance(fill_values, dict):
+                for key, value in fill_values.items():
+                    self.df[key].fillna(value, inplace=True)
+            else:
+                self.df.fillna(fill_values, inplace=True)
+
+        return self
+
     def get(
             self,
             index: pd.Index = None,
@@ -281,66 +386,6 @@ class Base(HeaderBase):
                     result.drop(columns=column, inplace=True)
 
         return result.copy() if (copy and not result_is_copy) else result
-
-    def extend_index(
-            self,
-            index: pd.Index,
-            *,
-            fill_values: typing.Union[
-                typing.Any, typing.Dict[str, typing.Any]
-            ] = None,
-            inplace: bool = False,
-    ) -> 'Base':
-        r"""Extend table by new rows.
-
-        Args:
-            index: index conform to
-                :ref:`table specifications <data-tables:Tables>`
-            fill_values: replace NaN with these values (either a scalar
-                applied to all columns or a dictionary with column name as
-                key)
-            inplace: extend index in place
-
-        Returns:
-            new object if ``inplace=False``, otherwise ``self``
-
-        Raises:
-            ValueError: if index type is not matched
-
-        """
-        if not inplace:
-            return self.copy().extend_index(
-                index, fill_values=fill_values, inplace=True,
-            )
-
-        if hasattr(self, 'type'):
-            input_type = index_type(index)
-            if self.type != input_type:
-                raise ValueError(
-                    f'Cannot extend a '
-                    f'{self.type} '
-                    f'table with a '
-                    f'{input_type} '
-                    f'index.'
-                )
-        else:
-            if not utils.is_index_alike([self.index, index]):
-                # TODO: add utils.assert_index_alike()
-                raise ValueError(
-                    'Levels and dtypes of all objects must match, '
-                    'see audformat.utils.is_index_alike().'
-                )
-
-        new_index = self.df.index.union(index)
-        self._df = self.df.reindex(new_index)
-        if fill_values is not None:
-            if isinstance(fill_values, dict):
-                for key, value in fill_values.items():
-                    self.df[key].fillna(value, inplace=True)
-            else:
-                self.df.fillna(fill_values, inplace=True)
-
-        return self
 
     def load(
             self,
@@ -441,29 +486,37 @@ class Base(HeaderBase):
         r"""Pick rows from index.
 
         Args:
-            index: index conform to
-                :ref:`table specifications <data-tables:Tables>`
+            index: index object
             inplace: pick index in place
 
         Returns:
             new object if ``inplace=False``, otherwise ``self``
 
         Raises:
-            ValueError: if table type is not matched
+            ValueError: if level and dtype of index does not match table
 
         """
         if not inplace:
             return self.copy().pick_index(index, inplace=True)
 
-        input_type = index_type(index)
-        if self.type != input_type:
-            raise ValueError(
-                'It is not possible to pick a '
-                f'{input_type} '
-                'index from a '
-                f'{self.type} '
-                f'index'
-            )
+        if hasattr(self, 'type'):
+            input_type = index_type(index)
+            if self.type != input_type:
+                raise ValueError(
+                    'It is not possible to pick a '
+                    f'{input_type} '
+                    'index from a '
+                    f'{self.type} '
+                    f'index'
+                )
+        else:
+            if not utils.is_index_alike([self.index, index]):
+                # TODO: add utils.assert_index_alike()
+                raise ValueError(
+                    'Levels and dtypes of all objects must match, '
+                    'see audformat.utils.is_index_alike().'
+                )
+
         new_index = self.df.index.intersection(index)
         self._df = self.df.reindex(new_index)
 
@@ -1115,43 +1168,6 @@ class Table(Base):
             else:
                 level = None
             self.df.drop(index, inplace=True, level=level)
-
-        return self
-
-    def drop_index(
-            self,
-            index: pd.Index,
-            *,
-            inplace: bool = False,
-    ) -> 'Table':
-        r"""Drop rows from index.
-
-        Args:
-            index: index conform to
-                :ref:`table specifications <data-tables:Tables>`
-            inplace: drop index in place
-
-        Returns:
-            new object if ``inplace=False``, otherwise ``self``
-
-        Raises:
-            ValueError: if table type is not matched
-
-        """
-        if not inplace:
-            return self.copy().drop_index(index, inplace=True)
-
-        input_type = index_type(index)
-        if self.type != input_type:
-            raise ValueError(
-                'It is not possible to drop a '
-                f'{input_type} index '
-                'from a '
-                f'{self.type} '
-                'index'
-            )
-        new_index = self.df.index.difference(index)
-        self._df = self.df.reindex(new_index)
 
         return self
 
