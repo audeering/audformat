@@ -188,7 +188,7 @@ class Base(HeaderBase):
             inplace: drop columns in place
 
         Returns:
-            new ``Table`` if ``inplace=False``, otherwise ``self``
+            new object if ``inplace=False``, otherwise ``self``
 
         """
         if not inplace:
@@ -282,6 +282,57 @@ class Base(HeaderBase):
 
         return result.copy() if (copy and not result_is_copy) else result
 
+    def extend_index(
+            self,
+            index: pd.Index,
+            *,
+            fill_values: typing.Union[
+                typing.Any, typing.Dict[str, typing.Any]
+            ] = None,
+            inplace: bool = False,
+    ) -> 'Base':
+        r"""Extend table by new rows.
+
+        Args:
+            index: index conform to
+                :ref:`table specifications <data-tables:Tables>`
+            fill_values: replace NaN with these values (either a scalar
+                applied to all columns or a dictionary with column name as
+                key)
+            inplace: extend index in place
+
+        Returns:
+            new object if ``inplace=False``, otherwise ``self``
+
+        Raises:
+            ValueError: if index type is not matched
+
+        """
+        if not inplace:
+            return self.copy().extend_index(
+                index, fill_values=fill_values, inplace=True,
+            )
+
+        input_type = index_type(index)
+        if self.type != input_type:
+            raise ValueError(
+                f'Cannot extend a '
+                f'{self.type} '
+                f'table with a '
+                f'{input_type} '
+                f'index.'
+            )
+        new_index = self.df.index.union(index)
+        self._df = self.df.reindex(new_index)
+        if fill_values is not None:
+            if isinstance(fill_values, dict):
+                for key, value in fill_values.items():
+                    self.df[key].fillna(value, inplace=True)
+            else:
+                self.df.fillna(fill_values, inplace=True)
+
+        return self
+
     def load(
             self,
             path: str,
@@ -351,7 +402,7 @@ class Base(HeaderBase):
             column_ids: typing.Union[str, typing.Sequence[str]],
             *,
             inplace: bool = False,
-    ) -> 'Table':
+    ) -> 'Base':
         r"""Pick columns by ID.
 
         All other columns will be dropped.
@@ -361,7 +412,7 @@ class Base(HeaderBase):
             inplace: pick columns in place
 
         Returns:
-            new ``Table`` if ``inplace=False``, otherwise ``self``
+            new object if ``inplace=False``, otherwise ``self``
 
         """
         if isinstance(column_ids, str):
@@ -371,6 +422,43 @@ class Base(HeaderBase):
             if column_id not in column_ids:
                 drop_ids.add(column_id)
         return self.drop_columns(list(drop_ids), inplace=inplace)
+
+    def pick_index(
+            self,
+            index: pd.Index,
+            *,
+            inplace: bool = False,
+    ) -> 'Base':
+        r"""Pick rows from index.
+
+        Args:
+            index: index conform to
+                :ref:`table specifications <data-tables:Tables>`
+            inplace: pick index in place
+
+        Returns:
+            new object if ``inplace=False``, otherwise ``self``
+
+        Raises:
+            ValueError: if table type is not matched
+
+        """
+        if not inplace:
+            return self.copy().pick_index(index, inplace=True)
+
+        input_type = index_type(index)
+        if self.type != input_type:
+            raise ValueError(
+                'It is not possible to pick a '
+                f'{input_type} '
+                'index from a '
+                f'{self.type} '
+                f'index'
+            )
+        new_index = self.df.index.intersection(index)
+        self._df = self.df.reindex(new_index)
+
+        return self
 
     def save(
             self,
@@ -999,7 +1087,7 @@ class Table(Base):
             inplace: drop files in place
 
         Returns:
-            new ``Table`` if ``inplace=False``, otherwise ``self``
+            new object if ``inplace=False``, otherwise ``self``
 
         """
         if not inplace:
@@ -1035,7 +1123,7 @@ class Table(Base):
             inplace: drop index in place
 
         Returns:
-            new ``Table`` if ``inplace=False``, otherwise ``self``
+            new object if ``inplace=False``, otherwise ``self``
 
         Raises:
             ValueError: if table type is not matched
@@ -1055,57 +1143,6 @@ class Table(Base):
             )
         new_index = self.df.index.difference(index)
         self._df = self.df.reindex(new_index)
-
-        return self
-
-    def extend_index(
-            self,
-            index: pd.Index,
-            *,
-            fill_values: typing.Union[
-                typing.Any, typing.Dict[str, typing.Any]
-            ] = None,
-            inplace: bool = False,
-    ) -> 'Table':
-        r"""Extend table by new rows.
-
-        Args:
-            index: index conform to
-                :ref:`table specifications <data-tables:Tables>`
-            fill_values: replace NaN with these values (either a scalar
-                applied to all columns or a dictionary with column name as
-                key)
-            inplace: extend index in place
-
-        Returns:
-            new ``Table`` if ``inplace=False``, otherwise ``self``
-
-        Raises:
-            ValueError: if index type is not matched
-
-        """
-        if not inplace:
-            return self.copy().extend_index(
-                index, fill_values=fill_values, inplace=True,
-            )
-
-        input_type = index_type(index)
-        if self.type != input_type:
-            raise ValueError(
-                f'Cannot extend a '
-                f'{self.type} '
-                f'table with a '
-                f'{input_type} '
-                f'index.'
-            )
-        new_index = self.df.index.union(index)
-        self._df = self.df.reindex(new_index)
-        if fill_values is not None:
-            if isinstance(fill_values, dict):
-                for key, value in fill_values.items():
-                    self.df[key].fillna(value, inplace=True)
-            else:
-                self.df.fillna(fill_values, inplace=True)
 
         return self
 
@@ -1198,43 +1235,6 @@ class Table(Base):
 
         return result
 
-    def pick_index(
-            self,
-            index: pd.Index,
-            *,
-            inplace: bool = False,
-    ) -> 'Table':
-        r"""Pick rows from index.
-
-        Args:
-            index: index conform to
-                :ref:`table specifications <data-tables:Tables>`
-            inplace: pick index in place
-
-        Returns:
-            new ``Table`` if ``inplace=False``, otherwise ``self``
-
-        Raises:
-            ValueError: if table type is not matched
-
-        """
-        if not inplace:
-            return self.copy().pick_index(index, inplace=True)
-
-        input_type = index_type(index)
-        if self.type != input_type:
-            raise ValueError(
-                'It is not possible to pick a '
-                f'{input_type} '
-                'index from a '
-                f'{self.type} '
-                f'index'
-            )
-        new_index = self.df.index.intersection(index)
-        self._df = self.df.reindex(new_index)
-
-        return self
-
     def pick_files(
             self,
             files: typing.Union[
@@ -1254,7 +1254,7 @@ class Table(Base):
             inplace: pick files in place
 
         Returns:
-            new ``Table`` if ``inplace=False``, otherwise ``self``
+            new object if ``inplace=False``, otherwise ``self``
 
         """
         if not inplace:
