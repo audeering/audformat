@@ -618,6 +618,51 @@ def test_get_column(table, column, expected):
     pd.testing.assert_series_equal(table[column].get(), expected)
 
 
+def test_extend_index():
+
+    db = audformat.testing.create_db(minimal=True)
+    db.schemes['scheme'] = audformat.Scheme()
+
+    # empty and invalid
+
+    db['misc'] = audformat.MiscTable(pd.Index([], name='idx'))
+    db['misc'].extend_index(pd.Index([], name='idx'))
+    assert db['misc'].get().empty
+    with pytest.raises(
+            ValueError,
+            match='Levels and dtypes of all objects must match',
+    ):
+        db['misc'].extend_index(pd.Index([], name='other'))
+
+    db.drop_tables('misc')
+
+    # not empty
+
+    db['misc'] = audformat.MiscTable(pd.Index([], name='idx'))
+    db['misc']['columns'] = audformat.Column(scheme_id='scheme')
+    db['misc'].extend_index(
+        pd.Index(['1', '2'], name='idx'),
+        fill_values='a',
+        inplace=True,
+    )
+    np.testing.assert_equal(
+        db['misc']['columns'].get().values,
+        np.array(['a', 'a']),
+    )
+    index = pd.Index(['1', '3'], name='idx')
+    db['misc'].extend_index(
+        index,
+        fill_values='b',
+        inplace=True,
+    )
+    np.testing.assert_equal(
+        db['misc']['columns'].get().values,
+        np.array(['a', 'a', 'b']),
+    )
+
+    db.drop_tables('misc')
+
+
 @pytest.mark.parametrize(
     'index',
     [

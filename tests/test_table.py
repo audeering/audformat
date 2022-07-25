@@ -710,8 +710,7 @@ def test_extend_index():
         db['table']['columns'].get().values,
         np.array(['a', 'a']),
     )
-    index = pd.Index(['1.wav', '3.wav'],
-                     name=audformat.define.IndexField.FILE)
+    index = audformat.filewise_index(['1.wav', '3.wav'])
     db['table'].extend_index(
         index,
         fill_values='b',

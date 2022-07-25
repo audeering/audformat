@@ -313,15 +313,24 @@ class Base(HeaderBase):
                 index, fill_values=fill_values, inplace=True,
             )
 
-        input_type = index_type(index)
-        if self.type != input_type:
-            raise ValueError(
-                f'Cannot extend a '
-                f'{self.type} '
-                f'table with a '
-                f'{input_type} '
-                f'index.'
-            )
+        if hasattr(self, 'type'):
+            input_type = index_type(index)
+            if self.type != input_type:
+                raise ValueError(
+                    f'Cannot extend a '
+                    f'{self.type} '
+                    f'table with a '
+                    f'{input_type} '
+                    f'index.'
+                )
+        else:
+            if not utils.is_index_alike([self.index, index]):
+                # TODO: add utils.assert_index_alike()
+                raise ValueError(
+                    'Levels and dtypes of all objects must match, '
+                    'see audformat.utils.is_index_alike().'
+                )
+
         new_index = self.df.index.union(index)
         self._df = self.df.reindex(new_index)
         if fill_values is not None:
