@@ -454,12 +454,48 @@ def intersect(
         MultiIndex([('f1', '0 days', '0 days 00:00:01'),
                     ('f2', '0 days', '0 days 00:00:01')],
                    names=['file', 'start', 'end'])
+        >>> intersect(
+        ...     [
+        ...         pd.Index([0, 1], name='idx'),
+        ...         pd.Index([1, 2], dtype='Int64', name='idx'),
+        ...     ]
+        ... )
+        Index([1], dtype='Int64', name='idx')
+        >>> intersect(
+        ...     [
+        ...         pd.Index([0, 1], name='idx'),
+        ...         pd.MultiIndex.from_arrays([[1, 2]], names=['idx']),
+        ...     ]
+        ... )
+        MultiIndex([(1,)],
+                   names=['idx'])
+        >>> intersect(
+        ...     [
+        ...         pd.MultiIndex.from_arrays(
+        ...             [['a', 'b', 'c'], [0, 1, 2]],
+        ...             names=['idx1', 'idx2'],
+        ...         ),
+        ...         pd.MultiIndex.from_arrays(
+        ...             [['b', 'c'], [1, 3]],
+        ...             names=['idx1', 'idx2'],
+        ...         ),
+        ...     ]
+        ... )
+        MultiIndex([('b', 1)],
+                   names=['idx1', 'idx2'])
+
 
     """
     if not objs:
-        return filewise_index()
+        return pd.Index([])
 
     def intersect_objs(objs):
+
+        if not is_index_alike(objs):
+            raise ValueError(
+                'Levels and dtypes of all objects must match, '
+                'see audformat.utils.is_index_alike().'
+            )
 
         # if we have a mixture
         # of pd.Index and pd.MultiIndex
@@ -489,32 +525,27 @@ def intersect(
 
         return index
 
-    types = [index_type(obj) for obj in objs]
+    objs_filewise = [is_filewise_index(obj) for obj in objs]
+    objs_other = [obj for obj in objs if obj not in objs_filewise]
 
-    if len(set(types)) == 1:
+    index_filewise = intersect_objs(objs_filewise)
+    index_other = intersect_objs(objs_other)
 
-        index = intersect_misc(objs)
+
+    if (
+            len(objs_filewise) > 0
+            and len(objs_other) > 0
+    ):
+        # intersect segmented + misc and filewise
+        index = index_other[
+            index_other.isin(index_filewise, 0)
+        ]
+
+    elif len(objs_filewise) > 0:
+        index = index_filewise
 
     else:
-
-        # intersect only filewise
-        objs_filewise = [
-            obj for obj, type in zip(objs, types)
-            if type == define.IndexType.FILEWISE
-        ]
-        index_filewise = intersect_misc(objs_filewise)
-
-        # intersect only segmented
-        objs_segmented = [
-            obj for obj, type in zip(objs, types)
-            if type == define.IndexType.SEGMENTED
-        ]
-        index_segmented = intersect_misc(objs_segmented)
-
-        # intersect segmented and filewise
-        index = index_segmented[
-            index_segmented.isin(index_filewise, 0)
-        ]
+        index = index_other
 
     # We use len() here as index.empty takes a very long time
     if len(index) == 0 and is_segmented_index(index):
