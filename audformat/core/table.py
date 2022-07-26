@@ -269,7 +269,7 @@ class Base(HeaderBase):
 
         _assert_table_index(self, index, 'extend')
 
-        new_index = self.df.index.union(index)
+        new_index = utils.union([self.df.index, index])
         self._df = self.df.reindex(new_index)
         if fill_values is not None:
             if isinstance(fill_values, dict):
