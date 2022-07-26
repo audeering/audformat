@@ -607,13 +607,16 @@ def test_dtype_multiindex_single_level(
 def test_drop_and_pick_index():
 
     table_id = 'misc'
-    index = pytest.DB[table_id].index[:5]
+
+    index = pytest.DB[table_id].index[:2]
     df_pick = pytest.DB[table_id].pick_index(index).get()
-    index = pytest.DB[table_id].index[5:]
+    index = pytest.DB[table_id].index[2:]
     df_drop = pytest.DB[table_id].drop_index(index).get()
+
+    assert len(df_pick) == len(df_drop) == 2
     pd.testing.assert_frame_equal(df_pick, df_drop)
 
-    index = pytest.DB['segments'].index[:5]
+    index = pytest.DB['segments'].index[:2]
     with pytest.raises(
         ValueError,
         match='Cannot drop',

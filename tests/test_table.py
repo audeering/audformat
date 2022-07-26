@@ -520,10 +520,13 @@ def test_drop_and_pick_columns(inplace):
 def test_drop_and_pick_index():
 
     for table in ['files', 'segments']:
+
         index = pytest.DB[table].index[:5]
         df_pick = pytest.DB[table].pick_index(index).get()
         index = pytest.DB[table].index[5:]
         df_drop = pytest.DB[table].drop_index(index).get()
+
+        assert len(df_pick) == len(df_drop) == 5
         pd.testing.assert_frame_equal(df_pick, df_drop)
 
     index = pytest.DB['segments'].index[:5]
