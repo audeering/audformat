@@ -94,7 +94,7 @@ from audformat import define
             False,
             pd.Series(
                 [1., 2.],
-                pd.MultiIndex.from_arrays([['f1', 'f2']]),
+                pd.Index(['f1', 'f2']),
             ),
         ),
         (
@@ -108,7 +108,7 @@ from audformat import define
             False,
             pd.Series(
                 [1., 2.],
-                pd.MultiIndex.from_arrays([['f1', 'f2']], names=['idx']),
+                pd.Index(['f1', 'f2'], name='idx'),
             ),
         ),
         # combine values in same location
@@ -994,7 +994,7 @@ def test_index_has_overlap(obj, expected):
                 pd.Index([0, 1], name='idx'),
                 pd.MultiIndex.from_arrays([[1, 2]], names=['idx']),
             ],
-            pd.MultiIndex.from_arrays([[1]], names=['idx']),
+            pd.Index([1], dtype='Int64', name='idx'),
         ),
         (
             [

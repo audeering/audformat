@@ -40,6 +40,11 @@ def concat(
     requires that levels and dtypes
     of all objects match,
     see :func:`audformat.utils.is_index_alike`.
+    When a :class:`pd:Index`
+    is concatenated with a single-level
+    :class:`pd.MultiIndex`,
+    the result is
+    :class:`pd:Index`.
 
     The new object contains index and columns of all objects.
     Missing values will be set to ``NaN``.
@@ -177,17 +182,14 @@ def concat(
 
     # if we have a mixture
     # of pd.Index and pd.MultiIndex
-    # convert all to pd.MultiIndex
+    # convert all to pd.Index
     if (
         objs[0].index.nlevels == 1
         and len(set(isinstance(obj.index, pd.MultiIndex) for obj in objs)) == 2
     ):
         for n, obj in enumerate(objs):
-            if not isinstance(obj.index, pd.MultiIndex):
-                objs[n].index = pd.MultiIndex.from_arrays(
-                    [obj.index.to_list()],
-                    names=[obj.index.name],
-                )
+            if isinstance(obj.index, pd.MultiIndex):
+                objs[n].index = obj.index.get_level_values(0)
 
     # the new index is a union of the individual objects
     index = union([obj.index for obj in objs])
@@ -484,6 +486,11 @@ def intersect(
     requires that levels and dtypes
     of all objects match,
     see :func:`audformat.utils.is_index_alike`.
+    When a :class:`pd:Index`
+    is intersected with a single-level
+    :class:`pd.MultiIndex`,
+    the result is
+    :class:`pd:Index`.
 
     Args:
         objs: index objects
@@ -509,8 +516,7 @@ def intersect(
         ...         pd.MultiIndex.from_arrays([[1, 2]], names=['idx']),
         ...     ]
         ... )
-        MultiIndex([(1,)],
-                   names=['idx'])
+        Int64Index([1], dtype='int64', name='idx')
         >>> intersect(
         ...     [
         ...         pd.MultiIndex.from_arrays(
@@ -583,17 +589,14 @@ def intersect(
 
         # if we have a mixture
         # of pd.Index and pd.MultiIndex
-        # convert all to pd.MultiIndex
+        # convert all to pd.Index
         if (
             objs[0].nlevels == 1
             and len(set(isinstance(obj, pd.MultiIndex) for obj in objs)) == 2
         ):
             objs = [
-                obj if isinstance(obj, pd.MultiIndex)
-                else pd.MultiIndex.from_arrays(
-                    [obj.to_list()],
-                    names=[obj.name],
-                )
+                obj if not isinstance(obj, pd.MultiIndex)
+                else obj.get_level_values(0)
                 for obj in objs
             ]
 
@@ -1445,6 +1448,11 @@ def union(
     requires that levels and dtypes
     of all objects match,
     see :func:`audformat.utils.is_index_alike`.
+    When a :class:`pd:Index`
+    is combined with a single-level
+    :class:`pd.MultiIndex`,
+    the result is
+    :class:`pd:Index`.
 
     Args:
         objs: index objects
@@ -1469,10 +1477,7 @@ def union(
         ...         pd.MultiIndex.from_arrays([[1, 2]], names=['idx']),
         ...     ]
         ... )
-        MultiIndex([(0,),
-                    (1,),
-                    (2,)],
-                   names=['idx'])
+        Int64Index([0, 1, 2], dtype='int64', name='idx')
         >>> union(
         ...     [
         ...         pd.MultiIndex.from_arrays(
@@ -1542,14 +1547,14 @@ def union(
 
     # if we have a mixture
     # of pd.Index and pd.MultiIndex
-    # convert all to pd.MultiIndex
+    # convert all to pd.Index
     if (
         objs[0].nlevels == 1
         and len(set(isinstance(obj, pd.MultiIndex) for obj in objs)) == 2
     ):
         objs = [
-            obj if isinstance(obj, pd.MultiIndex)
-            else pd.MultiIndex.from_arrays([obj.to_list()], names=[obj.name])
+            obj if not isinstance(obj, pd.MultiIndex)
+            else obj.get_level_values(0)
             for obj in objs
         ]
 
