@@ -201,7 +201,7 @@ def concat(
             dtype_2 = column.dtype
 
             # assert same dtype
-            if not same_dtype(dtype_1, dtype_2):
+            if not _is_same_dtype(dtype_1, dtype_2):
                 if dtype_1.name == 'category':
                     dtype_1 = repr(dtype_1)
                 if dtype_2.name == 'category':
@@ -1063,23 +1063,6 @@ def replace_file_extension(
     return index
 
 
-def same_dtype(d1, d2) -> bool:
-    r"""Helper function to compare pandas dtype."""
-    if d1.name.startswith('bool') and d2.name.startswith('bool'):
-        # match different bool types, i.e. bool and boolean
-        return True
-    if d1.name.lower().startswith('int') and d2.name.lower().startswith('int'):
-        # match different int types, e.g. int64 and Int64
-        return True
-    if d1.name.startswith('float') and d2.name.startswith('float'):
-        # match different float types, e.g. float32 and float64
-        return True
-    if d1.name == 'category' and d2.name == 'category':
-        # match only if categories are the same
-        return d1 == d2
-    return d1.name == d2.name
-
-
 def set_index_dtypes(
         index: pd.Index,
         dtypes: typing.Union[
@@ -1560,3 +1543,20 @@ def _convert_single_level_multi_index(
             for n, obj in enumerate(objs):
                 if isinstance(obj.index, pd.MultiIndex):
                     objs[n].index = obj.index.get_level_values(0)
+
+
+def _is_same_dtype(d1, d2) -> bool:
+    r"""Helper function to compare pandas dtype."""
+    if d1.name.startswith('bool') and d2.name.startswith('bool'):
+        # match different bool types, i.e. bool and boolean
+        return True
+    if d1.name.lower().startswith('int') and d2.name.lower().startswith('int'):
+        # match different int types, e.g. int64 and Int64
+        return True
+    if d1.name.startswith('float') and d2.name.startswith('float'):
+        # match different float types, e.g. float32 and float64
+        return True
+    if d1.name == 'category' and d2.name == 'category':
+        # match only if categories are the same
+        return d1 == d2
+    return d1.name == d2.name
