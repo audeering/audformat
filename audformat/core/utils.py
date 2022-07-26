@@ -1,4 +1,5 @@
 import errno
+import itertools
 import os
 import re
 import sys
@@ -174,7 +175,7 @@ def concat(
         if not filewise.all():
             objs = [to_segmented_index(obj) for obj in objs]
     else:
-        _convert_single_level_multi_index(objs)
+        objs = _convert_single_level_multi_index(objs)
 
     # the new index is a union of the individual objects
     index = union([obj.index for obj in objs])
@@ -533,12 +534,12 @@ def intersect(
                    names=['file', 'start', 'end'])
         >>> intersect(
         ...     [
+        ...         filewise_index(['f1']),
         ...         filewise_index(['f1', 'f2']),
-        ...         segmented_index(['f1', 'f2'], [0, 0], [1, 1]),
+        ...         segmented_index(['f1', 'f2', 'f3'], [0, 0, 0], [1, 1, 1]),
         ...     ]
         ... )
-        MultiIndex([('f1', '0 days', '0 days 00:00:01'),
-                    ('f2', '0 days', '0 days 00:00:01')],
+        MultiIndex([('f1', '0 days', '0 days 00:00:01')],
                    names=['file', 'start', 'end'])
 
     """
@@ -566,7 +567,7 @@ def intersect(
 
     else:
 
-        _convert_single_level_multi_index(objs)
+        objs = _convert_single_level_multi_index(objs)
 
         index = objs[0]
         for obj in objs[1:]:
@@ -1175,6 +1176,130 @@ def set_index_dtypes(
     return index
 
 
+def symmetric_difference(
+        objs: typing.Sequence[typing.Union[pd.Index]],
+) -> pd.Index:
+    r"""Symmetric difference of index objects.
+
+    If all index objects are conform to
+    :ref:`table specifications <data-tables:Tables>`
+    and at least one object is segmented,
+    the output is a segmented index.
+    Otherwise,
+    requires that levels and dtypes
+    of all objects match,
+    see :func:`audformat.utils.is_index_alike`.
+    When the symmetric difference of a
+    :class:`pandas.Index`
+    with a single-level
+    :class:`pandas.MultiIndex`,
+    is calculated,
+    the result is a
+    :class:`pandas.Index`.
+
+    Args:
+        objs: index objects
+
+    Returns:
+        symmetric difference of index objects
+
+    Raises:
+        ValueError: if level and dtypes of objects do not match
+
+    Example:
+        >>> symmetric_difference(
+        ...     [
+        ...         pd.Index([0, 1], name='idx'),
+        ...         pd.Index([1, 2], dtype='Int64', name='idx'),
+        ...     ]
+        ... )
+        Index([0, 2], dtype='Int64', name='idx')
+        >>> symmetric_difference(
+        ...     [
+        ...         pd.Index([0, 1], name='idx'),
+        ...         pd.MultiIndex.from_arrays([[1, 2]], names=['idx']),
+        ...     ]
+        ... )
+        Int64Index([0, 2], dtype='int64', name='idx')
+        >>> symmetric_difference(
+        ...     [
+        ...         pd.MultiIndex.from_arrays(
+        ...             [['a', 'b', 'c'], [0, 1, 2]],
+        ...             names=['idx1', 'idx2'],
+        ...         ),
+        ...         pd.MultiIndex.from_arrays(
+        ...             [['b', 'c'], [1, 3]],
+        ...             names=['idx1', 'idx2'],
+        ...         ),
+        ...     ]
+        ... )
+        MultiIndex([('a', 0),
+                    ('c', 2),
+                    ('c', 3)],
+                   names=['idx1', 'idx2'])
+        >>> symmetric_difference(
+        ...     [
+        ...         filewise_index(['f1', 'f2', 'f3']),
+        ...         filewise_index(['f2', 'f3', 'f4']),
+        ...     ]
+        ... )
+        Index(['f1', 'f4'], dtype='string', name='file')
+        >>> symmetric_difference(
+        ...     [
+        ...         segmented_index(['f1'], [0], [1]),
+        ...         segmented_index(['f1', 'f2'], [0, 1], [1, 2]),
+        ...     ]
+        ... )
+        MultiIndex([('f2', '0 days 00:00:01', '0 days 00:00:02')],
+                   names=['file', 'start', 'end'])
+        >>> symmetric_difference(
+        ...     [
+        ...         filewise_index(['f1']),
+        ...         filewise_index(['f1', 'f2']),
+        ...         segmented_index(['f1', 'f2', 'f3'], [0, 0, 0], [1, 1, 1]),
+        ...     ]
+        ... )
+        MultiIndex([('f1', '0 days', '0 days 00:00:01'),
+                    ('f2', '0 days',               NaT),
+                    ('f2', '0 days', '0 days 00:00:01'),
+                    ('f3', '0 days', '0 days 00:00:01')],
+                   names=['file', 'start', 'end'])
+
+    """
+    if not objs:
+        return pd.Index([])
+
+    if len(objs) == 1:
+        return objs[0]
+
+    objs_filewise = [obj for obj in objs if is_filewise_index(obj)]
+    objs_segmented = [obj for obj in objs if is_segmented_index(obj)]
+
+    if (
+            len(objs_filewise) > 0
+            and len(objs_segmented) > 0
+            and len(objs_filewise + objs_segmented) == len(objs)
+    ):
+
+        # if we have a mixture of segmented and filewise
+        # intersect separately and combine afterwards
+        index_filewise = symmetric_difference(objs_filewise)
+        index_segmented = symmetric_difference(objs_segmented)
+        index = union([index_filewise, index_segmented])
+        index = index.sortlevel()[0]
+
+    else:
+
+        index_union = union(objs)
+        pairwise_intersect = []
+        for pair in itertools.combinations(objs, 2):
+            pairwise_intersect.append(intersect(pair))
+        index_intersect = union(pairwise_intersect)
+        index = index_union.difference(index_intersect)
+
+    return index
+
+
 def to_filewise_index(
         obj: typing.Union[pd.Index, pd.Series, pd.DataFrame],
         root: str,
@@ -1474,14 +1599,16 @@ def union(
                    names=['file', 'start', 'end'])
         >>> union(
         ...     [
+        ...         filewise_index(['f1']),
         ...         filewise_index(['f1', 'f2']),
-        ...         segmented_index(['f1', 'f2'], [0, 0], [1, 1]),
+        ...         segmented_index(['f1', 'f2', 'f3'], [0, 0, 0], [1, 1, 1]),
         ...     ]
         ... )
         MultiIndex([('f1', '0 days',               NaT),
                     ('f2', '0 days',               NaT),
                     ('f1', '0 days', '0 days 00:00:01'),
-                    ('f2', '0 days', '0 days 00:00:01')],
+                    ('f2', '0 days', '0 days 00:00:01'),
+                    ('f3', '0 days', '0 days 00:00:01')],
                    names=['file', 'start', 'end'])
 
     """
@@ -1499,7 +1626,7 @@ def union(
         if not filewise.all():
             objs = [to_segmented_index(obj) for obj in objs]
     else:
-        _convert_single_level_multi_index(objs)
+        objs = _convert_single_level_multi_index(objs)
 
     # Combine all MultiIndex entries and drop duplicates afterwards,
     # faster than using index.union(),
@@ -1512,8 +1639,8 @@ def union(
 
 
 def _convert_single_level_multi_index(
-        objs: typing.List[typing.Union[pd.Index, pd.Series, pd.DataFrame]],
-):
+        objs: typing.Sequence[typing.Union[pd.Index, pd.Series, pd.DataFrame]],
+) -> typing.Sequence[typing.Union[pd.Index, pd.Series, pd.DataFrame]]:
     r"""Convert single-level pd.MultiIndex to pd.Index.
 
     If input is a mixture of single-level
@@ -1540,6 +1667,7 @@ def _convert_single_level_multi_index(
                      for index in indices)) == 2
 
     if is_single_level and is_mix:
+        objs = list(objs)
         for idx, obj in enumerate(objs):
             if isinstance(obj, pd.MultiIndex):
                 objs[idx] = obj.get_level_values(0)
@@ -1548,6 +1676,8 @@ def _convert_single_level_multi_index(
                     and isinstance(obj.index, pd.MultiIndex)
             ):
                 objs[idx].index = obj.index.get_level_values(0)
+
+    return objs
 
 
 def _is_same_dtype(d1, d2) -> bool:

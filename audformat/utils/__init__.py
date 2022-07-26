@@ -1,5 +1,6 @@
 from audformat.core.utils import (
     concat,
+    symmetric_difference,
     duration,
     expand_file_path,
     hash,
