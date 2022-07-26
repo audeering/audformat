@@ -40,11 +40,11 @@ def concat(
     requires that levels and dtypes
     of all objects match,
     see :func:`audformat.utils.is_index_alike`.
-    When a :class:`pd:Index`
+    When a :class:`pandas.Index`
     is concatenated with a single-level
-    :class:`pd.MultiIndex`,
+    :class:`pandas.MultiIndex`,
     the result is
-    :class:`pd:Index`.
+    :class:`pandas.Index`.
 
     The new object contains index and columns of all objects.
     Missing values will be set to ``NaN``.
@@ -486,11 +486,11 @@ def intersect(
     requires that levels and dtypes
     of all objects match,
     see :func:`audformat.utils.is_index_alike`.
-    When a :class:`pd:Index`
+    When a :class:`pandas.Index`
     is intersected with a single-level
-    :class:`pd.MultiIndex`,
+    :class:`pandas.MultiIndex`,
     the result is
-    :class:`pd:Index`.
+    :class:`pandas.Index`.
 
     Args:
         objs: index objects
@@ -1448,11 +1448,11 @@ def union(
     requires that levels and dtypes
     of all objects match,
     see :func:`audformat.utils.is_index_alike`.
-    When a :class:`pd:Index`
+    When a :class:`pandas.Index`
     is combined with a single-level
-    :class:`pd.MultiIndex`,
+    :class:`pandas.MultiIndex`,
     the result is
-    :class:`pd:Index`.
+    :class:`pandas.Index`.
 
     Args:
         objs: index objects

@@ -614,9 +614,9 @@ class MiscTable(Base):
     the column ID must be different
     from the index level names.
     When initialized with a single-level
-    :class:`pd.MultiIndex`,
+    :class:`pandas.MultiIndex`,
     the index will be converted to a
-    :class:`pd:Index`.
+    :class:`pandas.Index`.
 
     Args:
         index: table index with non-empty and unique level names
