@@ -586,22 +586,20 @@ def test_dtype_multiindex_single_level(
             pd.Series(index_values, dtype=index_dtype),
         ],
         names=[name],
-
     )
     table = audformat.MiscTable(index)
     assert table.levels[name] == expected_audformat_dtype
-    assert table.index.dtypes[name] == expected_pandas_dtype
+    assert table.index.dtype == expected_pandas_dtype
 
     # Store and load table
     db = audformat.testing.create_db(minimal=True)
     db['misc'] = table
     assert db['misc'].levels[name] == expected_audformat_dtype
-    assert db['misc'].index.dtypes[name] == expected_pandas_dtype
+    assert db['misc'].index.dtype == expected_pandas_dtype
 
     db_root = tmpdir.join('db')
     db.save(db_root, storage_format='csv')
     db_new = audformat.Database.load(db_root)
-    # After loading we now longer have a MultiIndex
     assert db_new['misc'].levels[name] == expected_audformat_dtype
     assert db_new['misc'].index.dtype == expected_pandas_dtype
 

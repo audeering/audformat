@@ -994,7 +994,7 @@ def test_index_has_overlap(obj, expected):
                 pd.Index([0, 1], name='idx'),
                 pd.MultiIndex.from_arrays([[1, 2]], names=['idx']),
             ],
-            pd.Index([1], dtype='Int64', name='idx'),
+            pd.Index([1], name='idx'),
         ),
         (
             [

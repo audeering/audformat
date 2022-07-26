@@ -613,6 +613,10 @@ class MiscTable(Base):
     When adding a column,
     the column ID must be different
     from the index level names.
+    When initialized with a single-level
+    :class:`pd.MultiIndex`,
+    the index will be converted to a
+    :class:`pd:Index`.
 
     Args:
         index: table index with non-empty and unique level names
@@ -678,6 +682,11 @@ class MiscTable(Base):
         r"""Index levels."""
 
         if index is not None:
+
+            # convert single-level pd.MultiIndex to pd.Index
+            if isinstance(index, pd.MultiIndex) and index.nlevels == 1:
+                index = index.get_level_values(0)
+
             if isinstance(index, pd.MultiIndex):
                 levels = list(index.names)
                 dtypes = list(index.dtypes)
