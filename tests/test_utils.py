@@ -531,8 +531,8 @@ from audformat import define
         # error: index names do not match
         pytest.param(
             [
-                pd.Series([], index=pd.Index([], name='idx1')),
-                pd.Series([], index=pd.Index([], name='idx2')),
+                pd.Series([], index=pd.Index([], name='idx1'), dtype='object'),
+                pd.Series([], index=pd.Index([], name='idx2'), dtype='object'),
             ],
             False,
             None,
