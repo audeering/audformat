@@ -1526,9 +1526,9 @@ def _convert_single_level_multi_index(
         )
 
     indices = [obj if isinstance(obj, pd.Index) else obj.index for obj in objs]
-    is_single_level = indices[0].nlevels == 1 
+    is_single_level = indices[0].nlevels == 1
     is_mix = len(set(isinstance(index, pd.MultiIndex)
-                     for index in indices)) == 2 
+                     for index in indices)) == 2
 
     if is_single_level and is_mix:
         for idx, obj in enumerate(objs):
