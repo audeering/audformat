@@ -489,7 +489,7 @@ def intersect(
     When a :class:`pandas.Index`
     is intersected with a single-level
     :class:`pandas.MultiIndex`,
-    the result is
+    the result is a
     :class:`pandas.Index`.
 
     Args:
