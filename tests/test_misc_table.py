@@ -671,6 +671,22 @@ def test_extend_index():
         np.array(['a', 'a', 'b']),
     )
 
+    # extend with MultIndex
+
+    # TODO: uncomment when https://github.com/audeering/audformat/issues/227
+    #  is solved
+
+    # index = pd.MultiIndex.from_arrays([['1', '4']], names=['idx'])
+    # db['misc'].extend_index(
+    #     index,
+    #     fill_values='b',
+    #     inplace=True,
+    # )
+    # np.testing.assert_equal(
+    #     db['misc']['columns'].get().values,
+    #     np.array(['a', 'a', 'b', 'b']),
+    # )
+
     db.drop_tables('misc')
 
 
