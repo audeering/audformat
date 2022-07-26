@@ -2281,7 +2281,7 @@ def test_to_filewise(output_folder, table_id, expected_file_names):
                 pd.Index([0, 1], name='idx'),
                 pd.MultiIndex.from_arrays([[1, 2]], names=['idx']),
             ],
-            pd.MultiIndex.from_arrays([[0, 1, 2]], names=['idx']),
+            pd.Index([0, 1, 2], name='idx'),
         ),
         (
             [
