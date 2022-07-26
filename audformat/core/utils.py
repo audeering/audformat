@@ -40,6 +40,11 @@ def concat(
     requires that levels and dtypes
     of all objects match,
     see :func:`audformat.utils.is_index_alike`.
+    When a :class:`pandas.Index`
+    is concatenated with a single-level
+    :class:`pandas.MultiIndex`,
+    the result is a
+    :class:`pandas.Index`.
 
     The new object contains index and columns of all objects.
     Missing values will be set to ``NaN``.
@@ -169,25 +174,7 @@ def concat(
         if not filewise.all():
             objs = [to_segmented_index(obj) for obj in objs]
     else:
-        if not is_index_alike(objs):
-            raise ValueError(
-                'Levels and dtypes of all objects must match, '
-                'see audformat.utils.is_index_alike().'
-            )
-
-    # if we have a mixture
-    # of pd.Index and pd.MultiIndex
-    # convert all to pd.MultiIndex
-    if (
-        objs[0].index.nlevels == 1
-        and len(set(isinstance(obj.index, pd.MultiIndex) for obj in objs)) == 2
-    ):
-        for n, obj in enumerate(objs):
-            if not isinstance(obj.index, pd.MultiIndex):
-                objs[n].index = pd.MultiIndex.from_arrays(
-                    [obj.index.to_list()],
-                    names=[obj.index.name],
-                )
+        _convert_single_level_multi_index(objs)
 
     # the new index is a union of the individual objects
     index = union([obj.index for obj in objs])
@@ -214,7 +201,7 @@ def concat(
             dtype_2 = column.dtype
 
             # assert same dtype
-            if not same_dtype(dtype_1, dtype_2):
+            if not _is_same_dtype(dtype_1, dtype_2):
                 if dtype_1.name == 'category':
                     dtype_1 = repr(dtype_1)
                 if dtype_2.name == 'category':
@@ -484,6 +471,11 @@ def intersect(
     requires that levels and dtypes
     of all objects match,
     see :func:`audformat.utils.is_index_alike`.
+    When a :class:`pandas.Index`
+    is intersected with a single-level
+    :class:`pandas.MultiIndex`,
+    the result is a
+    :class:`pandas.Index`.
 
     Args:
         objs: index objects
@@ -509,8 +501,7 @@ def intersect(
         ...         pd.MultiIndex.from_arrays([[1, 2]], names=['idx']),
         ...     ]
         ... )
-        MultiIndex([(1,)],
-                   names=['idx'])
+        Int64Index([1], dtype='int64', name='idx')
         >>> intersect(
         ...     [
         ...         pd.MultiIndex.from_arrays(
@@ -575,27 +566,7 @@ def intersect(
 
     else:
 
-        if not is_index_alike(objs):
-            raise ValueError(
-                'Levels and dtypes of all objects must match, '
-                'see audformat.utils.is_index_alike().'
-            )
-
-        # if we have a mixture
-        # of pd.Index and pd.MultiIndex
-        # convert all to pd.MultiIndex
-        if (
-            objs[0].nlevels == 1
-            and len(set(isinstance(obj, pd.MultiIndex) for obj in objs)) == 2
-        ):
-            objs = [
-                obj if isinstance(obj, pd.MultiIndex)
-                else pd.MultiIndex.from_arrays(
-                    [obj.to_list()],
-                    names=[obj.name],
-                )
-                for obj in objs
-            ]
+        _convert_single_level_multi_index(objs)
 
         index = objs[0]
         for obj in objs[1:]:
@@ -1092,23 +1063,6 @@ def replace_file_extension(
     return index
 
 
-def same_dtype(d1, d2) -> bool:
-    r"""Helper function to compare pandas dtype."""
-    if d1.name.startswith('bool') and d2.name.startswith('bool'):
-        # match different bool types, i.e. bool and boolean
-        return True
-    if d1.name.lower().startswith('int') and d2.name.lower().startswith('int'):
-        # match different int types, e.g. int64 and Int64
-        return True
-    if d1.name.startswith('float') and d2.name.startswith('float'):
-        # match different float types, e.g. float32 and float64
-        return True
-    if d1.name == 'category' and d2.name == 'category':
-        # match only if categories are the same
-        return d1 == d2
-    return d1.name == d2.name
-
-
 def set_index_dtypes(
         index: pd.Index,
         dtypes: typing.Union[
@@ -1445,6 +1399,11 @@ def union(
     requires that levels and dtypes
     of all objects match,
     see :func:`audformat.utils.is_index_alike`.
+    When a :class:`pandas.Index`
+    is combined with a single-level
+    :class:`pandas.MultiIndex`,
+    the result is a
+    :class:`pandas.Index`.
 
     Args:
         objs: index objects
@@ -1469,10 +1428,7 @@ def union(
         ...         pd.MultiIndex.from_arrays([[1, 2]], names=['idx']),
         ...     ]
         ... )
-        MultiIndex([(0,),
-                    (1,),
-                    (2,)],
-                   names=['idx'])
+        Int64Index([0, 1, 2], dtype='int64', name='idx')
         >>> union(
         ...     [
         ...         pd.MultiIndex.from_arrays(
@@ -1534,24 +1490,7 @@ def union(
         if not filewise.all():
             objs = [to_segmented_index(obj) for obj in objs]
     else:
-        if not is_index_alike(objs):
-            raise ValueError(
-                'Levels and dtypes of all objects must match, '
-                'see audformat.utils.is_index_alike().'
-            )
-
-    # if we have a mixture
-    # of pd.Index and pd.MultiIndex
-    # convert all to pd.MultiIndex
-    if (
-        objs[0].nlevels == 1
-        and len(set(isinstance(obj, pd.MultiIndex) for obj in objs)) == 2
-    ):
-        objs = [
-            obj if isinstance(obj, pd.MultiIndex)
-            else pd.MultiIndex.from_arrays([obj.to_list()], names=[obj.name])
-            for obj in objs
-        ]
+        _convert_single_level_multi_index(objs)
 
     # Combine all MultiIndex entries and drop duplicates afterwards,
     # faster than using index.union(),
@@ -1561,3 +1500,59 @@ def union(
     index = index.drop_duplicates()
 
     return index
+
+
+def _convert_single_level_multi_index(
+        objs: typing.List[typing.Union[pd.Index, pd.Series, pd.DataFrame]],
+):
+    r"""Convert single-level pd.MultiIndex to pd.Index.
+
+    If input is a mixture of single-level
+    pd.MultiIndex and pd.Index objects,
+    all objects are converted to pd.Index.
+    Assumes that list is not empty.
+
+    Args:
+        objs: list with objects
+
+    Raises:
+        ValueError: if level and dtypes of objects do not match
+
+    """
+    if not is_index_alike(objs):
+        raise ValueError(
+            'Levels and dtypes of all objects must match, '
+            'see audformat.utils.is_index_alike().'
+        )
+
+    indices = [obj if isinstance(obj, pd.Index) else obj.index for obj in objs]
+    is_single_level = indices[0].nlevels == 1
+    is_mix = len(set(isinstance(index, pd.MultiIndex)
+                     for index in indices)) == 2
+
+    if is_single_level and is_mix:
+        for idx, obj in enumerate(objs):
+            if isinstance(obj, pd.MultiIndex):
+                objs[idx] = obj.get_level_values(0)
+            elif (
+                    not isinstance(obj, pd.Index)
+                    and isinstance(obj.index, pd.MultiIndex)
+            ):
+                objs[idx].index = obj.index.get_level_values(0)
+
+
+def _is_same_dtype(d1, d2) -> bool:
+    r"""Helper function to compare pandas dtype."""
+    if d1.name.startswith('bool') and d2.name.startswith('bool'):
+        # match different bool types, i.e. bool and boolean
+        return True
+    if d1.name.lower().startswith('int') and d2.name.lower().startswith('int'):
+        # match different int types, e.g. int64 and Int64
+        return True
+    if d1.name.startswith('float') and d2.name.startswith('float'):
+        # match different float types, e.g. float32 and float64
+        return True
+    if d1.name == 'category' and d2.name == 'category':
+        # match only if categories are the same
+        return d1 == d2
+    return d1.name == d2.name
