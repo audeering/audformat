@@ -174,22 +174,7 @@ def concat(
         if not filewise.all():
             objs = [to_segmented_index(obj) for obj in objs]
     else:
-        if not is_index_alike(objs):
-            raise ValueError(
-                'Levels and dtypes of all objects must match, '
-                'see audformat.utils.is_index_alike().'
-            )
-
-    # if we have a mixture
-    # of pd.Index and pd.MultiIndex
-    # convert all to pd.Index
-    if (
-        objs[0].index.nlevels == 1
-        and len(set(isinstance(obj.index, pd.MultiIndex) for obj in objs)) == 2
-    ):
-        for n, obj in enumerate(objs):
-            if isinstance(obj.index, pd.MultiIndex):
-                objs[n].index = obj.index.get_level_values(0)
+        _convert_single_level_multi_index(objs)
 
     # the new index is a union of the individual objects
     index = union([obj.index for obj in objs])
@@ -581,24 +566,7 @@ def intersect(
 
     else:
 
-        if not is_index_alike(objs):
-            raise ValueError(
-                'Levels and dtypes of all objects must match, '
-                'see audformat.utils.is_index_alike().'
-            )
-
-        # if we have a mixture
-        # of pd.Index and pd.MultiIndex
-        # convert all to pd.Index
-        if (
-            objs[0].nlevels == 1
-            and len(set(isinstance(obj, pd.MultiIndex) for obj in objs)) == 2
-        ):
-            objs = [
-                obj if not isinstance(obj, pd.MultiIndex)
-                else obj.get_level_values(0)
-                for obj in objs
-            ]
+        _convert_single_level_multi_index(objs)
 
         index = objs[0]
         for obj in objs[1:]:
@@ -1539,24 +1507,7 @@ def union(
         if not filewise.all():
             objs = [to_segmented_index(obj) for obj in objs]
     else:
-        if not is_index_alike(objs):
-            raise ValueError(
-                'Levels and dtypes of all objects must match, '
-                'see audformat.utils.is_index_alike().'
-            )
-
-    # if we have a mixture
-    # of pd.Index and pd.MultiIndex
-    # convert all to pd.Index
-    if (
-        objs[0].nlevels == 1
-        and len(set(isinstance(obj, pd.MultiIndex) for obj in objs)) == 2
-    ):
-        objs = [
-            obj if not isinstance(obj, pd.MultiIndex)
-            else obj.get_level_values(0)
-            for obj in objs
-        ]
+        _convert_single_level_multi_index(objs)
 
     # Combine all MultiIndex entries and drop duplicates afterwards,
     # faster than using index.union(),
@@ -1566,3 +1517,46 @@ def union(
     index = index.drop_duplicates()
 
     return index
+
+
+def _convert_single_level_multi_index(
+        objs: typing.Sequence[typing.Union[pd.Index, pd.Series, pd.DataFrame]],
+):
+    r"""Convert single-level pd.MultiIndex to pd.Index.
+
+    If input is a mixture of single-level
+    pd.MultiIndex and pd.Index objects,
+    all objects are converted to pd.Index.
+    Assumes that list is not empty.
+
+    Args:
+        objs: list with objects
+
+    Raises:
+        ValueError: if level and dtypes of objects do not match
+
+    """
+    if not is_index_alike(objs):
+        raise ValueError(
+            'Levels and dtypes of all objects must match, '
+            'see audformat.utils.is_index_alike().'
+        )
+
+    if isinstance(objs[0], pd.Index):
+        is_single_level = objs[0].nlevels == 1
+        is_mix = len(set(isinstance(obj, pd.MultiIndex)
+                         for obj in objs)) == 2
+    else:
+        is_single_level = objs[0].index.nlevels == 1
+        is_mix = len(set(isinstance(obj.index, pd.MultiIndex)
+                         for obj in objs)) == 2
+
+    if is_single_level and is_mix:
+        if isinstance(objs[0], pd.Index):
+            for n, obj in enumerate(objs):
+                if isinstance(obj, pd.MultiIndex):
+                    objs[n] = obj.get_level_values(0)
+        else:
+            for n, obj in enumerate(objs):
+                if isinstance(obj.index, pd.MultiIndex):
+                    objs[n].index = obj.index.get_level_values(0)
