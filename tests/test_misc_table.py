@@ -608,6 +608,8 @@ def test_drop_and_pick_index():
 
     table_id = 'misc'
 
+    # drop and pick with pd.Index
+
     index = pytest.DB[table_id].index[:2]
     df_pick = pytest.DB[table_id].pick_index(index).get()
     index = pytest.DB[table_id].index[2:]
@@ -615,6 +617,26 @@ def test_drop_and_pick_index():
 
     assert len(df_pick) == len(df_drop) == 2
     pd.testing.assert_frame_equal(df_pick, df_drop)
+
+    # drop and pick with pd.MultiIndex
+
+    index = pd.MultiIndex.from_arrays(
+        [pytest.DB[table_id].index[:2].to_list()],
+        names=[pytest.DB[table_id].index.name],
+    )
+    index = audformat.utils.set_index_dtypes(index, 'string')
+    df_pick = pytest.DB[table_id].pick_index(index).get()
+    index = pd.MultiIndex.from_arrays(
+        [pytest.DB[table_id].index[2:].to_list()],
+        names=[pytest.DB[table_id].index.name],
+    )
+    index = audformat.utils.set_index_dtypes(index, 'string')
+    df_drop = pytest.DB[table_id].drop_index(index).get()
+
+    assert len(df_pick) == len(df_drop) == 2
+    pd.testing.assert_frame_equal(df_pick, df_drop)
+
+    # invalid index
 
     index = pytest.DB['segments'].index[:2]
     with pytest.raises(
@@ -647,7 +669,7 @@ def test_extend_index():
 
     db.drop_tables('misc')
 
-    # not empty
+    # extend with pd.Index
 
     db['misc'] = audformat.MiscTable(pd.Index([], name='idx'))
     db['misc']['columns'] = audformat.Column(scheme_id='scheme')
@@ -671,21 +693,18 @@ def test_extend_index():
         np.array(['a', 'a', 'b']),
     )
 
-    # extend with MultIndex
+    # extend with pd.MultiIndex
 
-    # TODO: uncomment when https://github.com/audeering/audformat/issues/227
-    #  is solved
-
-    # index = pd.MultiIndex.from_arrays([['1', '4']], names=['idx'])
-    # db['misc'].extend_index(
-    #     index,
-    #     fill_values='b',
-    #     inplace=True,
-    # )
-    # np.testing.assert_equal(
-    #     db['misc']['columns'].get().values,
-    #     np.array(['a', 'a', 'b', 'b']),
-    # )
+    index = pd.MultiIndex.from_arrays([['1', '4']], names=['idx'])
+    db['misc'].extend_index(
+        index,
+        fill_values='b',
+        inplace=True,
+    )
+    np.testing.assert_equal(
+        db['misc']['columns'].get().values,
+        np.array(['a', 'a', 'b', 'b']),
+    )
 
     db.drop_tables('misc')
 
