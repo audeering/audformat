@@ -1525,24 +1525,20 @@ def _convert_single_level_multi_index(
             'see audformat.utils.is_index_alike().'
         )
 
-    if isinstance(objs[0], pd.Index):
-        is_single_level = objs[0].nlevels == 1
-        is_mix = len(set(isinstance(obj, pd.MultiIndex)
-                         for obj in objs)) == 2
-    else:
-        is_single_level = objs[0].index.nlevels == 1
-        is_mix = len(set(isinstance(obj.index, pd.MultiIndex)
-                         for obj in objs)) == 2
+    indices = [obj if isinstance(obj, pd.Index) else obj.index for obj in objs]
+    is_single_level = indices[0].nlevels == 1 
+    is_mix = len(set(isinstance(index, pd.MultiIndex)
+                     for index in indices)) == 2 
 
     if is_single_level and is_mix:
-        if isinstance(objs[0], pd.Index):
-            for idx, obj in enumerate(objs):
-                if isinstance(obj, pd.MultiIndex):
-                    objs[idx] = obj.get_level_values(0)
-        else:
-            for idx, obj in enumerate(objs):
-                if isinstance(obj.index, pd.MultiIndex):
-                    objs[idx].index = obj.index.get_level_values(0)
+        for idx, obj in enumerate(objs):
+            if isinstance(obj, pd.MultiIndex):
+                objs[idx] = obj.get_level_values(0)
+            elif (
+                    not isinstance(obj, pd.Index)
+                    and isinstance(obj.index, pd.MultiIndex)
+            ):
+                objs[idx].index = obj.index.get_level_values(0)
 
 
 def _is_same_dtype(d1, d2) -> bool:
