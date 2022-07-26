@@ -57,14 +57,9 @@ autodoc_mock_imports = [
 autosectionlabel_prefix_document = True
 autosectionlabel_maxdepth = 2
 
-# Do not copy prompot output
+# Do not copy prompt output
 copybutton_prompt_text = r'>>> |\.\.\. |$ '
 copybutton_prompt_is_regexp = True
-
-# Mapping to external documentation
-intersphinx_mapping = {
-    'python': ('https://docs.python.org/3/', None),
-}
 
 linkcheck_ignore = [
     'https://www.isca-speech.org',
