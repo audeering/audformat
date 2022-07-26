@@ -43,7 +43,7 @@ def concat(
     When a :class:`pandas.Index`
     is concatenated with a single-level
     :class:`pandas.MultiIndex`,
-    the result is
+    the result is a
     :class:`pandas.Index`.
 
     The new object contains index and columns of all objects.
