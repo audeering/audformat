@@ -1503,7 +1503,7 @@ def union(
 
 
 def _convert_single_level_multi_index(
-        objs: typing.Sequence[typing.Union[pd.Index, pd.Series, pd.DataFrame]],
+        objs: typing.List[typing.Union[pd.Index, pd.Series, pd.DataFrame]],
 ):
     r"""Convert single-level pd.MultiIndex to pd.Index.
 
@@ -1536,13 +1536,13 @@ def _convert_single_level_multi_index(
 
     if is_single_level and is_mix:
         if isinstance(objs[0], pd.Index):
-            for n, obj in enumerate(objs):
+            for idx, obj in enumerate(objs):
                 if isinstance(obj, pd.MultiIndex):
-                    objs[n] = obj.get_level_values(0)
+                    objs[idx] = obj.get_level_values(0)
         else:
-            for n, obj in enumerate(objs):
+            for idx, obj in enumerate(objs):
                 if isinstance(obj.index, pd.MultiIndex):
-                    objs[n].index = obj.index.get_level_values(0)
+                    objs[idx].index = obj.index.get_level_values(0)
 
 
 def _is_same_dtype(d1, d2) -> bool:
