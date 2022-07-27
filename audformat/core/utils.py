@@ -529,7 +529,7 @@ def intersect(
         ...         segmented_index(['f1', 'f2'], [0, 1], [1, 2]),
         ...     ]
         ... )
-        MultiIndex([('f1', '0 days', '0 days 00:00:01')],
+        MultiIndex([('f1', '0 days 00:00:00', '0 days 00:00:01')],
                    names=['file', 'start', 'end'])
         >>> intersect(
         ...     [
@@ -568,24 +568,11 @@ def intersect(
 
         objs = _convert_single_level_multi_index(objs)
 
-        index = objs[0]
-        for obj in objs[1:]:
-            index = index.intersection(obj)
-
-        # index.intersection() does not preserve string dtype
-        # for MultiIndex
-        if isinstance(index, pd.MultiIndex):
-            obj = objs[0]
-            dtypes = {
-                name: dtype for name, dtype in zip(obj.names, obj.dtypes)
-                if dtype == 'string'
-            }
-            index = set_index_dtypes(index, dtypes)
-
-    # We use len() here as index.empty takes a very long time
-    if len(index) == 0 and is_segmented_index(index):
-        # asserts that start and end are of type 'timedelta64[ns]'
-        index = segmented_index()
+        index = union(objs)
+        mask = np.ones(len(index), dtype=bool)
+        for obj in objs:
+            mask &= index.isin(obj)
+        index = index[mask]
 
     return index
 
