@@ -1260,9 +1260,9 @@ def symmetric_difference(
         ...     ]
         ... )
         MultiIndex([('f1', '0 days', '0 days 00:00:01'),
-                    ('f2', '0 days',               NaT),
                     ('f2', '0 days', '0 days 00:00:01'),
-                    ('f3', '0 days', '0 days 00:00:01')],
+                    ('f3', '0 days', '0 days 00:00:01'),
+                    ('f2', '0 days',               NaT)],
                    names=['file', 'start', 'end'])
 
     """
@@ -1285,8 +1285,7 @@ def symmetric_difference(
         # intersect separately and combine afterwards
         index_filewise = symmetric_difference(objs_filewise)
         index_segmented = symmetric_difference(objs_segmented)
-        index = union([index_filewise, index_segmented])
-        index = index.sortlevel()[0]
+        index = union([index_segmented, index_filewise])
 
     else:
 
@@ -1296,6 +1295,16 @@ def symmetric_difference(
             pairwise_intersect.append(intersect(pair))
         index_intersect = union(pairwise_intersect)
         index = index_union.difference(index_intersect)
+
+        # index.difference() does not preserve string dtype
+        # for MultiIndex
+        if isinstance(index, pd.MultiIndex):
+            obj = objs[0]
+            dtypes = {
+                name: dtype for name, dtype in zip(obj.names, obj.dtypes)
+                if dtype == 'string'
+            }
+            index = set_index_dtypes(index, dtypes)
 
     return index
 
