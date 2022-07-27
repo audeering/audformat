@@ -1281,20 +1281,14 @@ def symmetric_difference(
     # index.difference() does not preserve string dtype
     # for MultiIndex
     if is_segmented_index(index):
-        index = set_index_dtypes(index, {define.IndexField.FILE: 'string'})
-        # TODO: when https://github.com/audeering/audformat/issues/230
-        #  is fixed replace use:
-        #         index = set_index_dtypes(index, {
-        #                 'file': 'string',
-        #                 'start': 'timedelta64[ns]',
-        #                 'end': 'timedelta64[ns]',
-        #             },
-        #         )
-        if len(index.levels[2]) == 0:
-            index = audformat.segmented_index(
-                index.get_level_values(define.IndexField.FILE),
-                index.get_level_values(define.IndexField.START),
-            )
+        index = set_index_dtypes(
+            index,
+            {
+                define.IndexField.FILE: 'string',
+                define.IndexField.START: 'timedelta64[ns]',
+                define.IndexField.END: 'timedelta64[ns]',
+            },
+        )
     elif isinstance(index, pd.MultiIndex):
         obj = objs[0]
         dtypes = {
