@@ -940,6 +940,13 @@ def test_index_has_overlap(obj, expected):
         ),
         (
             [
+                audformat.segmented_index('f1'),
+                audformat.segmented_index('f1', 0, 1),
+            ],
+            audformat.segmented_index(),
+        ),
+        (
+            [
                 audformat.segmented_index(['f1', 'f2'], [0, 0], [1, 1]),
                 audformat.segmented_index(['f2', 'f3'], [0, 0], [1, 1]),
                 audformat.filewise_index(['f1', 'f2']),
@@ -1030,6 +1037,11 @@ def test_index_has_overlap(obj, expected):
     ]
 )
 def test_intersect(objs, expected):
+    pd.testing.assert_index_equal(
+        audformat.utils.intersect(objs),
+        expected,
+    )
+    objs = list(reversed(objs))
     pd.testing.assert_index_equal(
         audformat.utils.intersect(objs),
         expected,
