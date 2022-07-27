@@ -13,6 +13,7 @@ import pandas as pd
 import audeer
 import audiofile
 
+import audformat
 from audformat.core import define
 from audformat.core.common import to_audformat_dtype
 from audformat.core.database import Database
@@ -1259,10 +1260,8 @@ def symmetric_difference(
         ...         segmented_index(['f1', 'f2', 'f3'], [0, 0, 0], [1, 1, 1]),
         ...     ]
         ... )
-        MultiIndex([('f1', '0 days', '0 days 00:00:01'),
-                    ('f2', '0 days', '0 days 00:00:01'),
-                    ('f3', '0 days', '0 days 00:00:01'),
-                    ('f2', '0 days',               NaT)],
+        MultiIndex([('f2', '0 days',               NaT),
+                    ('f3', '0 days', '0 days 00:00:01')],
                    names=['file', 'start', 'end'])
 
     """
@@ -1272,39 +1271,37 @@ def symmetric_difference(
     if len(objs) == 1:
         return objs[0]
 
-    objs_filewise = [obj for obj in objs if is_filewise_index(obj)]
-    objs_segmented = [obj for obj in objs if is_segmented_index(obj)]
+    index_union = union(objs)
+    pairwise_intersect = []
+    for pair in itertools.combinations(objs, 2):
+        pairwise_intersect.append(intersect(pair))
+    index_intersect = union(pairwise_intersect)
+    index = index_union.difference(index_intersect)
 
-    if (
-            len(objs_filewise) > 0
-            and len(objs_segmented) > 0
-            and len(objs_filewise + objs_segmented) == len(objs)
-    ):
-
-        # if we have a mixture of segmented and filewise
-        # intersect separately and combine afterwards
-        index_filewise = symmetric_difference(objs_filewise)
-        index_segmented = symmetric_difference(objs_segmented)
-        index = union([index_segmented, index_filewise])
-
-    else:
-
-        index_union = union(objs)
-        pairwise_intersect = []
-        for pair in itertools.combinations(objs, 2):
-            pairwise_intersect.append(intersect(pair))
-        index_intersect = union(pairwise_intersect)
-        index = index_union.difference(index_intersect)
-
-        # index.difference() does not preserve string dtype
-        # for MultiIndex
-        if isinstance(index, pd.MultiIndex):
-            obj = objs[0]
-            dtypes = {
-                name: dtype for name, dtype in zip(obj.names, obj.dtypes)
-                if dtype == 'string'
-            }
-            index = set_index_dtypes(index, dtypes)
+    # index.difference() does not preserve string dtype
+    # for MultiIndex
+    if is_segmented_index(index):
+        index = set_index_dtypes(index, {define.IndexField.FILE: 'string'})
+        # TODO: when https://github.com/audeering/audformat/issues/230
+        #  is fixed replace use:
+        #         index = set_index_dtypes(index, {
+        #                 'file': 'string',
+        #                 'start': 'timedelta64[ns]',
+        #                 'end': 'timedelta64[ns]',
+        #             },
+        #         )
+        if len(index.levels[2]) == 0:
+            index = audformat.segmented_index(
+                index.get_level_values(define.IndexField.FILE),
+                index.get_level_values(define.IndexField.START),
+            )
+    elif isinstance(index, pd.MultiIndex):
+        obj = objs[0]
+        dtypes = {
+            name: dtype for name, dtype in zip(obj.names, obj.dtypes)
+            if dtype == 'string'
+        }
+        index = set_index_dtypes(index, dtypes)
 
     return index
 

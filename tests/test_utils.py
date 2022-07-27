@@ -2021,9 +2021,9 @@ def test_set_index_dtypes(index, dtypes, expected):
                 audformat.filewise_index(['f1', 'f2']),
             ],
             audformat.segmented_index(
-                ['f1', 'f3', 'f1', 'f2'],
-                [0, 0, 0, 0],
-                [1, 1, pd.NaT, pd.NaT],
+                ['f1', 'f2', 'f3'],
+                [0, 0, 0],
+                [pd.NaT, pd.NaT, 1],
             ),
         ),
         (
@@ -2033,9 +2033,9 @@ def test_set_index_dtypes(index, dtypes, expected):
                 audformat.filewise_index('f1'),
             ],
             audformat.segmented_index(
-                ['f1', 'f3', 'f1'],
-                [0, 0, 0],
-                [1, 1, pd.NaT],
+                ['f1', 'f3'],
+                [0, 0],
+                [pd.NaT, 1],
             ),
         ),
         (
@@ -2045,9 +2045,8 @@ def test_set_index_dtypes(index, dtypes, expected):
                 audformat.filewise_index(['f2', 'f3']),
             ],
             audformat.segmented_index(
-                ['f1', 'f2', 'f1', 'f3'],
-                [0, 0, 0, 0],
-                [1, 1, pd.NaT, pd.NaT],
+                ['f1', 'f3'],
+                [0, 0],
             ),
         ),
         (
@@ -2057,9 +2056,8 @@ def test_set_index_dtypes(index, dtypes, expected):
                 audformat.filewise_index(['f2', 'f3']),
             ],
             audformat.segmented_index(
-                ['f1', 'f2', 'f1', 'f3'],
-                [0, 0, 0, 0],
-                [1, 1, pd.NaT, pd.NaT],
+                ['f1', 'f3'],
+                [0, 0],
             ),
         ),
         # other
