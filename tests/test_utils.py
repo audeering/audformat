@@ -1848,13 +1848,14 @@ def test_replace_file_extension(index, extension, pattern, expected_index):
         (
             pd.MultiIndex.from_arrays(
                 [
+                    ['f1', 'f2'],
                     [0, 1],
                     [pd.NaT, pd.NaT],
                 ],
-                names=['idx', 'time'],
+                names=['file', 'start', 'end'],
             ),
-            {'time': 'timedelta64[ns]'},
-            None,
+            {'end': 'timedelta64[ns]'},
+            audformat.segmented_index(['f1', 'f2'], [0, 1]),
         ),
         pytest.param(
             pd.MultiIndex.from_arrays(
