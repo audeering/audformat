@@ -1278,8 +1278,8 @@ def symmetric_difference(
     index_intersect = union(pairwise_intersect)
     index = index_union.difference(index_intersect)
 
-    # index.difference() does not preserve string dtype
-    # for MultiIndex
+    # index.difference() for MultiIndex
+    # does not preserve string and timedelta64[ns] dtypes
     if is_segmented_index(index):
         index = set_index_dtypes(
             index,
