@@ -1164,6 +1164,7 @@ def set_index_dtypes(
                     index = index.set_levels(
                         index.levels[idx].astype(dtype),
                         level=level,
+                        verify_integrity=False,
                     )
     else:
         # Index
