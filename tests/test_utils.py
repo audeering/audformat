@@ -1849,7 +1849,7 @@ def test_replace_file_extension(index, extension, pattern, expected_index):
             pd.MultiIndex.from_arrays(
                 [
                     ['f1', 'f2'],
-                    [0, 1],
+                    [0, int(1e9)],
                     [pd.NaT, pd.NaT],
                 ],
                 names=['file', 'start', 'end'],
