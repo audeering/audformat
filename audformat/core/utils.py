@@ -1139,9 +1139,9 @@ def set_index_dtypes(
 
     if isinstance(index, pd.MultiIndex):
         # MultiIndex
-        if all([len(level) == 0 for level in index.levels]):
-            # set_levels() does not work
-            # in the case the levels are something like `[[], []]`,
+        if any([len(index.levels[index.names.index(level)]) == 0
+                for level in dtypes]):
+            # set_levels() does not work on empty levels,
             # so we convert to a dataframe instead
             df = index.to_frame()
             for level, dtype in dtypes.items():

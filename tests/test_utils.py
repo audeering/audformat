@@ -1779,6 +1779,72 @@ def test_replace_file_extension(index, extension, pattern, expected_index):
                 names=['idx1', 'idx2'],
             ),
         ),
+        (
+            audformat.filewise_index([]),
+            'int',
+            pd.Index([], dtype='int', name='file'),
+        ),
+        (
+            audformat.filewise_index(['1', '2']),
+            'int',
+            pd.Index([1, 2], name='file'),
+        ),
+        (
+            audformat.segmented_index(['1', '2'], [0, 0], [1, 1]),
+            {
+                'file': 'int',
+                'start': 'str',
+                'end': 'str',
+            },
+            pd.MultiIndex.from_arrays(
+                [
+                    [1, 2],
+                    ['0 days', '0 days'],
+                    ['0 days 00:00:01', '0 days 00:00:01'],
+                ],
+                names=['file', 'start', 'end'],
+            ),
+        ),
+        (
+            pd.MultiIndex.from_arrays(
+                [
+                    ['1', '2'],
+                    [0, int(1e9)],
+                ],
+                names=['idx', 'time'],
+            ),
+            {
+                'idx': 'int',
+                'time': 'timedelta64[ns]',
+            },
+            pd.MultiIndex.from_arrays(
+                [
+                    [1, 2],
+                    pd.to_timedelta([0, 1], unit='s'),
+                ],
+                names=['idx', 'time'],
+            ),
+        ),
+        (
+            pd.MultiIndex.from_arrays(
+                [
+                    ['1', '2'],
+                    [None, None],
+                ],
+                names=['idx', 'date'],
+            ),
+            {
+                'idx': 'int',
+                'date': 'datetime64[ns]',
+            },
+            pd.MultiIndex.from_arrays(
+                [
+                    [1, 2],
+                    [pd.NaT, pd.NaT],
+                ],
+                names=['idx', 'date'],
+            ),
+        ),
         pytest.param(
             pd.MultiIndex.from_arrays(
                 [
