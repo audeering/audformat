@@ -1145,7 +1145,13 @@ def set_index_dtypes(
             # so we convert to a dataframe instead
             df = index.to_frame()
             for level, dtype in dtypes.items():
-                df[level] = df[level].astype(dtype)
+                if dtype != df[level].dtype:
+                    if pd.api.types.is_timedelta64_dtype(dtype):
+                        # avoid: TypeError: Cannot cast DatetimeArray
+                        # to dtype timedelta64[ns]
+                        df[level] = pd.to_timedelta(list(df[level]))
+                    else:
+                        df[level] = df[level].astype(dtype)
             index = pd.MultiIndex.from_frame(df)
         else:
             for level, dtype in dtypes.items():
@@ -1154,14 +1160,17 @@ def set_index_dtypes(
                 # hence we access the data directly with
                 # index.levels[idx]
                 idx = index.names.index(level)
-                index = index.set_levels(
-                    index.levels[idx].astype(dtype),
-                    level=level,
-                )
+                if dtype != index.levels[idx].dtype:
+                    index = index.set_levels(
+                        index.levels[idx].astype(dtype),
+                        level=level,
+                        verify_integrity=False,
+                    )
     else:
         # Index
         dtype = next(iter(dtypes.values()))
-        index = index.astype(dtype)
+        if dtype != index.dtype:
+            index = index.astype(dtype)
 
     return index
 
