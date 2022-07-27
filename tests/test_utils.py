@@ -1845,6 +1845,17 @@ def test_replace_file_extension(index, extension, pattern, expected_index):
                 names=['idx', 'date'],
             ),
         ),
+        (
+            pd.MultiIndex.from_arrays(
+                [
+                    [0, 1],
+                    [pd.NaT, pd.NaT],
+                ],
+                names=['idx', 'time'],
+            ),
+            {'time': 'timedelta64[ns]'},
+            None,
+        ),
         pytest.param(
             pd.MultiIndex.from_arrays(
                 [
