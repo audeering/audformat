@@ -1854,7 +1854,11 @@ def test_replace_file_extension(index, extension, pattern, expected_index):
                 ],
                 names=['file', 'start', 'end'],
             ),
-            {'end': 'timedelta64[ns]'},
+            {
+                'file': 'string',
+                'start': 'timedelta64[ns]',
+                'end': 'timedelta64[ns]',
+            },
             audformat.segmented_index(['f1', 'f2'], [0, 1]),
         ),
         pytest.param(
