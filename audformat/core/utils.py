@@ -1624,12 +1624,13 @@ def _assert_index_alike(
     objs = [obj if isinstance(obj, pd.Index) else obj.index for obj in objs]
     msg = 'Levels and dtypes of all objects must match.'
 
-    dims = set(obj.nlevels for obj in objs)
+    dims = sorted(list(set(obj.nlevels for obj in objs)))
     if len(dims) > 1:
         msg += f' Found different number of levels: {dims}.'
         raise ValueError(msg)
 
-    names = set([tuple(obj.names) for obj in objs])
+    names = sorted(list(set([tuple(obj.names) if len(obj.names) > 1
+                             else obj.names[0] for obj in objs])))
     if len(names) > 1:
         msg += f' Found different level names: {names}.'
         raise ValueError(msg)
@@ -1640,7 +1641,8 @@ def _assert_index_alike(
             ds = [to_audformat_dtype(dtype) for dtype in obj.dtypes]
         else:
             ds = [to_audformat_dtype(obj.dtype)]
-        dtypes.add(tuple(ds))
+        dtypes.add(tuple(ds) if len(ds) > 1 else ds[0])
+    dtypes = sorted(list(dtypes))
     if len(dtypes) > 1:
         msg += f' Found different level dtypes: {dtypes}.'
 
