@@ -483,12 +483,6 @@ def intersect(
     Example:
         >>> intersect(
         ...     [
-        ...         pd.Index([1, 2, 3], name='idx'),
-        ...     ]
-        ... )
-        Int64Index([1, 2, 3], dtype='int64', name='idx')
-        >>> intersect(
-        ...     [
         ...         pd.Index([1, np.nan], dtype='Int64', name='idx'),
         ...         pd.Index([1, 2, 3], name='idx'),
         ...     ]
@@ -1175,6 +1169,12 @@ def symmetric_difference(
     Raises:
         ValueError: if level and dtypes of objects do not match
     Example:
+        >>> symmetric_difference(
+        ...     [
+        ...         pd.Index([1, 2, 3], name='idx'),
+        ...     ]
+        ... )
+        Int64Index([1, 2, 3], dtype='int64', name='idx')
         >>> symmetric_difference(
         ...     [
         ...         pd.Index([0, 1], name='idx'),
