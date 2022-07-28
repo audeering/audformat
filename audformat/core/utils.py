@@ -527,11 +527,10 @@ def intersect(
         >>> intersect(
         ...     [
         ...         filewise_index(['f1', 'f2']),
-        ...         segmented_index(['f1', 'f2'], [0, 0], [1, 1]),
+        ...         segmented_index(['f1', 'f2'], [0, 0], [pd.NaT, 1]),
         ...     ]
         ... )
-        MultiIndex([('f1', '0 days', '0 days 00:00:01'),
-                    ('f2', '0 days', '0 days 00:00:01')],
+        MultiIndex([('f1', '0 days', NaT)],
                    names=['file', 'start', 'end'])
 
     """
@@ -541,37 +540,20 @@ def intersect(
     if len(objs) == 1:
         return objs[0]
 
-    objs_filewise = [obj for obj in objs if is_filewise_index(obj)]
-    objs_segmented = [obj for obj in objs if is_segmented_index(obj)]
+    objs = _maybe_convert_filewise_index(objs)
+    objs = _maybe_convert_single_level_multi_index(objs)
 
-    if (
-            len(objs_filewise) > 0
-            and len(objs_segmented) > 0
-            and len(objs_filewise + objs_segmented) == len(objs)
-    ):
-
-        # if we have a mixture of segmented and filewise
-        # intersect separately,
-        # and find segments that are part of the files
-        index_filewise = intersect(objs_filewise)
-        index_segmented = intersect(objs_segmented)
-        index = index_segmented[index_segmented.isin(index_filewise, 0)]
-
-    else:
-
-        objs = _maybe_convert_single_level_multi_index(objs)
-
-        # sort objects by length
-        objs = sorted(objs, key=lambda obj: len(obj))
-        # start from shortest index
-        index = objs[0]
-        mask = np.ones(len(index), dtype=bool)
-        for obj in objs[1:]:
-            mask &= index.isin(obj)
-            if not mask.any():
-                # break early if no more intersection is possible
-                break
-        index = index[mask]
+    # sort objects by length
+    objs = sorted(objs, key=lambda obj: len(obj))
+    # start from shortest index
+    index = objs[0]
+    mask = np.ones(len(index), dtype=bool)
+    for obj in objs[1:]:
+        mask &= index.isin(obj)
+        if not mask.any():
+            # break early if no more intersection is possible
+            break
+    index = index[mask]
 
     return index
 
