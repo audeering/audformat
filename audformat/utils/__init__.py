@@ -15,6 +15,7 @@ from audformat.core.utils import (
     read_csv,
     replace_file_extension,
     set_index_dtypes,
+    symmetric_difference,
     to_filewise_index,
     to_segmented_index,
     union,

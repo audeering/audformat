@@ -1143,6 +1143,117 @@ def set_index_dtypes(
     return index
 
 
+def symmetric_difference(
+        objs: typing.Sequence[typing.Union[pd.Index]],
+) -> pd.Index:
+    r"""Symmetric difference of index objects.
+
+    If all index objects are conform to
+    :ref:`table specifications <data-tables:Tables>`
+    and at least one object is segmented,
+    the output is a segmented index.
+    Otherwise,
+    requires that levels and dtypes
+    of all objects match,
+    see :func:`audformat.utils.is_index_alike`.
+    When the symmetric difference of a
+    :class:`pandas.Index`
+    with a single-level
+    :class:`pandas.MultiIndex`,
+    is calculated,
+    the result is a
+    :class:`pandas.Index`.
+
+    Args:
+        objs: index objects
+
+    Returns:
+        symmetric difference of index objects
+
+    Raises:
+        ValueError: if level and dtypes of objects do not match
+
+    Example:
+        >>> symmetric_difference(
+        ...     [
+        ...         pd.Index([1, 2, 3], name='idx'),
+        ...     ]
+        ... )
+        Int64Index([1, 2, 3], dtype='int64', name='idx')
+        >>> symmetric_difference(
+        ...     [
+        ...         pd.Index([0, 1], name='idx'),
+        ...         pd.Index([1, 2], dtype='Int64', name='idx'),
+        ...     ]
+        ... )
+        Index([0, 2], dtype='Int64', name='idx')
+        >>> symmetric_difference(
+        ...     [
+        ...         pd.Index([0, 1], name='idx'),
+        ...         pd.MultiIndex.from_arrays([[1, 2]], names=['idx']),
+        ...     ]
+        ... )
+        Int64Index([0, 2], dtype='int64', name='idx')
+        >>> symmetric_difference(
+        ...     [
+        ...         pd.MultiIndex.from_arrays(
+        ...             [['a', 'b', 'c'], [0, 1, 2]],
+        ...             names=['idx1', 'idx2'],
+        ...         ),
+        ...         pd.MultiIndex.from_arrays(
+        ...             [['b', 'c'], [1, 3]],
+        ...             names=['idx1', 'idx2'],
+        ...         ),
+        ...     ]
+        ... )
+        MultiIndex([('a', 0),
+                    ('c', 2),
+                    ('c', 3)],
+                   names=['idx1', 'idx2'])
+        >>> symmetric_difference(
+        ...     [
+        ...         filewise_index(['f1', 'f2', 'f3']),
+        ...         filewise_index(['f2', 'f3', 'f4']),
+        ...     ]
+        ... )
+        Index(['f1', 'f4'], dtype='string', name='file')
+        >>> symmetric_difference(
+        ...     [
+        ...         segmented_index(['f1'], [0], [1]),
+        ...         segmented_index(['f1', 'f2'], [0, 1], [1, 2]),
+        ...     ]
+        ... )
+        MultiIndex([('f2', '0 days 00:00:01', '0 days 00:00:02')],
+                   names=['file', 'start', 'end'])
+        >>> symmetric_difference(
+        ...     [
+        ...         filewise_index(['f1', 'f2']),
+        ...         segmented_index(['f1', 'f2'], [0, 0], [pd.NaT, 1]),
+        ...     ]
+        ... )
+        MultiIndex([('f2', '0 days',               NaT),
+                    ('f2', '0 days', '0 days 00:00:01')],
+                   names=['file', 'start', 'end'])
+
+    """
+    if not objs:
+        return pd.Index([])
+
+    if len(objs) == 1:
+        return objs[0]
+
+    objs = _maybe_convert_filewise_index(objs)
+    objs = _maybe_convert_single_level_multi_index(objs)
+
+    index = union(objs)
+    count = np.zeros(len(index))
+    for obj in objs:
+        count += index.isin(obj)
+    index = index[count == 1]
+
+    return index
+
+
 def to_filewise_index(
         obj: typing.Union[pd.Index, pd.Series, pd.DataFrame],
         root: str,
