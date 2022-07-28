@@ -12,6 +12,7 @@ import pandas as pd
 import audeer
 import audiofile
 
+import audformat.utils
 from audformat.core import define
 from audformat.core.common import to_audformat_dtype
 from audformat.core.database import Database
@@ -483,6 +484,12 @@ def intersect(
     Example:
         >>> intersect(
         ...     [
+        ...         pd.Index([1, 2, 3], name='idx'),
+        ...     ]
+        ... )
+        Int64Index([], dtype='int64', name='idx')
+        >>> intersect(
+        ...     [
         ...         pd.Index([1, np.nan], dtype='Int64', name='idx'),
         ...         pd.Index([1, 2, 3], name='idx'),
         ...     ]
@@ -538,7 +545,7 @@ def intersect(
         return pd.Index([])
 
     if len(objs) == 1:
-        return objs[0]
+        return _alike_index(objs[0])
 
     objs = _maybe_convert_filewise_index(objs)
     objs = _maybe_convert_single_level_multi_index(objs)
@@ -1581,6 +1588,28 @@ def union(
     index = index.drop_duplicates()
 
     return index
+
+
+def _alike_index(index: pd.Index) -> pd.Index:
+    r"""Return empty index with same levels and dtypes."""
+    if is_filewise_index(index):
+        return filewise_index()
+    elif is_segmented_index(index):
+        return segmented_index()
+    elif isinstance(index, pd.MultiIndex):
+        return audformat.utils.set_index_dtypes(
+            pd.MultiIndex.from_arrays(
+                [[]] * index.nlevels,
+                names=index.names,
+            ),
+            index.dtypes.to_dict(),
+        )
+    else:
+        return pd.Index(
+            [],
+            dtype=index.dtype,
+            name=index.name,
+        )
 
 
 def _is_same_dtype(d1, d2) -> bool:
