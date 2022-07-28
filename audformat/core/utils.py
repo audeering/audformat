@@ -1629,8 +1629,13 @@ def _assert_index_alike(
         msg += f' Found different number of levels: {dims}.'
         raise ValueError(msg)
 
-    names = sorted(list(set([tuple(obj.names) if len(obj.names) > 1
-                             else obj.names[0] for obj in objs])))
+    names = set()
+    for obj in objs:
+        if len(obj.names) > 1:
+            names.add(tuple([str(name) for name in obj.names]))
+        else:
+            names.add(str(obj.names[0]))
+    names = sorted(list(names))
     if len(names) > 1:
         msg += f' Found different level names: {names}.'
         raise ValueError(msg)

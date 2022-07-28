@@ -1138,6 +1138,13 @@ def test_intersect(objs, expected):
         ),
         (
             [
+                pd.Index([1, 2, 3]),
+                pd.Index([10, 20], name='l'),
+            ],
+            "Found different level names: ['None', 'l']",
+        ),
+        (
+            [
                 pd.Index([1, 2, 3], name='l'),
                 pd.MultiIndex.from_arrays([[10, 20]], names=['l']),
             ],
@@ -1242,6 +1249,14 @@ def test_intersect(objs, expected):
             ],
             "Found different level dtypes: "
             "[('object', 'int'), ('object', 'object')]",
+        ),
+        (
+            [
+                pd.MultiIndex.from_arrays([[], []], names=['l1', 'l2']),
+                pd.MultiIndex.from_arrays([[], []]),
+            ],
+            "Found different level names: "
+            "[('None', 'None'), ('l1', 'l2')]",
         ),
         (
             [
