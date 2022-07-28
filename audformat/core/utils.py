@@ -168,6 +168,7 @@ def concat(
         return objs[0]
 
     objs = _maybe_convert_filewise_index(objs)
+    _assert_index_alike(objs)
     objs = _maybe_convert_single_level_multi_index(objs)
 
     # the new index is a union of the individual objects
@@ -1597,7 +1598,7 @@ def _alike_index(index: pd.Index) -> pd.Index:
     elif is_segmented_index(index):
         return segmented_index()
     elif isinstance(index, pd.MultiIndex):
-        return audformat.utils.set_index_dtypes(
+        return set_index_dtypes(
             pd.MultiIndex.from_arrays(
                 [[]] * index.nlevels,
                 names=index.names,
@@ -1610,6 +1611,40 @@ def _alike_index(index: pd.Index) -> pd.Index:
             dtype=index.dtype,
             name=index.name,
         )
+
+
+def _assert_index_alike(
+        objs: typing.Sequence[typing.Union[pd.Index, pd.Series, pd.DataFrame]],
+):
+    r"""Raise error if is_index_alike() returns ``False``."""
+
+    if is_index_alike(objs):
+        return
+
+    objs = [obj if isinstance(obj, pd.Index) else obj.index for obj in objs]
+    msg = 'Levels and dtypes of all objects must match.'
+
+    dims = set(obj.nlevels for obj in objs)
+    if len(dims) > 1:
+        msg += f' Found different number of levels: {dims}.'
+        raise ValueError(msg)
+
+    names = set([tuple(obj.names) for obj in objs])
+    if len(names) > 1:
+        msg += f' Found different level names: {names}.'
+        raise ValueError(msg)
+
+    dtypes = set()
+    for obj in objs:
+        if isinstance(obj, pd.MultiIndex):
+            ds = [to_audformat_dtype(dtype) for dtype in obj.dtypes]
+        else:
+            ds = [to_audformat_dtype(obj.dtype)]
+        dtypes.add(tuple(ds))
+    if len(dtypes) > 1:
+        msg += f' Found different level dtypes: {dtypes}.'
+
+    raise ValueError(msg)
 
 
 def _is_same_dtype(d1, d2) -> bool:
