@@ -1,3 +1,4 @@
+import itertools
 from io import StringIO
 import os
 import shutil
@@ -940,6 +941,13 @@ def test_index_has_overlap(obj, expected):
         ),
         (
             [
+                audformat.segmented_index('f1'),
+                audformat.segmented_index('f1', 0, 1),
+            ],
+            audformat.segmented_index(),
+        ),
+        (
+            [
                 audformat.segmented_index(['f1', 'f2'], [0, 0], [1, 1]),
                 audformat.segmented_index(['f2', 'f3'], [0, 0], [1, 1]),
                 audformat.filewise_index(['f1', 'f2']),
@@ -984,8 +992,8 @@ def test_index_has_overlap(obj, expected):
         ),
         (
             [
-                pd.Index([0, 1], name='idx'),
-                pd.Index([1, 2], dtype='Int64', name='idx'),
+                pd.Index([1, np.nan], dtype='Int64', name='idx'),
+                pd.Index([1, 2, 3], name='idx'),
             ],
             pd.Index([1], dtype='Int64', name='idx'),
         ),
@@ -1030,10 +1038,11 @@ def test_index_has_overlap(obj, expected):
     ]
 )
 def test_intersect(objs, expected):
-    pd.testing.assert_index_equal(
-        audformat.utils.intersect(objs),
-        expected,
-    )
+    for permuted_objs in itertools.permutations(objs):
+        pd.testing.assert_index_equal(
+            audformat.utils.intersect(permuted_objs),
+            expected,
+        )
 
 
 @pytest.mark.parametrize(

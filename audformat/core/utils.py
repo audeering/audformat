@@ -490,8 +490,8 @@ def intersect(
     Example:
         >>> intersect(
         ...     [
-        ...         pd.Index([0, 1], name='idx'),
-        ...         pd.Index([1, 2], dtype='Int64', name='idx'),
+        ...         pd.Index([1, np.nan], dtype='Int64', name='idx'),
+        ...         pd.Index([1, 2, 3], name='idx'),
         ...     ]
         ... )
         Index([1], dtype='Int64', name='idx')
@@ -568,24 +568,17 @@ def intersect(
 
         objs = _convert_single_level_multi_index(objs)
 
+        # sort objects by length
+        objs = sorted(objs, key=lambda obj: len(obj))
+        # start from shortest index
         index = objs[0]
+        mask = np.ones(len(index), dtype=bool)
         for obj in objs[1:]:
-            index = index.intersection(obj)
-
-        # index.intersection() does not preserve string dtype
-        # for MultiIndex
-        if isinstance(index, pd.MultiIndex):
-            obj = objs[0]
-            dtypes = {
-                name: dtype for name, dtype in zip(obj.names, obj.dtypes)
-                if dtype == 'string'
-            }
-            index = set_index_dtypes(index, dtypes)
-
-    # We use len() here as index.empty takes a very long time
-    if len(index) == 0 and is_segmented_index(index):
-        # asserts that start and end are of type 'timedelta64[ns]'
-        index = segmented_index()
+            mask &= index.isin(obj)
+            if not mask.any():
+                # break early if no more intersection is possible
+                break
+        index = index[mask]
 
     return index
 
