@@ -490,8 +490,8 @@ def intersect(
     Example:
         >>> intersect(
         ...     [
-        ...         pd.Index([0, 1], name='idx'),
-        ...         pd.Index([1, 2], dtype='Int64', name='idx'),
+        ...         pd.Index([1, np.nan], dtype='Int64', name='idx'),
+        ...         pd.Index([1, 2, 3], name='idx'),
         ...     ]
         ... )
         Index([1], dtype='Int64', name='idx')
@@ -529,7 +529,7 @@ def intersect(
         ...         segmented_index(['f1', 'f2'], [0, 1], [1, 2]),
         ...     ]
         ... )
-        MultiIndex([('f1', '0 days 00:00:00', '0 days 00:00:01')],
+        MultiIndex([('f1', '0 days', '0 days 00:00:01')],
                    names=['file', 'start', 'end'])
         >>> intersect(
         ...     [
@@ -568,11 +568,12 @@ def intersect(
 
         objs = _convert_single_level_multi_index(objs)
 
-        index = union(objs)
-        mask = np.ones(len(index), dtype=bool)
-        # sort objects by length to check short indices first
+        # sort objects by length
         objs = sorted(objs, key=lambda obj: len(obj))
-        for obj in objs:
+        # start from shortest index
+        index = objs[0]
+        mask = np.ones(len(index), dtype=bool)
+        for obj in objs[1:]:
             mask &= index.isin(obj)
             if not mask.any():
                 # break early if no more intersection is possible
