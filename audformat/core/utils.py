@@ -490,7 +490,7 @@ def intersect(
         >>> intersect(
         ...     [
         ...         pd.Index([1, np.nan], dtype='Int64', name='idx'),
-        ...         pd.Index([1, 2, 3], name='idx'),
+        ...         pd.Index([1, 2, 3], dtype='Int64', name='idx'),
         ...     ]
         ... )
         Index([1], dtype='Int64', name='idx')
@@ -553,14 +553,14 @@ def intersect(
     # sort objects by length
     objs = sorted(objs, key=lambda obj: len(obj))
     # start from shortest index
-    index = objs[0]
-    mask = np.ones(len(index), dtype=bool)
+    index = set(objs[0])
     for obj in objs[1:]:
-        mask &= index.isin(obj)
-        if not mask.any():
+        index = index.intersection(set(obj))
+        if len(index) == 0:
             # break early if no more intersection is possible
             break
-    index = index[mask]
+    index = sorted(list((index)))
+    index = _alike_index(obj, index)
 
     return index
 
@@ -1600,23 +1600,18 @@ def union(
     return index
 
 
-def _alike_index(index: pd.Index) -> pd.Index:
-    r"""Return empty index with same levels and dtypes."""
-    if is_filewise_index(index):
-        return filewise_index()
-    elif is_segmented_index(index):
-        return segmented_index()
-    elif isinstance(index, pd.MultiIndex):
-        return set_index_dtypes(
-            pd.MultiIndex.from_arrays(
-                [[]] * index.nlevels,
-                names=index.names,
-            ),
+def _alike_index(
+        index: pd.Index,
+        data: typing.Sequence = [],
+) -> pd.Index:
+    if isinstance(index, pd.MultiIndex):
+        return audformat.utils.set_index_dtypes(
+            pd.MultiIndex.from_tuples(data, names=list(index.names)),
             index.dtypes.to_dict(),
         )
     else:
         return pd.Index(
-            [],
+            data,
             dtype=index.dtype,
             name=index.name,
         )
