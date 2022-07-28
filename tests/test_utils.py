@@ -1000,7 +1000,7 @@ def test_index_has_overlap(obj, expected):
             [
                 pd.Index([0, 1], name='idx'),
             ],
-            pd.Index([], name='idx'),
+            pd.Index([], dtype='int64', name='idx'),
         ),
         (
             [

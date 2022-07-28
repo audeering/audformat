@@ -486,7 +486,7 @@ def intersect(
         ...         pd.Index([1, 2, 3], name='idx'),
         ...     ]
         ... )
-        Index([], dtype='object', name='idx')
+        Int64Index([], dtype='int64', name='idx')
         >>> intersect(
         ...     [
         ...         pd.Index([1, np.nan], dtype='Int64', name='idx'),
@@ -544,17 +544,7 @@ def intersect(
         return pd.Index([])
 
     if len(objs) == 1:
-        if is_filewise_index(objs[0]):
-            return filewise_index()
-        elif is_segmented_index(objs[0]):
-            return segmented_index()
-        elif isinstance(objs[0], pd.MultiIndex):
-            return pd.MultiIndex.from_arrays(
-                [[]] * objs[0].nlevels,
-                names=objs[0].names,
-            )
-        else:
-            return pd.Index([], name=objs[0].name)
+        return _alike_index(objs[0])
 
     objs = _maybe_convert_filewise_index(objs)
     objs = _maybe_convert_single_level_multi_index(objs)
@@ -1597,6 +1587,25 @@ def union(
     index = index.drop_duplicates()
 
     return index
+
+
+def _alike_index(index: pd.Index) -> pd.Index:
+    r"""Return empty index with same levels and dtypes."""
+    if is_filewise_index(index):
+        return filewise_index()
+    elif is_segmented_index(index):
+        return segmented_index()
+    elif isinstance(index, pd.MultiIndex):
+        return pd.MultiIndex.from_arrays(
+            [[]] * index.nlevels,
+            names=index.names,
+        )
+    else:
+        return pd.Index(
+            [],
+            dtype=index.dtype,
+            name=index.name,
+        )
 
 
 def _is_same_dtype(d1, d2) -> bool:
