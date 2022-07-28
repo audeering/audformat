@@ -1084,10 +1084,10 @@ def test_index_has_overlap(obj, expected):
 )
 def test_intersect(objs, expected):
     for permuted_objs in itertools.permutations(objs):
-        index = audformat.utils.intersect(permuted_objs)
-        if len(index) > 0:
-            index = index.sort_values()
-        pd.testing.assert_index_equal(index, expected)
+        pd.testing.assert_index_equal(
+            audformat.utils.intersect(permuted_objs),
+            expected,
+        )
     # Ensure A ∩ (B ∩ C) == (A ∩ B) ∩ C
     if len(objs) > 2:
         pd.testing.assert_index_equal(
