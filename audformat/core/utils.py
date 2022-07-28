@@ -174,7 +174,7 @@ def concat(
         if not filewise.all():
             objs = [to_segmented_index(obj) for obj in objs]
     else:
-        _convert_single_level_multi_index(objs)
+        objs = _convert_single_level_multi_index(objs)
 
     # the new index is a union of the individual objects
     index = union([obj.index for obj in objs])
@@ -566,7 +566,7 @@ def intersect(
 
     else:
 
-        _convert_single_level_multi_index(objs)
+        objs = _convert_single_level_multi_index(objs)
 
         index = objs[0]
         for obj in objs[1:]:
@@ -1499,7 +1499,7 @@ def union(
         if not filewise.all():
             objs = [to_segmented_index(obj) for obj in objs]
     else:
-        _convert_single_level_multi_index(objs)
+        objs = _convert_single_level_multi_index(objs)
 
     # Combine all MultiIndex entries and drop duplicates afterwards,
     # faster than using index.union(),
@@ -1512,8 +1512,8 @@ def union(
 
 
 def _convert_single_level_multi_index(
-        objs: typing.List[typing.Union[pd.Index, pd.Series, pd.DataFrame]],
-):
+        objs: typing.Sequence[typing.Union[pd.Index, pd.Series, pd.DataFrame]],
+) -> typing.Sequence[typing.Union[pd.Index, pd.Series, pd.DataFrame]]:
     r"""Convert single-level pd.MultiIndex to pd.Index.
 
     If input is a mixture of single-level
@@ -1523,6 +1523,9 @@ def _convert_single_level_multi_index(
 
     Args:
         objs: list with objects
+
+    Returns:
+        list with possibly converted objects
 
     Raises:
         ValueError: if level and dtypes of objects do not match
@@ -1540,6 +1543,7 @@ def _convert_single_level_multi_index(
                      for index in indices)) == 2
 
     if is_single_level and is_mix:
+        objs = list(objs)
         for idx, obj in enumerate(objs):
             if isinstance(obj, pd.MultiIndex):
                 objs[idx] = obj.get_level_values(0)
@@ -1548,6 +1552,8 @@ def _convert_single_level_multi_index(
                     and isinstance(obj.index, pd.MultiIndex)
             ):
                 objs[idx].index = obj.index.get_level_values(0)
+
+    return objs
 
 
 def _is_same_dtype(d1, d2) -> bool:
