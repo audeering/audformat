@@ -166,15 +166,8 @@ def concat(
     if len(objs) == 1:
         return objs[0]
 
-    # check if all objects are either filewise or segmented,
-    # if this is the case possibly convert filewise to segmented indices
-    filewise = np.array([is_filewise_index(obj) for obj in objs])
-    segmented = np.array([is_segmented_index(obj) for obj in objs])
-    if (filewise | segmented).all():
-        if not filewise.all():
-            objs = [to_segmented_index(obj) for obj in objs]
-    else:
-        objs = _convert_single_level_multi_index(objs)
+    objs = _maybe_convert_filewise_index(objs)
+    objs = _maybe_convert_single_level_multi_index(objs)
 
     # the new index is a union of the individual objects
     index = union([obj.index for obj in objs])
@@ -566,7 +559,7 @@ def intersect(
 
     else:
 
-        objs = _convert_single_level_multi_index(objs)
+        objs = _maybe_convert_single_level_multi_index(objs)
 
         # sort objects by length
         objs = sorted(objs, key=lambda obj: len(obj))
@@ -1484,15 +1477,8 @@ def union(
     if len(objs) == 1:
         return objs[0]
 
-    # check if all objects are either filewise or segmented,
-    # if this is the case possibly convert filewise to segmented indices
-    filewise = np.array([is_filewise_index(obj) for obj in objs])
-    segmented = np.array([is_segmented_index(obj) for obj in objs])
-    if (filewise | segmented).all():
-        if not filewise.all():
-            objs = [to_segmented_index(obj) for obj in objs]
-    else:
-        objs = _convert_single_level_multi_index(objs)
+    objs = _maybe_convert_filewise_index(objs)
+    objs = _maybe_convert_single_level_multi_index(objs)
 
     # Combine all MultiIndex entries and drop duplicates afterwards,
     # faster than using index.union(),
@@ -1504,7 +1490,48 @@ def union(
     return index
 
 
-def _convert_single_level_multi_index(
+def _is_same_dtype(d1, d2) -> bool:
+    r"""Helper function to compare pandas dtype."""
+    if d1.name.startswith('bool') and d2.name.startswith('bool'):
+        # match different bool types, i.e. bool and boolean
+        return True
+    if d1.name.lower().startswith('int') and d2.name.lower().startswith('int'):
+        # match different int types, e.g. int64 and Int64
+        return True
+    if d1.name.startswith('float') and d2.name.startswith('float'):
+        # match different float types, e.g. float32 and float64
+        return True
+    if d1.name == 'category' and d2.name == 'category':
+        # match only if categories are the same
+        return d1 == d2
+    return d1.name == d2.name
+
+
+def _maybe_convert_filewise_index(
+        objs: typing.Sequence[typing.Union[pd.Index, pd.Series, pd.DataFrame]],
+) -> typing.Sequence[typing.Union[pd.Index, pd.Series, pd.DataFrame]]:
+    r"""Convert filewise to segmented index.
+
+    Checks if all index objects are either filewise or segmented,
+    if this is the case possibly convert filewise to segmented indices
+
+    Args:
+        objs: list with objects
+
+    Returns:
+        list with possibly converted index objects
+
+    """
+    filewise = np.array([is_filewise_index(obj) for obj in objs])
+    segmented = np.array([is_segmented_index(obj) for obj in objs])
+    if (filewise | segmented).all():
+        if not filewise.all():
+            objs = [to_segmented_index(obj) for obj in objs]
+
+    return objs
+
+
+def _maybe_convert_single_level_multi_index(
         objs: typing.Sequence[typing.Union[pd.Index, pd.Series, pd.DataFrame]],
 ) -> typing.Sequence[typing.Union[pd.Index, pd.Series, pd.DataFrame]]:
     r"""Convert single-level pd.MultiIndex to pd.Index.
@@ -1547,20 +1574,3 @@ def _convert_single_level_multi_index(
                 objs[idx].index = obj.index.get_level_values(0)
 
     return objs
-
-
-def _is_same_dtype(d1, d2) -> bool:
-    r"""Helper function to compare pandas dtype."""
-    if d1.name.startswith('bool') and d2.name.startswith('bool'):
-        # match different bool types, i.e. bool and boolean
-        return True
-    if d1.name.lower().startswith('int') and d2.name.lower().startswith('int'):
-        # match different int types, e.g. int64 and Int64
-        return True
-    if d1.name.startswith('float') and d2.name.startswith('float'):
-        # match different float types, e.g. float32 and float64
-        return True
-    if d1.name == 'category' and d2.name == 'category':
-        # match only if categories are the same
-        return d1 == d2
-    return d1.name == d2.name
