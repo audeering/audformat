@@ -2718,3 +2718,19 @@ def test_union(objs, expected):
         audformat.utils.union(objs),
         expected,
     )
+    # Ensure A ∪ (B ∪ C) == (A ∪ B) ∪ C
+    if len(objs) > 2:
+        pd.testing.assert_index_equal(
+            audformat.utils.union(
+                [
+                    objs[0],
+                    audformat.utils.union(objs[1:]),
+                ]
+            ),
+            audformat.utils.union(
+                [
+                    audformat.utils.union(objs[:-1]),
+                    objs[-1],
+                ]
+            ),
+        )
