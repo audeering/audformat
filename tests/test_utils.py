@@ -1051,6 +1051,21 @@ def test_intersect(objs, expected):
             audformat.utils.intersect(permuted_objs),
             expected,
         )
+    if len(objs) > 2:
+        pd.testing.assert_index_equal(
+            audformat.utils.intersect(
+                [
+                    objs[0],
+                    audformat.utils.intersect(objs[1:]),
+                ]
+            ),
+            audformat.utils.intersect(
+                [
+                    audformat.utils.intersect(objs[:-1]),
+                    objs[-1],
+                ]
+            ),
+        )
 
 
 @pytest.mark.parametrize(
