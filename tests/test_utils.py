@@ -1005,13 +1005,19 @@ def test_index_has_overlap(obj, expected):
         (
             [
                 pd.MultiIndex.from_arrays(
-                    [[0, 1], [2, 3]],
+                    [[0, 1], ['a', 'b']],
                     names=['idx1', 'idx2'],
                 ),
             ],
-            pd.MultiIndex.from_arrays(
-                [[], []],
-                names=['idx1', 'idx2'],
+            audformat.utils.set_index_dtypes(
+                pd.MultiIndex.from_arrays(
+                    [[], []],
+                    names=['idx1', 'idx2'],
+                ),
+                {
+                    'idx1': 'int',
+                    'idx2': 'object',
+                },
             ),
         ),
         (

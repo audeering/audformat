@@ -12,6 +12,7 @@ import pandas as pd
 import audeer
 import audiofile
 
+import audformat.utils
 from audformat.core import define
 from audformat.core.common import to_audformat_dtype
 from audformat.core.database import Database
@@ -1596,9 +1597,12 @@ def _alike_index(index: pd.Index) -> pd.Index:
     elif is_segmented_index(index):
         return segmented_index()
     elif isinstance(index, pd.MultiIndex):
-        return pd.MultiIndex.from_arrays(
-            [[]] * index.nlevels,
-            names=index.names,
+        return audformat.utils.set_index_dtypes(
+            pd.MultiIndex.from_arrays(
+                [[]] * index.nlevels,
+                names=index.names,
+            ),
+            index.dtypes.to_dict(),
         )
     else:
         return pd.Index(
