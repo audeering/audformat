@@ -168,7 +168,6 @@ def concat(
         return objs[0]
 
     objs = _maybe_convert_filewise_index(objs)
-    _assert_index_alike(objs)
     objs = _maybe_convert_single_level_multi_index(objs)
 
     # the new index is a union of the individual objects
@@ -549,6 +548,7 @@ def intersect(
         return _alike_index(objs[0])
 
     objs = _maybe_convert_filewise_index(objs)
+    _assert_index_alike(objs)
     objs = _maybe_convert_single_level_multi_index(objs)
 
     # sort objects by length
@@ -1616,8 +1616,15 @@ def _alike_index(index: pd.Index) -> pd.Index:
 def _assert_index_alike(
         objs: typing.Sequence[typing.Union[pd.Index, pd.Series, pd.DataFrame]],
 ):
-    r"""Raise error if is_index_alike() returns ``False``."""
+    r"""Raise if index objects are not alike.
 
+    Args:
+        objs: objects
+
+    Raises:
+        ValueError: if index objects are not alike
+
+    """
     if is_index_alike(objs):
         return
 
@@ -1711,16 +1718,7 @@ def _maybe_convert_single_level_multi_index(
     Returns:
         list with possibly converted objects
 
-    Raises:
-        ValueError: if level and dtypes of objects do not match
-
     """
-    if not is_index_alike(objs):
-        raise ValueError(
-            'Levels and dtypes of all objects must match, '
-            'see audformat.utils.is_index_alike().'
-        )
-
     indices = [obj if isinstance(obj, pd.Index) else obj.index for obj in objs]
     is_single_level = indices[0].nlevels == 1
     is_mix = len(set(isinstance(index, pd.MultiIndex)
