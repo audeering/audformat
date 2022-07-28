@@ -1,3 +1,4 @@
+import itertools
 from io import StringIO
 import os
 import shutil
@@ -1037,15 +1038,11 @@ def test_index_has_overlap(obj, expected):
     ]
 )
 def test_intersect(objs, expected):
-    pd.testing.assert_index_equal(
-        audformat.utils.intersect(objs),
-        expected,
-    )
-    objs = list(reversed(objs))
-    pd.testing.assert_index_equal(
-        audformat.utils.intersect(objs),
-        expected,
-    )
+    for permuted_objs in itertools.permutations(objs):
+        pd.testing.assert_index_equal(
+            audformat.utils.intersect(permuted_objs),
+            expected,
+        )
 
 
 @pytest.mark.parametrize(
