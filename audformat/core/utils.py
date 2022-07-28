@@ -169,6 +169,7 @@ def concat(
 
     objs = _maybe_convert_filewise_index(objs)
     objs = _maybe_convert_single_level_multi_index(objs)
+    _assert_index_alike(objs)
 
     # the new index is a union of the individual objects
     index = union([obj.index for obj in objs])
@@ -548,8 +549,8 @@ def intersect(
         return _alike_index(objs[0])
 
     objs = _maybe_convert_filewise_index(objs)
-    _assert_index_alike(objs)
     objs = _maybe_convert_single_level_multi_index(objs)
+    _assert_index_alike(objs)
 
     # sort objects by length
     objs = sorted(objs, key=lambda obj: len(obj))
@@ -1252,6 +1253,7 @@ def symmetric_difference(
 
     objs = _maybe_convert_filewise_index(objs)
     objs = _maybe_convert_single_level_multi_index(objs)
+    _assert_index_alike(objs)
 
     index = union(objs)
     count = np.zeros(len(index))
@@ -1580,6 +1582,7 @@ def union(
 
     objs = _maybe_convert_filewise_index(objs)
     objs = _maybe_convert_single_level_multi_index(objs)
+    _assert_index_alike(objs)
 
     # Combine all MultiIndex entries and drop duplicates afterwards,
     # faster than using index.union(),
