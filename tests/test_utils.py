@@ -2127,6 +2127,252 @@ def test_to_segmented_index(obj, allow_nat, files_duration, root, expected):
 
 
 @pytest.mark.parametrize(
+    'objs, expected',
+    [
+        # empty
+        (
+            [],
+            pd.Index([]),
+        ),
+        # conform to audformat
+        (
+            [
+                audformat.filewise_index(),
+            ],
+            audformat.filewise_index(),
+        ),
+        (
+            [
+                audformat.filewise_index(),
+                audformat.filewise_index(),
+            ],
+            audformat.filewise_index(),
+        ),
+        (
+            [
+                audformat.filewise_index(['f1', 'f2']),
+                audformat.filewise_index(['f1', 'f2']),
+            ],
+            audformat.filewise_index(),
+        ),
+        (
+            [
+                audformat.filewise_index(['f1', 'f2']),
+                audformat.filewise_index(['f1', 'f2']),
+                audformat.filewise_index(['f2', 'f3']),
+            ],
+            audformat.filewise_index('f3'),
+        ),
+        (
+            [
+                audformat.filewise_index(['f1', 'f2']),
+                audformat.filewise_index(['f1', 'f2']),
+                audformat.filewise_index('f3'),
+            ],
+            audformat.filewise_index('f3'),
+        ),
+        (
+            [
+                audformat.segmented_index(),
+            ],
+            audformat.segmented_index(),
+        ),
+        (
+            [
+                audformat.segmented_index(),
+                audformat.segmented_index(),
+            ],
+            audformat.segmented_index(),
+        ),
+        (
+            [
+                audformat.segmented_index(['f1', 'f2']),
+                audformat.segmented_index(['f1', 'f2']),
+            ],
+            audformat.segmented_index(),
+        ),
+        (
+            [
+                audformat.segmented_index(['f1', 'f2']),
+                audformat.segmented_index(['f3', 'f4']),
+            ],
+            audformat.segmented_index(['f1', 'f2', 'f3', 'f4']),
+        ),
+        (
+            [
+                audformat.segmented_index(['f1', 'f2'], [0, 0], [1, 1]),
+                audformat.segmented_index(['f2', 'f1'], [0, 0], [1, 1]),
+                audformat.segmented_index(['f2', 'f3'], [0, 0], [1, 1]),
+            ],
+            audformat.segmented_index('f3', 0, 1),
+        ),
+        (
+            [
+                audformat.segmented_index(['f1', 'f2'], [0, 0], [1, 1]),
+                audformat.segmented_index(['f2', 'f1'], [0, 0], [1, 1]),
+                audformat.segmented_index(['f2', 'f3'], [1, 1], [2, 2]),
+            ],
+            audformat.segmented_index(
+                ['f2', 'f3'],
+                [1, 1],
+                [2, 2],
+            ),
+        ),
+        (
+            [
+                audformat.filewise_index(),
+                audformat.segmented_index(),
+            ],
+            audformat.segmented_index(),
+        ),
+        (
+            [
+                audformat.filewise_index(['f1', 'f2']),
+                audformat.segmented_index(),
+            ],
+            audformat.segmented_index(['f1', 'f2']),
+        ),
+        (
+            [
+                audformat.filewise_index(),
+                audformat.segmented_index(['f1', 'f2']),
+            ],
+            audformat.segmented_index(['f1', 'f2']),
+        ),
+        (
+            [
+                audformat.segmented_index(['f1', 'f2'], [0, 0], [1, 1]),
+                audformat.segmented_index(['f2', 'f3'], [0, 0], [1, 1]),
+                audformat.filewise_index(['f1', 'f2']),
+            ],
+            audformat.segmented_index(
+                ['f1', 'f3', 'f1', 'f2'],
+                [0, 0, 0, 0],
+                [1, 1, pd.NaT, pd.NaT],
+            ),
+        ),
+        (
+            [
+                audformat.segmented_index(['f1', 'f2'], [0, 0], [1, pd.NaT]),
+                audformat.segmented_index(['f2', 'f3'], [0, 0], [1, 1]),
+                audformat.filewise_index(['f1', 'f2']),
+            ],
+            audformat.segmented_index(
+                ['f1', 'f2', 'f3', 'f1'],
+                [0, 0, 0, 0],
+                [1, 1, 1, pd.NaT],
+            ),
+        ),
+        (
+            [
+                audformat.segmented_index(['f1', 'f2'], [0, 0], [1, 1]),
+                audformat.filewise_index(['f1', 'f2']),
+                audformat.filewise_index(['f2', 'f3']),
+            ],
+            audformat.segmented_index(
+                ['f1', 'f2', 'f1', 'f3'],
+                [0, 0, 0, 0],
+                [1, 1, pd.NaT, pd.NaT],
+            ),
+        ),
+        # other
+        (
+            [
+                pd.Index([]),
+            ],
+            pd.Index([]),
+        ),
+        (
+            [
+                pd.Index([]),
+                pd.Index([]),
+            ],
+            pd.Index([]),
+        ),
+        (
+            [
+                pd.Index([0, 1], name='idx'),
+                pd.Index([1, 2], name='idx'),
+            ],
+            pd.Index([0, 2], name='idx'),
+        ),
+        (
+            [
+                pd.Index([0, 1], name='idx'),
+                pd.Index([1, 2], dtype='Int64', name='idx'),
+            ],
+            pd.Index([0, 2], dtype='Int64', name='idx'),
+        ),
+        (
+            [
+                pd.Index([0, 1], name='idx'),
+                pd.MultiIndex.from_arrays([[1, 2]], names=['idx']),
+            ],
+            pd.Index([0, 2], name='idx'),
+        ),
+        (
+            [
+                pd.MultiIndex.from_arrays([[0, 1]], names=['idx']),
+                pd.MultiIndex.from_arrays([[1, 2]], names=['idx']),
+            ],
+            pd.MultiIndex.from_arrays([[0, 2]], names=['idx']),
+        ),
+        (
+            [
+                pd.MultiIndex.from_arrays(
+                    [['a', 'b', 'c'], [0, 1, 2]],
+                    names=['idx1', 'idx2'],
+                ),
+                pd.MultiIndex.from_arrays(
+                    [['b', 'c'], [1, 3]],
+                    names=['idx1', 'idx2'],
+                ),
+            ],
+            pd.MultiIndex.from_arrays(
+                [['a', 'c', 'c'], [0, 2, 3]],
+                names=['idx1', 'idx2'],
+            ),
+        ),
+        pytest.param(
+            [
+                pd.Index([], name='idx1'),
+                pd.Index([], name='idx2'),
+            ],
+            None,
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
+    ]
+)
+def test_symmetric_difference(objs, expected):
+    pd.testing.assert_index_equal(
+        audformat.utils.symmetric_difference(objs),
+        expected,
+    )
+    expected = expected.sortlevel()[0]
+    for permuted_objs in itertools.permutations(objs):
+        pd.testing.assert_index_equal(
+            audformat.utils.symmetric_difference(permuted_objs).sortlevel()[0],
+            expected,
+        )
+    # Ensure (A Δ B) Δ C = A Δ (B Δ C)
+    if len(objs) > 2:
+        pd.testing.assert_index_equal(
+            audformat.utils.symmetric_difference(
+                [
+                    objs[0],
+                    audformat.utils.symmetric_difference(objs[1:]),
+                ]
+            ).sortlevel()[0],
+            audformat.utils.symmetric_difference(
+                [
+                    audformat.utils.symmetric_difference(objs[:-1]),
+                    objs[-1],
+                ]
+            ).sortlevel()[0],
+        )
+
+
+@pytest.mark.parametrize(
     'output_folder,table_id,expected_file_names',
     [
         pytest.param(
