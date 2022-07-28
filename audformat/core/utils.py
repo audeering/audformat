@@ -483,6 +483,12 @@ def intersect(
     Example:
         >>> intersect(
         ...     [
+        ...         pd.Index([1, 2, 3], name='idx'),
+        ...     ]
+        ... )
+        Int64Index([1, 2, 3], dtype='int64', name='idx')
+        >>> intersect(
+        ...     [
         ...         pd.Index([1, np.nan], dtype='Int64', name='idx'),
         ...         pd.Index([1, 2, 3], name='idx'),
         ...     ]
