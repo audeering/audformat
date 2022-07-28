@@ -952,7 +952,15 @@ def test_index_has_overlap(obj, expected):
                 audformat.segmented_index(['f2', 'f3'], [0, 0], [1, 1]),
                 audformat.filewise_index(['f1', 'f2']),
             ],
-            audformat.segmented_index('f2', 0, 1),
+            audformat.segmented_index(),
+        ),
+        (
+            [
+                audformat.segmented_index(['f1', 'f2'], [0, 0], [1, pd.NaT]),
+                audformat.segmented_index(['f2', 'f3'], [0, 0], [pd.NaT, 1]),
+                audformat.filewise_index(['f1', 'f2']),
+            ],
+            audformat.segmented_index('f2', 0, pd.NaT),
         ),
         (
             [
@@ -964,11 +972,11 @@ def test_index_has_overlap(obj, expected):
         ),
         (
             [
-                audformat.segmented_index(['f1', 'f2'], [0, 0], [1, 1]),
+                audformat.segmented_index(['f1', 'f2'], [0, 0], [1, pd.NaT]),
                 audformat.filewise_index(['f1', 'f2']),
                 audformat.filewise_index(['f2', 'f3']),
             ],
-            audformat.segmented_index('f2', 0, 1),
+            audformat.segmented_index('f2', 0, pd.NaT),
         ),
         (
             [
@@ -1042,6 +1050,22 @@ def test_intersect(objs, expected):
         pd.testing.assert_index_equal(
             audformat.utils.intersect(permuted_objs),
             expected,
+        )
+    # Ensure A ∩ (B ∩ C) == (A ∩ B) ∩ C
+    if len(objs) > 2:
+        pd.testing.assert_index_equal(
+            audformat.utils.intersect(
+                [
+                    objs[0],
+                    audformat.utils.intersect(objs[1:]),
+                ]
+            ),
+            audformat.utils.intersect(
+                [
+                    audformat.utils.intersect(objs[:-1]),
+                    objs[-1],
+                ]
+            ),
         )
 
 
