@@ -570,8 +570,13 @@ def intersect(
 
         index = union(objs)
         mask = np.ones(len(index), dtype=bool)
+        # sort objects by length to check short indices first
+        objs = sorted(objs, key=lambda obj: len(obj))
         for obj in objs:
             mask &= index.isin(obj)
+            if not mask.any():
+                # break early if no more intersection is possible
+                break
         index = index[mask]
 
     return index
