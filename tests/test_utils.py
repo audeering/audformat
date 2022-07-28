@@ -1051,6 +1051,7 @@ def test_intersect(objs, expected):
             audformat.utils.intersect(permuted_objs),
             expected,
         )
+    # Ensure A ∩ (B ∩ C) == (A ∩ B) ∩ C
     if len(objs) > 2:
         pd.testing.assert_index_equal(
             audformat.utils.intersect(
