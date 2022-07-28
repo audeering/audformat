@@ -12,13 +12,11 @@ import pandas as pd
 import audeer
 import audiofile
 
-import audformat.utils
 from audformat.core import define
 from audformat.core.common import to_audformat_dtype
 from audformat.core.database import Database
 from audformat.core.index import (
     filewise_index,
-    index_type,
     is_filewise_index,
     is_segmented_index,
     segmented_index,
