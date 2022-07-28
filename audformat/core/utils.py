@@ -1147,6 +1147,7 @@ def symmetric_difference(
         objs: typing.Sequence[typing.Union[pd.Index]],
 ) -> pd.Index:
     r"""Symmetric difference of index objects.
+
     If all index objects are conform to
     :ref:`table specifications <data-tables:Tables>`
     and at least one object is segmented,
@@ -1162,12 +1163,16 @@ def symmetric_difference(
     is calculated,
     the result is a
     :class:`pandas.Index`.
+
     Args:
         objs: index objects
+
     Returns:
         symmetric difference of index objects
+
     Raises:
         ValueError: if level and dtypes of objects do not match
+
     Example:
         >>> symmetric_difference(
         ...     [
