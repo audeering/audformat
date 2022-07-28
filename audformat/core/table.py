@@ -932,6 +932,8 @@ class Table(Base):
         else:
             index = self.df.index.get_level_values(define.IndexField.FILE)
             index.name = define.IndexField.FILE
+            if index.dtype != define.DataType.STRING:
+                index = utils.set_index_dtypes(index, define.DataType.STRING)
             return index
 
     @property
