@@ -483,6 +483,12 @@ def intersect(
     Example:
         >>> intersect(
         ...     [
+        ...         pd.Index([1, 2, 3], name='idx'),
+        ...     ]
+        ... )
+        Index([], dtype='object', name='idx')
+        >>> intersect(
+        ...     [
         ...         pd.Index([1, np.nan], dtype='Int64', name='idx'),
         ...         pd.Index([1, 2, 3], name='idx'),
         ...     ]
@@ -538,7 +544,17 @@ def intersect(
         return pd.Index([])
 
     if len(objs) == 1:
-        return objs[0]
+        if is_filewise_index(objs[0]):
+            return filewise_index()
+        elif is_segmented_index(objs[0]):
+            return segmented_index()
+        elif isinstance(objs[0], pd.MultiIndex):
+            return pd.MultiIndex.from_arrays(
+                [[]] * objs[0].nlevels,
+                names=objs[0].names,
+            )
+        else:
+            return pd.Index([], name=objs[0].name)
 
     objs = _maybe_convert_filewise_index(objs)
     objs = _maybe_convert_single_level_multi_index(objs)

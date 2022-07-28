@@ -847,6 +847,12 @@ def test_index_has_overlap(obj, expected):
         ),
         (
             [
+                audformat.filewise_index(['f1', 'f2']),
+            ],
+            audformat.filewise_index(),
+        ),
+        (
+            [
                 audformat.filewise_index(),
                 audformat.filewise_index(),
             ],
@@ -878,6 +884,12 @@ def test_index_has_overlap(obj, expected):
         (
             [
                 audformat.segmented_index(),
+            ],
+            audformat.segmented_index(),
+        ),
+        (
+            [
+                audformat.segmented_index(['f1', 'f2']),
             ],
             audformat.segmented_index(),
         ),
@@ -983,6 +995,24 @@ def test_index_has_overlap(obj, expected):
                 pd.Index([]),
             ],
             pd.Index([]),
+        ),
+        (
+            [
+                pd.Index([0, 1], name='idx'),
+            ],
+            pd.Index([], name='idx'),
+        ),
+        (
+            [
+                pd.MultiIndex.from_arrays(
+                    [[0, 1], [2, 3]],
+                    names=['idx1', 'idx2'],
+                ),
+            ],
+            pd.MultiIndex.from_arrays(
+                [[], []],
+                names=['idx1', 'idx2'],
+            ),
         ),
         (
             [
