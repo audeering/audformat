@@ -623,20 +623,6 @@ class Base(HeaderBase):
                     dtype = dtypes[column_id]
                     df[column_id] = df[column_id].astype(dtype)
 
-        # Older versions of audformat stored columns
-        # assigned to a string scheme as 'object',
-        # so we need to convert those to 'string'
-        for column_id, column in self.columns.items():
-            if (
-                column.scheme_id is not None
-                and (
-                    self.db.schemes[column.scheme_id].dtype
-                    == define.DataType.STRING
-                )
-                and df[column_id].dtype == 'object'
-            ):
-                df[column_id] = df[column_id].astype('string', copy=False)
-
         self._df = df
 
     def _load_pickled(self, path: str):
