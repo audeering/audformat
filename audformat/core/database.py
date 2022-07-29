@@ -620,7 +620,8 @@ class Database(HeaderBase):
     ) -> 'Database':
         r"""Update database with other database(s).
 
-        In order to update a database, *license* and *usage* have to match.
+        In order to :ref:`update a database <update-a-database>`,
+        *license* and *usage* have to match.
         *Media*, *raters*, *schemes* and *splits* that are not part of
         the database yet are added. Other fields will be updated by
         applying the following rules:
