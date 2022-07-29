@@ -1,10 +1,47 @@
 import typing
 
+import audeer
 import numpy as np
 import pandas as pd
 import pytest
 
 import audformat.testing
+
+
+def create_db_misc_table(
+    obj: typing.Union[pd.Series, pd.DataFrame] = None,
+    *,
+    rater: audformat.Rater = None,
+    media: audformat.Media = None,
+    split: audformat.Split = None,
+    scheme_id: str = None,  # overwrite id of first scheme
+) -> audformat.MiscTable:
+    if obj is None:
+        obj = pd.Series(
+            index=pd.Index([], name='idx'),
+            dtype=float,
+        )
+    db = audformat.testing.create_db(
+        data={'misc': obj}
+    )
+    table = db['misc']
+    if rater is not None:
+        db.raters['rater'] = rater
+        for column in table.columns.values():
+            column.rater_id = 'rater'
+    if media is not None:
+        db.media['media'] = media
+        table.media_id = 'media'
+    if split is not None:
+        db.splits['split'] = split
+        table.split_id = 'split'
+    if scheme_id is not None:
+        old_scheme_id = list(db.schemes)[0]
+        db.schemes[scheme_id] = db.schemes.pop(old_scheme_id)
+        for column in table.columns.values():
+            if column.scheme_id == old_scheme_id:
+                column.scheme_id = scheme_id
+    return table
 
 
 def create_misc_table(
@@ -1060,3 +1097,373 @@ def test_load_old_pickle(tmpdir):
     db_new = audformat.Database.load(db_root)
     assert db_new.schemes['column'].dtype == audformat.define.DataType.STRING
     assert db_new['misc'].df['column'].dtype == 'string'
+
+
+@pytest.mark.parametrize(
+    'table, overwrite, others',
+    [
+        # empty
+        (
+            create_db_misc_table(),
+            False,
+            [],
+        ),
+        (
+            create_db_misc_table(),
+            False,
+            create_db_misc_table(),
+        ),
+        # same column, with overlap
+        (
+            create_db_misc_table(
+                pd.Series(
+                    [1., 2.],
+                    index=pd.Index(['a', 'b'], name='idx'),
+                )
+            ),
+            False,
+            create_db_misc_table(
+                pd.Series(
+                    [2., 3.],  # ok, value do match
+                    index=pd.Index(['b', 'c'], name='idx'),
+                )
+            ),
+        ),
+        (
+            create_db_misc_table(
+                pd.Series(
+                    [1., 2.],
+                    index=pd.Index(['a', 'b'], name='idx'),
+                )
+            ),
+            False,
+            create_db_misc_table(
+                pd.Series(
+                    [np.nan, 3.],  # ok, value do match
+                    index=pd.Index(['b', 'c'], name='idx'),
+                )
+            ),
+        ),
+        pytest.param(
+            create_db_misc_table(
+                pd.Series(
+                    [1., 2.],
+                    index=pd.Index(['a', 'b'], name='idx'),
+                )
+            ),
+            False,
+            create_db_misc_table(
+                pd.Series(
+                    [99., 3.],  # error, value do not match
+                    index=pd.Index(['b', 'c'], name='idx'),
+                )
+            ),
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
+        (
+            create_db_misc_table(
+                pd.Series(
+                    [1., 2.],
+                    index=pd.Index(['a', 'b'], name='idx'),
+                )
+            ),
+            True,
+            create_db_misc_table(
+                pd.Series(
+                    [99., 3.],  # ok, will be overwritten
+                    index=pd.Index(['a', 'b'], name='idx'),
+                )
+            ),
+        ),
+        # columns with new schemes
+        (
+            create_db_misc_table(
+                pd.Series(
+                    [1., 2.],
+                    index=pd.Index(['a', 'b'], name='idx'),
+                    name='c1',
+                )
+            ),
+            False,
+            [
+                create_db_misc_table(
+                    pd.Series(
+                        ['a', 'b'],
+                        index=pd.Index(['b', 'c'], name='idx'),
+                        name='c2',
+                    )
+                ),
+                create_db_misc_table(
+                    pd.Series(
+                        [1, 2],
+                        index=pd.Index(['b', 'c'], name='idx'),
+                        name='c3',
+                    )
+                ),
+            ],
+        ),
+        # error: scheme mismatch
+        pytest.param(
+            create_db_misc_table(
+                pd.Series(
+                    [1., 2.],
+                    index=pd.Index(['a', 'b'], name='idx'),
+                )
+            ),
+            False,
+            create_db_misc_table(  # same column, different scheme
+                pd.Series(
+                    ['a', 'b'],
+                    index=pd.Index(['a', 'b'], name='idx'),
+                )
+            ),
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
+        pytest.param(
+            create_db_misc_table(
+                pd.Series(
+                    [1., 2.],
+                    index=pd.Index(['a', 'b'], name='idx'),
+                )
+            ),
+            False,
+            create_misc_table(  # no scheme
+                pd.Series(
+                    [1., 2.],
+                    index=pd.Index(['a', 'b'], name='idx'),
+                )
+            ),
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
+        pytest.param(
+            create_db_misc_table(
+                pd.Series(
+                    [1., 2.],
+                    index=pd.Index(['a', 'b'], name='idx'),
+                    name='c1',
+                ),
+                scheme_id='scheme',
+            ),
+            False,
+            create_db_misc_table(
+                pd.Series(  # different scheme with same id
+                    ['a', 'b'],
+                    index=pd.Index(['a', 'b'], name='idx'),
+                    name='c2',
+                ),
+                scheme_id='scheme',
+            ),
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
+        # column with new rater
+        (
+            create_db_misc_table(
+                pd.Series(
+                    index=pd.Index([], name='idx'),
+                    dtype='float',
+                    name='c1',
+                ),
+            ),
+            False,
+            create_db_misc_table(
+                pd.Series(
+                    index=pd.Index([], name='idx'),
+                    dtype='float',
+                    name='c2',
+                ),
+                rater=audformat.Rater(
+                    audformat.define.RaterType.HUMAN),
+            ),
+        ),
+        # error: rater mismatch
+        pytest.param(
+            create_db_misc_table(
+                rater=audformat.Rater(audformat.define.RaterType.HUMAN),
+            ),
+            False,
+            create_db_misc_table(
+                rater=audformat.Rater(audformat.define.RaterType.MACHINE),
+            ),
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
+        pytest.param(
+            create_db_misc_table(
+                rater=audformat.Rater(audformat.define.RaterType.HUMAN),
+            ),
+            False,
+            create_db_misc_table(),
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
+        pytest.param(
+            create_db_misc_table(),
+            False,
+            create_db_misc_table(
+                rater=audformat.Rater(audformat.define.RaterType.MACHINE),
+            ),
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
+        pytest.param(
+            create_db_misc_table(
+                pd.Series(
+                    index=pd.Index([], name='idx'),
+                    dtype='float',
+                    name='c1',
+                ),
+                rater=audformat.Rater(audformat.define.RaterType.HUMAN),
+            ),
+            False,
+            create_db_misc_table(
+                pd.Series(
+                    index=pd.Index([], name='idx'),
+                    dtype='float',
+                    name='c2',
+                ),
+                rater=audformat.Rater(audformat.define.RaterType.MACHINE),
+            ),
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
+        # media and split match
+        (
+            create_db_misc_table(
+                media=audformat.Media(audformat.define.MediaType.AUDIO),
+                split=audformat.Split(audformat.define.SplitType.TEST),
+            ),
+            False,
+            create_db_misc_table(
+                media=audformat.Media(audformat.define.MediaType.AUDIO),
+                split=audformat.Split(audformat.define.SplitType.TEST),
+            ),
+        ),
+        # error: media mismatch
+        pytest.param(
+            create_db_misc_table(
+                media=audformat.Media(audformat.define.MediaType.AUDIO),
+            ),
+            False,
+            create_db_misc_table(
+                media=audformat.Media(audformat.define.MediaType.VIDEO),
+            ),
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
+        pytest.param(
+            create_db_misc_table(
+                media=audformat.Media(audformat.define.MediaType.AUDIO),
+            ),
+            False,
+            create_db_misc_table(),
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
+        pytest.param(
+            create_db_misc_table(),
+            False,
+            create_db_misc_table(
+                media=audformat.Media(audformat.define.MediaType.AUDIO),
+            ),
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
+        # error: split mismatch
+        pytest.param(
+            create_db_misc_table(
+                split=audformat.Split(audformat.define.SplitType.TEST),
+            ),
+            False,
+            create_db_misc_table(
+                split=audformat.Split(audformat.define.SplitType.TRAIN),
+            ),
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
+        pytest.param(
+            create_db_misc_table(
+                split=audformat.Split(audformat.define.SplitType.TEST),
+            ),
+            False,
+            create_db_misc_table(),
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
+        pytest.param(
+            create_db_misc_table(),
+            False,
+            create_db_misc_table(
+                split=audformat.Split(audformat.define.SplitType.TRAIN),
+            ),
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
+        # error: not assigned to db
+        pytest.param(
+            audformat.MiscTable(pd.Index([], name='idx')),
+            False,
+            [],
+            marks=pytest.mark.xfail(raises=RuntimeError),
+        ),
+        # error: different level dimensions
+        pytest.param(
+            create_db_misc_table(
+                pd.Series(
+                    index=pd.Index([], name='idx'),
+                    dtype='object',
+                ),
+            ),
+            False,
+            create_db_misc_table(
+                pd.Series(
+                    index=pd.MultiIndex.from_arrays(
+                        [[], []],
+                        names=['idx1', 'idx2'],
+                    ),
+                    dtype='object',
+                )
+            ),
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
+        # error: different level names
+        pytest.param(
+            create_db_misc_table(
+                pd.Series(
+                    index=pd.Index([], name='idx1'),
+                    dtype='object',
+                ),
+            ),
+            False,
+            create_db_misc_table(
+                pd.Series(
+                    index=pd.Index([], name='idx2'),
+                    dtype='object',
+                ),
+            ),
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
+        # error: different level dtype
+        pytest.param(
+            create_db_misc_table(
+                pd.Series(
+                    index=pd.Index([], dtype='int', name='idx'),
+                    dtype='object',
+                ),
+            ),
+            False,
+            create_db_misc_table(
+                pd.Series(
+                    index=pd.Index([], dtype='string', name='idx'),
+                    dtype='object',
+                ),
+            ),
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
+    ]
+)
+def test_update(table, overwrite, others):
+    df = table.get()
+    table.update(others, overwrite=overwrite)
+    others = audeer.to_list(others)
+    df = audformat.utils.concat(
+        [df] + [other.df for other in others],
+        overwrite=overwrite,
+    )
+    assert audformat.utils.is_index_alike([table.index, df.index])
+    if isinstance(df, pd.Series):
+        df = df.to_frame()
+    pd.testing.assert_frame_equal(table.df, df)
+    for other in others:
+        for column_id, column in other.columns.items():
+            assert column.scheme == table[column_id].scheme
+            assert column.rater == table[column_id].rater

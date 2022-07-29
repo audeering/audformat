@@ -1426,8 +1426,7 @@ def test_type():
 def test_update(table, overwrite, others):
     df = table.get()
     table.update(others, overwrite=overwrite)
-    if isinstance(others, audformat.Table):
-        others = [others]
+    others = audeer.to_list(others)
     df = audformat.utils.concat(
         [df] + [other.df for other in others],
         overwrite=overwrite,
