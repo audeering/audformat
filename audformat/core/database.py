@@ -47,6 +47,10 @@ class Database(HeaderBase):
     In addition, it links to a number of tables
     listing files and labels.
 
+    For a start
+    see how to :ref:`create a database <create-a-database>`
+    and inspect the :ref:`example of the emodb database <emodb-example>`.
+
     Args:
         name: name of database
         source: data source (e.g. link to website)
@@ -620,7 +624,8 @@ class Database(HeaderBase):
     ) -> 'Database':
         r"""Update database with other database(s).
 
-        In order to update a database, *license* and *usage* have to match.
+        In order to :ref:`update a database <update-a-database>`,
+        *license* and *usage* have to match.
         *Media*, *raters*, *schemes* and *splits* that are not part of
         the database yet are added. Other fields will be updated by
         applying the following rules:

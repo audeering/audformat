@@ -1,3 +1,5 @@
+.. _combine-tables:
+
 Combine tables
 ==============
 

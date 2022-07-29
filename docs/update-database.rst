@@ -1,3 +1,5 @@
+.. _update-a-database:
+
 Update a database
 =================
 

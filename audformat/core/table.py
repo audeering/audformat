@@ -65,7 +65,8 @@ class Base(HeaderBase):
     def __add__(self, other: typing.Self) -> typing.Self:
         r"""Create new table by combining two tables.
 
-        The new table contains index and columns of both tables.
+        The new :ref:`combined table <combine-tables>`
+        contains index and columns of both tables.
         Missing values will be set to ``NaN``.
 
         If table is conform to
@@ -339,7 +340,8 @@ class Base(HeaderBase):
         use ``index`` to get a subset.
 
         Examples are provided with the
-        :ref:`table specifications <data-tables:Tables>`.
+        :ref:`table specifications <data-tables:Tables>`,
+        and for ``map`` in :ref:`map-scheme-labels`.
 
         Args:
             index: index
@@ -1199,7 +1201,8 @@ class Table(Base):
             index: index conform to
                 :ref:`table specifications <data-tables:Tables>`
             copy: return a copy of the labels
-            map: map scheme or scheme fields to column values.
+            map: :ref:`map scheme or scheme fields to column values
+                <map-scheme-labels>`.
                 For example if your table holds a column ``speaker`` with
                 speaker IDs, which is assigned to a scheme that contains a
                 dict mapping speaker IDs to age and gender entries,
@@ -1307,7 +1310,9 @@ class Table(Base):
     ) -> Table:
         r"""Update table with other table(s).
 
-        Table which calls ``update()`` must be assigned to a database.
+        Table which calls ``update()``
+        to :ref:`combine tables <combine-tables>`
+        must be assigned to a database.
         For all tables media and split must match.
 
         Columns that are not yet part of the table will be added and

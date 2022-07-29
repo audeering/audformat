@@ -1,3 +1,5 @@
+.. _create-a-database:
+
 Create a database
 =================
 

@@ -156,7 +156,8 @@ class Column(HeaderBase):
             index: index conform to
                 :ref:`table specifications <data-tables:Tables>`
             copy: return a copy of the labels
-            map: map scheme or scheme field to column values.
+            map: :ref:`map scheme or scheme field to column values
+                <map-scheme-labels>`.
                 For example if your column holds speaker IDs and is
                 assigned to a scheme that contains a dict mapping
                 speaker IDs to age entries, ``map='age'``
