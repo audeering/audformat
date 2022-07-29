@@ -294,6 +294,13 @@ def test_access():
                 )
             ),
         ),
+        (
+            [
+                pytest.DB['files'],
+                pytest.DB['segments'],
+            ],
+            pytest.DB['files'] + pytest.DB['segments'],
+        )
     ]
 )
 def test_add(tables, expected):
