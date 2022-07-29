@@ -12,13 +12,11 @@ import pandas as pd
 import audeer
 import audiofile
 
-import audformat.utils
 from audformat.core import define
 from audformat.core.common import to_audformat_dtype
 from audformat.core.database import Database
 from audformat.core.index import (
     filewise_index,
-    index_type,
     is_filewise_index,
     is_segmented_index,
     segmented_index,
@@ -169,6 +167,7 @@ def concat(
 
     objs = _maybe_convert_filewise_index(objs)
     objs = _maybe_convert_single_level_multi_index(objs)
+    _assert_index_alike(objs)
 
     # the new index is a union of the individual objects
     index = union([obj.index for obj in objs])
@@ -549,6 +548,7 @@ def intersect(
 
     objs = _maybe_convert_filewise_index(objs)
     objs = _maybe_convert_single_level_multi_index(objs)
+    _assert_index_alike(objs)
 
     # sort objects by length
     objs = sorted(objs, key=lambda obj: len(obj))
@@ -1251,6 +1251,7 @@ def symmetric_difference(
 
     objs = _maybe_convert_filewise_index(objs)
     objs = _maybe_convert_single_level_multi_index(objs)
+    _assert_index_alike(objs)
 
     index = union(objs)
     count = np.zeros(len(index))
@@ -1579,6 +1580,7 @@ def union(
 
     objs = _maybe_convert_filewise_index(objs)
     objs = _maybe_convert_single_level_multi_index(objs)
+    _assert_index_alike(objs)
 
     # Combine all MultiIndex entries and drop duplicates afterwards,
     # faster than using index.union(),
@@ -1597,7 +1599,7 @@ def _alike_index(index: pd.Index) -> pd.Index:
     elif is_segmented_index(index):
         return segmented_index()
     elif isinstance(index, pd.MultiIndex):
-        return audformat.utils.set_index_dtypes(
+        return set_index_dtypes(
             pd.MultiIndex.from_arrays(
                 [[]] * index.nlevels,
                 names=index.names,
@@ -1610,6 +1612,54 @@ def _alike_index(index: pd.Index) -> pd.Index:
             dtype=index.dtype,
             name=index.name,
         )
+
+
+def _assert_index_alike(
+        objs: typing.Sequence[typing.Union[pd.Index, pd.Series, pd.DataFrame]],
+):
+    r"""Raise if index objects are not alike.
+
+    Args:
+        objs: objects
+
+    Raises:
+        ValueError: if index objects are not alike
+
+    """
+    if is_index_alike(objs):
+        return
+
+    objs = [obj if isinstance(obj, pd.Index) else obj.index for obj in objs]
+    msg = 'Levels and dtypes of all objects must match.'
+
+    dims = list(dict.fromkeys(obj.nlevels for obj in objs))
+    if len(dims) > 1:
+        msg += f' Found different number of levels: {dims}.'
+        raise ValueError(msg)
+
+    names = []
+    for obj in objs:
+        if len(obj.names) > 1:
+            names.append(tuple([name for name in obj.names]))
+        else:
+            names.append(obj.names[0])
+    names = list(dict.fromkeys(names))
+    if len(names) > 1:
+        msg += f' Found different level names: {names}.'
+        raise ValueError(msg)
+
+    dtypes = []
+    for obj in objs:
+        if isinstance(obj, pd.MultiIndex):
+            ds = [to_audformat_dtype(dtype) for dtype in obj.dtypes]
+        else:
+            ds = [to_audformat_dtype(obj.dtype)]
+        dtypes.append(tuple(ds) if len(ds) > 1 else ds[0])
+    dtypes = list(dict.fromkeys(dtypes))
+    if len(dtypes) > 1:
+        msg += f' Found different level dtypes: {dtypes}.'
+
+    raise ValueError(msg)
 
 
 def _is_same_dtype(d1, d2) -> bool:
@@ -1669,16 +1719,7 @@ def _maybe_convert_single_level_multi_index(
     Returns:
         list with possibly converted objects
 
-    Raises:
-        ValueError: if level and dtypes of objects do not match
-
     """
-    if not is_index_alike(objs):
-        raise ValueError(
-            'Levels and dtypes of all objects must match, '
-            'see audformat.utils.is_index_alike().'
-        )
-
     indices = [obj if isinstance(obj, pd.Index) else obj.index for obj in objs]
     is_single_level = indices[0].nlevels == 1
     is_mix = len(set(isinstance(index, pd.MultiIndex)

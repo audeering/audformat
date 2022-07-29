@@ -1,6 +1,7 @@
 import itertools
 from io import StringIO
 import os
+import re
 import shutil
 
 import numpy as np
@@ -1106,41 +1107,55 @@ def test_intersect(objs, expected):
 
 
 @pytest.mark.parametrize(
-    'objs, expected',
+    'objs, error_msg',
     [
         (
             [
                 pd.Index([]),
             ],
-            True,
+            None,
         ),
         (
             [
                 pd.Index([]),
                 pd.Index([]),
             ],
-            True,
+            None,
         ),
         (
             [
                 pd.Index([], name='l'),
                 pd.Index([], name='L'),
             ],
-            False,
+            "Found different level names: ['l', 'L']",
         ),
         (
             [
                 pd.Index([]),
                 pd.MultiIndex([[]], [[]]),
             ],
-            True,
+            None,
+        ),
+        (
+            [
+                pd.Index([]),
+                pd.Index([], name='None')
+            ],
+            "Found different level names: [None, 'None']",
+        ),
+        (
+            [
+                pd.Index([1, 2, 3]),
+                pd.Index([10, 20], name='l'),
+            ],
+            "Found different level names: [None, 'l']",
         ),
         (
             [
                 pd.Index([1, 2, 3], name='l'),
                 pd.MultiIndex.from_arrays([[10, 20]], names=['l']),
             ],
-            True,
+            None,
         ),
         (
             [
@@ -1154,25 +1169,24 @@ def test_intersect(objs, expected):
                     names=['l'],
                 ),
             ],
-            True,
+            None,
         ),
         (
             [
                 pd.Index([1, 2, 3], name='l'),
                 pd.MultiIndex.from_arrays([[10, 20]], names=['L']),
             ],
-            False,
+            "Found different level names: ['l', 'L']",
         ),
         (
             [
                 pd.Index(['a', 'b', 'c'], name='l'),
                 pd.MultiIndex.from_arrays([[10, 20]], names=['l']),
             ],
-            False,
+            "Found different level dtypes: ['object', 'int']",
         ),
         (
             [
-                pd.Index([1, 2, 3], name='l'),
                 pd.MultiIndex.from_arrays(
                     [
                         [10],
@@ -1180,8 +1194,9 @@ def test_intersect(objs, expected):
                     ],
                     names=['l1', 'l2'],
                 ),
+                pd.Index([1, 2, 3], name='l'),
             ],
-            False,
+            'Found different number of levels: [2, 1]',
         ),
         (
             [
@@ -1200,7 +1215,7 @@ def test_intersect(objs, expected):
                     names=['l1', 'l2'],
                 ),
             ],
-            True,
+            None,
         ),
         (
             [
@@ -1219,7 +1234,8 @@ def test_intersect(objs, expected):
                     names=['l1', 'l2'],
                 ),
             ],
-            False,
+            "Found different level dtypes: "
+            "[('object', 'int'), ('int', 'object')]",
         ),
         (
             [
@@ -1238,7 +1254,16 @@ def test_intersect(objs, expected):
                     names=['l1', 'l2'],
                 ),
             ],
-            False,
+            "Found different level dtypes: "
+            "[('object', 'int'), ('object', 'object')]",
+        ),
+        (
+            [
+                pd.MultiIndex.from_arrays([[], []], names=['l1', 'l2']),
+                pd.MultiIndex.from_arrays([[], []]),
+            ],
+            "Found different level names: "
+            "[('l1', 'l2'), (None, None)]",
         ),
         (
             [
@@ -1257,33 +1282,42 @@ def test_intersect(objs, expected):
                     names=['L1', 'L2'],
                 ),
             ],
-            False,
+            "Found different level names: "
+            "[('l1', 'l2'), ('L1', 'L2')]",
         ),
         (
             [
                 audformat.filewise_index(['f1', 'f2']),
                 audformat.filewise_index(),
             ],
-            True,
+            None,
         ),
         (
             [
                 audformat.segmented_index(['f1', 'f2'], [0, 1], [1, 2]),
                 audformat.segmented_index(),
             ],
-            True,
+            None,
         ),
         (
             [
                 audformat.filewise_index(['f1', 'f2']),
                 audformat.segmented_index(['f1', 'f2'], [0, 1], [1, 2]),
             ],
-            False,
+            'Found different number of levels: [1, 3]',
         ),
     ]
 )
-def test_is_index_alike(objs, expected):
-    assert audformat.utils.is_index_alike(objs) == expected
+def test_is_index_alike(objs, error_msg):
+    if error_msg is None:
+        assert audformat.utils.is_index_alike(objs)
+    else:
+        assert not audformat.utils.is_index_alike(objs)
+        with pytest.raises(
+            ValueError,
+            match=re.escape(error_msg),
+        ):
+            audformat.core.utils._assert_index_alike(objs)
 
 
 @pytest.mark.parametrize(
