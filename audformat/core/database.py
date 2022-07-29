@@ -657,8 +657,9 @@ class Database(HeaderBase):
             ValueError: if database has different license or usage
             ValueError: if different media, rater, scheme or split with
                 same ID is found
-            ValueError: if table data cannot be combined (e.g. values in
-                same position overlap)
+            ValueError: if tables cannot be combined
+                (e.g. values in same position overlap or
+                level and dtypes of table indices do not match)
             RuntimeError: if ``copy_media=True``,
                 but one of the involved databases was not saved
                 (contains files but no root folder)

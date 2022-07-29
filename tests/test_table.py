@@ -22,7 +22,7 @@ def create_db_table(
     if obj is None:
         obj = pd.Series(
             index=audformat.filewise_index(),
-            dtype=float,
+            dtype='object',
         )
     db = audformat.testing.create_db(
         data={'table': obj}
@@ -57,7 +57,6 @@ def create_table(
     for name in obj:
         table[name] = audformat.Column()
         table[name].set(obj[name].values)
-    table._df = table.df.astype(obj.dtypes)
     return table
 
 
@@ -85,14 +84,14 @@ def test_access():
                 create_table(
                     pd.Series(
                         index=audformat.filewise_index(),
-                        dtype=float,
+                        dtype='object',
                     )
                 ),
             ],
             create_table(
                 pd.Series(
                     index=audformat.filewise_index(),
-                    dtype=float,
+                    dtype='object',
                 )
             ),
         ),
@@ -101,14 +100,14 @@ def test_access():
                 create_table(
                     pd.Series(
                         index=audformat.filewise_index(),
-                        dtype=float,
+                        dtype='object',
                     )
                 ),
             ] * 3,
             create_table(
                 pd.Series(
                     index=audformat.filewise_index(),
-                    dtype=float,
+                    dtype='object',
                 )
             ),
         ),
@@ -124,7 +123,7 @@ def test_access():
                 create_table(
                     pd.Series(
                         index=audformat.filewise_index(),
-                        dtype=float,
+                        dtype='object',
                     )
                 ),
             ],
@@ -141,19 +140,19 @@ def test_access():
                 create_table(
                     pd.Series(
                         index=audformat.filewise_index(),
-                        dtype=float,
+                        dtype='object',
                     )
                 ),
                 create_table(
                     pd.Series(
-                        [1.],
+                        ['a'],
                         index=audformat.filewise_index('f1'),
                     )
                 ),
             ],
             create_table(
                 pd.Series(
-                    [1.],
+                    ['a'],
                     index=audformat.filewise_index('f1'),
                 )
             ),
@@ -164,14 +163,14 @@ def test_access():
                 create_table(
                     pd.Series(
                         index=audformat.filewise_index(),
-                        dtype=float,
+                        dtype='object',
                         name='c1',
                     )
                 ),
                 create_table(
                     pd.Series(
                         index=audformat.segmented_index(),
-                        dtype=float,
+                        dtype='object',
                         name='c2',
                     )
                 ),
@@ -181,12 +180,12 @@ def test_access():
                     {
                         'c1': pd.Series(
                             index=audformat.segmented_index(),
-                            dtype=float,
+                            dtype='object',
                             name='c1',
                         ),
                         'c2': pd.Series(
                             index=audformat.segmented_index(),
-                            dtype=float,
+                            dtype='object',
                             name='c2',
                         )
                     },
@@ -295,20 +294,6 @@ def test_access():
                 )
             ),
         ),
-        (
-            [
-                pytest.DB['files'],
-                pytest.DB['segments'],
-            ],
-            create_table(
-                audformat.utils.concat(
-                    [
-                        pytest.DB['files'].df,
-                        pytest.DB['segments'].df,
-                    ]
-                )
-            )
-        )
     ]
 )
 def test_add(tables, expected):
@@ -1253,7 +1238,7 @@ def test_type():
             create_db_table(
                 pd.Series(
                     index=audformat.filewise_index(),
-                    dtype=float,
+                    dtype='object',
                     name='c1',
                 ),
             ),
@@ -1261,7 +1246,7 @@ def test_type():
             create_db_table(
                 pd.Series(
                     index=audformat.filewise_index(),
-                    dtype=float,
+                    dtype='object',
                     name='c2',
                 ),
                 rater=audformat.Rater(
@@ -1299,7 +1284,7 @@ def test_type():
             create_db_table(
                 pd.Series(
                     index=audformat.filewise_index(),
-                    dtype=float,
+                    dtype='object',
                     name='c1',
                 ),
                 rater=audformat.Rater(audformat.define.RaterType.HUMAN),
@@ -1308,7 +1293,7 @@ def test_type():
             create_db_table(
                 pd.Series(
                     index=audformat.filewise_index(),
-                    dtype=float,
+                    dtype='object',
                     name='c2',
                 ),
                 rater=audformat.Rater(audformat.define.RaterType.MACHINE),

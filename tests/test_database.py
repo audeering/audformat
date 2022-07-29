@@ -2,6 +2,7 @@ import datetime
 import filecmp
 import os
 import re
+import typing
 
 import audeer
 import audiofile
@@ -10,6 +11,19 @@ import pytest
 
 import audformat
 import audformat.testing
+
+
+def create_misc_table(
+        obj: typing.Union[pd.Series, pd.DataFrame],
+) -> audformat.MiscTable:
+    r"""Helper function to create Table."""
+    table = audformat.MiscTable(obj.index)
+    if isinstance(obj, pd.Series):
+        obj = obj.to_frame()
+    for name in obj:
+        table[name] = audformat.Column()
+        table[name].set(obj[name].values)
+    return table
 
 
 def full_path(
@@ -657,7 +671,7 @@ def test_update(tmpdir):
     db = audformat.testing.create_db(minimal=True)
     db.author = 'author'
     db.organization = 'organization'
-    db.meta['meta'] = 'meta'
+    db.meta['key'] = 'value'
     db.raters['rater'] = audformat.Rater()
     db.schemes['float'] = audformat.Scheme(float)
     db.schemes['labels'] = audformat.Scheme(labels=['a', 'b'])
@@ -670,6 +684,13 @@ def test_update(tmpdir):
             'float': ('float', 'rater'),
             'labels': ('labels', None),
         },
+    )
+    db['misc'] = create_misc_table(
+        pd.Series(
+            [1, 2, 3],
+            pd.Index(['a', 'b', 'c'], name='idx'),
+            name='c',
+        )
     )
     db_root = audeer.mkdir(os.path.join(tmpdir, 'db'))
     db.save(db_root)
@@ -696,6 +717,15 @@ def test_update(tmpdir):
             'labels': ('labels', None),
         },
     )
+    other1['misc'] = create_misc_table(
+        pd.DataFrame(
+            {
+                'c1': [1, 2, 3],
+                'c2': [1., 2., 3.],
+            },
+            pd.Index(['a', 'b', 'c'], name='idx'),
+        )
+    )
     other1_root = audeer.mkdir(os.path.join(tmpdir, 'other1'))
     other1.save(other1_root)
     audformat.testing.create_audio_files(other1, file_duration='0.1s')
@@ -710,6 +740,15 @@ def test_update(tmpdir):
         'table_new',
         audformat.define.IndexType.SEGMENTED,
         columns={'str': ('str', 'rater2')},
+    )
+    other2['misc_new'] = create_misc_table(
+        pd.DataFrame(
+            {
+                'c1': [1, 2, 3],
+                'c2': [1., 2., 3.],
+            },
+            pd.Index(['a', 'b', 'c'], name='idx'),
+        )
     )
     other2_root = audeer.mkdir(os.path.join(tmpdir, 'other2'))
     other2.save(other2_root)
@@ -749,6 +788,7 @@ def test_update(tmpdir):
 
     pd.testing.assert_frame_equal(db['table'].df, df)
     assert db['table_new'] == other2['table_new']
+    assert db['misc_new'] == other2['misc_new']
 
     for other in others:
         for rater_id, rater in other.raters.items():
@@ -836,7 +876,7 @@ def test_update(tmpdir):
 
     with pytest.raises(ValueError):
         other = audformat.testing.create_db(minimal=True)
-        other.meta['meta'] = 'other'
+        other.meta['key'] = 'other'
         db.update(other)
 
     # fail if self has absolute path
