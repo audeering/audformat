@@ -24,6 +24,7 @@ from audformat.core.errors import (
 from audformat.core.index import (
     filewise_index,
     index_type,
+    is_filewise_index,
     is_segmented_index,
 )
 from audformat.core.media import Media
@@ -648,6 +649,20 @@ class Base(HeaderBase):
                 and df[column_id].dtype == 'object'
             ):
                 df[column_id] = df[column_id].astype('string', copy=False)
+        # Fix index entries as well
+        if (
+                (
+                    is_filewise_index(df.index)
+                    and df.index.dtype == 'object'
+                ) or (
+                    is_segmented_index(df.index)
+                    and df.index.dtypes[define.IndexField.FILE] == 'object'
+                )
+        ):
+            df.index = utils.set_index_dtypes(
+                df.index,
+                {define.IndexField.FILE: 'string'},
+            )
 
         self._df = df
 

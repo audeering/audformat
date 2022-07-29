@@ -890,6 +890,33 @@ def test_load(tmpdir):
     pd.testing.assert_frame_equal(table.df, df)
 
 
+def test_load_old_pickle(tmpdir):
+    # We have stored string dtype as object dtype before
+    # and have to fix this when loading old PKL files from cache.
+
+    # Create PKL file containing strings as object
+    y = pd.Series(['c'], dtype='object', name='column')
+    index = pd.Index(['f1'], dtype='object', name='file')
+
+    db = audformat.testing.create_db(minimal=True)
+    db['table'] = audformat.Table(index)
+    db.schemes['column'] = audformat.Scheme(audformat.define.DataType.OBJECT)
+    db['table']['column'] = audformat.Column(scheme_id='column')
+    db['table']['column'].set(y.values)
+    db_root = tmpdir.join('db')
+    db.save(db_root, storage_format='pkl')
+
+    # Change scheme dtype to string and store header again
+    db.schemes['column'] = audformat.Scheme(audformat.define.DataType.STRING)
+    db.save(db_root, header_only=True)
+
+    # Load and check that dtype is string
+    db_new = audformat.Database.load(db_root)
+    assert db_new.schemes['column'].dtype == audformat.define.DataType.STRING
+    assert db_new['table'].df['column'].dtype == 'string'
+    assert db_new['table'].index.dtype == 'string'
+
+
 @pytest.mark.parametrize(
     'table, map',
     [
