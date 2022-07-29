@@ -91,6 +91,7 @@ class Base(HeaderBase):
         Raises:
             ValueError: if columns with the same name have different dtypes
             ValueError: if values in the same position do not match
+            ValueError: if level and dtypes of indices do not match
 
         """
         df = utils.concat([self.df, other.df])
