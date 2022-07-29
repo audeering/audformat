@@ -813,15 +813,15 @@ class MiscTable(Base):
         file other
         f1   f2     True
              f3    False
-        >>> index_ex = pd.MultiIndex.from_tuples(
+        >>> index_new = pd.MultiIndex.from_tuples(
         ...   [
         ...     ('f4', 'f1'),
         ...   ],
         ...   names=['file', 'other'],
         ... )
-        >>> index_ex = utils.set_index_dtypes(index_ex, 'string')
+        >>> index_new = utils.set_index_dtypes(index_new, 'string')
         >>> table_ex = table.extend_index(
-        ...     index_ex,
+        ...     index_new,
         ...     inplace=False,
         ... )
         >>> table_ex.get()
@@ -833,7 +833,7 @@ class MiscTable(Base):
         f4   f1       NaN
         >>> table_ex.set(
         ...     {'match': True},
-        ...     index=index_ex,
+        ...     index=index_new,
         ... )
         >>> table_ex.get()
                     match
@@ -983,9 +983,9 @@ class Table(Base):
         f1   0 days NaT      0
         f2   0 days NaT      1
         f3   0 days NaT      2
-        >>> index_ex = filewise_index('f4')
+        >>> index_new = filewise_index('f4')
         >>> table_ex = table.extend_index(
-        ...     index_ex,
+        ...     index_new,
         ...     inplace=False,
         ... )
         >>> table_ex.get()
@@ -997,7 +997,7 @@ class Table(Base):
         f4      NaN
         >>> table_ex.set(
         ...     {'values': 3},
-        ...     index=index_ex,
+        ...     index=index_new,
         ... )
         >>> table_ex.get()
              values
