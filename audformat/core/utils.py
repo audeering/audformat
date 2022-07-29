@@ -1640,10 +1640,10 @@ def _assert_index_alike(
     names = set()
     for obj in objs:
         if len(obj.names) > 1:
-            names.add(tuple([str(name) for name in obj.names]))
+            names.add(tuple([name for name in obj.names]))
         else:
-            names.add(str(obj.names[0]))
-    names = sorted(list(names))
+            names.add(obj.names[0])
+    names = sorted(list(names), key=lambda e: str(e))  # support None
     if len(names) > 1:
         msg += f' Found different level names: {names}.'
         raise ValueError(msg)
