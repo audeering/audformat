@@ -1501,6 +1501,14 @@ def union(
     the result is a
     :class:`pandas.Index`.
 
+    The order of the resulting index
+    depends on the order of ``objs``.
+    If you require :func:`audformat.utils.union`
+    to be commutative_,
+    you have to sort its output.
+
+    .. _commutative: https://en.wikipedia.org/wiki/Commutative_property
+
     Args:
         objs: index objects
 
