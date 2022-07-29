@@ -1632,30 +1632,30 @@ def _assert_index_alike(
     objs = [obj if isinstance(obj, pd.Index) else obj.index for obj in objs]
     msg = 'Levels and dtypes of all objects must match.'
 
-    dims = sorted(list(set(obj.nlevels for obj in objs)))
+    dims = list(dict.fromkeys(obj.nlevels for obj in objs))
     if len(dims) > 1:
         msg += f' Found different number of levels: {dims}.'
         raise ValueError(msg)
 
-    names = set()
+    names = []
     for obj in objs:
         if len(obj.names) > 1:
-            names.add(tuple([name for name in obj.names]))
+            names.append(tuple([name for name in obj.names]))
         else:
-            names.add(obj.names[0])
-    names = sorted(list(names), key=lambda e: str(e))  # support None
+            names.append(obj.names[0])
+    names = list(dict.fromkeys(names))
     if len(names) > 1:
         msg += f' Found different level names: {names}.'
         raise ValueError(msg)
 
-    dtypes = set()
+    dtypes = []
     for obj in objs:
         if isinstance(obj, pd.MultiIndex):
             ds = [to_audformat_dtype(dtype) for dtype in obj.dtypes]
         else:
             ds = [to_audformat_dtype(obj.dtype)]
-        dtypes.add(tuple(ds) if len(ds) > 1 else ds[0])
-    dtypes = sorted(list(dtypes))
+        dtypes.append(tuple(ds) if len(ds) > 1 else ds[0])
+    dtypes = list(dict.fromkeys(dtypes))
     if len(dtypes) > 1:
         msg += f' Found different level dtypes: {dtypes}.'
 
