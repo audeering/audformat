@@ -268,7 +268,7 @@ class Base(HeaderBase):
             new object if ``inplace=False``, otherwise ``self``
 
         Raises:
-            ValueError: if level and dtypes of table indices do not match
+            ValueError: if level and dtypes of index does not match table index
 
         """
         if not inplace:
@@ -304,7 +304,7 @@ class Base(HeaderBase):
             new object if ``inplace=False``, otherwise ``self``
 
         Raises:
-            ValueError: if level and dtypes of table indices do not match
+            ValueError: if level and dtypes of index does not match table index
 
         """
         if not inplace:
@@ -509,7 +509,7 @@ class Base(HeaderBase):
             new object if ``inplace=False``, otherwise ``self``
 
         Raises:
-            ValueError: if level and dtypes of table indices do not match
+            ValueError: if level and dtypes of index does not match table index
 
         """
         if not inplace:
