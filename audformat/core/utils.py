@@ -1605,7 +1605,7 @@ def _alike_index(
         data: typing.Sequence = [],
 ) -> pd.Index:
     if isinstance(index, pd.MultiIndex):
-        return audformat.utils.set_index_dtypes(
+        return set_index_dtypes(
             pd.MultiIndex.from_tuples(data, names=list(index.names)),
             index.dtypes.to_dict(),
         )
