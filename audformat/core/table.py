@@ -65,7 +65,8 @@ class Base(HeaderBase):
     def __add__(self, other: typing.Self) -> typing.Self:
         r"""Create new table by combining two tables.
 
-        The new table contains index and columns of both tables.
+        The new :ref:`combined table <combine-tables>`
+        contains index and columns of both tables.
         Missing values will be set to ``NaN``.
 
         If table is conform to
@@ -1309,7 +1310,9 @@ class Table(Base):
     ) -> Table:
         r"""Update table with other table(s).
 
-        Table which calls ``update()`` must be assigned to a database.
+        Table which calls ``update()``
+        to :ref:`combine tables <combine-tables>`
+        must be assigned to a database.
         For all tables media and split must match.
 
         Columns that are not yet part of the table will be added and
