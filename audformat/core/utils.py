@@ -550,9 +550,7 @@ def intersect(
     objs = _maybe_convert_single_level_multi_index(objs)
     _assert_index_alike(objs)
 
-    # sort objects by length
-    objs = sorted(objs, key=lambda obj: len(obj))
-    # start from shortest index
+    # start from first object
     index = list(objs[0])
     for obj in objs[1:]:
         index = [idx for idx in index if idx in obj]
