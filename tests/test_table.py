@@ -557,14 +557,14 @@ def test_drop_and_pick_index_order():
     new_table = table.pick_index(
         audformat.filewise_index(['f1', 'f2'])
     )
-    assert pd.testing.assert_index_equal(
+    pd.testing.assert_index_equal(
         new_table.index,
         audformat.filewise_index(['f2', 'f1']),
     )
     new_table = table.drop_index(
         audformat.filewise_index(['f1', 'f2'])
     )
-    assert pd.testing.assert_index_equal(
+    pd.testing.assert_index_equal(
         new_table.index,
         audformat.filewise_index(['f4', 'f3']),
     )
