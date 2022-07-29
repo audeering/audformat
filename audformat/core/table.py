@@ -66,7 +66,11 @@ class Base(HeaderBase):
 
         The new table contains index and columns of both tables.
         Missing values will be set to ``NaN``.
-        If at least one table is segmented, the output has a segmented index.
+
+        If table is conform to
+        :ref:`table specifications <data-tables:Tables>`
+        and at least one table is segmented,
+        the output has a segmented index.
 
         Columns with the same identifier are combined to a single column.
         This requires that:
@@ -79,7 +83,7 @@ class Base(HeaderBase):
         as well as,
         references to schemes and raters are discarded.
         If you intend to keep them,
-        use :meth:`audformat.Table.update`.
+        use ``update()``.
 
         Args:
             other: the other table
