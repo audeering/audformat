@@ -604,6 +604,111 @@ def test_dtype_multiindex_single_level(
     assert db_new['misc'].index.dtype == expected_pandas_dtype
 
 
+def test_drop_and_pick_index():
+
+    table_id = 'misc'
+
+    # drop and pick with pd.Index
+
+    index = pytest.DB[table_id].index[:2]
+    df_pick = pytest.DB[table_id].pick_index(index).get()
+    index = pytest.DB[table_id].index[2:]
+    df_drop = pytest.DB[table_id].drop_index(index).get()
+
+    assert len(df_pick) == len(df_drop) == 2
+    pd.testing.assert_frame_equal(df_pick, df_drop)
+
+    # drop and pick with pd.MultiIndex
+
+    index = pd.MultiIndex.from_arrays(
+        [pytest.DB[table_id].index[:2].to_list()],
+        names=[pytest.DB[table_id].index.name],
+    )
+    index = audformat.utils.set_index_dtypes(index, 'string')
+    df_pick = pytest.DB[table_id].pick_index(index).get()
+    index = pd.MultiIndex.from_arrays(
+        [pytest.DB[table_id].index[2:].to_list()],
+        names=[pytest.DB[table_id].index.name],
+    )
+    index = audformat.utils.set_index_dtypes(index, 'string')
+    df_drop = pytest.DB[table_id].drop_index(index).get()
+
+    assert len(df_pick) == len(df_drop) == 2
+    pd.testing.assert_frame_equal(df_pick, df_drop)
+
+    # invalid index
+
+    index = pytest.DB['segments'].index[:2]
+    with pytest.raises(
+        ValueError,
+        match='Cannot drop',
+    ):
+        pytest.DB[table_id].drop_index(index).get()
+    with pytest.raises(
+        ValueError,
+        match='Cannot pick',
+    ):
+        pytest.DB[table_id].pick_index(index).get()
+
+
+def test_extend_index():
+
+    db = audformat.testing.create_db(minimal=True)
+    db.schemes['scheme'] = audformat.Scheme()
+
+    # empty and invalid
+
+    db['misc'] = audformat.MiscTable(pd.Index([], name='idx'))
+    db['misc'].extend_index(pd.Index([], name='idx'))
+    assert db['misc'].get().empty
+    with pytest.raises(
+        ValueError,
+        match='Cannot extend',
+    ):
+        db['misc'].extend_index(pd.Index([], name='other'))
+
+    db.drop_tables('misc')
+
+    # extend with pd.Index
+
+    db['misc'] = audformat.MiscTable(pd.Index([], name='idx'))
+    db['misc']['columns'] = audformat.Column(scheme_id='scheme')
+    db['misc'].extend_index(
+        pd.Index(['1', '2'], name='idx'),
+        fill_values='a',
+        inplace=True,
+    )
+    np.testing.assert_equal(
+        db['misc']['columns'].get().values,
+        np.array(['a', 'a']),
+    )
+    index = pd.Index(['1', '3'], name='idx')
+    db['misc'].extend_index(
+        index,
+        fill_values='b',
+        inplace=True,
+    )
+    np.testing.assert_equal(
+        db['misc']['columns'].get().values,
+        np.array(['a', 'a', 'b']),
+    )
+
+    # extend with pd.MultiIndex
+
+    index = pd.MultiIndex.from_arrays([['1', '4']], names=['idx'])
+    db['misc'].extend_index(
+        index,
+        fill_values='b',
+        inplace=True,
+    )
+    np.testing.assert_equal(
+        db['misc']['columns'].get().values,
+        np.array(['a', 'a', 'b', 'b']),
+    )
+
+    db.drop_tables('misc')
+
+
 @pytest.mark.parametrize(
     'table, column, expected',
     [

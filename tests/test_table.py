@@ -517,6 +517,31 @@ def test_drop_and_pick_columns(inplace):
         assert 'string' in db['files'].columns
 
 
+def test_drop_and_pick_index():
+
+    for table in ['files', 'segments']:
+
+        index = pytest.DB[table].index[:5]
+        df_pick = pytest.DB[table].pick_index(index).get()
+        index = pytest.DB[table].index[5:]
+        df_drop = pytest.DB[table].drop_index(index).get()
+
+        assert len(df_pick) == len(df_drop) == 5
+        pd.testing.assert_frame_equal(df_pick, df_drop)
+
+    index = pytest.DB['segments'].index[:5]
+    with pytest.raises(
+        ValueError,
+        match='Cannot drop rows'
+    ):
+        pytest.DB['files'].drop_index(index).get()
+    with pytest.raises(
+        ValueError,
+        match='Cannot pick rows',
+    ):
+        pytest.DB['files'].pick_index(index).get()
+
+
 @pytest.mark.parametrize(
     'files',
     [
@@ -541,54 +566,6 @@ def test_drop_files(files, table):
     elif isinstance(files, str):
         files = [files]
     assert len(table.files.intersection(files)) == 0
-
-
-@pytest.mark.parametrize(
-    'files',
-    [
-        pytest.DB.files,
-        pytest.DB.files[0],
-        [pytest.DB.files[0], 'does-not-exist.wav'],
-        lambda x: '1' in x,
-    ]
-)
-@pytest.mark.parametrize(
-    'table',
-    [
-        pytest.DB['files'],
-        pytest.DB['segments'],
-    ]
-)
-def test_pick_files(files, table):
-
-    table = table.pick_files(files, inplace=False)
-    if callable(files):
-        files = table.files[table.files.to_series().apply(files)]
-        seen = set()
-        seen_add = seen.add
-        files = [x for x in files if not (x in seen or seen_add(x))]
-    elif isinstance(files, str):
-        files = [files]
-    pd.testing.assert_index_equal(
-        table.files.unique(),
-        audformat.filewise_index(files).intersection(table.files),
-    )
-
-
-def test_and_pick_index():
-
-    for table in ['files', 'segments']:
-        index = pytest.DB[table].index[:5]
-        df_pick = pytest.DB[table].pick_index(index).get()
-        index = pytest.DB[table].index[5:]
-        df_drop = pytest.DB[table].drop_index(index).get()
-        pd.testing.assert_frame_equal(df_pick, df_drop)
-
-    index = pytest.DB['segments'].index[:5]
-    with pytest.raises(ValueError):
-        pytest.DB['files'].drop_index(index).get()
-    with pytest.raises(ValueError):
-        pytest.DB['files'].pick_index(index).get()
 
 
 def test_empty():
@@ -685,7 +662,10 @@ def test_extend_index():
     db['table'] = audformat.Table()
     db['table'].extend_index(audformat.filewise_index())
     assert db['table'].get().empty
-    with pytest.raises(ValueError):
+    with pytest.raises(
+        ValueError,
+        match='Cannot extend',
+    ):
         db['table'].extend_index(
             audformat.segmented_index(
                 files=['1.wav', '2.wav'],
@@ -710,8 +690,7 @@ def test_extend_index():
         db['table']['columns'].get().values,
         np.array(['a', 'a']),
     )
-    index = pd.Index(['1.wav', '3.wav'],
-                     name=audformat.define.IndexField.FILE)
+    index = audformat.filewise_index(['1.wav', '3.wav'])
     db['table'].extend_index(
         index,
         fill_values='b',
@@ -948,6 +927,38 @@ def test_map(table, map):
         if column not in mapped_columns:
             expected.drop(columns=column, inplace=True)
     pd.testing.assert_frame_equal(result, expected)
+
+
+@pytest.mark.parametrize(
+    'files',
+    [
+        pytest.DB.files,
+        pytest.DB.files[0],
+        [pytest.DB.files[0], 'does-not-exist.wav'],
+        lambda x: '1' in x,
+    ]
+)
+@pytest.mark.parametrize(
+    'table',
+    [
+        pytest.DB['files'],
+        pytest.DB['segments'],
+    ]
+)
+def test_pick_files(files, table):
+
+    table = table.pick_files(files, inplace=False)
+    if callable(files):
+        files = table.files[table.files.to_series().apply(files)]
+        seen = set()
+        seen_add = seen.add
+        files = [x for x in files if not (x in seen or seen_add(x))]
+    elif isinstance(files, str):
+        files = [files]
+    pd.testing.assert_index_equal(
+        table.files.unique(),
+        audformat.filewise_index(files).intersection(table.files),
+    )
 
 
 @pytest.mark.parametrize('num_files,num_segments_per_file,values', [
