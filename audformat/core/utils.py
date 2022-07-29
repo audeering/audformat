@@ -553,13 +553,12 @@ def intersect(
     # sort objects by length
     objs = sorted(objs, key=lambda obj: len(obj))
     # start from shortest index
-    index = set(objs[0])
+    index = list(objs[0])
     for obj in objs[1:]:
-        index = index.intersection(set(obj))
+        index = [idx for idx in index if idx in obj]
         if len(index) == 0:
             # break early if no more intersection is possible
             break
-    index = sorted(list((index)))
     index = _alike_index(obj, index)
 
     return index
