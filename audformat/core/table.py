@@ -813,6 +813,51 @@ class MiscTable(Base):
         file other
         f1   f2     True
              f3    False
+        >>> index_ex = pd.MultiIndex.from_tuples(
+        ...   [
+        ...     ('f4', 'f1'),
+        ...   ],
+        ...   names=['file', 'other'],
+        ... )
+        >>> index_ex = utils.set_index_dtypes(index_ex, 'string')
+        >>> table_ex = table.extend_index(
+        ...     index_ex,
+        ...     inplace=False,
+        ... )
+        >>> table_ex.get()
+                    match
+        file other
+        f1   f2      True
+             f3     False
+        f2   f3      True
+        f4   f1       NaN
+        >>> table_ex.set(
+        ...     {'match': True},
+        ...     index=index_ex,
+        ... )
+        >>> table_ex.get()
+                    match
+        file other
+        f1   f2      True
+             f3     False
+        f2   f3      True
+        f4   f1      True
+        >>> table_str = MiscTable(index)
+        >>> table_str['strings'] = Column()
+        >>> table_str.set({'strings': ['a', 'b', 'c']})
+        >>> (table + table_str).get()
+                    match strings
+        file other
+        f1   f2      True       a
+             f3     False       b
+        f2   f3      True       c
+        >>> (table_ex + table_str).get()
+                    match strings
+        file other
+        f1   f2      True       a
+             f3     False       b
+        f2   f3      True       c
+        f4   f1      True     NaN
 
     """
     def __init__(
