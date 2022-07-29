@@ -62,6 +62,49 @@ class Base(HeaderBase):
         self._db = None
         self._id = None
 
+    def __add__(self, other: typing.Self) -> typing.Self:
+        r"""Create new table by combining two tables.
+
+        The new table contains index and columns of both tables.
+        Missing values will be set to ``NaN``.
+
+        If table is conform to
+        :ref:`table specifications <data-tables:Tables>`
+        and at least one table is segmented,
+        the output has a segmented index.
+
+        Columns with the same identifier are combined to a single column.
+        This requires that:
+
+        1. both columns have the same dtype
+        2. in places where the indices overlap the values of both columns
+           match or one column contains ``NaN``
+
+        Media and split information,
+        as well as,
+        references to schemes and raters are discarded.
+        If you intend to keep them,
+        use ``update()``.
+
+        Args:
+            other: the other table
+
+        Raises:
+            ValueError: if columns with the same name have different dtypes
+            ValueError: if values in the same position do not match
+            ValueError: if level and dtypes of indices do not match
+
+        """
+        df = utils.concat([self.df, other.df])
+
+        table = self.__new__(type(self))
+        table.__init__(df.index)
+        for column_id in df:
+            table[column_id] = Column()
+        table._df = df
+
+        return table
+
     def __getitem__(self, column_id: str) -> Column:
         r"""Return view to a column.
 
@@ -785,6 +828,51 @@ class MiscTable(Base):
         file other
         f1   f2     True
              f3    False
+        >>> index_new = pd.MultiIndex.from_tuples(
+        ...   [
+        ...     ('f4', 'f1'),
+        ...   ],
+        ...   names=['file', 'other'],
+        ... )
+        >>> index_new = utils.set_index_dtypes(index_new, 'string')
+        >>> table_ex = table.extend_index(
+        ...     index_new,
+        ...     inplace=False,
+        ... )
+        >>> table_ex.get()
+                    match
+        file other
+        f1   f2      True
+             f3     False
+        f2   f3      True
+        f4   f1       NaN
+        >>> table_ex.set(
+        ...     {'match': True},
+        ...     index=index_new,
+        ... )
+        >>> table_ex.get()
+                    match
+        file other
+        f1   f2      True
+             f3     False
+        f2   f3      True
+        f4   f1      True
+        >>> table_str = MiscTable(index)
+        >>> table_str['strings'] = Column()
+        >>> table_str.set({'strings': ['a', 'b', 'c']})
+        >>> (table + table_str).get()
+                    match strings
+        file other
+        f1   f2      True       a
+             f3     False       b
+        f2   f3      True       c
+        >>> (table_ex + table_str).get()
+                    match strings
+        file other
+        f1   f2      True       a
+             f3     False       b
+        f2   f3      True       c
+        f4   f1      True     NaN
 
     """
     def __init__(
@@ -910,9 +998,9 @@ class Table(Base):
         f1   0 days NaT      0
         f2   0 days NaT      1
         f3   0 days NaT      2
-        >>> index_ex = filewise_index('f4')
+        >>> index_new = filewise_index('f4')
         >>> table_ex = table.extend_index(
-        ...     index_ex,
+        ...     index_new,
         ...     inplace=False,
         ... )
         >>> table_ex.get()
@@ -924,7 +1012,7 @@ class Table(Base):
         f4      NaN
         >>> table_ex.set(
         ...     {'values': 3},
-        ...     index=index_ex,
+        ...     index=index_new,
         ... )
         >>> table_ex.get()
              values
@@ -973,43 +1061,6 @@ class Table(Base):
             description=description,
             meta=meta,
         )
-
-    def __add__(self, other: Table) -> Table:
-        r"""Create new table by combining two tables.
-
-        The new table contains index and columns of both tables.
-        Missing values will be set to ``NaN``.
-        If at least one table is segmented, the output has a segmented index.
-
-        Columns with the same identifier are combined to a single column.
-        This requires that:
-
-        1. both columns have the same dtype
-        2. in places where the indices overlap the values of both columns
-           match or one column contains ``NaN``
-
-        Media and split information,
-        as well as,
-        references to schemes and raters are discarded.
-        If you intend to keep them,
-        use :meth:`audformat.Table.update`.
-
-        Args:
-            other: the other table
-
-        Raises:
-            ValueError: if columns with the same name have different dtypes
-            ValueError: if values in the same position do not match
-
-        """
-        df = utils.concat([self.df, other.df])
-
-        table = Table(df.index)
-        for column_id in df:
-            table[column_id] = Column()
-        table._df = df
-
-        return table
 
     @property
     def ends(self) -> pd.Index:
