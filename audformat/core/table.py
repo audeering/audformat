@@ -572,7 +572,7 @@ class Base(HeaderBase):
     ):
         r"""Set labels.
 
-        By default all labels of the table are replaced,
+        By default, all labels of the table are replaced,
         use ``index`` to select a subset.
         If a column is assigned to a :class:`Scheme`
         values will be automatically converted
@@ -592,6 +592,182 @@ class Base(HeaderBase):
         """
         for idx, data in values.items():
             self.columns[idx].set(data, index=index)
+
+    def update(
+            self,
+            others: typing.Union[typing.Self, typing.Sequence[typing.Self]],
+            *,
+            overwrite: bool = False,
+    ) -> typing.Self:
+        r"""Update table with other table(s).
+
+        Table which calls ``update()``
+        to :ref:`combine tables <combine-tables>`
+        must be assigned to a database.
+        For all tables media and split must match.
+
+        Columns that are not yet part of the table will be added and
+        referenced schemes or raters are copied.
+        For overlapping columns, schemes and raters must match.
+
+        Columns with the same identifier are combined to a single column.
+        This requires that both columns have the same dtype
+        and if ``overwrite`` is set to ``False``,
+        values in places where the indices overlap have to match
+        or one column contains ``NaN``.
+        If ``overwrite`` is set to ``True``,
+        the value of the last table in the list is kept.
+
+        The index type of the table must not change.
+
+        Args:
+            others: table object(s)
+            overwrite: overwrite values where indices overlap
+
+        Returns:
+            the updated table
+
+        Raises:
+            RuntimeError: if table is not assign to a database
+            ValueError: if split or media does not match
+            ValueError: if overlapping columns reference different schemes
+                or raters
+            ValueError: if a missing scheme or rater cannot be copied
+                because a different object with the same ID exists
+            ValueError: if values in same position overlap
+            ValueError: if index is not conform to table index
+
+        """
+        if self.db is None:
+            raise RuntimeError(
+                'Table is not assigned to a database.'
+            )
+
+        others = audeer.to_list(others)
+
+        for other in others:
+            _assert_table_index(self, other.index, 'update')
+
+        def raise_error(
+                msg,
+                left: typing.Optional[HeaderDict],
+                right: typing.Optional[HeaderDict],
+        ):
+            raise ValueError(
+                f"{msg}:\n"
+                f"{left}\n"
+                "!=\n"
+                f"{right}"
+            )
+
+        def assert_equal(
+                msg: str,
+                left: typing.Optional[HeaderDict],
+                right: typing.Optional[HeaderDict],
+        ):
+            equal = True
+            if left and right:
+                equal = left == right
+            elif left or right:
+                equal = False
+            if not equal:
+                raise_error(msg, left, right)
+
+        missing_schemes = {}
+        missing_raters = {}
+
+        for other in others:
+
+            assert_equal(
+                "Media of table "
+                f"'{other._id}' "
+                "does not match",
+                self.media,
+                other.media,
+            )
+
+            assert_equal(
+                "Split of table "
+                f"'{other._id}' "
+                "does not match",
+                self.split,
+                other.split,
+            )
+
+            # assert schemes match for overlapping columns and
+            # look for missing schemes in new columns,
+            # raise an error if a different scheme with same ID exists
+            for column_id, column in other.columns.items():
+                if column_id in self.columns:
+                    assert_equal(
+                        "Scheme of common column "
+                        f"'{other._id}.{column_id}' "
+                        "does not match",
+                        self.columns[column_id].scheme,
+                        column.scheme,
+                    )
+                else:
+                    if column.scheme is not None:
+                        if column.scheme_id in self.db.schemes:
+                            assert_equal(
+                                "Cannot copy scheme of column "
+                                f"'{other._id}.{column_id}' "
+                                "as a different scheme with ID "
+                                f"'{column.scheme_id}' "
+                                "exists",
+                                self.db.schemes[column.scheme_id],
+                                column.scheme,
+                            )
+                        else:
+                            missing_schemes[column.scheme_id] = column.scheme
+
+            # assert raters match for overlapping columns and
+            # look for missing raters in new columns,
+            # raise an error if a different rater with same ID exists
+            for column_id, column in other.columns.items():
+                if column_id in self.columns:
+                    assert_equal(
+                        f"self['{self._id}']['{column_id}'].rater "
+                        "does not match "
+                        f"other['{other._id}']['{column_id}'].rater",
+                        self.columns[column_id].rater,
+                        column.rater,
+                    )
+                else:
+                    if column.rater is not None:
+                        if column.rater_id in self.db.raters:
+                            assert_equal(
+                                f"db1.raters['{column.scheme_id}'] "
+                                "does not match "
+                                f"db2.raters['{column.scheme_id}']",
+                                self.db.raters[column.rater_id],
+                                column.rater,
+                            )
+                        else:
+                            missing_raters[column.rater_id] = column.rater
+
+        # concatenate table data
+        df = utils.concat(
+            [self.df] + [other.df for other in others],
+            overwrite=overwrite,
+        )
+
+        # insert missing schemes and raters
+        for scheme_id, scheme in missing_schemes.items():
+            self.db.schemes[scheme_id] = copy.copy(scheme)
+        for rater_id, rater in missing_raters.items():
+            self.db.raters[rater_id] = copy.copy(rater)
+
+        # insert new columns
+        for other in others:
+            for column_id, column in other.columns.items():
+                if column_id not in self.columns:
+                    self.columns[column_id] = copy.copy(column)
+
+        # update table data
+        self._df = df
+
+        return self
 
     def _get_by_index(
             self,
@@ -1299,190 +1475,6 @@ class Table(Base):
             index = self.files.intersection(files)
             index.name = define.IndexField.FILE
             self._df = self.get(index, copy=False)
-
-        return self
-
-    def update(
-            self,
-            others: typing.Union[Table, typing.Sequence[Table]],
-            *,
-            overwrite: bool = False,
-    ) -> Table:
-        r"""Update table with other table(s).
-
-        Table which calls ``update()``
-        to :ref:`combine tables <combine-tables>`
-        must be assigned to a database.
-        For all tables media and split must match.
-
-        Columns that are not yet part of the table will be added and
-        referenced schemes or raters are copied.
-        For overlapping columns, schemes and raters must match.
-
-        Columns with the same identifier are combined to a single column.
-        This requires that both columns have the same dtype
-        and if ``overwrite`` is set to ``False``,
-        values in places where the indices overlap have to match
-        or one column contains ``NaN``.
-        If ``overwrite`` is set to ``True``,
-        the value of the last table in the list is kept.
-
-        The index type of the table must not change.
-
-        Args:
-            others: table object(s)
-            overwrite: overwrite values where indices overlap
-
-        Returns:
-            the updated table
-
-        Raises:
-            RuntimeError: if table is not assign to a database
-            ValueError: if split or media does not match
-            ValueError: if overlapping columns reference different schemes
-                or raters
-            ValueError: if a missing scheme or rater cannot be copied
-                because a different object with the same ID exists
-            ValueError: if values in same position overlap
-            ValueError: if operation would change the index type of the table
-
-        """
-        if self.db is None:
-            raise RuntimeError(
-                'Table is not assigned to a database.'
-            )
-
-        if isinstance(others, Table):
-            others = [others]
-
-        for other in others:
-            if self.type != other.type:
-                raise ValueError(
-                    'Cannot update a '
-                    f'{self.type} '
-                    'table with a '
-                    f'{other.type} '
-                    'table.'
-                )
-
-        def raise_error(
-                msg,
-                left: typing.Optional[HeaderDict],
-                right: typing.Optional[HeaderDict],
-        ):
-            raise ValueError(
-                f"{msg}:\n"
-                f"{left}\n"
-                "!=\n"
-                f"{right}"
-            )
-
-        def assert_equal(
-                msg: str,
-                left: typing.Optional[HeaderDict],
-                right: typing.Optional[HeaderDict],
-        ):
-            equal = True
-            if left and right:
-                equal = left == right
-            elif left or right:
-                equal = False
-            if not equal:
-                raise_error(msg, left, right)
-
-        missing_schemes = {}
-        missing_raters = {}
-
-        for other in others:
-
-            assert_equal(
-                "Media of table "
-                f"'{other._id}' "
-                "does not match",
-                self.media,
-                other.media,
-            )
-
-            assert_equal(
-                "Split of table "
-                f"'{other._id}' "
-                "does not match",
-                self.split,
-                other.split,
-            )
-
-            # assert schemes match for overlapping columns and
-            # look for missing schemes in new columns,
-            # raise an error if a different scheme with same ID exists
-            for column_id, column in other.columns.items():
-                if column_id in self.columns:
-                    assert_equal(
-                        "Scheme of common column "
-                        f"'{other._id}.{column_id}' "
-                        "does not match",
-                        self.columns[column_id].scheme,
-                        column.scheme,
-                    )
-                else:
-                    if column.scheme is not None:
-                        if column.scheme_id in self.db.schemes:
-                            assert_equal(
-                                "Cannot copy scheme of column "
-                                f"'{other._id}.{column_id}' "
-                                "as a different scheme with ID "
-                                f"'{column.scheme_id}' "
-                                "exists",
-                                self.db.schemes[column.scheme_id],
-                                column.scheme,
-                            )
-                        else:
-                            missing_schemes[column.scheme_id] = column.scheme
-
-            # assert raters match for overlapping columns and
-            # look for missing raters in new columns,
-            # raise an error if a different rater with same ID exists
-            for column_id, column in other.columns.items():
-                if column_id in self.columns:
-                    assert_equal(
-                        f"self['{self._id}']['{column_id}'].rater "
-                        "does not match "
-                        f"other['{other._id}']['{column_id}'].rater",
-                        self.columns[column_id].rater,
-                        column.rater,
-                    )
-                else:
-                    if column.rater is not None:
-                        if column.rater_id in self.db.raters:
-                            assert_equal(
-                                f"db1.raters['{column.scheme_id}'] "
-                                "does not match "
-                                f"db2.raters['{column.scheme_id}']",
-                                self.db.raters[column.rater_id],
-                                column.rater,
-                            )
-                        else:
-                            missing_raters[column.rater_id] = column.rater
-
-        # concatenate table data
-        df = utils.concat(
-            [self.df] + [other.df for other in others],
-            overwrite=overwrite,
-        )
-
-        # insert missing schemes and raters
-        for scheme_id, scheme in missing_schemes.items():
-            self.db.schemes[scheme_id] = copy.copy(scheme)
-        for rater_id, rater in missing_raters.items():
-            self.db.raters[rater_id] = copy.copy(rater)
-
-        # insert new columns
-        for other in others:
-            for column_id, column in other.columns.items():
-                if column_id not in self.columns:
-                    self.columns[column_id] = copy.copy(column)
-
-        # update table data
-        self._df = df
 
         return self
 
