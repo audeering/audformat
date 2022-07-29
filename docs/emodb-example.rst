@@ -1,3 +1,5 @@
+.. _emodb-example:
+
 Emodb example
 =============
 

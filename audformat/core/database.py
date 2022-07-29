@@ -47,6 +47,10 @@ class Database(HeaderBase):
     In addition, it links to a number of tables
     listing files and labels.
 
+    For a start
+    see how to :ref:`create a database <create-a-database>`
+    and inspect the :ref:`example of the emodb database <emodb-example>`.
+
     Args:
         name: name of database
         source: data source (e.g. link to website)
