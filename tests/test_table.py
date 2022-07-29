@@ -547,6 +547,29 @@ def test_drop_and_pick_index():
         pytest.DB['files'].pick_index(index).get()
 
 
+def test_drop_and_pick_index_order():
+
+    # Ensure order of index is preserved.
+    # This is affected by utils.intersect()
+    # and utils.symmetric_difference()
+    index = audformat.filewise_index(['f4', 'f3', 'f2', 'f1'])
+    table = audformat.Table(index)
+    new_table = table.pick_index(
+        audformat.filewise_index(['f1', 'f2'])
+    )
+    assert pd.testing.assert_index_equal(
+        new_table.index,
+        audformat.filewise_index(['f2', 'f1']),
+    )
+    new_table = table.drop_index(
+        audformat.filewise_index(['f1', 'f2'])
+    )
+    assert pd.testing.assert_index_equal(
+        new_table.index,
+        audformat.filewise_index(['f4', 'f3']),
+    )
+
+
 @pytest.mark.parametrize(
     'files',
     [
