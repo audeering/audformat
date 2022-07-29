@@ -19,6 +19,7 @@ Column
 
 .. autoclass:: Column
     :members:
+    :inherited-members:
 
 filewise_index
 --------------
@@ -35,6 +36,7 @@ Database
 
 .. autoclass:: Database
     :members:
+    :inherited-members:
     :special-members:
 
 index_type
@@ -57,13 +59,14 @@ Media
 
 .. autoclass:: Media
     :members:
+    :inherited-members:
 
 MiscTable
 ---------
 
 .. autoclass:: MiscTable
     :members:
-    :inherited-members: HeaderBase
+    :inherited-members:
     :special-members: __add__, __getitem__, __setitem__
 
 Rater
@@ -71,12 +74,14 @@ Rater
 
 .. autoclass:: Rater
     :members:
+    :inherited-members:
 
 Scheme
 ------
 
 .. autoclass:: Scheme
     :members:
+    :inherited-members:
 
 Split
 -----
@@ -86,6 +91,7 @@ Usually one of :class:`define.SplitType`.
 
 .. autoclass:: Split
     :members:
+    :inherited-members:
 
 Table
 -----
@@ -102,5 +108,5 @@ There are two types of tables:
 
 .. autoclass:: Table
     :members:
-    :inherited-members: HeaderBase
+    :inherited-members:
     :special-members: __add__, __getitem__, __setitem__
