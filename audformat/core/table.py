@@ -61,6 +61,44 @@ class Base(HeaderBase):
         self._db = None
         self._id = None
 
+    def __add__(self, other: typing.Self) -> typing.Self:
+        r"""Create new table by combining two tables.
+
+        The new table contains index and columns of both tables.
+        Missing values will be set to ``NaN``.
+        If at least one table is segmented, the output has a segmented index.
+
+        Columns with the same identifier are combined to a single column.
+        This requires that:
+
+        1. both columns have the same dtype
+        2. in places where the indices overlap the values of both columns
+           match or one column contains ``NaN``
+
+        Media and split information,
+        as well as,
+        references to schemes and raters are discarded.
+        If you intend to keep them,
+        use :meth:`audformat.Table.update`.
+
+        Args:
+            other: the other table
+
+        Raises:
+            ValueError: if columns with the same name have different dtypes
+            ValueError: if values in the same position do not match
+
+        """
+        df = utils.concat([self.df, other.df])
+
+        table = self.__new__(type(self))
+        table.__init__(df.index)
+        for column_id in df:
+            table[column_id] = Column()
+        table._df = df
+
+        return table
+
     def __getitem__(self, column_id: str) -> Column:
         r"""Return view to a column.
 
@@ -958,43 +996,6 @@ class Table(Base):
             description=description,
             meta=meta,
         )
-
-    def __add__(self, other: Table) -> Table:
-        r"""Create new table by combining two tables.
-
-        The new table contains index and columns of both tables.
-        Missing values will be set to ``NaN``.
-        If at least one table is segmented, the output has a segmented index.
-
-        Columns with the same identifier are combined to a single column.
-        This requires that:
-
-        1. both columns have the same dtype
-        2. in places where the indices overlap the values of both columns
-           match or one column contains ``NaN``
-
-        Media and split information,
-        as well as,
-        references to schemes and raters are discarded.
-        If you intend to keep them,
-        use :meth:`audformat.Table.update`.
-
-        Args:
-            other: the other table
-
-        Raises:
-            ValueError: if columns with the same name have different dtypes
-            ValueError: if values in the same position do not match
-
-        """
-        df = utils.concat([self.df, other.df])
-
-        table = Table(df.index)
-        for column_id in df:
-            table[column_id] = Column()
-        table._df = df
-
-        return table
 
     @property
     def ends(self) -> pd.Index:
