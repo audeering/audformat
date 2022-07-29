@@ -635,7 +635,7 @@ class Base(HeaderBase):
             ValueError: if a missing scheme or rater cannot be copied
                 because a different object with the same ID exists
             ValueError: if values in same position overlap
-            ValueError: if index is not conform to table index
+            ValueError: if level and dtypes of table indices do not match
 
         """
         if self.db is None:
