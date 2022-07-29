@@ -1,8 +1,252 @@
+import typing
+
 import numpy as np
 import pandas as pd
 import pytest
 
 import audformat.testing
+
+
+def create_misc_table(
+        obj: typing.Union[pd.Series, pd.DataFrame],
+) -> audformat.MiscTable:
+    r"""Helper function to create Table."""
+    table = audformat.MiscTable(obj.index)
+    if isinstance(obj, pd.Series):
+        obj = obj.to_frame()
+    for name in obj:
+        table[name] = audformat.Column()
+        table[name].set(obj[name].values)
+    table._df = table.df.astype(obj.dtypes)
+    return table
+
+
+@pytest.mark.parametrize(
+    'tables, expected',
+    [
+        # empty
+        (
+            [
+                create_misc_table(
+                    pd.Series(
+                        index=pd.Index([], name='idx'),
+                        dtype='float',
+                    ),
+                ),
+            ],
+            create_misc_table(
+                pd.Series(
+                    index=pd.Index([], name='idx'),
+                    dtype='float',
+                ),
+            ),
+        ),
+        (
+            [
+                create_misc_table(
+                    pd.Series(
+                        index=pd.Index([], name='idx'),
+                        dtype='float',
+                    ),
+                ),
+            ] * 3,
+            create_misc_table(
+                pd.Series(
+                    index=pd.Index([], name='idx'),
+                    dtype='float',
+                ),
+            ),
+        ),
+        # content + empty
+        (
+            [
+                create_misc_table(
+                    pd.Series(
+                        [1.],
+                        index=pd.Index(['a'], name='idx'),
+                    ),
+                ),
+                create_misc_table(
+                    pd.Series(
+                        index=pd.Index([], name='idx'),
+                        dtype='float',
+                    ),
+                ),
+            ],
+            create_misc_table(
+                pd.Series(
+                    [1.],
+                    index=pd.Index(['a'], name='idx'),
+                ),
+            ),
+        ),
+        # empty + content
+        (
+            [
+                create_misc_table(
+                    pd.Series(
+                        index=pd.Index([], name='idx'),
+                        dtype='float',
+                    )
+                ),
+                create_misc_table(
+                    pd.Series(
+                        [1.],
+                        index=pd.Index(['a'], name='idx'),
+                    ),
+                ),
+            ],
+            create_misc_table(
+                pd.Series(
+                    [1.],
+                    index=pd.Index(['a'], name='idx'),
+                ),
+            ),
+        ),
+        # content + content
+        (
+            [
+                create_misc_table(
+                    pd.Series(
+                        [1., 2.],
+                        index=pd.Index(['a', 'b'], name='idx'),
+                    ),
+                ),
+                create_misc_table(
+                    pd.Series(
+                        [2., 3.],
+                        index=pd.Index(['b', 'c'], name='idx'),
+                    ),
+                ),
+            ],
+            create_misc_table(
+                pd.Series(
+                    [1., 2., 3.],
+                    index=pd.Index(['a', 'b', 'c'], name='idx'),
+                ),
+            ),
+        ),
+        # different columns
+        (
+            [
+                create_misc_table(
+                    pd.Series(
+                        [1., 1.],
+                        index=pd.Index(['a', 'b'], name='idx'),
+                        name='c1',
+                    ),
+                ),
+                create_misc_table(
+                    pd.Series(
+                        [2., 2.],
+                        index=pd.Index(['b', 'c'], name='idx'),
+                        name='c2',
+                    ),
+                ),
+            ],
+            create_misc_table(
+                pd.DataFrame(
+                    {
+                        'c1': [1., 1., np.nan],
+                        'c2': [np.nan, 2., 2.],
+                    },
+                    index=pd.Index(['a', 'b', 'c'], name='idx'),
+                ),
+            ),
+        ),
+        pytest.param(  # value mismatch
+            [
+                create_misc_table(
+                    pd.Series(
+                        [1., 1.],
+                        index=pd.Index(['a', 'b'], name='idx'),
+                    ),
+                ),
+                create_misc_table(
+                    pd.Series(
+                        [2., 2.],
+                        index=pd.Index(['b', 'c'], name='idx'),
+                    ),
+                ),
+            ],
+            None,
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
+        pytest.param(  # level dimension mismatch
+            [
+                create_misc_table(
+                    pd.Series(
+                        [],
+                        index=pd.MultiIndex.from_arrays(
+                            [[], []],
+                            names=['idx1', 'idx2'],
+                        ),
+                        dtype='float',
+                    ),
+                ),
+                create_misc_table(
+                    pd.Series(
+                        [],
+                        index=pd.Index([], name='idx1'),
+                        dtype='float',
+                    ),
+                )
+            ],
+            None,
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
+        pytest.param(  # level name mismatch
+            [
+                create_misc_table(
+                    pd.Series(
+                        [],
+                        index=pd.Index([], name='idx1'),
+                        dtype='float',
+                    ),
+                ),
+                create_misc_table(
+                    pd.Series(
+                        [],
+                        index=pd.Index([], name='idx2'),
+                        dtype='float',
+                    ),
+                )
+            ],
+            None,
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
+        pytest.param(  # level dtype mismatch
+            [
+                create_misc_table(
+                    pd.Series(
+                        [],
+                        index=pd.Index([], name='idx1'),
+                        dtype='string',
+                    ),
+                ),
+                create_misc_table(
+                    pd.Series(
+                        [],
+                        index=pd.Index([], name='idx2'),
+                        dtype='float',
+                    ),
+                )
+            ],
+            None,
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
+    ]
+)
+def test_add(tables, expected):
+    table = tables[0]
+    for other in tables[1:]:
+        table += other
+    assert table.media_id is None
+    assert table.split_id is None
+    for column in table.columns.values():
+        assert column.scheme_id is None
+        assert column.rater_id is None
+    assert table == expected
 
 
 @pytest.mark.parametrize(
