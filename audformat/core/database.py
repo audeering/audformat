@@ -758,6 +758,11 @@ class Database(HeaderBase):
 
         # join tables
         for other in others:
+            for misc_id, misc in other.misc_tables.items():
+                if misc_id in self.misc_tables:
+                    self[misc_id].update(misc, overwrite=overwrite)
+                else:
+                    self[misc_id] = misc.copy()
             for table_id, table in other.tables.items():
                 if table_id in self.tables:
                     self[table_id].update(table, overwrite=overwrite)
