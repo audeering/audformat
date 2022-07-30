@@ -54,6 +54,12 @@ def create_misc_table(
     for name in obj:
         table[name] = audformat.Column()
         table[name].set(obj[name].values)
+    # change 'int64' to 'Int64'
+    dtypes = {
+        name: 'Int64' if pd.api.types.is_integer_dtype(dtype) else dtype
+        for name, dtype in obj.dtypes.items()
+    }
+    table._df = table.df.astype(dtypes)
     return table
 
 
@@ -66,14 +72,14 @@ def create_misc_table(
                 create_misc_table(
                     pd.Series(
                         index=pd.Index([], name='idx'),
-                        dtype='object',
+                        dtype='float',
                     ),
                 ),
             ],
             create_misc_table(
                 pd.Series(
                     index=pd.Index([], name='idx'),
-                    dtype='object',
+                    dtype='float',
                 ),
             ),
         ),
@@ -82,14 +88,14 @@ def create_misc_table(
                 create_misc_table(
                     pd.Series(
                         index=pd.Index([], name='idx'),
-                        dtype='object',
+                        dtype='float',
                     ),
                 ),
             ] * 3,
             create_misc_table(
                 pd.Series(
                     index=pd.Index([], name='idx'),
-                    dtype='object',
+                    dtype='float',
                 ),
             ),
         ),
@@ -105,7 +111,7 @@ def create_misc_table(
                 create_misc_table(
                     pd.Series(
                         index=pd.Index([], name='idx'),
-                        dtype='object',
+                        dtype='float',
                     ),
                 ),
             ],
@@ -122,7 +128,7 @@ def create_misc_table(
                 create_misc_table(
                     pd.Series(
                         index=pd.Index([], name='idx'),
-                        dtype='object',
+                        dtype='float',
                     )
                 ),
                 create_misc_table(
@@ -217,14 +223,14 @@ def create_misc_table(
                             [[], []],
                             names=['idx1', 'idx2'],
                         ),
-                        dtype='object',
+                        dtype='float',
                     ),
                 ),
                 create_misc_table(
                     pd.Series(
                         [],
                         index=pd.Index([], name='idx1'),
-                        dtype='object',
+                        dtype='float',
                     ),
                 )
             ],
@@ -237,14 +243,14 @@ def create_misc_table(
                     pd.Series(
                         [],
                         index=pd.Index([], name='idx1'),
-                        dtype='object',
+                        dtype='float',
                     ),
                 ),
                 create_misc_table(
                     pd.Series(
                         [],
                         index=pd.Index([], name='idx2'),
-                        dtype='object',
+                        dtype='float',
                     ),
                 )
             ],
@@ -264,7 +270,7 @@ def create_misc_table(
                     pd.Series(
                         [],
                         index=pd.Index([], name='idx2'),
-                        dtype='object',
+                        dtype='float',
                     ),
                 )
             ],
@@ -1259,7 +1265,7 @@ def test_load_old_pickle(tmpdir):
             create_db_misc_table(
                 pd.Series(
                     index=pd.Index([], name='idx'),
-                    dtype='object',
+                    dtype='float',
                     name='c1',
                 ),
             ),
@@ -1267,7 +1273,7 @@ def test_load_old_pickle(tmpdir):
             create_db_misc_table(
                 pd.Series(
                     index=pd.Index([], name='idx'),
-                    dtype='object',
+                    dtype='float',
                     name='c2',
                 ),
                 rater=audformat.Rater(
@@ -1305,7 +1311,7 @@ def test_load_old_pickle(tmpdir):
             create_db_misc_table(
                 pd.Series(
                     index=pd.Index([], name='idx'),
-                    dtype='object',
+                    dtype='float',
                     name='c1',
                 ),
                 rater=audformat.Rater(audformat.define.RaterType.HUMAN),
@@ -1314,7 +1320,7 @@ def test_load_old_pickle(tmpdir):
             create_db_misc_table(
                 pd.Series(
                     index=pd.Index([], name='idx'),
-                    dtype='object',
+                    dtype='float',
                     name='c2',
                 ),
                 rater=audformat.Rater(audformat.define.RaterType.MACHINE),

@@ -23,6 +23,12 @@ def create_misc_table(
     for name in obj:
         table[name] = audformat.Column()
         table[name].set(obj[name].values)
+    # change 'int64' to 'Int64'
+    dtypes = {
+        name: 'Int64' if pd.api.types.is_integer_dtype(dtype) else dtype
+        for name, dtype in obj.dtypes.items()
+    }
+    table._df = table.df.astype(dtypes)
     return table
 
 
