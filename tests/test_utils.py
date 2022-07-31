@@ -876,6 +876,13 @@ def test_index_has_overlap(obj, expected):
         ),
         (
             [
+                audformat.filewise_index(['f3', 'f2', 'f1']),
+                audformat.filewise_index(['f1', 'f2']),
+            ],
+            audformat.filewise_index(['f2', 'f1']),
+        ),
+        (
+            [
                 audformat.filewise_index(['f1', 'f2']),
                 audformat.filewise_index(['f1', 'f2']),
                 audformat.filewise_index('f3'),
@@ -1083,11 +1090,10 @@ def test_index_has_overlap(obj, expected):
     ]
 )
 def test_intersect(objs, expected):
-    for permuted_objs in itertools.permutations(objs):
-        pd.testing.assert_index_equal(
-            audformat.utils.intersect(permuted_objs),
-            expected,
-        )
+    pd.testing.assert_index_equal(
+        audformat.utils.intersect(objs),
+        expected,
+    )
     # Ensure A ∩ (B ∩ C) == (A ∩ B) ∩ C
     if len(objs) > 2:
         pd.testing.assert_index_equal(
