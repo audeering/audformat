@@ -13,25 +13,6 @@ import audformat
 import audformat.testing
 
 
-def create_misc_table(
-        obj: typing.Union[pd.Series, pd.DataFrame],
-) -> audformat.MiscTable:
-    r"""Helper function to create Table."""
-    table = audformat.MiscTable(obj.index)
-    if isinstance(obj, pd.Series):
-        obj = obj.to_frame()
-    for name in obj:
-        table[name] = audformat.Column()
-        table[name].set(obj[name].values)
-    # change 'int64' to 'Int64'
-    dtypes = {
-        name: 'Int64' if pd.api.types.is_integer_dtype(dtype) else dtype
-        for name, dtype in obj.dtypes.items()
-    }
-    table._df = table.df.astype(dtypes)
-    return table
-
-
 def full_path(
         db: audformat.Database,
         db_root: str,

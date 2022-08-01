@@ -49,13 +49,11 @@ def add_misc_table(
         p_none: float = None,
         split_id: str = None,
         media_id: str = None,
-) -> Table:
-    r"""Adds a table with random values.
+) -> MiscTable:
+    r"""Add a miscellaneous table with random values.
 
     By default, adds one column for every scheme in the database.
     To create a specific set of columns use ``columns``.
-    If a ``media_id`` is passed, the file format will be
-    determined from there. Otherwise, WAV is used.
 
     Args:
         db: a database
@@ -102,7 +100,7 @@ def add_table(
         split_id: str = None,
         media_id: str = None,
 ) -> Table:
-    r"""Adds a table with random values.
+    r"""Add a table with random values.
 
     By default, adds one column for every scheme in the database.
     To create a specific set of columns use ``columns``.
