@@ -657,8 +657,9 @@ class Database(HeaderBase):
             ValueError: if database has different license or usage
             ValueError: if different media, rater, scheme or split with
                 same ID is found
-            ValueError: if table data cannot be combined (e.g. values in
-                same position overlap)
+            ValueError: if tables cannot be combined
+                (e.g. values in same position overlap or
+                level and dtypes of table indices do not match)
             RuntimeError: if ``copy_media=True``,
                 but one of the involved databases was not saved
                 (contains files but no root folder)
@@ -758,6 +759,14 @@ class Database(HeaderBase):
 
         # join tables
         for other in others:
+            # update misc tables first
+            # as they might be used in schemes
+            # linked by audformat tables
+            for misc_id, misc in other.misc_tables.items():
+                if misc_id in self.misc_tables:
+                    self[misc_id].update(misc, overwrite=overwrite)
+                else:
+                    self[misc_id] = misc.copy()
             for table_id, table in other.tables.items():
                 if table_id in self.tables:
                     self[table_id].update(table, overwrite=overwrite)

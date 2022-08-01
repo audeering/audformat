@@ -2,6 +2,7 @@ import datetime
 import filecmp
 import os
 import re
+import typing
 
 import audeer
 import audiofile
@@ -10,6 +11,25 @@ import pytest
 
 import audformat
 import audformat.testing
+
+
+def create_misc_table(
+        obj: typing.Union[pd.Series, pd.DataFrame],
+) -> audformat.MiscTable:
+    r"""Helper function to create Table."""
+    table = audformat.MiscTable(obj.index)
+    if isinstance(obj, pd.Series):
+        obj = obj.to_frame()
+    for name in obj:
+        table[name] = audformat.Column()
+        table[name].set(obj[name].values)
+    # change 'int64' to 'Int64'
+    dtypes = {
+        name: 'Int64' if pd.api.types.is_integer_dtype(dtype) else dtype
+        for name, dtype in obj.dtypes.items()
+    }
+    table._df = table.df.astype(dtypes)
+    return table
 
 
 def full_path(
@@ -657,7 +677,7 @@ def test_update(tmpdir):
     db = audformat.testing.create_db(minimal=True)
     db.author = 'author'
     db.organization = 'organization'
-    db.meta['meta'] = 'meta'
+    db.meta['key'] = 'value'
     db.raters['rater'] = audformat.Rater()
     db.schemes['float'] = audformat.Scheme(float)
     db.schemes['labels'] = audformat.Scheme(labels=['a', 'b'])
@@ -671,6 +691,14 @@ def test_update(tmpdir):
             'labels': ('labels', None),
         },
     )
+    db['misc'] = create_misc_table(
+        pd.Series(
+            [1, 2],
+            pd.Index(['a', 'b'], dtype='string', name='idx'),
+            name='c1',
+        )
+    )
+
     db_root = audeer.mkdir(os.path.join(tmpdir, 'db'))
     db.save(db_root)
     audformat.testing.create_audio_files(db, file_duration='0.1s')
@@ -682,8 +710,8 @@ def test_update(tmpdir):
     other1 = audformat.testing.create_db(minimal=True)
     other1.raters['rater'] = audformat.Rater()
     other1.raters['rater2'] = audformat.Rater()
-    other1.schemes['int'] = audformat.Scheme(int)
-    other1.schemes['float'] = audformat.Scheme(float)
+    other1.schemes['int'] = audformat.Scheme(audformat.define.DataType.INTEGER)
+    other1.schemes['float'] = audformat.Scheme(audformat.define.DataType.FLOAT)
     other1.schemes['labels'] = audformat.Scheme(labels=['b', 'c'])
     audformat.testing.add_table(
         other1,
@@ -695,6 +723,15 @@ def test_update(tmpdir):
             'float': ('float', 'rater2'),
             'labels': ('labels', None),
         },
+    )
+    other1['misc'] = create_misc_table(
+        pd.DataFrame(
+            {
+                'c1': [98, 99],  # overwrite value of 'b'
+                'c2': [1., 2.],  # add new column
+            },
+            pd.Index(['b', 'c'], dtype='string', name='idx'),
+        ),
     )
     other1_root = audeer.mkdir(os.path.join(tmpdir, 'other1'))
     other1.save(other1_root)
@@ -711,6 +748,12 @@ def test_update(tmpdir):
         audformat.define.IndexType.SEGMENTED,
         columns={'str': ('str', 'rater2')},
     )
+    other2['misc_new'] = create_misc_table(
+        pd.Series(
+            ['a', 'b'],
+            pd.Index([0, 1], name='idx'),
+        ),
+    )
     other2_root = audeer.mkdir(os.path.join(tmpdir, 'other2'))
     other2.save(other2_root)
     audformat.testing.create_audio_files(other2, file_duration='0.1s')
@@ -726,8 +769,12 @@ def test_update(tmpdir):
     # replace labels to avoid error
 
     db.schemes['labels'].replace_labels(other1.schemes['labels'].labels)
-    df = audformat.utils.concat(
+    df_table = audformat.utils.concat(
         [db['table'].df, other1['table'].df],
+        overwrite=True,
+    )
+    df_misc = audformat.utils.concat(
+        [db['misc'].df, other1['misc'].df],
         overwrite=True,
     )
     others = [other1, other2]
@@ -747,8 +794,10 @@ def test_update(tmpdir):
 
     db.update(others, overwrite=True, copy_media=True)
 
-    pd.testing.assert_frame_equal(db['table'].df, df)
+    pd.testing.assert_frame_equal(db['table'].df, df_table)
+    pd.testing.assert_frame_equal(db['misc'].df, df_misc)
     assert db['table_new'] == other2['table_new']
+    assert db['misc_new'] == other2['misc_new']
 
     for other in others:
         for rater_id, rater in other.raters.items():
@@ -836,7 +885,7 @@ def test_update(tmpdir):
 
     with pytest.raises(ValueError):
         other = audformat.testing.create_db(minimal=True)
-        other.meta['meta'] = 'other'
+        other.meta['key'] = 'other'
         db.update(other)
 
     # fail if self has absolute path
