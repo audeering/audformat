@@ -560,11 +560,7 @@ def intersect(
 
     # start from first object
     index = list(objs[0])
-    nlevels = objs[0].nlevels
     for obj in objs[1:]:
-        if nlevels > 1:
-            # for multi-level indices we are faster using set()
-            obj = set(obj)
         index = [idx for idx in index if idx in obj]
         if len(index) == 0:
             # break early if no more intersection is possible
