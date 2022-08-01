@@ -759,6 +759,9 @@ class Database(HeaderBase):
 
         # join tables
         for other in others:
+            # update misc tables first
+            # as they might be used in schemes
+            # linked by audformat tables
             for misc_id, misc in other.misc_tables.items():
                 if misc_id in self.misc_tables:
                     self[misc_id].update(misc, overwrite=overwrite)
