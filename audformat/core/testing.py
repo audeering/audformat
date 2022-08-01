@@ -34,6 +34,70 @@ from audformat.core.table import (
 )
 
 
+def add_misc_table(
+        db: Database,
+        table_id: str,
+        index: pd.Index,
+        *,
+        columns: Union[
+            str,
+            Sequence[str],
+            Dict[str, Union[
+                str, Tuple[Optional[str], Optional[str]]
+            ]],
+        ] = None,
+        p_none: float = None,
+        split_id: str = None,
+        media_id: str = None,
+) -> Table:
+    r"""Adds a table with random values.
+
+    By default, adds one column for every scheme in the database.
+    To create a specific set of columns use ``columns``.
+    If a ``media_id`` is passed, the file format will be
+    determined from there. Otherwise, WAV is used.
+
+    Args:
+        db: a database
+        table_id: ID of table that will be created
+        index: index object
+        columns: a list of scheme_ids or a dictionary with column names as
+            keys and tuples of ``(scheme_id, rater_id)`` as values. ``None``
+            values are allowed
+        p_none: probability to draw invalid values
+        split_id: optional split ID
+        media_id: optional media ID
+
+    Returns:
+        table object
+
+    """
+    if columns is None:
+        columns = columns or {s: (s, None) for s in list(db.schemes)}
+    elif isinstance(columns, str):
+        columns = {columns: (columns, None)}
+    elif isinstance(columns, Sequence):
+        columns = {s: (s, None) for s in columns}
+
+    db[table_id] = MiscTable(
+        index,
+        split_id=split_id,
+        media_id=media_id,
+    )
+
+    for column_id, (scheme_id, rater_id) in columns.items():
+        db[table_id][column_id] = Column(
+            scheme_id=scheme_id,
+            rater_id=rater_id,
+        )
+        if scheme_id is not None:
+            db[table_id][column_id].set(
+                db.schemes[scheme_id].draw(len(index), p_none=p_none)
+            )
+
+    return db[table_id]
+
+
 def add_table(
         db: Database,
         table_id: str,
