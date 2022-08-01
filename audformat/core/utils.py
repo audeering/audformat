@@ -1,3 +1,4 @@
+import collections
 import errno
 import os
 import re
@@ -1209,7 +1210,7 @@ def symmetric_difference(
         Int64Index([1, 2, 3], dtype='int64', name='idx')
         >>> symmetric_difference(
         ...     [
-        ...         pd.Index([0, 1], name='idx'),
+        ...         pd.Index([0, 1], dtype='Int64', name='idx'),
         ...         pd.Index([1, 2], dtype='Int64', name='idx'),
         ...     ]
         ... )
@@ -1273,11 +1274,10 @@ def symmetric_difference(
     objs = _maybe_convert_single_level_multi_index(objs)
     _assert_index_alike(objs)
 
-    index = union(objs)
-    count = np.zeros(len(index))
-    for obj in objs:
-        count += index.isin(obj)
-    index = index[count == 1]
+    index = audeer.flatten_list([list(obj) for obj in objs])
+    counting = collections.Counter(index)
+    index = [idx for idx, count in counting.items() if count == 1]
+    index = _alike_index(objs[0], index)
 
     return index
 

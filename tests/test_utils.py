@@ -2388,7 +2388,7 @@ def test_to_segmented_index(obj, allow_nat, files_duration, root, expected):
         ),
         (
             [
-                pd.Index([0, 1], name='idx'),
+                pd.Index([0, 1], dtype='Int64', name='idx'),
                 pd.Index([1, 2], dtype='Int64', name='idx'),
             ],
             pd.Index([0, 2], dtype='Int64', name='idx'),
