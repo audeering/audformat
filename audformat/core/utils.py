@@ -558,14 +558,20 @@ def intersect(
     objs = _maybe_convert_single_level_multi_index(objs)
     _assert_index_alike(objs)
 
+    # sort objects by length
+    objs_sorted = sorted(objs, key=lambda obj: len(obj))
     # start from first object
-    index = list(objs[0])
-    for obj in objs[1:]:
+    index = list(objs_sorted[0])
+    for obj in objs_sorted[1:]:
         index = [idx for idx in index if idx in obj]
         if len(index) == 0:
             # break early if no more intersection is possible
             break
+
     index = _alike_index(objs[0], index)
+
+    # Ensure we have order of first object
+    index = objs[0].intersection(index)
 
     return index
 
