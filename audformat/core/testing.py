@@ -72,28 +72,12 @@ def add_misc_table(
         table object
 
     """
-    if columns is None:
-        columns = columns or {s: (s, None) for s in list(db.schemes)}
-    elif isinstance(columns, str):
-        columns = {columns: (columns, None)}
-    elif isinstance(columns, Sequence):
-        columns = {s: (s, None) for s in columns}
-
     db[table_id] = MiscTable(
         index,
         split_id=split_id,
         media_id=media_id,
     )
-
-    for column_id, (scheme_id, rater_id) in columns.items():
-        db[table_id][column_id] = Column(
-            scheme_id=scheme_id,
-            rater_id=rater_id,
-        )
-        if scheme_id is not None:
-            db[table_id][column_id].set(
-                db.schemes[scheme_id].draw(len(index), p_none=p_none)
-            )
+    _add_columns(db, db[table_id], columns, len(index), p_none)
 
     return db[table_id]
 
@@ -152,13 +136,6 @@ def add_table(
     if isinstance(file_duration, str):
         file_duration = pd.Timedelta(file_duration)
 
-    if columns is None:
-        columns = columns or {s: (s, None) for s in list(db.schemes)}
-    elif isinstance(columns, str):
-        columns = {columns: (columns, None)}
-    elif isinstance(columns, Sequence):
-        columns = {s: (s, None) for s in columns}
-
     audio_format = 'wav'
     if media_id and db.media[media_id].format:
         audio_format = db.media[media_id].format
@@ -206,15 +183,7 @@ def add_table(
             media_id=media_id,
         )
 
-    for column_id, (scheme_id, rater_id) in columns.items():
-        db[table_id][column_id] = Column(
-            scheme_id=scheme_id,
-            rater_id=rater_id,
-        )
-        if scheme_id is not None:
-            db[table_id][column_id].set(
-                db.schemes[scheme_id].draw(n_items, p_none=p_none)
-            )
+    _add_columns(db, db[table_id], columns, n_items, p_none)
 
     return db[table_id]
 
@@ -458,3 +427,37 @@ def create_db(
     )
 
     return db
+
+
+def _add_columns(
+        db: Database,
+        table: Table,
+        columns: Optional[
+            Union[
+                str,
+                Sequence[str],
+                Dict[str, Union[
+                    str, Tuple[Optional[str], Optional[str]]
+                ]],
+            ]
+        ],
+        n_items: int,
+        p_none: float,
+):
+    r"""Convert 'columns' argument of add_[misc_]table() to dict."""
+    if columns is None:
+        columns = columns or {s: (s, None) for s in list(db.schemes)}
+    elif isinstance(columns, str):
+        columns = {columns: (columns, None)}
+    elif isinstance(columns, Sequence):
+        columns = {s: (s, None) for s in columns}
+
+    for column_id, (scheme_id, rater_id) in columns.items():
+        table[column_id] = Column(
+            scheme_id=scheme_id,
+            rater_id=rater_id,
+        )
+        if scheme_id is not None:
+            table[column_id].set(
+                db.schemes[scheme_id].draw(n_items, p_none=p_none)
+            )
