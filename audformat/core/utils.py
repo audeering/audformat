@@ -1192,6 +1192,16 @@ def symmetric_difference(
     the result is a
     :class:`pandas.Index`.
 
+    The order of the resulting index
+    depends on the order of ``objs``.
+    The dtype of the resulting index
+    is identical to the dtype of the first object.
+    If you require :func:`audformat.utils.intersect`
+    to be commutative_,
+    you have to sort its output.
+
+    .. _commutative: https://en.wikipedia.org/wiki/Commutative_property
+
     Args:
         objs: index objects
 
