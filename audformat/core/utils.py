@@ -1274,10 +1274,13 @@ def symmetric_difference(
     objs = _maybe_convert_single_level_multi_index(objs)
     _assert_index_alike(objs)
 
-    index = audeer.flatten_list([list(obj) for obj in objs])
-    counting = collections.Counter(index)
-    index = [idx for idx, count in counting.items() if count == 1]
-    index = _alike_index(objs[0], index)
+    index = objs[0]
+    for obj in objs[1:]:
+        index = [
+            idx for idx in union([index, obj])
+            if idx not in intersect([index, obj])
+        ]
+        index = _alike_index(objs[0], index)
 
     return index
 
