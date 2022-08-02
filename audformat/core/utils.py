@@ -1196,7 +1196,7 @@ def symmetric_difference(
     depends on the order of ``objs``.
     The dtype of the resulting index
     is identical to the dtype of the first object.
-    If you require :func:`audformat.utils.intersect`
+    If you require :func:`audformat.utils.symmetric_difference`
     to be commutative_,
     you have to sort its output.
 
