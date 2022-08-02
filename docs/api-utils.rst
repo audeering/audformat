@@ -9,6 +9,11 @@ concat
 
 .. autofunction:: concat
 
+difference
+----------
+
+.. autofunction:: difference
+
 duration
 --------
 
@@ -83,11 +88,6 @@ set_index_dtypes
 ----------------
 
 .. autofunction:: set_index_dtypes
-
-symmetric_difference
---------------------
-
-.. autofunction:: symmetric_difference
 
 to_filewise_index
 -----------------

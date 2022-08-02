@@ -276,7 +276,7 @@ class Base(HeaderBase):
 
         _assert_table_index(self, index, 'drop rows from')
 
-        new_index = utils.symmetric_difference([self.index, index])
+        new_index = utils.difference([self.index, index])
         self._df = self.df.reindex(new_index)
 
         return self
