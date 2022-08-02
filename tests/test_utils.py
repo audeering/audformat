@@ -2411,6 +2411,20 @@ def test_to_segmented_index(obj, allow_nat, files_duration, root, expected):
         ),
         (
             [
+                pd.Index([0, 1], dtype='int64', name='idx'),
+                pd.Index([1, 2], dtype='Int64', name='idx'),
+            ],
+            pd.Index([0, 2], dtype='int64', name='idx'),
+        ),
+        (
+            [
+                pd.Index([1, 2], dtype='Int64', name='idx'),
+                pd.Index([0, 1], dtype='int64', name='idx'),
+            ],
+            pd.Index([2, 0], dtype='Int64', name='idx'),
+        ),
+        (
+            [
                 pd.Index([0, 1], name='idx'),
                 pd.MultiIndex.from_arrays([[1, 2]], names=['idx']),
             ],
@@ -2454,12 +2468,6 @@ def test_symmetric_difference(objs, expected):
         audformat.utils.symmetric_difference(objs),
         expected,
     )
-    expected = expected.sortlevel()[0]
-    for permuted_objs in itertools.permutations(objs):
-        pd.testing.assert_index_equal(
-            audformat.utils.symmetric_difference(permuted_objs).sortlevel()[0],
-            expected,
-        )
     # Ensure (A Δ B) Δ C = A Δ (B Δ C)
     if len(objs) > 2:
         pd.testing.assert_index_equal(
