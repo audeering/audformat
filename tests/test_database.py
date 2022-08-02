@@ -13,25 +13,6 @@ import audformat
 import audformat.testing
 
 
-def create_misc_table(
-        obj: typing.Union[pd.Series, pd.DataFrame],
-) -> audformat.MiscTable:
-    r"""Helper function to create Table."""
-    table = audformat.MiscTable(obj.index)
-    if isinstance(obj, pd.Series):
-        obj = obj.to_frame()
-    for name in obj:
-        table[name] = audformat.Column()
-        table[name].set(obj[name].values)
-    # change 'int64' to 'Int64'
-    dtypes = {
-        name: 'Int64' if pd.api.types.is_integer_dtype(dtype) else dtype
-        for name, dtype in obj.dtypes.items()
-    }
-    table._df = table.df.astype(dtypes)
-    return table
-
-
 def full_path(
         db: audformat.Database,
         db_root: str,
@@ -691,12 +672,13 @@ def test_update(tmpdir):
             'labels': ('labels', None),
         },
     )
-    db['misc'] = create_misc_table(
-        pd.Series(
-            [1, 2],
-            pd.Index(['a', 'b'], dtype='string', name='idx'),
-            name='c1',
-        )
+    audformat.testing.add_misc_table(
+        db,
+        'misc',
+        pd.Index(['a', 'b'], dtype='string', name='idx'),
+        columns={
+            'float': ('float', 'rater'),
+        },
     )
 
     db_root = audeer.mkdir(os.path.join(tmpdir, 'db'))
@@ -724,14 +706,14 @@ def test_update(tmpdir):
             'labels': ('labels', None),
         },
     )
-    other1['misc'] = create_misc_table(
-        pd.DataFrame(
-            {
-                'c1': [98, 99],  # overwrite value of 'b'
-                'c2': [1., 2.],  # add new column
-            },
-            pd.Index(['b', 'c'], dtype='string', name='idx'),
-        ),
+    audformat.testing.add_misc_table(
+        other1,
+        'misc',
+        pd.Index(['b', 'c'], dtype='string', name='idx'),
+        columns={
+            'float': ('float', 'rater'),
+            'labels': ('labels', None),
+        },
     )
     other1_root = audeer.mkdir(os.path.join(tmpdir, 'other1'))
     other1.save(other1_root)
@@ -748,11 +730,11 @@ def test_update(tmpdir):
         audformat.define.IndexType.SEGMENTED,
         columns={'str': ('str', 'rater2')},
     )
-    other2['misc_new'] = create_misc_table(
-        pd.Series(
-            ['a', 'b'],
-            pd.Index([0, 1], name='idx'),
-        ),
+    audformat.testing.add_misc_table(
+        other2,
+        'misc_new',
+        pd.Index([0, 1], dtype='string', name='idx'),
+        columns={'str': ('str', 'rater2')},
     )
     other2_root = audeer.mkdir(os.path.join(tmpdir, 'other2'))
     other2.save(other2_root)
