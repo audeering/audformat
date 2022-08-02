@@ -62,7 +62,7 @@ def add_misc_table(
         columns: a list of scheme_ids or a dictionary with column names as
             keys and tuples of ``(scheme_id, rater_id)`` as values. ``None``
             values are allowed
-        p_none: probability to draw invalid values
+        p_none: probability to draw ``None``
         split_id: optional split ID
         media_id: optional media ID
 
@@ -123,7 +123,7 @@ def add_table(
             segmented table)
         file_duration: the file duration
         file_root: file sub directory
-        p_none: probability to draw invalid values
+        p_none: probability to draw ``None``
         split_id: optional split ID
         media_id: optional media ID
 
