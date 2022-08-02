@@ -472,6 +472,8 @@ def intersect(
 
     The order of the resulting index
     depends on the order of ``objs``.
+    The dtype of the resulting index
+    is identical to the dtype of the first object.
     If you require :func:`audformat.utils.intersect`
     to be commutative_,
     you have to sort its output.
