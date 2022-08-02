@@ -562,7 +562,12 @@ def intersect(
 
     # sort objects by length
     objs_sorted = sorted(objs, key=lambda obj: len(obj))
-    # start from first object
+
+    # return if the shortest obj has no entries
+    if len(objs_sorted[0]) == 0:
+        return _alike_index(objs[0])
+
+    # start from shortest object
     index = list(objs_sorted[0])
     for obj in objs_sorted[1:]:
         index = [idx for idx in index if idx in obj]
