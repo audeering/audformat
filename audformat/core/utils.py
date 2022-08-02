@@ -378,7 +378,7 @@ def difference(
                     ('f2', '0 days', '0 days 00:00:01')],
                    names=['file', 'start', 'end'])
 
-    """
+    """  # noqa: E501
     if not objs:
         return pd.Index([])
 
