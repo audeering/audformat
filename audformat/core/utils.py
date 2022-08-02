@@ -470,6 +470,16 @@ def intersect(
     the result is a
     :class:`pandas.Index`.
 
+    The order of the resulting index
+    depends on the order of ``objs``.
+    The dtype of the resulting index
+    is identical to the dtype of the first object.
+    If you require :func:`audformat.utils.intersect`
+    to be commutative_,
+    you have to sort its output.
+
+    .. _commutative: https://en.wikipedia.org/wiki/Commutative_property
+
     Args:
         objs: index objects
 
@@ -490,7 +500,7 @@ def intersect(
         >>> intersect(
         ...     [
         ...         pd.Index([1, np.nan], dtype='Int64', name='idx'),
-        ...         pd.Index([1, 2, 3], name='idx'),
+        ...         pd.Index([1, 2, 3], dtype='Int64', name='idx'),
         ...     ]
         ... )
         Index([1], dtype='Int64', name='idx')
@@ -551,16 +561,26 @@ def intersect(
     _assert_index_alike(objs)
 
     # sort objects by length
-    objs = sorted(objs, key=lambda obj: len(obj))
-    # start from shortest index
-    index = objs[0]
-    mask = np.ones(len(index), dtype=bool)
-    for obj in objs[1:]:
-        mask &= index.isin(obj)
-        if not mask.any():
+    objs_sorted = sorted(objs, key=lambda obj: len(obj))
+
+    # return if the shortest obj has no entries
+    if len(objs_sorted[0]) == 0:
+        return _alike_index(objs[0])
+
+    # start from shortest object
+    index = list(objs_sorted[0])
+    for obj in objs_sorted[1:]:
+        index = [idx for idx in index if idx in obj]
+        if len(index) == 0:
             # break early if no more intersection is possible
             break
-    index = index[mask]
+
+    index = _alike_index(objs[0], index)
+
+    # Ensure we have order of first object
+    index = objs[0].intersection(index)
+    if isinstance(index, pd.MultiIndex):
+        index = set_index_dtypes(index, objs[0].dtypes.to_dict())
 
     return index
 
@@ -1600,23 +1620,18 @@ def union(
     return index
 
 
-def _alike_index(index: pd.Index) -> pd.Index:
-    r"""Return empty index with same levels and dtypes."""
-    if is_filewise_index(index):
-        return filewise_index()
-    elif is_segmented_index(index):
-        return segmented_index()
-    elif isinstance(index, pd.MultiIndex):
+def _alike_index(
+        index: pd.Index,
+        data: typing.Sequence = [],
+) -> pd.Index:
+    if isinstance(index, pd.MultiIndex):
         return set_index_dtypes(
-            pd.MultiIndex.from_arrays(
-                [[]] * index.nlevels,
-                names=index.names,
-            ),
+            pd.MultiIndex.from_tuples(data, names=list(index.names)),
             index.dtypes.to_dict(),
         )
     else:
         return pd.Index(
-            [],
+            data,
             dtype=index.dtype,
             name=index.name,
         )
