@@ -1176,6 +1176,12 @@ def symmetric_difference(
 ) -> pd.Index:
     r"""Symmetric difference of index objects.
 
+    Returns index items
+    that are not shared by two or more objects.
+    For two objects this is identical
+    to their `symmetric difference`_.
+
+    When providing more than two objects
     If all index objects are conform to
     :ref:`table specifications <data-tables:Tables>`
     and at least one object is segmented,
@@ -1200,6 +1206,7 @@ def symmetric_difference(
     to be commutative_,
     you have to sort its output.
 
+    .. _symmetric difference: https://en.wikipedia.org/wiki/Symmetric_difference
     .. _commutative: https://en.wikipedia.org/wiki/Commutative_property
 
     Args:
