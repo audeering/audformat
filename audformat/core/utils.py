@@ -279,7 +279,6 @@ def difference(
     For two objects this is identical
     to their `symmetric difference`_.
 
-    When providing more than two objects
     If all index objects are conform to
     :ref:`table specifications <data-tables:Tables>`
     and at least one object is segmented,
