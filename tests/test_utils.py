@@ -1047,14 +1047,14 @@ def test_index_has_overlap(obj, expected):
                 pd.Index([1, 2, 3], name='idx'),
                 pd.Index([1, np.nan], dtype='Int64', name='idx'),
             ],
-            pd.Index([1], dtype='Int64', name='idx'),
+            pd.Int64Index([1], dtype='int64', name='idx')
         ),
         (
             [
                 pd.Index([1, np.nan], dtype='Int64', name='idx'),
                 pd.Index([1, 2, 3], name='idx'),
             ],
-            pd.Index([1], dtype='int64', name='idx'),
+            pd.Index([1], dtype='Int64', name='idx'),
         ),
         (
             [

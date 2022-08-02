@@ -572,6 +572,8 @@ def intersect(
 
     # Ensure we have order of first object
     index = objs[0].intersection(index)
+    if isinstance(index, pd.MultiIndex):
+        index = set_index_dtypes(index, objs[0].dtypes.to_dict())
 
     return index
 
