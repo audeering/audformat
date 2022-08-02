@@ -1274,13 +1274,24 @@ def symmetric_difference(
     objs = _maybe_convert_single_level_multi_index(objs)
     _assert_index_alike(objs)
 
-    index = objs[0]
+    def intersect2(obj1, obj2):
+        return [o for o in obj1 if o in obj2]
+
+    def union2(obj1, obj2):
+        if len(obj1) > len(obj2):
+            return obj1 + [o for o in obj2 if o not in obj1]
+        else:
+            return [o for o in obj1 if o not in obj2] + obj2
+
+    index = list(objs[0])
     for obj in objs[1:]:
+        obj = list(obj)
         index = [
-            idx for idx in union([index, obj])
-            if idx not in intersect([index, obj])
+            idx for idx in union2(index, obj)
+            if idx not in intersect2(index, obj)
         ]
-        index = _alike_index(objs[0], index)
+
+    index = _alike_index(objs[0], index)
 
     return index
 
