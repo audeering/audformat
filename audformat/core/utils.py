@@ -1287,8 +1287,9 @@ def symmetric_difference(
     index = list(objs[0])
     for obj in objs[1:]:
         index += list(obj)
-        counting = collections.Counter(index)
-        index = [idx for idx, count in counting.items() if count == 1]
+
+    counting = collections.Counter(index)
+    index = [idx for idx, count in counting.items() if count == 1]
 
     index = _alike_index(objs[0], index)
 

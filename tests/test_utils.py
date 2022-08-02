@@ -2251,15 +2251,15 @@ def test_to_segmented_index(obj, allow_nat, files_duration, root, expected):
                 audformat.filewise_index(['f1', 'f2']),
                 audformat.filewise_index(['f2', 'f3']),
             ],
-            audformat.filewise_index(['f2', 'f3']),
+            audformat.filewise_index('f3'),
         ),
         (
             [
                 audformat.filewise_index(['f2', 'f3']),
                 audformat.filewise_index(['f1', 'f2']),
-                audformat.filewise_index(['f1', 'f2']),
+                audformat.filewise_index('f2'),
             ],
-            audformat.filewise_index(['f3', 'f2']),
+            audformat.filewise_index(['f3', 'f1']),
         ),
         (
             [
@@ -2302,7 +2302,7 @@ def test_to_segmented_index(obj, allow_nat, files_duration, root, expected):
                 audformat.segmented_index(['f2', 'f1'], [0, 0], [1, 1]),
                 audformat.segmented_index(['f2', 'f3'], [0, 0], [1, 1]),
             ],
-            audformat.segmented_index(['f2', 'f3'], [0, 0], [1, 1]),
+            audformat.segmented_index('f3', 0, 1),
         ),
         (
             [
@@ -2352,9 +2352,9 @@ def test_to_segmented_index(obj, allow_nat, files_duration, root, expected):
                 audformat.filewise_index(['f1', 'f2']),
             ],
             audformat.segmented_index(
-                ['f1', 'f3', 'f1', 'f2'],
-                [0, 0, 0, 0],
-                [1, 1, pd.NaT, pd.NaT],
+                ['f1', 'f3', 'f1'],
+                [0, 0, 0],
+                [1, 1, pd.NaT],
             ),
         ),
         (
