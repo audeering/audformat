@@ -272,7 +272,7 @@ def concat(
 def difference(
         objs: typing.Sequence[typing.Union[pd.Index]],
 ) -> pd.Index:
-    r"""Symmetric difference of index objects.
+    r"""Difference of index objects.
 
     Returns index items
     that are not shared by two or more objects.
