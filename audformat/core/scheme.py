@@ -332,8 +332,8 @@ class Scheme(common.HeaderBase):
         if self._db is not None and self._id is not None:
             labels = self._labels_to_list(labels)
             for table in (
-                    list(self._db.tables.values()) +
-                    list(self._db.misc_tables.values())
+                    list(self._db.tables.values())
+                    + list(self._db.misc_tables.values())
             ):
                 for column in table.columns.values():
                     if column.scheme_id == self._id:
