@@ -937,6 +937,37 @@ def test_drop_and_pick_index():
         pytest.DB[table_id].pick_index(index).get()
 
 
+def test_drop_extend_and_pick_index_order():
+
+    # Ensure order of index is preserved.
+    index = pd.Index([4, 3, 2, 1], name='idx')
+    table = audformat.MiscTable(index)
+    # pick
+    new_table = table.pick_index(
+        pd.Index([1, 2], name='idx')
+    )
+    pd.testing.assert_index_equal(
+        new_table.index,
+        pd.Index([2, 1], dtype='Int64', name='idx'),
+    )
+    # extend
+    new_table = table.extend_index(
+        pd.Index([5], name='idx')
+    )
+    pd.testing.assert_index_equal(
+        new_table.index,
+        pd.Index([4, 3, 2, 1, 5], dtype='Int64', name='idx'),
+    )
+    # drop
+    new_table = table.drop_index(
+        pd.Index([1, 2], name='idx')
+    )
+    pd.testing.assert_index_equal(
+        new_table.index,
+        pd.Index([4, 3], dtype='Int64', name='idx'),
+    )
+
+
 def test_extend_index():
 
     db = audformat.testing.create_db(minimal=True)
