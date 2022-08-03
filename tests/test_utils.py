@@ -2589,6 +2589,13 @@ def test_to_filewise(output_folder, table_id, expected_file_names):
         ),
         (
             [
+                audformat.filewise_index(['f2', 'f1']),
+                audformat.filewise_index(['f1', 'f2']),
+            ],
+            audformat.filewise_index(['f2', 'f1']),
+        ),
+        (
+            [
                 audformat.filewise_index(['f1', 'f2']),
                 audformat.filewise_index(['f1', 'f2']),
                 audformat.filewise_index(['f2', 'f3']),
@@ -2750,6 +2757,13 @@ def test_to_filewise(output_folder, table_id, expected_file_names):
                 pd.Index([1, 2], dtype='Int64', name='idx'),
             ],
             pd.Index([0, 1, 2], dtype='Int64', name='idx'),
+        ),
+        (
+            [
+                pd.Index([1, 2], dtype='Int64', name='idx'),
+                pd.Index([0, 1], name='idx'),
+            ],
+            pd.Index([1, 2, 0], dtype='Int64', name='idx'),
         ),
         (
             [
