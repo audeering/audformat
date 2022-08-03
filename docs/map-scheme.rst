@@ -25,8 +25,20 @@ information about the speakers in the database.
     :hide-output:
 
     import audformat.testing
+    import pandas as pd
 
     db = audformat.testing.create_db(minimal=True)
+    db['speaker'] = audformat.MiscTable(
+        pd.Index(['spk1', 'spk2', 'spk3'], dtype='string', name='speaker')
+    )
+    db['speaker']['age'] = audformat.Column()
+    db['speaker']['gender'] = audformat.Column()
+    db['speaker'].set(
+        {
+            'age': [33, 30, 37],
+            'gender': ['male', 'female', 'male'],
+        }
+    )
     db.schemes['transcription'] = audformat.Scheme(
         labels={
             0: 'hello',
@@ -34,20 +46,8 @@ information about the speakers in the database.
         }
     )
     db.schemes['speaker'] = audformat.Scheme(
-        labels={
-            'spk1': {
-                'gender': 'male',
-                'age': 33,
-            },
-            'spk2': {
-                'gender': 'female',
-                'age': 30,
-            },
-            'spk3': {
-                'gender': 'male',
-                'age': 37,
-            },
-        }
+        labels='speaker',
+        dtype='str',
     )
     audformat.testing.add_table(
         db,
