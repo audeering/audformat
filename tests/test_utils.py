@@ -1291,7 +1291,7 @@ def test_index_has_overlap(obj, expected):
             [
                 pd.Index([0, 1], name='idx'),
             ],
-            pd.Index([], dtype='int64', name='idx'),
+            pd.Index([], dtype='Int64', name='idx'),
         ),
         (
             [
@@ -1306,7 +1306,7 @@ def test_index_has_overlap(obj, expected):
                     names=['idx1', 'idx2'],
                 ),
                 {
-                    'idx1': 'int',
+                    'idx1': 'Int64',
                     'idx2': 'object',
                 },
             ),
@@ -1323,14 +1323,14 @@ def test_index_has_overlap(obj, expected):
                 pd.Index([0, 1], name='idx'),
                 pd.Index([1, 2], name='idx'),
             ],
-            pd.Index([1], name='idx'),
+            pd.Index([1], dtype='Int64', name='idx'),
         ),
         (
             [
                 pd.Index([1, 2, 3], name='idx'),
                 pd.Index([1, np.nan], dtype='Int64', name='idx'),
             ],
-            pd.Index([1], dtype='int64', name='idx')
+            pd.Index([1], dtype='Int64', name='idx')
         ),
         (
             [
@@ -1351,7 +1351,7 @@ def test_index_has_overlap(obj, expected):
                 pd.Index([0, 1], name='idx'),
                 pd.MultiIndex.from_arrays([[1, 2]], names=['idx']),
             ],
-            pd.Index([1], name='idx'),
+            pd.Index([1], dtype='Int64', name='idx'),
         ),
         (
             [

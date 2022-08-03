@@ -596,6 +596,8 @@ def intersect(
     requires that levels and dtypes
     of all objects match,
     see :func:`audformat.utils.is_index_alike`.
+    Integer dtypes don't have to match,
+    but the result will always be of dtype ``Int64``.
     When a :class:`pandas.Index`
     is intersected with a single-level
     :class:`pandas.MultiIndex`,
@@ -604,8 +606,6 @@ def intersect(
 
     The order of the resulting index
     depends on the order of ``objs``.
-    The dtype of the resulting index
-    is identical to the dtype of the first object.
     If you require :func:`audformat.utils.intersect`
     to be commutative_,
     you have to sort its output.
@@ -628,11 +628,11 @@ def intersect(
         ...         pd.Index([1, 2, 3], name='idx'),
         ...     ]
         ... )
-        Int64Index([], dtype='int64', name='idx')
+        Index([], dtype='Int64', name='idx')
         >>> intersect(
         ...     [
         ...         pd.Index([1, np.nan], dtype='Int64', name='idx'),
-        ...         pd.Index([1, 2, 3], dtype='Int64', name='idx'),
+        ...         pd.Index([1, 2, 3], name='idx'),
         ...     ]
         ... )
         Index([1], dtype='Int64', name='idx')
@@ -642,7 +642,7 @@ def intersect(
         ...         pd.MultiIndex.from_arrays([[1, 2]], names=['idx']),
         ...     ]
         ... )
-        Int64Index([1], dtype='int64', name='idx')
+        Index([1], dtype='Int64', name='idx')
         >>> intersect(
         ...     [
         ...         pd.MultiIndex.from_arrays(
@@ -686,7 +686,7 @@ def intersect(
         return pd.Index([])
 
     if len(objs) == 1:
-        return _alike_index(objs[0])
+        return _alike_index(_maybe_convert_int_dtype(objs[0]))
 
     objs = _maybe_convert_filewise_index(objs)
     objs = _maybe_convert_single_level_multi_index(objs)
@@ -707,7 +707,7 @@ def intersect(
             # break early if no more intersection is possible
             break
 
-    index = _alike_index(objs[0], index)
+    index = _alike_index(_maybe_convert_int_dtype(objs[0]), index)
 
     # Ensure we have order of first object
     index = objs[0].intersection(index)
