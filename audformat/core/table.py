@@ -271,15 +271,17 @@ class Base(HeaderBase):
             ValueError: if level and dtypes of index does not match table index
 
         """
-        if not inplace:
-            return self.copy().drop_index(index, inplace=True)
+        table = self if inplace else self.copy()
 
-        _assert_table_index(self, index, 'drop rows from')
+        _assert_table_index(table, index, 'drop rows from')
 
-        new_index = utils.difference([self.index, index])
-        self._df = self.df.reindex(new_index)
+        new_index = utils.difference([table.index, index])
+        table._df = table.df.reindex(new_index)
 
-        return self
+        if inplace:
+            _maybe_update_scheme(table)
+
+        return table
 
     def extend_index(
             self,
@@ -307,23 +309,23 @@ class Base(HeaderBase):
             ValueError: if level and dtypes of index does not match table index
 
         """
-        if not inplace:
-            return self.copy().extend_index(
-                index, fill_values=fill_values, inplace=True,
-            )
+        table = self if inplace else self.copy()
 
-        _assert_table_index(self, index, 'extend')
+        _assert_table_index(table, index, 'extend')
 
-        new_index = utils.union([self.df.index, index])
-        self._df = self.df.reindex(new_index)
+        new_index = utils.union([table.index, index])
+        table._df = table.df.reindex(new_index)
         if fill_values is not None:
             if isinstance(fill_values, dict):
                 for key, value in fill_values.items():
-                    self.df[key].fillna(value, inplace=True)
+                    table.df[key].fillna(value, inplace=True)
             else:
-                self.df.fillna(fill_values, inplace=True)
+                table.df.fillna(fill_values, inplace=True)
 
-        return self
+        if inplace:
+            _maybe_update_scheme(table)
+
+        return table
 
     def get(
             self,
@@ -512,15 +514,17 @@ class Base(HeaderBase):
             ValueError: if level and dtypes of index does not match table index
 
         """
-        if not inplace:
-            return self.copy().pick_index(index, inplace=True)
+        table = self if inplace else self.copy()
 
-        _assert_table_index(self, index, 'pick rows from')
+        _assert_table_index(table, index, 'pick rows from')
 
-        new_index = utils.intersect([self.df.index, index])
-        self._df = self.df.reindex(new_index)
+        new_index = utils.intersect([table.index, index])
+        table._df = table.df.reindex(new_index)
 
-        return self
+        if inplace:
+            _maybe_update_scheme(table)
+
+        return table
 
     def save(
             self,
@@ -1541,3 +1545,13 @@ def _assert_table_index(
             f'\nbut yours is:\n'
             f'\t{got}'
         )
+
+
+def _maybe_update_scheme(
+        table: Base,
+):
+    r"""Replace labels if table is used in a scheme."""
+    if table.db is not None and isinstance(table, MiscTable):
+        for scheme in table.db.schemes.values():
+            if table._id == scheme.labels:
+                scheme.replace_labels(table._id)

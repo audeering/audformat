@@ -356,7 +356,11 @@ def test_replace_labels_misc_table():
 
     db = audformat.testing.create_db(minimal=True)
     db['labels'] = audformat.MiscTable(
-        pd.Index(['spk1', 'spk2'], name='speaker', dtype='string')
+        pd.Index(
+            ['a', 'b', 'c', 'd'],
+            dtype='string',
+            name='idx',
+        )
     )
 
     # non-assigned scheme
@@ -375,40 +379,97 @@ def test_replace_labels_misc_table():
     # assigned scheme
     db.schemes['scheme'] = scheme
     assert scheme.labels == 'labels'
-    assert scheme._labels_to_dict() == {'spk1': {}, 'spk2': {}}
+    assert scheme._labels_to_dict() == {'a': {}, 'b': {}, 'c': {}, 'd': {}}
 
     # use scheme in (miscellaneous) table
-    db['table'] = audformat.Table(index=audformat.filewise_index(['f1', 'f2']))
+    db['table'] = audformat.Table(
+        index=audformat.filewise_index(['f1', 'f2', 'f3', 'f4']),
+    )
     db['table']['column'] = audformat.Column(scheme_id='scheme')
-    db['table']['column'].set(['spk1', 'spk2'])
-    db['misc'] = audformat.MiscTable(index=pd.Index([0, 1], name='idx'))
+    db['table']['column'].set(['a', 'b', 'c', 'd'])
+    db['misc'] = audformat.MiscTable(
+        index=pd.Index(
+            [0, 1, 2, 3],
+            name='idx',
+        ),
+    )
     db['misc']['column'] = audformat.Column(scheme_id='scheme')
-    db['misc']['column'].set(['spk1', 'spk2'])
+    db['misc']['column'].set(['a', 'b', 'c', 'd'])
 
     # replace with new misc table scheme
     db['labels-new'] = audformat.MiscTable(
-        pd.Index(['spk1', 'spk2', 'spk3'], name='speaker', dtype='string')
+        pd.Index(
+            ['b', 'c', 'd', 'e'],
+            dtype='string',
+            name='idx',
+        )
     )
     scheme.replace_labels('labels-new')
     assert scheme.labels == 'labels-new'
-    assert scheme._labels_to_dict() == {'spk1': {}, 'spk2': {}, 'spk3': {}}
+    assert scheme._labels_to_dict() == {'b': {}, 'c': {}, 'd': {}, 'e': {}}
+    expected = [np.NaN, 'b', 'c', 'd']
+    assert list(db['table']['column'].get().values) == expected
+    assert list(db['misc']['column'].get().values) == expected
+
+    # extend labels
+    db['labels-new'].extend_index(
+        pd.Index(
+            ['f'],
+            dtype='string',
+            name='idx',
+        ),
+        inplace=True,
+    )
+    expected = {'b': {}, 'c': {}, 'd': {}, 'e': {}, 'f': {}}
+    assert scheme._labels_to_dict() == expected
+    assert 'f' in db['table']['column'].get().dtype.categories
+    assert 'f' in db['misc']['column'].get().dtype.categories
+
+    # pick labels
+    db['labels-new'].pick_index(
+        pd.Index(
+            ['c', 'd', 'e'],
+            dtype='string',
+            name='idx',
+        ),
+        inplace=True,
+    )
+    assert scheme._labels_to_dict() == {'c': {}, 'd': {}, 'e': {}}
+    expected = [np.NaN, np.NaN, 'c', 'd']
+    assert list(db['table']['column'].get().values) == expected
+    assert list(db['misc']['column'].get().values) == expected
+
+    # drop labels
+    db['labels-new'].drop_index(
+        pd.Index(
+            ['c'],
+            dtype='string',
+            name='idx',
+        ),
+        inplace=True,
+    )
+    assert scheme._labels_to_dict() == {'d': {}, 'e': {}}
+    expected = [np.NaN, np.NaN, np.NaN, 'd']
+    assert list(db['table']['column'].get().values) == expected
+    assert list(db['misc']['column'].get().values) == expected
 
     # replace with dictionary
-    scheme.replace_labels({'spk1': {}})
-    assert scheme.labels == {'spk1': {}}
-    assert scheme._labels_to_dict() == {'spk1': {}}
-    assert list(db['table']['column'].get().values) == ['spk1', np.NaN]
-    assert list(db['misc']['column'].get().values) == ['spk1', np.NaN]
+    scheme.replace_labels({'e': {}})
+    assert scheme.labels == {'e': {}}
+    assert scheme._labels_to_dict() == {'e': {}}
+    expected = [np.NaN, np.NaN, np.NaN, np.NaN]
+    assert list(db['table']['column'].get().values) == expected
+    assert list(db['misc']['column'].get().values) == expected
 
     # replace again with misc table
     scheme.replace_labels('labels')
     assert scheme.labels == 'labels'
-    assert scheme._labels_to_dict() == {'spk1': {}, 'spk2': {}}
+    assert scheme._labels_to_dict() == {'a': {}, 'b': {}, 'c': {}, 'd': {}}
 
     # replace with list
-    scheme.replace_labels(['spk1', 'spk2'])
-    assert scheme.labels == ['spk1', 'spk2']
-    assert scheme._labels_to_dict() == {'spk1': {}, 'spk2': {}}
+    scheme.replace_labels(['a', 'b'])
+    assert scheme.labels == ['a', 'b']
+    assert scheme._labels_to_dict() == {'a': {}, 'b': {}}
 
     # replace with non-existing misc table scheme
     error_msg = (
