@@ -393,7 +393,7 @@ def difference(
     counting = collections.Counter(index)
     index = [idx for idx, count in counting.items() if count == 1]
 
-    # Check if we
+    # select object with highest dtype for integers
     alike_obj = objs[0]
     if 'int64' in _dtypes(alike_obj):
         for obj in objs[1:]:
