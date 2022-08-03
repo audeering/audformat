@@ -139,6 +139,39 @@ class Base(HeaderBase):
             ValueError: if column ID is not different from level names
 
         """
+
+        if column.scheme_id is not None and self.db is not None:
+
+            # check if scheme uses
+            # labels from a table
+            labels = self.db.schemes[column.scheme_id].labels
+            if isinstance(labels, str):
+
+                # check if scheme uses
+                # labels from this table
+                if self._id == labels:
+                    raise ValueError(
+                        f"Scheme "
+                        f"'{column.scheme_id}' "
+                        f"uses misc table "
+                        f"'{self._id}' "
+                        f"as labels and cannot be used "
+                        f"with columns of the same table."
+                    )
+
+                # check if this table
+                # is already used with a scheme
+                for scheme_id, scheme in self.db.schemes.items():
+                    if self._id == scheme.labels:
+                        raise ValueError(
+                            f"Since the misc table "
+                            f"'{self._id}' "
+                            f"is used as labels in scheme "
+                            f"'{scheme_id}' "
+                            f"its columns cannot used with a scheme "
+                            f"that also uses labels from a misc table."
+                        )
+
         self.columns[column_id] = column
         return column
 
