@@ -478,3 +478,15 @@ def test_replace_labels_misc_table():
     )
     with pytest.raises(ValueError, match=error_msg):
         scheme.replace_labels('misc-non-existing')
+
+    # replace labels with a misc table that
+    # has a column that already links a misc table
+    scheme.replace_labels('labels')
+    db['labels-new']['column'] = audformat.Column(scheme_id='scheme')
+    error_msg = (
+        "The misc table 'labels-new' cannot be used as scheme labels "
+        "when one of its columns is assigned to a scheme "
+        "that uses labels from a misc table."
+    )
+    with pytest.raises(ValueError, match=error_msg):
+        scheme.replace_labels('labels-new')
