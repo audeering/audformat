@@ -123,7 +123,6 @@ to the emotion table.
 .. jupyter-execute::
 
     import audformat
-    import audiofile as af
     import pandas as pd
 
     # Prepare functions for getting information from file names
