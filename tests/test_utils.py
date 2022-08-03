@@ -771,6 +771,13 @@ def test_concat(objs, overwrite, expected):
         ),
         (
             [
+                pd.Index([0, 1], dtype='int64', name='idx'),
+                pd.Index([0, 1, np.NaN], dtype='Int64', name='idx'),
+            ],
+            pd.Index([np.NaN], dtype='Int64', name='idx'),
+        ),
+        (
+            [
                 pd.Index([0, 1], name='idx'),
                 pd.MultiIndex.from_arrays([[1, 2]], names=['idx']),
             ],
