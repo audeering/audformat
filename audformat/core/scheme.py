@@ -71,7 +71,7 @@ class Scheme(common.HeaderBase):
         labels: [a, b, c]
         >>> Scheme(define.DataType.INTEGER)
         {dtype: int}
-        >>> Scheme(float, minimum=0, maximum=1)
+        >>> Scheme('float', minimum=0, maximum=1)
         {dtype: float, minimum: 0, maximum: 1}
         >>> # Use index of misc table as labels
         >>> import audformat
@@ -105,7 +105,7 @@ class Scheme(common.HeaderBase):
 
     def __init__(
             self,
-            dtype: typing.Union[typing.Type, define.DataType] = None,
+            dtype: str = None,
             *,
             labels: typing.Union[dict, list, str] = None,
             minimum: typing.Union[int, float] = None,
