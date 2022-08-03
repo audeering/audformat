@@ -287,6 +287,8 @@ def difference(
     requires that levels and dtypes
     of all objects match,
     see :func:`audformat.utils.is_index_alike`.
+    Integer dtypes don't have to match,
+    but the result will always be of dtype ``Int64``.
     When the symmetric difference of a
     :class:`pandas.Index`
     with a single-level
@@ -308,7 +310,7 @@ def difference(
         objs: index objects
 
     Returns:
-        symmetric difference of index objects
+        difference of index objects
 
     Raises:
         ValueError: if level and dtypes of objects do not match
@@ -319,21 +321,21 @@ def difference(
         ...         pd.Index([1, 2, 3], name='idx'),
         ...     ]
         ... )
-        Int64Index([1, 2, 3], dtype='int64', name='idx')
+        Index([1, 2, 3], dtype='Int64', name='idx')
         >>> difference(
         ...     [
-        ...         pd.Index([0, 1], dtype='Int64', name='idx'),
-        ...         pd.Index([1, 2], dtype='Int64', name='idx'),
+        ...         pd.Index([0, 1], name='idx'),
+        ...         pd.Index([1, np.NaN], dtype='Int64', name='idx'),
         ...     ]
         ... )
-        Index([0, 2], dtype='Int64', name='idx')
+        Index([0, <NA>], dtype='Int64', name='idx')
         >>> difference(
         ...     [
         ...         pd.Index([0, 1], name='idx'),
         ...         pd.MultiIndex.from_arrays([[1, 2]], names=['idx']),
         ...     ]
         ... )
-        Int64Index([0, 2], dtype='int64', name='idx')
+        Index([0, 2], dtype='Int64', name='idx')
         >>> difference(
         ...     [
         ...         pd.MultiIndex.from_arrays(
@@ -380,7 +382,7 @@ def difference(
         return pd.Index([])
 
     if len(objs) == 1:
-        return objs[0]
+        return _maybe_convert_int_dtype(objs[0])
 
     objs = _maybe_convert_filewise_index(objs)
     objs = _maybe_convert_single_level_multi_index(objs)
@@ -393,15 +395,7 @@ def difference(
     counting = collections.Counter(index)
     index = [idx for idx, count in counting.items() if count == 1]
 
-    # select object with highest dtype for integers
-    alike_obj = objs[0]
-    if 'int64' in _dtypes(alike_obj):
-        for obj in objs[1:]:
-            if 'Int64' in _dtypes(obj):
-                alike_obj = obj
-                break
-
-    index = _alike_index(alike_obj, index)
+    index = _alike_index(_maybe_convert_int_dtype(objs[0]), index)
 
     return index
 
@@ -1728,6 +1722,24 @@ def _is_same_dtype(d1, d2) -> bool:
         # match only if categories are the same
         return d1 == d2
     return d1.name == d2.name
+
+
+def _maybe_convert_int_dtype(
+        index: pd.Index,
+) -> pd.Index:
+    r"""Convert integer dtypes to Int64."""
+    # Ensure integers are always stored as Int64
+    if isinstance(index, pd.MultiIndex):
+        levels = list(index.names)
+        dtypes = list(index.dtypes)
+    else:
+        levels = [index.name]
+        dtypes = [index.dtype]
+    int_dtypes = {
+        level: 'Int64' for level, dtype in zip(levels, dtypes)
+        if pd.api.types.is_integer_dtype(dtype)
+    }
+    return set_index_dtypes(index, int_dtypes)
 
 
 def _maybe_convert_filewise_index(
