@@ -297,8 +297,6 @@ def difference(
 
     The order of the resulting index
     depends on the order of ``objs``.
-    The dtype of the resulting index
-    is identical to the dtype of the first object.
     If you require :func:`audformat.utils.difference`
     to be commutative_,
     you have to sort its output.
@@ -395,7 +393,15 @@ def difference(
     counting = collections.Counter(index)
     index = [idx for idx, count in counting.items() if count == 1]
 
-    index = _alike_index(objs[0], index)
+    # Check if we
+    alike_obj = objs[0]
+    if 'int64' in _dtypes(alike_obj):
+        for obj in objs[1:]:
+            if 'Int64' in _dtypes(obj):
+                alike_obj = obj
+                break
+
+    index = _alike_index(alike_obj, index)
 
     return index
 
@@ -1703,6 +1709,14 @@ def _assert_index_alike(
         msg += f' Found different level dtypes: {dtypes}.'
 
     raise ValueError(msg)
+
+
+def _dtypes(obj):
+    r"""List of dtypes of object."""
+    if obj.nlevels == 1:
+        return [obj.dtype]
+    else:
+        return list(obj.dtypes.values)
 
 
 def _is_same_dtype(d1, d2) -> bool:

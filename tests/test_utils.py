@@ -760,7 +760,7 @@ def test_concat(objs, overwrite, expected):
                 pd.Index([0, 1], dtype='int64', name='idx'),
                 pd.Index([1, 2], dtype='Int64', name='idx'),
             ],
-            pd.Index([0, 2], dtype='int64', name='idx'),
+            pd.Index([0, 2], dtype='Int64', name='idx'),
         ),
         (
             [
