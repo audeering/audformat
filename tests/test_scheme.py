@@ -181,7 +181,7 @@ def test_scheme_errors():
     with pytest.raises(ValueError, match=error_msg):
         db.schemes['misc'] = scheme
 
-    # misc table should only contain an one-dimensional index
+    # misc table should only contain a one-dimensional index
     error_msg = (
         "Index of misc table 'misc' used as scheme labels "
         "is only allowed to have a single level."
@@ -208,6 +208,42 @@ def test_scheme_errors():
     scheme = audformat.Scheme(labels='misc', dtype='int')
     with pytest.raises(ValueError, match=error_msg):
         db.schemes['misc'] = scheme
+
+    # cannot assign misc table scheme to itself
+    db['misc'] = audformat.MiscTable(pd.Index([], name='misc'))
+    db.schemes['scheme'] = audformat.Scheme(labels='misc', dtype='object')
+    error_msg = (
+        "Scheme 'scheme' uses misc table 'misc' as labels "
+        "and cannot be used with columns of the same table."
+    )
+    with pytest.raises(ValueError, match=error_msg):
+        db['misc']['column'] = audformat.Column(scheme_id='scheme')
+
+    # cannot assign column of a misc table used in a scheme
+    # to a scheme that already uses a misc table
+    db['misc2'] = audformat.MiscTable(pd.Index([], name='misc2'))
+    db.schemes['scheme2'] = audformat.Scheme(labels='misc2', dtype='object')
+    error_msg = (
+        "Since the misc table 'misc2' "
+        "is used as labels in scheme 'scheme2' "
+        "its columns cannot used with a scheme "
+        "that also uses labels from a misc table."
+    )
+    with pytest.raises(ValueError, match=error_msg):
+        db['misc2']['column'] = audformat.Column(scheme_id='scheme')
+
+    # Cannot assign misc table as scheme if one of its column
+    # is linked to a scheme that already uses a misc table
+    db['misc3'] = audformat.MiscTable(pd.Index([], name='misc3'))
+    db['misc3']['column'] = audformat.Column(scheme_id='scheme')
+    scheme = audformat.Scheme(labels='misc3', dtype='object')
+    error_msg = (
+        "The misc table 'misc3' cannot be used as scheme labels "
+        "when one of its columns is assigned to a scheme "
+        "that uses labels from a misc table."
+    )
+    with pytest.raises(ValueError, match=error_msg):
+        db.schemes['scheme3'] = scheme
 
 
 @pytest.mark.parametrize(
