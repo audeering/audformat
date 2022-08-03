@@ -1532,6 +1532,8 @@ def union(
     requires that levels and dtypes
     of all objects match,
     see :func:`audformat.utils.is_index_alike`.
+    Integer dtypes don't have to match,
+    but the result will always be of dtype ``Int64``.
     When a :class:`pandas.Index`
     is combined with a single-level
     :class:`pandas.MultiIndex`,
@@ -1569,7 +1571,7 @@ def union(
         ...         pd.MultiIndex.from_arrays([[1, 2]], names=['idx']),
         ...     ]
         ... )
-        Int64Index([0, 1, 2], dtype='int64', name='idx')
+        Index([0, 1, 2], dtype='Int64', name='idx')
         >>> union(
         ...     [
         ...         pd.MultiIndex.from_arrays(
@@ -1621,7 +1623,7 @@ def union(
         return pd.Index([])
 
     if len(objs) == 1:
-        return objs[0]
+        return _maybe_convert_int_dtype(objs[0])
 
     objs = _maybe_convert_filewise_index(objs)
     objs = _maybe_convert_single_level_multi_index(objs)
@@ -1633,6 +1635,8 @@ def union(
     df = pd.concat([o.to_frame() for o in objs])
     index = df.index
     index = index.drop_duplicates()
+
+    index = _maybe_convert_int_dtype(index)
 
     return index
 

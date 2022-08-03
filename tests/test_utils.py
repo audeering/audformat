@@ -2755,7 +2755,7 @@ def test_to_filewise(output_folder, table_id, expected_file_names):
                 pd.Index([0, 1], name='idx'),
                 pd.Index([1, 2], name='idx'),
             ],
-            pd.Index([0, 1, 2], name='idx'),
+            pd.Index([0, 1, 2], dtype='Int64', name='idx'),
         ),
         (
             [
@@ -2769,14 +2769,17 @@ def test_to_filewise(output_folder, table_id, expected_file_names):
                 pd.Index([0, 1], name='idx'),
                 pd.MultiIndex.from_arrays([[1, 2]], names=['idx']),
             ],
-            pd.Index([0, 1, 2], name='idx'),
+            pd.Index([0, 1, 2], dtype='Int64', name='idx'),
         ),
         (
             [
                 pd.MultiIndex.from_arrays([[0, 1]], names=['idx']),
                 pd.MultiIndex.from_arrays([[1, 2]], names=['idx']),
             ],
-            pd.MultiIndex.from_arrays([[0, 1, 2]], names=['idx']),
+            audformat.utils.set_index_dtypes(
+                pd.MultiIndex.from_arrays([[0, 1, 2]], names=['idx']),
+                'Int64',
+            ),
         ),
         (
             [
@@ -2789,9 +2792,12 @@ def test_to_filewise(output_folder, table_id, expected_file_names):
                     names=['idx1', 'idx2'],
                 ),
             ],
-            pd.MultiIndex.from_arrays(
-                [['a', 'b', 'c', 'c'], [0, 1, 2, 3]],
-                names=['idx1', 'idx2'],
+            audformat.utils.set_index_dtypes(
+                pd.MultiIndex.from_arrays(
+                    [['a', 'b', 'c', 'c'], [0, 1, 2, 3]],
+                    names=['idx1', 'idx2'],
+                ),
+                {'idx2': 'Int64'},
             ),
         ),
         pytest.param(
