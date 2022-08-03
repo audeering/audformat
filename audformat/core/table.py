@@ -1076,22 +1076,10 @@ class MiscTable(Base):
             if isinstance(index, pd.MultiIndex) and index.nlevels == 1:
                 index = index.get_level_values(0)
 
-            if isinstance(index, pd.MultiIndex):
-                levels = list(index.names)
-                dtypes = list(index.dtypes)
-            else:
-                levels = [index.name]
-                dtypes = [index.dtype]
-
-            dtypes = [to_audformat_dtype(dtype) for dtype in dtypes]
-
             # Ensure integers are always stored as Int64
-            int_dtypes = {
-                level: 'Int64' for level, dtype in zip(levels, dtypes)
-                if pd.api.types.is_integer_dtype(dtype)
-            }
-            index = utils.set_index_dtypes(index, int_dtypes)
+            index = utils._maybe_convert_int_dtype(index)
 
+            levels = utils._levels(index)
             if not all(levels) or len(levels) > len(set(levels)):
                 raise ValueError(
                     f'Got index with levels '
@@ -1099,6 +1087,10 @@ class MiscTable(Base):
                     f'but names must be non-empty and unique.'
                 )
 
+            dtypes = [
+                to_audformat_dtype(dtype)
+                for dtype in utils._dtypes(index)
+            ]
             self.levels = {
                 level: dtype for level, dtype in zip(levels, dtypes)
             }

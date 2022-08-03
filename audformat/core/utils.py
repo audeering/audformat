@@ -1706,7 +1706,7 @@ def _assert_index_alike(
 def _dtypes(obj):
     r"""List of dtypes of object."""
     if isinstance(obj, pd.MultiIndex):
-        return list(obj.dtypes.values)
+        return list(obj.dtypes)
     else:
         return [obj.dtype]
 
@@ -1728,17 +1728,21 @@ def _is_same_dtype(d1, d2) -> bool:
     return d1.name == d2.name
 
 
+def _levels(obj):
+    r"""List of dtypes of object."""
+    if isinstance(obj, pd.MultiIndex):
+        return list(obj.names)
+    else:
+        return [obj.name]
+
+
 def _maybe_convert_int_dtype(
         index: pd.Index,
 ) -> pd.Index:
     r"""Convert integer dtypes to Int64."""
     # Ensure integers are always stored as Int64
-    if isinstance(index, pd.MultiIndex):
-        levels = list(index.names)
-        dtypes = list(index.dtypes)
-    else:
-        levels = [index.name]
-        dtypes = [index.dtype]
+    levels = _levels(index)
+    dtypes = _dtypes(index)
     int_dtypes = {
         level: 'Int64' for level, dtype in zip(levels, dtypes)
         if pd.api.types.is_integer_dtype(dtype)
