@@ -181,19 +181,23 @@ to the emotion table.
 
     male = audformat.define.Gender.MALE
     female = audformat.define.Gender.FEMALE
-    language = audformat.utils.map_language('de')
-    speaker_mapping = {
-        3: {'gender': male, 'age': 31, 'language': language},
-        8: {'gender': female, 'age': 34, 'language': language},
-        9: {'gender': female, 'age': 21, 'language': language},
-        10: {'gender': male, 'age': 32, 'language': language},
-        11: {'gender': male, 'age': 26, 'language': language},
-        12: {'gender': male, 'age': 30, 'language': language},
-        13: {'gender': female, 'age': 32, 'language': language},
-        14: {'gender': female, 'age': 35, 'language': language},
-        15: {'gender': male, 'age': 25, 'language': language},
-        16: {'gender': female, 'age': 31, 'language': language},
-    }
+    de = audformat.utils.map_language('de')
+    df_speaker = pd.DataFrame(
+        index=pd.Index([3, 8, 9, 10, 11, 12, 13, 14, 15, 16], name='speaker'),
+        columns=['age', 'gender', 'language'],
+        data = [
+            [31, male, de],
+            [34, female, de],
+            [21, female, de],
+            [32, male, de],
+            [26, male, de],
+            [30, male, de],
+            [32, female, de],
+            [35, female, de],
+            [25, male, de],
+            [31, female, de],
+       ],
+    )
     speakers = list(parse_names(names, from_i=0, to_i=2, is_number=True))
 
     transcription_mapping = {
@@ -228,7 +232,7 @@ and assign the information to it.
         name='emodb',
         source=source,
         usage=audformat.define.Usage.UNRESTRICTED,
-        languages=[language],
+        languages=[de],
         description=description,
         meta={
             'pdf': (
@@ -254,23 +258,46 @@ and assign the information to it.
         description='Six basic emotions and neutral.',
     )
     db.schemes['confidence'] = audformat.Scheme(
-        audformat.define.DataType.FLOAT,
+        'float',
         minimum=0,
         maximum=1,
         description='Confidence of emotion ratings.',
     )
+    db.schemes['age'] = audformat.Scheme(
+        'int',
+        minimum=0,
+        description='Age of speaker',
+    )
+    db.schemes['gender'] = audformat.Scheme(
+        labels=['female', 'male'],
+        description='Gender of speaker',
+    )
+    db.schemes['language'] = audformat.Scheme(
+        'str',
+        description='Language of speaker',
+    )
+    db.schemes['transcription'] = audformat.Scheme(
+        labels=transcription_mapping,
+        description='Sentence produced by actor.',
+    )
+
+    # MiscTable
+    db['speaker'] = audformat.MiscTable(df_speaker.index)
+    db['speaker']['age'] = audformat.Column(scheme_id='age')
+    db['speaker']['gender'] = audformat.Column(scheme_id='gender')
+    db['speaker']['language'] = audformat.Column(scheme_id='language')
+    db['speaker'].set(df_speaker.to_dict(orient='list'))
+
+    # MiscTable as Scheme
     db.schemes['speaker'] = audformat.Scheme(
-        labels=speaker_mapping,
+        labels='speaker',
+        dtype='int',
         description=(
             'The actors could produce each sentence as often as '
             'they liked and were asked to remember a real '
             'situation from their past when they had felt this '
             'emotion.'
         ),
-    )
-    db.schemes['transcription'] = audformat.Scheme(
-        labels=transcription_mapping,
-        description='Sentence produced by actor.',
     )
 
     # Tables
@@ -314,7 +341,7 @@ First check which tables are available.
 
 .. jupyter-execute::
 
-    list(db.tables)
+    list(db)
 
 Then list the first 10 entries of every table.
 
@@ -326,7 +353,13 @@ Then list the first 10 entries of every table.
 
     db['emotion'].get()[:10]
 
-You access additional header information in a table
+.. jupyter-execute::
+
+    db['speaker'].get()[:10]
+
+Columns might contain labels,
+that provide additional mappings.
+You can access this additional information
 with the ``map`` argument of :meth:`audformat.Table.get`,
 see :ref:`map-scheme-labels`
 for an extended documentation.
