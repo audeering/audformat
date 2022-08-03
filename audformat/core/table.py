@@ -137,10 +137,21 @@ class Base(HeaderBase):
             BadIdError: if a column with a ``scheme_id`` or ``rater_id`` is
                 added that does not exist
             ValueError: if column ID is not different from level names
+            ValueError: if the column is linked to a
+                :class:`audformat.Scheme`
+                that is using labels from a
+                :class:`audformat.MiscTable`,
+                but the table the columns is assigned to
+                is already used in this or another
+                :class:`audformat.Scheme`
 
         """
 
-        if column.scheme_id is not None and self.db is not None:
+        if (
+                column.scheme_id is not None
+                and self.db is not None
+                and column.scheme_id in self.db.schemes
+        ):
 
             # check if scheme uses
             # labels from a table
