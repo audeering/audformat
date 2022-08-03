@@ -772,10 +772,7 @@ def is_index_alike(
     # check dtypes
     dtypes = set()
     for obj in objs:
-        if isinstance(obj, pd.MultiIndex):
-            ds = [to_audformat_dtype(dtype) for dtype in obj.dtypes]
-        else:
-            ds = [to_audformat_dtype(obj.dtype)]
+        ds = [to_audformat_dtype(dtype) for dtype in _dtypes(obj)]
         dtypes.add(tuple(ds))
     if len(dtypes) > 1:
         return False
@@ -1699,10 +1696,7 @@ def _assert_index_alike(
 
     dtypes = []
     for obj in objs:
-        if isinstance(obj, pd.MultiIndex):
-            ds = [to_audformat_dtype(dtype) for dtype in obj.dtypes]
-        else:
-            ds = [to_audformat_dtype(obj.dtype)]
+        ds = [to_audformat_dtype(dtype) for dtype in _dtypes(obj)]
         dtypes.append(tuple(ds) if len(ds) > 1 else ds[0])
     dtypes = list(dict.fromkeys(dtypes))
     if len(dtypes) > 1:
@@ -1713,10 +1707,10 @@ def _assert_index_alike(
 
 def _dtypes(obj):
     r"""List of dtypes of object."""
-    if obj.nlevels == 1:
-        return [obj.dtype]
-    else:
+    if isinstance(obj, pd.MultiIndex):
         return list(obj.dtypes.values)
+    else:
+        return [obj.dtype]
 
 
 def _is_same_dtype(d1, d2) -> bool:
