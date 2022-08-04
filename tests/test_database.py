@@ -2,7 +2,6 @@ import datetime
 import filecmp
 import os
 import re
-import typing
 
 import audeer
 import audiofile
@@ -662,6 +661,15 @@ def test_update(tmpdir):
     db.raters['rater'] = audformat.Rater()
     db.schemes['float'] = audformat.Scheme(float)
     db.schemes['labels'] = audformat.Scheme(labels=['a', 'b'])
+    audformat.testing.add_misc_table(
+        db,
+        'misc',
+        pd.Index(['a', 'b'], dtype='string', name='idx'),
+        columns={
+            'float': ('float', 'rater'),
+        },
+    )
+    db.schemes['misc'] = audformat.Scheme(dtype='str', labels='misc')
     audformat.testing.add_table(
         db,
         'table',
@@ -670,14 +678,7 @@ def test_update(tmpdir):
         columns={
             'float': ('float', 'rater'),
             'labels': ('labels', None),
-        },
-    )
-    audformat.testing.add_misc_table(
-        db,
-        'misc',
-        pd.Index(['a', 'b'], dtype='string', name='idx'),
-        columns={
-            'float': ('float', 'rater'),
+            'misc': ('misc', None),
         },
     )
 
@@ -695,6 +696,16 @@ def test_update(tmpdir):
     other1.schemes['int'] = audformat.Scheme(audformat.define.DataType.INTEGER)
     other1.schemes['float'] = audformat.Scheme(audformat.define.DataType.FLOAT)
     other1.schemes['labels'] = audformat.Scheme(labels=['b', 'c'])
+    audformat.testing.add_misc_table(
+        other1,
+        'misc',
+        pd.Index(['b', 'c'], dtype='string', name='idx'),
+        columns={
+            'float': ('float', 'rater'),
+            'labels': ('labels', None),
+        },
+    )
+    other1.schemes['misc'] = audformat.Scheme(dtype='str', labels='misc')
     audformat.testing.add_table(
         other1,
         'table',
@@ -704,15 +715,7 @@ def test_update(tmpdir):
             'int': ('int', 'rater'),
             'float': ('float', 'rater2'),
             'labels': ('labels', None),
-        },
-    )
-    audformat.testing.add_misc_table(
-        other1,
-        'misc',
-        pd.Index(['b', 'c'], dtype='string', name='idx'),
-        columns={
-            'float': ('float', 'rater'),
-            'labels': ('labels', None),
+            'misc': ('misc', None),
         },
     )
     other1_root = audeer.mkdir(os.path.join(tmpdir, 'other1'))
@@ -723,7 +726,7 @@ def test_update(tmpdir):
 
     other2 = audformat.testing.create_db(minimal=True)
     other2.raters['rater2'] = audformat.Rater()
-    other2.schemes['str'] = audformat.Scheme(str)
+    other2.schemes['str'] = audformat.Scheme('str')
     audformat.testing.add_table(
         other2,
         'table_new',
@@ -748,9 +751,10 @@ def test_update(tmpdir):
             overwrite=True,
         )
 
-    # replace labels to avoid error
+    # join labels to avoid error
 
-    db.schemes['labels'].replace_labels(other1.schemes['labels'].labels)
+    audformat.utils.join_schemes([db, other1], 'labels')
+    audformat.utils.join_schemes([db, other1], 'misc')
     df_table = audformat.utils.concat(
         [db['table'].df, other1['table'].df],
         overwrite=True,
