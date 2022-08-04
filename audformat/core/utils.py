@@ -1740,20 +1740,6 @@ def _levels(obj):
         return [obj.name]
 
 
-def _maybe_convert_int_dtype(
-        index: pd.Index,
-) -> pd.Index:
-    r"""Convert integer dtypes to Int64."""
-    # Ensure integers are always stored as Int64
-    levels = _levels(index)
-    dtypes = _dtypes(index)
-    int_dtypes = {
-        level: 'Int64' for level, dtype in zip(levels, dtypes)
-        if pd.api.types.is_integer_dtype(dtype)
-    }
-    return set_index_dtypes(index, int_dtypes)
-
-
 def _maybe_convert_filewise_index(
         objs: typing.Sequence[typing.Union[pd.Index, pd.Series, pd.DataFrame]],
 ) -> typing.Sequence[typing.Union[pd.Index, pd.Series, pd.DataFrame]]:
@@ -1776,6 +1762,20 @@ def _maybe_convert_filewise_index(
             objs = [to_segmented_index(obj) for obj in objs]
 
     return objs
+
+
+def _maybe_convert_int_dtype(
+        index: pd.Index,
+) -> pd.Index:
+    r"""Convert integer dtypes to Int64."""
+    # Ensure integers are always stored as Int64
+    levels = _levels(index)
+    dtypes = _dtypes(index)
+    int_dtypes = {
+        level: 'Int64' for level, dtype in zip(levels, dtypes)
+        if pd.api.types.is_integer_dtype(dtype)
+    }
+    return set_index_dtypes(index, int_dtypes)
 
 
 def _maybe_convert_single_level_multi_index(
