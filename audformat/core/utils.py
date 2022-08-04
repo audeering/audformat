@@ -381,8 +381,10 @@ def difference(
     if not objs:
         return pd.Index([])
 
+    objs = [_maybe_convert_int_dtype(obj) for obj in objs]
+
     if len(objs) == 1:
-        return _maybe_convert_int_dtype(objs[0])
+        return objs[0]
 
     objs = _maybe_convert_filewise_index(objs)
     objs = _maybe_convert_single_level_multi_index(objs)
@@ -395,7 +397,7 @@ def difference(
     counting = collections.Counter(index)
     index = [idx for idx, count in counting.items() if count == 1]
 
-    index = _alike_index(_maybe_convert_int_dtype(objs[0]), index)
+    index = _alike_index(objs[0], index)
 
     return index
 
@@ -685,8 +687,10 @@ def intersect(
     if not objs:
         return pd.Index([])
 
+    objs = [_maybe_convert_int_dtype(obj) for obj in objs]
+
     if len(objs) == 1:
-        return _alike_index(_maybe_convert_int_dtype(objs[0]))
+        return _alike_index(objs[0])
 
     objs = _maybe_convert_filewise_index(objs)
     objs = _maybe_convert_single_level_multi_index(objs)
@@ -697,7 +701,7 @@ def intersect(
 
     # return if the shortest obj has no entries
     if len(objs_sorted[0]) == 0:
-        return _alike_index(_maybe_convert_int_dtype(objs[0]))
+        return _alike_index(objs[0])
 
     # start from shortest object
     index = list(objs_sorted[0])
@@ -707,13 +711,12 @@ def intersect(
             # break early if no more intersection is possible
             break
 
-    index = _alike_index(_maybe_convert_int_dtype(objs[0]), index)
+    index = _alike_index(objs[0], index)
 
     # Ensure we have order of first object
     index = objs[0].intersection(index)
     if isinstance(index, pd.MultiIndex):
         index = set_index_dtypes(index, objs[0].dtypes.to_dict())
-        index = _maybe_convert_int_dtype(index)
 
     return index
 
@@ -1623,8 +1626,10 @@ def union(
     if not objs:
         return pd.Index([])
 
+    objs = [_maybe_convert_int_dtype(obj) for obj in objs]
+
     if len(objs) == 1:
-        return _maybe_convert_int_dtype(objs[0])
+        return objs[0]
 
     objs = _maybe_convert_filewise_index(objs)
     objs = _maybe_convert_single_level_multi_index(objs)
@@ -1636,8 +1641,6 @@ def union(
     df = pd.concat([o.to_frame() for o in objs])
     index = df.index
     index = index.drop_duplicates()
-
-    index = _maybe_convert_int_dtype(index)
 
     return index
 
