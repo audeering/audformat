@@ -713,6 +713,7 @@ def intersect(
     index = objs[0].intersection(index)
     if isinstance(index, pd.MultiIndex):
         index = set_index_dtypes(index, objs[0].dtypes.to_dict())
+        index = _maybe_convert_int_dtype(index)
 
     return index
 
