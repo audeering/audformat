@@ -755,6 +755,9 @@ class Database(HeaderBase):
                     self_labels = self.schemes[scheme_id].labels
 
                     # join labels from misc tables
+                    # by combining the index of all tables,
+                    # columns values will be updated
+                    # later when the tables are joined
                     if (
                         isinstance(other_labels, str)
                         or isinstance(self_labels, str)
