@@ -937,6 +937,12 @@ def join_schemes(
     if you want to combine databases
     with :meth:`audformat.Database.update`.
 
+    Joining schemes that use labels
+    from a misc table is not supported.
+    Please use
+    :meth:`audformat.Database.update`
+    instead.
+
     Args:
         dbs: sequence of databases
         scheme_id: scheme ID of a scheme with labels
