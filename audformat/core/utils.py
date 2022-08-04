@@ -697,7 +697,7 @@ def intersect(
 
     # return if the shortest obj has no entries
     if len(objs_sorted[0]) == 0:
-        return _alike_index(objs[0])
+        return _alike_index(_maybe_convert_int_dtype(objs[0]))
 
     # start from shortest object
     index = list(objs_sorted[0])
