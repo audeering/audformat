@@ -851,8 +851,9 @@ def join_labels(
         joined labels
 
     Raises:
-        ValueError: if labels are of different type
-        ValueError: if label type is not ``list`` or ``dict``
+        ValueError: if labels are of different dtype
+            or not ``list`` or ``dict``
+            or labels from a misc table
 
     Example:
         >>> join_labels([{'a': 0, 'b': 1}, {'b': 2, 'c': 2}])
@@ -864,6 +865,12 @@ def join_labels(
 
     if not isinstance(labels, list):
         labels = list(labels)
+
+    if any([isinstance(x, str) for x in labels]):
+        raise ValueError(
+            'Cannot join labels from a misc table '
+            'with other label types.'
+        )
 
     label_type = type(labels[0])
     joined_labels = labels[0]
@@ -940,16 +947,7 @@ def join_schemes(
           labels: [a, b]
 
     """
-    is_misc_table = np.array(
-        [isinstance(db.schemes[scheme_id].labels, str) for db in dbs],
-    )
-    if is_misc_table.any():
-        if not is_misc_table.all():
-            raise ValueError(
-                'Cannot join schemes '
-                'if only a subset of the schemes '
-                'use labels from a misc table.'
-            )
+    if all([isinstance(db.schemes[scheme_id].labels, str) for db in dbs]):
         tables = [db[db.schemes[scheme_id].labels] for db in dbs]
         index = union([table.index for table in tables])
         for table in tables:

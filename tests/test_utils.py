@@ -1900,8 +1900,8 @@ def test_join_schemes():
     db4['misc'] = audformat.MiscTable(pd.Index([0, 1, 2], name='idx'))
     db4.schemes['scheme_id'] = audformat.Scheme(dtype='int', labels='misc')
     error_msg = (
-        "Cannot join schemes if only a subset "
-        "of the schemes use labels from a misc table."
+        'Cannot join labels from a misc table '
+        'with other label types.'
     )
     with pytest.raises(ValueError, match=error_msg):
         audformat.utils.join_schemes([db1, db4], 'scheme_id')
