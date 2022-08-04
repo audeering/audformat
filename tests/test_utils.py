@@ -1365,7 +1365,10 @@ def test_index_has_overlap(obj, expected):
                 pd.MultiIndex.from_arrays([[0, 1]], names=['idx']),
                 pd.MultiIndex.from_arrays([[1, 2]], names=['idx']),
             ],
-            pd.MultiIndex.from_arrays([[1]], names=['idx']),
+            audformat.utils.set_index_dtypes(
+                pd.MultiIndex.from_arrays([[1]], names=['idx']),
+                'Int64',
+            ),
         ),
         (
             [
@@ -1378,9 +1381,12 @@ def test_index_has_overlap(obj, expected):
                     names=['idx1', 'idx2'],
                 ),
             ],
-            pd.MultiIndex.from_arrays(
-                [['b'], [1]],
-                names=['idx1', 'idx2'],
+            audformat.utils.set_index_dtypes(
+                pd.MultiIndex.from_arrays(
+                    [['b'], [1]],
+                    names=['idx1', 'idx2'],
+                ),
+                {'idx2': 'Int64'},
             ),
         ),
         pytest.param(
