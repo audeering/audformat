@@ -1854,8 +1854,8 @@ def test_join_schemes():
             db2['misc'].index,
         ],
     )
-    pd.testing.assert_index_equal(db1['misc'].index.sortlevel()[0], expected)
-    pd.testing.assert_index_equal(db2['misc'].index.sortlevel()[0], expected)
+    pd.testing.assert_index_equal(db1['misc'].index, expected)
+    pd.testing.assert_index_equal(db2['misc'].index, expected)
 
     # Three database
 
@@ -1879,9 +1879,9 @@ def test_join_schemes():
             db3['misc'].index,
         ],
     )
-    pd.testing.assert_index_equal(db1['misc'].index.sortlevel()[0], expected)
-    pd.testing.assert_index_equal(db2['misc'].index.sortlevel()[0], expected)
-    pd.testing.assert_index_equal(db3['misc'].index.sortlevel()[0], expected)
+    pd.testing.assert_index_equal(db1['misc'].index, expected)
+    pd.testing.assert_index_equal(db2['misc'].index, expected)
+    pd.testing.assert_index_equal(db3['misc'].index, expected)
 
     # Fail for schemes without labels
     db4 = audformat.Database('db')

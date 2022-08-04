@@ -954,6 +954,8 @@ def join_schemes(
         index = union([table.index for table in tables])
         for table in tables:
             table.extend_index(index, inplace=True)
+            # ensure we end up with the same index order in all tables
+            table._df = table.df.reindex(index)
     else:
         labels = join_labels([db.schemes[scheme_id].labels for db in dbs])
         for db in dbs:
