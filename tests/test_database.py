@@ -692,7 +692,8 @@ def test_update(tmpdir):
 
     other_bad = audformat.testing.create_db(minimal=True)
     other_bad.schemes['labels'] = audformat.Scheme(labels=[1, 2, 3])
-    with pytest.raises(TypeError):
+    error_msg = "Elements or keys must have the same dtype"
+    with pytest.raises(ValueError, match=error_msg):
         db.update(other_bad)
 
     other_bad = audformat.testing.create_db(minimal=True)
