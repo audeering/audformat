@@ -626,8 +626,11 @@ class Database(HeaderBase):
 
         In order to :ref:`update a database <update-a-database>`,
         *license* and *usage* have to match.
+        Labels and values of *schemes*
+        with the same ID are combined.
         *Media*, *raters*, *schemes* and *splits* that are not part of
-        the database yet are added. Other fields will be updated by
+        the database yet are added.
+        Other fields will be updated by
         applying the following rules:
 
         ============= =====================================
@@ -657,6 +660,8 @@ class Database(HeaderBase):
             ValueError: if database has different license or usage
             ValueError: if different media, rater, scheme or split with
                 same ID is found
+            ValueError: if schemes cannot be combined,
+                e.g. labels have different dtype
             ValueError: if tables cannot be combined
                 (e.g. values in same position overlap or
                 level and dtypes of table indices do not match)
