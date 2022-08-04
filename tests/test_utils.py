@@ -1809,6 +1809,11 @@ def test_iter_by_file(obj, expected):
             [],
             marks=pytest.mark.xfail(raises=ValueError),
         ),
+        pytest.param(
+            [['a', 'b'], 'misc_id'],
+            [],
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
     ]
 )
 def test_join_labels(labels, expected):
@@ -1900,8 +1905,10 @@ def test_join_schemes():
     db4['misc'] = audformat.MiscTable(pd.Index([0, 1, 2], name='idx'))
     db4.schemes['scheme_id'] = audformat.Scheme(dtype='int', labels='misc')
     error_msg = (
-        'Cannot join labels from a misc table '
-        'with other label types.'
+        'Cannot join schemes with labels '
+        'from a misc table with '
+        'schemes that do not receive their labels '
+        'from a misc table.'
     )
     with pytest.raises(ValueError, match=error_msg):
         audformat.utils.join_schemes([db1, db4], 'scheme_id')

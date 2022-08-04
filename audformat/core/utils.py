@@ -866,10 +866,14 @@ def join_labels(
     if not isinstance(labels, list):
         labels = list(labels)
 
-    if any([isinstance(x, str) for x in labels]):
+    misc_table_ids = [x for x in labels if isinstance(x, str)]
+    if len(misc_table_ids) > 0:
         raise ValueError(
-            'Cannot join labels from a misc table '
-            'with other label types.'
+            f"The following string values were provided: '"
+            f"{misc_table_ids}'. "
+            "This assumes that labels are defined "
+            "in misc tables with according IDs, "
+            "which is not supported by 'join_labels()'."
         )
 
     label_type = type(labels[0])
@@ -947,7 +951,15 @@ def join_schemes(
           labels: [a, b]
 
     """
-    if all([isinstance(db.schemes[scheme_id].labels, str) for db in dbs]):
+    is_misc_id = [isinstance(db.schemes[scheme_id].labels, str) for db in dbs]
+    if any(is_misc_id):
+        if not all(is_misc_id):
+            raise ValueError(
+                'Cannot join schemes with labels '
+                'from a misc table with '
+                'schemes that do not receive their labels '
+                'from a misc table.'
+            )
         tables = [db[db.schemes[scheme_id].labels] for db in dbs]
         index = union([table.index for table in tables])
         for table in tables:
