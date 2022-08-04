@@ -853,7 +853,7 @@ def join_labels(
     Raises:
         ValueError: if labels are of different dtype
             or not ``list`` or ``dict``
-            or labels from a misc table
+            or from a misc table
 
     Example:
         >>> join_labels([{'a': 0, 'b': 1}, {'b': 2, 'c': 2}])
