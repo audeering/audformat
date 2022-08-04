@@ -756,7 +756,7 @@ class Database(HeaderBase):
 
                     # join labels from misc tables
                     # by combining the index of all tables,
-                    # columns values will be updated
+                    # column values will be updated
                     # later when the tables are joined
                     if (
                         isinstance(other_labels, str)
