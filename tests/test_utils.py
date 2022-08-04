@@ -1749,6 +1749,10 @@ def test_iter_by_file(obj, expected):
             [],
         ),
         (
+            [[], []],
+            [],
+        ),
+        (
             (['a'], ['b']),
             ['a', 'b'],
         ),
@@ -1795,7 +1799,17 @@ def test_iter_by_file(obj, expected):
             marks=pytest.mark.xfail(raises=ValueError),
         ),
         pytest.param(
+            ['a', 'b', 0],
+            [],
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
+        pytest.param(
             [{'a': 0, 'b': 1}, ['c']],
+            [],
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
+        pytest.param(
+            [{'a': 0, 'b': 1}, {0: 'c'}],
             [],
             marks=pytest.mark.xfail(raises=ValueError),
         ),
