@@ -1825,18 +1825,17 @@ def test_join_schemes():
     db1 = audformat.Database('db1')
     scheme1 = audformat.Scheme(labels={'a': [1, 2]})
     db1.schemes['scheme_id'] = scheme1
-
     audformat.utils.join_schemes([db1], 'scheme_id')
     assert db1.schemes['scheme_id'] == scheme1
 
     db1['misc'] = audformat.MiscTable(pd.Index([0, 1], name='idx'))
     scheme_misc1 = audformat.Scheme(dtype='int', labels='misc')
     db1.schemes['scheme_misc_id'] = scheme_misc1
-
     audformat.utils.join_schemes([db1], 'scheme_misc_id')
     assert db1.schemes['scheme_misc_id'] == scheme_misc1
 
     # Two databases
+
     db2 = audformat.Database('db2')
     scheme2 = audformat.Scheme(labels={'b': [3]})
     db2.schemes['scheme_id'] = scheme2
@@ -1845,18 +1844,67 @@ def test_join_schemes():
     assert db1.schemes['scheme_id'] == expected
     assert db2.schemes['scheme_id'] == expected
 
+    db2['misc'] = audformat.MiscTable(pd.Index([3], name='idx'))
+    scheme_misc2 = audformat.Scheme(dtype='int', labels='misc')
+    db2.schemes['scheme_misc_id'] = scheme_misc2
+    audformat.utils.join_schemes([db1, db2], 'scheme_misc_id')
+    expected = audformat.utils.union(
+        [
+            db1['misc'].index,
+            db2['misc'].index,
+        ],
+    )
+    pd.testing.assert_index_equal(db1['misc'].index.sortlevel()[0], expected)
+    pd.testing.assert_index_equal(db2['misc'].index.sortlevel()[0], expected)
+
     # Three database
+
     db3 = audformat.Database('db3')
     scheme3 = audformat.Scheme(labels={'a': [4]})
     db3.schemes['scheme_id'] = scheme3
     expected = audformat.Scheme(labels={'a': [4], 'b': [3]})
     audformat.utils.join_schemes([db1, db2, db3], 'scheme_id')
+    assert db1.schemes['scheme_id'] == expected
+    assert db2.schemes['scheme_id'] == expected
+    assert db3.schemes['scheme_id'] == expected
+
+    db3['misc'] = audformat.MiscTable(pd.Index([3], name='idx'))
+    scheme_misc3 = audformat.Scheme(dtype='int', labels='misc')
+    db3.schemes['scheme_misc_id'] = scheme_misc3
+    audformat.utils.join_schemes([db1, db2, db3], 'scheme_misc_id')
+    expected = audformat.utils.union(
+        [
+            db1['misc'].index,
+            db2['misc'].index,
+            db3['misc'].index,
+        ],
+    )
+    pd.testing.assert_index_equal(db1['misc'].index.sortlevel()[0], expected)
+    pd.testing.assert_index_equal(db2['misc'].index.sortlevel()[0], expected)
+    pd.testing.assert_index_equal(db3['misc'].index.sortlevel()[0], expected)
 
     # Fail for schemes without labels
-    with pytest.raises(ValueError):
-        db = audformat.Database('db')
-        db.schemes['scheme_id'] = audformat.Scheme('str')
-        audformat.utils.join_schemes([db], 'scheme_id')
+    db4 = audformat.Database('db')
+    db4.schemes['scheme_id'] = audformat.Scheme('str')
+    error_msg = "Supported label types are 'list' and 'dict'"
+    with pytest.raises(ValueError, match=error_msg):
+        audformat.utils.join_schemes([db4], 'scheme_id')
+
+    # Fail for schemes with different label type
+    db4.schemes['scheme_id'] = audformat.Scheme('int', labels=[0, 1])
+    error_msg = "Labels are of different type"
+    with pytest.raises(ValueError, match=error_msg):
+        audformat.utils.join_schemes([db1, db4], 'scheme_id')
+
+    # Fail if only a subset of schemes use labels from misc tables
+    db4['misc'] = audformat.MiscTable(pd.Index([0, 1, 2], name='idx'))
+    db4.schemes['scheme_id'] = audformat.Scheme(dtype='int', labels='misc')
+    error_msg = (
+        "Cannot join schemes if only a subset "
+        "of the schemes use labels from a misc table."
+    )
+    with pytest.raises(ValueError, match=error_msg):
+        audformat.utils.join_schemes([db1, db4], 'scheme_id')
 
 
 @pytest.mark.parametrize(

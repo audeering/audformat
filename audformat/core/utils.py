@@ -924,6 +924,10 @@ def join_schemes(
         scheme_id: scheme ID of a scheme with labels
             that should be joined
 
+    Raises:
+        ValueError: if schemes with different dtypes are combined
+            or only a subset of the schemes use labels from a misc table
+
     Example:
         >>> db1 = Database('db1')
         >>> db2 = Database('db2')
@@ -936,9 +940,24 @@ def join_schemes(
           labels: [a, b]
 
     """
-    labels = join_labels([db.schemes[scheme_id].labels for db in dbs])
-    for db in dbs:
-        db.schemes[scheme_id].replace_labels(labels)
+    is_misc_table = np.array(
+        [isinstance(db.schemes[scheme_id].labels, str) for db in dbs],
+    )
+    if is_misc_table.any():
+        if not is_misc_table.all():
+            raise ValueError(
+                'Cannot join schemes '
+                'if only a subset of the schemes '
+                'use labels from a misc table.'
+            )
+        tables = [db[db.schemes[scheme_id].labels] for db in dbs]
+        index = union([table.index for table in tables])
+        for table in tables:
+            table.extend_index(index, inplace=True)
+    else:
+        labels = join_labels([db.schemes[scheme_id].labels for db in dbs])
+        for db in dbs:
+            db.schemes[scheme_id].replace_labels(labels)
 
 
 def map_country(country: str) -> str:
