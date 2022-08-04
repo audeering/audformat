@@ -734,13 +734,69 @@ class Database(HeaderBase):
             assert_equal(other, 'license')
             assert_equal(other, 'usage')
 
-        # can only join databases with relatvie paths
+        # can only join databases with relative paths
         for database in [self] + others:
             if not database.is_portable:
                 raise RuntimeError(
                     f"You can only update with databases that are portable. "
                     f"The database '{database.name}' is not portable."
                 )
+
+        # join schemes with labels
+        for other in others:
+            for scheme_id in other.schemes:
+                if scheme_id in self.schemes:
+                    other_labels = other.schemes[scheme_id].labels
+                    self_labels = self.schemes[scheme_id].labels
+
+                    # join labels from misc tables
+                    if (
+                        isinstance(other_labels, str)
+                        or isinstance(self_labels, str)
+                    ):
+
+                        if (
+                            isinstance(other_labels, str)
+                            != isinstance(self_labels, str)
+                        ):
+                            raise ValueError(
+                                f"Cannot join scheme "
+                                f"'{scheme_id}' "
+                                f"when one is using a misc table "
+                                f"and the other is not."
+                            )
+
+                        if other_labels != self_labels:
+                            raise ValueError(
+                                f"Cannot join scheme "
+                                f"'{scheme_id}' "
+                                f"when using misc tables "
+                                f"with different IDs: "
+                                f"'{self_labels}' "
+                                f"!= "
+                                f"'{other_labels}'."
+                            )
+
+                        other_table = other[other_labels]
+                        self_table = self[self_labels]
+                        index = utils.union(
+                            [
+                                other_table.index,
+                                self_table.index,
+                            ],
+                        )
+                        other_table.extend_index(index, inplace=True)
+                        self_table.extend_index(index, inplace=True)
+                        # ensure same index order in both tables
+                        other_table._df = other_table.df.reindex(index)
+                        self_table._df = self_table.df.reindex(index)
+
+                    # join other labels
+                    elif (
+                        other_labels is not None
+                        and self_labels is not None
+                    ):
+                        utils.join_schemes([self, other], scheme_id)
 
         # join fields
         for other in others:
@@ -759,15 +815,8 @@ class Database(HeaderBase):
 
         # join tables
         for other in others:
-            # update misc tables first
-            # as they might be used in schemes
-            # linked by audformat tables
-            for misc_id, misc in other.misc_tables.items():
-                if misc_id in self.misc_tables:
-                    self[misc_id].update(misc, overwrite=overwrite)
-                else:
-                    self[misc_id] = misc.copy()
-            for table_id, table in other.tables.items():
+            for table_id in list(other.misc_tables) + list(other.tables):
+                table = other[table_id]
                 if table_id in self.tables:
                     self[table_id].update(table, overwrite=overwrite)
                 else:

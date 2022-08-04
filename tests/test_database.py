@@ -659,7 +659,7 @@ def test_update(tmpdir):
     db.organization = 'organization'
     db.meta['key'] = 'value'
     db.raters['rater'] = audformat.Rater()
-    db.schemes['float'] = audformat.Scheme(float)
+    db.schemes['float'] = audformat.Scheme('float')
     db.schemes['labels'] = audformat.Scheme(labels=['a', 'b'])
     audformat.testing.add_misc_table(
         db,
@@ -687,6 +687,38 @@ def test_update(tmpdir):
     audformat.testing.create_audio_files(db, file_duration='0.1s')
 
     assert db.update(db) == db
+
+    # databases with schemes that are not compatible
+
+    other_bad = audformat.testing.create_db(minimal=True)
+    other_bad.schemes['labels'] = audformat.Scheme(labels=[1, 2, 3])
+    with pytest.raises(TypeError):
+        db.update(other_bad)
+
+    other_bad = audformat.testing.create_db(minimal=True)
+    other_bad.schemes['misc'] = audformat.Scheme('str')
+    error_msg = (
+        "Cannot join scheme 'misc' when one "
+        "is using a misc table and the other is not."
+    )
+    with pytest.raises(ValueError, match=error_msg):
+        db.update(other_bad)
+
+    other_bad = audformat.testing.create_db(minimal=True)
+    other_bad['misc-bla'] = audformat.MiscTable(
+        pd.Index(['b', 'c'], dtype='string', name='idx'),
+    )
+    other_bad.schemes['misc'] = audformat.Scheme(
+        dtype='str',
+        labels='misc-bla',
+    )
+    error_msg = (
+        "Cannot join scheme 'misc' "
+        "when using misc tables with "
+        "different IDs: 'misc' != 'misc-bla'"
+    )
+    with pytest.raises(ValueError, match=error_msg):
+        db.update(other_bad)
 
     # database with same table, but extra column
 
@@ -743,34 +775,16 @@ def test_update(tmpdir):
     other2.save(other2_root)
     audformat.testing.create_audio_files(other2, file_duration='0.1s')
 
-    # raises error because schemes do not match
+    # update db with [other1, other2]
 
-    with pytest.raises(ValueError):
-        audformat.utils.concat(
-            [db['table'].df, other1['table'].df],
-            overwrite=True,
-        )
-
-    # join labels to avoid error
-
-    audformat.utils.join_schemes([db, other1], 'labels')
-    audformat.utils.join_schemes([db, other1], 'misc')
-    df_table = audformat.utils.concat(
-        [db['table'].df, other1['table'].df],
-        overwrite=True,
-    )
-    df_misc = audformat.utils.concat(
-        [db['misc'].df, other1['misc'].df],
-        overwrite=True,
-    )
     others = [other1, other2]
 
-    # assert that raters, schemes and tables are correctly updated
+    # fails because overlapping values
 
     with pytest.raises(ValueError):
         db.update(others, overwrite=False)
 
-    # fail if self.root is not given
+    # fails because self.root is not given
 
     db_root = db.root
     db._root = None
@@ -778,10 +792,12 @@ def test_update(tmpdir):
         db.update(others, overwrite=True, copy_media=True)
     db._root = db_root
 
+    # now should work...
+
     db.update(others, overwrite=True, copy_media=True)
 
-    pd.testing.assert_frame_equal(db['table'].df, df_table)
-    pd.testing.assert_frame_equal(db['misc'].df, df_misc)
+    assert 'int' in db['table'].columns
+    assert 'labels' in db['misc'].columns
     assert db['table_new'] == other2['table_new']
     assert db['misc_new'] == other2['misc_new']
 
