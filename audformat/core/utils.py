@@ -925,7 +925,7 @@ def join_schemes(
             that should be joined
 
     Raises:
-        ValueError: if schemes with different dtypes are combined
+        ValueError: if joining schemes with different dtype
             or only a subset of the schemes use labels from a misc table
 
     Example:
