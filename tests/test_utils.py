@@ -746,7 +746,7 @@ def test_concat(objs, overwrite, expected):
                 pd.Index([0, 1], name='idx'),
                 pd.Index([1, 2], name='idx'),
             ],
-            pd.Index([0, 2], name='idx'),
+            pd.Index([0, 2], dtype='Int64', name='idx'),
         ),
         (
             [
@@ -760,7 +760,7 @@ def test_concat(objs, overwrite, expected):
                 pd.Index([0, 1], dtype='int64', name='idx'),
                 pd.Index([1, 2], dtype='Int64', name='idx'),
             ],
-            pd.Index([0, 2], dtype='int64', name='idx'),
+            pd.Index([0, 2], dtype='Int64', name='idx'),
         ),
         (
             [
@@ -771,17 +771,27 @@ def test_concat(objs, overwrite, expected):
         ),
         (
             [
+                pd.Index([0, 1], dtype='int64', name='idx'),
+                pd.Index([0, 1, np.NaN], dtype='Int64', name='idx'),
+            ],
+            pd.Index([np.NaN], dtype='Int64', name='idx'),
+        ),
+        (
+            [
                 pd.Index([0, 1], name='idx'),
                 pd.MultiIndex.from_arrays([[1, 2]], names=['idx']),
             ],
-            pd.Index([0, 2], name='idx'),
+            pd.Index([0, 2], dtype='Int64', name='idx'),
         ),
         (
             [
                 pd.MultiIndex.from_arrays([[0, 1]], names=['idx']),
                 pd.MultiIndex.from_arrays([[1, 2]], names=['idx']),
             ],
-            pd.MultiIndex.from_arrays([[0, 2]], names=['idx']),
+            audformat.utils.set_index_dtypes(
+                pd.MultiIndex.from_arrays([[0, 2]], names=['idx']),
+                'Int64',
+            ),
         ),
         (
             [
@@ -794,9 +804,12 @@ def test_concat(objs, overwrite, expected):
                     names=['idx1', 'idx2'],
                 ),
             ],
-            pd.MultiIndex.from_arrays(
-                [['a', 'c', 'c'], [0, 2, 3]],
-                names=['idx1', 'idx2'],
+            audformat.utils.set_index_dtypes(
+                pd.MultiIndex.from_arrays(
+                    [['a', 'c', 'c'], [0, 2, 3]],
+                    names=['idx1', 'idx2'],
+                ),
+                {'idx2': 'Int64'},
             ),
         ),
         pytest.param(
@@ -1278,7 +1291,7 @@ def test_index_has_overlap(obj, expected):
             [
                 pd.Index([0, 1], name='idx'),
             ],
-            pd.Index([], dtype='int64', name='idx'),
+            pd.Index([], dtype='Int64', name='idx'),
         ),
         (
             [
@@ -1293,7 +1306,7 @@ def test_index_has_overlap(obj, expected):
                     names=['idx1', 'idx2'],
                 ),
                 {
-                    'idx1': 'int',
+                    'idx1': 'Int64',
                     'idx2': 'object',
                 },
             ),
@@ -1307,17 +1320,24 @@ def test_index_has_overlap(obj, expected):
         ),
         (
             [
+                pd.Index([], dtype='int64'),
+                pd.Index([0, 1], dtype='int64'),
+            ],
+            pd.Index([], dtype='Int64'),
+        ),
+        (
+            [
                 pd.Index([0, 1], name='idx'),
                 pd.Index([1, 2], name='idx'),
             ],
-            pd.Index([1], name='idx'),
+            pd.Index([1], dtype='Int64', name='idx'),
         ),
         (
             [
                 pd.Index([1, 2, 3], name='idx'),
                 pd.Index([1, np.nan], dtype='Int64', name='idx'),
             ],
-            pd.Index([1], dtype='int64', name='idx')
+            pd.Index([1], dtype='Int64', name='idx')
         ),
         (
             [
@@ -1338,14 +1358,17 @@ def test_index_has_overlap(obj, expected):
                 pd.Index([0, 1], name='idx'),
                 pd.MultiIndex.from_arrays([[1, 2]], names=['idx']),
             ],
-            pd.Index([1], name='idx'),
+            pd.Index([1], dtype='Int64', name='idx'),
         ),
         (
             [
                 pd.MultiIndex.from_arrays([[0, 1]], names=['idx']),
                 pd.MultiIndex.from_arrays([[1, 2]], names=['idx']),
             ],
-            pd.MultiIndex.from_arrays([[1]], names=['idx']),
+            audformat.utils.set_index_dtypes(
+                pd.MultiIndex.from_arrays([[1]], names=['idx']),
+                'Int64',
+            ),
         ),
         (
             [
@@ -1358,9 +1381,12 @@ def test_index_has_overlap(obj, expected):
                     names=['idx1', 'idx2'],
                 ),
             ],
-            pd.MultiIndex.from_arrays(
-                [['b'], [1]],
-                names=['idx1', 'idx2'],
+            audformat.utils.set_index_dtypes(
+                pd.MultiIndex.from_arrays(
+                    [['b'], [1]],
+                    names=['idx1', 'idx2'],
+                ),
+                {'idx2': 'Int64'},
             ),
         ),
         pytest.param(
@@ -2749,7 +2775,7 @@ def test_to_filewise(output_folder, table_id, expected_file_names):
                 pd.Index([0, 1], name='idx'),
                 pd.Index([1, 2], name='idx'),
             ],
-            pd.Index([0, 1, 2], name='idx'),
+            pd.Index([0, 1, 2], dtype='Int64', name='idx'),
         ),
         (
             [
@@ -2770,14 +2796,17 @@ def test_to_filewise(output_folder, table_id, expected_file_names):
                 pd.Index([0, 1], name='idx'),
                 pd.MultiIndex.from_arrays([[1, 2]], names=['idx']),
             ],
-            pd.Index([0, 1, 2], name='idx'),
+            pd.Index([0, 1, 2], dtype='Int64', name='idx'),
         ),
         (
             [
                 pd.MultiIndex.from_arrays([[0, 1]], names=['idx']),
                 pd.MultiIndex.from_arrays([[1, 2]], names=['idx']),
             ],
-            pd.MultiIndex.from_arrays([[0, 1, 2]], names=['idx']),
+            audformat.utils.set_index_dtypes(
+                pd.MultiIndex.from_arrays([[0, 1, 2]], names=['idx']),
+                'Int64',
+            ),
         ),
         (
             [
@@ -2790,9 +2819,12 @@ def test_to_filewise(output_folder, table_id, expected_file_names):
                     names=['idx1', 'idx2'],
                 ),
             ],
-            pd.MultiIndex.from_arrays(
-                [['a', 'b', 'c', 'c'], [0, 1, 2, 3]],
-                names=['idx1', 'idx2'],
+            audformat.utils.set_index_dtypes(
+                pd.MultiIndex.from_arrays(
+                    [['a', 'b', 'c', 'c'], [0, 1, 2, 3]],
+                    names=['idx1', 'idx2'],
+                ),
+                {'idx2': 'Int64'},
             ),
         ),
         pytest.param(

@@ -287,6 +287,8 @@ def difference(
     requires that levels and dtypes
     of all objects match,
     see :func:`audformat.utils.is_index_alike`.
+    Integer dtypes don't have to match,
+    but the result will always be of dtype ``Int64``.
     When the symmetric difference of a
     :class:`pandas.Index`
     with a single-level
@@ -297,8 +299,6 @@ def difference(
 
     The order of the resulting index
     depends on the order of ``objs``.
-    The dtype of the resulting index
-    is identical to the dtype of the first object.
     If you require :func:`audformat.utils.difference`
     to be commutative_,
     you have to sort its output.
@@ -310,7 +310,7 @@ def difference(
         objs: index objects
 
     Returns:
-        symmetric difference of index objects
+        difference of index objects
 
     Raises:
         ValueError: if level and dtypes of objects do not match
@@ -321,21 +321,21 @@ def difference(
         ...         pd.Index([1, 2, 3], name='idx'),
         ...     ]
         ... )
-        Int64Index([1, 2, 3], dtype='int64', name='idx')
+        Index([1, 2, 3], dtype='Int64', name='idx')
         >>> difference(
         ...     [
-        ...         pd.Index([0, 1], dtype='Int64', name='idx'),
-        ...         pd.Index([1, 2], dtype='Int64', name='idx'),
+        ...         pd.Index([0, 1], name='idx'),
+        ...         pd.Index([1, np.NaN], dtype='Int64', name='idx'),
         ...     ]
         ... )
-        Index([0, 2], dtype='Int64', name='idx')
+        Index([0, <NA>], dtype='Int64', name='idx')
         >>> difference(
         ...     [
         ...         pd.Index([0, 1], name='idx'),
         ...         pd.MultiIndex.from_arrays([[1, 2]], names=['idx']),
         ...     ]
         ... )
-        Int64Index([0, 2], dtype='int64', name='idx')
+        Index([0, 2], dtype='Int64', name='idx')
         >>> difference(
         ...     [
         ...         pd.MultiIndex.from_arrays(
@@ -380,6 +380,8 @@ def difference(
     """  # noqa: E501
     if not objs:
         return pd.Index([])
+
+    objs = [_maybe_convert_int_dtype(obj) for obj in objs]
 
     if len(objs) == 1:
         return objs[0]
@@ -596,6 +598,8 @@ def intersect(
     requires that levels and dtypes
     of all objects match,
     see :func:`audformat.utils.is_index_alike`.
+    Integer dtypes don't have to match,
+    but the result will always be of dtype ``Int64``.
     When a :class:`pandas.Index`
     is intersected with a single-level
     :class:`pandas.MultiIndex`,
@@ -604,8 +608,6 @@ def intersect(
 
     The order of the resulting index
     depends on the order of ``objs``.
-    The dtype of the resulting index
-    is identical to the dtype of the first object.
     If you require :func:`audformat.utils.intersect`
     to be commutative_,
     you have to sort its output.
@@ -628,11 +630,11 @@ def intersect(
         ...         pd.Index([1, 2, 3], name='idx'),
         ...     ]
         ... )
-        Int64Index([], dtype='int64', name='idx')
+        Index([], dtype='Int64', name='idx')
         >>> intersect(
         ...     [
         ...         pd.Index([1, np.nan], dtype='Int64', name='idx'),
-        ...         pd.Index([1, 2, 3], dtype='Int64', name='idx'),
+        ...         pd.Index([1, 2, 3], name='idx'),
         ...     ]
         ... )
         Index([1], dtype='Int64', name='idx')
@@ -642,7 +644,7 @@ def intersect(
         ...         pd.MultiIndex.from_arrays([[1, 2]], names=['idx']),
         ...     ]
         ... )
-        Int64Index([1], dtype='int64', name='idx')
+        Index([1], dtype='Int64', name='idx')
         >>> intersect(
         ...     [
         ...         pd.MultiIndex.from_arrays(
@@ -684,6 +686,8 @@ def intersect(
     """
     if not objs:
         return pd.Index([])
+
+    objs = [_maybe_convert_int_dtype(obj) for obj in objs]
 
     if len(objs) == 1:
         return _alike_index(objs[0])
@@ -766,10 +770,7 @@ def is_index_alike(
     # check dtypes
     dtypes = set()
     for obj in objs:
-        if isinstance(obj, pd.MultiIndex):
-            ds = [to_audformat_dtype(dtype) for dtype in obj.dtypes]
-        else:
-            ds = [to_audformat_dtype(obj.dtype)]
+        ds = [to_audformat_dtype(dtype) for dtype in _dtypes(obj)]
         dtypes.add(tuple(ds))
     if len(dtypes) > 1:
         return False
@@ -1535,6 +1536,8 @@ def union(
     requires that levels and dtypes
     of all objects match,
     see :func:`audformat.utils.is_index_alike`.
+    Integer dtypes don't have to match,
+    but the result will always be of dtype ``Int64``.
     When a :class:`pandas.Index`
     is combined with a single-level
     :class:`pandas.MultiIndex`,
@@ -1572,7 +1575,7 @@ def union(
         ...         pd.MultiIndex.from_arrays([[1, 2]], names=['idx']),
         ...     ]
         ... )
-        Int64Index([0, 1, 2], dtype='int64', name='idx')
+        Index([0, 1, 2], dtype='Int64', name='idx')
         >>> union(
         ...     [
         ...         pd.MultiIndex.from_arrays(
@@ -1622,6 +1625,8 @@ def union(
     """
     if not objs:
         return pd.Index([])
+
+    objs = [_maybe_convert_int_dtype(obj) for obj in objs]
 
     if len(objs) == 1:
         return objs[0]
@@ -1693,16 +1698,21 @@ def _assert_index_alike(
 
     dtypes = []
     for obj in objs:
-        if isinstance(obj, pd.MultiIndex):
-            ds = [to_audformat_dtype(dtype) for dtype in obj.dtypes]
-        else:
-            ds = [to_audformat_dtype(obj.dtype)]
+        ds = [to_audformat_dtype(dtype) for dtype in _dtypes(obj)]
         dtypes.append(tuple(ds) if len(ds) > 1 else ds[0])
     dtypes = list(dict.fromkeys(dtypes))
     if len(dtypes) > 1:
         msg += f' Found different level dtypes: {dtypes}.'
 
     raise ValueError(msg)
+
+
+def _dtypes(obj):
+    r"""List of dtypes of object."""
+    if isinstance(obj, pd.MultiIndex):
+        return list(obj.dtypes)
+    else:
+        return [obj.dtype]
 
 
 def _is_same_dtype(d1, d2) -> bool:
@@ -1720,6 +1730,14 @@ def _is_same_dtype(d1, d2) -> bool:
         # match only if categories are the same
         return d1 == d2
     return d1.name == d2.name
+
+
+def _levels(obj):
+    r"""List of dtypes of object."""
+    if isinstance(obj, pd.MultiIndex):
+        return list(obj.names)
+    else:
+        return [obj.name]
 
 
 def _maybe_convert_filewise_index(
@@ -1744,6 +1762,20 @@ def _maybe_convert_filewise_index(
             objs = [to_segmented_index(obj) for obj in objs]
 
     return objs
+
+
+def _maybe_convert_int_dtype(
+        index: pd.Index,
+) -> pd.Index:
+    r"""Convert integer dtypes to Int64."""
+    # Ensure integers are always stored as Int64
+    levels = _levels(index)
+    dtypes = _dtypes(index)
+    int_dtypes = {
+        level: 'Int64' for level, dtype in zip(levels, dtypes)
+        if pd.api.types.is_integer_dtype(dtype)
+    }
+    return set_index_dtypes(index, int_dtypes)
 
 
 def _maybe_convert_single_level_multi_index(
