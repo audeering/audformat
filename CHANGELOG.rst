@@ -41,6 +41,7 @@ Version 0.15.0 (2022-08-05)
 * Changed: ``audformat.Database.__iter__``
   iterates through all (misc) tables,
   e.g. a user can do ``list(db)``
+  to get a list of all (misc) tables
 * Changed: require ``pandas>=1.4.1``
 * Changed: use ``pandas`` dtype ``'string'``
   instead of ``'object'``
