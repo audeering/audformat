@@ -49,10 +49,11 @@ Version 0.15.0 (2022-08-05)
   in the emodb example
   in the documentation
 * Fixed: ensure column IDs are different from index level names
-* Fixed: make sure incoming data
-  is converted to matching dtype of scheme
-  before checking if the value lies in the max-min-range
-  of the scheme
+* Fixed: make sure
+  ``audformat.Column.set()``
+  converts data to dtype of scheme
+  before checking if values are in min-max-range
+  of scheme
 * Fixed: links to ``pandas`` API in the documentation
 * Fixed: include methods
   ``to_dict()``,
