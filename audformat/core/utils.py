@@ -949,8 +949,8 @@ def join_schemes(
             that should be joined
 
     Raises:
-        ValueError: if joining schemes with different dtype
-            or only a subset of the schemes use labels from a misc table
+        ValueError: if scheme labels are of different dtype
+            or not ``list`` or ``dict``
 
     Example:
         >>> db1 = Database('db1')
