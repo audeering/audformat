@@ -838,7 +838,7 @@ def iter_by_file(
 
 def join_labels(
         labels: typing.Sequence[typing.Union[typing.List, typing.Dict]],
-):
+) -> typing.Union[typing.List, typing.Dict]:
     r"""Combine scheme labels.
 
     Args:
@@ -851,8 +851,8 @@ def join_labels(
         joined labels
 
     Raises:
-        ValueError: if labels are of different type
-        ValueError: if label type is not ``list`` or ``dict``
+        ValueError: if labels are of different dtype
+            or not ``list`` or ``dict``
 
     Example:
         >>> join_labels([{'a': 0, 'b': 1}, {'b': 2, 'c': 2}])
@@ -860,38 +860,53 @@ def join_labels(
 
     """
     if len(labels) == 0:
-        return labels
+        return []
 
     if not isinstance(labels, list):
         labels = list(labels)
 
-    label_type = type(labels[0])
-    joined_labels = labels[0]
+    misc_table_ids = [x for x in labels if isinstance(x, str)]
+    if len(misc_table_ids) > 0:
+        raise ValueError(
+            f"The following string values were provided: '"
+            f"{misc_table_ids}'. "
+            "This assumes that labels are defined "
+            "in misc tables with according IDs, "
+            "which is not supported by 'join_labels()'."
+        )
 
-    for label in labels[1:]:
-        if type(label) != label_type:
-            raise ValueError(
-                f"Labels are of different type:\n"
-                f"{label_type}\n"
-                f"!=\n"
-                f"{type(label)}"
+    if not (
+        all([isinstance(x, list) for x in labels])
+        or all([isinstance(x, dict) for x in labels])
+    ):
+        raise ValueError(
+            (
+                "All labels must be either "
+                "of type 'list' or 'dict'."
             )
+        )
 
-    if label_type == dict:
+    if len(labels) == 1:
+        return labels[0]
+
+    items = audeer.flatten_list([list(x) for x in labels])
+    dtypes = sorted(list(set([str(type(x)) for x in items])))
+    if len(dtypes) > 1:
+        raise ValueError(
+            f"Elements or keys must "
+            f"have the same dtype, "
+            f"but yours have "
+            f"{dtypes}.",
+        )
+
+    if isinstance(labels[0], dict):
+        joined_labels = labels[0]
         for label in labels[1:]:
             for key, value in label.items():
                 if key not in joined_labels or joined_labels[key] != value:
                     joined_labels[key] = value
-    elif label_type == list:
-        joined_labels = list(
-            set(list(joined_labels) + audeer.flatten_list(labels[1:]))
-        )
-        joined_labels = sorted(audeer.flatten_list(joined_labels))
     else:
-        raise ValueError(
-            f"Supported label types are 'list' and 'dict', "
-            f"but your is '{label_type}'"
-        )
+        joined_labels = sorted(list(set(items)))
 
     # Check if joined labels have a valid format,
     # e.g. {0: {'age': 20}, '0': {'age': 30}} is not allowed
@@ -919,10 +934,20 @@ def join_schemes(
     if you want to combine databases
     with :meth:`audformat.Database.update`.
 
+    Joining schemes that use labels
+    from a misc table is not supported.
+    Please use
+    :meth:`audformat.Database.update`
+    instead.
+
     Args:
         dbs: sequence of databases
         scheme_id: scheme ID of a scheme with labels
             that should be joined
+
+    Raises:
+        ValueError: if scheme labels are of different dtype
+            or not ``list`` or ``dict``
 
     Example:
         >>> db1 = Database('db1')

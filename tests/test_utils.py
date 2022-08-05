@@ -1749,6 +1749,22 @@ def test_iter_by_file(obj, expected):
             [],
         ),
         (
+            [[]],
+            [],
+        ),
+        (
+            [{}],
+            {},
+        ),
+        (
+            [[], []],
+            [],
+        ),
+        (
+            [{}, {}],
+            {},
+        ),
+        (
             (['a'], ['b']),
             ['a', 'b'],
         ),
@@ -1795,7 +1811,17 @@ def test_iter_by_file(obj, expected):
             marks=pytest.mark.xfail(raises=ValueError),
         ),
         pytest.param(
+            ['a', 'b', 0],
+            [],
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
+        pytest.param(
             [{'a': 0, 'b': 1}, ['c']],
+            [],
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
+        pytest.param(
+            [{'a': 0, 'b': 1}, {0: 'c'}],
             [],
             marks=pytest.mark.xfail(raises=ValueError),
         ),
@@ -1809,6 +1835,11 @@ def test_iter_by_file(obj, expected):
             [],
             marks=pytest.mark.xfail(raises=ValueError),
         ),
+        pytest.param(
+            [['a', 'b'], 'misc_id'],
+            [],
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
     ]
 )
 def test_join_labels(labels, expected):
@@ -1816,15 +1847,20 @@ def test_join_labels(labels, expected):
 
 
 def test_join_schemes():
+
     # Empty list
     audformat.utils.join_schemes([], 'scheme_id')
+
     # One database
+
     db1 = audformat.Database('db1')
     scheme1 = audformat.Scheme(labels={'a': [1, 2]})
     db1.schemes['scheme_id'] = scheme1
     audformat.utils.join_schemes([db1], 'scheme_id')
     assert db1.schemes['scheme_id'] == scheme1
+
     # Two databases
+
     db2 = audformat.Database('db2')
     scheme2 = audformat.Scheme(labels={'b': [3]})
     db2.schemes['scheme_id'] = scheme2
@@ -1832,17 +1868,39 @@ def test_join_schemes():
     audformat.utils.join_schemes([db1, db2], 'scheme_id')
     assert db1.schemes['scheme_id'] == expected
     assert db2.schemes['scheme_id'] == expected
+
     # Three database
+
     db3 = audformat.Database('db3')
     scheme3 = audformat.Scheme(labels={'a': [4]})
     db3.schemes['scheme_id'] = scheme3
     expected = audformat.Scheme(labels={'a': [4], 'b': [3]})
     audformat.utils.join_schemes([db1, db2, db3], 'scheme_id')
+    assert db1.schemes['scheme_id'] == expected
+    assert db2.schemes['scheme_id'] == expected
+    assert db3.schemes['scheme_id'] == expected
+
     # Fail for schemes without labels
-    with pytest.raises(ValueError):
-        db = audformat.Database('db')
-        db.schemes['scheme_id'] = audformat.Scheme('str')
-        audformat.utils.join_schemes([db], 'scheme_id')
+    db4 = audformat.Database('db')
+    db4.schemes['scheme_id'] = audformat.Scheme('str')
+    error_msg = "All labels must be either of type 'list' or 'dict'"
+    with pytest.raises(ValueError, match=error_msg):
+        audformat.utils.join_schemes([db4], 'scheme_id')
+
+    # Fail for schemes with different label type
+    db5 = audformat.Database('db')
+    db5.schemes['scheme_id'] = audformat.Scheme('int', labels={0: 'a'})
+    error_msg = "Elements or keys must have the same dtype"
+    with pytest.raises(ValueError, match=error_msg):
+        audformat.utils.join_schemes([db1, db5], 'scheme_id')
+
+    # Fail if some schemes use labels from misc tables
+    db6 = audformat.Database('db')
+    db6['misc'] = audformat.MiscTable(pd.Index([0, 1, 2], name='idx'))
+    db6.schemes['scheme_id'] = audformat.Scheme(dtype='int', labels='misc')
+    error_msg = "The following string values were provided"
+    with pytest.raises(ValueError, match=error_msg):
+        audformat.utils.join_schemes([db1, db6], 'scheme_id')
 
 
 @pytest.mark.parametrize(
