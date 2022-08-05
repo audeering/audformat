@@ -7,6 +7,82 @@ The format is based on `Keep a Changelog`_,
 and this project adheres to `Semantic Versioning`_.
 
 
+Version 0.15.0 (2022-08-05)
+---------------------------
+
+* Added: ``audformat.MiscTable``
+  which can store data
+  not associated with media files
+* Added: store scheme labels in a misc table
+* Added: dictionary ``audformat.Database.misc_tables``
+  holding misc tables of a database
+* Added: ``audformat.utils.difference()``
+  for finding index entries
+  that are only part of a single index
+  for a given sequence of indices
+* Added: ``audformat.utils.is_index_alike()``
+  for checking if a sequence of indices
+  has the same number of levels,
+  level names,
+  and matching dtypes
+* Added: ``audformat.define.DataType.OBJECT``
+* Added: ``audformat.utils.set_index_dtypes()``
+  to change dtypes of an index
+* Added: ``audformat.testing.add_misc_table()``
+* Added: ``audformat.Database.__iter__``
+  iterates through all (misc) tables,
+  e.g. a user can do ``list(db)``
+  to get a list of all (misc) tables
+* Changed: ``audformat.Database.update()``
+  can now join schemes
+  with different labels
+* Changed: ``audformat.utils.union()``,
+  ``audformat.utils.intersect()``,
+  and ``audformat.utils.concat()``
+  now support any kind of index
+* Changed: ``audformat.utils.intersect()``
+  no longer removes segments
+  from a segmented index
+  that are contained
+  in a filewise index
+* Changed: require ``pandas>=1.4.1``
+* Changed: use ``pandas`` dtype ``'string'``
+  instead of ``'object'``
+  for storing ``audformat`` dtype ``'str'`` entries
+* Changed: use a misc table
+  to store the ``'speaker'`` scheme labels
+  in the emodb example
+  in the documentation
+* Changed: ``audformat.utils.join_labels()``
+  raises ``ValueError``
+  if labels are of different dtype
+* Fixed: ensure column IDs are different from index level names
+* Fixed: make sure
+  ``audformat.Column.set()``
+  converts data to dtype of scheme
+  before checking if values are in min-max-range
+  of scheme
+* Fixed: links to ``pandas`` API in the documentation
+* Fixed: include methods
+  ``to_dict()``,
+  ``from_dict()``,
+  ``dump()``,
+  and attributes
+  ``description``,
+  ``meta``
+  in the documentation for the classes
+  ``audformat.Column``,
+  ``audformat.Database``,
+  ``audformat.Media``,
+  ``audformat.Rater``,
+  ``audformat.Scheme``,
+  ``audformat.Split``,
+  ``audformat.Table``
+* Fixed: type hint of argument ``dtype``
+  in the documentation of ``audformat.Scheme``
+* Removed: support for Python 3.7
+
+
 Version 0.14.3 (2022-06-01)
 ---------------------------
 
