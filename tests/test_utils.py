@@ -1894,7 +1894,7 @@ def test_join_schemes():
     with pytest.raises(ValueError, match=error_msg):
         audformat.utils.join_schemes([db1, db5], 'scheme_id')
 
-    # Fail if only a subset of schemes use labels from misc tables
+    # Fail if some schemes use labels from misc tables
     db6 = audformat.Database('db')
     db6['misc'] = audformat.MiscTable(pd.Index([0, 1, 2], name='idx'))
     db6.schemes['scheme_id'] = audformat.Scheme(dtype='int', labels='misc')
