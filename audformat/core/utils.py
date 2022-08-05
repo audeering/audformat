@@ -886,9 +886,6 @@ def join_labels(
             )
         )
 
-    labels = [x for x in labels if len(x) > 0]
-    if len(labels) == 0:
-        return []
     if len(labels) == 1:
         return labels[0]
 
