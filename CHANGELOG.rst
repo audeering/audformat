@@ -53,7 +53,7 @@ Version 0.15.0 (2022-08-05)
   is converted to matching dtype of scheme
   before checking if the value lies in the max-min-range
   of the scheme
-* Fixed: links to ``pandas`` objects in the documentation
+* Fixed: links to ``pandas`` API in the documentation
 * Fixed: include methods
   ``to_dict()``,
   ``from_dict()``,
