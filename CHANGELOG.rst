@@ -62,7 +62,7 @@ Version 0.15.0 (2022-08-05)
   and attributes
   ``description``,
   ``meta``
-  for the classes
+  in the documentation for the classes
   ``audformat.Column``,
   ``audformat.Database``,
   ``audformat.Media``,
