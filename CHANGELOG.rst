@@ -48,6 +48,9 @@ Version 0.15.0 (2022-08-05)
   to store the ``'speaker'`` scheme labels
   in the emodb example
   in the documentation
+* Changed: ``audformat.utils.join_labels()``
+  raises ``ValueError``
+  if labels are of different dtype
 * Fixed: ensure column IDs are different from index level names
 * Fixed: make sure
   ``audformat.Column.set()``
