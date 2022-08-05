@@ -14,7 +14,7 @@ Version 0.15.0 (2022-08-05)
   which can store labels
   not associated with media files
 * Added: usage of a misc table as labels in a scheme
-* Added: dictionary ``audformat.Database.misc_table``
+* Added: dictionary ``audformat.Database.misc_tables``
   holding misc tables of a database
 * Added: ``audformat.utils.difference()``
   for finding index entries
