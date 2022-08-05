@@ -32,12 +32,10 @@ Version 0.15.0 (2022-08-05)
 * Changed: ``audformat.Database.update()``
   can now join schemes
   with different labels
-* Changed: ``audformat.utils.union()``
-  and ``audformat.utils.intersect()``
+* Changed: ``audformat.utils.union()``,
+  ``audformat.utils.intersect()``,
+  and ``audformat.utils.concat()``
   now support any kind of index
-* Changed: ``audformat.utils.concat()``
-  can now concatenate objects
-  that contain any kind of index
 * Changed: ``audformat.Database.__iter__``
   iterates through all (misc) tables,
   e.g. a user can do ``list(db)``
