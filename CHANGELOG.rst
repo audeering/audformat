@@ -40,6 +40,11 @@ Version 0.15.0 (2022-08-05)
   ``audformat.utils.intersect()``,
   and ``audformat.utils.concat()``
   now support any kind of index
+* Changed: ``audformat.utils.intersect()``
+  no longer removes segments
+  from a segmented index
+  that are contained
+  in a filewise index
 * Changed: require ``pandas>=1.4.1``
 * Changed: use ``pandas`` dtype ``'string'``
   instead of ``'object'``
