@@ -71,7 +71,7 @@ Version 0.15.0 (2022-08-05)
   ``audformat.Split``,
   ``audformat.Table``
 * Fixed: type hint of argument ``dtype``
-  in ``audformat.Scheme``
+  in the documentation of ``audformat.Scheme``
 * Removed: support for Python 3.7
 
 
