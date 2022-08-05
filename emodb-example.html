@@ -76,7 +76,7 @@
             
             
               <div class="version">
-                v0.14.3
+                v0.15.0
               </div>
             
           
@@ -125,6 +125,7 @@
 <li class="toctree-l1"><a class="reference internal" href="data-conventions.html">Conventions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data-header.html">Header</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data-tables.html">Tables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data-misc-tables.html">Misc Tables</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data-example.html">Example</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Documentation</span></p>
@@ -177,7 +178,7 @@
            <div itemprop="articleBody">
             
   <div class="section" id="emodb-example">
-<h1>Emodb example<a class="headerlink" href="#emodb-example" title="Permalink to this heading">¶</a></h1>
+<span id="id1"></span><h1>Emodb example<a class="headerlink" href="#emodb-example" title="Permalink to this heading">¶</a></h1>
 <p>In this example we download the small <a class="reference external" href="http://emodb.bilderbar.info">emodb</a> database,
 that contains sentences
 spoken with different emotions
@@ -189,7 +190,7 @@ The audio is stored as WAV files.</p>
 to the folder <code class="file docutils literal notranslate"><span class="pre">emodb-src</span></code>.</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">urllib.request</span>
 
 <span class="kn">import</span> <span class="nn">audeer</span>
@@ -207,7 +208,7 @@ to the folder <code class="file docutils literal notranslate"><span class="pre">
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>[&#39;labsilb&#39;, &#39;erkennung.txt&#39;, &#39;wav&#39;, &#39;lablaut&#39;, &#39;erklaerung.txt&#39;, &#39;silb&#39;]
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>[&#39;silb&#39;, &#39;erkennung.txt&#39;, &#39;lablaut&#39;, &#39;wav&#39;, &#39;erklaerung.txt&#39;, &#39;labsilb&#39;]
 </pre></div>
 </div>
 </div>
@@ -222,12 +223,12 @@ of the database.</p>
 <p>First, have a look at the file names.</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">src_dir</span><span class="p">,</span> <span class="s1">&#39;wav&#39;</span><span class="p">))[:</span><span class="mi">3</span><span class="p">]</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">src_dir</span><span class="p">,</span> <span class="s1">&#39;wav&#39;</span><span class="p">))[:</span><span class="mi">3</span><span class="p">]</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>[&#39;09b02Na.wav&#39;, &#39;16b10Td.wav&#39;, &#39;03a02Fc.wav&#39;]
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>[&#39;15b02Lb.wav&#39;, &#39;14a04Lb.wav&#39;, &#39;15b01Lb.wav&#39;]
 </pre></div>
 </div>
 </div>
@@ -407,8 +408,7 @@ and use the annotations to add a confidence column
 to the emotion table.</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">audformat</span>
-<span class="kn">import</span> <span class="nn">audiofile</span> <span class="k">as</span> <span class="nn">af</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">audformat</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 
 <span class="c1"># Prepare functions for getting information from file names</span>
@@ -466,19 +466,23 @@ to the emotion table.</p>
 
 <span class="n">male</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">define</span><span class="o">.</span><span class="n">Gender</span><span class="o">.</span><span class="n">MALE</span>
 <span class="n">female</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">define</span><span class="o">.</span><span class="n">Gender</span><span class="o">.</span><span class="n">FEMALE</span>
-<span class="n">language</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">map_language</span><span class="p">(</span><span class="s1">&#39;de&#39;</span><span class="p">)</span>
-<span class="n">speaker_mapping</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="mi">3</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;gender&#39;</span><span class="p">:</span> <span class="n">male</span><span class="p">,</span> <span class="s1">&#39;age&#39;</span><span class="p">:</span> <span class="mi">31</span><span class="p">,</span> <span class="s1">&#39;language&#39;</span><span class="p">:</span> <span class="n">language</span><span class="p">},</span>
-    <span class="mi">8</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;gender&#39;</span><span class="p">:</span> <span class="n">female</span><span class="p">,</span> <span class="s1">&#39;age&#39;</span><span class="p">:</span> <span class="mi">34</span><span class="p">,</span> <span class="s1">&#39;language&#39;</span><span class="p">:</span> <span class="n">language</span><span class="p">},</span>
-    <span class="mi">9</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;gender&#39;</span><span class="p">:</span> <span class="n">female</span><span class="p">,</span> <span class="s1">&#39;age&#39;</span><span class="p">:</span> <span class="mi">21</span><span class="p">,</span> <span class="s1">&#39;language&#39;</span><span class="p">:</span> <span class="n">language</span><span class="p">},</span>
-    <span class="mi">10</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;gender&#39;</span><span class="p">:</span> <span class="n">male</span><span class="p">,</span> <span class="s1">&#39;age&#39;</span><span class="p">:</span> <span class="mi">32</span><span class="p">,</span> <span class="s1">&#39;language&#39;</span><span class="p">:</span> <span class="n">language</span><span class="p">},</span>
-    <span class="mi">11</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;gender&#39;</span><span class="p">:</span> <span class="n">male</span><span class="p">,</span> <span class="s1">&#39;age&#39;</span><span class="p">:</span> <span class="mi">26</span><span class="p">,</span> <span class="s1">&#39;language&#39;</span><span class="p">:</span> <span class="n">language</span><span class="p">},</span>
-    <span class="mi">12</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;gender&#39;</span><span class="p">:</span> <span class="n">male</span><span class="p">,</span> <span class="s1">&#39;age&#39;</span><span class="p">:</span> <span class="mi">30</span><span class="p">,</span> <span class="s1">&#39;language&#39;</span><span class="p">:</span> <span class="n">language</span><span class="p">},</span>
-    <span class="mi">13</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;gender&#39;</span><span class="p">:</span> <span class="n">female</span><span class="p">,</span> <span class="s1">&#39;age&#39;</span><span class="p">:</span> <span class="mi">32</span><span class="p">,</span> <span class="s1">&#39;language&#39;</span><span class="p">:</span> <span class="n">language</span><span class="p">},</span>
-    <span class="mi">14</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;gender&#39;</span><span class="p">:</span> <span class="n">female</span><span class="p">,</span> <span class="s1">&#39;age&#39;</span><span class="p">:</span> <span class="mi">35</span><span class="p">,</span> <span class="s1">&#39;language&#39;</span><span class="p">:</span> <span class="n">language</span><span class="p">},</span>
-    <span class="mi">15</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;gender&#39;</span><span class="p">:</span> <span class="n">male</span><span class="p">,</span> <span class="s1">&#39;age&#39;</span><span class="p">:</span> <span class="mi">25</span><span class="p">,</span> <span class="s1">&#39;language&#39;</span><span class="p">:</span> <span class="n">language</span><span class="p">},</span>
-    <span class="mi">16</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;gender&#39;</span><span class="p">:</span> <span class="n">female</span><span class="p">,</span> <span class="s1">&#39;age&#39;</span><span class="p">:</span> <span class="mi">31</span><span class="p">,</span> <span class="s1">&#39;language&#39;</span><span class="p">:</span> <span class="n">language</span><span class="p">},</span>
-<span class="p">}</span>
+<span class="n">de</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">map_language</span><span class="p">(</span><span class="s1">&#39;de&#39;</span><span class="p">)</span>
+<span class="n">df_speaker</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+    <span class="n">index</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">16</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;speaker&#39;</span><span class="p">),</span>
+    <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;age&#39;</span><span class="p">,</span> <span class="s1">&#39;gender&#39;</span><span class="p">,</span> <span class="s1">&#39;language&#39;</span><span class="p">],</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">[</span><span class="mi">31</span><span class="p">,</span> <span class="n">male</span><span class="p">,</span> <span class="n">de</span><span class="p">],</span>
+        <span class="p">[</span><span class="mi">34</span><span class="p">,</span> <span class="n">female</span><span class="p">,</span> <span class="n">de</span><span class="p">],</span>
+        <span class="p">[</span><span class="mi">21</span><span class="p">,</span> <span class="n">female</span><span class="p">,</span> <span class="n">de</span><span class="p">],</span>
+        <span class="p">[</span><span class="mi">32</span><span class="p">,</span> <span class="n">male</span><span class="p">,</span> <span class="n">de</span><span class="p">],</span>
+        <span class="p">[</span><span class="mi">26</span><span class="p">,</span> <span class="n">male</span><span class="p">,</span> <span class="n">de</span><span class="p">],</span>
+        <span class="p">[</span><span class="mi">30</span><span class="p">,</span> <span class="n">male</span><span class="p">,</span> <span class="n">de</span><span class="p">],</span>
+        <span class="p">[</span><span class="mi">32</span><span class="p">,</span> <span class="n">female</span><span class="p">,</span> <span class="n">de</span><span class="p">],</span>
+        <span class="p">[</span><span class="mi">35</span><span class="p">,</span> <span class="n">female</span><span class="p">,</span> <span class="n">de</span><span class="p">],</span>
+        <span class="p">[</span><span class="mi">25</span><span class="p">,</span> <span class="n">male</span><span class="p">,</span> <span class="n">de</span><span class="p">],</span>
+        <span class="p">[</span><span class="mi">31</span><span class="p">,</span> <span class="n">female</span><span class="p">,</span> <span class="n">de</span><span class="p">],</span>
+   <span class="p">],</span>
+<span class="p">)</span>
 <span class="n">speakers</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">parse_names</span><span class="p">(</span><span class="n">names</span><span class="p">,</span> <span class="n">from_i</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">to_i</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">is_number</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
 
 <span class="n">transcription_mapping</span> <span class="o">=</span> <span class="p">{</span>
@@ -512,11 +516,11 @@ to the emotion table.</p>
 and assign the information to it.</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">db</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Database</span><span class="p">(</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">db</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Database</span><span class="p">(</span>
     <span class="n">name</span><span class="o">=</span><span class="s1">&#39;emodb&#39;</span><span class="p">,</span>
     <span class="n">source</span><span class="o">=</span><span class="n">source</span><span class="p">,</span>
     <span class="n">usage</span><span class="o">=</span><span class="n">audformat</span><span class="o">.</span><span class="n">define</span><span class="o">.</span><span class="n">Usage</span><span class="o">.</span><span class="n">UNRESTRICTED</span><span class="p">,</span>
-    <span class="n">languages</span><span class="o">=</span><span class="p">[</span><span class="n">language</span><span class="p">],</span>
+    <span class="n">languages</span><span class="o">=</span><span class="p">[</span><span class="n">de</span><span class="p">],</span>
     <span class="n">description</span><span class="o">=</span><span class="n">description</span><span class="p">,</span>
     <span class="n">meta</span><span class="o">=</span><span class="p">{</span>
         <span class="s1">&#39;pdf&#39;</span><span class="p">:</span> <span class="p">(</span>
@@ -542,23 +546,46 @@ and assign the information to it.</p>
     <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Six basic emotions and neutral.&#39;</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s1">&#39;confidence&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Scheme</span><span class="p">(</span>
-    <span class="n">audformat</span><span class="o">.</span><span class="n">define</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">FLOAT</span><span class="p">,</span>
+    <span class="s1">&#39;float&#39;</span><span class="p">,</span>
     <span class="n">minimum</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
     <span class="n">maximum</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
     <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Confidence of emotion ratings.&#39;</span><span class="p">,</span>
 <span class="p">)</span>
+<span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s1">&#39;age&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Scheme</span><span class="p">(</span>
+    <span class="s1">&#39;int&#39;</span><span class="p">,</span>
+    <span class="n">minimum</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Age of speaker&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s1">&#39;gender&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Scheme</span><span class="p">(</span>
+    <span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;female&#39;</span><span class="p">,</span> <span class="s1">&#39;male&#39;</span><span class="p">],</span>
+    <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Gender of speaker&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s1">&#39;language&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Scheme</span><span class="p">(</span>
+    <span class="s1">&#39;str&#39;</span><span class="p">,</span>
+    <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Language of speaker&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s1">&#39;transcription&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Scheme</span><span class="p">(</span>
+    <span class="n">labels</span><span class="o">=</span><span class="n">transcription_mapping</span><span class="p">,</span>
+    <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Sentence produced by actor.&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="c1"># MiscTable</span>
+<span class="n">db</span><span class="p">[</span><span class="s1">&#39;speaker&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">MiscTable</span><span class="p">(</span><span class="n">df_speaker</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+<span class="n">db</span><span class="p">[</span><span class="s1">&#39;speaker&#39;</span><span class="p">][</span><span class="s1">&#39;age&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">scheme_id</span><span class="o">=</span><span class="s1">&#39;age&#39;</span><span class="p">)</span>
+<span class="n">db</span><span class="p">[</span><span class="s1">&#39;speaker&#39;</span><span class="p">][</span><span class="s1">&#39;gender&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">scheme_id</span><span class="o">=</span><span class="s1">&#39;gender&#39;</span><span class="p">)</span>
+<span class="n">db</span><span class="p">[</span><span class="s1">&#39;speaker&#39;</span><span class="p">][</span><span class="s1">&#39;language&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">scheme_id</span><span class="o">=</span><span class="s1">&#39;language&#39;</span><span class="p">)</span>
+<span class="n">db</span><span class="p">[</span><span class="s1">&#39;speaker&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">df_speaker</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(</span><span class="n">orient</span><span class="o">=</span><span class="s1">&#39;list&#39;</span><span class="p">))</span>
+
+<span class="c1"># MiscTable as Scheme</span>
 <span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s1">&#39;speaker&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Scheme</span><span class="p">(</span>
-    <span class="n">labels</span><span class="o">=</span><span class="n">speaker_mapping</span><span class="p">,</span>
+    <span class="n">labels</span><span class="o">=</span><span class="s1">&#39;speaker&#39;</span><span class="p">,</span>
+    <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;int&#39;</span><span class="p">,</span>
     <span class="n">description</span><span class="o">=</span><span class="p">(</span>
         <span class="s1">&#39;The actors could produce each sentence as often as &#39;</span>
         <span class="s1">&#39;they liked and were asked to remember a real &#39;</span>
         <span class="s1">&#39;situation from their past when they had felt this &#39;</span>
         <span class="s1">&#39;emotion.&#39;</span>
     <span class="p">),</span>
-<span class="p">)</span>
-<span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s1">&#39;transcription&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Scheme</span><span class="p">(</span>
-    <span class="n">labels</span><span class="o">=</span><span class="n">transcription_mapping</span><span class="p">,</span>
-    <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Sentence produced by actor.&#39;</span><span class="p">,</span>
 <span class="p">)</span>
 
 <span class="c1"># Tables</span>
@@ -595,7 +622,7 @@ and assign the information to it.</p>
 we can inspect its header.</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">db</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">db</span>
 </pre></div>
 </div>
 </div>
@@ -614,28 +641,21 @@ media:
 raters:
   gold: {type: human}
 schemes:
+  age: {description: Age of speaker, dtype: int, minimum: 0}
   confidence: {description: Confidence of emotion ratings., dtype: float, minimum: 0,
     maximum: 1}
   emotion:
     description: Six basic emotions and neutral.
     dtype: str
     labels: [anger, boredom, disgust, fear, happiness, sadness, neutral]
-  speaker:
-    description: The actors could produce each sentence as often as they liked and
-      were asked to remember a real situation from their past when they had felt this
-      emotion.
-    dtype: int
-    labels:
-      3: {gender: male, age: 31, language: deu}
-      8: {gender: female, age: 34, language: deu}
-      9: {gender: female, age: 21, language: deu}
-      10: {gender: male, age: 32, language: deu}
-      11: {gender: male, age: 26, language: deu}
-      12: {gender: male, age: 30, language: deu}
-      13: {gender: female, age: 32, language: deu}
-      14: {gender: female, age: 35, language: deu}
-      15: {gender: male, age: 25, language: deu}
-      16: {gender: female, age: 31, language: deu}
+  gender:
+    description: Gender of speaker
+    dtype: str
+    labels: [female, male]
+  language: {description: Language of speaker, dtype: str}
+  speaker: {description: The actors could produce each sentence as often as they liked
+      and were asked to remember a real situation from their past when they had felt
+      this emotion., dtype: int, labels: speaker}
   transcription:
     description: Sentence produced by actor.
     dtype: str
@@ -658,6 +678,13 @@ tables:
     columns:
       speaker: {scheme_id: speaker}
       transcription: {scheme_id: transcription}
+misc_tables:
+  speaker:
+    levels: {speaker: int}
+    columns:
+      age: {scheme_id: age}
+      gender: {scheme_id: gender}
+      language: {scheme_id: language}
 pdf: http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.130.8506&amp;rep=rep1&amp;type=pdf
 </pre></div>
 </div>
@@ -669,12 +696,12 @@ pdf: http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.130.8506&amp;rep=r
 <p>First check which tables are available.</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">list</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">tables</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">list</span><span class="p">(</span><span class="n">db</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>[&#39;files&#39;, &#39;emotion&#39;]
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>[&#39;emotion&#39;, &#39;files&#39;, &#39;speaker&#39;]
 </pre></div>
 </div>
 </div>
@@ -682,7 +709,7 @@ pdf: http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.130.8506&amp;rep=r
 <p>Then list the first 10 entries of every table.</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="p">[</span><span class="s1">&#39;files&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()[:</span><span class="mi">10</span><span class="p">]</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="p">[</span><span class="s1">&#39;files&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()[:</span><span class="mi">10</span><span class="p">]</span>
 </pre></div>
 </div>
 </div>
@@ -771,7 +798,7 @@ pdf: http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.130.8506&amp;rep=r
 </div>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="p">[</span><span class="s1">&#39;emotion&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()[:</span><span class="mi">10</span><span class="p">]</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="p">[</span><span class="s1">&#39;emotion&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()[:</span><span class="mi">10</span><span class="p">]</span>
 </pre></div>
 </div>
 </div>
@@ -858,13 +885,116 @@ pdf: http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.130.8506&amp;rep=r
 </table>
 </div></div></div>
 </div>
-<p>You access additional header information in a table
+<div class="jupyter_cell jupyter_container docutils container">
+<div class="cell_input code_cell docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="p">[</span><span class="s1">&#39;speaker&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()[:</span><span class="mi">10</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>age</th>
+      <th>gender</th>
+      <th>language</th>
+    </tr>
+    <tr>
+      <th>speaker</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>3</th>
+      <td>31</td>
+      <td>male</td>
+      <td>deu</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>34</td>
+      <td>female</td>
+      <td>deu</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>21</td>
+      <td>female</td>
+      <td>deu</td>
+    </tr>
+    <tr>
+      <th>10</th>
+      <td>32</td>
+      <td>male</td>
+      <td>deu</td>
+    </tr>
+    <tr>
+      <th>11</th>
+      <td>26</td>
+      <td>male</td>
+      <td>deu</td>
+    </tr>
+    <tr>
+      <th>12</th>
+      <td>30</td>
+      <td>male</td>
+      <td>deu</td>
+    </tr>
+    <tr>
+      <th>13</th>
+      <td>32</td>
+      <td>female</td>
+      <td>deu</td>
+    </tr>
+    <tr>
+      <th>14</th>
+      <td>35</td>
+      <td>female</td>
+      <td>deu</td>
+    </tr>
+    <tr>
+      <th>15</th>
+      <td>25</td>
+      <td>male</td>
+      <td>deu</td>
+    </tr>
+    <tr>
+      <th>16</th>
+      <td>31</td>
+      <td>female</td>
+      <td>deu</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<p>Columns might contain labels,
+that provide additional mappings.
+You can access this additional information
 with the <code class="docutils literal notranslate"><span class="pre">map</span></code> argument of <a class="reference internal" href="api.html#audformat.Table.get" title="audformat.Table.get"><code class="xref py py-meth docutils literal notranslate"><span class="pre">audformat.Table.get()</span></code></a>,
 see <a class="reference internal" href="map-scheme.html#map-scheme-labels"><span class="std std-ref">Map scheme labels</span></a>
 for an extended documentation.</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="p">[</span><span class="s1">&#39;files&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">map</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;speaker&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;speaker&#39;</span><span class="p">,</span> <span class="s1">&#39;age&#39;</span><span class="p">,</span> <span class="s1">&#39;gender&#39;</span><span class="p">]})[:</span><span class="mi">10</span><span class="p">]</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="p">[</span><span class="s1">&#39;files&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">map</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;speaker&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;speaker&#39;</span><span class="p">,</span> <span class="s1">&#39;age&#39;</span><span class="p">,</span> <span class="s1">&#39;gender&#39;</span><span class="p">]})[:</span><span class="mi">10</span><span class="p">]</span>
 </pre></div>
 </div>
 </div>
@@ -983,7 +1113,7 @@ Note, that we have to make sure
 that the media files are located at the correct position ourselves.</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">shutil</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">shutil</span>
 
 
 <span class="n">db_dir</span> <span class="o">=</span> <span class="n">audeer</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="s1">&#39;emodb&#39;</span><span class="p">)</span>
@@ -998,7 +1128,7 @@ that the media files are located at the correct position ourselves.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>[&#39;wav&#39;, &#39;db.files.csv&#39;, &#39;db.emotion.csv&#39;, &#39;db.yaml&#39;]
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>[&#39;db.files.csv&#39;, &#39;db.emotion.csv&#39;, &#39;wav&#39;, &#39;db.yaml&#39;, &#39;db.speaker.csv&#39;]
 </pre></div>
 </div>
 </div>
@@ -1006,7 +1136,7 @@ that the media files are located at the correct position ourselves.</p>
 <p>You can read the database from disk as well.</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">db</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Database</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">db_dir</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">db</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Database</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">db_dir</span><span class="p">)</span>
 <span class="n">db</span><span class="o">.</span><span class="n">name</span>
 </pre></div>
 </div>
@@ -1047,7 +1177,7 @@ that the media files are located at the correct position ourselves.</p>
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2022/06/01 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2022/08/05 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>

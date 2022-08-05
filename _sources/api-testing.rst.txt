@@ -14,10 +14,10 @@ In order to use it you first have to import it explicitly:
     import audformat.testing
 
 
-create_db
----------
+add_misc_table
+--------------
 
-.. autofunction:: create_db
+.. autofunction:: add_misc_table
 
 add_table
 ---------
@@ -28,3 +28,8 @@ create_audio_files
 ------------------
 
 .. autofunction:: create_audio_files
+
+create_db
+---------
+
+.. autofunction:: create_db

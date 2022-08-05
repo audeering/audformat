@@ -76,7 +76,7 @@
             
             
               <div class="version">
-                v0.14.3
+                v0.15.0
               </div>
             
           
@@ -117,6 +117,7 @@
 <li class="toctree-l1"><a class="reference internal" href="data-conventions.html">Conventions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data-header.html">Header</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data-tables.html">Tables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data-misc-tables.html">Misc Tables</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data-example.html">Example</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Documentation</span></p>
@@ -169,14 +170,14 @@
            <div itemprop="articleBody">
             
   <div class="section" id="update-a-database">
-<h1>Update a database<a class="headerlink" href="#update-a-database" title="Permalink to this heading">¶</a></h1>
+<span id="id1"></span><h1>Update a database<a class="headerlink" href="#update-a-database" title="Permalink to this heading">¶</a></h1>
 <p>A feature that is especially useful for databases growing over time,
 is the possibility to update a <a class="reference internal" href="api.html#audformat.Database" title="audformat.Database"><code class="xref py py-class docutils literal notranslate"><span class="pre">audformat.Database</span></code></a>.
 For instance, consider the following database that contains
 age labels for a hundred files.</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">audformat</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">audformat</span>
 <span class="kn">import</span> <span class="nn">audformat.testing</span>
 
 
@@ -215,7 +216,7 @@ tables:
 </div>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="p">[</span><span class="s1">&#39;table&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">df</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="p">[</span><span class="s1">&#39;table&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">df</span>
 </pre></div>
 </div>
 </div>
@@ -248,23 +249,23 @@ tables:
   <tbody>
     <tr>
       <th>audio/001.wav</th>
-      <td>20</td>
+      <td>37</td>
     </tr>
     <tr>
       <th>audio/002.wav</th>
-      <td>43</td>
+      <td>37</td>
     </tr>
     <tr>
       <th>audio/003.wav</th>
-      <td>20</td>
+      <td>24</td>
     </tr>
     <tr>
       <th>audio/004.wav</th>
-      <td>20</td>
+      <td>28</td>
     </tr>
     <tr>
       <th>audio/005.wav</th>
-      <td>34</td>
+      <td>32</td>
     </tr>
     <tr>
       <th>...</th>
@@ -272,23 +273,23 @@ tables:
     </tr>
     <tr>
       <th>audio/096.wav</th>
-      <td>34</td>
+      <td>29</td>
     </tr>
     <tr>
       <th>audio/097.wav</th>
-      <td>34</td>
+      <td>27</td>
     </tr>
     <tr>
       <th>audio/098.wav</th>
-      <td>44</td>
+      <td>36</td>
     </tr>
     <tr>
       <th>audio/099.wav</th>
-      <td>25</td>
+      <td>37</td>
     </tr>
     <tr>
       <th>audio/100.wav</th>
-      <td>37</td>
+      <td>39</td>
     </tr>
   </tbody>
 </table>
@@ -300,7 +301,7 @@ The new files are stored together with annotations in a second database,
 that is then added to the original database.</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">db_update</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">create_db</span><span class="p">(</span><span class="n">minimal</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">db_update</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">create_db</span><span class="p">(</span><span class="n">minimal</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">db_update</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s1">&#39;age&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s1">&#39;age&#39;</span><span class="p">]</span>
 <span class="n">audformat</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">add_table</span><span class="p">(</span>
     <span class="n">db_update</span><span class="p">,</span>
@@ -343,23 +344,23 @@ that is then added to the original database.</p>
   <tbody>
     <tr>
       <th>audio/001.wav</th>
-      <td>20</td>
+      <td>37</td>
     </tr>
     <tr>
       <th>audio/002.wav</th>
-      <td>43</td>
+      <td>37</td>
     </tr>
     <tr>
       <th>audio/003.wav</th>
-      <td>20</td>
+      <td>24</td>
     </tr>
     <tr>
       <th>audio/004.wav</th>
-      <td>20</td>
+      <td>28</td>
     </tr>
     <tr>
       <th>audio/005.wav</th>
-      <td>34</td>
+      <td>32</td>
     </tr>
     <tr>
       <th>...</th>
@@ -367,23 +368,23 @@ that is then added to the original database.</p>
     </tr>
     <tr>
       <th>audio/100.wav</th>
-      <td>37</td>
+      <td>39</td>
     </tr>
     <tr>
       <th>audio/101.wav</th>
-      <td>49</td>
+      <td>35</td>
     </tr>
     <tr>
       <th>audio/102.wav</th>
-      <td>29</td>
+      <td>47</td>
     </tr>
     <tr>
       <th>audio/103.wav</th>
-      <td>30</td>
+      <td>37</td>
     </tr>
     <tr>
       <th>audio/104.wav</th>
-      <td>31</td>
+      <td>45</td>
     </tr>
   </tbody>
 </table>
@@ -395,7 +396,7 @@ To update those, we again start from a fresh database containing only
 the critical files, relabel them and then update the original database.</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">db_update</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">create_db</span><span class="p">(</span><span class="n">minimal</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">db_update</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">create_db</span><span class="p">(</span><span class="n">minimal</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">db_update</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s1">&#39;age&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s1">&#39;age&#39;</span><span class="p">]</span>
 <span class="n">audformat</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">add_table</span><span class="p">(</span>
     <span class="n">db_update</span><span class="p">,</span>
@@ -438,23 +439,23 @@ the critical files, relabel them and then update the original database.</p>
   <tbody>
     <tr>
       <th>audio/001.wav</th>
-      <td>41</td>
+      <td>48</td>
     </tr>
     <tr>
       <th>audio/002.wav</th>
-      <td>42</td>
+      <td>29</td>
     </tr>
     <tr>
       <th>audio/003.wav</th>
-      <td>34</td>
+      <td>45</td>
     </tr>
     <tr>
       <th>audio/004.wav</th>
-      <td>23</td>
+      <td>40</td>
     </tr>
     <tr>
       <th>audio/005.wav</th>
-      <td>37</td>
+      <td>34</td>
     </tr>
     <tr>
       <th>...</th>
@@ -462,23 +463,23 @@ the critical files, relabel them and then update the original database.</p>
     </tr>
     <tr>
       <th>audio/100.wav</th>
-      <td>37</td>
+      <td>39</td>
     </tr>
     <tr>
       <th>audio/101.wav</th>
-      <td>49</td>
+      <td>35</td>
     </tr>
     <tr>
       <th>audio/102.wav</th>
-      <td>29</td>
+      <td>47</td>
     </tr>
     <tr>
       <th>audio/103.wav</th>
-      <td>30</td>
+      <td>37</td>
     </tr>
     <tr>
       <th>audio/104.wav</th>
-      <td>31</td>
+      <td>45</td>
     </tr>
   </tbody>
 </table>
@@ -490,7 +491,7 @@ Again, it might be easier to start with a fresh database to
 collect the new labels and only later merge it into our original database.</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">db_update</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Database</span><span class="p">(</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">db_update</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Database</span><span class="p">(</span>
     <span class="n">name</span><span class="o">=</span><span class="s1">&#39;update&#39;</span><span class="p">,</span>
     <span class="n">languages</span><span class="o">=</span><span class="n">audformat</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">map_language</span><span class="p">(</span><span class="s1">&#39;french&#39;</span><span class="p">),</span>
 <span class="p">)</span>
@@ -540,28 +541,28 @@ collect the new labels and only later merge it into our original database.</p>
   <tbody>
     <tr>
       <th>audio/001.wav</th>
-      <td>41</td>
+      <td>48</td>
       <td>female</td>
     </tr>
     <tr>
       <th>audio/002.wav</th>
-      <td>42</td>
+      <td>29</td>
       <td>female</td>
     </tr>
     <tr>
       <th>audio/003.wav</th>
-      <td>34</td>
+      <td>45</td>
       <td>male</td>
     </tr>
     <tr>
       <th>audio/004.wav</th>
-      <td>23</td>
+      <td>40</td>
       <td>male</td>
     </tr>
     <tr>
       <th>audio/005.wav</th>
-      <td>37</td>
-      <td>male</td>
+      <td>34</td>
+      <td>female</td>
     </tr>
     <tr>
       <th>...</th>
@@ -570,28 +571,28 @@ collect the new labels and only later merge it into our original database.</p>
     </tr>
     <tr>
       <th>audio/100.wav</th>
+      <td>39</td>
+      <td>male</td>
+    </tr>
+    <tr>
+      <th>audio/101.wav</th>
+      <td>35</td>
+      <td>female</td>
+    </tr>
+    <tr>
+      <th>audio/102.wav</th>
+      <td>47</td>
+      <td>female</td>
+    </tr>
+    <tr>
+      <th>audio/103.wav</th>
       <td>37</td>
       <td>female</td>
     </tr>
     <tr>
-      <th>audio/101.wav</th>
-      <td>49</td>
-      <td>male</td>
-    </tr>
-    <tr>
-      <th>audio/102.wav</th>
-      <td>29</td>
-      <td>male</td>
-    </tr>
-    <tr>
-      <th>audio/103.wav</th>
-      <td>30</td>
-      <td>female</td>
-    </tr>
-    <tr>
       <th>audio/104.wav</th>
-      <td>31</td>
-      <td>male</td>
+      <td>45</td>
+      <td>female</td>
     </tr>
   </tbody>
 </table>
@@ -602,7 +603,7 @@ collect the new labels and only later merge it into our original database.</p>
 but also adds the new gender scheme:</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="o">.</span><span class="n">schemes</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="o">.</span><span class="n">schemes</span>
 </pre></div>
 </div>
 </div>
@@ -641,7 +642,7 @@ gender:
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2022/06/01 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2022/08/05 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>

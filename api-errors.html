@@ -76,7 +76,7 @@
             
             
               <div class="version">
-                v0.14.3
+                v0.15.0
               </div>
             
           
@@ -117,6 +117,7 @@
 <li class="toctree-l1"><a class="reference internal" href="data-conventions.html">Conventions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data-header.html">Header</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data-tables.html">Tables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data-misc-tables.html">Misc Tables</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data-example.html">Example</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Documentation</span></p>
@@ -128,6 +129,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#badkeyerror">BadKeyError</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#badtypeerror">BadTypeError</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#badvalueerror">BadValueError</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#tableexistserror">TableExistsError</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="api-testing.html">audformat.testing</a></li>
@@ -245,6 +247,23 @@
 </dd></dl>
 
 </div>
+<div class="section" id="tableexistserror">
+<h2>TableExistsError<a class="headerlink" href="#tableexistserror" title="Permalink to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="audformat.errors.TableExistsError">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">audformat.errors.</span></span><span class="sig-name descname"><span class="pre">TableExistsError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">table_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">table_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/audformat/core/errors.html#TableExistsError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.errors.TableExistsError" title="Permalink to this definition">¶</a></dt>
+<dd><p>If a table of another type with same ID exists already.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>table_type</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – table type</p></li>
+<li><p><strong>table_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – table identifier</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
 </div>
 
 
@@ -270,7 +289,7 @@
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2022/06/01 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2022/08/05 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>

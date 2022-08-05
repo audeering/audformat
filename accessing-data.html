@@ -76,7 +76,7 @@
             
             
               <div class="version">
-                v0.14.3
+                v0.15.0
               </div>
             
           
@@ -121,6 +121,7 @@
 <li class="toctree-l1"><a class="reference internal" href="data-conventions.html">Conventions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data-header.html">Header</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data-tables.html">Tables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data-misc-tables.html">Misc Tables</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data-example.html">Example</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Documentation</span></p>
@@ -184,7 +185,7 @@
 by the <a class="reference internal" href="api.html#audformat.Table.get" title="audformat.Table.get"><code class="xref py py-meth docutils literal notranslate"><span class="pre">audformat.Table.get()</span></code></a> method:</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">audformat.testing</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">audformat.testing</span>
 
 
 <span class="n">db</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">create_db</span><span class="p">()</span>
@@ -197,10 +198,10 @@ by the <a class="reference internal" href="api.html#audformat.Table.get" title="
 <div class="cell_output docutils container">
 </div>
 </div>
-<p>Which returns the following <code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code>:</p>
+<p>Which returns the following <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a>:</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">table</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">table</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span>
 </pre></div>
 </div>
 </div>
@@ -236,12 +237,12 @@ by the <a class="reference internal" href="api.html#audformat.Table.get" title="
     <tr>
       <th>audio/001.wav</th>
       <td>False</td>
-      <td>1970-01-01 00:00:00.940</td>
+      <td>1970-01-01 00:00:00.650</td>
     </tr>
     <tr>
       <th>audio/002.wav</th>
       <td>True</td>
-      <td>NaT</td>
+      <td>1970-01-01 00:00:00.420</td>
     </tr>
   </tbody>
 </table>
@@ -250,7 +251,7 @@ by the <a class="reference internal" href="api.html#audformat.Table.get" title="
 <p>Or you can directly access a column with <a class="reference internal" href="api.html#audformat.Column.get" title="audformat.Column.get"><code class="xref py py-meth docutils literal notranslate"><span class="pre">audformat.Column.get()</span></code></a>:</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">column</span> <span class="o">=</span> <span class="n">db</span><span class="p">[</span><span class="s1">&#39;files&#39;</span><span class="p">][</span><span class="s1">&#39;string&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">column</span> <span class="o">=</span> <span class="n">db</span><span class="p">[</span><span class="s1">&#39;files&#39;</span><span class="p">][</span><span class="s1">&#39;string&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
 <span class="c1"># Short for:</span>
 <span class="c1"># column = db.tables[&#39;files&#39;].columns[&#39;string&#39;].get()</span>
 </pre></div>
@@ -259,10 +260,10 @@ by the <a class="reference internal" href="api.html#audformat.Table.get" title="
 <div class="cell_output docutils container">
 </div>
 </div>
-<p>Which results in the following <code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.Series</span></code>:</p>
+<p>Which results in the following <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Series.html#pandas.Series" title="(in pandas v1.4.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.Series</span></code></a>:</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">column</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">column</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span>
 </pre></div>
 </div>
 </div>
@@ -281,11 +282,11 @@ by the <a class="reference internal" href="api.html#audformat.Table.get" title="
   <tbody>
     <tr>
       <th>audio/001.wav</th>
-      <td>o07TscFKyt</td>
+      <td>N1iy41WoSd</td>
     </tr>
     <tr>
       <th>audio/002.wav</th>
-      <td>lJcrlYXaQV</td>
+      <td>qjZwHkdblJ</td>
     </tr>
   </tbody>
 </table></div></div>
@@ -299,7 +300,7 @@ have a look at the code examples in the
 <p>To convert to absolute file paths in all tables, do:</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
 
 
 <span class="n">db</span><span class="o">.</span><span class="n">map_files</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">)</span>
@@ -335,7 +336,7 @@ have a look at the code examples in the
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2022/06/01 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2022/08/05 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>

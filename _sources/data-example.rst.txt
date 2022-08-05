@@ -35,3 +35,16 @@ and as CSV:
     :hide-code:
 
     print(db['segments'].get().to_csv())
+
+Misc table as :class:`pd.DataFrame`:
+
+.. jupyter-execute::
+    
+    db['misc'].get()
+
+and as CSV:
+
+.. jupyter-execute::
+    :hide-code:
+
+    print(db['misc'].get().to_csv())

@@ -76,7 +76,7 @@
             
             
               <div class="version">
-                v0.14.3
+                v0.15.0
               </div>
             
           
@@ -146,14 +146,20 @@
 <li class="toctree-l3"><a class="reference internal" href="#id10">audformat implementation</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#column">Column</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#misc-table">Misc Table</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#id11">Minimal example</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#id12">audformat implementation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#column">Column</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id13">Minimal example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id14">audformat implementation</a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="data-tables.html">Tables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data-misc-tables.html">Misc Tables</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data-example.html">Example</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Documentation</span></p>
@@ -310,7 +316,7 @@ see <a class="reference internal" href="api-define.html#audformat.define.Usage" 
 <h3>audformat implementation<a class="headerlink" href="#audformat-implementation" title="Permalink to this heading">¶</a></h3>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">audformat</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">audformat</span>
 
 
 <span class="c1"># Create Database</span>
@@ -388,7 +394,7 @@ languages: []
 <h3>audformat implementation<a class="headerlink" href="#id2" title="Permalink to this heading">¶</a></h3>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create minimal Rater</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create minimal Rater</span>
 <span class="n">rater</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Rater</span><span class="p">(</span><span class="n">audformat</span><span class="o">.</span><span class="n">define</span><span class="o">.</span><span class="n">RaterType</span><span class="o">.</span><span class="n">HUMAN</span><span class="p">)</span>
 <span class="c1"># Add Rater to Database</span>
 <span class="n">db</span><span class="o">.</span><span class="n">raters</span><span class="p">[</span><span class="s1">&#39;raterid&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rater</span>
@@ -477,7 +483,7 @@ numeric)</p></td>
 <h3>audformat implementation<a class="headerlink" href="#id4" title="Permalink to this heading">¶</a></h3>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create minimal Scheme</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create minimal Scheme</span>
 <span class="n">scheme</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Scheme</span><span class="p">(</span><span class="n">audformat</span><span class="o">.</span><span class="n">define</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">FLOAT</span><span class="p">)</span>
 <span class="c1"># Add Scheme to Database</span>
 <span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s1">&#39;schemeid&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">scheme</span>
@@ -552,7 +558,7 @@ typically one of <a class="reference internal" href="api-define.html#audformat.d
 <h3>audformat implementation<a class="headerlink" href="#id6" title="Permalink to this heading">¶</a></h3>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create minimal Split</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create minimal Split</span>
 <span class="n">split</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Split</span><span class="p">(</span><span class="n">audformat</span><span class="o">.</span><span class="n">define</span><span class="o">.</span><span class="n">SplitType</span><span class="o">.</span><span class="n">TEST</span><span class="p">)</span>
 <span class="c1"># Add Split to Database</span>
 <span class="n">db</span><span class="o">.</span><span class="n">splits</span><span class="p">[</span><span class="s1">&#39;splitid&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">split</span>
@@ -659,7 +665,7 @@ typically one of <a class="reference internal" href="api-define.html#audformat.d
 <h3>audformat implementation<a class="headerlink" href="#id8" title="Permalink to this heading">¶</a></h3>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create minimal media information</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create minimal media information</span>
 <span class="n">media</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Media</span><span class="p">()</span>
 <span class="c1"># Add media to Database</span>
 <span class="n">db</span><span class="o">.</span><span class="n">media</span><span class="p">[</span><span class="s1">&#39;mediaid&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">media</span>
@@ -745,7 +751,7 @@ typically one of <a class="reference internal" href="api-define.html#audformat.d
 <h3>audformat implementation<a class="headerlink" href="#id10" title="Permalink to this heading">¶</a></h3>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create minimal Table</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create minimal Table</span>
 <span class="n">table</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Table</span><span class="p">(</span><span class="n">audformat</span><span class="o">.</span><span class="n">filewise_index</span><span class="p">())</span>
 <span class="c1"># Add Table to Database</span>
 <span class="n">db</span><span class="o">.</span><span class="n">tables</span><span class="p">[</span><span class="s1">&#39;tableid&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">table</span>
@@ -763,6 +769,93 @@ typically one of <a class="reference internal" href="api-define.html#audformat.d
 <div class="cell_output docutils container">
 <div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>tableid:
   {type: filewise}
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="misc-table">
+<h2>Misc Table<a class="headerlink" href="#misc-table" title="Permalink to this heading">¶</a></h2>
+<p>This part of the header is represented by <a class="reference internal" href="api.html#audformat.MiscTable" title="audformat.MiscTable"><code class="xref py py-class docutils literal notranslate"><span class="pre">audformat.MiscTable</span></code></a>.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 19%" />
+<col style="width: 12%" />
+<col style="width: 69%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Field</p></th>
+<th class="head"><p>Mandatory</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>id</p></td>
+<td><p>yes</p></td>
+<td><p>Unique identifier of misc table</p></td>
+</tr>
+<tr class="row-odd"><td><p>columns</p></td>
+<td></td>
+<td><p>Dictionary of columns (see below)</p></td>
+</tr>
+<tr class="row-even"><td><p>description</p></td>
+<td></td>
+<td><p>Description of table</p></td>
+</tr>
+<tr class="row-odd"><td><p>media_id</p></td>
+<td></td>
+<td><p>Files in this table are of this media type</p></td>
+</tr>
+<tr class="row-even"><td><p>split_id</p></td>
+<td></td>
+<td><p>The split the table belongs to</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>meta-key-1</em></p></td>
+<td></td>
+<td><p>1st optional meta field</p></td>
+</tr>
+<tr class="row-even"><td><p>…</p></td>
+<td></td>
+<td><p>…</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>meta-key-N</em></p></td>
+<td></td>
+<td><p>Nth optional meta field</p></td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="id11">
+<h3>Minimal example<a class="headerlink" href="#id11" title="Permalink to this heading">¶</a></h3>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">misc_tables</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">misctableid</span><span class="p">:</span><span class="w"></span>
+<span class="w">        </span><span class="nt">levels</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">idx</span><span class="p p-Indicator">]</span><span class="w"></span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id12">
+<h3>audformat implementation<a class="headerlink" href="#id12" title="Permalink to this heading">¶</a></h3>
+<div class="jupyter_cell jupyter_container docutils container">
+<div class="cell_input code_cell docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create minimal Misc Table</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="n">misc_table</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">MiscTable</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">([],</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;idx&#39;</span><span class="p">))</span>
+<span class="c1"># Add Misc Table to Database</span>
+<span class="n">db</span><span class="o">.</span><span class="n">misc_tables</span><span class="p">[</span><span class="s1">&#39;misctableid&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">misc_table</span>
+<span class="c1"># Access dataframe of Misc Table</span>
+<span class="n">db</span><span class="o">.</span><span class="n">misc_tables</span><span class="p">[</span><span class="s1">&#39;misctableid&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">df</span>
+<span class="c1"># Add Misc Table to Database (short notation)</span>
+<span class="n">db</span><span class="p">[</span><span class="s1">&#39;misctableid&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">misc_table</span>
+<span class="c1"># Access dataframe of Misc Table (short notation)</span>
+<span class="n">db</span><span class="p">[</span><span class="s1">&#39;misctableid&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">df</span>
+<span class="c1"># Access misc tables</span>
+<span class="n">db</span><span class="o">.</span><span class="n">misc_tables</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>misctableid:
+  levels: {idx: object}
 </pre></div>
 </div>
 </div>
@@ -815,8 +908,8 @@ typically one of <a class="reference internal" href="api-define.html#audformat.d
 </tr>
 </tbody>
 </table>
-<div class="section" id="id11">
-<h3>Minimal example<a class="headerlink" href="#id11" title="Permalink to this heading">¶</a></h3>
+<div class="section" id="id13">
+<h3>Minimal example<a class="headerlink" href="#id13" title="Permalink to this heading">¶</a></h3>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">tables</span><span class="p">:</span><span class="w"></span>
 <span class="w">    </span><span class="nt">tableid</span><span class="p">:</span><span class="w"></span>
 <span class="w">        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">filewise</span><span class="w"></span>
@@ -825,11 +918,11 @@ typically one of <a class="reference internal" href="api-define.html#audformat.d
 </pre></div>
 </div>
 </div>
-<div class="section" id="id12">
-<h3>audformat implementation<a class="headerlink" href="#id12" title="Permalink to this heading">¶</a></h3>
+<div class="section" id="id14">
+<h3>audformat implementation<a class="headerlink" href="#id14" title="Permalink to this heading">¶</a></h3>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create minimal Column</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create minimal Column</span>
 <span class="n">column</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Column</span><span class="p">()</span>
 <span class="c1"># Add Column to Table</span>
 <span class="n">db</span><span class="o">.</span><span class="n">tables</span><span class="p">[</span><span class="s1">&#39;tableid&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="s1">&#39;columnid&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">column</span>
@@ -874,7 +967,7 @@ typically one of <a class="reference internal" href="api-define.html#audformat.d
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2022/06/01 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2022/08/05 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>

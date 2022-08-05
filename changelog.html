@@ -75,7 +75,7 @@
             
             
               <div class="version">
-                v0.14.3
+                v0.15.0
               </div>
             
           
@@ -116,6 +116,7 @@
 <li class="toctree-l1"><a class="reference internal" href="data-conventions.html">Conventions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data-header.html">Header</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data-tables.html">Tables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data-misc-tables.html">Misc Tables</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data-example.html">Example</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Documentation</span></p>
@@ -131,6 +132,7 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Changelog</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#version-0-15-0-2022-08-05">Version 0.15.0 (2022-08-05)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#version-0-14-3-2022-06-01">Version 0.14.3 (2022-06-01)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#version-0-14-2-2022-04-29">Version 0.14.2 (2022-04-29)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#version-0-14-1-2022-03-03">Version 0.14.1 (2022-03-03)</a></li>
@@ -206,6 +208,82 @@
 <p>All notable changes to this project will be documented in this file.</p>
 <p>The format is based on <a class="reference external" href="https://keepachangelog.com/en/1.0.0/">Keep a Changelog</a>,
 and this project adheres to <a class="reference external" href="https://semver.org/spec/v2.0.0.html">Semantic Versioning</a>.</p>
+<div class="section" id="version-0-15-0-2022-08-05">
+<h2>Version 0.15.0 (2022-08-05)<a class="headerlink" href="#version-0-15-0-2022-08-05" title="Permalink to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Added: <code class="docutils literal notranslate"><span class="pre">audformat.MiscTable</span></code>
+which can store data
+not associated with media files</p></li>
+<li><p>Added: store scheme labels in a misc table</p></li>
+<li><p>Added: dictionary <code class="docutils literal notranslate"><span class="pre">audformat.Database.misc_tables</span></code>
+holding misc tables of a database</p></li>
+<li><p>Added: <code class="docutils literal notranslate"><span class="pre">audformat.utils.difference()</span></code>
+for finding index entries
+that are only part of a single index
+for a given sequence of indices</p></li>
+<li><p>Added: <code class="docutils literal notranslate"><span class="pre">audformat.utils.is_index_alike()</span></code>
+for checking if a sequence of indices
+has the same number of levels,
+level names,
+and matching dtypes</p></li>
+<li><p>Added: <code class="docutils literal notranslate"><span class="pre">audformat.define.DataType.OBJECT</span></code></p></li>
+<li><p>Added: <code class="docutils literal notranslate"><span class="pre">audformat.utils.set_index_dtypes()</span></code>
+to change dtypes of an index</p></li>
+<li><p>Added: <code class="docutils literal notranslate"><span class="pre">audformat.testing.add_misc_table()</span></code></p></li>
+<li><p>Added: <code class="docutils literal notranslate"><span class="pre">audformat.Database.__iter__</span></code>
+iterates through all (misc) tables,
+e.g. a user can do <code class="docutils literal notranslate"><span class="pre">list(db)</span></code>
+to get a list of all (misc) tables</p></li>
+<li><p>Changed: <code class="docutils literal notranslate"><span class="pre">audformat.Database.update()</span></code>
+can now join schemes
+with different labels</p></li>
+<li><p>Changed: <code class="docutils literal notranslate"><span class="pre">audformat.utils.union()</span></code>,
+<code class="docutils literal notranslate"><span class="pre">audformat.utils.intersect()</span></code>,
+and <code class="docutils literal notranslate"><span class="pre">audformat.utils.concat()</span></code>
+now support any kind of index</p></li>
+<li><p>Changed: <code class="docutils literal notranslate"><span class="pre">audformat.utils.intersect()</span></code>
+no longer removes segments
+from a segmented index
+that are contained
+in a filewise index</p></li>
+<li><p>Changed: require <code class="docutils literal notranslate"><span class="pre">pandas&gt;=1.4.1</span></code></p></li>
+<li><p>Changed: use <code class="docutils literal notranslate"><span class="pre">pandas</span></code> dtype <code class="docutils literal notranslate"><span class="pre">'string'</span></code>
+instead of <code class="docutils literal notranslate"><span class="pre">'object'</span></code>
+for storing <code class="docutils literal notranslate"><span class="pre">audformat</span></code> dtype <code class="docutils literal notranslate"><span class="pre">'str'</span></code> entries</p></li>
+<li><p>Changed: use a misc table
+to store the <code class="docutils literal notranslate"><span class="pre">'speaker'</span></code> scheme labels
+in the emodb example
+in the documentation</p></li>
+<li><p>Changed: <code class="docutils literal notranslate"><span class="pre">audformat.utils.join_labels()</span></code>
+raises <code class="docutils literal notranslate"><span class="pre">ValueError</span></code>
+if labels are of different dtype</p></li>
+<li><p>Fixed: ensure column IDs are different from index level names</p></li>
+<li><p>Fixed: make sure
+<code class="docutils literal notranslate"><span class="pre">audformat.Column.set()</span></code>
+converts data to dtype of scheme
+before checking if values are in min-max-range
+of scheme</p></li>
+<li><p>Fixed: links to <code class="docutils literal notranslate"><span class="pre">pandas</span></code> API in the documentation</p></li>
+<li><p>Fixed: include methods
+<code class="docutils literal notranslate"><span class="pre">to_dict()</span></code>,
+<code class="docutils literal notranslate"><span class="pre">from_dict()</span></code>,
+<code class="docutils literal notranslate"><span class="pre">dump()</span></code>,
+and attributes
+<code class="docutils literal notranslate"><span class="pre">description</span></code>,
+<code class="docutils literal notranslate"><span class="pre">meta</span></code>
+in the documentation for the classes
+<code class="docutils literal notranslate"><span class="pre">audformat.Column</span></code>,
+<code class="docutils literal notranslate"><span class="pre">audformat.Database</span></code>,
+<code class="docutils literal notranslate"><span class="pre">audformat.Media</span></code>,
+<code class="docutils literal notranslate"><span class="pre">audformat.Rater</span></code>,
+<code class="docutils literal notranslate"><span class="pre">audformat.Scheme</span></code>,
+<code class="docutils literal notranslate"><span class="pre">audformat.Split</span></code>,
+<code class="docutils literal notranslate"><span class="pre">audformat.Table</span></code></p></li>
+<li><p>Fixed: type hint of argument <code class="docutils literal notranslate"><span class="pre">dtype</span></code>
+in the documentation of <code class="docutils literal notranslate"><span class="pre">audformat.Scheme</span></code></p></li>
+<li><p>Removed: support for Python 3.7</p></li>
+</ul>
+</div>
 <div class="section" id="version-0-14-3-2022-06-01">
 <h2>Version 0.14.3 (2022-06-01)<a class="headerlink" href="#version-0-14-3-2022-06-01" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
@@ -515,7 +593,7 @@ and <code class="docutils literal notranslate"><span class="pre">audformat.Colum
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2022/06/01 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2022/08/05 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>

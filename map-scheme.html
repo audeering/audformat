@@ -76,7 +76,7 @@
             
             
               <div class="version">
-                v0.14.3
+                v0.15.0
               </div>
             
           
@@ -117,6 +117,7 @@
 <li class="toctree-l1"><a class="reference internal" href="data-conventions.html">Conventions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data-header.html">Header</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data-tables.html">Tables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data-misc-tables.html">Misc Tables</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data-example.html">Example</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Documentation</span></p>
@@ -182,7 +183,7 @@ And a scheme <code class="docutils literal notranslate"><span class="pre">'speak
 information about the speakers in the database.</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">audformat.testing</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">audformat.testing</span>
 
 <span class="n">db</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">create_db</span><span class="p">(</span><span class="n">minimal</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s1">&#39;transcription&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Scheme</span><span class="p">(</span>
@@ -219,10 +220,10 @@ information about the speakers in the database.</p>
 </div>
 </div>
 <p>If we request the <code class="docutils literal notranslate"><span class="pre">transcription</span></code> column,
-we get a <code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.Series</span></code> with the word IDs:</p>
+we get a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Series.html#pandas.Series" title="(in pandas v1.4.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.Series</span></code></a> with the word IDs:</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="p">[</span><span class="s1">&#39;files&#39;</span><span class="p">][</span><span class="s1">&#39;transcription&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="p">[</span><span class="s1">&#39;files&#39;</span><span class="p">][</span><span class="s1">&#39;transcription&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -249,7 +250,7 @@ we get a <code class="xref py py-class docutils literal notranslate"><span class
     </tr>
     <tr>
       <th>audio/003.wav</th>
-      <td>1</td>
+      <td>0</td>
     </tr>
     <tr>
       <th>audio/004.wav</th>
@@ -257,7 +258,7 @@ we get a <code class="xref py py-class docutils literal notranslate"><span class
     </tr>
     <tr>
       <th>audio/005.wav</th>
-      <td>1</td>
+      <td>0</td>
     </tr>
   </tbody>
 </table></div></div>
@@ -266,7 +267,7 @@ we get a <code class="xref py py-class docutils literal notranslate"><span class
 we can use the <code class="docutils literal notranslate"><span class="pre">map</span></code> argument to request them.</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="p">[</span><span class="s1">&#39;files&#39;</span><span class="p">][</span><span class="s1">&#39;transcription&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">map</span><span class="o">=</span><span class="s1">&#39;transcription&#39;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="p">[</span><span class="s1">&#39;files&#39;</span><span class="p">][</span><span class="s1">&#39;transcription&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">map</span><span class="o">=</span><span class="s1">&#39;transcription&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -293,7 +294,7 @@ we can use the <code class="docutils literal notranslate"><span class="pre">map<
     </tr>
     <tr>
       <th>audio/003.wav</th>
-      <td>goodbye</td>
+      <td>hello</td>
     </tr>
     <tr>
       <th>audio/004.wav</th>
@@ -301,17 +302,17 @@ we can use the <code class="docutils literal notranslate"><span class="pre">map<
     </tr>
     <tr>
       <th>audio/005.wav</th>
-      <td>goodbye</td>
+      <td>hello</td>
     </tr>
   </tbody>
 </table></div></div>
 </div>
 <p>Note that we can pass any string to <code class="docutils literal notranslate"><span class="pre">map</span></code>.
 It will be used as the name of
-the returned <code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.Series</span></code>.</p>
+the returned <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Series.html#pandas.Series" title="(in pandas v1.4.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.Series</span></code></a>.</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="p">[</span><span class="s1">&#39;files&#39;</span><span class="p">][</span><span class="s1">&#39;transcription&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">map</span><span class="o">=</span><span class="s1">&#39;word&#39;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="p">[</span><span class="s1">&#39;files&#39;</span><span class="p">][</span><span class="s1">&#39;transcription&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">map</span><span class="o">=</span><span class="s1">&#39;word&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -338,7 +339,7 @@ the returned <code class="xref py py-class docutils literal notranslate"><span c
     </tr>
     <tr>
       <th>audio/003.wav</th>
-      <td>goodbye</td>
+      <td>hello</td>
     </tr>
     <tr>
       <th>audio/004.wav</th>
@@ -346,7 +347,7 @@ the returned <code class="xref py py-class docutils literal notranslate"><span c
     </tr>
     <tr>
       <th>audio/005.wav</th>
-      <td>goodbye</td>
+      <td>hello</td>
     </tr>
   </tbody>
 </table></div></div>
@@ -355,7 +356,7 @@ the returned <code class="xref py py-class docutils literal notranslate"><span c
 a list of names is returned:</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="p">[</span><span class="s1">&#39;files&#39;</span><span class="p">][</span><span class="s1">&#39;speaker&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="p">[</span><span class="s1">&#39;files&#39;</span><span class="p">][</span><span class="s1">&#39;speaker&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -378,15 +379,15 @@ a list of names is returned:</p>
     </tr>
     <tr>
       <th>audio/002.wav</th>
-      <td>spk2</td>
+      <td>spk1</td>
     </tr>
     <tr>
       <th>audio/003.wav</th>
-      <td>spk3</td>
+      <td>spk1</td>
     </tr>
     <tr>
       <th>audio/004.wav</th>
-      <td>spk2</td>
+      <td>spk1</td>
     </tr>
     <tr>
       <th>audio/005.wav</th>
@@ -398,7 +399,7 @@ a list of names is returned:</p>
 <p>If we are interested in the the age of the speakers, we can do:</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="p">[</span><span class="s1">&#39;files&#39;</span><span class="p">][</span><span class="s1">&#39;speaker&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">map</span><span class="o">=</span><span class="s1">&#39;age&#39;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="p">[</span><span class="s1">&#39;files&#39;</span><span class="p">][</span><span class="s1">&#39;speaker&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">map</span><span class="o">=</span><span class="s1">&#39;age&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -421,15 +422,15 @@ a list of names is returned:</p>
     </tr>
     <tr>
       <th>audio/002.wav</th>
-      <td>30</td>
+      <td>33</td>
     </tr>
     <tr>
       <th>audio/003.wav</th>
-      <td>37</td>
+      <td>33</td>
     </tr>
     <tr>
       <th>audio/004.wav</th>
-      <td>30</td>
+      <td>33</td>
     </tr>
     <tr>
       <th>audio/005.wav</th>
@@ -443,7 +444,7 @@ Here we pass a dictionary with column names
 as keys and scheme fields as values.</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">map</span> <span class="o">=</span> <span class="p">{</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">map</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s1">&#39;speaker&#39;</span><span class="p">:</span> <span class="s1">&#39;age&#39;</span><span class="p">,</span>
 <span class="p">}</span>
 <span class="n">db</span><span class="p">[</span><span class="s1">&#39;files&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">map</span><span class="o">=</span><span class="nb">map</span><span class="p">)</span>
@@ -487,21 +488,21 @@ as keys and scheme fields as values.</p>
     <tr>
       <th>audio/002.wav</th>
       <td>1</td>
-      <td>30</td>
+      <td>33</td>
     </tr>
     <tr>
       <th>audio/003.wav</th>
-      <td>1</td>
-      <td>37</td>
+      <td>0</td>
+      <td>33</td>
     </tr>
     <tr>
       <th>audio/004.wav</th>
       <td>0</td>
-      <td>30</td>
+      <td>33</td>
     </tr>
     <tr>
       <th>audio/005.wav</th>
-      <td>1</td>
+      <td>0</td>
       <td>30</td>
     </tr>
   </tbody>
@@ -512,7 +513,7 @@ as keys and scheme fields as values.</p>
 and to map the same column to multiple fields.</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">map</span> <span class="o">=</span> <span class="p">{</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">map</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s1">&#39;transcription&#39;</span><span class="p">:</span> <span class="s1">&#39;words&#39;</span><span class="p">,</span>
     <span class="s1">&#39;speaker&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;age&#39;</span><span class="p">,</span> <span class="s1">&#39;gender&#39;</span><span class="p">],</span>
 <span class="p">}</span>
@@ -560,24 +561,24 @@ and to map the same column to multiple fields.</p>
     <tr>
       <th>audio/002.wav</th>
       <td>goodbye</td>
-      <td>30</td>
-      <td>female</td>
+      <td>33</td>
+      <td>male</td>
     </tr>
     <tr>
       <th>audio/003.wav</th>
-      <td>goodbye</td>
-      <td>37</td>
+      <td>hello</td>
+      <td>33</td>
       <td>male</td>
     </tr>
     <tr>
       <th>audio/004.wav</th>
       <td>hello</td>
-      <td>30</td>
-      <td>female</td>
+      <td>33</td>
+      <td>male</td>
     </tr>
     <tr>
       <th>audio/005.wav</th>
-      <td>goodbye</td>
+      <td>hello</td>
       <td>30</td>
       <td>female</td>
     </tr>
@@ -589,7 +590,7 @@ and to map the same column to multiple fields.</p>
 we can include the column name in the list.</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">map</span> <span class="o">=</span> <span class="p">{</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">map</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s1">&#39;transcription&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;transcription&#39;</span><span class="p">,</span> <span class="s1">&#39;words&#39;</span><span class="p">],</span>
     <span class="s1">&#39;speaker&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;speaker&#39;</span><span class="p">,</span> <span class="s1">&#39;age&#39;</span><span class="p">,</span> <span class="s1">&#39;gender&#39;</span><span class="p">],</span>
 <span class="p">}</span>
@@ -643,32 +644,32 @@ we can include the column name in the list.</p>
     <tr>
       <th>audio/002.wav</th>
       <td>1</td>
-      <td>spk2</td>
+      <td>spk1</td>
       <td>goodbye</td>
-      <td>30</td>
-      <td>female</td>
+      <td>33</td>
+      <td>male</td>
     </tr>
     <tr>
       <th>audio/003.wav</th>
-      <td>1</td>
-      <td>spk3</td>
-      <td>goodbye</td>
-      <td>37</td>
+      <td>0</td>
+      <td>spk1</td>
+      <td>hello</td>
+      <td>33</td>
       <td>male</td>
     </tr>
     <tr>
       <th>audio/004.wav</th>
       <td>0</td>
-      <td>spk2</td>
+      <td>spk1</td>
       <td>hello</td>
-      <td>30</td>
-      <td>female</td>
+      <td>33</td>
+      <td>male</td>
     </tr>
     <tr>
       <th>audio/005.wav</th>
-      <td>1</td>
+      <td>0</td>
       <td>spk2</td>
-      <td>goodbye</td>
+      <td>hello</td>
       <td>30</td>
       <td>female</td>
     </tr>
@@ -701,7 +702,7 @@ we can include the column name in the list.</p>
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2022/06/01 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2022/08/05 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>

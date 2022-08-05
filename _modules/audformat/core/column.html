@@ -74,7 +74,7 @@
             
             
               <div class="version">
-                v0.14.3
+                v0.15.0
               </div>
             
           
@@ -115,6 +115,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../data-conventions.html">Conventions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../data-header.html">Header</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../data-tables.html">Tables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../data-misc-tables.html">Misc Tables</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../data-example.html">Example</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Documentation</span></p>
@@ -167,7 +168,9 @@
            <div itemprop="articleBody">
             
   <h1>Source code for audformat.core.column</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">typing</span>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>  <span class="c1"># allow typing without string</span>
+
+<span class="kn">import</span> <span class="nn">typing</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
@@ -180,8 +183,13 @@
     <span class="n">to_array</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">audformat.core.rater</span> <span class="kn">import</span> <span class="n">Rater</span>
-<span class="kn">from</span> <span class="nn">audformat.core.scheme</span> <span class="kn">import</span> <span class="n">Scheme</span>
 <span class="kn">from</span> <span class="nn">audformat.core.typing</span> <span class="kn">import</span> <span class="n">Values</span>
+
+<span class="k">if</span> <span class="n">typing</span><span class="o">.</span><span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="c1"># Fix to make mypy work without circular imports,</span>
+    <span class="c1"># compare</span>
+    <span class="c1"># https://adamj.eu/tech/2021/05/13/python-type-hints-how-to-fix-circular-imports/</span>
+    <span class="kn">from</span> <span class="nn">audformat.core.scheme</span> <span class="kn">import</span> <span class="n">Scheme</span>  <span class="c1"># pragma: nocover</span>
 
 
 <span class="k">def</span> <span class="nf">assert_values</span><span class="p">(</span>
@@ -308,7 +316,7 @@
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">:</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Get labels.</span>
 
-<span class="sd">        By default all labels of the column are returned,</span>
+<span class="sd">        By default, all labels of the column are returned,</span>
 <span class="sd">        use ``index`` to get a subset.</span>
 
 <span class="sd">        Examples are provided with the</span>
@@ -318,7 +326,8 @@
 <span class="sd">            index: index conform to</span>
 <span class="sd">                :ref:`table specifications &lt;data-tables:Tables&gt;`</span>
 <span class="sd">            copy: return a copy of the labels</span>
-<span class="sd">            map: map scheme or scheme field to column values.</span>
+<span class="sd">            map: :ref:`map scheme or scheme field to column values</span>
+<span class="sd">                &lt;map-scheme-labels&gt;`.</span>
 <span class="sd">                For example if your column holds speaker IDs and is</span>
 <span class="sd">                assigned to a scheme that contains a dict mapping</span>
 <span class="sd">                speaker IDs to age entries, ``map=&#39;age&#39;``</span>
@@ -329,7 +338,9 @@
 <span class="sd">                will be converted to a segmented index.</span>
 <span class="sd">                ``start`` will be set to ``0`` and</span>
 <span class="sd">                ``end`` to ``NaT`` or to the file duration</span>
-<span class="sd">                if ``allow_nat`` is set to ``False``</span>
+<span class="sd">                if ``allow_nat`` is set to ``False``.</span>
+<span class="sd">                If column belongs to a miscellaneous table,</span>
+<span class="sd">                this and the following arguments have no effect</span>
 <span class="sd">            allow_nat: if set to ``False``,</span>
 <span class="sd">                ``end=NaT`` is replaced with file duration</span>
 <span class="sd">            root: root directory under which the files are stored.</span>
@@ -348,9 +359,10 @@
 <span class="sd">        Raises:</span>
 <span class="sd">            FileNotFoundError: if file is not found</span>
 <span class="sd">            RuntimeError: if column is not assigned to a table</span>
-<span class="sd">            ValueError: if trying to map without a scheme</span>
-<span class="sd">            ValueError: if trying to map from a scheme that has no labels</span>
-<span class="sd">            ValueError: if trying to map to a non-existing field</span>
+<span class="sd">            ValueError: if trying to map without a scheme,</span>
+<span class="sd">                or from a scheme that has no labels,</span>
+<span class="sd">                or from a scheme that has only a list of labels,</span>
+<span class="sd">                or to a non-existing field</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_table</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -358,15 +370,21 @@
                 <span class="s1">&#39;Column is not assigned to a table.&#39;</span>
             <span class="p">)</span>
 
-        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_table</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
-            <span class="n">index</span><span class="p">,</span>
-            <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-            <span class="n">as_segmented</span><span class="o">=</span><span class="n">as_segmented</span><span class="p">,</span>
-            <span class="n">allow_nat</span><span class="o">=</span><span class="n">allow_nat</span><span class="p">,</span>
-            <span class="n">root</span><span class="o">=</span><span class="n">root</span><span class="p">,</span>
-            <span class="n">num_workers</span><span class="o">=</span><span class="n">num_workers</span><span class="p">,</span>
-            <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span>
-        <span class="p">)</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_table</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">):</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_table</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                <span class="n">index</span><span class="p">,</span>
+                <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                <span class="n">as_segmented</span><span class="o">=</span><span class="n">as_segmented</span><span class="p">,</span>
+                <span class="n">allow_nat</span><span class="o">=</span><span class="n">allow_nat</span><span class="p">,</span>
+                <span class="n">root</span><span class="o">=</span><span class="n">root</span><span class="p">,</span>
+                <span class="n">num_workers</span><span class="o">=</span><span class="n">num_workers</span><span class="p">,</span>
+                <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_table</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                <span class="n">index</span><span class="p">,</span>
+                <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="p">)</span>
         <span class="n">result</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_id</span><span class="p">]</span>
 
         <span class="k">if</span> <span class="nb">map</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -378,11 +396,18 @@
                     <span class="sa">f</span><span class="s2">&quot;Column &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_id</span><span class="si">}</span><span class="s2">&#39; is not assigned to a scheme.&quot;</span>
                 <span class="p">)</span>
 
-            <span class="n">labels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_table</span><span class="o">.</span><span class="n">_db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">scheme_id</span><span class="p">]</span><span class="o">.</span><span class="n">labels</span>
+            <span class="n">scheme</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_table</span><span class="o">.</span><span class="n">_db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">scheme_id</span><span class="p">]</span>
+            <span class="n">labels</span> <span class="o">=</span> <span class="n">scheme</span><span class="o">.</span><span class="n">_labels_to_dict</span><span class="p">()</span>
 
             <span class="k">if</span> <span class="n">labels</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                     <span class="sa">f</span><span class="s2">&quot;Scheme &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">scheme_id</span><span class="si">}</span><span class="s2">&#39; has no labels.&quot;</span>
+                <span class="p">)</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="n">labels</span><span class="o">.</span><span class="n">values</span><span class="p">()):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Scheme &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">scheme_id</span><span class="si">}</span><span class="s2">&#39; provides no mapping &quot;</span>
+                    <span class="s2">&quot;for its labels.&quot;</span>
                 <span class="p">)</span>
 
             <span class="n">mapping</span> <span class="o">=</span> <span class="p">{}</span>
@@ -413,10 +438,11 @@
     <span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Set labels.</span>
 
-<span class="sd">        By default all labels of the column are replaced,</span>
+<span class="sd">        By default, all labels of the column are replaced,</span>
 <span class="sd">        use ``index`` to set a subset.</span>
 <span class="sd">        If columns is assigned to a :class:`Scheme`</span>
-<span class="sd">        values have to match its ``dtype``.</span>
+<span class="sd">        values will be automatically converted</span>
+<span class="sd">        to match its dtype.</span>
 
 <span class="sd">        Examples are provided with the</span>
 <span class="sd">        :ref:`table specifications &lt;data-tables:Tables&gt;`.</span>
@@ -430,7 +456,8 @@
 <span class="sd">            RuntimeError: if column is not assign to a table</span>
 <span class="sd">            ValueError: if trying to set values of a filewise column</span>
 <span class="sd">                using a segmented index</span>
-<span class="sd">            ValueError: if values do not match scheme</span>
+<span class="sd">            ValueError: if values cannot be converted</span>
+<span class="sd">                to match the schemes dtype</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_table</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -447,17 +474,14 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">scheme_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">scheme</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_table</span><span class="o">.</span><span class="n">_db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">scheme_id</span><span class="p">]</span>
             <span class="n">assert_values</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">scheme</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="n">index_type</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">)</span> <span class="o">==</span> <span class="n">index_type</span><span class="p">(</span><span class="n">index</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">is_scalar</span><span class="p">(</span><span class="n">values</span><span class="p">):</span>
-                <span class="n">values</span> <span class="o">=</span> <span class="p">[</span><span class="n">values</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
-            <span class="n">values</span> <span class="o">=</span> <span class="n">to_array</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
-            <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">index</span><span class="p">,</span> <span class="n">column_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span>
-                <span class="n">values</span><span class="p">,</span>
-                <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">,</span>
-                <span class="n">dtype</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="n">column_id</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span>
-            <span class="p">)</span>
+            <span class="n">dtype</span> <span class="o">=</span> <span class="n">scheme</span><span class="o">.</span><span class="n">to_pandas_dtype</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
+            <span class="n">dtype</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">column_id</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span>
+
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_table</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">)</span> <span class="ow">and</span> \
+                <span class="bp">self</span><span class="o">.</span><span class="n">_table</span><span class="o">.</span><span class="n">type</span> <span class="o">!=</span> <span class="n">index_type</span><span class="p">(</span><span class="n">index</span><span class="p">):</span>
+            <span class="c1"># special case where a filewise / segmented table</span>
+            <span class="c1"># is requested with an index of the other type</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_table</span><span class="o">.</span><span class="n">is_filewise</span><span class="p">:</span>
                 <span class="n">files</span> <span class="o">=</span> <span class="n">index</span><span class="o">.</span><span class="n">get_level_values</span><span class="p">(</span><span class="n">define</span><span class="o">.</span><span class="n">IndexField</span><span class="o">.</span><span class="n">FILE</span><span class="p">)</span>
                 <span class="n">index</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">files</span><span class="p">]</span><span class="o">.</span><span class="n">index</span>
@@ -466,7 +490,16 @@
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                     <span class="s1">&#39;Cannot set values of a filewise column &#39;</span>
                     <span class="s1">&#39;using a segmented index.&#39;</span>
-                <span class="p">)</span></div>
+                <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">is_scalar</span><span class="p">(</span><span class="n">values</span><span class="p">):</span>
+                <span class="n">values</span> <span class="o">=</span> <span class="p">[</span><span class="n">values</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+            <span class="n">values</span> <span class="o">=</span> <span class="n">to_array</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+            <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">index</span><span class="p">,</span> <span class="n">column_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span>
+                <span class="n">values</span><span class="p">,</span>
+                <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">,</span>
+                <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span>
+            <span class="p">)</span></div>
 
     <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
@@ -492,7 +525,7 @@
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2022/06/01 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2022/08/05 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>

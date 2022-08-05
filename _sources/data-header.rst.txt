@@ -294,6 +294,53 @@ audformat implementation
     db.tables
 
 
+Misc Table
+----------
+
+This part of the header is represented by :class:`audformat.MiscTable`.
+
+==============  =========  ====================================================
+Field           Mandatory  Description
+==============  =========  ====================================================
+id              yes        Unique identifier of misc table
+columns                    Dictionary of columns (see below)
+description                Description of table
+media_id                   Files in this table are of this media type
+split_id                   The split the table belongs to
+*meta-key-1*               1st optional meta field
+...                        ...
+*meta-key-N*               Nth optional meta field
+==============  =========  ====================================================
+
+Minimal example
+^^^^^^^^^^^^^^^
+
+.. code-block:: yaml
+
+    misc_tables:
+        misctableid:
+            levels: [idx]
+
+audformat implementation
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. jupyter-execute::
+
+    # Create minimal Misc Table
+    import pandas as pd
+    misc_table = audformat.MiscTable(pd.Index([], name='idx'))
+    # Add Misc Table to Database
+    db.misc_tables['misctableid'] = misc_table
+    # Access dataframe of Misc Table
+    db.misc_tables['misctableid'].df
+    # Add Misc Table to Database (short notation)
+    db['misctableid'] = misc_table
+    # Access dataframe of Misc Table (short notation)
+    db['misctableid'].df
+    # Access misc tables
+    db.misc_tables
+
+
 Column
 ------
 

@@ -74,7 +74,7 @@
             
             
               <div class="version">
-                v0.14.3
+                v0.15.0
               </div>
             
           
@@ -115,6 +115,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../data-conventions.html">Conventions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../data-header.html">Header</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../data-tables.html">Tables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../data-misc-tables.html">Misc Tables</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../data-example.html">Example</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Documentation</span></p>
@@ -185,17 +186,68 @@
 <span class="kn">import</span> <span class="nn">audiofile</span> <span class="k">as</span> <span class="nn">af</span>
 
 <span class="kn">from</span> <span class="nn">audformat.core</span> <span class="kn">import</span> <span class="n">define</span>
+<span class="kn">from</span> <span class="nn">audformat.core.column</span> <span class="kn">import</span> <span class="n">Column</span>
 <span class="kn">from</span> <span class="nn">audformat.core.database</span> <span class="kn">import</span> <span class="n">Database</span>
 <span class="kn">from</span> <span class="nn">audformat.core.index</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">filewise_index</span><span class="p">,</span>
+    <span class="n">is_filewise_index</span><span class="p">,</span>
+    <span class="n">is_segmented_index</span><span class="p">,</span>
     <span class="n">segmented_index</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">audformat.core.media</span> <span class="kn">import</span> <span class="n">Media</span>
 <span class="kn">from</span> <span class="nn">audformat.core.rater</span> <span class="kn">import</span> <span class="n">Rater</span>
 <span class="kn">from</span> <span class="nn">audformat.core.scheme</span> <span class="kn">import</span> <span class="n">Scheme</span>
 <span class="kn">from</span> <span class="nn">audformat.core.split</span> <span class="kn">import</span> <span class="n">Split</span>
-<span class="kn">from</span> <span class="nn">audformat.core.table</span> <span class="kn">import</span> <span class="n">Table</span>
-<span class="kn">from</span> <span class="nn">audformat.core.column</span> <span class="kn">import</span> <span class="n">Column</span>
+<span class="kn">from</span> <span class="nn">audformat.core.table</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">MiscTable</span><span class="p">,</span>
+    <span class="n">Table</span><span class="p">,</span>
+<span class="p">)</span>
+
+
+<div class="viewcode-block" id="add_misc_table"><a class="viewcode-back" href="../../../api-testing.html#audformat.testing.add_misc_table">[docs]</a><span class="k">def</span> <span class="nf">add_misc_table</span><span class="p">(</span>
+        <span class="n">db</span><span class="p">:</span> <span class="n">Database</span><span class="p">,</span>
+        <span class="n">table_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">index</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">columns</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span>
+            <span class="nb">str</span><span class="p">,</span>
+            <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+            <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span>
+                <span class="nb">str</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span>
+            <span class="p">]],</span>
+        <span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">p_none</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">split_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">media_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MiscTable</span><span class="p">:</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Add a miscellaneous table with random values.</span>
+
+<span class="sd">    By default, adds one column for every scheme in the database.</span>
+<span class="sd">    To create a specific set of columns use ``columns``.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        db: a database</span>
+<span class="sd">        table_id: ID of table that will be created</span>
+<span class="sd">        index: index object</span>
+<span class="sd">        columns: a list of scheme_ids or a dictionary with column names as</span>
+<span class="sd">            keys and tuples of ``(scheme_id, rater_id)`` as values. ``None``</span>
+<span class="sd">            values are allowed</span>
+<span class="sd">        p_none: probability to draw ``None``</span>
+<span class="sd">        split_id: optional split ID</span>
+<span class="sd">        media_id: optional media ID</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        table object</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">db</span><span class="p">[</span><span class="n">table_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">MiscTable</span><span class="p">(</span>
+        <span class="n">index</span><span class="p">,</span>
+        <span class="n">split_id</span><span class="o">=</span><span class="n">split_id</span><span class="p">,</span>
+        <span class="n">media_id</span><span class="o">=</span><span class="n">media_id</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">_add_columns</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">db</span><span class="p">[</span><span class="n">table_id</span><span class="p">],</span> <span class="n">columns</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">index</span><span class="p">),</span> <span class="n">p_none</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">db</span><span class="p">[</span><span class="n">table_id</span><span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="add_table"><a class="viewcode-back" href="../../../api-testing.html#audformat.testing.add_table">[docs]</a><span class="k">def</span> <span class="nf">add_table</span><span class="p">(</span>
@@ -218,12 +270,12 @@
         <span class="n">split_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">media_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Table</span><span class="p">:</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Adds a table with random values.</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Add a table with random values.</span>
 
-<span class="sd">    By default adds one column for every scheme in the database.</span>
+<span class="sd">    By default, adds one column for every scheme in the database.</span>
 <span class="sd">    To create a specific set of columns use ``columns``.</span>
 <span class="sd">    If a ``media_id`` is passed, the file format will be</span>
-<span class="sd">    determined from there. Otherwise WAV is used.</span>
+<span class="sd">    determined from there. Otherwise, WAV is used.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        db: a database</span>
@@ -238,10 +290,10 @@
 <span class="sd">            the number of files. For a different ordering a sequence of</span>
 <span class="sd">            integers can be passed</span>
 <span class="sd">        num_segments_per_file: number of segments per file (only applies to</span>
-<span class="sd">            to segmented table)</span>
+<span class="sd">            segmented table)</span>
 <span class="sd">        file_duration: the file duration</span>
 <span class="sd">        file_root: file sub directory</span>
-<span class="sd">        p_none: probability to draw invalid values</span>
+<span class="sd">        p_none: probability to draw ``None``</span>
 <span class="sd">        split_id: optional split ID</span>
 <span class="sd">        media_id: optional media ID</span>
 
@@ -251,13 +303,6 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">file_duration</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
         <span class="n">file_duration</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Timedelta</span><span class="p">(</span><span class="n">file_duration</span><span class="p">)</span>
-
-    <span class="k">if</span> <span class="n">columns</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">columns</span> <span class="o">=</span> <span class="n">columns</span> <span class="ow">or</span> <span class="p">{</span><span class="n">s</span><span class="p">:</span> <span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">)}</span>
-    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">columns</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-        <span class="n">columns</span> <span class="o">=</span> <span class="p">{</span><span class="n">columns</span><span class="p">:</span> <span class="p">(</span><span class="n">columns</span><span class="p">,</span> <span class="kc">None</span><span class="p">)}</span>
-    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">columns</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">):</span>
-        <span class="n">columns</span> <span class="o">=</span> <span class="p">{</span><span class="n">s</span><span class="p">:</span> <span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">columns</span><span class="p">}</span>
 
     <span class="n">audio_format</span> <span class="o">=</span> <span class="s1">&#39;wav&#39;</span>
     <span class="k">if</span> <span class="n">media_id</span> <span class="ow">and</span> <span class="n">db</span><span class="o">.</span><span class="n">media</span><span class="p">[</span><span class="n">media_id</span><span class="p">]</span><span class="o">.</span><span class="n">format</span><span class="p">:</span>
@@ -306,15 +351,7 @@
             <span class="n">media_id</span><span class="o">=</span><span class="n">media_id</span><span class="p">,</span>
         <span class="p">)</span>
 
-    <span class="k">for</span> <span class="n">column_id</span><span class="p">,</span> <span class="p">(</span><span class="n">scheme_id</span><span class="p">,</span> <span class="n">rater_id</span><span class="p">)</span> <span class="ow">in</span> <span class="n">columns</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-        <span class="n">db</span><span class="p">[</span><span class="n">table_id</span><span class="p">][</span><span class="n">column_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span>
-            <span class="n">scheme_id</span><span class="o">=</span><span class="n">scheme_id</span><span class="p">,</span>
-            <span class="n">rater_id</span><span class="o">=</span><span class="n">rater_id</span><span class="p">,</span>
-        <span class="p">)</span>
-        <span class="k">if</span> <span class="n">scheme_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">db</span><span class="p">[</span><span class="n">table_id</span><span class="p">][</span><span class="n">column_id</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span>
-                <span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="n">scheme_id</span><span class="p">]</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">n_items</span><span class="p">,</span> <span class="n">p_none</span><span class="o">=</span><span class="n">p_none</span><span class="p">)</span>
-            <span class="p">)</span>
+    <span class="n">_add_columns</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">db</span><span class="p">[</span><span class="n">table_id</span><span class="p">],</span> <span class="n">columns</span><span class="p">,</span> <span class="n">n_items</span><span class="p">,</span> <span class="n">p_none</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">db</span><span class="p">[</span><span class="n">table_id</span><span class="p">]</span></div>
 
@@ -330,7 +367,7 @@
 <span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Create audio files for a database.</span>
 
-<span class="sd">    By default empty files are created. A sample generator function can be</span>
+<span class="sd">    By default, empty files are created. A sample generator function can be</span>
 <span class="sd">    passed to generate the samples. The function gets as input a time stamp</span>
 <span class="sd">    and should create a sample in the amplitude range ``[-1..1]``.</span>
 
@@ -387,8 +424,10 @@
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Database</span><span class="p">:</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Create test database.</span>
 
-<span class="sd">    Creates a test database called ``unittest`` with a filewise</span>
-<span class="sd">    and segmented table.</span>
+<span class="sd">    Creates a test database called ``unittest`` with a</span>
+<span class="sd">    filewise,</span>
+<span class="sd">    segmented,</span>
+<span class="sd">    and miscellaneous table.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        minimal: create minimal database without tables</span>
@@ -425,12 +464,15 @@
                 <span class="k">return</span> <span class="n">define</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">INTEGER</span>
             <span class="k">if</span> <span class="n">series</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;float&#39;</span><span class="p">):</span>
                 <span class="k">return</span> <span class="n">define</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">FLOAT</span>
-            <span class="k">return</span> <span class="s1">&#39;str&#39;</span>
+            <span class="k">return</span> <span class="n">define</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">STRING</span>
 
         <span class="k">for</span> <span class="n">table_id</span><span class="p">,</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">):</span>
                 <span class="n">obj</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">to_frame</span><span class="p">()</span>
-            <span class="n">db</span><span class="p">[</span><span class="n">table_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">Table</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">is_filewise_index</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span> <span class="ow">or</span> <span class="n">is_segmented_index</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+                <span class="n">db</span><span class="p">[</span><span class="n">table_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">Table</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">db</span><span class="p">[</span><span class="n">table_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">MiscTable</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">column_id</span><span class="p">,</span> <span class="n">column</span> <span class="ow">in</span> <span class="n">obj</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                 <span class="n">dtype</span> <span class="o">=</span> <span class="n">to_scheme_type</span><span class="p">(</span><span class="n">column</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">dtype</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">:</span>
@@ -479,11 +521,35 @@
         <span class="n">labels</span><span class="o">=</span><span class="p">{</span><span class="mi">1</span><span class="p">:</span> <span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="mi">3</span><span class="p">:</span> <span class="s1">&#39;c&#39;</span><span class="p">}</span>
     <span class="p">)</span>
     <span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s1">&#39;label_map_str&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Scheme</span><span class="p">(</span>
-        <span class="n">labels</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;label1&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;prop1&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;prop2&#39;</span><span class="p">:</span> <span class="s1">&#39;a&#39;</span><span class="p">},</span>
-                <span class="s1">&#39;label2&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;prop1&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;prop2&#39;</span><span class="p">:</span> <span class="s1">&#39;b&#39;</span><span class="p">},</span>
-                <span class="s1">&#39;label3&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;prop1&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;prop2&#39;</span><span class="p">:</span> <span class="s1">&#39;c&#39;</span><span class="p">}})</span>
+        <span class="n">labels</span><span class="o">=</span><span class="p">{</span>
+            <span class="s1">&#39;label1&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;prop1&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;prop2&#39;</span><span class="p">:</span> <span class="s1">&#39;a&#39;</span><span class="p">},</span>
+            <span class="s1">&#39;label2&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;prop1&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;prop2&#39;</span><span class="p">:</span> <span class="s1">&#39;b&#39;</span><span class="p">},</span>
+            <span class="s1">&#39;label3&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;prop1&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;prop2&#39;</span><span class="p">:</span> <span class="s1">&#39;c&#39;</span><span class="p">},</span>
+        <span class="p">}</span>
+    <span class="p">)</span>
     <span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s1">&#39;string&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Scheme</span><span class="p">()</span>
     <span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Scheme</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">define</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">TIME</span><span class="p">)</span>
+
+    <span class="c1">##############</span>
+    <span class="c1"># Misc Table #</span>
+    <span class="c1">##############</span>
+
+    <span class="n">index</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">(</span>
+        <span class="p">[</span><span class="s1">&#39;label1&#39;</span><span class="p">,</span> <span class="s1">&#39;label2&#39;</span><span class="p">,</span> <span class="s1">&#39;label3&#39;</span><span class="p">],</span>
+        <span class="n">name</span><span class="o">=</span><span class="s1">&#39;labels&#39;</span><span class="p">,</span>
+        <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;string&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">db</span><span class="p">[</span><span class="s1">&#39;misc&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">MiscTable</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+    <span class="n">db</span><span class="p">[</span><span class="s1">&#39;misc&#39;</span><span class="p">][</span><span class="s1">&#39;int&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">scheme_id</span><span class="o">=</span><span class="s1">&#39;int&#39;</span><span class="p">)</span>
+    <span class="n">db</span><span class="p">[</span><span class="s1">&#39;misc&#39;</span><span class="p">][</span><span class="s1">&#39;int&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s1">&#39;int&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">index</span><span class="p">)))</span>
+    <span class="n">db</span><span class="p">[</span><span class="s1">&#39;misc&#39;</span><span class="p">][</span><span class="s1">&#39;label&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">scheme_id</span><span class="o">=</span><span class="s1">&#39;label&#39;</span><span class="p">)</span>
+    <span class="n">db</span><span class="p">[</span><span class="s1">&#39;misc&#39;</span><span class="p">][</span><span class="s1">&#39;label&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">index</span><span class="p">)))</span>
+
+    <span class="c1">############################</span>
+    <span class="c1"># Schemes from Misc Tables #</span>
+    <span class="c1">############################</span>
+
+    <span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s1">&#39;label_map_misc&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Scheme</span><span class="p">(</span><span class="n">labels</span><span class="o">=</span><span class="s1">&#39;misc&#39;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;str&#39;</span><span class="p">)</span>
 
     <span class="c1">##########</span>
     <span class="c1"># Splits #</span>
@@ -529,6 +595,40 @@
     <span class="p">)</span>
 
     <span class="k">return</span> <span class="n">db</span></div>
+
+
+<span class="k">def</span> <span class="nf">_add_columns</span><span class="p">(</span>
+        <span class="n">db</span><span class="p">:</span> <span class="n">Database</span><span class="p">,</span>
+        <span class="n">table</span><span class="p">:</span> <span class="n">Table</span><span class="p">,</span>
+        <span class="n">columns</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span>
+            <span class="n">Union</span><span class="p">[</span>
+                <span class="nb">str</span><span class="p">,</span>
+                <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+                <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span>
+                    <span class="nb">str</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span>
+                <span class="p">]],</span>
+            <span class="p">]</span>
+        <span class="p">],</span>
+        <span class="n">n_items</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">p_none</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Convert &#39;columns&#39; argument of add_[misc_]table() to dict.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">columns</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">columns</span> <span class="o">=</span> <span class="n">columns</span> <span class="ow">or</span> <span class="p">{</span><span class="n">s</span><span class="p">:</span> <span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">)}</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">columns</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">columns</span> <span class="o">=</span> <span class="p">{</span><span class="n">columns</span><span class="p">:</span> <span class="p">(</span><span class="n">columns</span><span class="p">,</span> <span class="kc">None</span><span class="p">)}</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">columns</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">):</span>
+        <span class="n">columns</span> <span class="o">=</span> <span class="p">{</span><span class="n">s</span><span class="p">:</span> <span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">columns</span><span class="p">}</span>
+
+    <span class="k">for</span> <span class="n">column_id</span><span class="p">,</span> <span class="p">(</span><span class="n">scheme_id</span><span class="p">,</span> <span class="n">rater_id</span><span class="p">)</span> <span class="ow">in</span> <span class="n">columns</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">table</span><span class="p">[</span><span class="n">column_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span>
+            <span class="n">scheme_id</span><span class="o">=</span><span class="n">scheme_id</span><span class="p">,</span>
+            <span class="n">rater_id</span><span class="o">=</span><span class="n">rater_id</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">scheme_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">table</span><span class="p">[</span><span class="n">column_id</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span>
+                <span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="n">scheme_id</span><span class="p">]</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">n_items</span><span class="p">,</span> <span class="n">p_none</span><span class="o">=</span><span class="n">p_none</span><span class="p">)</span>
+            <span class="p">)</span>
 </pre></div>
 
            </div>
@@ -544,7 +644,7 @@
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2022/06/01 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2022/08/05 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>

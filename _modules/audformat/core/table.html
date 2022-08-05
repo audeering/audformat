@@ -74,7 +74,7 @@
             
             
               <div class="version">
-                v0.14.3
+                v0.15.0
               </div>
             
           
@@ -115,6 +115,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../data-conventions.html">Conventions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../data-header.html">Header</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../data-tables.html">Tables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../data-misc-tables.html">Misc Tables</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../data-example.html">Example</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Documentation</span></p>
@@ -167,7 +168,9 @@
            <div itemprop="articleBody">
             
   <h1>Source code for audformat.core.table</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">copy</span>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>  <span class="c1"># allow typing without string</span>
+
+<span class="kn">import</span> <span class="nn">copy</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">pickle</span>
 <span class="kn">import</span> <span class="nn">typing</span>
@@ -182,6 +185,8 @@
 <span class="kn">from</span> <span class="nn">audformat.core.common</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">HeaderBase</span><span class="p">,</span>
     <span class="n">HeaderDict</span><span class="p">,</span>
+    <span class="n">to_audformat_dtype</span><span class="p">,</span>
+    <span class="n">to_pandas_dtype</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">audformat.core.errors</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">BadIdError</span><span class="p">,</span>
@@ -189,6 +194,8 @@
 <span class="kn">from</span> <span class="nn">audformat.core.index</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">filewise_index</span><span class="p">,</span>
     <span class="n">index_type</span><span class="p">,</span>
+    <span class="n">is_filewise_index</span><span class="p">,</span>
+    <span class="n">is_segmented_index</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">audformat.core.media</span> <span class="kn">import</span> <span class="n">Media</span>
 <span class="kn">from</span> <span class="nn">audformat.core.split</span> <span class="kn">import</span> <span class="n">Split</span>
@@ -225,6 +232,50 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_db</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_id</span> <span class="o">=</span> <span class="kc">None</span>
 
+    <span class="k">def</span> <span class="fm">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Self</span><span class="p">:</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Create new table by combining two tables.</span>
+
+<span class="sd">        The new :ref:`combined table &lt;combine-tables&gt;`</span>
+<span class="sd">        contains index and columns of both tables.</span>
+<span class="sd">        Missing values will be set to ``NaN``.</span>
+
+<span class="sd">        If table is conform to</span>
+<span class="sd">        :ref:`table specifications &lt;data-tables:Tables&gt;`</span>
+<span class="sd">        and at least one table is segmented,</span>
+<span class="sd">        the output has a segmented index.</span>
+
+<span class="sd">        Columns with the same identifier are combined to a single column.</span>
+<span class="sd">        This requires that:</span>
+
+<span class="sd">        1. both columns have the same dtype</span>
+<span class="sd">        2. in places where the indices overlap the values of both columns</span>
+<span class="sd">           match or one column contains ``NaN``</span>
+
+<span class="sd">        Media and split information,</span>
+<span class="sd">        as well as,</span>
+<span class="sd">        references to schemes and raters are discarded.</span>
+<span class="sd">        If you intend to keep them,</span>
+<span class="sd">        use ``update()``.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            other: the other table</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError: if columns with the same name have different dtypes</span>
+<span class="sd">            ValueError: if values in the same position do not match</span>
+<span class="sd">            ValueError: if level and dtypes of indices do not match</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">df</span><span class="p">])</span>
+
+        <span class="n">table</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+        <span class="n">table</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">column_id</span> <span class="ow">in</span> <span class="n">df</span><span class="p">:</span>
+            <span class="n">table</span><span class="p">[</span><span class="n">column_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">Column</span><span class="p">()</span>
+        <span class="n">table</span><span class="o">.</span><span class="n">_df</span> <span class="o">=</span> <span class="n">df</span>
+
+        <span class="k">return</span> <span class="n">table</span>
+
     <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Column</span><span class="p">:</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Return view to a column.</span>
 
@@ -236,7 +287,7 @@
 
     <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
-            <span class="n">other</span><span class="p">:</span> <span class="s1">&#39;Base&#39;</span><span class="p">,</span>
+            <span class="n">other</span><span class="p">:</span> <span class="n">Base</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dump</span><span class="p">()</span> <span class="o">!=</span> <span class="n">other</span><span class="o">.</span><span class="n">dump</span><span class="p">():</span>
             <span class="k">return</span> <span class="kc">False</span>
@@ -255,6 +306,7 @@
 <span class="sd">        Raises:</span>
 <span class="sd">            BadIdError: if a column with a ``scheme_id`` or ``rater_id`` is</span>
 <span class="sd">                added that does not exist</span>
+<span class="sd">            ValueError: if column ID is not different from level names</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="n">column_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">column</span>
@@ -317,7 +369,7 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">split_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">splits</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">split_id</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Base&#39;</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Self</span><span class="p">:</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Copy table.</span>
 
 <span class="sd">        Return:</span>
@@ -345,7 +397,7 @@
             <span class="n">column_ids</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span>
             <span class="o">*</span><span class="p">,</span>
             <span class="n">inplace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Table&#39;</span><span class="p">:</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Self</span><span class="p">:</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Drop columns by ID.</span>
 
 <span class="sd">        Args:</span>
@@ -353,7 +405,7 @@
 <span class="sd">            inplace: drop columns in place</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            new ``Table`` if ``inplace=False``, otherwise ``self``</span>
+<span class="sd">            new object if ``inplace=False``, otherwise ``self``</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">inplace</span><span class="p">:</span>
@@ -370,6 +422,81 @@
 
         <span class="k">return</span> <span class="bp">self</span>
 
+    <span class="k">def</span> <span class="nf">drop_index</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">index</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">,</span>
+            <span class="o">*</span><span class="p">,</span>
+            <span class="n">inplace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Self</span><span class="p">:</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Drop rows from index.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            index: index object</span>
+<span class="sd">            inplace: drop index in place</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            new object if ``inplace=False``, otherwise ``self``</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError: if level and dtypes of index does not match table index</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">table</span> <span class="o">=</span> <span class="bp">self</span> <span class="k">if</span> <span class="n">inplace</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+        <span class="n">_assert_table_index</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="s1">&#39;drop rows from&#39;</span><span class="p">)</span>
+
+        <span class="n">new_index</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">difference</span><span class="p">([</span><span class="n">table</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">index</span><span class="p">])</span>
+        <span class="n">table</span><span class="o">.</span><span class="n">_df</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">reindex</span><span class="p">(</span><span class="n">new_index</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">inplace</span><span class="p">:</span>
+            <span class="n">_maybe_update_scheme</span><span class="p">(</span><span class="n">table</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">table</span>
+
+    <span class="k">def</span> <span class="nf">extend_index</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">index</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">,</span>
+            <span class="o">*</span><span class="p">,</span>
+            <span class="n">fill_values</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span>
+                <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span>
+                <span class="n">typing</span><span class="o">.</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">]</span>
+            <span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">inplace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Self</span><span class="p">:</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Extend table with new rows.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            index: index object</span>
+<span class="sd">            fill_values: replace NaN with these values (either a scalar</span>
+<span class="sd">                applied to all columns or a dictionary with column name as</span>
+<span class="sd">                key)</span>
+<span class="sd">            inplace: extend index in place</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            new object if ``inplace=False``, otherwise ``self``</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError: if level and dtypes of index does not match table index</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">table</span> <span class="o">=</span> <span class="bp">self</span> <span class="k">if</span> <span class="n">inplace</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+        <span class="n">_assert_table_index</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="s1">&#39;extend&#39;</span><span class="p">)</span>
+
+        <span class="n">new_index</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">union</span><span class="p">([</span><span class="n">table</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">index</span><span class="p">])</span>
+        <span class="n">table</span><span class="o">.</span><span class="n">_df</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">reindex</span><span class="p">(</span><span class="n">new_index</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">fill_values</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">fill_values</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">fill_values</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="n">table</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">table</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="n">fill_values</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">inplace</span><span class="p">:</span>
+            <span class="n">_maybe_update_scheme</span><span class="p">(</span><span class="n">table</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">table</span>
+
     <span class="k">def</span> <span class="nf">get</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
             <span class="n">index</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -385,7 +512,8 @@
 <span class="sd">        use ``index`` to get a subset.</span>
 
 <span class="sd">        Examples are provided with the</span>
-<span class="sd">        :ref:`table specifications &lt;data-tables:Tables&gt;`.</span>
+<span class="sd">        :ref:`table specifications &lt;data-tables:Tables&gt;`,</span>
+<span class="sd">        and for ``map`` in :ref:`map-scheme-labels`.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            index: index</span>
@@ -516,7 +644,7 @@
             <span class="n">column_ids</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span>
             <span class="o">*</span><span class="p">,</span>
             <span class="n">inplace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Table&#39;</span><span class="p">:</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Self</span><span class="p">:</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Pick columns by ID.</span>
 
 <span class="sd">        All other columns will be dropped.</span>
@@ -526,7 +654,7 @@
 <span class="sd">            inplace: pick columns in place</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            new ``Table`` if ``inplace=False``, otherwise ``self``</span>
+<span class="sd">            new object if ``inplace=False``, otherwise ``self``</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">column_ids</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
@@ -536,6 +664,37 @@
             <span class="k">if</span> <span class="n">column_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">column_ids</span><span class="p">:</span>
                 <span class="n">drop_ids</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">column_id</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">drop_columns</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">drop_ids</span><span class="p">),</span> <span class="n">inplace</span><span class="o">=</span><span class="n">inplace</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">pick_index</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">index</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">,</span>
+            <span class="o">*</span><span class="p">,</span>
+            <span class="n">inplace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Self</span><span class="p">:</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Pick rows from index.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            index: index object</span>
+<span class="sd">            inplace: pick index in place</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            new object if ``inplace=False``, otherwise ``self``</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError: if level and dtypes of index does not match table index</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">table</span> <span class="o">=</span> <span class="bp">self</span> <span class="k">if</span> <span class="n">inplace</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+        <span class="n">_assert_table_index</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="s1">&#39;pick rows from&#39;</span><span class="p">)</span>
+
+        <span class="n">new_index</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">intersect</span><span class="p">([</span><span class="n">table</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">index</span><span class="p">])</span>
+        <span class="n">table</span><span class="o">.</span><span class="n">_df</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">reindex</span><span class="p">(</span><span class="n">new_index</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">inplace</span><span class="p">:</span>
+            <span class="n">_maybe_update_scheme</span><span class="p">(</span><span class="n">table</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">table</span>
 
     <span class="k">def</span> <span class="nf">save</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
@@ -590,7 +749,8 @@
 <span class="sd">        By default, all labels of the table are replaced,</span>
 <span class="sd">        use ``index`` to select a subset.</span>
 <span class="sd">        If a column is assigned to a :class:`Scheme`</span>
-<span class="sd">        values have to match its ``dtype``.</span>
+<span class="sd">        values will be automatically converted</span>
+<span class="sd">        to match its dtype.</span>
 
 <span class="sd">        Examples are provided with the</span>
 <span class="sd">        :ref:`table specifications &lt;data-tables:Tables&gt;`.</span>
@@ -600,657 +760,24 @@
 <span class="sd">            index: index</span>
 
 <span class="sd">        Raises:</span>
-<span class="sd">            ValueError: if values do not match scheme</span>
+<span class="sd">            ValueError: if values cannot be converted</span>
+<span class="sd">                to match the schemes dtype</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">values</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_get_by_index</span><span class="p">(</span>
+    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
-            <span class="n">index</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>  <span class="c1"># pragma: no cover</span>
-        <span class="c1"># Executed when calling `self.get(index=index)`.</span>
-        <span class="c1"># Returns `df, df_is_copy`</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
-
-    <span class="k">def</span> <span class="nf">_index_levels_and_converters</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Tuple</span><span class="p">[</span>
-            <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
-            <span class="n">typing</span><span class="o">.</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Callable</span><span class="p">],</span>
-    <span class="p">]:</span>  <span class="c1"># pragma: no cover</span>
-        <span class="c1"># Executed when loading table from CSV file.</span>
-        <span class="c1"># Returns: `index_levels, index_converters`</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
-
-    <span class="k">def</span> <span class="nf">_load_csv</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-
-        <span class="n">usecols</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">dtypes</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="n">schemes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">schemes</span>
-
-        <span class="c1"># index columns</span>
-
-        <span class="n">levels</span><span class="p">,</span> <span class="n">converters</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_index_levels_and_converters</span><span class="p">()</span>
-        <span class="n">usecols</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">levels</span><span class="p">)</span>
-
-        <span class="c1"># other columns</span>
-
-        <span class="k">for</span> <span class="n">column_id</span><span class="p">,</span> <span class="n">column</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="n">usecols</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">column_id</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">column</span><span class="o">.</span><span class="n">scheme_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">dtype</span> <span class="o">=</span> <span class="n">schemes</span><span class="p">[</span><span class="n">column</span><span class="o">.</span><span class="n">scheme_id</span><span class="p">]</span><span class="o">.</span><span class="n">to_pandas_dtype</span><span class="p">()</span>
-                <span class="c1"># use converter if column contains dates or timestamps</span>
-                <span class="k">if</span> <span class="n">dtype</span> <span class="o">==</span> <span class="s1">&#39;datetime64[ns]&#39;</span><span class="p">:</span>
-                    <span class="n">converters</span><span class="p">[</span><span class="n">column_id</span><span class="p">]</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-                <span class="k">elif</span> <span class="n">dtype</span> <span class="o">==</span> <span class="s1">&#39;timedelta64[ns]&#39;</span><span class="p">:</span>
-                    <span class="n">converters</span><span class="p">[</span><span class="n">column_id</span><span class="p">]</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_timedelta</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">dtypes</span><span class="p">[</span><span class="n">column_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">dtype</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">dtypes</span><span class="p">[</span><span class="n">column_id</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;str&#39;</span>
-
-        <span class="c1"># read csv</span>
-
-        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span>
-            <span class="n">path</span><span class="p">,</span>
-            <span class="n">usecols</span><span class="o">=</span><span class="n">usecols</span><span class="p">,</span>
-            <span class="n">dtype</span><span class="o">=</span><span class="n">dtypes</span><span class="p">,</span>
-            <span class="n">index_col</span><span class="o">=</span><span class="n">levels</span><span class="p">,</span>
-            <span class="n">converters</span><span class="o">=</span><span class="n">converters</span><span class="p">,</span>
-            <span class="n">float_precision</span><span class="o">=</span><span class="s1">&#39;round_trip&#39;</span><span class="p">,</span>
-        <span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">_df</span> <span class="o">=</span> <span class="n">df</span>
-
-    <span class="k">def</span> <span class="nf">_load_pickled</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-
-        <span class="c1"># Older versions of audformat used xz compression</span>
-        <span class="c1"># which produced smaller files,</span>
-        <span class="c1"># but was slower.</span>
-        <span class="c1"># The try-except statement allows backward compatibility</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_pickle</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
-        <span class="k">except</span> <span class="n">pickle</span><span class="o">.</span><span class="n">UnpicklingError</span><span class="p">:</span>
-            <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_pickle</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">compression</span><span class="o">=</span><span class="s1">&#39;xz&#39;</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">_df</span> <span class="o">=</span> <span class="n">df</span>
-
-    <span class="k">def</span> <span class="nf">_save_csv</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-        <span class="c1"># Load table before opening CSV file</span>
-        <span class="c1"># to avoid creating a CSV file</span>
-        <span class="c1"># that is newer than the PKL file</span>
-        <span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
-            <span class="n">df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">_save_pickled</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">to_pickle</span><span class="p">(</span>
-            <span class="n">path</span><span class="p">,</span>
-            <span class="n">protocol</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>  <span class="c1"># supported by Python &gt;= 3.4</span>
-        <span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">_set_column</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">column</span><span class="p">:</span> <span class="n">Column</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Column</span><span class="p">:</span>
-
-        <span class="k">if</span> <span class="n">column</span><span class="o">.</span><span class="n">scheme_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> \
-                <span class="n">column</span><span class="o">.</span><span class="n">scheme_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">BadIdError</span><span class="p">(</span><span class="s1">&#39;column&#39;</span><span class="p">,</span> <span class="n">column</span><span class="o">.</span><span class="n">scheme_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="n">column</span><span class="o">.</span><span class="n">rater_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> \
-                <span class="n">column</span><span class="o">.</span><span class="n">rater_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">raters</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">BadIdError</span><span class="p">(</span><span class="s1">&#39;rater&#39;</span><span class="p">,</span> <span class="n">column</span><span class="o">.</span><span class="n">rater_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">raters</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="n">column</span><span class="o">.</span><span class="n">scheme_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">dtype</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="n">column</span><span class="o">.</span><span class="n">scheme_id</span><span class="p">]</span><span class="o">.</span><span class="n">to_pandas_dtype</span><span class="p">()</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">dtype</span> <span class="o">=</span> <span class="nb">object</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">column_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
-
-        <span class="n">column</span><span class="o">.</span><span class="n">_id</span> <span class="o">=</span> <span class="n">column_id</span>
-        <span class="n">column</span><span class="o">.</span><span class="n">_table</span> <span class="o">=</span> <span class="bp">self</span>
-
-        <span class="k">return</span> <span class="n">column</span>
-
-
-<div class="viewcode-block" id="Table"><a class="viewcode-back" href="../../../api.html#audformat.Table">[docs]</a><span class="k">class</span> <span class="nc">Table</span><span class="p">(</span><span class="n">Base</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Table with annotation data.</span>
-
-<span class="sd">    Consists of a list of file names to which it assigns</span>
-<span class="sd">    numerical values or labels.</span>
-<span class="sd">    To fill a table with labels,</span>
-<span class="sd">    add one ore more :class:`audformat.Column`</span>
-<span class="sd">    and use :meth:`audformat.Table.set` to set the values.</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        index: index conform to</span>
-<span class="sd">            :ref:`table specifications &lt;data-tables:Tables&gt;`.</span>
-<span class="sd">            If ``None`` creates an empty filewise table</span>
-<span class="sd">        split_id: split identifier (must exist)</span>
-<span class="sd">        media_id: media identifier (must exist)</span>
-<span class="sd">        description: database description</span>
-<span class="sd">        meta: additional meta fields</span>
-
-<span class="sd">    Raises:</span>
-<span class="sd">        ValueError: if index not conform to</span>
-<span class="sd">            :ref:`table specifications &lt;data-tables:Tables&gt;`</span>
-
-<span class="sd">    Example:</span>
-<span class="sd">        &gt;&gt;&gt; index = filewise_index([&#39;f1&#39;, &#39;f2&#39;, &#39;f3&#39;])</span>
-<span class="sd">        &gt;&gt;&gt; table = Table(</span>
-<span class="sd">        ...     index,</span>
-<span class="sd">        ...     split_id=define.SplitType.TEST,</span>
-<span class="sd">        ... )</span>
-<span class="sd">        &gt;&gt;&gt; table[&#39;values&#39;] = Column()</span>
-<span class="sd">        &gt;&gt;&gt; table</span>
-<span class="sd">        type: filewise</span>
-<span class="sd">        split_id: test</span>
-<span class="sd">        columns:</span>
-<span class="sd">          values: {}</span>
-<span class="sd">        &gt;&gt;&gt; table.get()</span>
-<span class="sd">             values</span>
-<span class="sd">        file</span>
-<span class="sd">        f1      NaN</span>
-<span class="sd">        f2      NaN</span>
-<span class="sd">        f3      NaN</span>
-<span class="sd">        &gt;&gt;&gt; table.set({&#39;values&#39;: [0, 1, 2]})</span>
-<span class="sd">        &gt;&gt;&gt; table.get()</span>
-<span class="sd">             values</span>
-<span class="sd">        file</span>
-<span class="sd">        f1        0</span>
-<span class="sd">        f2        1</span>
-<span class="sd">        f3        2</span>
-<span class="sd">        &gt;&gt;&gt; table.get(index[:2])</span>
-<span class="sd">             values</span>
-<span class="sd">        file</span>
-<span class="sd">        f1        0</span>
-<span class="sd">        f2        1</span>
-<span class="sd">        &gt;&gt;&gt; table.get(as_segmented=True)</span>
-<span class="sd">                        values</span>
-<span class="sd">        file start  end</span>
-<span class="sd">        f1   0 days NaT      0</span>
-<span class="sd">        f2   0 days NaT      1</span>
-<span class="sd">        f3   0 days NaT      2</span>
-<span class="sd">        &gt;&gt;&gt; index_ex = filewise_index(&#39;f4&#39;)</span>
-<span class="sd">        &gt;&gt;&gt; table_ex = table.extend_index(</span>
-<span class="sd">        ...     index_ex,</span>
-<span class="sd">        ...     inplace=False,</span>
-<span class="sd">        ... )</span>
-<span class="sd">        &gt;&gt;&gt; table_ex.get()</span>
-<span class="sd">             values</span>
-<span class="sd">        file</span>
-<span class="sd">        f1        0</span>
-<span class="sd">        f2        1</span>
-<span class="sd">        f3        2</span>
-<span class="sd">        f4      NaN</span>
-<span class="sd">        &gt;&gt;&gt; table_ex.set(</span>
-<span class="sd">        ...     {&#39;values&#39;: 3},</span>
-<span class="sd">        ...     index=index_ex,</span>
-<span class="sd">        ... )</span>
-<span class="sd">        &gt;&gt;&gt; table_ex.get()</span>
-<span class="sd">             values</span>
-<span class="sd">        file</span>
-<span class="sd">        f1        0</span>
-<span class="sd">        f2        1</span>
-<span class="sd">        f3        2</span>
-<span class="sd">        f4        3</span>
-<span class="sd">        &gt;&gt;&gt; table_str = Table(index)</span>
-<span class="sd">        &gt;&gt;&gt; table_str[&#39;strings&#39;] = Column()</span>
-<span class="sd">        &gt;&gt;&gt; table_str.set({&#39;strings&#39;: [&#39;a&#39;, &#39;b&#39;, &#39;c&#39;]})</span>
-<span class="sd">        &gt;&gt;&gt; (table + table_str).get()</span>
-<span class="sd">             values strings</span>
-<span class="sd">        file</span>
-<span class="sd">        f1        0       a</span>
-<span class="sd">        f2        1       b</span>
-<span class="sd">        f3        2       c</span>
-<span class="sd">        &gt;&gt;&gt; (table_ex + table_str).get()</span>
-<span class="sd">             values strings</span>
-<span class="sd">        file</span>
-<span class="sd">        f1        0       a</span>
-<span class="sd">        f2        1       b</span>
-<span class="sd">        f3        2       c</span>
-<span class="sd">        f4        3     NaN</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span>
-            <span class="n">index</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="o">*</span><span class="p">,</span>
-            <span class="n">split_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="n">media_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="n">meta</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="p">):</span>
-        <span class="k">if</span> <span class="n">index</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">index</span> <span class="o">=</span> <span class="n">filewise_index</span><span class="p">()</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">index_type</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Table type&quot;&quot;&quot;</span>
-
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
-            <span class="n">index</span><span class="p">,</span>
-            <span class="n">split_id</span><span class="o">=</span><span class="n">split_id</span><span class="p">,</span>
-            <span class="n">media_id</span><span class="o">=</span><span class="n">media_id</span><span class="p">,</span>
-            <span class="n">description</span><span class="o">=</span><span class="n">description</span><span class="p">,</span>
-            <span class="n">meta</span><span class="o">=</span><span class="n">meta</span><span class="p">,</span>
-        <span class="p">)</span>
-
-<div class="viewcode-block" id="Table.__add__"><a class="viewcode-back" href="../../../api.html#audformat.Table.__add__">[docs]</a>    <span class="k">def</span> <span class="fm">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="s1">&#39;Table&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Table&#39;</span><span class="p">:</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Create new table by combining two tables.</span>
-
-<span class="sd">        The new table contains index and columns of both tables.</span>
-<span class="sd">        Missing values will be set to ``NaN``.</span>
-<span class="sd">        If at least one table is segmented, the output has a segmented index.</span>
-
-<span class="sd">        Columns with the same identifier are combined to a single column.</span>
-<span class="sd">        This requires that:</span>
-
-<span class="sd">        1. both columns have the same dtype</span>
-<span class="sd">        2. in places where the indices overlap the values of both columns</span>
-<span class="sd">           match or one column contains ``NaN``</span>
-
-<span class="sd">        Media and split information,</span>
-<span class="sd">        as well as,</span>
-<span class="sd">        references to schemes and raters are discarded.</span>
-<span class="sd">        If you intend to keep them,</span>
-<span class="sd">        use :meth:`audformat.Table.update`.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            other: the other table</span>
-
-<span class="sd">        Raises:</span>
-<span class="sd">            ValueError: if columns with the same name have different dtypes</span>
-<span class="sd">            ValueError: if values in the same position do not match</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">df</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">df</span><span class="p">])</span>
-
-        <span class="n">table</span> <span class="o">=</span> <span class="n">Table</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">column_id</span> <span class="ow">in</span> <span class="n">df</span><span class="p">:</span>
-            <span class="n">table</span><span class="p">[</span><span class="n">column_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">Column</span><span class="p">()</span>
-        <span class="n">table</span><span class="o">.</span><span class="n">_df</span> <span class="o">=</span> <span class="n">df</span>
-
-        <span class="k">return</span> <span class="n">table</span></div>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">ends</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">:</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Segment end times.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            timestamps</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_segmented</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">get_level_values</span><span class="p">(</span>
-                <span class="n">define</span><span class="o">.</span><span class="n">IndexField</span><span class="o">.</span><span class="n">END</span>
-            <span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">utils</span><span class="o">.</span><span class="n">to_segmented_index</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">)</span><span class="o">.</span><span class="n">get_level_values</span><span class="p">(</span>
-                <span class="n">define</span><span class="o">.</span><span class="n">IndexField</span><span class="o">.</span><span class="n">END</span>
-            <span class="p">)</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">files</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">:</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Files referenced in the table.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            files</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># We use len() here as self.df.index.empty takes a very long time</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">filewise_index</span><span class="p">()</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">get_level_values</span><span class="p">(</span><span class="n">define</span><span class="o">.</span><span class="n">IndexField</span><span class="o">.</span><span class="n">FILE</span><span class="p">)</span>
-            <span class="n">index</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">define</span><span class="o">.</span><span class="n">IndexField</span><span class="o">.</span><span class="n">FILE</span>
-            <span class="k">return</span> <span class="n">index</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">is_filewise</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Check if filewise table.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            ``True`` if filewise table.</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">define</span><span class="o">.</span><span class="n">IndexType</span><span class="o">.</span><span class="n">FILEWISE</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">is_segmented</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Check if segmented table.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            ``True`` if segmented table.</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">define</span><span class="o">.</span><span class="n">IndexType</span><span class="o">.</span><span class="n">SEGMENTED</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">starts</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">:</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Segment start times.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            timestamps</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_segmented</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">get_level_values</span><span class="p">(</span>
-                <span class="n">define</span><span class="o">.</span><span class="n">IndexField</span><span class="o">.</span><span class="n">START</span>
-            <span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">utils</span><span class="o">.</span><span class="n">to_segmented_index</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">)</span><span class="o">.</span><span class="n">get_level_values</span><span class="p">(</span>
-                <span class="n">define</span><span class="o">.</span><span class="n">IndexField</span><span class="o">.</span><span class="n">START</span>
-            <span class="p">)</span>
-
-<div class="viewcode-block" id="Table.copy"><a class="viewcode-back" href="../../../api.html#audformat.Table.copy">[docs]</a>    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Table&#39;</span><span class="p">:</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Copy table.</span>
-
-<span class="sd">        Return:</span>
-<span class="sd">            new table object</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span></div>
-
-<div class="viewcode-block" id="Table.drop_files"><a class="viewcode-back" href="../../../api.html#audformat.Table.drop_files">[docs]</a>    <span class="k">def</span> <span class="nf">drop_files</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span>
-            <span class="n">files</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span>
-                <span class="nb">str</span><span class="p">,</span>
-                <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
-                <span class="n">typing</span><span class="o">.</span><span class="n">Callable</span><span class="p">[[</span><span class="nb">str</span><span class="p">],</span> <span class="nb">bool</span><span class="p">],</span>
-            <span class="p">],</span>
-            <span class="o">*</span><span class="p">,</span>
-            <span class="n">inplace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Table&#39;</span><span class="p">:</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Drop files.</span>
-
-<span class="sd">        Remove rows with a reference to listed or matching files.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            files: list of files or condition function</span>
-<span class="sd">            inplace: drop files in place</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            new ``Table`` if ``inplace=False``, otherwise ``self``</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">inplace</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span><span class="o">.</span><span class="n">drop_files</span><span class="p">(</span><span class="n">files</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">files</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-            <span class="n">files</span> <span class="o">=</span> <span class="p">[</span><span class="n">files</span><span class="p">]</span>
-        <span class="k">if</span> <span class="n">callable</span><span class="p">(</span><span class="n">files</span><span class="p">):</span>
-            <span class="n">sel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">files</span><span class="o">.</span><span class="n">to_series</span><span class="p">()</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">files</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="o">~</span><span class="n">sel</span><span class="o">.</span><span class="n">values</span><span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">files</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">files</span><span class="p">)</span>
-            <span class="n">index</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">define</span><span class="o">.</span><span class="n">IndexField</span><span class="o">.</span><span class="n">FILE</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_segmented</span><span class="p">:</span>
-                <span class="n">level</span> <span class="o">=</span> <span class="s1">&#39;file&#39;</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">level</span> <span class="o">=</span> <span class="kc">None</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="n">level</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="bp">self</span></div>
-
-<div class="viewcode-block" id="Table.drop_index"><a class="viewcode-back" href="../../../api.html#audformat.Table.drop_index">[docs]</a>    <span class="k">def</span> <span class="nf">drop_index</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span>
-            <span class="n">index</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">,</span>
-            <span class="o">*</span><span class="p">,</span>
-            <span class="n">inplace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Table&#39;</span><span class="p">:</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Drop rows from index.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            index: index conform to</span>
-<span class="sd">                :ref:`table specifications &lt;data-tables:Tables&gt;`</span>
-<span class="sd">            inplace: drop index in place</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            new ``Table`` if ``inplace=False``, otherwise ``self``</span>
-
-<span class="sd">        Raises:</span>
-<span class="sd">            ValueError: if table type is not matched</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">inplace</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span><span class="o">.</span><span class="n">drop_index</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
-        <span class="n">input_type</span> <span class="o">=</span> <span class="n">index_type</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">!=</span> <span class="n">input_type</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s1">&#39;It is not possible to drop a &#39;</span>
-                <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">input_type</span><span class="si">}</span><span class="s1"> index &#39;</span>
-                <span class="s1">&#39;from a &#39;</span>
-                <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="si">}</span><span class="s1"> &#39;</span>
-                <span class="s1">&#39;index&#39;</span>
-            <span class="p">)</span>
-        <span class="n">new_index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">reindex</span><span class="p">(</span><span class="n">new_index</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="bp">self</span></div>
-
-<div class="viewcode-block" id="Table.extend_index"><a class="viewcode-back" href="../../../api.html#audformat.Table.extend_index">[docs]</a>    <span class="k">def</span> <span class="nf">extend_index</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span>
-            <span class="n">index</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">,</span>
-            <span class="o">*</span><span class="p">,</span>
-            <span class="n">fill_values</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span>
-                <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">]</span>
-            <span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="n">inplace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Table&#39;</span><span class="p">:</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Extend table by new rows.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            index: index conform to</span>
-<span class="sd">                :ref:`table specifications &lt;data-tables:Tables&gt;`</span>
-<span class="sd">            fill_values: replace NaN with these values (either a scalar</span>
-<span class="sd">                applied to all columns or a dictionary with column name as</span>
-<span class="sd">                key)</span>
-<span class="sd">            inplace: extend index in place</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            new ``Table`` if ``inplace=False``, otherwise ``self``</span>
-
-<span class="sd">        Raises:</span>
-<span class="sd">            ValueError: if index type is not matched</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">inplace</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span><span class="o">.</span><span class="n">extend_index</span><span class="p">(</span>
-                <span class="n">index</span><span class="p">,</span> <span class="n">fill_values</span><span class="o">=</span><span class="n">fill_values</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-            <span class="p">)</span>
-
-        <span class="n">input_type</span> <span class="o">=</span> <span class="n">index_type</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">!=</span> <span class="n">input_type</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s1">&#39;Cannot extend a &#39;</span>
-                <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="si">}</span><span class="s1"> &#39;</span>
-                <span class="sa">f</span><span class="s1">&#39;table with a &#39;</span>
-                <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">input_type</span><span class="si">}</span><span class="s1"> &#39;</span>
-                <span class="sa">f</span><span class="s1">&#39;index.&#39;</span>
-            <span class="p">)</span>
-        <span class="n">new_index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">reindex</span><span class="p">(</span><span class="n">new_index</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">fill_values</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">fill_values</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-                <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">fill_values</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="n">fill_values</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="bp">self</span></div>
-
-<div class="viewcode-block" id="Table.get"><a class="viewcode-back" href="../../../api.html#audformat.Table.get">[docs]</a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span>
-            <span class="n">index</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="o">*</span><span class="p">,</span>
-            <span class="nb">map</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Dict</span><span class="p">[</span>
-                <span class="nb">str</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span>
-            <span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="n">copy</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-            <span class="n">as_segmented</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-            <span class="n">allow_nat</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-            <span class="n">root</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="n">num_workers</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
-            <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Get labels.</span>
-
-<span class="sd">        By default, all labels of the table are returned,</span>
-<span class="sd">        use ``index`` to get a subset.</span>
-
-<span class="sd">        Examples are provided with the</span>
-<span class="sd">        :ref:`table specifications &lt;data-tables:Tables&gt;`.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            index: index conform to</span>
-<span class="sd">                :ref:`table specifications &lt;data-tables:Tables&gt;`</span>
-<span class="sd">            copy: return a copy of the labels</span>
-<span class="sd">            map: map scheme or scheme fields to column values.</span>
-<span class="sd">                For example if your table holds a column ``speaker`` with</span>
-<span class="sd">                speaker IDs, which is assigned to a scheme that contains a</span>
-<span class="sd">                dict mapping speaker IDs to age and gender entries,</span>
-<span class="sd">                ``map={&#39;speaker&#39;: [&#39;age&#39;, &#39;gender&#39;]}``</span>
-<span class="sd">                will replace the column with two new columns that map ID</span>
-<span class="sd">                values to age and gender, respectively.</span>
-<span class="sd">                To also keep the original column with speaker IDS, you can do</span>
-<span class="sd">                ``map={&#39;speaker&#39;: [&#39;speaker&#39;, &#39;age&#39;, &#39;gender&#39;]}``</span>
-<span class="sd">            as_segmented: if set to ``True``</span>
-<span class="sd">                and table has a filewise index,</span>
-<span class="sd">                the index of the returned table</span>
-<span class="sd">                will be converted to a segmented index.</span>
-<span class="sd">                ``start`` will be set to ``0`` and</span>
-<span class="sd">                ``end`` to ``NaT`` or to the file duration</span>
-<span class="sd">                if ``allow_nat`` is set to ``False``</span>
-<span class="sd">            allow_nat: if set to ``False``,</span>
-<span class="sd">                ``end=NaT`` is replaced with file duration</span>
-<span class="sd">            root: root directory under which the files are stored.</span>
-<span class="sd">                Provide if file names are relative and</span>
-<span class="sd">                database was not saved or loaded from disk.</span>
-<span class="sd">                If ``None`` :attr:`audformat.Database.root` is used.</span>
-<span class="sd">                Only relevant if ``allow_nat`` is set to ``False``</span>
-<span class="sd">            num_workers: number of parallel jobs.</span>
-<span class="sd">                If ``None`` will be set to the number of processors</span>
-<span class="sd">                on the machine multiplied by 5</span>
-<span class="sd">            verbose: show progress bar</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            labels</span>
-
-<span class="sd">        Raises:</span>
-<span class="sd">            FileNotFoundError: if file is not found</span>
-<span class="sd">            RuntimeError: if table is not assign to a database</span>
-<span class="sd">            ValueError: if trying to map without a scheme</span>
-<span class="sd">            ValueError: if trying to map from a scheme that has no labels</span>
-<span class="sd">            ValueError: if trying to map to a non-existing field</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">result</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="nb">map</span><span class="o">=</span><span class="nb">map</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="n">copy</span><span class="p">)</span>
-
-        <span class="c1"># if necessary, convert to segmented index and replace NaT</span>
-        <span class="n">is_segmented</span> <span class="o">=</span> <span class="n">index_type</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">index</span><span class="p">)</span> <span class="o">==</span> <span class="n">define</span><span class="o">.</span><span class="n">IndexType</span><span class="o">.</span><span class="n">SEGMENTED</span>
-        <span class="k">if</span> <span class="p">(</span>
-                <span class="p">(</span><span class="ow">not</span> <span class="n">is_segmented</span> <span class="ow">and</span> <span class="n">as_segmented</span><span class="p">)</span>
-                <span class="ow">or</span> <span class="p">(</span><span class="n">is_segmented</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">allow_nat</span><span class="p">)</span>
-        <span class="p">):</span>
-            <span class="n">files_duration</span> <span class="o">=</span> <span class="kc">None</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">files_duration</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">_files_duration</span>
-                <span class="n">root</span> <span class="o">=</span> <span class="n">root</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">root</span>
-            <span class="n">new_index</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">to_segmented_index</span><span class="p">(</span>
-                <span class="n">result</span><span class="o">.</span><span class="n">index</span><span class="p">,</span>
-                <span class="n">allow_nat</span><span class="o">=</span><span class="n">allow_nat</span><span class="p">,</span>
-                <span class="n">files_duration</span><span class="o">=</span><span class="n">files_duration</span><span class="p">,</span>
-                <span class="n">root</span><span class="o">=</span><span class="n">root</span><span class="p">,</span>
-                <span class="n">num_workers</span><span class="o">=</span><span class="n">num_workers</span><span class="p">,</span>
-                <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span>
-            <span class="p">)</span>
-            <span class="n">result</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">set_axis</span><span class="p">(</span><span class="n">new_index</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="n">result</span></div>
-
-<div class="viewcode-block" id="Table.pick_index"><a class="viewcode-back" href="../../../api.html#audformat.Table.pick_index">[docs]</a>    <span class="k">def</span> <span class="nf">pick_index</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span>
-            <span class="n">index</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">,</span>
-            <span class="o">*</span><span class="p">,</span>
-            <span class="n">inplace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Table&#39;</span><span class="p">:</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Pick rows from index.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            index: index conform to</span>
-<span class="sd">                :ref:`table specifications &lt;data-tables:Tables&gt;`</span>
-<span class="sd">            inplace: pick index in place</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            new ``Table`` if ``inplace=False``, otherwise ``self``</span>
-
-<span class="sd">        Raises:</span>
-<span class="sd">            ValueError: if table type is not matched</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">inplace</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span><span class="o">.</span><span class="n">pick_index</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
-        <span class="n">input_type</span> <span class="o">=</span> <span class="n">index_type</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">!=</span> <span class="n">input_type</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s1">&#39;It is not possible to pick a &#39;</span>
-                <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">input_type</span><span class="si">}</span><span class="s1"> &#39;</span>
-                <span class="s1">&#39;index from a &#39;</span>
-                <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="si">}</span><span class="s1"> &#39;</span>
-                <span class="sa">f</span><span class="s1">&#39;index&#39;</span>
-            <span class="p">)</span>
-        <span class="n">new_index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">reindex</span><span class="p">(</span><span class="n">new_index</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="bp">self</span></div>
-
-<div class="viewcode-block" id="Table.pick_files"><a class="viewcode-back" href="../../../api.html#audformat.Table.pick_files">[docs]</a>    <span class="k">def</span> <span class="nf">pick_files</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span>
-            <span class="n">files</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span>
-                <span class="nb">str</span><span class="p">,</span>
-                <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
-                <span class="n">typing</span><span class="o">.</span><span class="n">Callable</span><span class="p">[[</span><span class="nb">str</span><span class="p">],</span> <span class="nb">bool</span><span class="p">],</span>
-            <span class="p">],</span>
-            <span class="o">*</span><span class="p">,</span>
-            <span class="n">inplace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Table&#39;</span><span class="p">:</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Pick files.</span>
-
-<span class="sd">        Keep only rows with a reference to listed files or matching files.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            files: list of files or condition function</span>
-<span class="sd">            inplace: pick files in place</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            new ``Table`` if ``inplace=False``, otherwise ``self``</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">inplace</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span><span class="o">.</span><span class="n">pick_files</span><span class="p">(</span><span class="n">files</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">files</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-            <span class="n">files</span> <span class="o">=</span> <span class="p">[</span><span class="n">files</span><span class="p">]</span>
-        <span class="k">if</span> <span class="n">callable</span><span class="p">(</span><span class="n">files</span><span class="p">):</span>
-            <span class="n">sel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">files</span><span class="o">.</span><span class="n">to_series</span><span class="p">()</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">files</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">sel</span><span class="o">.</span><span class="n">values</span><span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">files</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">files</span><span class="p">)</span>
-            <span class="n">index</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">define</span><span class="o">.</span><span class="n">IndexField</span><span class="o">.</span><span class="n">FILE</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="bp">self</span></div>
-
-<div class="viewcode-block" id="Table.update"><a class="viewcode-back" href="../../../api.html#audformat.Table.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span>
-            <span class="n">others</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="s1">&#39;Table&#39;</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="s1">&#39;Table&#39;</span><span class="p">]],</span>
+            <span class="n">others</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Self</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Self</span><span class="p">]],</span>
             <span class="o">*</span><span class="p">,</span>
             <span class="n">overwrite</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Table&#39;</span><span class="p">:</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Self</span><span class="p">:</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Update table with other table(s).</span>
 
-<span class="sd">        Table which calls ``update()`` must be assigned to a database.</span>
+<span class="sd">        Table which calls ``update()``</span>
+<span class="sd">        to :ref:`combine tables &lt;combine-tables&gt;`</span>
+<span class="sd">        must be assigned to a database.</span>
 <span class="sd">        For all tables media and split must match.</span>
 
 <span class="sd">        Columns that are not yet part of the table will be added and</span>
@@ -1282,7 +809,7 @@
 <span class="sd">            ValueError: if a missing scheme or rater cannot be copied</span>
 <span class="sd">                because a different object with the same ID exists</span>
 <span class="sd">            ValueError: if values in same position overlap</span>
-<span class="sd">            ValueError: if operation would change the index type of the table</span>
+<span class="sd">            ValueError: if level and dtypes of table indices do not match</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -1290,18 +817,10 @@
                 <span class="s1">&#39;Table is not assigned to a database.&#39;</span>
             <span class="p">)</span>
 
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">others</span><span class="p">,</span> <span class="n">Table</span><span class="p">):</span>
-            <span class="n">others</span> <span class="o">=</span> <span class="p">[</span><span class="n">others</span><span class="p">]</span>
+        <span class="n">others</span> <span class="o">=</span> <span class="n">audeer</span><span class="o">.</span><span class="n">to_list</span><span class="p">(</span><span class="n">others</span><span class="p">)</span>
 
         <span class="k">for</span> <span class="n">other</span> <span class="ow">in</span> <span class="n">others</span><span class="p">:</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">!=</span> <span class="n">other</span><span class="o">.</span><span class="n">type</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                    <span class="s1">&#39;Cannot update a &#39;</span>
-                    <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="si">}</span><span class="s1"> &#39;</span>
-                    <span class="s1">&#39;table with a &#39;</span>
-                    <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">other</span><span class="o">.</span><span class="n">type</span><span class="si">}</span><span class="s1"> &#39;</span>
-                    <span class="s1">&#39;table.&#39;</span>
-                <span class="p">)</span>
+            <span class="n">_assert_table_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="s1">&#39;update&#39;</span><span class="p">)</span>
 
         <span class="k">def</span> <span class="nf">raise_error</span><span class="p">(</span>
                 <span class="n">msg</span><span class="p">,</span>
@@ -1422,6 +941,707 @@
         <span class="c1"># update table data</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_df</span> <span class="o">=</span> <span class="n">df</span>
 
+        <span class="k">return</span> <span class="bp">self</span>
+
+    <span class="k">def</span> <span class="nf">_get_by_index</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">index</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>  <span class="c1"># pragma: no cover</span>
+        <span class="c1"># Executed when calling `self.get(index=index)`.</span>
+        <span class="c1"># Returns `df, df_is_copy`</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_load_csv</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+
+        <span class="n">schemes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">schemes</span>
+        <span class="n">converters</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">dtypes</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">):</span>
+            <span class="c1"># filewise or segmented table</span>
+            <span class="n">dtypes</span><span class="p">[</span><span class="n">define</span><span class="o">.</span><span class="n">IndexField</span><span class="o">.</span><span class="n">FILE</span><span class="p">]</span> <span class="o">=</span> <span class="n">define</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">STRING</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">define</span><span class="o">.</span><span class="n">IndexType</span><span class="o">.</span><span class="n">SEGMENTED</span><span class="p">:</span>
+                <span class="n">dtypes</span><span class="p">[</span><span class="n">define</span><span class="o">.</span><span class="n">IndexField</span><span class="o">.</span><span class="n">START</span><span class="p">]</span> <span class="o">=</span> <span class="n">define</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">TIME</span>
+                <span class="n">dtypes</span><span class="p">[</span><span class="n">define</span><span class="o">.</span><span class="n">IndexField</span><span class="o">.</span><span class="n">END</span><span class="p">]</span> <span class="o">=</span> <span class="n">define</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">TIME</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># misc table</span>
+            <span class="n">dtypes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">levels</span>
+
+        <span class="c1"># index columns</span>
+        <span class="n">levels</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">dtypes</span><span class="p">)</span>
+        <span class="n">dtypes</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">level</span><span class="p">:</span> <span class="n">to_pandas_dtype</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">level</span><span class="p">,</span> <span class="n">dtype</span> <span class="ow">in</span> <span class="n">dtypes</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+        <span class="p">}</span>
+
+        <span class="c1"># other columns</span>
+        <span class="n">columns</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">column_id</span><span class="p">,</span> <span class="n">column</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">column</span><span class="o">.</span><span class="n">scheme_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">dtypes</span><span class="p">[</span><span class="n">column_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">schemes</span><span class="p">[</span><span class="n">column</span><span class="o">.</span><span class="n">scheme_id</span><span class="p">]</span><span class="o">.</span><span class="n">to_pandas_dtype</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">dtypes</span><span class="p">[</span><span class="n">column_id</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;object&#39;</span>
+
+        <span class="c1"># replace dtype with converter for dates or timestamps</span>
+        <span class="n">dtypes_wo_converters</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">column_id</span><span class="p">,</span> <span class="n">dtype</span> <span class="ow">in</span> <span class="n">dtypes</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">dtype</span> <span class="o">==</span> <span class="s1">&#39;datetime64[ns]&#39;</span><span class="p">:</span>
+                <span class="n">converters</span><span class="p">[</span><span class="n">column_id</span><span class="p">]</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">dtype</span> <span class="o">==</span> <span class="s1">&#39;timedelta64[ns]&#39;</span><span class="p">:</span>
+                <span class="n">converters</span><span class="p">[</span><span class="n">column_id</span><span class="p">]</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_timedelta</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">dtypes_wo_converters</span><span class="p">[</span><span class="n">column_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">dtype</span>
+
+        <span class="c1"># read csv</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span>
+            <span class="n">path</span><span class="p">,</span>
+            <span class="n">usecols</span><span class="o">=</span><span class="n">levels</span> <span class="o">+</span> <span class="n">columns</span><span class="p">,</span>
+            <span class="n">dtype</span><span class="o">=</span><span class="n">dtypes_wo_converters</span><span class="p">,</span>
+            <span class="n">index_col</span><span class="o">=</span><span class="n">levels</span><span class="p">,</span>
+            <span class="n">converters</span><span class="o">=</span><span class="n">converters</span><span class="p">,</span>
+            <span class="n">float_precision</span><span class="o">=</span><span class="s1">&#39;round_trip&#39;</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="c1"># For an empty CSV file</span>
+        <span class="c1"># converters will not set the correct dtype</span>
+        <span class="c1"># and we need to correct it manually</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># fix index</span>
+            <span class="n">converter_dtypes</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="n">level</span><span class="p">:</span> <span class="n">dtype</span> <span class="k">for</span> <span class="n">level</span><span class="p">,</span> <span class="n">dtype</span> <span class="ow">in</span> <span class="n">dtypes</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">level</span> <span class="ow">in</span> <span class="n">converters</span> <span class="ow">and</span> <span class="n">level</span> <span class="ow">in</span> <span class="n">levels</span>
+            <span class="p">}</span>
+            <span class="n">df</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">set_index_dtypes</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">converter_dtypes</span><span class="p">)</span>
+            <span class="c1"># fix columns</span>
+            <span class="k">for</span> <span class="n">column_id</span> <span class="ow">in</span> <span class="n">columns</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">column_id</span> <span class="ow">in</span> <span class="n">converters</span><span class="p">:</span>
+                    <span class="n">dtype</span> <span class="o">=</span> <span class="n">dtypes</span><span class="p">[</span><span class="n">column_id</span><span class="p">]</span>
+                    <span class="n">df</span><span class="p">[</span><span class="n">column_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">column_id</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_df</span> <span class="o">=</span> <span class="n">df</span>
+
+    <span class="k">def</span> <span class="nf">_load_pickled</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+
+        <span class="c1"># Older versions of audformat used xz compression</span>
+        <span class="c1"># which produced smaller files,</span>
+        <span class="c1"># but was slower.</span>
+        <span class="c1"># The try-except statement allows backward compatibility</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_pickle</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">pickle</span><span class="o">.</span><span class="n">UnpicklingError</span><span class="p">:</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_pickle</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">compression</span><span class="o">=</span><span class="s1">&#39;xz&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Older versions of audformat stored columns</span>
+        <span class="c1"># assigned to a string scheme as &#39;object&#39;,</span>
+        <span class="c1"># so we need to convert those to &#39;string&#39;</span>
+        <span class="k">for</span> <span class="n">column_id</span><span class="p">,</span> <span class="n">column</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="p">(</span>
+                <span class="n">column</span><span class="o">.</span><span class="n">scheme_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+                <span class="ow">and</span> <span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="n">column</span><span class="o">.</span><span class="n">scheme_id</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span>
+                    <span class="o">==</span> <span class="n">define</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">STRING</span>
+                <span class="p">)</span>
+                <span class="ow">and</span> <span class="n">df</span><span class="p">[</span><span class="n">column_id</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span> <span class="o">==</span> <span class="s1">&#39;object&#39;</span>
+            <span class="p">):</span>
+                <span class="n">df</span><span class="p">[</span><span class="n">column_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">column_id</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;string&#39;</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="c1"># Fix index entries as well</span>
+        <span class="k">if</span> <span class="p">(</span>
+                <span class="p">(</span>
+                    <span class="n">is_filewise_index</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+                    <span class="ow">and</span> <span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">dtype</span> <span class="o">==</span> <span class="s1">&#39;object&#39;</span>
+                <span class="p">)</span> <span class="ow">or</span> <span class="p">(</span>
+                    <span class="n">is_segmented_index</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+                    <span class="ow">and</span> <span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">dtypes</span><span class="p">[</span><span class="n">define</span><span class="o">.</span><span class="n">IndexField</span><span class="o">.</span><span class="n">FILE</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;object&#39;</span>
+                <span class="p">)</span>
+        <span class="p">):</span>
+            <span class="n">df</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">set_index_dtypes</span><span class="p">(</span>
+                <span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">,</span>
+                <span class="p">{</span><span class="n">define</span><span class="o">.</span><span class="n">IndexField</span><span class="o">.</span><span class="n">FILE</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">},</span>
+            <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_df</span> <span class="o">=</span> <span class="n">df</span>
+
+    <span class="k">def</span> <span class="nf">_save_csv</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="c1"># Load table before opening CSV file</span>
+        <span class="c1"># to avoid creating a CSV file</span>
+        <span class="c1"># that is newer than the PKL file</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
+            <span class="n">df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_save_pickled</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">to_pickle</span><span class="p">(</span>
+            <span class="n">path</span><span class="p">,</span>
+            <span class="n">protocol</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>  <span class="c1"># supported by Python &gt;= 3.4</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_set_column</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">column</span><span class="p">:</span> <span class="n">Column</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Column</span><span class="p">:</span>
+
+        <span class="n">levels</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">names</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">MultiIndex</span><span class="p">)</span>
+            <span class="k">else</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">column_id</span> <span class="ow">in</span> <span class="n">levels</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Cannot add column with ID &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">column_id</span><span class="si">}</span><span class="s2">&#39; &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;when there is an &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;index level with same name. &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;Level names are: &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">levels</span><span class="si">}</span><span class="s2">.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">column</span><span class="o">.</span><span class="n">scheme_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> \
+                <span class="n">column</span><span class="o">.</span><span class="n">scheme_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">BadIdError</span><span class="p">(</span><span class="s1">&#39;column&#39;</span><span class="p">,</span> <span class="n">column</span><span class="o">.</span><span class="n">scheme_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">column</span><span class="o">.</span><span class="n">rater_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> \
+                <span class="n">column</span><span class="o">.</span><span class="n">rater_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">raters</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">BadIdError</span><span class="p">(</span><span class="s1">&#39;rater&#39;</span><span class="p">,</span> <span class="n">column</span><span class="o">.</span><span class="n">rater_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">raters</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">column</span><span class="o">.</span><span class="n">scheme_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">dtype</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="n">column</span><span class="o">.</span><span class="n">scheme_id</span><span class="p">]</span><span class="o">.</span><span class="n">to_pandas_dtype</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">dtype</span> <span class="o">=</span> <span class="nb">object</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">column_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+
+        <span class="n">column</span><span class="o">.</span><span class="n">_id</span> <span class="o">=</span> <span class="n">column_id</span>
+        <span class="n">column</span><span class="o">.</span><span class="n">_table</span> <span class="o">=</span> <span class="bp">self</span>
+
+        <span class="k">return</span> <span class="n">column</span>
+
+
+<div class="viewcode-block" id="MiscTable"><a class="viewcode-back" href="../../../api.html#audformat.MiscTable">[docs]</a><span class="k">class</span> <span class="nc">MiscTable</span><span class="p">(</span><span class="n">Base</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Miscellaneous table.</span>
+
+<span class="sd">    .. note:: Intended for use with tables</span>
+<span class="sd">        that have an index that is not conform to</span>
+<span class="sd">        :ref:`table specifications &lt;data-tables:Tables&gt;`.</span>
+<span class="sd">        Otherwise, use :class:`audformat.Table`.</span>
+
+<span class="sd">    To fill a table with labels,</span>
+<span class="sd">    add one or more :class:`audformat.Column`</span>
+<span class="sd">    and use :meth:`audformat.MiscTable.set` to set the values.</span>
+<span class="sd">    When adding a column,</span>
+<span class="sd">    the column ID must be different</span>
+<span class="sd">    from the index level names.</span>
+<span class="sd">    When initialized with a single-level</span>
+<span class="sd">    :class:`pandas.MultiIndex`,</span>
+<span class="sd">    the index will be converted to a</span>
+<span class="sd">    :class:`pandas.Index`.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        index: table index with non-empty and unique level names</span>
+<span class="sd">        split_id: split identifier (must exist)</span>
+<span class="sd">        media_id: media identifier (must exist)</span>
+<span class="sd">        description: database description</span>
+<span class="sd">        meta: additional meta fields</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        ValueError: if level names of index are empty or not unique</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; index = pd.MultiIndex.from_tuples(</span>
+<span class="sd">        ...   [</span>
+<span class="sd">        ...     (&#39;f1&#39;, &#39;f2&#39;),</span>
+<span class="sd">        ...     (&#39;f1&#39;, &#39;f3&#39;),</span>
+<span class="sd">        ...     (&#39;f2&#39;, &#39;f3&#39;),</span>
+<span class="sd">        ...   ],</span>
+<span class="sd">        ...   names=[&#39;file&#39;, &#39;other&#39;],</span>
+<span class="sd">        ... )</span>
+<span class="sd">        &gt;&gt;&gt; index = utils.set_index_dtypes(index, &#39;string&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; table = MiscTable(</span>
+<span class="sd">        ...     index,</span>
+<span class="sd">        ...     split_id=define.SplitType.TEST,</span>
+<span class="sd">        ... )</span>
+<span class="sd">        &gt;&gt;&gt; table[&#39;match&#39;] = Column()</span>
+<span class="sd">        &gt;&gt;&gt; table</span>
+<span class="sd">        levels: {file: str, other: str}</span>
+<span class="sd">        split_id: test</span>
+<span class="sd">        columns:</span>
+<span class="sd">          match: {}</span>
+<span class="sd">        &gt;&gt;&gt; table.get()</span>
+<span class="sd">                   match</span>
+<span class="sd">        file other</span>
+<span class="sd">        f1   f2      NaN</span>
+<span class="sd">             f3      NaN</span>
+<span class="sd">        f2   f3      NaN</span>
+<span class="sd">        &gt;&gt;&gt; table.set({&#39;match&#39;: [True, False, True]})</span>
+<span class="sd">        &gt;&gt;&gt; table.get()</span>
+<span class="sd">                   match</span>
+<span class="sd">        file other</span>
+<span class="sd">        f1   f2     True</span>
+<span class="sd">             f3    False</span>
+<span class="sd">        f2   f3     True</span>
+<span class="sd">        &gt;&gt;&gt; table.get(index[:2])</span>
+<span class="sd">                   match</span>
+<span class="sd">        file other</span>
+<span class="sd">        f1   f2     True</span>
+<span class="sd">             f3    False</span>
+<span class="sd">        &gt;&gt;&gt; index_new = pd.MultiIndex.from_tuples(</span>
+<span class="sd">        ...   [</span>
+<span class="sd">        ...     (&#39;f4&#39;, &#39;f1&#39;),</span>
+<span class="sd">        ...   ],</span>
+<span class="sd">        ...   names=[&#39;file&#39;, &#39;other&#39;],</span>
+<span class="sd">        ... )</span>
+<span class="sd">        &gt;&gt;&gt; index_new = utils.set_index_dtypes(index_new, &#39;string&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; table_ex = table.extend_index(</span>
+<span class="sd">        ...     index_new,</span>
+<span class="sd">        ...     inplace=False,</span>
+<span class="sd">        ... )</span>
+<span class="sd">        &gt;&gt;&gt; table_ex.get()</span>
+<span class="sd">                    match</span>
+<span class="sd">        file other</span>
+<span class="sd">        f1   f2      True</span>
+<span class="sd">             f3     False</span>
+<span class="sd">        f2   f3      True</span>
+<span class="sd">        f4   f1       NaN</span>
+<span class="sd">        &gt;&gt;&gt; table_ex.set(</span>
+<span class="sd">        ...     {&#39;match&#39;: True},</span>
+<span class="sd">        ...     index=index_new,</span>
+<span class="sd">        ... )</span>
+<span class="sd">        &gt;&gt;&gt; table_ex.get()</span>
+<span class="sd">                    match</span>
+<span class="sd">        file other</span>
+<span class="sd">        f1   f2      True</span>
+<span class="sd">             f3     False</span>
+<span class="sd">        f2   f3      True</span>
+<span class="sd">        f4   f1      True</span>
+<span class="sd">        &gt;&gt;&gt; table_str = MiscTable(index)</span>
+<span class="sd">        &gt;&gt;&gt; table_str[&#39;strings&#39;] = Column()</span>
+<span class="sd">        &gt;&gt;&gt; table_str.set({&#39;strings&#39;: [&#39;a&#39;, &#39;b&#39;, &#39;c&#39;]})</span>
+<span class="sd">        &gt;&gt;&gt; (table + table_str).get()</span>
+<span class="sd">                    match strings</span>
+<span class="sd">        file other</span>
+<span class="sd">        f1   f2      True       a</span>
+<span class="sd">             f3     False       b</span>
+<span class="sd">        f2   f3      True       c</span>
+<span class="sd">        &gt;&gt;&gt; (table_ex + table_str).get()</span>
+<span class="sd">                    match strings</span>
+<span class="sd">        file other</span>
+<span class="sd">        f1   f2      True       a</span>
+<span class="sd">             f3     False       b</span>
+<span class="sd">        f2   f3      True       c</span>
+<span class="sd">        f4   f1      True     NaN</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">index</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">,</span>
+            <span class="o">*</span><span class="p">,</span>
+            <span class="n">split_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">media_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">meta</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">levels</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Index levels.&quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">index</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+
+            <span class="c1"># convert single-level pd.MultiIndex to pd.Index</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">MultiIndex</span><span class="p">)</span> <span class="ow">and</span> <span class="n">index</span><span class="o">.</span><span class="n">nlevels</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">index</span> <span class="o">=</span> <span class="n">index</span><span class="o">.</span><span class="n">get_level_values</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+            <span class="c1"># Ensure integers are always stored as Int64</span>
+            <span class="n">index</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">_maybe_convert_int_dtype</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+
+            <span class="n">levels</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">_levels</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="n">levels</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">levels</span><span class="p">)</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">levels</span><span class="p">)):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s1">&#39;Got index with levels &#39;</span>
+                    <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">levels</span><span class="si">}</span><span class="s1">, &#39;</span>
+                    <span class="sa">f</span><span class="s1">&#39;but names must be non-empty and unique.&#39;</span>
+                <span class="p">)</span>
+
+            <span class="n">dtypes</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">to_audformat_dtype</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">dtype</span> <span class="ow">in</span> <span class="n">utils</span><span class="o">.</span><span class="n">_dtypes</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+            <span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">levels</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="n">level</span><span class="p">:</span> <span class="n">dtype</span> <span class="k">for</span> <span class="n">level</span><span class="p">,</span> <span class="n">dtype</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">levels</span><span class="p">,</span> <span class="n">dtypes</span><span class="p">)</span>
+            <span class="p">}</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">index</span><span class="p">,</span>
+            <span class="n">split_id</span><span class="o">=</span><span class="n">split_id</span><span class="p">,</span>
+            <span class="n">media_id</span><span class="o">=</span><span class="n">media_id</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="n">description</span><span class="p">,</span>
+            <span class="n">meta</span><span class="o">=</span><span class="n">meta</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_get_by_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">index</span><span class="p">],</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="Table"><a class="viewcode-back" href="../../../api.html#audformat.Table">[docs]</a><span class="k">class</span> <span class="nc">Table</span><span class="p">(</span><span class="n">Base</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Table conform to :ref:`table specifications &lt;data-tables:Tables&gt;`.</span>
+
+<span class="sd">    Consists of a list of file names to which it assigns</span>
+<span class="sd">    numerical values or labels.</span>
+<span class="sd">    To fill a table with labels,</span>
+<span class="sd">    add one or more :class:`audformat.Column`</span>
+<span class="sd">    and use :meth:`audformat.Table.set` to set the values.</span>
+<span class="sd">    When adding a column,</span>
+<span class="sd">    the column ID must be different</span>
+<span class="sd">    from the index level names,</span>
+<span class="sd">    which are ``&#39;file&#39;``</span>
+<span class="sd">    in case of a ``filewise`` table</span>
+<span class="sd">    and ``&#39;file&#39;``, ``&#39;start&#39;`` and ``&#39;end&#39;``</span>
+<span class="sd">    in case of ``segmented`` table.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        index: index conform to</span>
+<span class="sd">            :ref:`table specifications &lt;data-tables:Tables&gt;`.</span>
+<span class="sd">            If ``None`` creates an empty filewise table</span>
+<span class="sd">        split_id: split identifier (must exist)</span>
+<span class="sd">        media_id: media identifier (must exist)</span>
+<span class="sd">        description: database description</span>
+<span class="sd">        meta: additional meta fields</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        ValueError: if index not conform to</span>
+<span class="sd">            :ref:`table specifications &lt;data-tables:Tables&gt;`</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; index = filewise_index([&#39;f1&#39;, &#39;f2&#39;, &#39;f3&#39;])</span>
+<span class="sd">        &gt;&gt;&gt; table = Table(</span>
+<span class="sd">        ...     index,</span>
+<span class="sd">        ...     split_id=define.SplitType.TEST,</span>
+<span class="sd">        ... )</span>
+<span class="sd">        &gt;&gt;&gt; table[&#39;values&#39;] = Column()</span>
+<span class="sd">        &gt;&gt;&gt; table</span>
+<span class="sd">        type: filewise</span>
+<span class="sd">        split_id: test</span>
+<span class="sd">        columns:</span>
+<span class="sd">          values: {}</span>
+<span class="sd">        &gt;&gt;&gt; table.get()</span>
+<span class="sd">             values</span>
+<span class="sd">        file</span>
+<span class="sd">        f1      NaN</span>
+<span class="sd">        f2      NaN</span>
+<span class="sd">        f3      NaN</span>
+<span class="sd">        &gt;&gt;&gt; table.set({&#39;values&#39;: [0, 1, 2]})</span>
+<span class="sd">        &gt;&gt;&gt; table.get()</span>
+<span class="sd">             values</span>
+<span class="sd">        file</span>
+<span class="sd">        f1        0</span>
+<span class="sd">        f2        1</span>
+<span class="sd">        f3        2</span>
+<span class="sd">        &gt;&gt;&gt; table.get(index[:2])</span>
+<span class="sd">             values</span>
+<span class="sd">        file</span>
+<span class="sd">        f1        0</span>
+<span class="sd">        f2        1</span>
+<span class="sd">        &gt;&gt;&gt; table.get(as_segmented=True)</span>
+<span class="sd">                        values</span>
+<span class="sd">        file start  end</span>
+<span class="sd">        f1   0 days NaT      0</span>
+<span class="sd">        f2   0 days NaT      1</span>
+<span class="sd">        f3   0 days NaT      2</span>
+<span class="sd">        &gt;&gt;&gt; index_new = filewise_index(&#39;f4&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; table_ex = table.extend_index(</span>
+<span class="sd">        ...     index_new,</span>
+<span class="sd">        ...     inplace=False,</span>
+<span class="sd">        ... )</span>
+<span class="sd">        &gt;&gt;&gt; table_ex.get()</span>
+<span class="sd">             values</span>
+<span class="sd">        file</span>
+<span class="sd">        f1        0</span>
+<span class="sd">        f2        1</span>
+<span class="sd">        f3        2</span>
+<span class="sd">        f4      NaN</span>
+<span class="sd">        &gt;&gt;&gt; table_ex.set(</span>
+<span class="sd">        ...     {&#39;values&#39;: 3},</span>
+<span class="sd">        ...     index=index_new,</span>
+<span class="sd">        ... )</span>
+<span class="sd">        &gt;&gt;&gt; table_ex.get()</span>
+<span class="sd">             values</span>
+<span class="sd">        file</span>
+<span class="sd">        f1        0</span>
+<span class="sd">        f2        1</span>
+<span class="sd">        f3        2</span>
+<span class="sd">        f4        3</span>
+<span class="sd">        &gt;&gt;&gt; table_str = Table(index)</span>
+<span class="sd">        &gt;&gt;&gt; table_str[&#39;strings&#39;] = Column()</span>
+<span class="sd">        &gt;&gt;&gt; table_str.set({&#39;strings&#39;: [&#39;a&#39;, &#39;b&#39;, &#39;c&#39;]})</span>
+<span class="sd">        &gt;&gt;&gt; (table + table_str).get()</span>
+<span class="sd">             values strings</span>
+<span class="sd">        file</span>
+<span class="sd">        f1        0       a</span>
+<span class="sd">        f2        1       b</span>
+<span class="sd">        f3        2       c</span>
+<span class="sd">        &gt;&gt;&gt; (table_ex + table_str).get()</span>
+<span class="sd">             values strings</span>
+<span class="sd">        file</span>
+<span class="sd">        f1        0       a</span>
+<span class="sd">        f2        1       b</span>
+<span class="sd">        f3        2       c</span>
+<span class="sd">        f4        3     NaN</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">index</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="o">*</span><span class="p">,</span>
+            <span class="n">split_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">media_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">meta</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="k">if</span> <span class="n">index</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">index</span> <span class="o">=</span> <span class="n">filewise_index</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">index_type</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Table type&quot;&quot;&quot;</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">index</span><span class="p">,</span>
+            <span class="n">split_id</span><span class="o">=</span><span class="n">split_id</span><span class="p">,</span>
+            <span class="n">media_id</span><span class="o">=</span><span class="n">media_id</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="n">description</span><span class="p">,</span>
+            <span class="n">meta</span><span class="o">=</span><span class="n">meta</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">ends</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">:</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Segment end times.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            timestamps</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_segmented</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">get_level_values</span><span class="p">(</span>
+                <span class="n">define</span><span class="o">.</span><span class="n">IndexField</span><span class="o">.</span><span class="n">END</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">utils</span><span class="o">.</span><span class="n">to_segmented_index</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">)</span><span class="o">.</span><span class="n">get_level_values</span><span class="p">(</span>
+                <span class="n">define</span><span class="o">.</span><span class="n">IndexField</span><span class="o">.</span><span class="n">END</span>
+            <span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">files</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">:</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Files referenced in the table.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            files</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># We use len() here as self.df.index.empty takes a very long time</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">filewise_index</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">get_level_values</span><span class="p">(</span><span class="n">define</span><span class="o">.</span><span class="n">IndexField</span><span class="o">.</span><span class="n">FILE</span><span class="p">)</span>
+            <span class="n">index</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">define</span><span class="o">.</span><span class="n">IndexField</span><span class="o">.</span><span class="n">FILE</span>
+            <span class="k">return</span> <span class="n">index</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">is_filewise</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Check if filewise table.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            ``True`` if filewise table.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">define</span><span class="o">.</span><span class="n">IndexType</span><span class="o">.</span><span class="n">FILEWISE</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">is_segmented</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Check if segmented table.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            ``True`` if segmented table.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">define</span><span class="o">.</span><span class="n">IndexType</span><span class="o">.</span><span class="n">SEGMENTED</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">starts</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">:</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Segment start times.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            timestamps</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_segmented</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">get_level_values</span><span class="p">(</span>
+                <span class="n">define</span><span class="o">.</span><span class="n">IndexField</span><span class="o">.</span><span class="n">START</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">utils</span><span class="o">.</span><span class="n">to_segmented_index</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">)</span><span class="o">.</span><span class="n">get_level_values</span><span class="p">(</span>
+                <span class="n">define</span><span class="o">.</span><span class="n">IndexField</span><span class="o">.</span><span class="n">START</span>
+            <span class="p">)</span>
+
+<div class="viewcode-block" id="Table.drop_files"><a class="viewcode-back" href="../../../api.html#audformat.Table.drop_files">[docs]</a>    <span class="k">def</span> <span class="nf">drop_files</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">files</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span>
+                <span class="nb">str</span><span class="p">,</span>
+                <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+                <span class="n">typing</span><span class="o">.</span><span class="n">Callable</span><span class="p">[[</span><span class="nb">str</span><span class="p">],</span> <span class="nb">bool</span><span class="p">],</span>
+            <span class="p">],</span>
+            <span class="o">*</span><span class="p">,</span>
+            <span class="n">inplace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Table</span><span class="p">:</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Drop files.</span>
+
+<span class="sd">        Remove rows with a reference to listed or matching files.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            files: list of files or condition function</span>
+<span class="sd">            inplace: drop files in place</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            new object if ``inplace=False``, otherwise ``self``</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">inplace</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span><span class="o">.</span><span class="n">drop_files</span><span class="p">(</span><span class="n">files</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">files</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">files</span> <span class="o">=</span> <span class="p">[</span><span class="n">files</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">callable</span><span class="p">(</span><span class="n">files</span><span class="p">):</span>
+            <span class="n">sel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">files</span><span class="o">.</span><span class="n">to_series</span><span class="p">()</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">files</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="o">~</span><span class="n">sel</span><span class="o">.</span><span class="n">values</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">files</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">files</span><span class="p">)</span>
+            <span class="n">index</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">define</span><span class="o">.</span><span class="n">IndexField</span><span class="o">.</span><span class="n">FILE</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_segmented</span><span class="p">:</span>
+                <span class="n">level</span> <span class="o">=</span> <span class="s1">&#39;file&#39;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">level</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="n">level</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="Table.get"><a class="viewcode-back" href="../../../api.html#audformat.Table.get">[docs]</a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">index</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="o">*</span><span class="p">,</span>
+            <span class="nb">map</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Dict</span><span class="p">[</span>
+                <span class="nb">str</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span>
+            <span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">copy</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="n">as_segmented</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+            <span class="n">allow_nat</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="n">root</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">num_workers</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+            <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Get labels.</span>
+
+<span class="sd">        By default, all labels of the table are returned,</span>
+<span class="sd">        use ``index`` to get a subset.</span>
+
+<span class="sd">        Examples are provided with the</span>
+<span class="sd">        :ref:`table specifications &lt;data-tables:Tables&gt;`.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            index: index conform to</span>
+<span class="sd">                :ref:`table specifications &lt;data-tables:Tables&gt;`</span>
+<span class="sd">            copy: return a copy of the labels</span>
+<span class="sd">            map: :ref:`map scheme or scheme fields to column values</span>
+<span class="sd">                &lt;map-scheme-labels&gt;`.</span>
+<span class="sd">                For example if your table holds a column ``speaker`` with</span>
+<span class="sd">                speaker IDs, which is assigned to a scheme that contains a</span>
+<span class="sd">                dict mapping speaker IDs to age and gender entries,</span>
+<span class="sd">                ``map={&#39;speaker&#39;: [&#39;age&#39;, &#39;gender&#39;]}``</span>
+<span class="sd">                will replace the column with two new columns that map ID</span>
+<span class="sd">                values to age and gender, respectively.</span>
+<span class="sd">                To also keep the original column with speaker IDS, you can do</span>
+<span class="sd">                ``map={&#39;speaker&#39;: [&#39;speaker&#39;, &#39;age&#39;, &#39;gender&#39;]}``</span>
+<span class="sd">            as_segmented: if set to ``True``</span>
+<span class="sd">                and table has a filewise index,</span>
+<span class="sd">                the index of the returned table</span>
+<span class="sd">                will be converted to a segmented index.</span>
+<span class="sd">                ``start`` will be set to ``0`` and</span>
+<span class="sd">                ``end`` to ``NaT`` or to the file duration</span>
+<span class="sd">                if ``allow_nat`` is set to ``False``</span>
+<span class="sd">            allow_nat: if set to ``False``,</span>
+<span class="sd">                ``end=NaT`` is replaced with file duration</span>
+<span class="sd">            root: root directory under which the files are stored.</span>
+<span class="sd">                Provide if file names are relative and</span>
+<span class="sd">                database was not saved or loaded from disk.</span>
+<span class="sd">                If ``None`` :attr:`audformat.Database.root` is used.</span>
+<span class="sd">                Only relevant if ``allow_nat`` is set to ``False``</span>
+<span class="sd">            num_workers: number of parallel jobs.</span>
+<span class="sd">                If ``None`` will be set to the number of processors</span>
+<span class="sd">                on the machine multiplied by 5</span>
+<span class="sd">            verbose: show progress bar</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            labels</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            FileNotFoundError: if file is not found</span>
+<span class="sd">            RuntimeError: if table is not assign to a database</span>
+<span class="sd">            ValueError: if trying to map without a scheme</span>
+<span class="sd">            ValueError: if trying to map from a scheme that has no labels</span>
+<span class="sd">            ValueError: if trying to map to a non-existing field</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="nb">map</span><span class="o">=</span><span class="nb">map</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="n">copy</span><span class="p">)</span>
+
+        <span class="c1"># if necessary, convert to segmented index and replace NaT</span>
+        <span class="n">is_segmented</span> <span class="o">=</span> <span class="n">is_segmented_index</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span>
+                <span class="p">(</span><span class="ow">not</span> <span class="n">is_segmented</span> <span class="ow">and</span> <span class="n">as_segmented</span><span class="p">)</span>
+                <span class="ow">or</span> <span class="p">(</span><span class="n">is_segmented</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">allow_nat</span><span class="p">)</span>
+        <span class="p">):</span>
+            <span class="n">files_duration</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">files_duration</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">_files_duration</span>
+                <span class="n">root</span> <span class="o">=</span> <span class="n">root</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">root</span>
+            <span class="n">new_index</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">to_segmented_index</span><span class="p">(</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">index</span><span class="p">,</span>
+                <span class="n">allow_nat</span><span class="o">=</span><span class="n">allow_nat</span><span class="p">,</span>
+                <span class="n">files_duration</span><span class="o">=</span><span class="n">files_duration</span><span class="p">,</span>
+                <span class="n">root</span><span class="o">=</span><span class="n">root</span><span class="p">,</span>
+                <span class="n">num_workers</span><span class="o">=</span><span class="n">num_workers</span><span class="p">,</span>
+                <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">set_axis</span><span class="p">(</span><span class="n">new_index</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">result</span></div>
+
+<div class="viewcode-block" id="Table.pick_files"><a class="viewcode-back" href="../../../api.html#audformat.Table.pick_files">[docs]</a>    <span class="k">def</span> <span class="nf">pick_files</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">files</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span>
+                <span class="nb">str</span><span class="p">,</span>
+                <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+                <span class="n">typing</span><span class="o">.</span><span class="n">Callable</span><span class="p">[[</span><span class="nb">str</span><span class="p">],</span> <span class="nb">bool</span><span class="p">],</span>
+            <span class="p">],</span>
+            <span class="o">*</span><span class="p">,</span>
+            <span class="n">inplace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Table</span><span class="p">:</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Pick files.</span>
+
+<span class="sd">        Keep only rows with a reference to listed files or matching files.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            files: list of files or condition function</span>
+<span class="sd">            inplace: pick files in place</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            new object if ``inplace=False``, otherwise ``self``</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">inplace</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span><span class="o">.</span><span class="n">pick_files</span><span class="p">(</span><span class="n">files</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">files</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">files</span> <span class="o">=</span> <span class="p">[</span><span class="n">files</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">callable</span><span class="p">(</span><span class="n">files</span><span class="p">):</span>
+            <span class="n">sel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">files</span><span class="o">.</span><span class="n">to_series</span><span class="p">()</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">files</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">sel</span><span class="o">.</span><span class="n">values</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">files</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">files</span><span class="p">)</span>
+            <span class="n">index</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">define</span><span class="o">.</span><span class="n">IndexField</span><span class="o">.</span><span class="n">FILE</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
         <span class="k">return</span> <span class="bp">self</span></div>
 
     <span class="k">def</span> <span class="nf">_get_by_index</span><span class="p">(</span>
@@ -1446,28 +1666,57 @@
                 <span class="n">files</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">dict</span><span class="o">.</span><span class="n">fromkeys</span><span class="p">(</span><span class="n">files</span><span class="p">))</span>  <span class="c1"># remove duplicates</span>
                 <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">files</span><span class="p">]</span>
 
-        <span class="k">return</span> <span class="n">result</span><span class="p">,</span> <span class="n">result_is_copy</span>
+        <span class="k">return</span> <span class="n">result</span><span class="p">,</span> <span class="n">result_is_copy</span></div>
 
-    <span class="k">def</span> <span class="nf">_index_levels_and_converters</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Tuple</span><span class="p">[</span>
-        <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
-        <span class="n">typing</span><span class="o">.</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Callable</span><span class="p">],</span>
-    <span class="p">]:</span>
-        <span class="n">converters</span> <span class="o">=</span> <span class="p">{}</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">define</span><span class="o">.</span><span class="n">IndexType</span><span class="o">.</span><span class="n">SEGMENTED</span><span class="p">:</span>
-            <span class="n">converters</span><span class="p">[</span><span class="n">define</span><span class="o">.</span><span class="n">IndexField</span><span class="o">.</span><span class="n">START</span><span class="p">]</span> <span class="o">=</span> \
-                <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_timedelta</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-            <span class="n">converters</span><span class="p">[</span><span class="n">define</span><span class="o">.</span><span class="n">IndexField</span><span class="o">.</span><span class="n">END</span><span class="p">]</span> <span class="o">=</span> \
-                <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_timedelta</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-            <span class="n">levels</span> <span class="o">=</span> <span class="p">[</span>
-                <span class="n">define</span><span class="o">.</span><span class="n">IndexField</span><span class="o">.</span><span class="n">FILE</span><span class="p">,</span>
-                <span class="n">define</span><span class="o">.</span><span class="n">IndexField</span><span class="o">.</span><span class="n">START</span><span class="p">,</span>
-                <span class="n">define</span><span class="o">.</span><span class="n">IndexField</span><span class="o">.</span><span class="n">END</span><span class="p">,</span>
-            <span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">levels</span> <span class="o">=</span> <span class="p">[</span><span class="n">define</span><span class="o">.</span><span class="n">IndexField</span><span class="o">.</span><span class="n">FILE</span><span class="p">]</span>
+<span class="k">def</span> <span class="nf">_assert_table_index</span><span class="p">(</span>
+        <span class="n">table</span><span class="p">:</span> <span class="n">Base</span><span class="p">,</span>
+        <span class="n">index</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">,</span>
+        <span class="n">operation</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Raise error if index does not match table.&quot;&quot;&quot;</span>
 
-        <span class="k">return</span> <span class="n">levels</span><span class="p">,</span> <span class="n">converters</span></div>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">Table</span><span class="p">):</span>
+        <span class="n">input_type</span> <span class="o">=</span> <span class="n">index_type</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">table</span><span class="o">.</span><span class="n">type</span> <span class="o">!=</span> <span class="n">input_type</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">&#39;Cannot &#39;</span>
+                <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">operation</span><span class="si">}</span><span class="s1"> &#39;</span>
+                <span class="sa">f</span><span class="s1">&#39;a &#39;</span>
+                <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">table</span><span class="o">.</span><span class="n">type</span><span class="si">}</span><span class="s1"> &#39;</span>
+                <span class="sa">f</span><span class="s1">&#39;table with a &#39;</span>
+                <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">input_type</span><span class="si">}</span><span class="s1"> &#39;</span>
+                <span class="sa">f</span><span class="s1">&#39;index.&#39;</span>
+            <span class="p">)</span>
+    <span class="k">elif</span> <span class="ow">not</span> <span class="n">utils</span><span class="o">.</span><span class="n">is_index_alike</span><span class="p">([</span><span class="n">table</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">index</span><span class="p">]):</span>
+
+        <span class="n">want</span> <span class="o">=</span> <span class="n">index</span><span class="o">.</span><span class="n">dtypes</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">MultiIndex</span><span class="p">)</span>\
+            <span class="k">else</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">index</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">([</span><span class="n">index</span><span class="o">.</span><span class="n">name</span><span class="p">]))</span>
+        <span class="n">want</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n\t</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">want</span><span class="o">.</span><span class="n">to_string</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">))</span>
+
+        <span class="n">got</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">dtypes</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">table</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">MultiIndex</span><span class="p">)</span>\
+            <span class="k">else</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">table</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">([</span><span class="n">table</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">name</span><span class="p">]))</span>
+        <span class="n">got</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n\t</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">got</span><span class="o">.</span><span class="n">to_string</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">))</span>
+
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s1">&#39;Cannot &#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">operation</span><span class="si">}</span><span class="s1"> &#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;table if input index and table index are not alike.</span><span class="se">\n</span><span class="s1">&#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;Expected index:</span><span class="se">\n</span><span class="s1">&#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;</span><span class="se">\t</span><span class="si">{</span><span class="n">want</span><span class="si">}</span><span class="s1">&#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">but yours is:</span><span class="se">\n</span><span class="s1">&#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;</span><span class="se">\t</span><span class="si">{</span><span class="n">got</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_maybe_update_scheme</span><span class="p">(</span>
+        <span class="n">table</span><span class="p">:</span> <span class="n">Base</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Replace labels if table is used in a scheme.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">table</span><span class="o">.</span><span class="n">db</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">MiscTable</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">scheme</span> <span class="ow">in</span> <span class="n">table</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">table</span><span class="o">.</span><span class="n">_id</span> <span class="o">==</span> <span class="n">scheme</span><span class="o">.</span><span class="n">labels</span><span class="p">:</span>
+                <span class="n">scheme</span><span class="o">.</span><span class="n">replace_labels</span><span class="p">(</span><span class="n">table</span><span class="o">.</span><span class="n">_id</span><span class="p">)</span>
 </pre></div>
 
            </div>
@@ -1483,7 +1732,7 @@
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2022/06/01 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2022/08/05 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>

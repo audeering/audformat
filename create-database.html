@@ -76,7 +76,7 @@
             
             
               <div class="version">
-                v0.14.3
+                v0.15.0
               </div>
             
           
@@ -121,6 +121,7 @@
 <li class="toctree-l1"><a class="reference internal" href="data-conventions.html">Conventions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data-header.html">Header</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data-tables.html">Tables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data-misc-tables.html">Misc Tables</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data-example.html">Example</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Documentation</span></p>
@@ -173,7 +174,7 @@
            <div itemprop="articleBody">
             
   <div class="section" id="create-a-database">
-<h1>Create a database<a class="headerlink" href="#create-a-database" title="Permalink to this heading">¶</a></h1>
+<span id="id1"></span><h1>Create a database<a class="headerlink" href="#create-a-database" title="Permalink to this heading">¶</a></h1>
 <p>The following examples show you
 how to create a <a class="reference internal" href="api.html#audformat.Database" title="audformat.Database"><code class="xref py py-class docutils literal notranslate"><span class="pre">audformat.Database</span></code></a>
 and store it to the disk.</p>
@@ -191,7 +192,7 @@ three raters annotated the files
 for the emotion anger in the range 0 to 5.</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">io</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">io</span>
 
 
 <span class="c1"># Create dummy CSV data.</span>
@@ -219,7 +220,7 @@ Each column has the scheme ID <code class="docutils literal notranslate"><span c
 for the defined scheme covering the emotion anger.</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">audformat</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">audformat</span>
 
 
 <span class="n">df</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">CSV</span><span class="p">)</span>
@@ -264,7 +265,7 @@ for the defined scheme covering the emotion anger.</p>
 <p>The resulting <a class="reference internal" href="api.html#audformat.Database" title="audformat.Database"><code class="xref py py-class docutils literal notranslate"><span class="pre">audformat.Database</span></code></a> will then contain:</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">db</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">db</span>
 </pre></div>
 </div>
 </div>
@@ -309,7 +310,7 @@ It provides you with a command to create a database,
 containing all possible <a class="reference internal" href="data-tables.html#tables"><span class="std std-ref">tables types</span></a>:</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">audformat.testing</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">audformat.testing</span>
 
 
 <span class="n">db</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">create_db</span><span class="p">()</span>
@@ -322,7 +323,7 @@ containing all possible <a class="reference internal" href="data-tables.html#tab
 <p>Which results in the following <a class="reference internal" href="api.html#audformat.Table" title="audformat.Table"><code class="xref py py-class docutils literal notranslate"><span class="pre">audformat.Table</span></code></a> objects:</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="o">.</span><span class="n">tables</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="o">.</span><span class="n">tables</span>
 </pre></div>
 </div>
 </div>
@@ -341,6 +342,7 @@ containing all possible <a class="reference internal" href="data-tables.html#tab
     label_map_str: {scheme_id: label_map_str, rater_id: gold}
     string: {scheme_id: string, rater_id: gold}
     time: {scheme_id: time, rater_id: gold}
+    label_map_misc: {scheme_id: label_map_misc, rater_id: gold}
     no_scheme: {}
 segments:
   type: segmented
@@ -356,6 +358,7 @@ segments:
     label_map_str: {scheme_id: label_map_str, rater_id: gold}
     string: {scheme_id: string, rater_id: gold}
     time: {scheme_id: time, rater_id: gold}
+    label_map_misc: {scheme_id: label_map_misc, rater_id: gold}
     no_scheme: {}
 </pre></div>
 </div>
@@ -366,7 +369,7 @@ containing only the minimum entries,
 required by the <a class="reference internal" href="data-header.html#database"><span class="std std-ref">database specification</span></a>:</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">db_minimal</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">create_db</span><span class="p">(</span><span class="n">minimal</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">db_minimal</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">create_db</span><span class="p">(</span><span class="n">minimal</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -376,7 +379,7 @@ required by the <a class="reference internal" href="data-header.html#database"><
 <p>Which results in the following <a class="reference internal" href="api.html#audformat.Database" title="audformat.Database"><code class="xref py py-class docutils literal notranslate"><span class="pre">audformat.Database</span></code></a>:</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">db_minimal</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">db_minimal</span>
 </pre></div>
 </div>
 </div>
@@ -415,7 +418,7 @@ languages: [deu, eng]
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2022/06/01 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2022/08/05 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>

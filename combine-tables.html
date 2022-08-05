@@ -76,7 +76,7 @@
             
             
               <div class="version">
-                v0.14.3
+                v0.15.0
               </div>
             
           
@@ -117,6 +117,7 @@
 <li class="toctree-l1"><a class="reference internal" href="data-conventions.html">Conventions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data-header.html">Header</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data-tables.html">Tables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data-misc-tables.html">Misc Tables</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data-example.html">Example</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Documentation</span></p>
@@ -169,14 +170,14 @@
            <div itemprop="articleBody">
             
   <div class="section" id="combine-tables">
-<h1>Combine tables<a class="headerlink" href="#combine-tables" title="Permalink to this heading">¶</a></h1>
+<span id="id1"></span><h1>Combine tables<a class="headerlink" href="#combine-tables" title="Permalink to this heading">¶</a></h1>
 <p>It can happen that labels in your database are stored
 in tables of different type as some labels belong to the whole file,
 others don’t. The following examples highlights this with the labels
 for age and likability:</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">audformat.testing</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">audformat.testing</span>
 
 
 <span class="n">db</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">create_db</span><span class="p">(</span><span class="n">minimal</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -208,10 +209,10 @@ for age and likability:</p>
 <div class="cell_output docutils container">
 </div>
 </div>
-<p>Which results in the following two <code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code>:</p>
+<p>Which results in the following two <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a>:</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">display</span><span class="p">(</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">display</span><span class="p">(</span>
     <span class="n">db</span><span class="p">[</span><span class="s1">&#39;age&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span>
     <span class="n">db</span><span class="p">[</span><span class="s1">&#39;likability&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span>
 <span class="p">)</span>
@@ -247,15 +248,15 @@ for age and likability:</p>
   <tbody>
     <tr>
       <th>audio/001.wav</th>
-      <td>36</td>
+      <td>43</td>
     </tr>
     <tr>
       <th>audio/002.wav</th>
-      <td>41</td>
+      <td>40</td>
     </tr>
     <tr>
       <th>audio/003.wav</th>
-      <td>40</td>
+      <td>43</td>
     </tr>
   </tbody>
 </table>
@@ -291,107 +292,107 @@ for age and likability:</p>
   <tbody>
     <tr>
       <th rowspan="5" valign="top">audio/001.wav</th>
-      <th>0 days 00:00:00.056676408</th>
-      <th>0 days 00:00:01.251912294</th>
-      <td>0.237508</td>
+      <th>0 days 00:00:00.489827116</th>
+      <th>0 days 00:00:00.815740533</th>
+      <td>0.201968</td>
     </tr>
     <tr>
-      <th>0 days 00:00:01.383391260</th>
-      <th>0 days 00:00:01.395122136</th>
-      <td>0.853837</td>
+      <th>0 days 00:00:01.144193191</th>
+      <th>0 days 00:00:01.274122950</th>
+      <td>0.864332</td>
     </tr>
     <tr>
-      <th>0 days 00:00:01.558486781</th>
-      <th>0 days 00:00:01.751668178</th>
-      <td>0.797563</td>
+      <th>0 days 00:00:01.365154748</th>
+      <th>0 days 00:00:01.507444405</th>
+      <td>0.218870</td>
     </tr>
     <tr>
-      <th>0 days 00:00:02.592490705</th>
-      <th>0 days 00:00:02.762557057</th>
-      <td>0.423176</td>
+      <th>0 days 00:00:01.537644699</th>
+      <th>0 days 00:00:02.087601746</th>
+      <td>0.846861</td>
     </tr>
     <tr>
-      <th>0 days 00:00:02.876013237</th>
-      <th>0 days 00:00:03.928273115</th>
-      <td>0.393693</td>
+      <th>0 days 00:00:02.583988208</th>
+      <th>0 days 00:00:02.871484330</th>
+      <td>0.923174</td>
     </tr>
     <tr>
       <th rowspan="5" valign="top">audio/002.wav</th>
-      <th>0 days 00:00:00.177183842</th>
-      <th>0 days 00:00:00.723897519</th>
-      <td>0.869123</td>
+      <th>0 days 00:00:00.540679334</th>
+      <th>0 days 00:00:00.894133147</th>
+      <td>0.739894</td>
     </tr>
     <tr>
-      <th>0 days 00:00:01.206883295</th>
-      <th>0 days 00:00:02.603079123</th>
-      <td>0.070885</td>
+      <th>0 days 00:00:01.473787117</th>
+      <th>0 days 00:00:01.680403336</th>
+      <td>0.755724</td>
     </tr>
     <tr>
-      <th>0 days 00:00:03.048708317</th>
-      <th>0 days 00:00:03.117882546</th>
-      <td>0.026460</td>
+      <th>0 days 00:00:02.136694251</th>
+      <th>0 days 00:00:02.297358731</th>
+      <td>0.700271</td>
     </tr>
     <tr>
-      <th>0 days 00:00:03.521799267</th>
-      <th>0 days 00:00:04.316451228</th>
-      <td>0.105650</td>
+      <th>0 days 00:00:02.810435188</th>
+      <th>0 days 00:00:03.024859447</th>
+      <td>0.943856</td>
     </tr>
     <tr>
-      <th>0 days 00:00:04.553441558</th>
-      <th>0 days 00:00:04.954554275</th>
-      <td>0.352611</td>
+      <th>0 days 00:00:03.293052640</th>
+      <th>0 days 00:00:04.676598944</th>
+      <td>0.898613</td>
     </tr>
     <tr>
       <th rowspan="5" valign="top">audio/003.wav</th>
-      <th>0 days 00:00:01.163993443</th>
-      <th>0 days 00:00:01.167209633</th>
-      <td>0.918635</td>
+      <th>0 days 00:00:00.719975275</th>
+      <th>0 days 00:00:00.837166093</th>
+      <td>0.296919</td>
     </tr>
     <tr>
-      <th>0 days 00:00:01.913446012</th>
-      <th>0 days 00:00:02.467975175</th>
-      <td>0.797064</td>
+      <th>0 days 00:00:01.233961668</th>
+      <th>0 days 00:00:02.197972177</th>
+      <td>0.064185</td>
     </tr>
     <tr>
-      <th>0 days 00:00:02.910743379</th>
-      <th>0 days 00:00:02.965722610</th>
-      <td>0.022131</td>
+      <th>0 days 00:00:02.419499880</th>
+      <th>0 days 00:00:02.451345765</th>
+      <td>0.405246</td>
     </tr>
     <tr>
-      <th>0 days 00:00:03.335205386</th>
-      <th>0 days 00:00:03.611672706</th>
-      <td>0.755188</td>
+      <th>0 days 00:00:03.741131201</th>
+      <th>0 days 00:00:03.765215417</th>
+      <td>0.922547</td>
     </tr>
     <tr>
-      <th>0 days 00:00:03.897113938</th>
-      <th>0 days 00:00:04.220128298</th>
-      <td>0.410789</td>
+      <th>0 days 00:00:03.926454280</th>
+      <th>0 days 00:00:04.160638993</th>
+      <td>0.668738</td>
     </tr>
     <tr>
       <th rowspan="5" valign="top">audio/004.wav</th>
-      <th>0 days 00:00:00.463070614</th>
-      <th>0 days 00:00:00.647504098</th>
-      <td>0.639035</td>
+      <th>0 days 00:00:00.372810755</th>
+      <th>0 days 00:00:01.095593752</th>
+      <td>0.090399</td>
     </tr>
     <tr>
-      <th>0 days 00:00:01.096226606</th>
-      <th>0 days 00:00:01.836876594</th>
-      <td>0.324991</td>
+      <th>0 days 00:00:01.579728691</th>
+      <th>0 days 00:00:01.858950529</th>
+      <td>0.425924</td>
     </tr>
     <tr>
-      <th>0 days 00:00:02.522199595</th>
-      <th>0 days 00:00:03.273293583</th>
-      <td>0.106517</td>
+      <th>0 days 00:00:01.859993414</th>
+      <th>0 days 00:00:02.072474148</th>
+      <td>0.922959</td>
     </tr>
     <tr>
-      <th>0 days 00:00:04.124763844</th>
-      <th>0 days 00:00:04.322796536</th>
-      <td>0.014500</td>
+      <th>0 days 00:00:03.359825811</th>
+      <th>0 days 00:00:03.844074501</th>
+      <td>0.617119</td>
     </tr>
     <tr>
-      <th>0 days 00:00:04.333329804</th>
-      <th>0 days 00:00:04.869339162</th>
-      <td>0.873957</td>
+      <th>0 days 00:00:04.510034912</th>
+      <th>0 days 00:00:04.590386560</th>
+      <td>0.895136</td>
     </tr>
   </tbody>
 </table>
@@ -400,17 +401,17 @@ for age and likability:</p>
 <p>You can simply combine both tables with:</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">combined_table</span> <span class="o">=</span> <span class="n">db</span><span class="p">[</span><span class="s1">&#39;likability&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">db</span><span class="p">[</span><span class="s1">&#39;age&#39;</span><span class="p">]</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">combined_table</span> <span class="o">=</span> <span class="n">db</span><span class="p">[</span><span class="s1">&#39;likability&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">db</span><span class="p">[</span><span class="s1">&#39;age&#39;</span><span class="p">]</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
 </div>
 </div>
-<p>Which results in the following <code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code>:</p>
+<p>Which results in the following <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a>:</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">combined_table</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">combined_table</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -449,126 +450,126 @@ for age and likability:</p>
   <tbody>
     <tr>
       <th rowspan="5" valign="top">audio/001.wav</th>
-      <th>0 days 00:00:00.056676408</th>
-      <th>0 days 00:00:01.251912294</th>
-      <td>0.237508</td>
+      <th>0 days 00:00:00.489827116</th>
+      <th>0 days 00:00:00.815740533</th>
+      <td>0.201968</td>
       <td>&lt;NA&gt;</td>
     </tr>
     <tr>
-      <th>0 days 00:00:01.383391260</th>
-      <th>0 days 00:00:01.395122136</th>
-      <td>0.853837</td>
+      <th>0 days 00:00:01.144193191</th>
+      <th>0 days 00:00:01.274122950</th>
+      <td>0.864332</td>
       <td>&lt;NA&gt;</td>
     </tr>
     <tr>
-      <th>0 days 00:00:01.558486781</th>
-      <th>0 days 00:00:01.751668178</th>
-      <td>0.797563</td>
+      <th>0 days 00:00:01.365154748</th>
+      <th>0 days 00:00:01.507444405</th>
+      <td>0.218870</td>
       <td>&lt;NA&gt;</td>
     </tr>
     <tr>
-      <th>0 days 00:00:02.592490705</th>
-      <th>0 days 00:00:02.762557057</th>
-      <td>0.423176</td>
+      <th>0 days 00:00:01.537644699</th>
+      <th>0 days 00:00:02.087601746</th>
+      <td>0.846861</td>
       <td>&lt;NA&gt;</td>
     </tr>
     <tr>
-      <th>0 days 00:00:02.876013237</th>
-      <th>0 days 00:00:03.928273115</th>
-      <td>0.393693</td>
+      <th>0 days 00:00:02.583988208</th>
+      <th>0 days 00:00:02.871484330</th>
+      <td>0.923174</td>
       <td>&lt;NA&gt;</td>
     </tr>
     <tr>
       <th rowspan="5" valign="top">audio/002.wav</th>
-      <th>0 days 00:00:00.177183842</th>
-      <th>0 days 00:00:00.723897519</th>
-      <td>0.869123</td>
+      <th>0 days 00:00:00.540679334</th>
+      <th>0 days 00:00:00.894133147</th>
+      <td>0.739894</td>
       <td>&lt;NA&gt;</td>
     </tr>
     <tr>
-      <th>0 days 00:00:01.206883295</th>
-      <th>0 days 00:00:02.603079123</th>
-      <td>0.070885</td>
+      <th>0 days 00:00:01.473787117</th>
+      <th>0 days 00:00:01.680403336</th>
+      <td>0.755724</td>
       <td>&lt;NA&gt;</td>
     </tr>
     <tr>
-      <th>0 days 00:00:03.048708317</th>
-      <th>0 days 00:00:03.117882546</th>
-      <td>0.026460</td>
+      <th>0 days 00:00:02.136694251</th>
+      <th>0 days 00:00:02.297358731</th>
+      <td>0.700271</td>
       <td>&lt;NA&gt;</td>
     </tr>
     <tr>
-      <th>0 days 00:00:03.521799267</th>
-      <th>0 days 00:00:04.316451228</th>
-      <td>0.105650</td>
+      <th>0 days 00:00:02.810435188</th>
+      <th>0 days 00:00:03.024859447</th>
+      <td>0.943856</td>
       <td>&lt;NA&gt;</td>
     </tr>
     <tr>
-      <th>0 days 00:00:04.553441558</th>
-      <th>0 days 00:00:04.954554275</th>
-      <td>0.352611</td>
+      <th>0 days 00:00:03.293052640</th>
+      <th>0 days 00:00:04.676598944</th>
+      <td>0.898613</td>
       <td>&lt;NA&gt;</td>
     </tr>
     <tr>
       <th rowspan="5" valign="top">audio/003.wav</th>
-      <th>0 days 00:00:01.163993443</th>
-      <th>0 days 00:00:01.167209633</th>
-      <td>0.918635</td>
+      <th>0 days 00:00:00.719975275</th>
+      <th>0 days 00:00:00.837166093</th>
+      <td>0.296919</td>
       <td>&lt;NA&gt;</td>
     </tr>
     <tr>
-      <th>0 days 00:00:01.913446012</th>
-      <th>0 days 00:00:02.467975175</th>
-      <td>0.797064</td>
+      <th>0 days 00:00:01.233961668</th>
+      <th>0 days 00:00:02.197972177</th>
+      <td>0.064185</td>
       <td>&lt;NA&gt;</td>
     </tr>
     <tr>
-      <th>0 days 00:00:02.910743379</th>
-      <th>0 days 00:00:02.965722610</th>
-      <td>0.022131</td>
+      <th>0 days 00:00:02.419499880</th>
+      <th>0 days 00:00:02.451345765</th>
+      <td>0.405246</td>
       <td>&lt;NA&gt;</td>
     </tr>
     <tr>
-      <th>0 days 00:00:03.335205386</th>
-      <th>0 days 00:00:03.611672706</th>
-      <td>0.755188</td>
+      <th>0 days 00:00:03.741131201</th>
+      <th>0 days 00:00:03.765215417</th>
+      <td>0.922547</td>
       <td>&lt;NA&gt;</td>
     </tr>
     <tr>
-      <th>0 days 00:00:03.897113938</th>
-      <th>0 days 00:00:04.220128298</th>
-      <td>0.410789</td>
+      <th>0 days 00:00:03.926454280</th>
+      <th>0 days 00:00:04.160638993</th>
+      <td>0.668738</td>
       <td>&lt;NA&gt;</td>
     </tr>
     <tr>
       <th rowspan="5" valign="top">audio/004.wav</th>
-      <th>0 days 00:00:00.463070614</th>
-      <th>0 days 00:00:00.647504098</th>
-      <td>0.639035</td>
+      <th>0 days 00:00:00.372810755</th>
+      <th>0 days 00:00:01.095593752</th>
+      <td>0.090399</td>
       <td>&lt;NA&gt;</td>
     </tr>
     <tr>
-      <th>0 days 00:00:01.096226606</th>
-      <th>0 days 00:00:01.836876594</th>
-      <td>0.324991</td>
+      <th>0 days 00:00:01.579728691</th>
+      <th>0 days 00:00:01.858950529</th>
+      <td>0.425924</td>
       <td>&lt;NA&gt;</td>
     </tr>
     <tr>
-      <th>0 days 00:00:02.522199595</th>
-      <th>0 days 00:00:03.273293583</th>
-      <td>0.106517</td>
+      <th>0 days 00:00:01.859993414</th>
+      <th>0 days 00:00:02.072474148</th>
+      <td>0.922959</td>
       <td>&lt;NA&gt;</td>
     </tr>
     <tr>
-      <th>0 days 00:00:04.124763844</th>
-      <th>0 days 00:00:04.322796536</th>
-      <td>0.014500</td>
+      <th>0 days 00:00:03.359825811</th>
+      <th>0 days 00:00:03.844074501</th>
+      <td>0.617119</td>
       <td>&lt;NA&gt;</td>
     </tr>
     <tr>
-      <th>0 days 00:00:04.333329804</th>
-      <th>0 days 00:00:04.869339162</th>
-      <td>0.873957</td>
+      <th>0 days 00:00:04.510034912</th>
+      <th>0 days 00:00:04.590386560</th>
+      <td>0.895136</td>
       <td>&lt;NA&gt;</td>
     </tr>
     <tr>
@@ -576,21 +577,21 @@ for age and likability:</p>
       <th>0 days 00:00:00</th>
       <th>NaT</th>
       <td>NaN</td>
-      <td>36</td>
+      <td>43</td>
     </tr>
     <tr>
       <th>audio/002.wav</th>
       <th>0 days 00:00:00</th>
       <th>NaT</th>
       <td>NaN</td>
-      <td>41</td>
+      <td>40</td>
     </tr>
     <tr>
       <th>audio/003.wav</th>
       <th>0 days 00:00:00</th>
       <th>NaT</th>
       <td>NaN</td>
-      <td>40</td>
+      <td>43</td>
     </tr>
   </tbody>
 </table>
@@ -600,7 +601,7 @@ for age and likability:</p>
 for which age information is available:</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">df_likability</span> <span class="o">=</span> <span class="n">db</span><span class="p">[</span><span class="s1">&#39;likability&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df_likability</span> <span class="o">=</span> <span class="n">db</span><span class="p">[</span><span class="s1">&#39;likability&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
     <span class="n">db</span><span class="p">[</span><span class="s1">&#39;age&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">files</span><span class="p">,</span>
 <span class="p">)</span>
 </pre></div>
@@ -609,10 +610,10 @@ for which age information is available:</p>
 <div class="cell_output docutils container">
 </div>
 </div>
-<p>Which results in the following <code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code>:</p>
+<p>Which results in the following <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a>:</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">df_likability</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df_likability</span>
 </pre></div>
 </div>
 </div>
@@ -649,81 +650,81 @@ for which age information is available:</p>
   <tbody>
     <tr>
       <th rowspan="5" valign="top">audio/001.wav</th>
-      <th>0 days 00:00:00.056676408</th>
-      <th>0 days 00:00:01.251912294</th>
-      <td>0.237508</td>
+      <th>0 days 00:00:00.489827116</th>
+      <th>0 days 00:00:00.815740533</th>
+      <td>0.201968</td>
     </tr>
     <tr>
-      <th>0 days 00:00:01.383391260</th>
-      <th>0 days 00:00:01.395122136</th>
-      <td>0.853837</td>
+      <th>0 days 00:00:01.144193191</th>
+      <th>0 days 00:00:01.274122950</th>
+      <td>0.864332</td>
     </tr>
     <tr>
-      <th>0 days 00:00:01.558486781</th>
-      <th>0 days 00:00:01.751668178</th>
-      <td>0.797563</td>
+      <th>0 days 00:00:01.365154748</th>
+      <th>0 days 00:00:01.507444405</th>
+      <td>0.218870</td>
     </tr>
     <tr>
-      <th>0 days 00:00:02.592490705</th>
-      <th>0 days 00:00:02.762557057</th>
-      <td>0.423176</td>
+      <th>0 days 00:00:01.537644699</th>
+      <th>0 days 00:00:02.087601746</th>
+      <td>0.846861</td>
     </tr>
     <tr>
-      <th>0 days 00:00:02.876013237</th>
-      <th>0 days 00:00:03.928273115</th>
-      <td>0.393693</td>
+      <th>0 days 00:00:02.583988208</th>
+      <th>0 days 00:00:02.871484330</th>
+      <td>0.923174</td>
     </tr>
     <tr>
       <th rowspan="5" valign="top">audio/002.wav</th>
-      <th>0 days 00:00:00.177183842</th>
-      <th>0 days 00:00:00.723897519</th>
-      <td>0.869123</td>
+      <th>0 days 00:00:00.540679334</th>
+      <th>0 days 00:00:00.894133147</th>
+      <td>0.739894</td>
     </tr>
     <tr>
-      <th>0 days 00:00:01.206883295</th>
-      <th>0 days 00:00:02.603079123</th>
-      <td>0.070885</td>
+      <th>0 days 00:00:01.473787117</th>
+      <th>0 days 00:00:01.680403336</th>
+      <td>0.755724</td>
     </tr>
     <tr>
-      <th>0 days 00:00:03.048708317</th>
-      <th>0 days 00:00:03.117882546</th>
-      <td>0.026460</td>
+      <th>0 days 00:00:02.136694251</th>
+      <th>0 days 00:00:02.297358731</th>
+      <td>0.700271</td>
     </tr>
     <tr>
-      <th>0 days 00:00:03.521799267</th>
-      <th>0 days 00:00:04.316451228</th>
-      <td>0.105650</td>
+      <th>0 days 00:00:02.810435188</th>
+      <th>0 days 00:00:03.024859447</th>
+      <td>0.943856</td>
     </tr>
     <tr>
-      <th>0 days 00:00:04.553441558</th>
-      <th>0 days 00:00:04.954554275</th>
-      <td>0.352611</td>
+      <th>0 days 00:00:03.293052640</th>
+      <th>0 days 00:00:04.676598944</th>
+      <td>0.898613</td>
     </tr>
     <tr>
       <th rowspan="5" valign="top">audio/003.wav</th>
-      <th>0 days 00:00:01.163993443</th>
-      <th>0 days 00:00:01.167209633</th>
-      <td>0.918635</td>
+      <th>0 days 00:00:00.719975275</th>
+      <th>0 days 00:00:00.837166093</th>
+      <td>0.296919</td>
     </tr>
     <tr>
-      <th>0 days 00:00:01.913446012</th>
-      <th>0 days 00:00:02.467975175</th>
-      <td>0.797064</td>
+      <th>0 days 00:00:01.233961668</th>
+      <th>0 days 00:00:02.197972177</th>
+      <td>0.064185</td>
     </tr>
     <tr>
-      <th>0 days 00:00:02.910743379</th>
-      <th>0 days 00:00:02.965722610</th>
-      <td>0.022131</td>
+      <th>0 days 00:00:02.419499880</th>
+      <th>0 days 00:00:02.451345765</th>
+      <td>0.405246</td>
     </tr>
     <tr>
-      <th>0 days 00:00:03.335205386</th>
-      <th>0 days 00:00:03.611672706</th>
-      <td>0.755188</td>
+      <th>0 days 00:00:03.741131201</th>
+      <th>0 days 00:00:03.765215417</th>
+      <td>0.922547</td>
     </tr>
     <tr>
-      <th>0 days 00:00:03.897113938</th>
-      <th>0 days 00:00:04.220128298</th>
-      <td>0.410789</td>
+      <th>0 days 00:00:03.926454280</th>
+      <th>0 days 00:00:04.160638993</th>
+      <td>0.668738</td>
     </tr>
   </tbody>
 </table>
@@ -733,17 +734,17 @@ for which age information is available:</p>
 in the likeability table:</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">df_age</span> <span class="o">=</span> <span class="n">db</span><span class="p">[</span><span class="s1">&#39;age&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">df_likability</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df_age</span> <span class="o">=</span> <span class="n">db</span><span class="p">[</span><span class="s1">&#39;age&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">df_likability</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
 </div>
 </div>
-<p>Which results in the following <code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code>:</p>
+<p>Which results in the following <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a>:</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">df_age</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df_age</span>
 </pre></div>
 </div>
 </div>
@@ -780,81 +781,81 @@ in the likeability table:</p>
   <tbody>
     <tr>
       <th rowspan="5" valign="top">audio/001.wav</th>
-      <th>0 days 00:00:00.056676408</th>
-      <th>0 days 00:00:01.251912294</th>
-      <td>36</td>
+      <th>0 days 00:00:00.489827116</th>
+      <th>0 days 00:00:00.815740533</th>
+      <td>43</td>
     </tr>
     <tr>
-      <th>0 days 00:00:01.383391260</th>
-      <th>0 days 00:00:01.395122136</th>
-      <td>36</td>
+      <th>0 days 00:00:01.144193191</th>
+      <th>0 days 00:00:01.274122950</th>
+      <td>43</td>
     </tr>
     <tr>
-      <th>0 days 00:00:01.558486781</th>
-      <th>0 days 00:00:01.751668178</th>
-      <td>36</td>
+      <th>0 days 00:00:01.365154748</th>
+      <th>0 days 00:00:01.507444405</th>
+      <td>43</td>
     </tr>
     <tr>
-      <th>0 days 00:00:02.592490705</th>
-      <th>0 days 00:00:02.762557057</th>
-      <td>36</td>
+      <th>0 days 00:00:01.537644699</th>
+      <th>0 days 00:00:02.087601746</th>
+      <td>43</td>
     </tr>
     <tr>
-      <th>0 days 00:00:02.876013237</th>
-      <th>0 days 00:00:03.928273115</th>
-      <td>36</td>
+      <th>0 days 00:00:02.583988208</th>
+      <th>0 days 00:00:02.871484330</th>
+      <td>43</td>
     </tr>
     <tr>
       <th rowspan="5" valign="top">audio/002.wav</th>
-      <th>0 days 00:00:00.177183842</th>
-      <th>0 days 00:00:00.723897519</th>
-      <td>41</td>
+      <th>0 days 00:00:00.540679334</th>
+      <th>0 days 00:00:00.894133147</th>
+      <td>40</td>
     </tr>
     <tr>
-      <th>0 days 00:00:01.206883295</th>
-      <th>0 days 00:00:02.603079123</th>
-      <td>41</td>
+      <th>0 days 00:00:01.473787117</th>
+      <th>0 days 00:00:01.680403336</th>
+      <td>40</td>
     </tr>
     <tr>
-      <th>0 days 00:00:03.048708317</th>
-      <th>0 days 00:00:03.117882546</th>
-      <td>41</td>
+      <th>0 days 00:00:02.136694251</th>
+      <th>0 days 00:00:02.297358731</th>
+      <td>40</td>
     </tr>
     <tr>
-      <th>0 days 00:00:03.521799267</th>
-      <th>0 days 00:00:04.316451228</th>
-      <td>41</td>
+      <th>0 days 00:00:02.810435188</th>
+      <th>0 days 00:00:03.024859447</th>
+      <td>40</td>
     </tr>
     <tr>
-      <th>0 days 00:00:04.553441558</th>
-      <th>0 days 00:00:04.954554275</th>
-      <td>41</td>
+      <th>0 days 00:00:03.293052640</th>
+      <th>0 days 00:00:04.676598944</th>
+      <td>40</td>
     </tr>
     <tr>
       <th rowspan="5" valign="top">audio/003.wav</th>
-      <th>0 days 00:00:01.163993443</th>
-      <th>0 days 00:00:01.167209633</th>
-      <td>40</td>
+      <th>0 days 00:00:00.719975275</th>
+      <th>0 days 00:00:00.837166093</th>
+      <td>43</td>
     </tr>
     <tr>
-      <th>0 days 00:00:01.913446012</th>
-      <th>0 days 00:00:02.467975175</th>
-      <td>40</td>
+      <th>0 days 00:00:01.233961668</th>
+      <th>0 days 00:00:02.197972177</th>
+      <td>43</td>
     </tr>
     <tr>
-      <th>0 days 00:00:02.910743379</th>
-      <th>0 days 00:00:02.965722610</th>
-      <td>40</td>
+      <th>0 days 00:00:02.419499880</th>
+      <th>0 days 00:00:02.451345765</th>
+      <td>43</td>
     </tr>
     <tr>
-      <th>0 days 00:00:03.335205386</th>
-      <th>0 days 00:00:03.611672706</th>
-      <td>40</td>
+      <th>0 days 00:00:03.741131201</th>
+      <th>0 days 00:00:03.765215417</th>
+      <td>43</td>
     </tr>
     <tr>
-      <th>0 days 00:00:03.897113938</th>
-      <th>0 days 00:00:04.220128298</th>
-      <td>40</td>
+      <th>0 days 00:00:03.926454280</th>
+      <th>0 days 00:00:04.160638993</th>
+      <td>43</td>
     </tr>
   </tbody>
 </table>
@@ -872,7 +873,7 @@ as we will demonstrate with the following example.</p>
 and add a gender scheme:</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">db2</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">create_db</span><span class="p">(</span><span class="n">minimal</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">db2</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">create_db</span><span class="p">(</span><span class="n">minimal</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">db2</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s1">&#39;gender&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Scheme</span><span class="p">(</span>
     <span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;female&#39;</span><span class="p">,</span> <span class="s1">&#39;male&#39;</span><span class="p">],</span>
 <span class="p">)</span>
@@ -891,7 +892,7 @@ and add a gender scheme:</p>
 <p>Next, we add a table and fill in some gender information:</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">audformat</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">add_table</span><span class="p">(</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">audformat</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">add_table</span><span class="p">(</span>
     <span class="n">db2</span><span class="p">,</span>
     <span class="n">table_id</span><span class="o">=</span><span class="s1">&#39;gender_and_age&#39;</span><span class="p">,</span>
     <span class="n">index_type</span><span class="o">=</span><span class="n">audformat</span><span class="o">.</span><span class="n">define</span><span class="o">.</span><span class="n">IndexType</span><span class="o">.</span><span class="n">FILEWISE</span><span class="p">,</span>
@@ -947,7 +948,7 @@ and add a gender scheme:</p>
 <p>Now, we update the table with age values from the other database.</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">db2</span><span class="p">[</span><span class="s1">&#39;gender_and_age&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">db</span><span class="p">[</span><span class="s1">&#39;age&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">db2</span><span class="p">[</span><span class="s1">&#39;gender_and_age&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">db</span><span class="p">[</span><span class="s1">&#39;age&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -983,12 +984,12 @@ and add a gender scheme:</p>
     <tr>
       <th>audio/002.wav</th>
       <td>female</td>
-      <td>41</td>
+      <td>40</td>
     </tr>
     <tr>
       <th>audio/003.wav</th>
       <td>male</td>
-      <td>40</td>
+      <td>43</td>
     </tr>
     <tr>
       <th>audio/004.wav</th>
@@ -998,7 +999,7 @@ and add a gender scheme:</p>
     <tr>
       <th>audio/001.wav</th>
       <td>NaN</td>
-      <td>36</td>
+      <td>43</td>
     </tr>
   </tbody>
 </table>
@@ -1007,7 +1008,7 @@ and add a gender scheme:</p>
 <p>And also copies the according scheme to the database:</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">db2</span><span class="o">.</span><span class="n">schemes</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">db2</span><span class="o">.</span><span class="n">schemes</span>
 </pre></div>
 </div>
 </div>
@@ -1046,7 +1047,7 @@ age:
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2022/06/01 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2022/08/05 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
