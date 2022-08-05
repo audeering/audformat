@@ -29,6 +29,10 @@ Version 0.15.0 (2022-08-05)
 * Added: ``audformat.utils.set_index_dtypes()``
   to change dtypes of an index
 * Added: ``audformat.testing.add_misc_table()``
+* Added: ``audformat.Database.__iter__``
+  iterates through all (misc) tables,
+  e.g. a user can do ``list(db)``
+  to get a list of all (misc) tables
 * Changed: ``audformat.Database.update()``
   can now join schemes
   with different labels
@@ -36,10 +40,6 @@ Version 0.15.0 (2022-08-05)
   ``audformat.utils.intersect()``,
   and ``audformat.utils.concat()``
   now support any kind of index
-* Changed: ``audformat.Database.__iter__``
-  iterates through all (misc) tables,
-  e.g. a user can do ``list(db)``
-  to get a list of all (misc) tables
 * Changed: require ``pandas>=1.4.1``
 * Changed: use ``pandas`` dtype ``'string'``
   instead of ``'object'``
