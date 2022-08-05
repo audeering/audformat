@@ -7,6 +7,74 @@ The format is based on `Keep a Changelog`_,
 and this project adheres to `Semantic Versioning`_.
 
 
+Version 0.15.0 (2022-08-05)
+---------------------------
+
+* Added: ``audformat.MiscTable``
+  which can store labels
+  not associated with media files
+* Added: usage of a misc table as labels in a scheme
+* Added: dictionary ``audformat.Database.misc_table``
+  holding misc tables of a database
+* Added: ``audformat.utils.difference()``
+  for finding index entries
+  that are only part of a single index
+  for a given sequence of indices
+* Added: ``audformat.utils.is_index_alike()``
+  for checking if a sequence of indices
+  has the same number of levels,
+  level names,
+  and matching dtypes
+* Added: ``audformat.define.DataType.OBJECT``
+* Added: ``audformat.utils.set_index_dtypes()``
+  to change dtypes of an index
+* Added: ``audformat.testing.add_misc_table()``
+* Changed: ``audformat.Database.update()``
+  can now join schemes
+  with different labels
+* Changed: ``audformat.utils.union()``
+  and ``audformat.utils.intersect()``
+  now support any kind of index
+* Changed: ``audformat.utils.concat()``
+  can now concatenate objects
+  that contain any kind of index
+* Changed: ``audformat.Database.__iter__``
+  iterates through all (misc) tables,
+  e.g. a user can do ``list(db)``
+* Changed: require ``pandas>=1.4.1``
+* Changed: use ``pandas`` dtype ``'string'``
+  instead of ``'object'``
+  for storing ``audformat`` dtype ``'str'`` entries
+* Changed: use a misc table
+  to store the ``'speaker'`` scheme labels
+  in the emodb example
+  in the documentation
+* Fixed: ensure column IDs are different from index level names
+* Fixed: make sure incoming data
+  is converted to matching dtype of scheme
+  before checking if the value lies in the max-min-range
+  of the scheme
+* Fixed: links to ``pandas`` objects in the documentation
+* Fixed: include methods
+  ``to_dict()``,
+  ``from_dict()``,
+  ``dump()``,
+  and attributes
+  ``description``,
+  ``meta``
+  for the classes
+  ``audformat.Column``,
+  ``audformat.Database``,
+  ``audformat.Media``,
+  ``audformat.Rater``,
+  ``audformat.Scheme``,
+  ``audformat.Split``,
+  ``audformat.Table``
+* Fixed: type hint of argument ``dtype``
+  in ``audformat.Scheme``
+* Removed: support for Python 3.7
+
+
 Version 0.14.3 (2022-06-01)
 ---------------------------
 
