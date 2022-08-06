@@ -155,14 +155,29 @@ class Scheme(common.HeaderBase):
                     )
                 dtype = dtype_labels
 
-        self.dtype = dtype
-        r"""Data type"""
-        self.labels = labels
-        r"""List of labels"""
+        self._dtype = dtype
+        self._labels = labels
+
         self.minimum = minimum if self.is_numeric else None
         r"""Minimum value"""
         self.maximum = maximum if self.is_numeric else None
         r"""Maximum value"""
+
+    @property
+    def dtype(self) -> str:
+        r"""Data type"""
+        return self._dtype
+
+    @property
+    def labels(self) -> typing.Optional[typing.Union[dict, list, str]]:
+        r"""Labels of scheme"""
+        if (
+                self._labels is not None
+                and not isinstance(self._labels, str)
+        ):
+            return self._labels.copy()
+        else:
+            return self._labels
 
     @property
     def is_numeric(self) -> bool:
@@ -327,7 +342,7 @@ class Scheme(common.HeaderBase):
                     f"'{dtype_labels}'"
                 )
 
-        self.labels = labels
+        self._labels = labels
 
         if self._db is not None and self._id is not None:
             labels = self._labels_to_list(labels)
