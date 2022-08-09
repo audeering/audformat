@@ -165,11 +165,21 @@ class Scheme(common.HeaderBase):
         r"""Maximum value"""
 
     @property
-    def is_numeric(self) -> bool:
-        r"""Check if data type is numeric.
+    def has_table(self) -> bool:
+        r"""Scheme has labels stored in a misc table.
 
         Returns:
-            ``True`` if data type is numeric.
+            ``True`` if scheme has labels stored in a misc table
+
+        """
+        return isinstance(self.labels, str)
+
+    @property
+    def is_numeric(self) -> bool:
+        r"""Data type is numeric.
+
+        Returns:
+            ``True`` if data type is numeric
 
         """
         return self.dtype in (define.DataType.INTEGER, define.DataType.FLOAT)
@@ -399,7 +409,7 @@ class Scheme(common.HeaderBase):
             # dtype is stored in the levels dictionary
             # as audformat dtypes.
             # In addition, a misc table used as labels
-            # is only allowed to have an one dimensional index,
+            # is only allowed to have a one dimensional index,
             # so we need to get only the first entry of the dict.
             levels = self._db[labels].levels
             dtype = next(iter(levels.values()))
