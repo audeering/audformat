@@ -166,10 +166,17 @@ class Scheme(common.HeaderBase):
 
     @property
     def has_table(self) -> bool:
-        r"""Scheme has labels stored in a misc table.
+        r"""Scheme has labels stored in a table.
+
+        If property is ``True``
+        the attribute ``labels``
+        is set to an ID of a
+        :class:`audformat.MiscTable`
+        where the actual label
+        values are stored.
 
         Returns:
-            ``True`` if scheme has labels stored in a misc table
+            ``True`` if scheme has labels stored in a table
 
         """
         return isinstance(self.labels, str)
