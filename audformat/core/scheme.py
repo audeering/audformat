@@ -161,7 +161,7 @@ class Scheme(common.HeaderBase):
         self.dtype = dtype
         r"""Data type"""
         self.labels = labels
-        r"""Labels or ID of misc table storing the labels"""
+        r"""Labels or ID of misc table holding the labels"""
         self.minimum = minimum if self.is_numeric else None
         r"""Minimum value"""
         self.maximum = maximum if self.is_numeric else None
