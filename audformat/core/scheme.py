@@ -166,7 +166,7 @@ class Scheme(common.HeaderBase):
 
     @property
     def uses_table(self) -> bool:
-        r"""Scheme has labels stored in a table.
+        r"""Scheme has labels stored in a misc table.
 
         If property is ``True``
         the attribute ``labels``
