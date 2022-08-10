@@ -2642,25 +2642,32 @@ def test_to_filewise_index(tmpdir, obj, expected_file_names):
         output_folder=output_folder,
         num_workers=3,
     )
+    new_files = new_obj.index.get_level_values(define.IndexField.FILE).values
 
     assert audformat.index_type(new_obj) == define.IndexType.FILEWISE
-    pd.testing.assert_frame_equal(
-        obj.reset_index(drop=True),
-        new_obj.reset_index(drop=True),
-    )
-    files = new_obj.index.get_level_values(define.IndexField.FILE).values
+
+    if isinstance(obj, pd.DataFrame):
+        pd.testing.assert_frame_equal(
+            obj.reset_index(drop=True),
+            new_obj.reset_index(drop=True),
+        )
+    elif isinstance(obj, pd.Series):
+        pd.testing.assert_series_equal(
+            obj.reset_index(drop=True),
+            new_obj.reset_index(drop=True),
+        )
 
     if audformat.is_segmented_index(obj):
         # already `framewise` frame is unprocessed
-        assert os.path.isabs(output_folder) == os.path.isabs(files[0])
+        assert os.path.isabs(output_folder) == os.path.isabs(new_files[0])
 
     if audformat.is_filewise_index(obj):
         # files of unprocessed frame are relative to `root`
-        files = [os.path.join(pytest.DB_ROOT, f) for f in files]
+        new_files = [os.path.join(pytest.DB_ROOT, f) for f in new_files]
 
-    assert all(os.path.exists(f) for f in files)
+    assert all(os.path.exists(f) for f in new_files)
 
-    file_names = [f.split('/')[-1].rsplit('.', 1)[0] for f in files]
+    file_names = [f.split('/')[-1].rsplit('.', 1)[0] for f in new_files]
     assert file_names == expected_file_names
 
 

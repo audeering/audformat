@@ -1386,20 +1386,20 @@ def to_filewise_index(
     # order of rows within group is preserved:
     # "https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.groupby.html"  # noqa
     files = obj.groupby(define.IndexField.FILE, sort=False)
-    segments = []
+    new_files = []
 
     for _, group in files:
         width = len(str(len(group) - 1))  # -1 because count starts at `0`
         f = group.index.get_level_values(define.IndexField.FILE)[0]
         f = os.path.relpath(f, root) if is_abs else f
-        segments.extend(
+        new_files.extend(
             [os.path.join(
                 output_folder,
                 "_{}.".format(str(count).zfill(width)).join(f.rsplit('.', 1))
             )
                 for count in range(len(group))]
         )
-        audeer.mkdir(os.path.dirname(segments[-1]))
+        audeer.mkdir(os.path.dirname(new_files[-1]))
 
     def _split_files(original, start, end, segment):
         signal, sr = audiofile.read(
@@ -1411,7 +1411,7 @@ def to_filewise_index(
     params = [
         ([file, start, end, segment], {}) for
         file, start, end, segment in
-        zip(original_files, starts, ends, segments)
+        zip(original_files, starts, ends, new_files)
     ]
 
     audeer.run_tasks(
@@ -1422,9 +1422,11 @@ def to_filewise_index(
         progress_bar=progress_bar,
     )
 
-    obj = obj.reset_index(drop=True)
-    obj[define.IndexField.FILE] = segments
-    return obj.set_index(keys=define.IndexField.FILE)
+    new_index = filewise_index(new_files)
+    new_obj = obj.reset_index(drop=True)
+    new_obj.index = new_index
+
+    return new_obj
 
 
 def to_segmented_index(
