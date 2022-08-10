@@ -2590,6 +2590,14 @@ def test_to_segmented_index(obj, allow_nat, files_duration, root, expected):
             pd.Series(index=audformat.segmented_index(), dtype='object'),
             [],
         ),
+        (
+            pd.DataFrame(index=audformat.filewise_index(), dtype='object'),
+            [],
+        ),
+        (
+            pd.DataFrame(index=audformat.segmented_index(), dtype='object'),
+            [],
+        ),
         # frame
         (
             pytest.DB['segments'].get(),
