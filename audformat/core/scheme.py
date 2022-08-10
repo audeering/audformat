@@ -61,7 +61,10 @@ class Scheme(common.HeaderBase):
             or its index contains duplicates,
             or ``dtype`` does not match type of labels
             from misc table,
-            or ``dtype`` is set to ``bool``
+            or ``dtype`` is set to ``bool``,
+            or the misc table has a column
+            that is already assigned to a scheme
+            with labels from another misc table
 
     Example:
         >>> Scheme()
@@ -298,7 +301,10 @@ class Scheme(common.HeaderBase):
                 but the corresponding misc table is not part of the database,
                 or the given table ID is not a misc table,
                 or its index is multi-dimensional,
-                or its index contains duplicates
+                or its index contains duplicates,
+                or the misc table has a column
+                that is already assigned to a scheme
+                with labels from another misc table
 
         Example:
             >>> speaker = Scheme(
@@ -386,6 +392,18 @@ class Scheme(common.HeaderBase):
                     f"The table '{table_id}' used as scheme labels "
                     "needs to be a misc table."
                 )
+            for column in self._db.misc_tables[table_id].columns.values():
+                if column.scheme_id is not None:
+                    scheme = self._db.schemes[column.scheme_id]
+                    if scheme.uses_table:
+                        raise ValueError(
+                            f"The misc table "
+                            f"'{table_id}' "
+                            f"cannot be used as scheme labels "
+                            f"when one of its columns is "
+                            f"assigned to a scheme that "
+                            f"uses labels from a misc table."
+                        )
             if self._db[table_id].index.nlevels > 1:
                 raise ValueError(
                     f"Index of misc table '{table_id}' used as scheme labels "

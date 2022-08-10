@@ -137,8 +137,49 @@ class Base(HeaderBase):
             BadIdError: if a column with a ``scheme_id`` or ``rater_id`` is
                 added that does not exist
             ValueError: if column ID is not different from level names
+            ValueError: if the column is linked to a scheme
+                that is using labels from a misc table,
+                but the misc table the column is assigned to
+                is already used by the same or another scheme
 
         """
+
+        if (
+                column.scheme_id is not None
+                and self.db is not None
+                and column.scheme_id in self.db.schemes
+        ):
+
+            # check if scheme uses
+            # labels from a table
+            scheme = self.db.schemes[column.scheme_id]
+            if scheme.uses_table:
+
+                # check if scheme uses
+                # labels from this table
+                if self._id == scheme.labels:
+                    raise ValueError(
+                        f"Scheme "
+                        f"'{column.scheme_id}' "
+                        f"uses misc table "
+                        f"'{self._id}' "
+                        f"as labels and cannot be used "
+                        f"with columns of the same table."
+                    )
+
+                # check if this table
+                # is already used with a scheme
+                for scheme_id in self.db.schemes:
+                    if self._id == self.db.schemes[scheme_id].labels:
+                        raise ValueError(
+                            f"Since the misc table "
+                            f"'{self._id}' "
+                            f"is used as labels in scheme "
+                            f"'{scheme_id}' "
+                            f"its columns cannot be used with a scheme "
+                            f"that also uses labels from a misc table."
+                        )
+
         self.columns[column_id] = column
         return column
 
