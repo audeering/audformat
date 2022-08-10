@@ -393,7 +393,7 @@ class Scheme(common.HeaderBase):
             for column in self._db.misc_tables[table_id].columns.values():
                 if column.scheme_id is not None:
                     scheme = self._db.schemes[column.scheme_id]
-                    if isinstance(scheme.labels, str):
+                    if scheme.uses_table:
                         raise ValueError(
                             f"The misc table "
                             f"'{table_id}' "

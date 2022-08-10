@@ -152,12 +152,12 @@ class Base(HeaderBase):
 
             # check if scheme uses
             # labels from a table
-            labels = self.db.schemes[column.scheme_id].labels
-            if isinstance(labels, str):
+            scheme = self.db.schemes[column.scheme_id]
+            if scheme.uses_table:
 
                 # check if scheme uses
                 # labels from this table
-                if self._id == labels:
+                if self._id == scheme.labels:
                     raise ValueError(
                         f"Scheme "
                         f"'{column.scheme_id}' "
@@ -169,8 +169,8 @@ class Base(HeaderBase):
 
                 # check if this table
                 # is already used with a scheme
-                for scheme_id, scheme in self.db.schemes.items():
-                    if self._id == scheme.labels:
+                for scheme_id in self.db.schemes:
+                    if self._id == self.db.schemes[scheme_id].labels:
                         raise ValueError(
                             f"Since the misc table "
                             f"'{self._id}' "
