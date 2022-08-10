@@ -1445,7 +1445,8 @@ def to_segmented_index(
     If ``allow_nat`` is set to ``False``,
     all occurrences of ``end=NaT``
     are replaced with the duration of the file.
-    This, however, requires that the referenced file exists.
+    This requires that the referenced file exists,
+    or that the durations are provided with ``files_duration``.
     If file names in the index are relative,
     the ``root`` argument can be used to provide
     the location where the files are stored.
@@ -1460,7 +1461,8 @@ def to_segmented_index(
             used to look up durations.
             If no entry is found for a file,
             it is added to the mapping.
-            Expects absolute file names.
+            Expects absolute file names
+            and durations as :class:`pd.Timedelta` objects.
             Only relevant if ``allow_nat`` is set to ``False``
         root: root directory under which the files referenced in the index
             are stored
@@ -1476,6 +1478,24 @@ def to_segmented_index(
         ValueError: if object not conform to
             :ref:`table specifications <data-tables:Tables>`
         FileNotFoundError: if file is not found
+
+    Example:
+        >>> index = filewise_index(['f1', 'f2'])
+        >>> to_segmented_index(index)
+        MultiIndex([('f1', '0 days', NaT),
+                    ('f2', '0 days', NaT)],
+                   names=['file', 'start', 'end'])
+        >>> to_segmented_index(
+        ...     index,
+        ...     allow_nat=False,
+        ...     files_duration={
+        ...         'f1': pd.to_timedelta(1.1, unit='s'),
+        ...         'f2': pd.to_timedelta(2.2, unit='s'),
+        ...     },
+        ... )
+        MultiIndex([('f1', '0 days', '0 days 00:00:01.100000'),
+                    ('f2', '0 days', '0 days 00:00:02.200000')],
+                   names=['file', 'start', 'end'])
 
     """
     is_segmented = is_segmented_index(obj)
