@@ -62,8 +62,9 @@ class Scheme(common.HeaderBase):
             or ``dtype`` does not match type of labels
             from misc table,
             or ``dtype`` is set to ``bool``,
-            or the misc table has a column that is already assigned to
-            a scheme with labels from another misc table
+            or the misc table has a column
+            that is already assigned to a scheme
+            with labels from another misc table
 
     Example:
         >>> Scheme()
