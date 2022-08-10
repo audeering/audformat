@@ -2573,22 +2573,39 @@ def test_to_segmented_index(obj, allow_nat, files_duration, root, expected):
 @pytest.mark.parametrize(
     'obj, expected_file_names',
     [
+        # empty
+        (
+            audformat.filewise_index(),
+            [],
+        ),
+        (
+            audformat.segmented_index(),
+            [],
+        ),
+        (
+            pd.Series(index=audformat.filewise_index(), dtype='object'),
+            [],
+        ),
+        (
+            pd.Series(index=audformat.segmented_index(), dtype='object'),
+            [],
+        ),
         # frame
         (
             pytest.DB['segments'].get(),
             [
-                str(i+1).zfill(3) + f'_{j}'
+                str(i + 1).zfill(3) + f'_{j}'
                 for i in range(len(pytest.DB['segments'].files.unique()))
                 for j in range(
-                    len(pytest.DB['segments'].files) //
-                    len(pytest.DB['segments'].files.unique())
+                    len(pytest.DB['segments'].files)
+                    // len(pytest.DB['segments'].files.unique())
                 )
             ],
         ),
         (
             pytest.DB['files'].get(),
             [
-                str(i+1).zfill(3)
+                str(i + 1).zfill(3)
                 for i in range(len(pytest.DB['files']))
             ],
         ),
@@ -2599,9 +2616,9 @@ def test_to_segmented_index(obj, allow_nat, files_duration, root, expected):
                 str(i + 1).zfill(3) + f'_{j}'
                 for i in range(len(pytest.DB['segments'].files.unique()))
                 for j in range(
-                len(pytest.DB['segments'].files) //
-                len(pytest.DB['segments'].files.unique())
-            )
+                    len(pytest.DB['segments'].files)
+                    // len(pytest.DB['segments'].files.unique())
+                )
             ],
         ),
         (
@@ -2618,9 +2635,9 @@ def test_to_segmented_index(obj, allow_nat, files_duration, root, expected):
                 str(i + 1).zfill(3) + f'_{j}'
                 for i in range(len(pytest.DB['segments'].files.unique()))
                 for j in range(
-                len(pytest.DB['segments'].files) //
-                len(pytest.DB['segments'].files.unique())
-            )
+                    len(pytest.DB['segments'].files)
+                    // len(pytest.DB['segments'].files.unique())
+                )
             ],
         ),
         (
@@ -2642,9 +2659,10 @@ def test_to_filewise_index(tmpdir, obj, expected_file_names):
         output_folder=output_folder,
         num_workers=3,
     )
-    new_files = new_obj.index.get_level_values(define.IndexField.FILE).values
+    new_index = new_obj if isinstance(new_obj, pd.Index) else new_obj.index
+    new_files = new_index.get_level_values(define.IndexField.FILE).values
 
-    assert audformat.index_type(new_obj) == define.IndexType.FILEWISE
+    assert audformat.is_filewise_index(new_obj)
 
     if isinstance(obj, pd.DataFrame):
         pd.testing.assert_frame_equal(
@@ -2659,7 +2677,8 @@ def test_to_filewise_index(tmpdir, obj, expected_file_names):
 
     if audformat.is_segmented_index(obj):
         # already `framewise` frame is unprocessed
-        assert os.path.isabs(output_folder) == os.path.isabs(new_files[0])
+        if len(new_files) > 0:
+            assert os.path.isabs(output_folder) == os.path.isabs(new_files[0])
 
     if audformat.is_filewise_index(obj):
         # files of unprocessed frame are relative to `root`
