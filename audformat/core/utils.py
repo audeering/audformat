@@ -1382,7 +1382,7 @@ def to_filewise_index(
     test_path = audeer.path(test_path)
 
     # keep ``output_folder`` relative if it's relative
-    if audeer.path(output_folder) in test_path:
+    if test_path.startswith(audeer.path(output_folder)):
         raise ValueError(
             f'``output_folder`` may not be contained in path to files of '
             f'original data: {audeer.path(output_folder)} != {test_path}')

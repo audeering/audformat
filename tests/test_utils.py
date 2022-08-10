@@ -2689,6 +2689,16 @@ def test_to_filewise_index(tmpdir, obj, expected_file_names):
     file_names = [f.split('/')[-1].rsplit('.', 1)[0] for f in new_files]
     assert file_names == expected_file_names
 
+    if len(obj) > 0 and not audformat.is_filewise_index(obj):
+        error_msg = '``output_folder`` may not be contained in path to files'
+        with pytest.raises(ValueError, match=error_msg):
+            utils.to_filewise_index(
+                obj=obj,
+                root=pytest.DB_ROOT,
+                output_folder='.',
+                num_workers=3,
+            )
+
 
 @pytest.mark.parametrize(
     'objs, expected',
