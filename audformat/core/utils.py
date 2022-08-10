@@ -1411,7 +1411,7 @@ def to_filewise_index(
         new_files.extend(
             [os.path.join(
                 output_folder,
-                "_{}.".format(str(count).zfill(width)).join(f.rsplit('.', 1))
+                '_{}.'.format(str(count).zfill(width)).join(f.rsplit('.', 1))
             )
                 for count in range(len(group))]
         )

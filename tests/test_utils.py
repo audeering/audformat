@@ -2602,7 +2602,7 @@ def test_to_segmented_index(obj, allow_nat, files_duration, root, expected):
         (
             pytest.DB['segments'].get(),
             [
-                str(i + 1).zfill(3) + f'_{j}'
+                f'{i + 1:03d}_{j}'  # 001_0, 001_1, ...
                 for i in range(len(pytest.DB['segments'].files.unique()))
                 for j in range(
                     len(pytest.DB['segments'].files)
@@ -2613,7 +2613,7 @@ def test_to_segmented_index(obj, allow_nat, files_duration, root, expected):
         (
             pytest.DB['files'].get(),
             [
-                str(i + 1).zfill(3)
+                f'{i + 1:03d}'
                 for i in range(len(pytest.DB['files']))
             ],
         ),
@@ -2621,7 +2621,7 @@ def test_to_segmented_index(obj, allow_nat, files_duration, root, expected):
         (
             pytest.DB['segments']['string'].get(),
             [
-                str(i + 1).zfill(3) + f'_{j}'
+                f'{i + 1:03d}_{j}'
                 for i in range(len(pytest.DB['segments'].files.unique()))
                 for j in range(
                     len(pytest.DB['segments'].files)
@@ -2632,7 +2632,7 @@ def test_to_segmented_index(obj, allow_nat, files_duration, root, expected):
         (
             pytest.DB['files']['string'].get(),
             [
-                str(i + 1).zfill(3)
+                f'{i + 1:03d}'
                 for i in range(len(pytest.DB['files']))
             ],
         ),
@@ -2640,7 +2640,7 @@ def test_to_segmented_index(obj, allow_nat, files_duration, root, expected):
         (
             pytest.DB['segments'].index,
             [
-                str(i + 1).zfill(3) + f'_{j}'
+                f'{i + 1:03d}_{j}'
                 for i in range(len(pytest.DB['segments'].files.unique()))
                 for j in range(
                     len(pytest.DB['segments'].files)
@@ -2651,7 +2651,7 @@ def test_to_segmented_index(obj, allow_nat, files_duration, root, expected):
         (
             pytest.DB['files'].index,
             [
-                str(i + 1).zfill(3)
+                f'{i + 1:03d}'
                 for i in range(len(pytest.DB['files']))
             ],
         ),
