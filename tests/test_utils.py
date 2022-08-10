@@ -2573,6 +2573,7 @@ def test_to_segmented_index(obj, allow_nat, files_duration, root, expected):
 @pytest.mark.parametrize(
     'obj, expected_file_names',
     [
+        # frame
         (
             pytest.DB['segments'].get(),
             [
@@ -2591,25 +2592,63 @@ def test_to_segmented_index(obj, allow_nat, files_duration, root, expected):
                 for i in range(len(pytest.DB['files']))
             ],
         ),
+        # series
+        (
+            pytest.DB['segments']['string'].get(),
+            [
+                str(i + 1).zfill(3) + f'_{j}'
+                for i in range(len(pytest.DB['segments'].files.unique()))
+                for j in range(
+                len(pytest.DB['segments'].files) //
+                len(pytest.DB['segments'].files.unique())
+            )
+            ],
+        ),
+        (
+            pytest.DB['files']['string'].get(),
+            [
+                str(i + 1).zfill(3)
+                for i in range(len(pytest.DB['files']))
+            ],
+        ),
+        # index
+        (
+            pytest.DB['segments'].index,
+            [
+                str(i + 1).zfill(3) + f'_{j}'
+                for i in range(len(pytest.DB['segments'].files.unique()))
+                for j in range(
+                len(pytest.DB['segments'].files) //
+                len(pytest.DB['segments'].files.unique())
+            )
+            ],
+        ),
+        (
+            pytest.DB['files'].index,
+            [
+                str(i + 1).zfill(3)
+                for i in range(len(pytest.DB['files']))
+            ],
+        ),
     ]
 )
-def test_to_filewise(tmpdir, obj, expected_file_names):
+def test_to_filewise_index(tmpdir, obj, expected_file_names):
 
     output_folder = tmpdir
 
-    frame = utils.to_filewise_index(
+    new_obj = utils.to_filewise_index(
         obj=obj,
         root=pytest.DB_ROOT,
         output_folder=output_folder,
         num_workers=3,
     )
 
-    assert audformat.index_type(frame) == define.IndexType.FILEWISE
+    assert audformat.index_type(new_obj) == define.IndexType.FILEWISE
     pd.testing.assert_frame_equal(
         obj.reset_index(drop=True),
-        frame.reset_index(drop=True),
+        new_obj.reset_index(drop=True),
     )
-    files = frame.index.get_level_values(define.IndexField.FILE).values
+    files = new_obj.index.get_level_values(define.IndexField.FILE).values
 
     if audformat.is_segmented_index(obj):
         # already `framewise` frame is unprocessed
