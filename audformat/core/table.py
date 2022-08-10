@@ -176,7 +176,7 @@ class Base(HeaderBase):
                             f"'{self._id}' "
                             f"is used as labels in scheme "
                             f"'{scheme_id}' "
-                            f"its columns cannot used with a scheme "
+                            f"its columns cannot be used with a scheme "
                             f"that also uses labels from a misc table."
                         )
 
