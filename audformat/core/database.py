@@ -756,13 +756,13 @@ class Database(HeaderBase):
                     # column values will be updated
                     # later when the tables are joined
                     if (
-                        other_scheme.has_table
-                        or self_scheme.has_table
+                        other_scheme.uses_table
+                        or self_scheme.uses_table
                     ):
 
                         if (
-                            other_scheme.has_table
-                            != self_scheme.has_table
+                            other_scheme.uses_table
+                            != self_scheme.uses_table
                         ):
                             raise ValueError(
                                 f"Cannot join scheme "

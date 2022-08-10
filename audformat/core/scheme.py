@@ -165,7 +165,7 @@ class Scheme(common.HeaderBase):
         r"""Maximum value"""
 
     @property
-    def has_table(self) -> bool:
+    def uses_table(self) -> bool:
         r"""Scheme has labels stored in a table.
 
         If property is ``True``
