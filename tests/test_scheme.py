@@ -226,7 +226,7 @@ def test_scheme_errors():
     error_msg = (
         "Since the misc table 'misc2' "
         "is used as labels in scheme 'scheme2' "
-        "its columns cannot used with a scheme "
+        "its columns cannot be used with a scheme "
         "that also uses labels from a misc table."
     )
     with pytest.raises(ValueError, match=error_msg):
