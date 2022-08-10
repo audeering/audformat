@@ -4,11 +4,7 @@ import os
 import shutil
 import typing
 
-import audiofile
 import oyaml as yaml
-
-import audformat.utils
-
 try:
     from yaml import CLoader as Loader
 except ImportError:  # pragma: nocover
@@ -16,6 +12,7 @@ except ImportError:  # pragma: nocover
 import pandas as pd
 
 import audeer
+import audiofile
 
 from audformat.core import define
 from audformat.core import utils
@@ -751,21 +748,21 @@ class Database(HeaderBase):
         for other in others:
             for scheme_id in other.schemes:
                 if scheme_id in self.schemes:
-                    other_labels = other.schemes[scheme_id].labels
-                    self_labels = self.schemes[scheme_id].labels
+                    other_scheme = other.schemes[scheme_id]
+                    self_scheme = self.schemes[scheme_id]
 
                     # join labels from misc tables
                     # by combining the index of all tables,
                     # column values will be updated
                     # later when the tables are joined
                     if (
-                        isinstance(other_labels, str)
-                        or isinstance(self_labels, str)
+                        other_scheme.uses_table
+                        or self_scheme.uses_table
                     ):
 
                         if (
-                            isinstance(other_labels, str)
-                            != isinstance(self_labels, str)
+                            other_scheme.uses_table
+                            != self_scheme.uses_table
                         ):
                             raise ValueError(
                                 f"Cannot join scheme "
@@ -774,19 +771,19 @@ class Database(HeaderBase):
                                 f"and the other is not."
                             )
 
-                        if other_labels != self_labels:
+                        if other_scheme.labels != self_scheme.labels:
                             raise ValueError(
                                 f"Cannot join scheme "
                                 f"'{scheme_id}' "
                                 f"when using misc tables "
                                 f"with different IDs: "
-                                f"'{self_labels}' "
+                                f"'{self_scheme.labels}' "
                                 f"!= "
-                                f"'{other_labels}'."
+                                f"'{other_scheme.labels}'."
                             )
 
-                        other_table = other[other_labels]
-                        self_table = self[self_labels]
+                        other_table = other[other_scheme.labels]
+                        self_table = self[self_scheme.labels]
                         index = utils.union(
                             [
                                 other_table.index,
@@ -801,8 +798,8 @@ class Database(HeaderBase):
 
                     # join other labels
                     elif (
-                        other_labels is not None
-                        and self_labels is not None
+                        other_scheme.labels is not None
+                        and self_scheme.labels is not None
                     ):
                         utils.join_schemes([self, other], scheme_id)
 
