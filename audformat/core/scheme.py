@@ -176,7 +176,7 @@ class Scheme(common.HeaderBase):
         values are stored.
 
         Returns:
-            ``True`` if scheme has labels stored in a table
+            ``True`` if scheme has labels stored in a misc table
 
         """
         return isinstance(self.labels, str)
