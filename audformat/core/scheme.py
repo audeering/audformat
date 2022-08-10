@@ -302,8 +302,9 @@ class Scheme(common.HeaderBase):
                 or the given table ID is not a misc table,
                 or its index is multi-dimensional,
                 or its index contains duplicates,
-                or the misc table has a column that is already assigned to
-                a scheme with labels from another misc table
+                or the misc table has a column
+                that is already assigned to a scheme
+                with labels from another misc table
 
         Example:
             >>> speaker = Scheme(
