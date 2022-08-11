@@ -74,7 +74,7 @@
             
             
               <div class="version">
-                v0.15.0
+                v0.15.1
               </div>
             
           
@@ -174,11 +174,7 @@
 <span class="kn">import</span> <span class="nn">shutil</span>
 <span class="kn">import</span> <span class="nn">typing</span>
 
-<span class="kn">import</span> <span class="nn">audiofile</span>
 <span class="kn">import</span> <span class="nn">oyaml</span> <span class="k">as</span> <span class="nn">yaml</span>
-
-<span class="kn">import</span> <span class="nn">audformat.utils</span>
-
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">yaml</span> <span class="kn">import</span> <span class="n">CLoader</span> <span class="k">as</span> <span class="n">Loader</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>  <span class="c1"># pragma: nocover</span>
@@ -186,6 +182,7 @@
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 
 <span class="kn">import</span> <span class="nn">audeer</span>
+<span class="kn">import</span> <span class="nn">audiofile</span>
 
 <span class="kn">from</span> <span class="nn">audformat.core</span> <span class="kn">import</span> <span class="n">define</span>
 <span class="kn">from</span> <span class="nn">audformat.core</span> <span class="kn">import</span> <span class="n">utils</span>
@@ -921,21 +918,21 @@
         <span class="k">for</span> <span class="n">other</span> <span class="ow">in</span> <span class="n">others</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">scheme_id</span> <span class="ow">in</span> <span class="n">other</span><span class="o">.</span><span class="n">schemes</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">scheme_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">schemes</span><span class="p">:</span>
-                    <span class="n">other_labels</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="n">scheme_id</span><span class="p">]</span><span class="o">.</span><span class="n">labels</span>
-                    <span class="n">self_labels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="n">scheme_id</span><span class="p">]</span><span class="o">.</span><span class="n">labels</span>
+                    <span class="n">other_scheme</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="n">scheme_id</span><span class="p">]</span>
+                    <span class="n">self_scheme</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="n">scheme_id</span><span class="p">]</span>
 
                     <span class="c1"># join labels from misc tables</span>
                     <span class="c1"># by combining the index of all tables,</span>
                     <span class="c1"># column values will be updated</span>
                     <span class="c1"># later when the tables are joined</span>
                     <span class="k">if</span> <span class="p">(</span>
-                        <span class="nb">isinstance</span><span class="p">(</span><span class="n">other_labels</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
-                        <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">self_labels</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
+                        <span class="n">other_scheme</span><span class="o">.</span><span class="n">uses_table</span>
+                        <span class="ow">or</span> <span class="n">self_scheme</span><span class="o">.</span><span class="n">uses_table</span>
                     <span class="p">):</span>
 
                         <span class="k">if</span> <span class="p">(</span>
-                            <span class="nb">isinstance</span><span class="p">(</span><span class="n">other_labels</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
-                            <span class="o">!=</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">self_labels</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
+                            <span class="n">other_scheme</span><span class="o">.</span><span class="n">uses_table</span>
+                            <span class="o">!=</span> <span class="n">self_scheme</span><span class="o">.</span><span class="n">uses_table</span>
                         <span class="p">):</span>
                             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                                 <span class="sa">f</span><span class="s2">&quot;Cannot join scheme &quot;</span>
@@ -944,19 +941,19 @@
                                 <span class="sa">f</span><span class="s2">&quot;and the other is not.&quot;</span>
                             <span class="p">)</span>
 
-                        <span class="k">if</span> <span class="n">other_labels</span> <span class="o">!=</span> <span class="n">self_labels</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">other_scheme</span><span class="o">.</span><span class="n">labels</span> <span class="o">!=</span> <span class="n">self_scheme</span><span class="o">.</span><span class="n">labels</span><span class="p">:</span>
                             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                                 <span class="sa">f</span><span class="s2">&quot;Cannot join scheme &quot;</span>
                                 <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">scheme_id</span><span class="si">}</span><span class="s2">&#39; &quot;</span>
                                 <span class="sa">f</span><span class="s2">&quot;when using misc tables &quot;</span>
                                 <span class="sa">f</span><span class="s2">&quot;with different IDs: &quot;</span>
-                                <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">self_labels</span><span class="si">}</span><span class="s2">&#39; &quot;</span>
+                                <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">self_scheme</span><span class="o">.</span><span class="n">labels</span><span class="si">}</span><span class="s2">&#39; &quot;</span>
                                 <span class="sa">f</span><span class="s2">&quot;!= &quot;</span>
-                                <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">other_labels</span><span class="si">}</span><span class="s2">&#39;.&quot;</span>
+                                <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">other_scheme</span><span class="o">.</span><span class="n">labels</span><span class="si">}</span><span class="s2">&#39;.&quot;</span>
                             <span class="p">)</span>
 
-                        <span class="n">other_table</span> <span class="o">=</span> <span class="n">other</span><span class="p">[</span><span class="n">other_labels</span><span class="p">]</span>
-                        <span class="n">self_table</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="n">self_labels</span><span class="p">]</span>
+                        <span class="n">other_table</span> <span class="o">=</span> <span class="n">other</span><span class="p">[</span><span class="n">other_scheme</span><span class="o">.</span><span class="n">labels</span><span class="p">]</span>
+                        <span class="n">self_table</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="n">self_scheme</span><span class="o">.</span><span class="n">labels</span><span class="p">]</span>
                         <span class="n">index</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">union</span><span class="p">(</span>
                             <span class="p">[</span>
                                 <span class="n">other_table</span><span class="o">.</span><span class="n">index</span><span class="p">,</span>
@@ -971,8 +968,8 @@
 
                     <span class="c1"># join other labels</span>
                     <span class="k">elif</span> <span class="p">(</span>
-                        <span class="n">other_labels</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-                        <span class="ow">and</span> <span class="n">self_labels</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+                        <span class="n">other_scheme</span><span class="o">.</span><span class="n">labels</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+                        <span class="ow">and</span> <span class="n">self_scheme</span><span class="o">.</span><span class="n">labels</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
                     <span class="p">):</span>
                         <span class="n">utils</span><span class="o">.</span><span class="n">join_schemes</span><span class="p">([</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">],</span> <span class="n">scheme_id</span><span class="p">)</span>
 
@@ -1323,7 +1320,7 @@
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2022/08/05 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2022/08/11 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>

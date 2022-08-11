@@ -76,7 +76,7 @@
             
             
               <div class="version">
-                v0.15.0
+                v0.15.1
               </div>
             
           
@@ -1692,6 +1692,10 @@ use <code class="docutils literal notranslate"><span class="pre">update()</span>
 <li><p><a class="reference internal" href="api-errors.html#audformat.errors.BadIdError" title="audformat.errors.BadIdError"><strong>BadIdError</strong></a> – if a column with a <code class="docutils literal notranslate"><span class="pre">scheme_id</span></code> or <code class="docutils literal notranslate"><span class="pre">rater_id</span></code> is
     added that does not exist</p></li>
 <li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.10)"><strong>ValueError</strong></a> – if column ID is not different from level names</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.10)"><strong>ValueError</strong></a> – if the column is linked to a scheme
+    that is using labels from a misc table,
+    but the misc table the column is assigned to
+    is already used by the same or another scheme</p></li>
 </ul>
 </dd>
 <dt class="field-odd">Return type</dt>
@@ -2268,7 +2272,10 @@ If a table ID is provided,
     or its index contains duplicates,
     or <code class="docutils literal notranslate"><span class="pre">dtype</span></code> does not match type of labels
     from misc table,
-    or <code class="docutils literal notranslate"><span class="pre">dtype</span></code> is set to <code class="docutils literal notranslate"><span class="pre">bool</span></code></p></li>
+    or <code class="docutils literal notranslate"><span class="pre">dtype</span></code> is set to <code class="docutils literal notranslate"><span class="pre">bool</span></code>,
+    or the misc table has a column
+    that is already assigned to a scheme
+    with labels from another misc table</p></li>
 </ul>
 </dd>
 </dl>
@@ -2363,13 +2370,13 @@ labels</p></li>
 <dl class="py property">
 <dt class="sig sig-object py" id="audformat.Scheme.is_numeric">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_numeric</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></em><a class="headerlink" href="#audformat.Scheme.is_numeric" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check if data type is numeric.</p>
+<dd><p>Data type is numeric.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">True</span></code> if data type is numeric.</p>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">True</span></code> if data type is numeric</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2377,7 +2384,7 @@ labels</p></li>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="audformat.Scheme.labels">
 <span class="sig-name descname"><span class="pre">labels</span></span><a class="headerlink" href="#audformat.Scheme.labels" title="Permalink to this definition">¶</a></dt>
-<dd><p>List of labels</p>
+<dd><p>Labels or ID of misc table holding the labels</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -2420,7 +2427,10 @@ Removed labels are set to <code class="docutils literal notranslate"><span class
     but the corresponding misc table is not part of the database,
     or the given table ID is not a misc table,
     or its index is multi-dimensional,
-    or its index contains duplicates</p></li>
+    or its index contains duplicates,
+    or the misc table has a column
+    that is already assigned to a scheme
+    with labels from another misc table</p></li>
 </ul>
 </dd>
 </dl>
@@ -2484,6 +2494,26 @@ returned. Otherwise the following rules are applied:</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/index.html#module-pandas" title="(in pandas v1.4.3)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pandas</span></code></a> data type</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="audformat.Scheme.uses_table">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">uses_table</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></em><a class="headerlink" href="#audformat.Scheme.uses_table" title="Permalink to this definition">¶</a></dt>
+<dd><p>Scheme has labels stored in a misc table.</p>
+<p>If property is <code class="docutils literal notranslate"><span class="pre">True</span></code>
+the attribute <code class="docutils literal notranslate"><span class="pre">labels</span></code>
+is set to an ID of a
+<a class="reference internal" href="#audformat.MiscTable" title="audformat.MiscTable"><code class="xref py py-class docutils literal notranslate"><span class="pre">audformat.MiscTable</span></code></a>
+where the actual label
+values are stored.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">True</span></code> if scheme has labels stored in a misc table</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2777,6 +2807,10 @@ use <code class="docutils literal notranslate"><span class="pre">update()</span>
 <li><p><a class="reference internal" href="api-errors.html#audformat.errors.BadIdError" title="audformat.errors.BadIdError"><strong>BadIdError</strong></a> – if a column with a <code class="docutils literal notranslate"><span class="pre">scheme_id</span></code> or <code class="docutils literal notranslate"><span class="pre">rater_id</span></code> is
     added that does not exist</p></li>
 <li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.10)"><strong>ValueError</strong></a> – if column ID is not different from level names</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.10)"><strong>ValueError</strong></a> – if the column is linked to a scheme
+    that is using labels from a misc table,
+    but the misc table the column is assigned to
+    is already used by the same or another scheme</p></li>
 </ul>
 </dd>
 <dt class="field-odd">Return type</dt>
@@ -3358,7 +3392,7 @@ the value of the last table in the list is kept.</p>
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2022/08/05 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2022/08/11 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>

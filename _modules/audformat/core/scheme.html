@@ -74,7 +74,7 @@
             
             
               <div class="version">
-                v0.15.0
+                v0.15.1
               </div>
             
           
@@ -231,7 +231,10 @@
 <span class="sd">            or its index contains duplicates,</span>
 <span class="sd">            or ``dtype`` does not match type of labels</span>
 <span class="sd">            from misc table,</span>
-<span class="sd">            or ``dtype`` is set to ``bool``</span>
+<span class="sd">            or ``dtype`` is set to ``bool``,</span>
+<span class="sd">            or the misc table has a column</span>
+<span class="sd">            that is already assigned to a scheme</span>
+<span class="sd">            with labels from another misc table</span>
 
 <span class="sd">    Example:</span>
 <span class="sd">        &gt;&gt;&gt; Scheme()</span>
@@ -328,18 +331,35 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span> <span class="o">=</span> <span class="n">dtype</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Data type&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">labels</span> <span class="o">=</span> <span class="n">labels</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;List of labels&quot;&quot;&quot;</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Labels or ID of misc table holding the labels&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">minimum</span> <span class="o">=</span> <span class="n">minimum</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_numeric</span> <span class="k">else</span> <span class="kc">None</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Minimum value&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">maximum</span> <span class="o">=</span> <span class="n">maximum</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_numeric</span> <span class="k">else</span> <span class="kc">None</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Maximum value&quot;&quot;&quot;</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">is_numeric</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Check if data type is numeric.</span>
+    <span class="k">def</span> <span class="nf">uses_table</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Scheme has labels stored in a misc table.</span>
+
+<span class="sd">        If property is ``True``</span>
+<span class="sd">        the attribute ``labels``</span>
+<span class="sd">        is set to an ID of a</span>
+<span class="sd">        :class:`audformat.MiscTable`</span>
+<span class="sd">        where the actual label</span>
+<span class="sd">        values are stored.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            ``True`` if data type is numeric.</span>
+<span class="sd">            ``True`` if scheme has labels stored in a misc table</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">labels</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">is_numeric</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Data type is numeric.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            ``True`` if data type is numeric</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span> <span class="ow">in</span> <span class="p">(</span><span class="n">define</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">INTEGER</span><span class="p">,</span> <span class="n">define</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">FLOAT</span><span class="p">)</span>
@@ -451,7 +471,10 @@
 <span class="sd">                but the corresponding misc table is not part of the database,</span>
 <span class="sd">                or the given table ID is not a misc table,</span>
 <span class="sd">                or its index is multi-dimensional,</span>
-<span class="sd">                or its index contains duplicates</span>
+<span class="sd">                or its index contains duplicates,</span>
+<span class="sd">                or the misc table has a column</span>
+<span class="sd">                that is already assigned to a scheme</span>
+<span class="sd">                with labels from another misc table</span>
 
 <span class="sd">        Example:</span>
 <span class="sd">            &gt;&gt;&gt; speaker = Scheme(</span>
@@ -539,6 +562,18 @@
                     <span class="sa">f</span><span class="s2">&quot;The table &#39;</span><span class="si">{</span><span class="n">table_id</span><span class="si">}</span><span class="s2">&#39; used as scheme labels &quot;</span>
                     <span class="s2">&quot;needs to be a misc table.&quot;</span>
                 <span class="p">)</span>
+            <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_db</span><span class="o">.</span><span class="n">misc_tables</span><span class="p">[</span><span class="n">table_id</span><span class="p">]</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">column</span><span class="o">.</span><span class="n">scheme_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">scheme</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="n">column</span><span class="o">.</span><span class="n">scheme_id</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="n">scheme</span><span class="o">.</span><span class="n">uses_table</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                            <span class="sa">f</span><span class="s2">&quot;The misc table &quot;</span>
+                            <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">table_id</span><span class="si">}</span><span class="s2">&#39; &quot;</span>
+                            <span class="sa">f</span><span class="s2">&quot;cannot be used as scheme labels &quot;</span>
+                            <span class="sa">f</span><span class="s2">&quot;when one of its columns is &quot;</span>
+                            <span class="sa">f</span><span class="s2">&quot;assigned to a scheme that &quot;</span>
+                            <span class="sa">f</span><span class="s2">&quot;uses labels from a misc table.&quot;</span>
+                        <span class="p">)</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_db</span><span class="p">[</span><span class="n">table_id</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">nlevels</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                     <span class="sa">f</span><span class="s2">&quot;Index of misc table &#39;</span><span class="si">{</span><span class="n">table_id</span><span class="si">}</span><span class="s2">&#39; used as scheme labels &quot;</span>
@@ -569,7 +604,7 @@
             <span class="c1"># dtype is stored in the levels dictionary</span>
             <span class="c1"># as audformat dtypes.</span>
             <span class="c1"># In addition, a misc table used as labels</span>
-            <span class="c1"># is only allowed to have an one dimensional index,</span>
+            <span class="c1"># is only allowed to have a one dimensional index,</span>
             <span class="c1"># so we need to get only the first entry of the dict.</span>
             <span class="n">levels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_db</span><span class="p">[</span><span class="n">labels</span><span class="p">]</span><span class="o">.</span><span class="n">levels</span>
             <span class="n">dtype</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">levels</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span>
@@ -647,7 +682,7 @@
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2022/08/05 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2022/08/11 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
