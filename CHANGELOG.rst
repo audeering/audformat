@@ -7,6 +7,22 @@ The format is based on `Keep a Changelog`_,
 and this project adheres to `Semantic Versioning`_.
 
 
+Version 0.15.1 (2022-08-11)
+---------------------------
+
+* Added: ``audformat.Scheme.uses_table``
+  to indicate if the scheme uses a misc table
+  to store its labels
+* Added: usage example to docstring of
+  ``audfromat.utils.to_segmented_index()``
+* Changed: forbid nesting of misc tables as scheme labels
+* Fixed: support for ``pd.Index``
+  and ``pd.Series``
+  in ``audformat.utils.to_filewise_index()``
+* Fixed: description of ``audformat.Schemes.labels``
+  in API documentation
+
+
 Version 0.15.0 (2022-08-05)
 ---------------------------
 
