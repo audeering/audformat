@@ -2571,75 +2571,141 @@ def test_to_segmented_index(obj, allow_nat, files_duration, root, expected):
 
 
 @pytest.mark.parametrize(
-    'output_folder,table_id,expected_file_names',
+    'obj, expected_file_names',
     [
-        pytest.param(
-            '.',
-            'segments',
-            None,
-            marks=pytest.mark.xfail(raises=ValueError)
-        ),
-        pytest.param(
-            os.path.abspath(''),
-            'segments',
-            None,
-            marks=pytest.mark.xfail(raises=ValueError)
+        # empty
+        (
+            audformat.filewise_index(),
+            [],
         ),
         (
-            'tmp',
-            'segments',
+            audformat.segmented_index(),
+            [],
+        ),
+        (
+            pd.Series(index=audformat.filewise_index(), dtype='object'),
+            [],
+        ),
+        (
+            pd.Series(index=audformat.segmented_index(), dtype='object'),
+            [],
+        ),
+        (
+            pd.DataFrame(index=audformat.filewise_index(), dtype='object'),
+            [],
+        ),
+        (
+            pd.DataFrame(index=audformat.segmented_index(), dtype='object'),
+            [],
+        ),
+        # frame
+        (
+            pytest.DB['segments'].get(),
             [
-                str(i).zfill(3) + f'_{j}'
-                for i in range(1, 11)
-                for j in range(10)
-            ]
+                f'{i + 1:03d}_{j}'  # 001_0, 001_1, ...
+                for i in range(len(pytest.DB['segments'].files.unique()))
+                for j in range(
+                    len(pytest.DB['segments'].files)
+                    // len(pytest.DB['segments'].files.unique())
+                )
+            ],
         ),
         (
-            'tmp',
-            'files',
-            [str(i).zfill(3) for i in range(1, 101)]
-        )
+            pytest.DB['files'].get(),
+            [
+                f'{i + 1:03d}'
+                for i in range(len(pytest.DB['files']))
+            ],
+        ),
+        # series
+        (
+            pytest.DB['segments']['string'].get(),
+            [
+                f'{i + 1:03d}_{j}'
+                for i in range(len(pytest.DB['segments'].files.unique()))
+                for j in range(
+                    len(pytest.DB['segments'].files)
+                    // len(pytest.DB['segments'].files.unique())
+                )
+            ],
+        ),
+        (
+            pytest.DB['files']['string'].get(),
+            [
+                f'{i + 1:03d}'
+                for i in range(len(pytest.DB['files']))
+            ],
+        ),
+        # index
+        (
+            pytest.DB['segments'].index,
+            [
+                f'{i + 1:03d}_{j}'
+                for i in range(len(pytest.DB['segments'].files.unique()))
+                for j in range(
+                    len(pytest.DB['segments'].files)
+                    // len(pytest.DB['segments'].files.unique())
+                )
+            ],
+        ),
+        (
+            pytest.DB['files'].index,
+            [
+                f'{i + 1:03d}'
+                for i in range(len(pytest.DB['files']))
+            ],
+        ),
     ]
 )
-def test_to_filewise(output_folder, table_id, expected_file_names):
+def test_to_filewise_index(tmpdir, obj, expected_file_names):
 
-    has_existed = os.path.exists(output_folder)
+    output_folder = tmpdir
 
-    frame = utils.to_filewise_index(
-        obj=pytest.DB[table_id].get(),
+    new_obj = utils.to_filewise_index(
+        obj=obj,
         root=pytest.DB_ROOT,
         output_folder=output_folder,
         num_workers=3,
     )
+    new_index = new_obj if isinstance(new_obj, pd.Index) else new_obj.index
+    new_files = new_index.get_level_values(define.IndexField.FILE).values
 
-    assert audformat.index_type(frame) == define.IndexType.FILEWISE
-    pd.testing.assert_frame_equal(
-        pytest.DB[table_id].get().reset_index(drop=True),
-        frame.reset_index(drop=True),
-    )
-    files = frame.index.get_level_values(define.IndexField.FILE).values
+    assert audformat.is_filewise_index(new_obj)
 
-    if table_id == 'segmented':  # already `framewise` frame is unprocessed
-        assert os.path.isabs(output_folder) == os.path.isabs(files[0])
+    if isinstance(obj, pd.DataFrame):
+        pd.testing.assert_frame_equal(
+            obj.reset_index(drop=True),
+            new_obj.reset_index(drop=True),
+        )
+    elif isinstance(obj, pd.Series):
+        pd.testing.assert_series_equal(
+            obj.reset_index(drop=True),
+            new_obj.reset_index(drop=True),
+        )
 
-    if table_id == 'files':
+    if audformat.is_segmented_index(obj):
+        # already `framewise` frame is unprocessed
+        if len(new_files) > 0:
+            assert os.path.isabs(output_folder) == os.path.isabs(new_files[0])
+
+    if audformat.is_filewise_index(obj):
         # files of unprocessed frame are relative to `root`
-        files = [os.path.join(pytest.DB_ROOT, f) for f in files]
-    assert all(os.path.exists(f) for f in files)
+        new_files = [os.path.join(pytest.DB_ROOT, f) for f in new_files]
 
-    file_names = [f.split('/')[-1].rsplit('.', 1)[0] for f in files]
+    assert all(os.path.exists(f) for f in new_files)
+
+    file_names = [f.split('/')[-1].rsplit('.', 1)[0] for f in new_files]
     assert file_names == expected_file_names
 
-    # clean-up
-    if not has_existed:  # output folder was created and can be removed
-        if os.path.exists(output_folder):
-            shutil.rmtree(output_folder)
-    else:
-        if table_id == 'segments':
-            for f in frame.index.get_level_values(
-                    define.IndexField.FILE):
-                if os.path.exists(f):
-                    os.remove(f)
+    if len(obj) > 0 and not audformat.is_filewise_index(obj):
+        error_msg = '``output_folder`` may not be contained in path to files'
+        with pytest.raises(ValueError, match=error_msg):
+            utils.to_filewise_index(
+                obj=obj,
+                root=pytest.DB_ROOT,
+                output_folder='.',
+                num_workers=3,
+            )
 
 
 @pytest.mark.parametrize(

@@ -1366,40 +1366,56 @@ def to_filewise_index(
     if is_filewise_index(obj):
         return obj
 
-    test_path = obj.index.get_level_values(define.IndexField.FILE)[0]
+    obj = obj.copy()
+
+    if len(obj) == 0:
+        index = filewise_index()
+        if not isinstance(obj, pd.Index):
+            obj.index = index
+        else:
+            obj = index
+        return obj
+
+    index = obj if isinstance(obj, pd.Index) else obj.index
+    test_path = index.get_level_values(define.IndexField.FILE)[0]
     is_abs = os.path.isabs(test_path)
     test_path = audeer.path(test_path)
 
     # keep ``output_folder`` relative if it's relative
-    if audeer.path(output_folder) in test_path:
+    if test_path.startswith(audeer.path(output_folder)):
         raise ValueError(
             f'``output_folder`` may not be contained in path to files of '
             f'original data: {audeer.path(output_folder)} != {test_path}')
 
-    obj = obj.copy()
-    original_files = obj.index.get_level_values(define.IndexField.FILE)
+    original_files = index.get_level_values(define.IndexField.FILE)
     if not is_abs:
         original_files = [os.path.join(root, f) for f in original_files]
-    starts = obj.index.get_level_values(define.IndexField.START)
-    ends = obj.index.get_level_values(define.IndexField.END)
+    starts = index.get_level_values(define.IndexField.START)
+    ends = index.get_level_values(define.IndexField.END)
 
     # order of rows within group is preserved:
     # "https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.groupby.html"  # noqa
-    files = obj.groupby(define.IndexField.FILE, sort=False)
-    segments = []
+    if isinstance(obj, pd.Index):
+        groups = pd.Series(index=obj, dtype='object').groupby(
+            define.IndexField.FILE,
+            sort=False,
+        )
+    else:
+        groups = obj.groupby(define.IndexField.FILE, sort=False)
+    new_files = []
 
-    for _, group in files:
+    for _, group in groups:
         width = len(str(len(group) - 1))  # -1 because count starts at `0`
         f = group.index.get_level_values(define.IndexField.FILE)[0]
         f = os.path.relpath(f, root) if is_abs else f
-        segments.extend(
+        new_files.extend(
             [os.path.join(
                 output_folder,
-                "_{}.".format(str(count).zfill(width)).join(f.rsplit('.', 1))
+                '_{}.'.format(str(count).zfill(width)).join(f.rsplit('.', 1))
             )
                 for count in range(len(group))]
         )
-        audeer.mkdir(os.path.dirname(segments[-1]))
+        audeer.mkdir(os.path.dirname(new_files[-1]))
 
     def _split_files(original, start, end, segment):
         signal, sr = audiofile.read(
@@ -1411,7 +1427,7 @@ def to_filewise_index(
     params = [
         ([file, start, end, segment], {}) for
         file, start, end, segment in
-        zip(original_files, starts, ends, segments)
+        zip(original_files, starts, ends, new_files)
     ]
 
     audeer.run_tasks(
@@ -1422,9 +1438,13 @@ def to_filewise_index(
         progress_bar=progress_bar,
     )
 
-    obj = obj.reset_index(drop=True)
-    obj[define.IndexField.FILE] = segments
-    return obj.set_index(keys=define.IndexField.FILE)
+    index = filewise_index(new_files)
+    if not isinstance(obj, pd.Index):
+        obj.index = index
+    else:
+        obj = index
+
+    return obj
 
 
 def to_segmented_index(
