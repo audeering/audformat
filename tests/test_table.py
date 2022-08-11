@@ -538,6 +538,16 @@ def test_drop_and_pick_columns(inplace):
         (
             create_table(
                 pd.Series(
+                    index=audformat.segmented_index(),
+                    dtype='object',
+                )
+            ),
+            audformat.segmented_index(),
+            audformat.segmented_index(),
+        ),
+        (
+            create_table(
+                pd.Series(
                     index=audformat.filewise_index(),
                     dtype='object',
                 )
