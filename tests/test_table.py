@@ -522,6 +522,40 @@ def test_drop_and_pick_columns(inplace):
         assert 'string' in db['files'].columns
 
 
+@pytest.mark.parametrize(
+    'table, index, expected',
+    [
+        (
+            create_table(
+                pd.Series(
+                    index=audformat.filewise_index(),
+                    dtype='object',
+                )
+            ),
+            audformat.filewise_index(),
+            audformat.filewise_index(),
+        ),
+        (
+            create_table(
+                pd.Series(
+                    index=audformat.filewise_index(),
+                    dtype='object',
+                )
+            ),
+            audformat.filewise_index(['f1', 'f2']),
+            audformat.filewise_index(),
+        ),
+    ]
+)
+def test_drop_index(table, index, expected):
+    index_org = table.index.copy()
+    table_new = table.drop_index(index, inplace=False)
+    pd.testing.assert_index_equal(table_new.index, expected)
+    pd.testing.assert_index_equal(table.index, index_org)
+    table.drop_index(index, inplace=True)
+    pd.testing.assert_index_equal(table.index, expected)
+
+
 def test_drop_and_pick_index():
 
     for table in ['files', 'segments']:
