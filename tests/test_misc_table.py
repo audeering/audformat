@@ -45,21 +45,23 @@ def create_db_misc_table(
 
 
 def create_misc_table(
-        obj: typing.Union[pd.Series, pd.DataFrame],
+        obj: typing.Union[pd.Index, pd.Series, pd.DataFrame],
 ) -> audformat.MiscTable:
     r"""Helper function to create Table."""
-    table = audformat.MiscTable(obj.index)
-    if isinstance(obj, pd.Series):
-        obj = obj.to_frame()
-    for name in obj:
-        table[name] = audformat.Column()
-        table[name].set(obj[name].values)
-    # change 'int64' to 'Int64'
-    dtypes = {
-        name: 'Int64' if pd.api.types.is_integer_dtype(dtype) else dtype
-        for name, dtype in obj.dtypes.items()
-    }
-    table._df = table.df.astype(dtypes)
+    index = obj if isinstance(obj, pd.Index) else obj.index
+    table = audformat.MiscTable(index)
+    if not isinstance(obj, pd.Index):
+        if isinstance(obj, pd.Series):
+            obj = obj.to_frame()
+        for name in obj:
+            table[name] = audformat.Column()
+            table[name].set(obj[name].values)
+        # change 'int64' to 'Int64'
+        dtypes = {
+            name: 'Int64' if pd.api.types.is_integer_dtype(dtype) else dtype
+            for name, dtype in obj.dtypes.items()
+        }
+        table._df = table.df.astype(dtypes)
     return table
 
 
@@ -966,6 +968,62 @@ def test_drop_extend_and_pick_index_order():
         new_table.index,
         pd.Index([4, 3], dtype='Int64', name='idx'),
     )
+
+
+@pytest.mark.parametrize(
+    'table, index, expected',
+    [
+        # table and index empty
+        (
+            create_misc_table(pd.Index([], name='idx')),
+            pd.Index([], name='idx'),
+            pd.Index([], name='idx'),
+        ),
+        # table empty
+        (
+            create_misc_table(pd.Index([], name='idx')),
+            pd.Index(['a', 'b'], name='idx'),
+            pd.Index([], name='idx'),
+        ),
+        # index empty
+        (
+            create_misc_table(pd.Index(['a', 'b'], name='idx')),
+            pd.Index([], name='idx'),
+            pd.Index(['a', 'b'], name='idx'),
+        ),
+        # index and table identical
+        (
+            create_misc_table(pd.Index(['a', 'b'], name='idx')),
+            pd.Index(['b', 'a'], name='idx'),
+            pd.Index([], name='idx'),
+        ),
+        # index within table
+        (
+            create_misc_table(pd.Index(['a', 'b'], name='idx')),
+            pd.Index(['b'], name='idx'),
+            pd.Index(['a'], name='idx'),
+        ),
+        # table within index
+        (
+            create_misc_table(pd.Index(['b'], name='idx')),
+            pd.Index(['a', 'b'], name='idx'),
+            pd.Index([], name='idx'),
+        ),
+        # index and table overlap
+        (
+            create_misc_table(pd.Index(['a', 'b'], name='idx')),
+            pd.Index(['b', 'c'], name='idx'),
+            pd.Index(['a'], name='idx'),
+        ),
+    ]
+)
+def test_drop_index(table, index, expected):
+    index_org = table.index.copy()
+    table_new = table.drop_index(index, inplace=False)
+    pd.testing.assert_index_equal(table_new.index, expected)
+    pd.testing.assert_index_equal(table.index, index_org)
+    table.drop_index(index, inplace=True)
+    pd.testing.assert_index_equal(table.index, expected)
 
 
 def test_extend_index():
