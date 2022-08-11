@@ -708,6 +708,19 @@ def test_drop_extend_and_pick_index_order():
             ),
             audformat.segmented_index('f1', 0, 1),
         ),
+        # different index type
+        pytest.param(
+            create_table(audformat.segmented_index()),
+            audformat.filewise_index(),
+            None,
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
+        pytest.param(
+            create_table(audformat.filewise_index()),
+            audformat.segmented_index(),
+            None,
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
     ]
 )
 def test_drop_index(table, index, expected):

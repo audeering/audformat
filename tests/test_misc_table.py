@@ -1015,6 +1015,19 @@ def test_drop_extend_and_pick_index_order():
             pd.Index(['b', 'c'], name='idx'),
             pd.Index(['a'], name='idx'),
         ),
+        # index are not alike
+        pytest.param(
+            create_misc_table(pd.Index([0, 1], name='idx1')),
+            pd.Index([0, 1], name='idx2'),
+            None,
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
+        pytest.param(
+            create_misc_table(pd.Index([0, 1], name='idx')),
+            pd.Index(['0', '1'], name='idx'),
+            None,
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
     ]
 )
 def test_drop_index(table, index, expected):
