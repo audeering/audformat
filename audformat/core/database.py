@@ -466,17 +466,7 @@ class Database(HeaderBase):
 
         """
         def job(table):
-            if table.is_segmented:
-                index = table.df.index.map(
-                    lambda x: (func(x[0]), x[1], x[2])
-                )
-                index = utils.set_index_dtypes(
-                    index,
-                    {define.IndexField.FILE: 'string'},
-                )
-                table.df.index = index
-            else:
-                table.df.index = table.df.index.map(lambda x: func(x))
+            table.map_files(func)
 
         audeer.run_tasks(
             job,
