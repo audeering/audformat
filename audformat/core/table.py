@@ -316,6 +316,7 @@ class Base(HeaderBase):
 
         _assert_table_index(table, index, 'drop rows from')
 
+        index = utils.intersect([table.index, index])
         new_index = utils.difference([table.index, index])
         table._df = table.df.reindex(new_index)
 
