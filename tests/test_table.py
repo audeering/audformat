@@ -1178,6 +1178,158 @@ def test_pick_files(files, table):
     )
 
 
+@pytest.mark.parametrize(
+    'table, index, expected',
+    [
+        # table and index empty
+        (
+            create_table(audformat.filewise_index()),
+            audformat.filewise_index(),
+            audformat.filewise_index(),
+        ),
+        (
+            create_table(audformat.segmented_index()),
+            audformat.segmented_index(),
+            audformat.segmented_index(),
+        ),
+        # table empty
+        (
+            create_table(audformat.filewise_index()),
+            audformat.filewise_index(['f1', 'f2']),
+            audformat.filewise_index(),
+        ),
+        (
+            create_table(audformat.segmented_index()),
+            audformat.segmented_index(
+                ['f1', 'f1', 'f2'],
+                [0, 1, 0],
+                [1, 2, 3],
+            ),
+            audformat.segmented_index(),
+        ),
+        # index empty
+        (
+            create_table(audformat.filewise_index(['f1', 'f2'])),
+            audformat.filewise_index(),
+            audformat.filewise_index(),
+        ),
+        (
+            create_table(
+                audformat.segmented_index(
+                    ['f1', 'f1', 'f2'],
+                    [0, 1, 0],
+                    [1, 2, 3],
+                ),
+            ),
+            audformat.segmented_index(),
+            audformat.segmented_index(),
+        ),
+        # index and table identical
+        (
+            create_table(audformat.filewise_index(['f1', 'f2'])),
+            audformat.filewise_index(['f2', 'f1']),
+            audformat.filewise_index(['f1', 'f2']),
+        ),
+        (
+            create_table(
+                audformat.segmented_index(
+                    ['f1', 'f1', 'f2'],
+                    [0, 1, 0],
+                    [1, 2, 3],
+                ),
+            ),
+            audformat.segmented_index(
+                ['f2', 'f1', 'f1'],
+                [0, 1, 0],
+                [3, 2, 1],
+            ),
+            audformat.segmented_index(
+                ['f1', 'f1', 'f2'],
+                [0, 1, 0],
+                [1, 2, 3],
+            ),
+        ),
+        # index within table
+        (
+            create_table(audformat.filewise_index(['f1', 'f2'])),
+            audformat.filewise_index(['f2']),
+            audformat.filewise_index(['f2']),
+        ),
+        (
+            create_table(
+                audformat.segmented_index(
+                    ['f1', 'f1', 'f2'],
+                    [0, 1, 0],
+                    [1, 2, 3],
+                ),
+            ),
+            audformat.segmented_index('f1', 1, 2),
+            audformat.segmented_index('f1', 1, 2),
+        ),
+        # table within index
+        (
+            create_table(audformat.filewise_index(['f2'])),
+            audformat.filewise_index(['f1', 'f2']),
+            audformat.filewise_index(['f2']),
+        ),
+        (
+            create_table(audformat.segmented_index('f1', 1, 2)),
+            audformat.segmented_index(
+                ['f1', 'f1', 'f2'],
+                [0, 1, 0],
+                [1, 2, 3],
+            ),
+            audformat.segmented_index('f1', 1, 2),
+        ),
+        # index and table overlap
+        (
+            create_table(audformat.filewise_index(['f1', 'f2'])),
+            audformat.filewise_index(['f2', 'f3']),
+            audformat.filewise_index(['f2']),
+        ),
+        (
+            create_table(
+                audformat.segmented_index(
+                    ['f1', 'f1', 'f2'],
+                    [0, 1, 0],
+                    [1, 2, 3],
+                ),
+            ),
+            audformat.segmented_index(
+                ['f2', 'f1', 'f1'],
+                [0, 1, 0],
+                [3, 2, 2],
+            ),
+            audformat.segmented_index(
+                ['f1', 'f2'],
+                [1, 0],
+                [2, 3],
+            ),
+        ),
+        # different index type
+        pytest.param(
+            create_table(audformat.segmented_index()),
+            audformat.filewise_index(),
+            None,
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
+        pytest.param(
+            create_table(audformat.filewise_index()),
+            audformat.segmented_index(),
+            None,
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
+    ]
+)
+def test_pick_index(table, index, expected):
+    index_org = table.index.copy()
+    table_new = table.pick_index(index, inplace=False)
+    pd.testing.assert_index_equal(table_new.index, expected)
+    pd.testing.assert_index_equal(table.index, index_org)
+    table.pick_index(index, inplace=True)
+    pd.testing.assert_index_equal(table.index, expected)
+
+
 @pytest.mark.parametrize('num_files,num_segments_per_file,values', [
     (3, 2, [0.0, 1.0, 2.0, 3.0, 4.0, 5.0]),
     (3, 2, np.array([0.0, 1.0, 2.0, 3.0, 4.0, 5.0])),
