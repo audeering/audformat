@@ -1207,6 +1207,75 @@ def test_load_old_pickle(tmpdir):
 
 
 @pytest.mark.parametrize(
+    'table, index, expected',
+    [
+        # table and index empty
+        (
+            create_misc_table(pd.Index([], name='idx')),
+            pd.Index([], name='idx'),
+            pd.Index([], name='idx'),
+        ),
+        # table empty
+        (
+            create_misc_table(pd.Index([], name='idx')),
+            pd.Index(['a', 'b'], name='idx'),
+            pd.Index([], name='idx'),
+        ),
+        # index empty
+        (
+            create_misc_table(pd.Index(['a', 'b'], name='idx')),
+            pd.Index([], name='idx'),
+            pd.Index([], name='idx'),
+        ),
+        # index and table identical
+        (
+            create_misc_table(pd.Index(['a', 'b'], name='idx')),
+            pd.Index(['b', 'a'], name='idx'),
+            pd.Index(['a', 'b'], name='idx'),
+        ),
+        # index within table
+        (
+            create_misc_table(pd.Index(['a', 'b'], name='idx')),
+            pd.Index(['b'], name='idx'),
+            pd.Index(['b'], name='idx'),
+        ),
+        # table within index
+        (
+            create_misc_table(pd.Index(['b'], name='idx')),
+            pd.Index(['a', 'b'], name='idx'),
+            pd.Index(['b'], name='idx'),
+        ),
+        # index and table overlap
+        (
+            create_misc_table(pd.Index(['a', 'b'], name='idx')),
+            pd.Index(['b', 'c'], name='idx'),
+            pd.Index(['b'], name='idx'),
+        ),
+        # index are not alike
+        pytest.param(
+            create_misc_table(pd.Index([0, 1], name='idx1')),
+            pd.Index([0, 1], name='idx2'),
+            None,
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
+        pytest.param(
+            create_misc_table(pd.Index([0, 1], name='idx')),
+            pd.Index(['0', '1'], name='idx'),
+            None,
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
+    ]
+)
+def test_pick_index(table, index, expected):
+    index_org = table.index.copy()
+    table_new = table.pick_index(index, inplace=False)
+    pd.testing.assert_index_equal(table_new.index, expected)
+    pd.testing.assert_index_equal(table.index, index_org)
+    table.pick_index(index, inplace=True)
+    pd.testing.assert_index_equal(table.index, expected)
+
+
+@pytest.mark.parametrize(
     'table, overwrite, others',
     [
         # empty
