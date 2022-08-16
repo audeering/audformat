@@ -1003,6 +1003,27 @@ def map_file_path(
 ) -> pd.Index:
     r"""Apply callable to file path in index.
 
+    Relies on :meth:`pandas.Index.map`,
+    which can be slow.
+    If speed is crucial,
+    consider to change the index directly.
+    In the following example we prefix every file with a folder
+    and add a new extension:
+
+    .. code-block:: python
+
+        root = '/root/'
+        ext = '.new'
+        if table.is_filewise:
+            table.df.index = root + table.df.index + ext
+            table.df.index.name = audformat.define.IndexField.FILE
+        elif len(table.df.index) > 0:
+            table.df.index.set_levels(
+                root + table.df.index.levels[0] + ext,
+                audformat.define.IndexField.FILE,
+                inplace=True,
+            )
+
     Args:
         index: index with file path conform to
             :ref:`table specifications <data-tables:Tables>`
@@ -1033,6 +1054,11 @@ def map_file_path(
         )
     else:
         index = index.map(func)
+
+    index = set_index_dtypes(
+        index,
+        {define.IndexField.FILE: 'string'},
+    )
 
     return index
 

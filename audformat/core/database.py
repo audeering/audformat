@@ -437,25 +437,9 @@ class Database(HeaderBase):
     ):
         r"""Apply function to file names in all tables.
 
-        Relies on :meth:`pandas.Index.map`,
-        which can be slow.
         If speed is crucial,
-        consider to change the index directly.
-        In the following example we prefix every file with a folder:
-
-        .. code-block:: python
-
-            root = '/root/'
-            for table in db.tables.values():
-                if table.is_filewise:
-                    table.df.index = root + table.df.index
-                    table.df.index.name = audformat.define.IndexField.FILE
-                elif len(table.df.index) > 0:
-                    table.df.index.set_levels(
-                        root + table.df.index.levels[0],
-                        audformat.define.IndexField.FILE,
-                        inplace=True,
-                    )
+        see :func:`audformat.utils.map_file_path`
+        for further hints how to optimize your code.
 
         Args:
             func: map function
