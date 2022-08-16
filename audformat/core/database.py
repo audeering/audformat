@@ -977,12 +977,12 @@ class Database(HeaderBase):
             params = []
             table_ids = []
 
-            if 'tables' in header and header['tables']:
-                for table_id in header['tables']:
-                    table_ids.append(table_id)
-
             if 'misc_tables' in header and header['misc_tables']:
                 for table_id in header['misc_tables']:
+                    table_ids.append(table_id)
+
+            if 'tables' in header and header['tables']:
+                for table_id in header['tables']:
                     table_ids.append(table_id)
 
             for table_id in table_ids:
@@ -1066,9 +1066,25 @@ class Database(HeaderBase):
                 db.raters[rater_id] = rater
 
         if 'schemes' in header and header['schemes']:
+            misc_table_schemes = {}
             for scheme_id, scheme_d in header['schemes'].items():
+                # ensure to load first all non misc table schemes
+                # as they might be needed
+                # when loading a misc table
                 scheme = Scheme()
-                scheme.from_dict(scheme_d)
+                if (
+                        'labels' in scheme_d
+                        and isinstance(scheme_d['labels'], str)
+                ):
+                    misc_table_schemes[scheme_id] = scheme_d
+                else:
+                    scheme.from_dict(scheme_d)
+                    db.schemes[scheme_id] = scheme
+            for scheme_id, scheme_d in misc_table_schemes.items():
+                scheme = Scheme(
+                    scheme_d['dtype'],
+                    labels=scheme_d['labels'],
+                )
                 db.schemes[scheme_id] = scheme
 
         if 'splits' in header and header['splits']:
