@@ -1008,7 +1008,9 @@ def map_file_path(
     If speed is crucial,
     consider to change the index directly.
     In the following example we prefix every file with a folder
-    and add a new extension:
+    and add a new extension,
+    compare also :func:`audformat.utils.expand_file_path`
+    and :func:`audformat.utils.replace_file_extension`:
 
     .. code-block:: python
 
