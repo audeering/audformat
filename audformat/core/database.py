@@ -1072,19 +1072,12 @@ class Database(HeaderBase):
                 # as they might be needed
                 # when loading a misc table
                 scheme = Scheme()
-                if (
-                        'labels' in scheme_d
-                        and isinstance(scheme_d['labels'], str)
-                ):
-                    misc_table_schemes[scheme_id] = scheme_d
+                scheme.from_dict(scheme_d)
+                if scheme.uses_table:
+                    misc_table_schemes[scheme_id] = scheme
                 else:
-                    scheme.from_dict(scheme_d)
                     db.schemes[scheme_id] = scheme
-            for scheme_id, scheme_d in misc_table_schemes.items():
-                scheme = Scheme(
-                    scheme_d['dtype'],
-                    labels=scheme_d['labels'],
-                )
+            for scheme_id, scheme in misc_table_schemes.items():
                 db.schemes[scheme_id] = scheme
 
         if 'splits' in header and header['splits']:
