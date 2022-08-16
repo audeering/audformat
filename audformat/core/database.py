@@ -1070,7 +1070,8 @@ class Database(HeaderBase):
             for scheme_id, scheme_d in header['schemes'].items():
                 # ensure to load first all non misc table schemes
                 # as they might be needed
-                # when loading a misc table
+                # when checking the scheme
+                # of the underlying misc table
                 scheme = Scheme()
                 scheme.from_dict(scheme_d)
                 if scheme.uses_table:
