@@ -977,12 +977,12 @@ class Database(HeaderBase):
             params = []
             table_ids = []
 
-            if 'misc_tables' in header and header['misc_tables']:
-                for table_id in header['misc_tables']:
-                    table_ids.append(table_id)
-
             if 'tables' in header and header['tables']:
                 for table_id in header['tables']:
+                    table_ids.append(table_id)
+
+            if 'misc_tables' in header and header['misc_tables']:
+                for table_id in header['misc_tables']:
                     table_ids.append(table_id)
 
             for table_id in table_ids:
