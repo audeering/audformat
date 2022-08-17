@@ -1057,11 +1057,6 @@ def map_file_path(
     else:
         index = index.map(func)
 
-    index = set_index_dtypes(
-        index,
-        {define.IndexField.FILE: 'string'},
-    )
-
     return index
 
 
