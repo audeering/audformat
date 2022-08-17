@@ -415,6 +415,33 @@ def test_license(license, license_url, expected_license, expected_url):
     assert db.license_url == expected_url
 
 
+def test_load(tmpdir):
+    # Test loading a database containg a misc table as scheme,
+    # see https://github.com/audeering/audformat/issues/294
+    db = audformat.testing.create_db(minimal=True)
+    db.schemes['scheme3'] = audformat.Scheme('str')
+    db.schemes['scheme1'] = audformat.Scheme(
+        labels=['some', 'test', 'labels']
+    )
+    audformat.testing.add_misc_table(
+        db,
+        'misc-in-scheme',
+        pd.Index([0, 1, 2], dtype='Int64', name='idx'),
+        columns={'emotion': ('scheme1', None)}
+    )
+    db.schemes['misc'] = audformat.Scheme(
+        'int',
+        labels='misc-in-scheme',
+    )
+    db.schemes['scheme2'] = audformat.Scheme('float')
+    # Order of schemes should be order of assigment
+    assert list(db.schemes) == ['scheme3', 'scheme1', 'misc', 'scheme2']
+    db.save(tmpdir)
+    db = audformat.Database.load(tmpdir)
+    # After loading from disc, order should be alphabetical
+    assert list(db.schemes) == ['misc', 'scheme1', 'scheme2', 'scheme3']
+
+
 @pytest.mark.parametrize(
     'num_workers',
     [

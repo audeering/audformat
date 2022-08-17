@@ -1040,10 +1040,30 @@ class Database(HeaderBase):
                 db.raters[rater_id] = rater
 
         if 'schemes' in header and header['schemes']:
+            misc_table_schemes = {}
             for scheme_id, scheme_d in header['schemes'].items():
+                # ensure to load first all non misc table schemes
+                # as they might be needed
+                # when checking the column schemes
+                # of the underlying misc table
                 scheme = Scheme()
                 scheme.from_dict(scheme_d)
+                if scheme.uses_table:
+                    misc_table_schemes[scheme_id] = scheme
+                else:
+                    db.schemes[scheme_id] = scheme
+            for scheme_id, scheme in misc_table_schemes.items():
                 db.schemes[scheme_id] = scheme
+            # restore order of scheme IDs
+            order = list(header['schemes'])
+            db.schemes = HeaderDict(
+                sorted(
+                    db.schemes.items(),
+                    key=lambda item: order.index(item[0]),
+                ),
+                value_type=Scheme,
+                set_callback=db._set_scheme,
+            )
 
         if 'splits' in header and header['splits']:
             for split_id, split_d in header['splits'].items():
