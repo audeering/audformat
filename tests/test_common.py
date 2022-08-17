@@ -85,3 +85,20 @@ def test_to_audformat_dtype(dtype, expected):
 def test_to_pandas_dtype(dtype, expected):
     dtype = audformat.core.common.to_pandas_dtype(dtype)
     assert dtype == expected
+
+
+def test_items_order():
+
+    d = audformat.core.common.HeaderDict(sorted_iter=False)
+    d['b'] = 1
+    d['a'] = 0
+    assert dict(d.items()) == {'b': 1, 'a': 0}
+    assert list(d.keys()) == ['b', 'a']
+    assert list(d.values()) == [1, 0]
+
+    d = audformat.core.common.HeaderDict(sorted_iter=True)
+    d['b'] = 1
+    d['a'] = 0
+    assert dict(d.items()) == {'a': 0, 'b': 1}
+    assert list(d.keys()) == ['a', 'b']
+    assert list(d.values()) == [0, 1]

@@ -91,6 +91,12 @@ class HeaderDict(OrderedDict):
         else:
             return super().items()
 
+    def keys(self):
+        return iter([key for key, _ in self.items()])
+
+    def values(self):
+        return iter([value for _, value in self.items()])
+
     def dump(self) -> str:
         if not self:
             return ''
