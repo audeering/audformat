@@ -419,22 +419,23 @@ def test_load(tmpdir):
     # Test loading a database containg a misc table as scheme,
     # see https://github.com/audeering/audformat/issues/294
     db = audformat.testing.create_db(minimal=True)
-    db.schemes['scheme'] = audformat.Scheme(
+    db.schemes['scheme1'] = audformat.Scheme(
         labels=['some', 'test', 'labels']
     )
     audformat.testing.add_misc_table(
         db,
         'misc-in-scheme',
         pd.Index([0, 1, 2], dtype='Int64', name='idx'),
-        columns={'emotion': ('scheme', None)}
+        columns={'emotion': ('scheme1', None)}
     )
     db.schemes['misc'] = audformat.Scheme(
         'int',
         labels='misc-in-scheme',
     )
+    db.schemes['scheme2'] = audformat.Scheme('float')
     db.save(tmpdir)
     db = audformat.Database.load(tmpdir)
-    assert list(db.schemes) == ['scheme', 'misc']
+    assert list(db.schemes) == ['scheme1', 'misc', 'scheme2']
 
 
 @pytest.mark.parametrize(
