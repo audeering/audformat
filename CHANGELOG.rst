@@ -11,18 +11,6 @@ Version 0.15.2 (2022-08-17)
 ---------------------------
 
 * Added: ``audformat.Table.map_files()``
-* Fixed: ensure that the methods ``.keys()``
-  and ``.values()``
-  return results in the same order
-  as the method ``.items()``
-  for ``audformat.Column``,
-  ``audformat.Database``,
-  ``audformat.Media``,
-  ``audformat.MiscTable``,
-  ``audformat.Rater``,
-  ``audformat.Scheme``,
-  ``audformat.Split``,
-  ``audformat.Table``
 * Fixed: ``audformat.Database.load()``
   for databases that contain a scheme
   with labels stored in a misc table
