@@ -7,6 +7,38 @@ The format is based on `Keep a Changelog`_,
 and this project adheres to `Semantic Versioning`_.
 
 
+Version 0.15.2 (2022-08-17)
+---------------------------
+
+* Added: ``audformat.Table.map_files()``
+* Fixed: ensure that the methods ``.keys()``
+  and ``.values()``
+  return results in the same order
+  as the method ``.items()``
+  for ``audformat.Column``,
+  ``audformat.Database``,
+  ``audformat.Media``,
+  ``audformat.MiscTable``,
+  ``audformat.Rater``,
+  ``audformat.Scheme``,
+  ``audformat.Split``,
+  ``audformat.Table``
+* Fixed: ``audformat.Database.load()``
+  for databases that contain a scheme
+  with labels stored in a misc table
+  that is using schemes for its columns.
+  Before it could fail
+  if the schemes were not loaded in the correct order
+* Fixed: ``audformat.Table.drop_index()``
+  and ``audformat.MiscTable.drop_index()``
+  when the provided index to drop
+  contains entries
+  not present in the index of the table.
+  Before it was extending the table
+  by those entries
+  besides dropping overlapping indices
+
+
 Version 0.15.1 (2022-08-11)
 ---------------------------
 
