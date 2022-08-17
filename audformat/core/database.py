@@ -1080,6 +1080,16 @@ class Database(HeaderBase):
                     db.schemes[scheme_id] = scheme
             for scheme_id, scheme in misc_table_schemes.items():
                 db.schemes[scheme_id] = scheme
+            # restore order of scheme IDs
+            order = list(header['schemes'])
+            db.schemes = HeaderDict(
+                sorted(
+                    db.schemes.items(),
+                    key=lambda item: order.index(item[0]),
+                ),
+                value_type=Scheme,
+                set_callback=db._set_scheme,
+            )
 
         if 'splits' in header and header['splits']:
             for split_id, split_d in header['splits'].items():
