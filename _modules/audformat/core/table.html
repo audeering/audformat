@@ -74,7 +74,7 @@
             
             
               <div class="version">
-                v0.15.1
+                v0.15.2
               </div>
             
           
@@ -486,6 +486,7 @@
 
         <span class="n">_assert_table_index</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="s1">&#39;drop rows from&#39;</span><span class="p">)</span>
 
+        <span class="n">index</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">intersect</span><span class="p">([</span><span class="n">table</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">index</span><span class="p">])</span>
         <span class="n">new_index</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">difference</span><span class="p">([</span><span class="n">table</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">index</span><span class="p">])</span>
         <span class="n">table</span><span class="o">.</span><span class="n">_df</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">reindex</span><span class="p">(</span><span class="n">new_index</span><span class="p">)</span>
 
@@ -1648,6 +1649,22 @@
 
         <span class="k">return</span> <span class="n">result</span></div>
 
+<div class="viewcode-block" id="Table.map_files"><a class="viewcode-back" href="../../../api.html#audformat.Table.map_files">[docs]</a>    <span class="k">def</span> <span class="nf">map_files</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">func</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Callable</span><span class="p">[[</span><span class="nb">str</span><span class="p">],</span> <span class="nb">str</span><span class="p">],</span>
+    <span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Apply function to file names in table.</span>
+
+<span class="sd">        If speed is crucial,</span>
+<span class="sd">        see :func:`audformat.utils.map_file_path`</span>
+<span class="sd">        for further hints how to optimize your code.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            func: map function</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">map_file_path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">func</span><span class="p">)</span></div>
+
 <div class="viewcode-block" id="Table.pick_files"><a class="viewcode-back" href="../../../api.html#audformat.Table.pick_files">[docs]</a>    <span class="k">def</span> <span class="nf">pick_files</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
             <span class="n">files</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span>
@@ -1773,7 +1790,7 @@
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2022/08/11 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2022/08/17 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>

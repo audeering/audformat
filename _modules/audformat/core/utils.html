@@ -74,7 +74,7 @@
             
             
               <div class="version">
-                v0.15.1
+                v0.15.2
               </div>
             
           
@@ -1173,6 +1173,29 @@
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">:</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Apply callable to file path in index.</span>
 
+<span class="sd">    Relies on :meth:`pandas.Index.map`,</span>
+<span class="sd">    which can be slow.</span>
+<span class="sd">    If speed is crucial,</span>
+<span class="sd">    consider to change the index directly.</span>
+<span class="sd">    In the following example we prefix every file with a folder</span>
+<span class="sd">    and add a new extension,</span>
+<span class="sd">    compare also :func:`audformat.utils.expand_file_path`</span>
+<span class="sd">    and :func:`audformat.utils.replace_file_extension`:</span>
+
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        root = &#39;/root/&#39;</span>
+<span class="sd">        ext = &#39;.new&#39;</span>
+<span class="sd">        if table.is_filewise:</span>
+<span class="sd">            table.df.index = root + table.df.index + ext</span>
+<span class="sd">            table.df.index.name = audformat.define.IndexField.FILE</span>
+<span class="sd">        elif len(table.df.index) &gt; 0:</span>
+<span class="sd">            table.df.index.set_levels(</span>
+<span class="sd">                root + table.df.index.levels[0] + ext,</span>
+<span class="sd">                audformat.define.IndexField.FILE,</span>
+<span class="sd">                inplace=True,</span>
+<span class="sd">            )</span>
+
 <span class="sd">    Args:</span>
 <span class="sd">        index: index with file path conform to</span>
 <span class="sd">            :ref:`table specifications &lt;data-tables:Tables&gt;`</span>
@@ -2062,7 +2085,7 @@
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2022/08/11 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2022/08/17 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
