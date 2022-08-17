@@ -1479,6 +1479,22 @@ class Table(Base):
 
         return result
 
+    def map_files(
+            self,
+            func: typing.Callable[[str], str],
+    ):
+        r"""Apply function to file names in table.
+
+        If speed is crucial,
+        see :func:`audformat.utils.map_file_path`
+        for further hints how to optimize your code.
+
+        Args:
+            func: map function
+
+        """
+        self.df.index = utils.map_file_path(self.df.index, func)
+
     def pick_files(
             self,
             files: typing.Union[
