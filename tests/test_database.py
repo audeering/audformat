@@ -434,6 +434,7 @@ def test_load(tmpdir):
     )
     db.save(tmpdir)
     db = audformat.Database.load(tmpdir)
+    assert list(db.schemes) == ['misc', 'scheme']
 
 
 @pytest.mark.parametrize(
