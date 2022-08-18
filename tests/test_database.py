@@ -434,11 +434,9 @@ def test_load(tmpdir):
         labels='misc-in-scheme',
     )
     db.schemes['scheme2'] = audformat.Scheme('float')
-    # Order of schemes should be order of assigment
-    assert list(db.schemes) == ['scheme3', 'scheme1', 'misc', 'scheme2']
+    assert list(db.schemes) == ['misc', 'scheme1', 'scheme2', 'scheme3']
     db.save(tmpdir)
     db = audformat.Database.load(tmpdir)
-    # After loading from disc, order should be alphabetical
     assert list(db.schemes) == ['misc', 'scheme1', 'scheme2', 'scheme3']
 
 
