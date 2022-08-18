@@ -40,6 +40,8 @@ class HeaderDict(OrderedDict):
         BadTypeError: if a value of an invalid type is added
 
     Example:
+        >>> HeaderDict()
+
         >>> d = HeaderDict()
         >>> d['b'] = 1
         >>> d['a'] = 0
@@ -82,6 +84,7 @@ class HeaderDict(OrderedDict):
         r"""Callback function when item is requested"""
         self.set_callback = set_callback
         r"""Callback function when item is added"""
+
         super().__init__(*args, **kwargs)
 
     def __getitem__(self, key):
