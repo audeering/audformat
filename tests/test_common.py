@@ -91,14 +91,32 @@ def test_items_order():
 
     d = audformat.core.common.HeaderDict(sorted_iter=False)
     d['b'] = 1
+    d['c'] = 2
     d['a'] = 0
-    assert dict(d.items()) == {'b': 1, 'a': 0}
-    assert list(d.keys()) == ['b', 'a']
-    assert list(d.values()) == [1, 0]
+    assert dict(d.items()) == {'b': 1, 'c': 2, 'a': 0}
+    assert list(d.keys()) == ['b', 'c', 'a']
+    assert list(d.values()) == [1, 2, 0]
+    assert list(d) == ['b', 'c', 'a']
+    for item, expected in zip(d, ['b', 'c', 'a']):
+        assert item == expected
+    for item, expected in zip(reversed(d), ['a', 'c', 'b']):
+        assert item == expected
+    assert d.popitem(last=True) == ('a', 0)
+    assert d.popitem(last=False) == ('b', 1)
+    assert list(d) == ['c']
 
     d = audformat.core.common.HeaderDict(sorted_iter=True)
     d['b'] = 1
+    d['c'] = 2
     d['a'] = 0
-    assert dict(d.items()) == {'a': 0, 'b': 1}
-    assert list(d.keys()) == ['a', 'b']
-    assert list(d.values()) == [0, 1]
+    assert dict(d.items()) == {'a': 0, 'b': 1, 'c': 2}
+    assert list(d.keys()) == ['a', 'b', 'c']
+    assert list(d.values()) == [0, 1, 2]
+    assert list(d) == ['a', 'b', 'c']
+    for item, expected in zip(d, ['a', 'b', 'c']):
+        assert item == expected
+    for item, expected in zip(reversed(d), ['c', 'b', 'a']):
+        assert item == expected
+    assert d.popitem(last=True) == ('c', 2)
+    assert d.popitem(last=False) == ('a', 0)
+    assert list(d) == ['b']

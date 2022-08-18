@@ -85,17 +85,20 @@ class HeaderDict(OrderedDict):
             value = self.get_callback(key, value)
         return value
 
-    def items(self):
+    def __iter__(self):
         if self.sorted_iter:
-            return iter(sorted(super().items()))
+            return sorted(super().keys()).__iter__()
         else:
-            return super().items()
+            return super().__iter__()
 
-    def keys(self):
-        return iter([key for key, _ in self.items()])
+    def __repr__(self) -> str:
+        return self.dump()
 
-    def values(self):
-        return iter([value for _, value in self.items()])
+    def __reversed__(self):
+        if self.sorted_iter:
+            return sorted(super().keys()).__reversed__()
+        else:
+            return super().__reversed__()
 
     def dump(self) -> str:
         if not self:
@@ -109,8 +112,29 @@ class HeaderDict(OrderedDict):
                 ]
             )
 
-    def __repr__(self) -> str:
-        return self.dump()
+    def items(self):
+        if self.sorted_iter:
+            return iter(sorted(super().items()))
+        else:
+            return super().items()
+
+    def keys(self):
+        return iter([key for key, _ in self.items()])
+
+    def popitem(self, last: bool = True):
+        if len(self) > 0 and self.sorted_iter:
+            keys = list(self)
+            if last:
+                key = keys[-1]
+            else:
+                key = keys[0]
+            value = super().pop(key)
+            return key, value
+        else:
+            return super().popitem(last)
+
+    def values(self):
+        return iter([value for _, value in self.items()])
 
 
 class HeaderBase:
