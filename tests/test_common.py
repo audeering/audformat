@@ -89,7 +89,7 @@ def test_to_pandas_dtype(dtype, expected):
 
 def test_items_order():
 
-    d = audformat.core.common.HeaderDict(sorted_iter=False)
+    d = audformat.core.common.HeaderDict(sort_by_key=False)
     d['b'] = 1
     d['c'] = 2
     d['a'] = 0
@@ -105,7 +105,7 @@ def test_items_order():
     assert d.popitem(last=False) == ('b', 1)
     assert list(d) == ['c']
 
-    d = audformat.core.common.HeaderDict(sorted_iter=True)
+    d = audformat.core.common.HeaderDict(sort_by_key=True)
     d['b'] = 1
     d['c'] = 2
     d['a'] = 0

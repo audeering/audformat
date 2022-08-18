@@ -52,7 +52,7 @@ class Base(HeaderBase):
         self.media_id = media_id
         r"""Media ID"""
         self.columns = HeaderDict(
-            sorted_iter=False,
+            sort_by_key=False,
             value_type=Column,
             set_callback=self._set_column,
         )

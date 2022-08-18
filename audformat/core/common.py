@@ -29,7 +29,8 @@ class HeaderDict(OrderedDict):
 
     Args:
         *args: default arguments
-        sorted_iter: if set, ``items()`` returns a sorted iterator
+        sort_by_key: if ``True`` maintain a sorted order,
+            otherwise order by assignment
         value_type: only accept values of this type
         get_callback: call this function when an item is requested
         set_callback: call this function when an item is added
@@ -39,8 +40,22 @@ class HeaderDict(OrderedDict):
         BadTypeError: if a value of an invalid type is added
 
     Example:
-        >>> HeaderDict()
-
+        >>> d = HeaderDict()
+        >>> d['b'] = 1
+        >>> d['a'] = 0
+        >>> d
+        a:
+          0
+        b:
+          1
+        >>> d = HeaderDict(sort_by_key=False)
+        >>> d['b'] = 1
+        >>> d['a'] = 0
+        >>> d
+        b:
+          1
+        a:
+          0
         >>> HeaderDict(
         ...     get_callback=lambda key, value: value + value,
         ...     set_callback=lambda key, value: value.upper(),
@@ -53,14 +68,14 @@ class HeaderDict(OrderedDict):
     def __init__(
             self,
             *args,
-            sorted_iter: bool = True,
+            sort_by_key: bool = True,
             value_type: type = None,
             get_callback: typing.Callable = None,
             set_callback: typing.Callable = None,
             **kwargs,
     ):
-        self.sorted_iter = sorted_iter
-        r"""Use sorted iterator"""
+        self.sort_by_key = sort_by_key
+        r"""Sort items by key"""
         self.value_type = value_type
         r"""Only accept values of this type"""
         self.get_callback = get_callback
@@ -68,14 +83,6 @@ class HeaderDict(OrderedDict):
         self.set_callback = set_callback
         r"""Callback function when item is added"""
         super().__init__(*args, **kwargs)
-
-    def __setitem__(self, key, value):
-        if self.set_callback is not None:
-            value = self.set_callback(key, value)
-        if self.value_type is not None:
-            if not isinstance(value, self.value_type):
-                raise BadTypeError(value, self.value_type)
-        super().__setitem__(key, value)
 
     def __getitem__(self, key):
         if key not in self:
@@ -86,7 +93,7 @@ class HeaderDict(OrderedDict):
         return value
 
     def __iter__(self):
-        if self.sorted_iter:
+        if self.sort_by_key:
             return sorted(super().keys()).__iter__()
         else:
             return super().__iter__()
@@ -95,10 +102,18 @@ class HeaderDict(OrderedDict):
         return self.dump()
 
     def __reversed__(self):
-        if self.sorted_iter:
+        if self.sort_by_key:
             return sorted(super().keys()).__reversed__()
         else:
             return super().__reversed__()
+
+    def __setitem__(self, key, value):
+        if self.set_callback is not None:
+            value = self.set_callback(key, value)
+        if self.value_type is not None:
+            if not isinstance(value, self.value_type):
+                raise BadTypeError(value, self.value_type)
+        super().__setitem__(key, value)
 
     def dump(self) -> str:
         if not self:
@@ -113,7 +128,7 @@ class HeaderDict(OrderedDict):
             )
 
     def items(self):
-        if self.sorted_iter:
+        if self.sort_by_key:
             return iter(sorted(super().items()))
         else:
             return super().items()
@@ -122,7 +137,7 @@ class HeaderDict(OrderedDict):
         return iter([key for key, _ in self.items()])
 
     def popitem(self, last: bool = True):
-        if len(self) > 0 and self.sorted_iter:
+        if len(self) > 0 and self.sort_by_key:
             keys = list(self)
             if last:
                 key = keys[-1]
