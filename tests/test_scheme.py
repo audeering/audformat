@@ -78,6 +78,32 @@ def test_scheme_assign_values():
             np.array([1.0, np.NaN, 3.0]),
             marks=pytest.mark.xfail(raises=ValueError),
         ),
+        (
+            audformat.Scheme(
+                audformat.define.DataType.FLOAT,
+                minimum=1.0,
+                maximum=2.0,
+            ),
+            np.array([1.0, None, 2.0]),
+        ),
+        pytest.param(  # minimum too low
+            audformat.Scheme(
+                audformat.define.DataType.FLOAT,
+                minimum=1.0,
+                maximum=2.0,
+            ),
+            np.array([0.0, None, 2.0]),
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
+        pytest.param(  # maximum too high
+            audformat.Scheme(
+                audformat.define.DataType.FLOAT,
+                minimum=1.0,
+                maximum=2.0,
+            ),
+            np.array([1.0, None, 3.0]),
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
     ]
 )
 def test_scheme_minimum_maximum(scheme, values):
@@ -100,6 +126,7 @@ def test_scheme_minimum_maximum(scheme, values):
         values,
         audformat.filewise_index(table.files),
         name=column_id,
+        dtype='float64',
     )
     column.set(values)
     pd.testing.assert_series_equal(column.get(), expected_series)

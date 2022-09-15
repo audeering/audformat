@@ -42,6 +42,10 @@ def assert_values(
                 values = values.values
             if isinstance(values, np.ndarray):
                 if scheme.is_numeric:
+                    # Support type object with None entries,
+                    # which need to be converted to NaN
+                    # to support min/max
+                    values = values.astype(float)
                     values = [
                         np.nanmin(values),
                         np.nanmax(values),
