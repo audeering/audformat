@@ -29,9 +29,11 @@ def assert_values(
     r"""Raise error if values do not match scheme."""
     ok = True
 
-    if scheme.labels is not None or \
-            scheme.minimum is not None or \
-            scheme.maximum is not None:
+    if (
+            scheme.labels is not None
+            or scheme.minimum is not None
+            or scheme.maximum is not None
+    ):
 
         if is_scalar(values):
             ok = values in scheme
@@ -41,8 +43,8 @@ def assert_values(
             if isinstance(values, np.ndarray):
                 if scheme.is_numeric:
                     values = [
-                        np.min(values),
-                        np.max(values),
+                        np.nanmin(values),
+                        np.nanmax(values),
                     ]
             values = list(set(values))
             ok = all([value in scheme for value in values])

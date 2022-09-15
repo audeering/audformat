@@ -25,6 +25,86 @@ def test_scheme_assign_values():
     assert list(db['table'].get(map={'speaker': 'age'})['age']) == ages
 
 
+@pytest.mark.parametrize(
+    'scheme, values',
+    [
+        (
+            audformat.Scheme(
+                audformat.define.DataType.FLOAT,
+            ),
+            [1.0, 2.0],
+        ),
+        (
+            audformat.Scheme(
+                audformat.define.DataType.FLOAT,
+                minimum=1.0,
+                maximum=2.0,
+            ),
+            [1.0, 2.0],
+        ),
+        pytest.param(  # minimum too low
+            audformat.Scheme(
+                audformat.define.DataType.FLOAT,
+                minimum=1.0,
+                maximum=2.0,
+            ),
+            [0.0, 2.0],
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
+        pytest.param(  # maximum too high
+            audformat.Scheme(
+                audformat.define.DataType.FLOAT,
+                minimum=1.0,
+                maximum=2.0,
+            ),
+            [1.0, 3.0],
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
+        pytest.param(  # minimum too low
+            audformat.Scheme(
+                audformat.define.DataType.FLOAT,
+                minimum=1.0,
+                maximum=2.0,
+            ),
+            np.array([0.0, np.NaN, 2.0]),
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
+        pytest.param(  # maximum too high
+            audformat.Scheme(
+                audformat.define.DataType.FLOAT,
+                minimum=1.0,
+                maximum=2.0,
+            ),
+            np.array([1.0, np.NaN, 3.0]),
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
+    ]
+)
+def test_scheme_minimum_maximum(scheme, values):
+
+    db = audformat.testing.create_db(minimal=True)
+    audformat.testing.add_table(
+        db,
+        'table',
+        audformat.define.IndexType.FILEWISE,
+        num_files=len(values),
+    )
+    db.schemes['scheme'] = scheme
+    db['table']['column'] = audformat.Column(scheme_id='scheme')
+
+    table = db['table']
+    column = db['table']['column']
+    column_id = 'column'
+
+    expected_series = pd.Series(
+        values,
+        audformat.filewise_index(table.files),
+        name=column_id,
+    )
+    column.set(values)
+    pd.testing.assert_series_equal(column.get(), expected_series)
+
+
 def test_scheme_contains():
 
     db = pytest.DB
