@@ -60,6 +60,9 @@ def test_scheme_assign_values():
             [1.0, 3.0],
             marks=pytest.mark.xfail(raises=ValueError),
         ),
+        # Finding minimum and maximum in array
+        # should nopt be affected by NaN, see
+        # https://github.com/audeering/audformat/issues/305
         pytest.param(  # minimum too low
             audformat.Scheme(
                 audformat.define.DataType.FLOAT,
@@ -78,6 +81,9 @@ def test_scheme_assign_values():
             np.array([1.0, np.NaN, 3.0]),
             marks=pytest.mark.xfail(raises=ValueError),
         ),
+        # Make sure we convert None to float
+        # before checking minimum/maximum, see
+        # https://github.com/audeering/audformat/issues/307
         (
             audformat.Scheme(
                 audformat.define.DataType.FLOAT,
@@ -102,6 +108,26 @@ def test_scheme_assign_values():
                 maximum=2.0,
             ),
             np.array([1.0, None, 3.0]),
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
+        # Using 0.0 failed before, see
+        # https://github.com/audeering/audformat/issues/304
+        pytest.param(  # minimum too low
+            audformat.Scheme(
+                audformat.define.DataType.FLOAT,
+                minimum=0.0,
+                maximum=2.0,
+            ),
+            np.array([-1.0, 2.0]),
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
+        pytest.param(  # maximum too high
+            audformat.Scheme(
+                audformat.define.DataType.FLOAT,
+                minimum=-1.0,
+                maximum=0.0,
+            ),
+            np.array([1.0, 2.0]),
             marks=pytest.mark.xfail(raises=ValueError),
         ),
     ]

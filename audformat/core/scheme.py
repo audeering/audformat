@@ -492,8 +492,8 @@ class Scheme(common.HeaderBase):
                 return item in labels
             if self.is_numeric:
                 item = float(item)
-                if self.minimum and not item >= self.minimum:
+                if self.minimum is not None and not item >= self.minimum:
                     return False
-                if self.maximum and not item <= self.maximum:
+                if self.maximum is not None and not item <= self.maximum:
                     return False
         return True
