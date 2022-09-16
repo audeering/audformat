@@ -27,7 +27,7 @@ def assert_values(
         scheme: Scheme,
 ):
     r"""Raise error if values do not match scheme."""
-    ok = True
+    bad_values = []
 
     if (
             scheme.labels is not None
@@ -36,26 +36,31 @@ def assert_values(
     ):
 
         if is_scalar(values):
-            ok = values in scheme
-        else:
-            if isinstance(values, pd.Series):
-                values = values.values
-            if isinstance(values, np.ndarray):
-                if scheme.is_numeric:
-                    # Support type object with None entries,
-                    # which need to be converted to NaN
-                    # to support min/max
-                    values = values.astype(float)
-                    values = [
-                        np.nanmin(values),
-                        np.nanmax(values),
-                    ]
-            values = list(set(values))
-            ok = all([value in scheme for value in values])
+            values = [values]
+        elif isinstance(values, pd.Series):
+            values = values.values
+        elif isinstance(values, np.ndarray):
+            if scheme.is_numeric:
+                # Support type object with None entries,
+                # which need to be converted to NaN
+                # to support min/max
+                values = values.astype(float)
+                values = [
+                    np.nanmin(values),
+                    np.nanmax(values),
+                ]
+        # Get unique values and preserve order
+        values = list(dict.fromkeys(values))
+        bad_values = [value for value in values if value not in scheme]
 
-    if not ok:
+    if len(bad_values) > 0:
+        values = str(bad_values[:50])[1:-1]
+        if len(bad_values) > 50:
+            values += ', ...'
         raise ValueError(
-            f'Some value(s) do not match scheme:\n{scheme}.'
+            f"Some value(s) do not match scheme\n{scheme}\n"
+            f"with scheme ID '{scheme._id}':\n"
+            f'{values}'
         )
 
 
