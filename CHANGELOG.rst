@@ -7,6 +7,27 @@ The format is based on `Keep a Changelog`_,
 and this project adheres to `Semantic Versioning`_.
 
 
+Version 0.15.3 (2022-09-19)
+---------------------------
+
+* Changed: ``audformat.Column.set()``
+  now lists values
+  not matching
+  the scheme of the column
+  in the corresponding error message
+* Fixed: ``audformat.Column.set()``
+  checking of values
+  for a scheme with minimum and/or maximum
+  when input values are given
+  as ``np.array``
+  and contain ``NaN``
+  or ``None``
+* Fixed: ``audformat.Column.set()``
+  checking of values
+  for a scheme with minimum and/or maximum
+  when minimum or maximum is 0
+
+
 Version 0.15.2 (2022-08-17)
 ---------------------------
 
