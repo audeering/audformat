@@ -1,3 +1,5 @@
+import re
+
 import numpy as np
 import pandas as pd
 import pytest
@@ -12,8 +14,9 @@ def test_scheme_assign_values():
     speakers = ['spk1', 'spk2', 'spk3']
     ages = [33, 44, 55]
     index = pd.Index(speakers, name='speaker', dtype='string')
+    db.schemes['age'] = audformat.Scheme('int', minimum=0)
     db['misc'] = audformat.MiscTable(index)
-    db['misc']['age'] = audformat.Column()
+    db['misc']['age'] = audformat.Column(scheme_id='age')
     db['misc']['age'].set(ages)
     db.schemes['scheme'] = audformat.Scheme(labels='misc', dtype='str')
     db['table'] = audformat.Table(audformat.filewise_index(['f1', 'f2', 'f3']))
@@ -23,6 +26,34 @@ def test_scheme_assign_values():
     assert list(db['table']['speaker'].get()) == speakers
     assert list(db['table']['speaker'].get(map='age')) == ages
     assert list(db['table'].get(map={'speaker': 'age'})['age']) == ages
+
+    # Set values not matching scheme
+    bad_values = ['spk4', 'spk5', 'spk6']
+    error_msg = re.escape(
+        "Some value(s) do not match scheme\n"
+        f"{db.schemes['scheme']}\n"
+        "with scheme ID 'scheme':\n"
+        "'spk4', 'spk5', 'spk6'"
+    )
+    with pytest.raises(ValueError, match=error_msg):
+        db['table']['speaker'].set(bad_values)
+    bad_values = list(range(-11, 0))
+    error_msg = re.escape(
+        "Some value(s) do not match scheme\n"
+        f"{db.schemes['age']}\n"
+        "with scheme ID 'age':\n"
+        f"-11, -10, -9, -8, -7, -6, -5, -4, -3, -2, ..."
+    )
+    with pytest.raises(ValueError, match=error_msg):
+        db['misc'].extend_index(
+            pd.Index(
+                [f'spk{n}' for n in range(4, 52)],
+                name='speaker',
+                dtype='string',
+            ),
+            inplace=True,
+        )
+        db['misc']['age'].set(bad_values)
 
 
 @pytest.mark.parametrize(
