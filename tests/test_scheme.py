@@ -37,13 +37,12 @@ def test_scheme_assign_values():
     )
     with pytest.raises(ValueError, match=error_msg):
         db['table']['speaker'].set(bad_values)
-    bad_values = list(range(-51, 0))
+    bad_values = list(range(-11, 0))
     error_msg = re.escape(
         "Some value(s) do not match scheme\n"
         f"{db.schemes['age']}\n"
         "with scheme ID 'age':\n"
-        f"{str(bad_values[:50])[1:-1]}"
-        ', ...'
+        f"-11, -10, -9, -8, -7, -6, -5, -4, -3, -2, ..."
     )
     with pytest.raises(ValueError, match=error_msg):
         db['misc'].extend_index(

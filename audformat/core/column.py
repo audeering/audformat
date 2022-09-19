@@ -54,8 +54,9 @@ def assert_values(
         bad_values = [value for value in values if value not in scheme]
 
     if len(bad_values) > 0:
-        values = str(bad_values[:50])[1:-1]
-        if len(bad_values) > 50:
+        max_display = 10
+        values = str(bad_values[:max_display])[1:-1]
+        if len(bad_values) > max_display:
             values += ', ...'
         raise ValueError(
             f"Some value(s) do not match scheme\n{scheme}\n"
