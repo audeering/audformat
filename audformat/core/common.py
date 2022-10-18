@@ -1,4 +1,5 @@
 import inspect
+import os
 import oyaml as yaml
 import typing
 import textwrap
@@ -308,6 +309,17 @@ def index_to_html(self):  # pragma: no cover
     df = self.to_frame()
     df = df.drop(columns=df.columns)
     return df.to_html()
+
+
+def is_relative_path(path):
+    return not (
+        os.path.isabs(path)
+        or '\\' in path
+        or path.startswith('./')
+        or '/./' in path
+        or path.startswith('../')
+        or '/../' in path
+    )
 
 
 def series_to_html(self):  # pragma: no cover

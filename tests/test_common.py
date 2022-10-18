@@ -120,3 +120,24 @@ def test_items_order():
     assert d.popitem(last=True) == ('c', 2)
     assert d.popitem(last=False) == ('a', 0)
     assert list(d) == ['b']
+
+
+@pytest.mark.parametrize(
+    'path, expected',
+    [
+        ('/root/file.txt', False),
+        ('./file.txt', False),
+        ('../file.txt', False),
+        ('doc/./file.txt', False),
+        ('doc/../file.txt', False),
+        ('doc/../../file.txt', False),
+        (r'C:\\doc\file.txt', False),
+        (r'a\b', False),
+        ('a/b', True),
+        ('b', True),
+        ('file.txt', True),
+    ],
+)
+def test_is_relative_path(path, expected):
+    relative = audformat.core.common.is_relative_path(path)
+    assert relative == expected

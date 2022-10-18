@@ -19,6 +19,7 @@ from audformat.core import utils
 from audformat.core.attachment import Attachment
 from audformat.core.column import Column
 from audformat.core.common import (
+    is_relative_path,
     HeaderBase,
     HeaderDict,
 )
@@ -247,17 +248,7 @@ class Database(HeaderBase):
         """
         if len(self.files) == 0:
             return True
-        return not any(
-            (
-                os.path.isabs(f)
-                or '\\' in f
-                or f.startswith('./')
-                or '/./' in f
-                or f.startswith('../')
-                or '/../' in f
-            )
-            for f in self.files
-        )
+        return all(is_relative_path(f) for f in self.files)
 
     @property
     def root(self) -> typing.Optional[str]:

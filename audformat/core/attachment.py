@@ -2,7 +2,10 @@ import os
 
 import audeer
 
-from audformat.core.common import HeaderBase
+from audformat.core.common import (
+    HeaderBase,
+    is_relative_path,
+)
 
 
 class Attachment(HeaderBase):
@@ -33,14 +36,7 @@ class Attachment(HeaderBase):
     ):
         super().__init__(description=description, meta=meta)
 
-        if (
-                os.path.isabs(path)
-                or '\\' in path
-                or path.startswith('./')
-                or '/./' in path
-                or path.startswith('../')
-                or '/../' in path
-        ):
+        if not is_relative_path(path):
             raise ValueError(
                 f"The provided path '{path}' needs to be relative "
                 "and not contain '\\', '.', or '..'."
