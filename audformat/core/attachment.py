@@ -19,8 +19,6 @@ class Attachment(HeaderBase):
         ValueError: if ``path`` is absolute
 
     Example:
-        >>> import audeer
-        >>> _ = audeer.touch('file.txt')
         >>> Attachment('file.txt', description='Attached file')
         {description: Attached file, path: file.txt}
 
