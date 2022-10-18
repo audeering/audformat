@@ -1,6 +1,7 @@
 from __future__ import annotations  # allow typing without string
 
 import typing
+import warnings
 
 import numpy as np
 import pandas as pd
