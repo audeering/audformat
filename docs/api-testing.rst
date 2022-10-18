@@ -24,6 +24,11 @@ add_table
 
 .. autofunction:: add_table
 
+create_attachment_files
+-----------------------
+
+.. autofunction:: create_attachment_files
+
 create_audio_files
 ------------------
 

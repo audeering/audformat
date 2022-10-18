@@ -495,6 +495,7 @@ def test_map_files(num_workers):
 def test_save_and_load(tmpdir, db, storage_format, load_data, num_workers):
 
     assert db.root is None
+    audformat.testing.create_attachment_files(db, tmpdir)
     db.save(
         tmpdir,
         storage_format=storage_format,

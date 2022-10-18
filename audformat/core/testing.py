@@ -13,9 +13,11 @@ import warnings
 import numpy as np
 import pandas as pd
 
+import audeer
 import audiofile as af
 
 from audformat.core import define
+from audformat.core.attachment import Attachment
 from audformat.core.column import Column
 from audformat.core.database import Database
 from audformat.core.index import (
@@ -186,6 +188,24 @@ def add_table(
     return db[table_id]
 
 
+def create_attachment_files(
+        db: Database,
+        root: str,
+):
+    r"""Create attachment folders and files of a database.
+
+    Args:
+        db: a database
+        root: root folder of database
+
+    """
+    for attachment_id in list(db.attachments):
+        path = audeer.path(root, db.attachments[attachment_id].path)
+        if not os.path.exists(path):
+            audeer.mkdir(os.path.dirname(path))
+            audeer.touch(path)
+
+
 def create_audio_files(
         db: Database,
         root: str = None,
@@ -310,6 +330,12 @@ def create_db(
                 db[table_id][column_id] = Column(scheme_id=dtype)
             db[table_id].set(obj)
         return db
+
+    ###############
+    # Attachments #
+    ###############
+
+    db.attachments['attachment'] = Attachment('extra/attachment.txt')
 
     #########
     # Media #

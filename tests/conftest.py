@@ -11,6 +11,7 @@ pytest.ROOT = os.path.dirname(os.path.realpath(__file__))
 
 pytest.DB = audformat.testing.create_db()
 pytest.DB_ROOT = os.path.join(pytest.ROOT, 'db')
+audformat.testing.create_attachment_files(pytest.DB, pytest.DB_ROOT)
 pytest.DB.save(pytest.DB_ROOT)
 
 pytest.FILE_DUR = pd.to_timedelta('1s')
