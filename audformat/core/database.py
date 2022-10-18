@@ -1046,7 +1046,7 @@ class Database(HeaderBase):
         if 'attachments' in header and header['attachments']:
             for attachment_id, attachment_d in header['attachments'].items():
                 attachment = Attachment(attachment_d['path'])
-                attachment = attachment.from_dict(attachment_d)
+                attachment.from_dict(attachment_d)
                 db.attachments[attachment_id] = attachment
 
         if 'media' in header and header['media']:
