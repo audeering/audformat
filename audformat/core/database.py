@@ -16,6 +16,7 @@ import audiofile
 
 from audformat.core import define
 from audformat.core import utils
+from audformat.core.attachment import Attachment
 from audformat.core.column import Column
 from audformat.core.common import (
     HeaderBase,
@@ -177,6 +178,8 @@ class Database(HeaderBase):
         r"""License of database"""
         self.license_url = license_url
         r"""URL of database license"""
+        self.attachments = HeaderDict(value_type=Attachment)
+        r"""Dictionary of attachments"""
         self.media = HeaderDict(value_type=Media)
         r"""Dictionary of media information"""
         self.raters = HeaderDict(value_type=Rater)
@@ -553,6 +556,11 @@ class Database(HeaderBase):
                 on the machine multiplied by 5
             verbose: show progress bar
 
+        Raises:
+            FileNotFoundError: if a file associated with an attachment
+                cannot be found
+                or is not a file
+
         """
         root = audeer.mkdir(root)
 
@@ -563,6 +571,7 @@ class Database(HeaderBase):
 
         if not header_only:
 
+            # Store (misc) tables
             def job(obj_id, obj):
                 path = audeer.path(root, f'{name}.{obj_id}')
                 obj.save(
@@ -582,6 +591,22 @@ class Database(HeaderBase):
                 progress_bar=verbose,
                 task_description='Save tables',
             )
+
+            # Check attachments exist
+            for attachment_id in list(self.attachments):
+                path = self.attachments[attachment_id].path
+                if not os.path.exists(audeer.path(root, path)):
+                    raise FileNotFoundError(
+                        f"The provided path '{path}' "
+                        f"of attachment '{attachment_id}' "
+                        "does not exist."
+                    )
+                if not os.path.isfile(audeer.path(root, path)):
+                    raise FileNotFoundError(
+                        f"The provided path '{path}' "
+                        f"of attachment '{attachment_id}' "
+                        "is not a file."
+                    )
 
         self._name = name
         self._root = root
@@ -1005,9 +1030,24 @@ class Database(HeaderBase):
         db = Database(
             name=header['name'],
             source=header['source'],
-            usage=header['usage'])
-        db.from_dict(header, ignore_keys=['media', 'misc_tables', 'raters',
-                                          'schemes', 'tables', 'splits'])
+            usage=header['usage'],
+        )
+        header_dicts = [
+            'attachments',
+            'media',
+            'misc_tables',
+            'raters',
+            'schemes',
+            'tables',
+            'splits',
+        ]
+        db.from_dict(header, ignore_keys=header_dicts)
+
+        if 'attachments' in header and header['attachments']:
+            for attachment_id, attachment_d in header['attachments'].items():
+                attachment = Attachment(attachment_d['path'])
+                attachment = attachment.from_dict(attachment_d)
+                db.attachments[attachment_id] = attachment
 
         if 'media' in header and header['media']:
             for media_id, media_d in header['media'].items():
