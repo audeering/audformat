@@ -17,6 +17,7 @@ class Attachment(HeaderBase):
 
     Raises:
         ValueError: if ``path`` is absolute
+            or contains ``\``, ``..`` or ``.``
 
     Example:
         >>> Attachment('file.txt', description='Attached file')
@@ -32,9 +33,17 @@ class Attachment(HeaderBase):
     ):
         super().__init__(description=description, meta=meta)
 
-        if os.path.isabs(path):
+        if (
+                os.path.isabs(path)
+                or '\\' in path
+                or path.startswith('./')
+                or '/./' in path
+                or path.startswith('../')
+                or '/../' in path
+        ):
             raise ValueError(
-                f"The provided path '{path}' needs to be relative."
+                f"The provided path '{path}' needs to be relative "
+                "and not contain '\\', '.', or '..'."
             )
 
         self._db = None

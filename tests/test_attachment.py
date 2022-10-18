@@ -1,4 +1,5 @@
 import os
+import re
 
 import pytest
 
@@ -8,11 +9,22 @@ import audformat
 
 def test_attachment(tmpdir):
 
-    # Path needs to be relative
-    path = '/root/file.txt'
-    error_msg = f"The provided path '{path}' needs to be relative."
-    with pytest.raises(ValueError, match=error_msg):
-        audformat.Attachment(path)
+    # Path needs to be relative and not contain ., .., \
+    for path in [
+        '/root/file.txt',
+        './file.txt',
+        '../file.txt',
+        'doc/./file.txt',
+        'doc/../file.txt',
+        'doc/../../file.txt',
+        r'C:\\doc\file.txt',
+    ]:
+        error_msg = (
+            f"The provided path '{path}' needs to be relative "
+            "and not contain '\\', '.', or '..'."
+        )
+        with pytest.raises(ValueError, match=re.escape(error_msg)):
+            audformat.Attachment(path)
 
     # Create database (path does not need to exist)
     path = 'attachments/file.txt'
