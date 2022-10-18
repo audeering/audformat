@@ -1,6 +1,7 @@
 from __future__ import annotations  # allow typing without string
 
 import typing
+import warnings
 
 import numpy as np
 import pandas as pd
@@ -337,11 +338,16 @@ class Column(HeaderBase):
             if is_scalar(values):
                 values = [values] * len(index)
             values = to_array(values)
-            df.loc[index, column_id] = pd.Series(
-                values,
-                index=index,
-                dtype=dtype,
-            )
+            with warnings.catch_warnings():
+                # Avoid FutureWarning for setting values in place
+                # as introduced at
+                # https://pandas.pydata.org/docs/dev/whatsnew/v1.5.0.html#inplace-operation-when-setting-values-with-loc-and-iloc
+                warnings.simplefilter(action='ignore', category=FutureWarning)
+                df.loc[index, column_id] = pd.Series(
+                    values,
+                    index=index,
+                    dtype=dtype,
+                )
 
     def __eq__(
             self,
