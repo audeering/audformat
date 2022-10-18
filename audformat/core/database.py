@@ -178,7 +178,10 @@ class Database(HeaderBase):
         r"""License of database"""
         self.license_url = license_url
         r"""URL of database license"""
-        self.attachments = HeaderDict(value_type=Attachment)
+        self.attachments = HeaderDict(
+            value_type=Attachment,
+            set_callback=self._set_attachment,
+        )
         r"""Dictionary of attachments"""
         self.media = HeaderDict(value_type=Media)
         r"""Dictionary of media information"""
@@ -594,19 +597,7 @@ class Database(HeaderBase):
 
             # Check attachments exist
             for attachment_id in list(self.attachments):
-                path = self.attachments[attachment_id].path
-                if not os.path.exists(audeer.path(root, path)):
-                    raise FileNotFoundError(
-                        f"The provided path '{path}' "
-                        f"of attachment '{attachment_id}' "
-                        "does not exist."
-                    )
-                if not os.path.isfile(audeer.path(root, path)):
-                    raise FileNotFoundError(
-                        f"The provided path '{path}' "
-                        f"of attachment '{attachment_id}' "
-                        "is not a file."
-                    )
+                self.attachments[attachment_id]._check_path(root)
 
         self._name = name
         self._root = root
@@ -917,6 +908,9 @@ class Database(HeaderBase):
             TableExistsError: if setting a miscellaneous table
                 when a filewise or segmented table with the same ID exists
                 (or vice versa)
+            FileNotFoundError: if a file associated with an attachment
+                cannot be found
+                or is not a file
 
         """
         if isinstance(table, MiscTable):
@@ -960,6 +954,11 @@ class Database(HeaderBase):
         Returns:
             database object
 
+        Raises:
+            FileNotFoundError: if a file associated with an attachment
+                cannot be found
+                or is not a file
+
         """
         ext = '.yaml'
         root = audeer.path(root)
@@ -975,6 +974,10 @@ class Database(HeaderBase):
 
             params = []
             table_ids = []
+
+            if 'attachments' in header and header['attachments']:
+                for attachment_id in header['attachments']:
+                    db.attachments[attachment_id]._check_path(root)
 
             if 'tables' in header and header['tables']:
                 for table_id in header['tables']:
@@ -1141,6 +1144,16 @@ class Database(HeaderBase):
                 db[table_id] = table
 
         return db
+
+    def _set_attachment(
+            self,
+            attachment_id: str,
+            attachment: Attachment,
+    ) -> Attachment:
+        attachment._db = self
+        attachment._id = attachment_id
+        attachment._check_path(self.root)
+        return attachment
 
     def _set_scheme(
             self,
