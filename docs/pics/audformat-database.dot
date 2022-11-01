@@ -11,7 +11,7 @@ digraph {
     label=<
       <table>
         <tr><td colspan='3'>Table#1</td></tr>
-        <tr><td>File</td><td>Name</td><td>Gender</td></tr>
+        <tr><td>file</td><td>name</td><td>gender</td></tr>
         <tr><td>alice.wav</td><td>Alice</td><td>female</td></tr>
         <tr><td>bob.wav</td><td>Bob</td><td>male</td></tr>
       </table>
@@ -21,7 +21,7 @@ digraph {
     label=<
       <table>
         <tr><td colspan='4'>Table#2</td></tr>
-        <tr><td>File</td><td>Start</td><td>End</td><td>Text</td></tr>
+        <tr><td>file</td><td>start</td><td>end</td><td>text</td></tr>
         <tr><td>alice.wav</td><td>0.2</td><td>1.1</td><td>Hi, I'm Alice</td></tr>
         <tr><td>bob.wav</td><td>1.4</td><td>3.0</td><td>How are you doing?</td></tr>
         <tr><td>alice.wav</td><td>3.4</td><td>4.7</td><td>Thanks, I'm good!</td></tr>

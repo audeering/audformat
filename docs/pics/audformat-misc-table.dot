@@ -3,12 +3,13 @@ digraph structs {
     rankdir=LR
     node[shape=record]
 
-    header [label="Header | ... | <table> table | <split> split | media | <rater> rater | <scheme> scheme | ... "]
-    table [label="MiscTable | { idx | <column> x | y }"]
+    header [label="Header | ... | <misctable> misc table | <table> table | <split> split | <media> media | <rater> rater | <scheme> scheme | ... "]
+    table [label="MiscTable | { <idx> idx | <column> x | y }"]
 
     header:split -> table [style="dotted"]
+    header:media -> table:idx [style="dotted"]
     header:rater -> table:column [style="dotted"]
     header:scheme -> table:column [style="dotted"]
-    header:table -> table
+    header:misctable -> table
 
 }
