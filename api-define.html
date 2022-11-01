@@ -76,7 +76,7 @@
             
             
               <div class="version">
-                v0.15.3
+                v0.15.4
               </div>
             
           
@@ -124,16 +124,106 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="api.html">audformat</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">audformat.define</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#datatype">DataType</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#gender">Gender</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#indexfield">IndexField</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#indextype">IndexType</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#license">License</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#mediatype">MediaType</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#ratertype">RaterType</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#splittype">SplitType</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#tablestorageformat">TableStorageFormat</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#usage">Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#datatype">DataType</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#audformat.define.DataType"><code class="docutils literal notranslate"><span class="pre">DataType</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#audformat.define.DataType.BOOL"><code class="docutils literal notranslate"><span class="pre">DataType.BOOL</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#audformat.define.DataType.DATE"><code class="docutils literal notranslate"><span class="pre">DataType.DATE</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#audformat.define.DataType.FLOAT"><code class="docutils literal notranslate"><span class="pre">DataType.FLOAT</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#audformat.define.DataType.INTEGER"><code class="docutils literal notranslate"><span class="pre">DataType.INTEGER</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#audformat.define.DataType.OBJECT"><code class="docutils literal notranslate"><span class="pre">DataType.OBJECT</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#audformat.define.DataType.STRING"><code class="docutils literal notranslate"><span class="pre">DataType.STRING</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#audformat.define.DataType.TIME"><code class="docutils literal notranslate"><span class="pre">DataType.TIME</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#gender">Gender</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#audformat.define.Gender"><code class="docutils literal notranslate"><span class="pre">Gender</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#audformat.define.Gender.CHILD"><code class="docutils literal notranslate"><span class="pre">Gender.CHILD</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#audformat.define.Gender.FEMALE"><code class="docutils literal notranslate"><span class="pre">Gender.FEMALE</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#audformat.define.Gender.MALE"><code class="docutils literal notranslate"><span class="pre">Gender.MALE</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#audformat.define.Gender.OTHER"><code class="docutils literal notranslate"><span class="pre">Gender.OTHER</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#indexfield">IndexField</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#audformat.define.IndexField"><code class="docutils literal notranslate"><span class="pre">IndexField</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#audformat.define.IndexField.END"><code class="docutils literal notranslate"><span class="pre">IndexField.END</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#audformat.define.IndexField.FILE"><code class="docutils literal notranslate"><span class="pre">IndexField.FILE</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#audformat.define.IndexField.START"><code class="docutils literal notranslate"><span class="pre">IndexField.START</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#indextype">IndexType</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#audformat.define.IndexType"><code class="docutils literal notranslate"><span class="pre">IndexType</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#audformat.define.IndexType.FILEWISE"><code class="docutils literal notranslate"><span class="pre">IndexType.FILEWISE</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#audformat.define.IndexType.SEGMENTED"><code class="docutils literal notranslate"><span class="pre">IndexType.SEGMENTED</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#license">License</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#audformat.define.License"><code class="docutils literal notranslate"><span class="pre">License</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#audformat.define.License.CC0_1_0"><code class="docutils literal notranslate"><span class="pre">License.CC0_1_0</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#audformat.define.License.CC_BY_4_0"><code class="docutils literal notranslate"><span class="pre">License.CC_BY_4_0</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#audformat.define.License.CC_BY_NC_4_0"><code class="docutils literal notranslate"><span class="pre">License.CC_BY_NC_4_0</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#audformat.define.License.CC_BY_NC_SA_4_0"><code class="docutils literal notranslate"><span class="pre">License.CC_BY_NC_SA_4_0</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#audformat.define.License.CC_BY_SA_4_0"><code class="docutils literal notranslate"><span class="pre">License.CC_BY_SA_4_0</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#mediatype">MediaType</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#audformat.define.MediaType"><code class="docutils literal notranslate"><span class="pre">MediaType</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#audformat.define.MediaType.AUDIO"><code class="docutils literal notranslate"><span class="pre">MediaType.AUDIO</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#audformat.define.MediaType.OTHER"><code class="docutils literal notranslate"><span class="pre">MediaType.OTHER</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#audformat.define.MediaType.VIDEO"><code class="docutils literal notranslate"><span class="pre">MediaType.VIDEO</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#ratertype">RaterType</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#audformat.define.RaterType"><code class="docutils literal notranslate"><span class="pre">RaterType</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#audformat.define.RaterType.HUMAN"><code class="docutils literal notranslate"><span class="pre">RaterType.HUMAN</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#audformat.define.RaterType.MACHINE"><code class="docutils literal notranslate"><span class="pre">RaterType.MACHINE</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#audformat.define.RaterType.OTHER"><code class="docutils literal notranslate"><span class="pre">RaterType.OTHER</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#audformat.define.RaterType.TRUTH"><code class="docutils literal notranslate"><span class="pre">RaterType.TRUTH</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#audformat.define.RaterType.VOTE"><code class="docutils literal notranslate"><span class="pre">RaterType.VOTE</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#splittype">SplitType</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#audformat.define.SplitType"><code class="docutils literal notranslate"><span class="pre">SplitType</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#audformat.define.SplitType.DEVELOP"><code class="docutils literal notranslate"><span class="pre">SplitType.DEVELOP</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#audformat.define.SplitType.OTHER"><code class="docutils literal notranslate"><span class="pre">SplitType.OTHER</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#audformat.define.SplitType.TEST"><code class="docutils literal notranslate"><span class="pre">SplitType.TEST</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#audformat.define.SplitType.TRAIN"><code class="docutils literal notranslate"><span class="pre">SplitType.TRAIN</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#tablestorageformat">TableStorageFormat</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#audformat.define.TableStorageFormat"><code class="docutils literal notranslate"><span class="pre">TableStorageFormat</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#audformat.define.TableStorageFormat.CSV"><code class="docutils literal notranslate"><span class="pre">TableStorageFormat.CSV</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#audformat.define.TableStorageFormat.PICKLE"><code class="docutils literal notranslate"><span class="pre">TableStorageFormat.PICKLE</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#usage">Usage</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#audformat.define.Usage"><code class="docutils literal notranslate"><span class="pre">Usage</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#audformat.define.Usage.COMMERCIAL"><code class="docutils literal notranslate"><span class="pre">Usage.COMMERCIAL</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#audformat.define.Usage.OTHER"><code class="docutils literal notranslate"><span class="pre">Usage.OTHER</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#audformat.define.Usage.RESEARCH"><code class="docutils literal notranslate"><span class="pre">Usage.RESEARCH</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#audformat.define.Usage.RESTRICTED"><code class="docutils literal notranslate"><span class="pre">Usage.RESTRICTED</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#audformat.define.Usage.UNRESTRICTED"><code class="docutils literal notranslate"><span class="pre">Usage.UNRESTRICTED</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="api-errors.html">audformat.errors</a></li>
@@ -191,7 +281,7 @@
 <dd><p>Data types of column content.</p>
 <p>Use <code class="docutils literal notranslate"><span class="pre">DATE</span></code>
 to handle time and date information,
-e.g. as provided by <a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">datetime.datetime</span></code></a>.
+e.g. as provided by <a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">datetime.datetime</span></code></a>.
 Use <code class="docutils literal notranslate"><span class="pre">TIME</span></code>
 to handle duration values.</p>
 <dl class="py attribute">
@@ -505,7 +595,7 @@ to handle duration values.</p>
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2022/09/19 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2022/11/01 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
@@ -542,6 +632,7 @@ to handle duration values.</p>
         <script src="_static/underscore.js"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
         <script src="_static/clipboard.min.js"></script>
         <script src="_static/copybutton.js"></script>
         <script src="_static/thebelab-helper.js"></script>

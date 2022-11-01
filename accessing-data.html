@@ -76,7 +76,7 @@
             
             
               <div class="version">
-                v0.15.3
+                v0.15.4
               </div>
             
           
@@ -198,7 +198,7 @@ by the <a class="reference internal" href="api.html#audformat.Table.get" title="
 <div class="cell_output docutils container">
 </div>
 </div>
-<p>Which returns the following <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a>:</p>
+<p>Which returns the following <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.5.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a>:</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">table</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span>
@@ -236,13 +236,13 @@ by the <a class="reference internal" href="api.html#audformat.Table.get" title="
   <tbody>
     <tr>
       <th>audio/001.wav</th>
-      <td>False</td>
-      <td>NaT</td>
+      <td>True</td>
+      <td>1970-01-01 00:00:00.450</td>
     </tr>
     <tr>
       <th>audio/002.wav</th>
-      <td>True</td>
-      <td>1970-01-01 00:00:00.570</td>
+      <td>False</td>
+      <td>1970-01-01 00:00:00.450</td>
     </tr>
   </tbody>
 </table>
@@ -260,7 +260,7 @@ by the <a class="reference internal" href="api.html#audformat.Table.get" title="
 <div class="cell_output docutils container">
 </div>
 </div>
-<p>Which results in the following <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Series.html#pandas.Series" title="(in pandas v1.4.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.Series</span></code></a>:</p>
+<p>Which results in the following <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Series.html#pandas.Series" title="(in pandas v1.5.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.Series</span></code></a>:</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">column</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span>
@@ -282,11 +282,11 @@ by the <a class="reference internal" href="api.html#audformat.Table.get" title="
   <tbody>
     <tr>
       <th>audio/001.wav</th>
-      <td>p3FYwccf77</td>
+      <td>HTVRHsrGCO</td>
     </tr>
     <tr>
       <th>audio/002.wav</th>
-      <td>guOy7xwJtS</td>
+      <td>&lt;NA&gt;</td>
     </tr>
   </tbody>
 </table></div></div>
@@ -336,7 +336,7 @@ have a look at the code examples in the
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2022/09/19 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2022/11/01 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
@@ -373,6 +373,7 @@ have a look at the code examples in the
         <script src="_static/underscore.js"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
         <script src="_static/clipboard.min.js"></script>
         <script src="_static/copybutton.js"></script>
         <script src="_static/thebelab-helper.js"></script>
