@@ -7,6 +7,14 @@ The format is based on `Keep a Changelog`_,
 and this project adheres to `Semantic Versioning`_.
 
 
+Version 0.15.4 (2022-11-01)
+---------------------------
+
+* Fixed: avoid ``FutureWarning``
+  when setting values in place for a series
+  in ``audformat.Column.set()``
+
+
 Version 0.15.3 (2022-09-19)
 ---------------------------
 
