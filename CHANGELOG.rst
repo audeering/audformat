@@ -13,6 +13,9 @@ Version 0.15.4 (2022-11-01)
 * Fixed: avoid ``FutureWarning``
   when setting values in place for a series
   in ``audformat.Column.set()``
+* Fixed: improve sketches
+  in the specifications section
+  of the documentation
 
 
 Version 0.15.3 (2022-09-19)
