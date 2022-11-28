@@ -100,3 +100,100 @@ def test_attachment(tmpdir):
     )
     with pytest.raises(FileNotFoundError, match=error_msg):
         db = audformat.Database.load(db_path)
+
+
+@pytest.mark.parametrize(
+    'attachments',
+    [
+        [
+            'extra/file1.txt',
+            'extra/file2.txt',
+        ],
+        [
+            'extra/file1.txt',
+            'extra/sub/file1.txt',
+        ],
+        [
+            'extra/file1.txt',
+            'extra/sub/file1.txt',
+            'extra/folder1',
+        ],
+        [
+            'extra/file1.txt',
+            'extra/sub/file1.txt',
+            'extra/folder1',
+            'extra/sub/folder2',
+            'extra/sub/folder3',
+        ],
+        pytest.param(  # Same files
+            [
+                'extra/file1.txt',
+                'extra/file1.txt',
+            ],
+            marks=pytest.mark.xfail(raises=RuntimeError),
+        ),
+        pytest.param(  # Same files
+            [
+                'extra/file1.txt',
+                'extra/file1.txt',
+                'extra/file2.txt',
+                'extra/folder1',
+            ],
+            marks=pytest.mark.xfail(raises=RuntimeError),
+        ),
+        pytest.param(  # Overlapping file + folder
+            [
+                'extra/file1.txt',
+                'extra',
+            ],
+            marks=pytest.mark.xfail(raises=RuntimeError),
+        ),
+        pytest.param(  # Overlapping file + folder
+            [
+                'extra/sub/file1.txt',
+                'extra',
+            ],
+            marks=pytest.mark.xfail(raises=RuntimeError),
+        ),
+        pytest.param(  # Overlapping file + folder
+            [
+                'extra/sub/file1.txt',
+                'extra/sub',
+                'extra/file2.txt',
+            ],
+            marks=pytest.mark.xfail(raises=RuntimeError),
+        ),
+        pytest.param(  # Overlapping file + folder and same files
+            [
+                'extra/sub/file1.txt',
+                'extra/sub',
+                'extra/file2.txt',
+                'extra/file2.txt',
+            ],
+            marks=pytest.mark.xfail(raises=RuntimeError),
+        ),
+        pytest.param(  # Nested folders
+            [
+                'extra/sub/folder1',
+                'extra/sub',
+            ],
+            marks=pytest.mark.xfail(raises=RuntimeError),
+        ),
+        pytest.param(  # Nested folders
+            [
+                'extra/sub/folder1',
+                'extra/sub/folder2',
+                'extra/file1.txt',
+                'extra/sub',
+            ],
+            marks=pytest.mark.xfail(raises=RuntimeError),
+        ),
+    ]
+)
+def test_attachment_overlapping(tmpdir, attachments):
+    db = audformat.Database('db')
+    for n, attachment in enumerate(attachments):
+        db.attachments[str(n)] = audformat.Attachment(attachment)
+    db_path = audeer.path(tmpdir, 'db')
+    audformat.testing.create_attachment_files(db, db_path)
+    db.save(db_path)

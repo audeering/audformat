@@ -25,6 +25,13 @@ class Attachment(HeaderBase):
     Raises:
         ValueError: if ``path`` is absolute
             or contains ``\``, ``..`` or ``.``
+        RuntimeError: when assigning an attachment
+            to a database,
+            but the database contains another attachment
+            with an path
+            that is identical
+            or nested
+            compared to the current attachment path
 
     Example:
         >>> Attachment('file.txt', description='Attached file')
@@ -52,10 +59,26 @@ class Attachment(HeaderBase):
         self.path = path
         r"""Attachment path"""
 
+    def _check_overlap(
+            self,
+            other: str,
+    ):
+        r"""Check if two attachment paths are nested."""
+        if (
+                self.path == other.path
+                or self.path.startswith(other.path)
+                or other.path.startswith(self.path)
+        ):
+            raise RuntimeError(
+                f"Attachments '{self.path}' and '{other.path}' "
+                "are nested."
+            )
+
     def _check_path(
             self,
             root: str,
     ):
+        r"""Check if path exists and is not a symlink."""
         if root is None:
             return
         if not os.path.exists(audeer.path(root, self.path)):
