@@ -79,7 +79,7 @@ This part of the header is represented by :class:`audformat.Attachment`.
 ==============  =========  ====================================================
 Field           Mandatory  Description
 ==============  =========  ====================================================
-path            yes        Relative path to attached file
+path            yes        Relative path to attached file/folder
 description                Description of rater
 *meta-key-1*               1st optional meta field
 ...                        ...
