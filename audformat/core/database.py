@@ -551,9 +551,12 @@ class Database(HeaderBase):
             verbose: show progress bar
 
         Raises:
-            FileNotFoundError: if a file associated with an attachment
+            FileNotFoundError: if a file or folder
+                associated with an attachment
                 cannot be found
-                or is not a file
+            RuntimeError: if a file or folder
+                associated with an attachment
+                is a symlink
 
         """
         root = audeer.mkdir(root)
@@ -588,6 +591,9 @@ class Database(HeaderBase):
 
             # Check attachments exist
             for attachment_id in list(self.attachments):
+                print(
+                    f'{attachment_id}: {self.attachments[attachment_id].path}'
+                )
                 self.attachments[attachment_id]._check_path(root)
 
         self._name = name
@@ -899,9 +905,12 @@ class Database(HeaderBase):
             TableExistsError: if setting a miscellaneous table
                 when a filewise or segmented table with the same ID exists
                 (or vice versa)
-            FileNotFoundError: if a file associated with an attachment
+            FileNotFoundError: if a file or folder
+                associated with an attachment
                 cannot be found
-                or is not a file
+            RuntimeError: if a file or folder
+                associated with an attachment
+                is a symlink
 
         """
         if isinstance(table, MiscTable):

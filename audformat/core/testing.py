@@ -194,6 +194,10 @@ def create_attachment_files(
 ):
     r"""Create attachment folders and files of a database.
 
+    If an attachment path contains a ``.``
+    it is considered to represent a file,
+    otherwise a directory.
+
     Args:
         db: a database
         root: root folder of database
@@ -202,8 +206,11 @@ def create_attachment_files(
     for attachment_id in list(db.attachments):
         path = audeer.path(root, db.attachments[attachment_id].path)
         if not os.path.exists(path):
-            audeer.mkdir(os.path.dirname(path))
-            audeer.touch(path)
+            if '.' in os.path.basename(path):
+                audeer.mkdir(os.path.dirname(path))
+                audeer.touch(path)
+            else:
+                audeer.mkdir(path)
 
 
 def create_audio_files(
@@ -335,7 +342,8 @@ def create_db(
     # Attachments #
     ###############
 
-    db.attachments['attachment'] = Attachment('extra/attachment.txt')
+    db.attachments['file'] = Attachment('extra/file.txt')
+    db.attachments['folder'] = Attachment('extra/folder')
 
     #########
     # Media #

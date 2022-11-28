@@ -11,10 +11,14 @@ from audformat.core.common import (
 class Attachment(HeaderBase):
     r"""Database attachment.
 
-    Adds a file as attachment to a database.
+    Adds a file or folder
+    as attachment to a database.
+    If a folder is provided,
+    all of its sub-folders
+    and files are included.
 
     Args:
-        path: relative path to file
+        path: relative path to file or folder
         description: attachment description
         meta: additional meta fields
 
@@ -60,9 +64,9 @@ class Attachment(HeaderBase):
                 f"of attachment '{self._id}' "
                 "does not exist."
             )
-        if not os.path.isfile(audeer.path(root, self.path)):
-            raise FileNotFoundError(
+        if os.path.islink(os.path.join(root, self.path)):
+            raise RuntimeError(
                 f"The provided path '{self.path}' "
                 f"of attachment '{self._id}' "
-                "is not a file."
+                "is not allowed to be a symlink."
             )
