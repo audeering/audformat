@@ -36,8 +36,9 @@ exclude_patterns = [
     'emodb-src',
     '__pycache__',
     'tests',
-    '_templates',
+    # '_templates',
 ]
+templates_path = ['_templates']
 pygments_style = None
 extensions = [
     'sphinx.ext.graphviz',
@@ -55,14 +56,7 @@ extensions = [
 
 napoleon_use_ivar = True  # List of class attributes
 autodoc_inherit_docstrings = True  # disable docstring inheritance
-autosummary_generate_overwrite = False
-# autoclass_content = 'class'
-# autodoc_default_options = {
-#     'members': True,
-#     'inherited-members': True,
-#     'special-members': True,
-# }
-templates_path = ['docs/_templates']
+# autosummary_generate_overwrite = True
 
 intersphinx_mapping = {
     'audeer': ('https://audeering.github.io/audeer/', None),
