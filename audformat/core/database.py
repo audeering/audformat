@@ -236,7 +236,7 @@ class Database(HeaderBase):
     def is_portable(
         self,
     ) -> bool:
-        r"""Check if a database can be moved to another location.
+        r"""Check if database can be moved to another location.
 
         To be portable,
         media must not be referenced with an absolute path,
