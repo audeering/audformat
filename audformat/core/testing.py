@@ -194,7 +194,7 @@ def create_attachment_files(
 ):
     r"""Create attachment folders and files of a database.
 
-    If an attachment path contains a ``.``
+    If the basename of an attachment path contains a dot (``.``)
     it is considered to represent a file,
     otherwise a directory.
 
