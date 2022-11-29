@@ -6,7 +6,7 @@
 
     {% block methods %}
 
-    {% if methods %}
+    {% if methods or attributes %}
     .. rubric:: {{ _('Methods, Properties, Attributes') }}
 
     .. autosummary::
