@@ -32,6 +32,7 @@ extensions = [
     'sphinx.ext.graphviz',
     'sphinx.ext.autodoc',
     'sphinx.ext.napoleon',  # support for Google-style docstrings
+    'sphinx.ext.autosummary',
     'sphinx_autodoc_typehints',
     'sphinx.ext.autosectionlabel',
     'sphinx.ext.viewcode',
@@ -42,7 +43,13 @@ extensions = [
 ]
 
 napoleon_use_ivar = True  # List of class attributes
-autodoc_inherit_docstrings = False  # disable docstring inheritance
+autodoc_inherit_docstrings = True  # disable docstring inheritance
+autoclass_content = 'class'
+autodoc_default_options = {
+    'members': True,
+    'inherited-members': True,
+    'special-members': True,
+}
 intersphinx_mapping = {
     'audeer': ('https://audeering.github.io/audeer/', None),
     'pandas': ('https://pandas.pydata.org/pandas-docs/stable/', None),
