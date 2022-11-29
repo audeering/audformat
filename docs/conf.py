@@ -28,7 +28,16 @@ title = f'{project} Documentation'
 master_doc = 'index'
 extensions = []
 source_suffix = '.rst'
-exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', '**.ipynb_checkpoints']
+exclude_patterns = [
+    'build',
+    'Thumbs.db',
+    '.DS_Store',
+    '**.ipynb_checkpoints',
+    'emodb-src',
+    '__pycache__',
+    'tests',
+    '_templates',
+]
 pygments_style = None
 extensions = [
     'sphinx.ext.graphviz',
@@ -53,6 +62,8 @@ autosummary_generate_overwrite = False
 #     'inherited-members': True,
 #     'special-members': True,
 # }
+templates_path = ['docs/_templates']
+
 intersphinx_mapping = {
     'audeer': ('https://audeering.github.io/audeer/', None),
     'pandas': ('https://pandas.pydata.org/pandas-docs/stable/', None),
