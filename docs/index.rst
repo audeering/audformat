@@ -34,7 +34,7 @@
     :caption: API Documentation
     :hidden:
 
-    audformat
+    api/audformat
     api-define
     api-errors
     api-testing

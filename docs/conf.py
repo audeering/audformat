@@ -3,6 +3,8 @@ from datetime import date
 import os
 import subprocess
 
+import jinja2.filters
+
 
 config = configparser.ConfigParser()
 config.read(os.path.join('..', 'setup.cfg'))
@@ -44,12 +46,13 @@ extensions = [
 
 napoleon_use_ivar = True  # List of class attributes
 autodoc_inherit_docstrings = True  # disable docstring inheritance
-autoclass_content = 'class'
-autodoc_default_options = {
-    'members': True,
-    'inherited-members': True,
-    'special-members': True,
-}
+autosummary_generate_overwrite = False
+# autoclass_content = 'class'
+# autodoc_default_options = {
+#     'members': True,
+#     'inherited-members': True,
+#     'special-members': True,
+# }
 intersphinx_mapping = {
     'audeer': ('https://audeering.github.io/audeer/', None),
     'pandas': ('https://pandas.pydata.org/pandas-docs/stable/', None),
@@ -74,6 +77,10 @@ linkcheck_ignore = [
 
 # Graphviz figures
 graphviz_output_format = 'svg'
+
+# Disable auto-generation of TOC entries in the API
+# https://github.com/sphinx-doc/sphinx/issues/6316
+toc_object_entries = False
 
 # HTML --------------------------------------------------------------------
 html_theme = 'sphinx_audeering_theme'

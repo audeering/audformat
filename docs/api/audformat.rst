@@ -7,7 +7,7 @@ audformat
 .. rubric:: Functions
 
 .. autosummary::
-    :toctree: audformat
+    :toctree:
     :nosignatures:
 
     assert_index
@@ -21,9 +21,8 @@ audformat
 .. rubric:: Classes
 
 .. autosummary::
-    :toctree: audformat
+    :toctree:
     :nosignatures:
-    :recursive:
 
     Column
     Database
