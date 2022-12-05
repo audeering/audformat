@@ -76,7 +76,7 @@ class Attachment(HeaderBase):
 
     def _check_path(
             self,
-            root: str,
+            root: typing.Optional[str],
     ):
         r"""Check if path exists and is not a symlink."""
         if root is None:
