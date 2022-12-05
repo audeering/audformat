@@ -1143,7 +1143,8 @@ class Database(HeaderBase):
     ) -> Attachment:
         attachment._db = self
         attachment._id = attachment_id
-        attachment._check_path(self.root)
+        if self.root is not None:
+            attachment._check_path(self.root)
         for other_id in list(self.attachments):
             attachment._check_overlap(self.attachments[other_id])
         return attachment

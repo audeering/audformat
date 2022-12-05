@@ -191,9 +191,16 @@ def test_attachment(tmpdir):
     ]
 )
 def test_attachment_overlapping(tmpdir, attachments):
+    # Test for non-saved database
     db = audformat.Database('db')
     for n, attachment in enumerate(attachments):
         db.attachments[str(n)] = audformat.Attachment(attachment)
     db_path = audeer.path(tmpdir, 'db')
     audformat.testing.create_attachment_files(db, db_path)
     db.save(db_path)
+    # Test for saved database,
+    # that contains attachment files
+    db = audformat.Database('db')
+    db.save(db_path)
+    for n, attachment in enumerate(attachments):
+        db.attachments[str(n)] = audformat.Attachment(attachment)

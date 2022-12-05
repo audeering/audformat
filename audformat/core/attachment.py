@@ -76,11 +76,9 @@ class Attachment(HeaderBase):
 
     def _check_path(
             self,
-            root: typing.Optional[str],
+            root: str,
     ):
         r"""Check if path exists and is not a symlink."""
-        if root is None:
-            return
         if not os.path.exists(audeer.path(root, self.path)):
             raise FileNotFoundError(
                 f"The provided path '{self.path}' "
