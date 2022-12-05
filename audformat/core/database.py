@@ -946,9 +946,9 @@ class Database(HeaderBase):
             database object
 
         Raises:
-            FileNotFoundError: if a file associated with an attachment
+            FileNotFoundError: if a file or folder
+                associated with an attachment
                 cannot be found
-                or is not a file
 
         """
         ext = '.yaml'
