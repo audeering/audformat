@@ -79,7 +79,8 @@ This part of the header is represented by :class:`audformat.Rater`.
 Field           Mandatory  Description
 ==============  =========  ====================================================
 id              yes        Unique identifier of rater
-type            yes        Rater type, see :class:`audformat.define.RaterType`
+type            yes        Rater type, one of ``'human'``, ``'machine'``,
+                           ``'other'``, ``'ground truth'``, ``'vote'``
 description                Description of rater
 *meta-key-1*               1st optional meta field
 ...                        ...
@@ -101,7 +102,7 @@ audformat implementation
 .. jupyter-execute::
 
     # Create minimal Rater
-    rater = audformat.Rater(audformat.define.RaterType.HUMAN)
+    rater = audformat.Rater('human')
     # Add Rater to Database
     db.raters['raterid'] = rater
     # Access type of Rater

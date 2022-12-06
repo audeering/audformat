@@ -123,7 +123,21 @@ LICENSE_URLS = {
 
 
 class RaterType(DefineBase):
-    r"""Rater type of column."""
+    r"""Rater type of column.
+
+    Specifies string values
+    representing rater types
+    of different columns
+    in a tables or misc table.
+    Those string values
+    have to be provided
+    as ``type`` argument
+    to :class:`audformat.Rater`.
+    The exact string values are part
+    of the :ref:`rater specifications <data-header:Rater>`,
+    and should never be changed by a user.
+
+    """
     HUMAN = 'human'
     MACHINE = 'machine'
     OTHER = 'other'
