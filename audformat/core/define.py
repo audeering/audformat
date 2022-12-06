@@ -82,6 +82,42 @@ class IndexType(DefineBase):
     SEGMENTED = 'segmented'
 
 
+class License(DefineBase):
+    r"""Common public licenses recommended to use with your data.
+
+    Specifies string values
+    representing public licences
+    that are recommended to use with the database.
+    If those string values
+    are provided
+    as ``license`` argument
+    to :class:`audformat.Database`
+    the corresponding
+    ``license_url`` argument does not need
+    to be provided
+    but is set automatically.
+    The exact string values are not part
+    of the :ref:`database specifications <data-header:Database>`,
+    and can be changed if desired.
+
+    """
+    CC0_1_0 = 'CC0-1.0'
+    CC_BY_4_0 = 'CC-BY-4.0'
+    CC_BY_NC_4_0 = 'CC-BY-NC-4.0'
+    CC_BY_NC_SA_4_0 = 'CC-BY-NC-SA-4.0'
+    CC_BY_SA_4_0 = 'CC-BY-SA-4.0'
+
+
+LICENSE_URLS = {
+    License.CC0_1_0: 'https://creativecommons.org/publicdomain/zero/1.0/',
+    License.CC_BY_4_0: 'https://creativecommons.org/licenses/by/4.0/',
+    License.CC_BY_NC_4_0: 'https://creativecommons.org/licenses/by-nc/4.0/',
+    License.CC_BY_NC_SA_4_0:
+        'https://creativecommons.org/licenses/by-nc-sa/4.0/',
+    License.CC_BY_SA_4_0: 'https://creativecommons.org/licenses/by-sa/4.0/',
+}
+
+
 class MediaType(DefineBase):
     r"""Media type of table.
 
@@ -101,25 +137,6 @@ class MediaType(DefineBase):
     AUDIO = 'audio'
     OTHER = 'other'
     VIDEO = 'video'
-
-
-class License(DefineBase):
-    r"""Common public licenses recommended to use with your data."""
-    CC0_1_0 = 'CC0-1.0'
-    CC_BY_4_0 = 'CC-BY-4.0'
-    CC_BY_NC_4_0 = 'CC-BY-NC-4.0'
-    CC_BY_NC_SA_4_0 = 'CC-BY-NC-SA-4.0'
-    CC_BY_SA_4_0 = 'CC-BY-SA-4.0'
-
-
-LICENSE_URLS = {
-    License.CC0_1_0: 'https://creativecommons.org/publicdomain/zero/1.0/',
-    License.CC_BY_4_0: 'https://creativecommons.org/licenses/by/4.0/',
-    License.CC_BY_NC_4_0: 'https://creativecommons.org/licenses/by-nc/4.0/',
-    License.CC_BY_NC_SA_4_0:
-        'https://creativecommons.org/licenses/by-nc-sa/4.0/',
-    License.CC_BY_SA_4_0: 'https://creativecommons.org/licenses/by-sa/4.0/',
-}
 
 
 class RaterType(DefineBase):
