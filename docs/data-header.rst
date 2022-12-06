@@ -168,8 +168,8 @@ This part of the header is represented by :class:`audformat.Split`.
 Field           Mandatory  Description
 ==============  =========  ====================================================
 id              yes        Unique identifier of split
-type            yes        Split type,
-                           typically one of :class:`audformat.define.SplitType`
+type            yes        Split type, one of ``'train'``, ``'dev'``,
+                           ``'other'``, ``'test'``
 description                Description of split
 *meta-key-1*               1st optional meta field
 ...                        ...
@@ -191,7 +191,7 @@ audformat implementation
 .. jupyter-execute::
 
     # Create minimal Split
-    split = audformat.Split(audformat.define.SplitType.TEST)
+    split = audformat.Split('test')
     # Add Split to Database
     db.splits['splitid'] = split
     # Access type of Split

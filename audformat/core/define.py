@@ -147,7 +147,7 @@ class RaterType(DefineBase):
 
 class SplitType(DefineBase):
     r"""Split type of table.
-    
+
     Specifies string values
     representing split types
     of different tables
@@ -155,10 +155,7 @@ class SplitType(DefineBase):
     Those string values
     have to be provided
     as ``type`` argument
-    to :class:`audformat.Split`,
-    and are set
-    or returned
-    by :attr:`audformat.Database.splits`.
+    to :class:`audformat.Split`.
     The exact string values are part
     of the :ref:`split specifications <data-header:Split>`,
     and should never be changed by a user.
