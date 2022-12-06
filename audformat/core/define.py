@@ -34,8 +34,16 @@ class Gender(DefineBase):
 
 
 class IndexField(DefineBase):
-    r"""Index fields defined in
-        :ref:`table specifications <data-tables:Tables>`.
+    r"""Index fields of a table.
+
+    Specifies the string values
+    representing column/field names
+    for a filewise
+    and segmented index.
+    The exact string values are part
+    of the :ref:`table specifications <data-tables:Tables>`,
+    and should never be changed by a user.
+
     """
     FILE = 'file'
     START = 'start'
