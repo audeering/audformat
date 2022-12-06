@@ -210,7 +210,8 @@ To store media information use:
 Field             Mandatory  Description
 ================  =========  ====================================================
 id                yes        Unique identifier of media type
-type                         Media type, one of (``audio``, ``video``, ``other``)
+type                         Media type, one of ``'audio'``, ``'video'``,
+                             ``'other'``
 bit_depth                    Audio bit depth
 channels                     Number of audio channels
 description                  Description
@@ -240,7 +241,7 @@ audformat implementation
 .. jupyter-execute::
 
     # Create minimal media information
-    media = audformat.Media()
+    media = audformat.Media('audio')
     # Add media to Database
     db.media['mediaid'] = media
     # Access type of Media

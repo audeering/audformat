@@ -83,7 +83,21 @@ class IndexType(DefineBase):
 
 
 class MediaType(DefineBase):
-    r"""Media type of table."""
+    r"""Media type of table.
+
+    Specifies string values
+    representing media types
+    of different tables
+    or misc tables.
+    Those string values
+    have to be provided
+    as ``type`` argument
+    to :class:`audformat.Media`.
+    The exact string values are part
+    of the :ref:`media specifications <data-header:Media>`,
+    and should never be changed by a user.
+
+    """
     AUDIO = 'audio'
     OTHER = 'other'
     VIDEO = 'video'
@@ -118,7 +132,24 @@ class RaterType(DefineBase):
 
 
 class SplitType(DefineBase):
-    r"""Split type of table."""
+    r"""Split type of table.
+    
+    Specifies string values
+    representing split types
+    of different tables
+    or misc table.
+    Those string values
+    have to be provided
+    as ``type`` argument
+    to :class:`audformat.Split`,
+    and are set
+    or returned
+    by :attr:`audformat.Database.splits`.
+    The exact string values are part
+    of the :ref:`split specifications <data-header:Split>`,
+    and should never be changed by a user.
+
+    """
     TRAIN = 'train'
     DEVELOP = 'dev'
     OTHER = 'other'
