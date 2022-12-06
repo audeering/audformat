@@ -43,8 +43,18 @@ class IndexField(DefineBase):
 
 
 class IndexType(DefineBase):
-    r"""Index types defined in
-        :ref:`table specifications <data-tables:Tables>`.
+    r"""Index types of a table.
+
+    Specifies the string values
+    representing a filewise or segmented index.
+    Those string values are returned by
+    :attr:`audformat.Table.type`
+    and :func:`audformat.index_type`.
+    The exact string values are not part
+    of the :ref:`table specifications <data-tables:Tables>`,
+    but it is recommended
+    to not change them.
+
     """
     FILEWISE = 'filewise'
     SEGMENTED = 'segmented'

@@ -1268,7 +1268,12 @@ class Table(Base):
             index = filewise_index()
 
         self.type = index_type(index)
-        r"""Table type"""
+        r"""Table type
+
+        See :class:`audformat.define.IndexType`
+        for possible values.
+
+        """
 
         super().__init__(
             index,
