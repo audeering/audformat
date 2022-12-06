@@ -159,7 +159,12 @@ class Scheme(common.HeaderBase):
                 dtype = dtype_labels
 
         self.dtype = dtype
-        r"""Data type"""
+        r"""Data type.
+
+        Possible return values are given by
+        :class:`audformat.define.DataType`.
+
+        """
         self.labels = labels
         r"""Labels or ID of misc table holding the labels"""
         self.minimum = minimum if self.is_numeric else None

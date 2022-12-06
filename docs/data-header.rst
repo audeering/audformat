@@ -118,7 +118,9 @@ This part of the header is represented by :class:`audformat.Scheme`.
 ==============  =========  ====================================================
 Field           Mandatory  Description
 ==============  =========  ====================================================
-dtype           yes        Data type, see :class:`audformat.define.DataType`
+dtype           yes        Data type, one of ``'bool'``,
+                           ``'int'``, ``'float'``, ``'object'``,
+                           ``'str'``, ``'time'``, ``'date'``
 id              yes        Unique identifier of scheme
 description                Description of scheme
 labels                     Dictionary or list with labels
@@ -139,7 +141,7 @@ Minimal example
 
     schemes:
         schemeid:
-            dtype: human
+            dtype: float
 
 audformat implementation
 ^^^^^^^^^^^^^^^^^^^^^^^^
@@ -147,7 +149,7 @@ audformat implementation
 .. jupyter-execute::
 
     # Create minimal Scheme
-    scheme = audformat.Scheme(audformat.define.DataType.FLOAT)
+    scheme = audformat.Scheme('float')
     # Add Scheme to Database
     db.schemes['schemeid'] = scheme
     # Access dtype of Scheme

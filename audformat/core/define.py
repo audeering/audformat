@@ -9,6 +9,20 @@ from audformat.core.common import DefineBase
 class DataType(DefineBase):
     r"""Data types of column content.
 
+    Specifies string values
+    representing data types
+    of different columns
+    within a table or misc table.
+    Those string values
+    have to be provided
+    as ``dtype`` argument
+    to :class:`audformat.Scheme`,
+    and are returned
+    by :attr:`audformat.Scheme.dtype`.
+    The exact string values are part
+    of the :ref:`scheme specifications <data-header:Scheme>`,
+    and should never be changed by a user.
+
     Use ``DATE``
     to handle time and date information,
     e.g. as provided by :class:`datetime.datetime`.
