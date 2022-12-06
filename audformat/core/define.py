@@ -168,7 +168,33 @@ class SplitType(DefineBase):
 
 
 class TableStorageFormat(DefineBase):
-    r"""Storage format of tables."""
+    r"""Storage format of tables.
+
+    Specifies string values
+    used as file extensions
+    of the CSV and PKL files
+    that are used to store
+    a table or misc table.
+    Those string values
+    have to be provided
+    as ``storage_format`` argument
+    to :meth:`audformat.Database.save`,
+    :meth:`audformat.MiscTable.save`,
+    :meth:`audformat.Table.save`,
+    and when loading with
+    to :meth:`audformat.Database.load`,
+    :meth:`audformat.MiscTable.load`,
+    :meth:`audformat.Table.load`,
+    only files with an extension
+    matching the string values
+    are considered.
+
+    The exact string values for CSV files
+    are part
+    of the :ref:`audformat specifications <data-format:Database>`,
+    and should never be changed by a user.
+
+    """
     CSV = 'csv'
     PICKLE = 'pkl'
 
