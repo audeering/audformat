@@ -30,7 +30,8 @@ name            yes        Database name
 source          yes        Original source,
                            e.g. link to webpage where files are hosted
 usage           yes        What the database can be used for,
-                           see :class:`audformat.define.Usage`
+                           one of ``'commercial'``, ``'other'``,
+                           ``'research'``, ``'restricted'``, ``'unrestricted'``
 description                Description of the database
 expires                    Until when we are allowed to use the data
 languages                  List of languages that appear in the media files
@@ -65,7 +66,7 @@ audformat implementation
     db = audformat.Database(
         name='databasename',
         source='https://gitlab.audeering.com/data/databasename',
-        usage=audformat.define.Usage.COMMERCIAL,
+        usage='commercial',
     )
     db
 

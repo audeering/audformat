@@ -174,7 +174,22 @@ class TableStorageFormat(DefineBase):
 
 
 class Usage(DefineBase):
-    r"""Usage permission of database."""
+    r"""Usage permission of database.
+
+    Specifies string values
+    representing usage
+    of a database.
+    Those string values
+    have to be provided
+    as ``usage`` argument
+    to :class:`audformat.Database`,
+    and returned
+    by :attr:`audformat.Database.usage`.
+    The exact string values are part
+    of the :ref:`database specifications <data-header:Database>`,
+    and should never be changed by a user.
+
+    """
     COMMERCIAL = 'commercial'
     OTHER = 'other'
     RESEARCH = 'research'
