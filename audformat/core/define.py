@@ -40,7 +40,19 @@ class DataType(DefineBase):
 
 
 class Gender(DefineBase):
-    r"""Gender scheme definitions."""
+    r"""Gender scheme definitions.
+
+    Specifies string values
+    representing gender labels
+    that are recommended to use with a scheme
+    that contains gender labels,
+    e.g.
+    ``audformat.Scheme('str', labels=['female', 'male'])``.
+    The exact string values are not part
+    of the :ref:`scheme specifications <data-header:Scheme>`,
+    and can be changed if desired.
+
+    """
     CHILD = 'child'
     FEMALE = 'female'
     MALE = 'male'
