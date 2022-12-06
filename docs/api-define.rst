@@ -12,6 +12,7 @@ namely those inside
 
 * :class:`audformat.define.DataType`
 * :class:`audformat.define.IndexField`
+* :class:`audformat.define.IndexType`
 * :class:`audformat.define.MediaType`
 * :class:`audformat.define.RaterType`
 * :class:`audformat.define.SplitType`
@@ -27,7 +28,6 @@ Those are not part of the
 and can be changed by a user,
 namely those inside
 
-* :class:`audformat.define.IndexType`
 * :class:`audformat.define.Gender`
 * :class:`audformat.define.License`
 

@@ -261,7 +261,7 @@ This part of the header is represented by :class:`audformat.Table`
 Field           Mandatory  Description
 ==============  =========  ====================================================
 id              yes        Unique identifier of table
-type            yes        Table type, see :class:`audformat.define.TableType`
+type            yes        Table type, one of ``'filewise'``, ``'segmented'``
 columns                    Dictionary of columns (see below)
 description                Description of table
 media_id                   Files in this table are of this media type

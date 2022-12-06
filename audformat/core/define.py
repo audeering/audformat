@@ -84,10 +84,9 @@ class IndexType(DefineBase):
     Those string values are returned by
     :attr:`audformat.Table.type`
     and :func:`audformat.index_type`.
-    The exact string values are not part
+    The exact string values are part
     of the :ref:`table specifications <data-tables:Tables>`,
-    but it is recommended
-    to not change them.
+    and should never be changed by a user.
 
     """
     FILEWISE = 'filewise'
