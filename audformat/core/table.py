@@ -590,7 +590,7 @@ class Base(HeaderBase):
 
         """
         path = audeer.path(path)
-        define.TableStorageFormat.assert_has_attribute_value(storage_format)
+        define.TableStorageFormat._assert_has_attribute_value(storage_format)
 
         pickle_file = path + f'.{define.TableStorageFormat.PICKLE}'
         csv_file = path + f'.{define.TableStorageFormat.CSV}'

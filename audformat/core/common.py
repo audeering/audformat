@@ -282,13 +282,13 @@ class HeaderBase:
 class DefineBase:
 
     @classmethod
-    def assert_has_attribute_value(cls, value):
-        valid_values = cls.attribute_values()
+    def _assert_has_attribute_value(cls, value):
+        valid_values = cls._attribute_values()
         if value not in valid_values:
             raise BadValueError(value, valid_values)
 
     @classmethod
-    def attribute_values(cls):
+    def _attribute_values(cls):
         attributes = inspect.getmembers(
             cls, lambda x: not inspect.isroutine(x)
         )

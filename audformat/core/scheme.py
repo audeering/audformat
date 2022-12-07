@@ -124,7 +124,7 @@ class Scheme(common.HeaderBase):
         if dtype is not None:
             if dtype in self._dtypes:
                 dtype = self._dtypes[dtype]
-            define.DataType.assert_has_attribute_value(dtype)
+            define.DataType._assert_has_attribute_value(dtype)
 
         if dtype is None and labels is None:
             dtype = define.DataType.STRING
@@ -455,7 +455,7 @@ class Scheme(common.HeaderBase):
                     'All labels must be of the same data type.'
                 )
             dtype = common.to_audformat_dtype(dtype)
-        define.DataType.assert_has_attribute_value(dtype)
+        define.DataType._assert_has_attribute_value(dtype)
 
         return dtype
 

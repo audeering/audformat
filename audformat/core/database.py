@@ -149,10 +149,10 @@ class Database(HeaderBase):
             license_url: str = None,
             meta: dict = None,
     ):
-        define.Usage.assert_has_attribute_value(usage)
+        define.Usage._assert_has_attribute_value(usage)
         if (
                 license_url is None
-                and license in define.License.attribute_values()
+                and license in define.License._attribute_values()
         ):
             license_url = define.LICENSE_URLS[license]
 
