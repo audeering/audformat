@@ -192,6 +192,9 @@ def index_type(
 ) -> define.IndexType:
     r"""Derive index type.
 
+    Possible return values are given by
+    :class:`audformat.define.IndexType`.
+
     Args:
         obj: object conform to
             :ref:`table specifications <data-tables:Tables>`

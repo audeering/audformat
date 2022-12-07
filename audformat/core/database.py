@@ -164,7 +164,12 @@ class Database(HeaderBase):
         self.source = source
         r"""Database source"""
         self.usage = usage
-        r"""Usage permission"""
+        r"""Usage permission.
+
+        Possible return values are given by
+        :class:`audformat.define.Usage`.
+
+        """
         self.expires = expires
         r"""Expiry date"""
         self.languages = languages

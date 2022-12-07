@@ -30,7 +30,8 @@ name            yes        Database name
 source          yes        Original source,
                            e.g. link to webpage where files are hosted
 usage           yes        What the database can be used for,
-                           see :class:`audformat.define.Usage`
+                           one of ``'commercial'``, ``'other'``,
+                           ``'research'``, ``'restricted'``, ``'unrestricted'``
 description                Description of the database
 expires                    Until when we are allowed to use the data
 languages                  List of languages that appear in the media files
@@ -65,7 +66,7 @@ audformat implementation
     db = audformat.Database(
         name='databasename',
         source='https://gitlab.audeering.com/data/databasename',
-        usage=audformat.define.Usage.COMMERCIAL,
+        usage='commercial',
     )
     db
 
@@ -79,7 +80,8 @@ This part of the header is represented by :class:`audformat.Rater`.
 Field           Mandatory  Description
 ==============  =========  ====================================================
 id              yes        Unique identifier of rater
-type            yes        Rater type, see :class:`audformat.define.RaterType`
+type            yes        Rater type, one of ``'human'``, ``'machine'``,
+                           ``'other'``, ``'ground truth'``, ``'vote'``
 description                Description of rater
 *meta-key-1*               1st optional meta field
 ...                        ...
@@ -101,7 +103,7 @@ audformat implementation
 .. jupyter-execute::
 
     # Create minimal Rater
-    rater = audformat.Rater(audformat.define.RaterType.HUMAN)
+    rater = audformat.Rater('human')
     # Add Rater to Database
     db.raters['raterid'] = rater
     # Access type of Rater
@@ -118,7 +120,9 @@ This part of the header is represented by :class:`audformat.Scheme`.
 ==============  =========  ====================================================
 Field           Mandatory  Description
 ==============  =========  ====================================================
-dtype           yes        Data type, see :class:`audformat.define.DataType`
+dtype           yes        Data type, one of ``'bool'``,
+                           ``'int'``, ``'float'``, ``'object'``,
+                           ``'str'``, ``'time'``, ``'date'``
 id              yes        Unique identifier of scheme
 description                Description of scheme
 labels                     Dictionary or list with labels
@@ -139,7 +143,7 @@ Minimal example
 
     schemes:
         schemeid:
-            dtype: human
+            dtype: float
 
 audformat implementation
 ^^^^^^^^^^^^^^^^^^^^^^^^
@@ -147,7 +151,7 @@ audformat implementation
 .. jupyter-execute::
 
     # Create minimal Scheme
-    scheme = audformat.Scheme(audformat.define.DataType.FLOAT)
+    scheme = audformat.Scheme('float')
     # Add Scheme to Database
     db.schemes['schemeid'] = scheme
     # Access dtype of Scheme
@@ -165,8 +169,8 @@ This part of the header is represented by :class:`audformat.Split`.
 Field           Mandatory  Description
 ==============  =========  ====================================================
 id              yes        Unique identifier of split
-type            yes        Split type,
-                           typically one of :class:`audformat.define.SplitType`
+type            yes        Split type, one of ``'train'``, ``'dev'``,
+                           ``'other'``, ``'test'``
 description                Description of split
 *meta-key-1*               1st optional meta field
 ...                        ...
@@ -188,7 +192,7 @@ audformat implementation
 .. jupyter-execute::
 
     # Create minimal Split
-    split = audformat.Split(audformat.define.SplitType.TEST)
+    split = audformat.Split('test')
     # Add Split to Database
     db.splits['splitid'] = split
     # Access type of Split
@@ -208,7 +212,8 @@ To store media information use:
 Field             Mandatory  Description
 ================  =========  ====================================================
 id                yes        Unique identifier of media type
-type                         Media type, one of (``audio``, ``video``, ``other``)
+type                         Media type, one of ``'audio'``, ``'video'``,
+                             ``'other'``
 bit_depth                    Audio bit depth
 channels                     Number of audio channels
 description                  Description
@@ -238,7 +243,7 @@ audformat implementation
 .. jupyter-execute::
 
     # Create minimal media information
-    media = audformat.Media()
+    media = audformat.Media('audio')
     # Add media to Database
     db.media['mediaid'] = media
     # Access type of Media
@@ -256,7 +261,7 @@ This part of the header is represented by :class:`audformat.Table`
 Field           Mandatory  Description
 ==============  =========  ====================================================
 id              yes        Unique identifier of table
-type            yes        Table type, see :class:`audformat.define.TableType`
+type            yes        Table type, one of ``'filewise'``, ``'segmented'``
 columns                    Dictionary of columns (see below)
 description                Description of table
 media_id                   Files in this table are of this media type
