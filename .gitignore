@@ -10,3 +10,6 @@ venv/
 emodb-src/
 emodb.zip
 coverage.xml
+docs/api/audformat.*.*.rst
+docs/api/audformat.[A-Z]*.rst
+docs/api/audformat.*_*.rst

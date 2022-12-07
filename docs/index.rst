@@ -35,10 +35,10 @@
     :hidden:
 
     api/audformat
-    api-define
-    api-errors
-    api-testing
-    audformat.utils
+    api/audformat.define
+    api/audformat.errors
+    api/audformat.testing
+    api/audformat.utils
     genindex
 
 .. toctree::

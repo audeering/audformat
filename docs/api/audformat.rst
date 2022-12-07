@@ -24,6 +24,7 @@ audformat
     :toctree:
     :nosignatures:
 
+    Attachment
     Column
     Database
     Media

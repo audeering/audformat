@@ -7,7 +7,7 @@ audformat.utils
 .. rubric:: Functions
 
 .. autosummary::
-    :toctree: audformat.utils
+    :toctree:
     :nosignatures:
 
     concat
