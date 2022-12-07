@@ -14,6 +14,13 @@ assert_no_duplicates
 
 .. autofunction:: assert_no_duplicates
 
+Attachment
+----------
+
+.. autoclass:: Attachment
+    :members:
+    :inherited-members:
+
 Column
 ------
 

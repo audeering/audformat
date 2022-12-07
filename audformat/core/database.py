@@ -16,8 +16,10 @@ import audiofile
 
 from audformat.core import define
 from audformat.core import utils
+from audformat.core.attachment import Attachment
 from audformat.core.column import Column
 from audformat.core.common import (
+    is_relative_path,
     HeaderBase,
     HeaderDict,
 )
@@ -182,6 +184,11 @@ class Database(HeaderBase):
         r"""License of database"""
         self.license_url = license_url
         r"""URL of database license"""
+        self.attachments = HeaderDict(
+            value_type=Attachment,
+            set_callback=self._set_attachment,
+        )
+        r"""Dictionary of attachments"""
         self.media = HeaderDict(value_type=Media)
         r"""Dictionary of media information"""
         self.raters = HeaderDict(value_type=Rater)
@@ -246,17 +253,7 @@ class Database(HeaderBase):
         """
         if len(self.files) == 0:
             return True
-        return not any(
-            (
-                os.path.isabs(f)
-                or '\\' in f
-                or f.startswith('./')
-                or '/./' in f
-                or f.startswith('../')
-                or '/../' in f
-            )
-            for f in self.files
-        )
+        return all(is_relative_path(f) for f in self.files)
 
     @property
     def root(self) -> typing.Optional[str]:
@@ -558,6 +555,14 @@ class Database(HeaderBase):
                 on the machine multiplied by 5
             verbose: show progress bar
 
+        Raises:
+            FileNotFoundError: if a file or folder
+                associated with an attachment
+                cannot be found
+            RuntimeError: if a file or folder
+                associated with an attachment
+                is a symlink
+
         """
         root = audeer.mkdir(root)
 
@@ -568,6 +573,7 @@ class Database(HeaderBase):
 
         if not header_only:
 
+            # Store (misc) tables
             def job(obj_id, obj):
                 path = audeer.path(root, f'{name}.{obj_id}')
                 obj.save(
@@ -587,6 +593,10 @@ class Database(HeaderBase):
                 progress_bar=verbose,
                 task_description='Save tables',
             )
+
+            # Check attachments exist
+            for attachment_id in list(self.attachments):
+                self.attachments[attachment_id]._check_path(root)
 
         self._name = name
         self._root = root
@@ -940,6 +950,11 @@ class Database(HeaderBase):
         Returns:
             database object
 
+        Raises:
+            FileNotFoundError: if a file or folder
+                associated with an attachment
+                cannot be found
+
         """
         ext = '.yaml'
         root = audeer.path(root)
@@ -955,6 +970,10 @@ class Database(HeaderBase):
 
             params = []
             table_ids = []
+
+            if 'attachments' in header and header['attachments']:
+                for attachment_id in header['attachments']:
+                    db.attachments[attachment_id]._check_path(root)
 
             if 'tables' in header and header['tables']:
                 for table_id in header['tables']:
@@ -1010,9 +1029,24 @@ class Database(HeaderBase):
         db = Database(
             name=header['name'],
             source=header['source'],
-            usage=header['usage'])
-        db.from_dict(header, ignore_keys=['media', 'misc_tables', 'raters',
-                                          'schemes', 'tables', 'splits'])
+            usage=header['usage'],
+        )
+        header_dicts = [
+            'attachments',
+            'media',
+            'misc_tables',
+            'raters',
+            'schemes',
+            'tables',
+            'splits',
+        ]
+        db.from_dict(header, ignore_keys=header_dicts)
+
+        if 'attachments' in header and header['attachments']:
+            for attachment_id, attachment_d in header['attachments'].items():
+                attachment = Attachment(attachment_d['path'])
+                attachment.from_dict(attachment_d)
+                db.attachments[attachment_id] = attachment
 
         if 'media' in header and header['media']:
             for media_id, media_d in header['media'].items():
@@ -1106,6 +1140,19 @@ class Database(HeaderBase):
                 db[table_id] = table
 
         return db
+
+    def _set_attachment(
+            self,
+            attachment_id: str,
+            attachment: Attachment,
+    ) -> Attachment:
+        attachment._db = self
+        attachment._id = attachment_id
+        if self.root is not None:
+            attachment._check_path(self.root)
+        for other_id in list(self.attachments):
+            attachment._check_overlap(self.attachments[other_id])
+        return attachment
 
     def _set_scheme(
             self,

@@ -1,6 +1,7 @@
 from audformat import define
 from audformat import errors
 from audformat import utils
+from audformat.core.attachment import Attachment
 from audformat.core.column import Column
 from audformat.core.database import Database
 from audformat.core.index import (

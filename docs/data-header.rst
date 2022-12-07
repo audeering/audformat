@@ -35,6 +35,7 @@ usage           yes        What the database can be used for,
 description                Description of the database
 expires                    Until when we are allowed to use the data
 languages                  List of languages that appear in the media files
+attachments                Dictionary of attachment objects (see below)
 media                      Dictionary of media objects (see below)
 raters                     Dictionary of rater objects (see below)
 schemes                    Dictionary of scheme objects (see below)
@@ -69,6 +70,45 @@ audformat implementation
         usage='commercial',
     )
     db
+
+
+Attachment
+----------
+
+This part of the header is represented by :class:`audformat.Attachment`.
+
+==============  =========  ====================================================
+Field           Mandatory  Description
+==============  =========  ====================================================
+path            yes        Relative path to attached file/folder
+description                Description of rater
+*meta-key-1*               1st optional meta field
+...                        ...
+*meta-key-N*               Nth optional meta field
+==============  =========  ====================================================
+
+Minimal example
+^^^^^^^^^^^^^^^
+
+.. code-block:: yaml
+
+    attachments:
+        attachmentid:
+            path: docs/setup.pdf
+
+audformat implementation
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. jupyter-execute::
+
+    # Create minimal Attachment
+    attachment = audformat.Attachment('docs/setup.pdf')
+    # Add Attachment to Database
+    db.attachments['attachmentid'] = attachment
+    # Access path of Attachment
+    db.attachments['attachmentid'].path
+    # Access attachments
+    db.attachments
 
 
 Rater

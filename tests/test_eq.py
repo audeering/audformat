@@ -27,6 +27,7 @@ def test_with_data(tmpdir):
 
     # compare with db that has same data
 
+    audformat.testing.create_attachment_files(db, tmpdir)
     db.save(tmpdir)
     db3 = audformat.Database.load(tmpdir)
 
