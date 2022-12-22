@@ -7,6 +7,17 @@ The format is based on `Keep a Changelog`_,
 and this project adheres to `Semantic Versioning`_.
 
 
+Version 0.16.0 (2022-12-22)
+---------------------------
+
+* Added: ``audformat.Attachment`` to store
+  any kind of files/folders as part of the database
+* Added: support for Python 3.10
+* Added: support for Python 3.11
+* Changed: split API documentation into sub-pages
+  for each function
+
+
 Version 0.15.4 (2022-11-01)
 ---------------------------
 
