@@ -30,13 +30,44 @@ class DataType(DefineBase):
     to handle duration values.
 
     """
+
     BOOL = 'bool'
+    """Bool data type."""
+
     DATE = 'date'
+    """Date data type.
+
+    Data type to store date information,
+    e.g. as provided by :class:`datetime.datetime`.
+
+    """
+
     INTEGER = 'int'
+    """Integer data type."""
+
     FLOAT = 'float'
+    """Float data type."""
+
     OBJECT = 'object'
+    """Object data type.
+
+    This should be used if no other data type fits.
+    Inside :mod:`pandas` it is stored
+    as the ``object`` data type,
+    compare :attr:`pandas.DataFrame.dtypes`.
+
+    """
+
     STRING = 'str'
+    """String data type."""
+
     TIME = 'time'
+    """Time data type.
+
+    Data type to store durations,
+    e.g. as provided by :class:`pandas.Timedelta`.
+
+    """
 
 
 class Gender(DefineBase):
@@ -53,10 +84,33 @@ class Gender(DefineBase):
     and can be changed if desired.
 
     """
+
     CHILD = 'child'
+    """Child gender label.
+
+    Female and male children
+    have a voice more common to each other
+    than to a female or male grown up.
+    Hence,
+    we provide a common child label.
+
+    """
+
     FEMALE = 'female'
+    """Female gender label."""
+
     MALE = 'male'
+    """Male gender label."""
+
     OTHER = 'other'
+    """Other gender label.
+
+    Should include labels
+    that are not covered by
+    female, male, or child,
+    e.g. diverse.
+
+    """
 
 
 class IndexField(DefineBase):
@@ -71,9 +125,33 @@ class IndexField(DefineBase):
     and should never be changed by a user.
 
     """
+
     FILE = 'file'
+    """File index field.
+
+    Name of the index column
+    listing files
+    in a filewise or segmented table.
+
+    """
+
     START = 'start'
+    """Start index field.
+
+    Name of the index column
+    listing start times
+    in a segmented table.
+
+    """
+
     END = 'end'
+    """End index field.
+
+    Name of the index column
+    listing end times
+    in a segmented table.
+
+    """
 
 
 class IndexType(DefineBase):
@@ -89,8 +167,12 @@ class IndexType(DefineBase):
     and should never be changed by a user.
 
     """
+
     FILEWISE = 'filewise'
+    """Filewise index type."""
+
     SEGMENTED = 'segmented'
+    """Segmented index type."""
 
 
 class License(DefineBase):
@@ -112,11 +194,21 @@ class License(DefineBase):
     and can be changed if desired.
 
     """
+
     CC0_1_0 = 'CC0-1.0'
+    """Creative Commons 1.0 Universal."""
+
     CC_BY_4_0 = 'CC-BY-4.0'
+    """Creative Commons Attribution 4.0."""
+
     CC_BY_NC_4_0 = 'CC-BY-NC-4.0'
+    """Creative Commons Attribution-NonCommercial 4.0."""
+
     CC_BY_NC_SA_4_0 = 'CC-BY-NC-SA-4.0'
+    """Creative Commons Attribution-NonCommercial-ShareAlike 4.0."""
+
     CC_BY_SA_4_0 = 'CC-BY-SA-4.0'
+    """Creative Commons Attribution-ShareAlike 4.0."""
 
 
 LICENSE_URLS = {
@@ -145,9 +237,15 @@ class MediaType(DefineBase):
     and should never be changed by a user.
 
     """
+
     AUDIO = 'audio'
+    """Audio media type."""
+
     OTHER = 'other'
+    """Other media type."""
+
     VIDEO = 'video'
+    """Video media type."""
 
 
 class RaterType(DefineBase):
@@ -166,11 +264,21 @@ class RaterType(DefineBase):
     and should never be changed by a user.
 
     """
+
     HUMAN = 'human'
+    """Human rater type."""
+
     MACHINE = 'machine'
+    """Machine rater type."""
+
     OTHER = 'other'
+    """Other rater type."""
+
     TRUTH = 'ground truth'
+    """Ground truth rater type."""
+
     VOTE = 'vote'
+    """Vote rater type."""
 
 
 class SplitType(DefineBase):
@@ -189,10 +297,18 @@ class SplitType(DefineBase):
     and should never be changed by a user.
 
     """
+
     TRAIN = 'train'
+    """Train split type."""
+
     DEVELOP = 'dev'
+    """Dev split type."""
+
     OTHER = 'other'
+    """Other split type."""
+
     TEST = 'test'
+    """Test split type."""
 
 
 class TableStorageFormat(DefineBase):
@@ -223,8 +339,12 @@ class TableStorageFormat(DefineBase):
     and should never be changed by a user.
 
     """
+
     CSV = 'csv'
+    """File extension for tables stored in CSV format."""
+
     PICKLE = 'pkl'
+    """File extension for tables stored in PKL format."""
 
 
 class Usage(DefineBase):
@@ -244,8 +364,18 @@ class Usage(DefineBase):
     and should never be changed by a user.
 
     """
+
     COMMERCIAL = 'commercial'
+    """Commercial usage."""
+
     OTHER = 'other'
+    """Other usage."""
+
     RESEARCH = 'research'
+    """Research only usage."""
+
     RESTRICTED = 'restricted'
+    """Restricted usage."""
+
     UNRESTRICTED = 'unrestricted'
+    """Unrestricted usage."""

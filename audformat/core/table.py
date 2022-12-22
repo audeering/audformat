@@ -590,7 +590,7 @@ class Base(HeaderBase):
 
         """
         path = audeer.path(path)
-        define.TableStorageFormat.assert_has_attribute_value(storage_format)
+        define.TableStorageFormat._assert_has_attribute_value(storage_format)
 
         pickle_file = path + f'.{define.TableStorageFormat.PICKLE}'
         csv_file = path + f'.{define.TableStorageFormat.CSV}'
@@ -1014,7 +1014,7 @@ class MiscTable(Base):
     Raises:
         ValueError: if level names of index are empty or not unique
 
-    Example:
+    Examples:
         >>> index = pd.MultiIndex.from_tuples(
         ...   [
         ...     ('f1', 'f2'),
@@ -1178,7 +1178,7 @@ class Table(Base):
         ValueError: if index not conform to
             :ref:`table specifications <data-tables:Tables>`
 
-    Example:
+    Examples:
         >>> index = filewise_index(['f1', 'f2', 'f3'])
         >>> table = Table(
         ...     index,

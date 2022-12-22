@@ -14,27 +14,14 @@ In order to use it you first have to import it explicitly:
     import audformat.testing
 
 
-add_misc_table
---------------
+.. rubric:: Functions
 
-.. autofunction:: add_misc_table
+.. autosummary::
+    :toctree:
+    :nosignatures:
 
-add_table
----------
-
-.. autofunction:: add_table
-
-create_attachment_files
------------------------
-
-.. autofunction:: create_attachment_files
-
-create_audio_files
-------------------
-
-.. autofunction:: create_audio_files
-
-create_db
----------
-
-.. autofunction:: create_db
+    add_misc_table
+    add_table
+    create_attachment_files
+    create_audio_files
+    create_db

@@ -33,7 +33,7 @@ class Attachment(HeaderBase):
             or nested
             compared to the current attachment path
 
-    Example:
+    Examples:
         >>> Attachment('file.txt', description='Attached file')
         {description: Attached file, path: file.txt}
 

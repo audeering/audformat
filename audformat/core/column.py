@@ -79,7 +79,7 @@ class Column(HeaderBase):
         description: table description
         meta: additional meta fields
 
-    Example:
+    Examples:
         >>> Column(scheme_id='emotion')
         {scheme_id: emotion}
 

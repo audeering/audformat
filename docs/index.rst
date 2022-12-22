@@ -34,11 +34,11 @@
     :caption: API Documentation
     :hidden:
 
-    api
-    api-define
-    api-errors
-    api-testing
-    api-utils
+    api/audformat
+    api/audformat.define
+    api/audformat.errors
+    api/audformat.testing
+    api/audformat.utils
     genindex
 
 .. toctree::

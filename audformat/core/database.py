@@ -76,7 +76,7 @@ class Database(HeaderBase):
         BadValueError: if an invalid ``usage`` value is passed
         ValueError: if language is unknown
 
-    Example:
+    Examples:
         >>> db = Database(
         ...     'mydb',
         ...     'https://www.audeering.com/',
@@ -149,10 +149,10 @@ class Database(HeaderBase):
             license_url: str = None,
             meta: dict = None,
     ):
-        define.Usage.assert_has_attribute_value(usage)
+        define.Usage._assert_has_attribute_value(usage)
         if (
                 license_url is None
-                and license in define.License.attribute_values()
+                and license in define.License._attribute_values()
         ):
             license_url = define.LICENSE_URLS[license]
 
@@ -236,7 +236,7 @@ class Database(HeaderBase):
     def is_portable(
         self,
     ) -> bool:
-        r"""Check if a database can be moved to another location.
+        r"""Check if database can be moved to another location.
 
         To be portable,
         media must not be referenced with an absolute path,

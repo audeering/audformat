@@ -505,7 +505,7 @@ def test_save_and_load(tmpdir, db, storage_format, load_data, num_workers):
 
     expected_formats = [storage_format]
     for table_id in db.tables:
-        for ext in audformat.define.TableStorageFormat.attribute_values():
+        for ext in audformat.define.TableStorageFormat._attribute_values():
             table_file = os.path.join(tmpdir, f'db.{table_id}.{ext}')
             if ext in expected_formats:
                 assert os.path.exists(table_file)
@@ -639,7 +639,7 @@ def test_save_and_load(tmpdir, db, storage_format, load_data, num_workers):
     # Test missing table
     if db.tables:
         table_id = list(db.tables)[0]
-        for ext in audformat.define.TableStorageFormat.attribute_values():
+        for ext in audformat.define.TableStorageFormat._attribute_values():
             table_file = os.path.join(tmpdir, f'db.{table_id}.{ext}')
             if os.path.exists(table_file):
                 os.remove(table_file)

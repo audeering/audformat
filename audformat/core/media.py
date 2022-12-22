@@ -27,7 +27,7 @@ class Media(HeaderBase):
     Raises:
         BadValueError: if an invalid ``type`` is passed
 
-    Example:
+    Examples:
         >>> Media(
         ...     type=define.MediaType.AUDIO,
         ...     format='wav',
@@ -53,7 +53,7 @@ class Media(HeaderBase):
             meta: dict = None,
     ):
         super().__init__(description=description, meta=meta)
-        define.MediaType.assert_has_attribute_value(type)
+        define.MediaType._assert_has_attribute_value(type)
 
         self.type = type
         r"""Media type"""

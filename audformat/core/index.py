@@ -168,7 +168,7 @@ def filewise_index(
     Raises:
         ValueError: if created index contains duplicates
 
-    Example:
+    Examples:
         >>> filewise_index(['a.wav', 'b.wav'])
         Index(['a.wav', 'b.wav'], dtype='string', name='file')
 
@@ -206,7 +206,7 @@ def index_type(
         ValueError: if not conform to
             :ref:`table specifications <data-tables:Tables>`
 
-    Example:
+    Examples:
         >>> index_type(filewise_index())
         'filewise'
         >>> index_type(segmented_index())
@@ -238,7 +238,7 @@ def is_filewise_index(
     Returns:
         ``True`` if index is filewise, otherwise ``False``
 
-    Example:
+    Examples:
         >>> is_filewise_index(filewise_index())
         True
         >>> is_filewise_index(pd.Index([]))
@@ -265,7 +265,7 @@ def is_segmented_index(
     Returns:
         ``True`` if index is segmented, otherwise ``False``
 
-    Example:
+    Examples:
         >>> is_segmented_index(segmented_index())
         True
         >>> is_segmented_index(pd.Index([]))
@@ -313,7 +313,7 @@ def segmented_index(
     Raises:
         ValueError: if ``files``, ``start`` and ``ends`` differ in size
 
-    Example:
+    Examples:
         >>> segmented_index('a.wav', 0, 1.1)
         MultiIndex([('a.wav', '0 days', '0 days 00:00:01.100000')],
                    names=['file', 'start', 'end'])
