@@ -27,7 +27,7 @@ class Media(HeaderBase):
     Raises:
         BadValueError: if an invalid ``type`` is passed
 
-    Example:
+    Examples:
         >>> Media(
         ...     type=define.MediaType.AUDIO,
         ...     format='wav',

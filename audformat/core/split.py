@@ -20,7 +20,7 @@ class Split(HeaderBase):
     Raises:
         BadValueError: if an invalid ``type`` is passed
 
-    Example:
+    Examples:
         >>> Split(define.SplitType.TEST)
         {type: test}
 

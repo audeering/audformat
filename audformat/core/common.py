@@ -40,7 +40,7 @@ class HeaderDict(OrderedDict):
     Raises:
         BadTypeError: if a value of an invalid type is added
 
-    Example:
+    Examples:
         >>> HeaderDict()
 
         >>> d = HeaderDict()

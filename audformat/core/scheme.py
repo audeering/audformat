@@ -66,7 +66,7 @@ class Scheme(common.HeaderBase):
             that is already assigned to a scheme
             with labels from another misc table
 
-    Example:
+    Examples:
         >>> Scheme()
         {dtype: str}
         >>> Scheme(labels=['a', 'b', 'c'])
@@ -311,7 +311,7 @@ class Scheme(common.HeaderBase):
                 that is already assigned to a scheme
                 with labels from another misc table
 
-        Example:
+        Examples:
             >>> speaker = Scheme(
             ...     labels={
             ...         0: {'gender': 'female'},

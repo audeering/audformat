@@ -69,7 +69,7 @@ def concat(
         ValueError: if columns with the same name have different dtypes
         ValueError: if values in the same position do not match
 
-    Example:
+    Examples:
         >>> concat(
         ...     [
         ...         pd.Series([0], index=pd.Index([0])),
@@ -315,7 +315,7 @@ def difference(
     Raises:
         ValueError: if level and dtypes of objects do not match
 
-    Example:
+    Examples:
         >>> difference(
         ...     [
         ...         pd.Index([1, 2, 3], name='idx'),
@@ -438,8 +438,7 @@ def duration(
     Returns:
         duration
 
-    Example:
-
+    Examples:
         >>> index = segmented_index(
         ...     files=['a', 'b', 'c'],
         ...     starts=[0, 1, 3],
@@ -487,7 +486,7 @@ def expand_file_path(
         ValueError: if index is not conform to
             :ref:`table specifications <data-tables:Tables>`
 
-    Example:
+    Examples:
         >>> index = filewise_index(['f1', 'f2'])
         >>> index
         Index(['f1', 'f2'], dtype='string', name='file')
@@ -523,7 +522,7 @@ def hash(
     Returns:
         hash string
 
-    Example:
+    Examples:
         >>> index = filewise_index(['f1', 'f2'])
         >>> hash(index)
         '-4231615416436839963'
@@ -549,7 +548,7 @@ def index_has_overlap(
     Returns:
         ``True`` if overlap is detected, otherwise ``False``
 
-    Example:
+    Examples:
         >>> index = filewise_index(['f1', 'f2'])
         >>> index_has_overlap(index)
         False
@@ -624,7 +623,7 @@ def intersect(
         ValueError: if level and dtypes of objects do not match
 
 
-    Example:
+    Examples:
         >>> intersect(
         ...     [
         ...         pd.Index([1, 2, 3], name='idx'),
@@ -739,7 +738,7 @@ def is_index_alike(
     Returns:
         ``True`` if index objects are alike, otherwise ``False``
 
-    Example:
+    Examples:
         >>> index1 = pd.Index([1, 2, 3], dtype='Int64', name='l')
         >>> index2 = pd.MultiIndex.from_arrays([[10, 20]], names=['l'])
         >>> is_index_alike([index1, index2])
@@ -801,7 +800,7 @@ def iter_by_file(
     Returns:
         iterator in form of (file, sub_obj)
 
-    Example:
+    Examples:
         >>> index = filewise_index(['f1', 'f1', 'f2'])
         >>> next(iter_by_file(index))
         ('f1', Index(['f1'], dtype='string', name='file'))
@@ -854,7 +853,7 @@ def join_labels(
         ValueError: if labels are of different dtype
             or not ``list`` or ``dict``
 
-    Example:
+    Examples:
         >>> join_labels([{'a': 0, 'b': 1}, {'b': 2, 'c': 2}])
         {'a': 0, 'b': 2, 'c': 2}
 
@@ -949,7 +948,7 @@ def join_schemes(
         ValueError: if scheme labels are of different dtype
             or not ``list`` or ``dict``
 
-    Example:
+    Examples:
         >>> db1 = Database('db1')
         >>> db2 = Database('db2')
         >>> db1.schemes['scheme_id'] = Scheme(labels=['a'])
@@ -978,7 +977,7 @@ def map_country(country: str) -> str:
     Raises:
         ValueError: if country is not supported
 
-    Example:
+    Examples:
         >>> map_country('gb')
         'GBR'
         >>> map_country('gbr')
@@ -1038,7 +1037,7 @@ def map_file_path(
         ValueError: if index is not conform to
             :ref:`table specifications <data-tables:Tables>`
 
-    Example:
+    Examples:
         >>> index = filewise_index(['a/f1', 'a/f2'])
         >>> index
         Index(['a/f1', 'a/f2'], dtype='string', name='file')
@@ -1072,7 +1071,7 @@ def map_language(language: str) -> str:
     Raises:
         ValueError: if language is not supported
 
-    Example:
+    Examples:
         >>> map_language('en')
         'eng'
         >>> map_language('eng')
@@ -1133,7 +1132,7 @@ def read_csv(
         ValueError: if CSV file is not conform to
             :ref:`table specifications <data-tables:Tables>`
 
-    Example:
+    Examples:
         >>> from io import StringIO
         >>> string = StringIO('''file,start,end,value
         ... f1,00:00:00,00:00:01,0.0
@@ -1206,7 +1205,7 @@ def replace_file_extension(
     Returns:
         updated index
 
-    Example:
+    Examples:
         >>> index = filewise_index(['f1.wav', 'f2.flac'])
         >>> replace_file_extension(index, 'mp3')
         Index(['f1.mp3', 'f2.mp3'], dtype='string', name='file')
@@ -1522,7 +1521,7 @@ def to_segmented_index(
             :ref:`table specifications <data-tables:Tables>`
         FileNotFoundError: if file is not found
 
-    Example:
+    Examples:
         >>> index = filewise_index(['f1', 'f2'])
         >>> to_segmented_index(index)
         MultiIndex([('f1', '0 days', NaT),
@@ -1649,7 +1648,7 @@ def union(
     Raises:
         ValueError: if level and dtypes of objects do not match
 
-    Example:
+    Examples:
         >>> union(
         ...     [
         ...         pd.Index([0, 1], name='idx'),

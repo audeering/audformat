@@ -76,7 +76,7 @@ class Database(HeaderBase):
         BadValueError: if an invalid ``usage`` value is passed
         ValueError: if language is unknown
 
-    Example:
+    Examples:
         >>> db = Database(
         ...     'mydb',
         ...     'https://www.audeering.com/',
