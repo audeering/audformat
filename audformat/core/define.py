@@ -1,8 +1,3 @@
-import typing
-
-import numpy as np
-import pandas as pd
-
 from audformat.core.common import DefineBase
 
 

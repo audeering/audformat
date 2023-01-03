@@ -1,8 +1,6 @@
-import itertools
 from io import StringIO
 import os
 import re
-import shutil
 
 import numpy as np
 import pandas as pd

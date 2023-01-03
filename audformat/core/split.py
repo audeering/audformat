@@ -1,5 +1,3 @@
-import typing
-
 from audformat.core import define
 from audformat.core.common import HeaderBase
 
