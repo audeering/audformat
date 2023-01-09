@@ -1,4 +1,5 @@
 import os
+import typing
 
 import audeer
 
@@ -58,6 +59,36 @@ class Attachment(HeaderBase):
 
         self.path = path
         r"""Attachment path"""
+
+    @property
+    def files(
+            self,
+            full_path: bool = False,
+    ) -> typing.List:
+        r"""List all files part of the attachment.
+
+        Uses the path to the attachment
+        and list recursively all files that exist
+        on hard disc.
+
+        """
+        files = []
+        if not self._db.root:
+            return files
+
+        path = audeer.path(self._db.root, self.path)
+        if not os.path.exists(path):
+            return files
+
+        if os.path.isdir(path):
+            files = audeer.list_file_names(path, recursive=True)
+        else:
+            files = [path]
+
+        if not full_path:
+            files = [f.replace(f'{self._db.root}/', '') for f in files]
+
+        return files
 
     def _check_overlap(
             self,

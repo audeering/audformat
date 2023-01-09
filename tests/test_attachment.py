@@ -42,6 +42,10 @@ def test_attachment(tmpdir):
         meta={'mime': 'inode/directory'},
     )
 
+    # Files do not exist yet on disc
+    assert db.attachments['file'].files == []
+    assert db.attachments['folder'].files == []
+
     assert list(db.attachments) == ['file', 'folder']
     assert db.attachments['file'].path == file_path
     assert db.attachments['file'].description == 'Attached file'
@@ -80,9 +84,15 @@ def test_attachment(tmpdir):
     audeer.touch(audeer.path(db_path, file_path))
     db.save(db_path)
 
+    # File exist now, folder is empty
+    assert db.attachments['file'].files == [file_path]
+    assert db.attachments['folder'].files == []
+
     # Load database
     db = audformat.Database.load(db_path)
     assert list(db.attachments) == ['file', 'folder']
+    assert db.attachments['file'].files == [file_path]
+    assert db.attachments['folder'].files == []
     assert db.attachments['file'].path == file_path
     assert db.attachments['file'].description == 'Attached file'
     assert db.attachments['file'].meta == {'mime': 'text'}
@@ -198,6 +208,15 @@ def test_attachment_overlapping(tmpdir, attachments):
     db_path = audeer.path(tmpdir, 'db')
     audformat.testing.create_attachment_files(db, db_path)
     db.save(db_path)
+    # Test for list of files
+    # (an attachment is considered a file
+    # if it contains at least one .)
+    for n, attachment in enumerate(attachments):
+        expected_files = []
+        if '.' in attachment:
+            expected_files = [attachment]
+        assert db.attachments[str(n)].files == expected_files
+
     # Test for saved database,
     # that contains attachment files
     db = audformat.Database('db')
