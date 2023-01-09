@@ -63,7 +63,6 @@ class Attachment(HeaderBase):
     @property
     def files(
             self,
-            full_path: bool = False,
     ) -> typing.List:
         r"""List all files part of the attachment.
 
@@ -85,8 +84,8 @@ class Attachment(HeaderBase):
         else:
             files = [path]
 
-        if not full_path:
-            files = [f.replace(f'{self._db.root}/', '') for f in files]
+        # Remove db root path
+        files = [f.replace(f'{self._db.root}/', '') for f in files]
 
         return files
 
