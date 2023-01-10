@@ -91,13 +91,13 @@ def test_attachment(tmpdir):
     audeer.touch(audeer.path(db_path, file_path))
 
     # File exist now, folder is empty
-    assert db.attachments['file'].files == [audeer.path(db_path, file_path)]
+    assert db.attachments['file'].files == [file_path]
     assert db.attachments['folder'].files == []
 
     # Load database
     db = audformat.Database.load(db_path)
     assert list(db.attachments) == ['file', 'folder']
-    assert db.attachments['file'].files == [audeer.path(db_path, file_path)]
+    assert db.attachments['file'].files == [file_path]
     assert db.attachments['folder'].files == []
     assert db.attachments['file'].path == file_path
     assert db.attachments['file'].description == 'Attached file'
@@ -119,10 +119,6 @@ def test_attachment(tmpdir):
 
 
 @pytest.mark.parametrize(
-    # `expected` should be given as a relative path
-    # starting from `db.root`
-    # and will be converted to an absolute path
-    # in the test
     'root, folders, files, expected',
     [
         (
@@ -159,8 +155,6 @@ def test_attachment(tmpdir):
 )
 def test_attachment_files(tmpdir, root, folders, files, expected):
     db_path = audeer.path(tmpdir, 'db')
-    # Convert `expected` to absolute path
-    expected = [audeer.path(db_path, p) for p in expected]
     root_path = audeer.path(db_path, root)
     audeer.mkdir(root_path)
     for folder in folders:
@@ -279,7 +273,7 @@ def test_attachment_overlapping(tmpdir, attachments):
     for n, attachment in enumerate(attachments):
         expected_files = []
         if '.' in attachment:
-            expected_files = [audeer.path(db_path, attachment)]
+            expected_files = [attachment]
         assert db.attachments[str(n)].files == expected_files
 
     # Test for saved database,
