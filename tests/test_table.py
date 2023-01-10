@@ -711,17 +711,17 @@ def test_drop_extend_and_pick_index_order():
         # dtype of file level is object
         (
             create_table(audformat.filewise_index(['f1', 'f2'])),
-            pd.Index(['f2', 'f3'], dtype=object, name='file'),
+            pd.Index(['f2', 'f3'], dtype='object', name='file'),
             audformat.filewise_index(['f1']),
         ),
         (
-            create_table(pd.Index(['f1', 'f2'], dtype=object, name='file')),
+            create_table(pd.Index(['f1', 'f2'], dtype='object', name='file')),
             audformat.filewise_index(['f2', 'f3']),
             audformat.filewise_index(['f1']),
         ),
         (
-            create_table(pd.Index(['f1', 'f2'], dtype=object, name='file')),
-            pd.Index(['f2', 'f3'], dtype=object, name='file'),
+            create_table(pd.Index(['f1', 'f2'], dtype='object', name='file')),
+            pd.Index(['f2', 'f3'], dtype='object', name='file'),
             audformat.filewise_index(['f1']),
         ),
         # different index type
@@ -906,7 +906,7 @@ def test_extend_index():
         db['table']['columns'].get().values,
         np.array(['a', 'a', 'b']),
     )
-    index = pd.Index(['4.wav'], dtype=object, name='file')
+    index = pd.Index(['4.wav'], dtype='object', name='file')
     db['table'].extend_index(
         index,
         fill_values='c',
@@ -1352,17 +1352,17 @@ def test_pick_files(files, table):
         # dtype of file level is object
         (
             create_table(audformat.filewise_index(['f1', 'f2'])),
-            pd.Index(['f2'], dtype=object, name='file'),
+            pd.Index(['f2'], dtype='object', name='file'),
             audformat.filewise_index(['f2']),
         ),
         (
-            create_table(pd.Index(['f1', 'f2'], dtype=object, name='file')),
+            create_table(pd.Index(['f1', 'f2'], dtype='object', name='file')),
             audformat.filewise_index(['f2']),
             audformat.filewise_index(['f2']),
         ),
         (
-            create_table(pd.Index(['f1', 'f2'], dtype=object, name='file')),
-            pd.Index(['f2'], dtype=object, name='file'),
+            create_table(pd.Index(['f1', 'f2'], dtype='object', name='file')),
+            pd.Index(['f2'], dtype='object', name='file'),
             audformat.filewise_index(['f2']),
         ),
         # different index type
