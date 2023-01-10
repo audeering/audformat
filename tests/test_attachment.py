@@ -84,6 +84,12 @@ def test_attachment(tmpdir):
     audeer.touch(audeer.path(db_path, file_path))
     db.save(db_path)
 
+    # Remove file and check output of .files
+    os.remove(os.path.join(db_path, file_path))
+    assert db.attachments['file'].files == []
+    assert db.attachments['folder'].files == []
+    audeer.touch(audeer.path(db_path, file_path))
+
     # File exist now, folder is empty
     assert db.attachments['file'].files == [file_path]
     assert db.attachments['folder'].files == []
