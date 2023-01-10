@@ -1560,13 +1560,13 @@ def _assert_file_level_dtype_is_string(
 ) -> pd.Index:
     r"""Possibly set dtype of file level to 'string'."""
     if (
-        (
-            is_filewise_index(index)
-            and index.dtype == 'object'
-        ) or (
-            is_segmented_index(index)
-            and index.dtypes[define.IndexField.FILE] == 'object'
-        )
+            (
+                is_filewise_index(index)
+                and index.dtype == 'object'
+            ) or (
+                is_segmented_index(index)
+                and index.dtypes[define.IndexField.FILE] == 'object'
+            )
     ):
         index = utils.set_index_dtypes(
             index,
