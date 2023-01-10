@@ -708,6 +708,22 @@ def test_drop_extend_and_pick_index_order():
             ),
             audformat.segmented_index('f1', 0, 1),
         ),
+        # dtype of file level is object
+        (
+            create_table(audformat.filewise_index(['f1', 'f2'])),
+            pd.Index(['f2', 'f3'], dtype='object', name='file'),
+            audformat.filewise_index(['f1']),
+        ),
+        (
+            create_table(pd.Index(['f1', 'f2'], dtype='object', name='file')),
+            audformat.filewise_index(['f2', 'f3']),
+            audformat.filewise_index(['f1']),
+        ),
+        (
+            create_table(pd.Index(['f1', 'f2'], dtype='object', name='file')),
+            pd.Index(['f2', 'f3'], dtype='object', name='file'),
+            audformat.filewise_index(['f1']),
+        ),
         # different index type
         pytest.param(
             create_table(audformat.segmented_index()),
@@ -890,6 +906,16 @@ def test_extend_index():
         db['table']['columns'].get().values,
         np.array(['a', 'a', 'b']),
     )
+    index = pd.Index(['4.wav'], dtype='object', name='file')
+    db['table'].extend_index(
+        index,
+        fill_values='c',
+        inplace=True,
+    )
+    np.testing.assert_equal(
+        db['table']['columns'].get().values,
+        np.array(['a', 'a', 'b', 'c']),
+    )
 
     db.drop_tables('table')
 
@@ -925,6 +951,23 @@ def test_extend_index():
     np.testing.assert_equal(
         db['table']['columns'].get().values,
         np.array(['a', 'a', 'b']),
+    )
+    index = pd.MultiIndex.from_arrays(
+        [
+            ['3.wav'],
+            [pd.Timedelta(0)],
+            [pd.Timedelta(4, unit='s')],
+        ],
+        names=['file', 'start', 'end'],
+    )
+    db['table'].extend_index(
+        index,
+        fill_values={'columns': 'c'},
+        inplace=True,
+    )
+    np.testing.assert_equal(
+        db['table']['columns'].get().values,
+        np.array(['a', 'a', 'b', 'c']),
     )
 
     db.drop_tables('table')
@@ -972,6 +1015,18 @@ def test_filewise(num_files, values):
     table.df['column'] = np.nan
     df['column'][1:-1] = values[1:-1]
     index = audformat.filewise_index(table.files[1:-1])
+    table.set({'column': values[1:-1]}, index=index)
+    pd.testing.assert_frame_equal(
+        table.get(index),
+        df.loc[table.files[1:-1]],
+    )
+    pd.testing.assert_frame_equal(table.get(), df)
+
+    # dtype of file level is object
+    df['column'] = np.nan
+    table.df['column'] = np.nan
+    df['column'][1:-1] = values[1:-1]
+    index = pd.Index(table.files[1:-1], dtype='object', name='file')
     table.set({'column': values[1:-1]}, index=index)
     pd.testing.assert_frame_equal(
         table.get(index),
@@ -1306,6 +1361,22 @@ def test_pick_files(files, table):
                 [2, 3],
             ),
         ),
+        # dtype of file level is object
+        (
+            create_table(audformat.filewise_index(['f1', 'f2'])),
+            pd.Index(['f2'], dtype='object', name='file'),
+            audformat.filewise_index(['f2']),
+        ),
+        (
+            create_table(pd.Index(['f1', 'f2'], dtype='object', name='file')),
+            audformat.filewise_index(['f2']),
+            audformat.filewise_index(['f2']),
+        ),
+        (
+            create_table(pd.Index(['f1', 'f2'], dtype='object', name='file')),
+            pd.Index(['f2'], dtype='object', name='file'),
+            audformat.filewise_index(['f2']),
+        ),
         # different index type
         pytest.param(
             create_table(audformat.segmented_index()),
@@ -1378,6 +1449,24 @@ def test_segmented(num_files, num_segments_per_file, values):
         table.files[1:-1],
         starts=table.starts[1:-1],
         ends=table.ends[1:-1],
+    )
+    df.loc[index, :] = values[1:-1]
+    table.set({'column': values[1:-1]}, index=index)
+    pd.testing.assert_frame_equal(
+        table.get(index),
+        df.loc[index],
+    )
+
+    # dtype of file level is object
+    df['column'] = np.nan
+    table.df['column'] = np.nan
+    index = pd.MultiIndex.from_arrays(
+        [
+            table.files[1:-1].astype('object'),
+            table.starts[1:-1],
+            table.ends[1:-1],
+        ],
+        names=['file', 'start', 'end'],
     )
     df.loc[index, :] = values[1:-1]
     table.set({'column': values[1:-1]}, index=index)
