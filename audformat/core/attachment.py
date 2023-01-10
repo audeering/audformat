@@ -64,7 +64,7 @@ class Attachment(HeaderBase):
     def files(
             self,
     ) -> typing.List[str]:
-        r"""List all files part of the attachment.
+        r"""List all files that are part of the attachment.
 
         List recursively the relative path
         of all files that exist
