@@ -119,39 +119,52 @@ def test_attachment(tmpdir):
 
 
 @pytest.mark.parametrize(
-    'folder, files, expected',
+    'root, folders, files, expected',
     [
         (
             'extra',
             [],
             [],
+            [],
         ),
         (
             'extra',
+            [],
             ['file1.txt'],
             ['extra/file1.txt'],
         ),
         (
             'extra',
+            [],
             ['sub/file1.txt'],
             ['extra/sub/file1.txt'],
         ),
         (
             'extra',
+            ['sub1'],
+            ['sub2/file1.txt'],
+            ['extra/sub2/file1.txt'],
+        ),
+        (
+            'extra',
+            [],
             ['f1.txt', 'f2.txt'],
             ['extra/f1.txt', 'extra/f2.txt'],
         ),
     ]
 )
-def test_attachment_files(tmpdir, folder, files, expected):
-    folder_path = audeer.path(tmpdir, 'db', folder)
-    audeer.mkdir(folder_path)
+def test_attachment_files(tmpdir, root, folders, files, expected):
+    root_path = audeer.path(tmpdir, 'db', root)
+    audeer.mkdir(root_path)
+    for folder in folders:
+        path = audeer.path(root_path, folder)
+        audeer.mkdir(path)
     for file in files:
-        path = audeer.path(folder_path, file)
+        path = audeer.path(root_path, file)
         audeer.mkdir(os.path.dirname(path))
         audeer.touch(path)
     db = audformat.Database('db')
-    db.attachments['extra'] = audformat.Attachment(folder)
+    db.attachments['extra'] = audformat.Attachment(root)
     db_path = audeer.path(tmpdir, 'db')
     db.save(db_path)
     assert db.attachments['extra'].files == expected
