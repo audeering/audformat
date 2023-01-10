@@ -87,6 +87,8 @@ class Attachment(HeaderBase):
 
         # Remove absolute path
         files = [f.replace(f'{self._db.root}{os.path.sep}', '') for f in files]
+        # Make sure we use `/` as sep
+        files = [f.replace(os.path.sep, '/') for f in files]
 
         return files
 
