@@ -69,7 +69,7 @@ class Attachment(HeaderBase):
         List recursively the relative path
         of all files that exist
         under :attr:`audformat.Attachment.path`
-        on hard disc.
+        on hard disk.
 
         Raises:
             FileNotFoundError: if a path
