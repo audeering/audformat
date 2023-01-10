@@ -71,7 +71,7 @@ def test_attachment(tmpdir):
     error_msg = (
         f"The provided path '{file_path}' "
         f"of attachment 'file' "
-        "is not allowed to be a symlink."
+        "must not be a symlink."
     )
     with pytest.raises(RuntimeError, match=error_msg):
         db.save(db_path)
@@ -206,7 +206,7 @@ def test_attachment_files_errors(tmpdir):
     error_msg = (
         f"The provided path '{attachment_path}' "
         "of attachment 'attachment' "
-        "is not allowed to be a symlink."
+        "must not be a symlink."
     )
     with pytest.raises(RuntimeError, match=error_msg):
         attachment.files
@@ -223,7 +223,7 @@ def test_attachment_files_errors(tmpdir):
     error_msg = (
         f"The path '{os.path.join(db_path, attachment_path, 'link')}' "
         f"included in attachment 'attachment' "
-        "is not allowed to be a symlink."
+        "must not be a symlink."
     )
     with pytest.raises(RuntimeError, match=re.escape(error_msg)):
         attachment.files
@@ -239,7 +239,7 @@ def test_attachment_files_errors(tmpdir):
     error_msg = (
         f"The path '{os.path.join(db_path, attachment_path, 'file2.txt')}' "
         f"included in attachment 'attachment' "
-        "is not allowed to be a symlink."
+        "must not be a symlink."
     )
     with pytest.raises(RuntimeError, match=re.escape(error_msg)):
         attachment.files

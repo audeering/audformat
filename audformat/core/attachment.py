@@ -114,7 +114,7 @@ class Attachment(HeaderBase):
                     raise RuntimeError(
                         f"The path '{path}' "
                         f"included in attachment '{self._id}' "
-                        "is not allowed to be a symlink."
+                        "must not be a symlink."
                     )
         else:
             files = [path]
@@ -156,5 +156,5 @@ class Attachment(HeaderBase):
             raise RuntimeError(
                 f"The provided path '{self.path}' "
                 f"of attachment '{self._id}' "
-                "is not allowed to be a symlink."
+                "must not be a symlink."
             )
