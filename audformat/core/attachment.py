@@ -63,7 +63,7 @@ class Attachment(HeaderBase):
     @property
     def files(
             self,
-    ) -> typing.List:
+    ) -> typing.List[str]:
         r"""List all files part of the attachment.
 
         List recursively the absolute path
