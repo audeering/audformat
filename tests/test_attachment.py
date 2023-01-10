@@ -225,7 +225,7 @@ def test_attachment_files_errors(tmpdir):
         f"included in attachment 'attachment' "
         "is not allowed to be a symlink."
     )
-    with pytest.raises(RuntimeError, match=error_msg):
+    with pytest.raises(RuntimeError, match=re.escape(error_msg)):
         attachment.files
 
 
