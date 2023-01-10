@@ -66,8 +66,9 @@ class Attachment(HeaderBase):
     ) -> typing.List:
         r"""List all files part of the attachment.
 
-        Uses the path to the attachment
-        and list recursively all files that exist
+        List recursively the absolute path
+        of all files that exist
+        under :attr:`audformat.Attachment.path`
         on hard disc.
 
         """
@@ -83,9 +84,6 @@ class Attachment(HeaderBase):
             files = audeer.list_file_names(path, recursive=True)
         else:
             files = [path]
-
-        # Remove db root path
-        files = [f.replace(f'{self._db.root}/', '') for f in files]
 
         return files
 
