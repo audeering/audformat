@@ -71,7 +71,7 @@ def test_attachment(tmpdir):
     error_msg = (
         f"The provided path '{file_path}' "
         f"of attachment 'file' "
-        "is not allowed to be a symlink."
+        "must not be a symlink."
     )
     with pytest.raises(RuntimeError, match=error_msg):
         db.save(db_path)
@@ -80,9 +80,15 @@ def test_attachment(tmpdir):
     audeer.touch(audeer.path(db_path, file_path))
     db.save(db_path)
 
+    # File exist now, folder is empty
+    assert db.attachments['file'].files == [file_path]
+    assert db.attachments['folder'].files == []
+
     # Load database
     db = audformat.Database.load(db_path)
     assert list(db.attachments) == ['file', 'folder']
+    assert db.attachments['file'].files == [file_path]
+    assert db.attachments['folder'].files == []
     assert db.attachments['file'].path == file_path
     assert db.attachments['file'].description == 'Attached file'
     assert db.attachments['file'].meta == {'mime': 'text'}
@@ -103,11 +109,152 @@ def test_attachment(tmpdir):
 
 
 @pytest.mark.parametrize(
+    'root, folders, files, expected',
+    [
+        (
+            'extra',
+            [],
+            [],
+            [],
+        ),
+        (
+            'extra',
+            [],
+            ['file1.txt'],
+            ['extra/file1.txt'],
+        ),
+        (
+            'extra',
+            [],
+            ['sub/file1.txt'],
+            ['extra/sub/file1.txt'],
+        ),
+        (
+            'extra',
+            ['sub1'],
+            ['sub2/file1.txt'],
+            ['extra/sub2/file1.txt'],
+        ),
+        (
+            'extra',
+            [],
+            ['f1.txt', 'f2.txt'],
+            ['extra/f1.txt', 'extra/f2.txt'],
+        ),
+    ]
+)
+def test_attachment_files(tmpdir, root, folders, files, expected):
+    db_path = audeer.path(tmpdir, 'db')
+    root_path = audeer.path(db_path, root)
+    audeer.mkdir(root_path)
+    for folder in folders:
+        path = audeer.path(root_path, folder)
+        audeer.mkdir(path)
+    for file in files:
+        path = audeer.path(root_path, file)
+        audeer.mkdir(os.path.dirname(path))
+        audeer.touch(path)
+    db = audformat.Database('db')
+    db.attachments['extra'] = audformat.Attachment(root)
+    db_path = audeer.path(tmpdir, 'db')
+    db.save(db_path)
+    assert db.attachments['extra'].files == expected
+
+
+def test_attachment_files_errors(tmpdir):
+    db_path = audeer.path(tmpdir, 'db')
+    attachment_path = 'extra'
+
+    # Attachment not assigned to database
+    attachment = audformat.Attachment(attachment_path)
+    error_msg = (
+        'The attachment needs to be assigned to a database '
+        'before attached files can be listed.'
+    )
+    with pytest.raises(RuntimeError, match=error_msg):
+        attachment.files
+
+    # Database is not saved to disk
+    db = audformat.Database('db')
+    db.attachments['attachment'] = attachment
+    error_msg = (
+        'The database needs to be saved to disk '
+        'before attachment files can be listed.'
+    )
+    with pytest.raises(RuntimeError, match=error_msg):
+        attachment.files
+
+    # Attached path does not exists
+    audeer.mkdir(audeer.path(db_path, attachment_path))
+    db.save(db_path)
+    audeer.rmdir(audeer.path(db_path, attachment_path))
+    error_msg = (
+        f"The provided path '{attachment_path}' "
+        "of attachment 'attachment' "
+        "does not exist."
+    )
+    with pytest.raises(FileNotFoundError, match=error_msg):
+        attachment.files
+
+    # Attached path is a symlink
+    folder_link = 'extra-link'
+    audeer.mkdir(audeer.path(db_path, folder_link))
+    os.symlink(
+        audeer.path(db_path, folder_link),
+        audeer.path(db_path, attachment_path),
+    )
+    error_msg = (
+        f"The provided path '{attachment_path}' "
+        "of attachment 'attachment' "
+        "must not be a symlink."
+    )
+    with pytest.raises(RuntimeError, match=error_msg):
+        attachment.files
+
+    # Some files are inside a symlink folder
+    os.remove(os.path.join(db_path, attachment_path))
+    audeer.mkdir(audeer.path(db_path, attachment_path))
+    audeer.touch(audeer.path(db_path, attachment_path, 'file1.txt'))
+    audeer.touch(audeer.path(db_path, folder_link, 'file2.txt'))
+    os.symlink(
+        audeer.path(db_path, folder_link),
+        audeer.path(db_path, attachment_path, 'link'),
+    )
+    error_msg = (
+        f"The path '{os.path.join(db_path, attachment_path, 'link')}' "
+        f"included in attachment 'attachment' "
+        "must not be a symlink."
+    )
+    with pytest.raises(RuntimeError, match=re.escape(error_msg)):
+        attachment.files
+
+    # Some files of the attachments are symlinks
+    os.remove(os.path.join(db_path, attachment_path, 'link'))
+    audeer.touch(audeer.path(db_path, attachment_path, 'file1.txt'))
+    audeer.touch(audeer.path(db_path, folder_link, 'file2.txt'))
+    os.symlink(
+        audeer.path(db_path, folder_link, 'file2.txt'),
+        audeer.path(db_path, attachment_path, 'file2.txt'),
+    )
+    error_msg = (
+        f"The path '{os.path.join(db_path, attachment_path, 'file2.txt')}' "
+        f"included in attachment 'attachment' "
+        "must not be a symlink."
+    )
+    with pytest.raises(RuntimeError, match=re.escape(error_msg)):
+        attachment.files
+
+
+@pytest.mark.parametrize(
     'attachments',
     [
         [
             'extra/file1.txt',
             'extra/file2.txt',
+        ],
+        [
+            'extra/file1.txt',
+            'extra/.file2.txt',
         ],
         [
             'extra/file1.txt',
@@ -198,6 +345,15 @@ def test_attachment_overlapping(tmpdir, attachments):
     db_path = audeer.path(tmpdir, 'db')
     audformat.testing.create_attachment_files(db, db_path)
     db.save(db_path)
+    # Test for list of files
+    # (an attachment is considered a file
+    # if it contains at least one .)
+    for n, attachment in enumerate(attachments):
+        expected_files = []
+        if '.' in attachment:
+            expected_files = [attachment]
+        assert db.attachments[str(n)].files == expected_files
+
     # Test for saved database,
     # that contains attachment files
     db = audformat.Database('db')
