@@ -1022,6 +1022,18 @@ def test_filewise(num_files, values):
     )
     pd.testing.assert_frame_equal(table.get(), df)
 
+    # dtype of file level is object
+    df['column'] = np.nan
+    table.df['column'] = np.nan
+    df['column'][1:-1] = values[1:-1]
+    index = pd.Index(table.files[1:-1], dtype='object', name='file')
+    table.set({'column': values[1:-1]}, index=index)
+    pd.testing.assert_frame_equal(
+        table.get(index),
+        df.loc[table.files[1:-1]],
+    )
+    pd.testing.assert_frame_equal(table.get(), df)
+
     # all
     df['column'] = np.nan
     table.df['column'] = np.nan
@@ -1437,6 +1449,24 @@ def test_segmented(num_files, num_segments_per_file, values):
         table.files[1:-1],
         starts=table.starts[1:-1],
         ends=table.ends[1:-1],
+    )
+    df.loc[index, :] = values[1:-1]
+    table.set({'column': values[1:-1]}, index=index)
+    pd.testing.assert_frame_equal(
+        table.get(index),
+        df.loc[index],
+    )
+
+    # dtype of file level is object
+    df['column'] = np.nan
+    table.df['column'] = np.nan
+    index = pd.MultiIndex.from_arrays(
+        [
+            table.files[1:-1].astype('object'),
+            table.starts[1:-1],
+            table.ends[1:-1],
+        ],
+        names=['file', 'start', 'end'],
     )
     df.loc[index, :] = values[1:-1]
     table.set({'column': values[1:-1]}, index=index)
