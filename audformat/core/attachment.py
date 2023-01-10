@@ -73,9 +73,9 @@ class Attachment(HeaderBase):
 
         Raises:
             FileNotFoundError: if a path
-                associated with an attachment
+                associated with the attachment
                 cannot be found
-            RuntimeError: if any file
+            RuntimeError: if a path
                 associated with the attachment
                 is a symlink
             RuntimeError: if attachment is not part
@@ -104,10 +104,15 @@ class Attachment(HeaderBase):
                 recursive=True,
                 hidden=True,
             )
-            for file in files:
-                if os.path.islink(file):
+            dirs = audeer.list_dir_names(
+                path,
+                recursive=True,
+                hidden=True,
+            )
+            for path in files + dirs:
+                if os.path.islink(path):
                     raise RuntimeError(
-                        f"The file '{file}' "
+                        f"The path '{path}' "
                         f"included in attachment '{self._id}' "
                         "is not allowed to be a symlink."
                     )

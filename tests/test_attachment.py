@@ -211,9 +211,25 @@ def test_attachment_files_errors(tmpdir):
     with pytest.raises(RuntimeError, match=error_msg):
         attachment.files
 
-    # Some files of the attachments are symlinks
+    # Some files are inside a symlink folder
     os.remove(os.path.join(db_path, attachment_path))
     audeer.mkdir(audeer.path(db_path, attachment_path))
+    audeer.touch(audeer.path(db_path, attachment_path, 'file1.txt'))
+    audeer.touch(audeer.path(db_path, folder_link, 'file2.txt'))
+    os.symlink(
+        audeer.path(db_path, folder_link),
+        audeer.path(db_path, attachment_path, 'link'),
+    )
+    error_msg = (
+        f"The path '{os.path.join(db_path, attachment_path, 'link')}' "
+        f"included in attachment 'attachment' "
+        "is not allowed to be a symlink."
+    )
+    with pytest.raises(RuntimeError, match=re.escape(error_msg)):
+        attachment.files
+
+    # Some files of the attachments are symlinks
+    os.remove(os.path.join(db_path, attachment_path, 'link'))
     audeer.touch(audeer.path(db_path, attachment_path, 'file1.txt'))
     audeer.touch(audeer.path(db_path, folder_link, 'file2.txt'))
     os.symlink(
@@ -221,7 +237,7 @@ def test_attachment_files_errors(tmpdir):
         audeer.path(db_path, attachment_path, 'file2.txt'),
     )
     error_msg = (
-        f"The file '{os.path.join(db_path, attachment_path, 'file2.txt')}' "
+        f"The path '{os.path.join(db_path, attachment_path, 'file2.txt')}' "
         f"included in attachment 'attachment' "
         "is not allowed to be a symlink."
     )
