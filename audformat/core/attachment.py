@@ -71,17 +71,46 @@ class Attachment(HeaderBase):
         under :attr:`audformat.Attachment.path`
         on hard disc.
 
+        Raises:
+            FileNotFoundError: if a path
+                associated with an attachment
+                cannot be found
+            RuntimeError: if any file
+                associated with the attachment
+                is a symlink
+            RuntimeError: if attachment is not part
+                of a database
+            RuntimeError: if database is not saved to disk
+
         """
-        files = []
+        if not self._db:
+            raise RuntimeError(
+                'The attachment needs to be assigned to a database '
+                'before attached files can be listed.'
+            )
         if not self._db.root:
-            return files
+            raise RuntimeError(
+                'The database needs to be saved to disk '
+                'before attachment files can be listed.'
+            )
+        self._check_path(self._db.root)
+
+        files = []
 
         path = audeer.path(self._db.root, self.path)
-        if not os.path.exists(path):
-            return files
-
         if os.path.isdir(path):
-            files = audeer.list_file_names(path, recursive=True)
+            files = audeer.list_file_names(
+                path,
+                recursive=True,
+                hidden=True,
+            )
+            for file in files:
+                if os.path.islink(file):
+                    raise RuntimeError(
+                        f"The file '{file}' "
+                        f"included in attachment '{self._id}' "
+                        "is not allowed to be a symlink."
+                    )
         else:
             files = [path]
 
