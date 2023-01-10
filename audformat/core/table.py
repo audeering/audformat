@@ -314,7 +314,7 @@ class Base(HeaderBase):
         """
         table = self if inplace else self.copy()
 
-        index = _assert_file_level_dtype_is_string(index)
+        index = _maybe_convert_dtype_to_string(index)
         _assert_table_index(table, index, 'drop rows from')
 
         index = utils.intersect([table.index, index])
@@ -354,7 +354,7 @@ class Base(HeaderBase):
         """
         table = self if inplace else self.copy()
 
-        index = _assert_file_level_dtype_is_string(index)
+        index = _maybe_convert_dtype_to_string(index)
         _assert_table_index(table, index, 'extend')
 
         new_index = utils.union([table.index, index])
@@ -560,7 +560,7 @@ class Base(HeaderBase):
         """
         table = self if inplace else self.copy()
 
-        index = _assert_file_level_dtype_is_string(index)
+        index = _maybe_convert_dtype_to_string(index)
         _assert_table_index(table, index, 'pick rows from')
 
         new_index = utils.intersect([table.index, index])
@@ -920,7 +920,7 @@ class Base(HeaderBase):
             ):
                 df[column_id] = df[column_id].astype('string', copy=False)
         # Fix index entries as well
-        df.index = _assert_file_level_dtype_is_string(df.index)
+        df.index = _maybe_convert_dtype_to_string(df.index)
 
         self._df = df
 
@@ -1258,7 +1258,7 @@ class Table(Base):
         if index is None:
             index = filewise_index()
 
-        index = _assert_file_level_dtype_is_string(index)
+        index = _maybe_convert_dtype_to_string(index)
 
         self.type = index_type(index)
         r"""Table type
@@ -1555,26 +1555,6 @@ class Table(Base):
         return result, result_is_copy
 
 
-def _assert_file_level_dtype_is_string(
-        index: pd.Index,
-) -> pd.Index:
-    r"""Possibly set dtype of file level to 'string'."""
-    if (
-            (
-                is_filewise_index(index)
-                and index.dtype == 'object'
-            ) or (
-                is_segmented_index(index)
-                and index.dtypes[define.IndexField.FILE] == 'object'
-            )
-    ):
-        index = utils.set_index_dtypes(
-            index,
-            {define.IndexField.FILE: 'string'},
-        )
-    return index
-
-
 def _assert_table_index(
         table: Base,
         index: pd.Index,
@@ -1613,6 +1593,26 @@ def _assert_table_index(
             f'\nbut yours is:\n'
             f'\t{got}'
         )
+
+
+def _maybe_convert_dtype_to_string(
+        index: pd.Index,
+) -> pd.Index:
+    r"""Possibly set dtype of file level to 'string'."""
+    if (
+            (
+                is_filewise_index(index)
+                and index.dtype == 'object'
+            ) or (
+                is_segmented_index(index)
+                and index.dtypes[define.IndexField.FILE] == 'object'
+            )
+    ):
+        index = utils.set_index_dtypes(
+            index,
+            {define.IndexField.FILE: 'string'},
+        )
+    return index
 
 
 def _maybe_update_scheme(
