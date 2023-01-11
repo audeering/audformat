@@ -954,6 +954,7 @@ class Database(HeaderBase):
             FileNotFoundError: if a file or folder
                 associated with an attachment
                 cannot be found
+                when using ``load_data=True``
 
         """
         ext = '.yaml'
