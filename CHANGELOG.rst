@@ -7,7 +7,7 @@ The format is based on `Keep a Changelog`_,
 and this project adheres to `Semantic Versioning`_.
 
 
-Version 0.16.0 (2022-12-22)
+Version 1.0.0 (2023-01-11)
 ---------------------------
 
 * Added: ``audformat.Attachment`` to store
