@@ -1,0 +1,6 @@
+﻿BadTypeError
+============
+
+.. currentmodule:: audformat.errors
+
+.. autoexception:: audformat.errors.BadTypeError

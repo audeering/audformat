@@ -1,0 +1,20 @@
+﻿MediaType
+=========
+
+.. currentmodule:: audformat.define
+
+.. autoclass:: MediaType
+
+
+AUDIO
+-----
+.. autoattribute:: MediaType.AUDIO
+    
+OTHER
+-----
+.. autoattribute:: MediaType.OTHER
+    
+VIDEO
+-----
+.. autoattribute:: MediaType.VIDEO
+    

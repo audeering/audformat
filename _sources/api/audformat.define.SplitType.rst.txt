@@ -1,0 +1,24 @@
+﻿SplitType
+=========
+
+.. currentmodule:: audformat.define
+
+.. autoclass:: SplitType
+
+
+DEVELOP
+-------
+.. autoattribute:: SplitType.DEVELOP
+    
+OTHER
+-----
+.. autoattribute:: SplitType.OTHER
+    
+TEST
+----
+.. autoattribute:: SplitType.TEST
+    
+TRAIN
+-----
+.. autoattribute:: SplitType.TRAIN
+    

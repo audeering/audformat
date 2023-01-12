@@ -1,0 +1,24 @@
+﻿Gender
+======
+
+.. currentmodule:: audformat.define
+
+.. autoclass:: Gender
+
+
+CHILD
+-----
+.. autoattribute:: Gender.CHILD
+    
+FEMALE
+------
+.. autoattribute:: Gender.FEMALE
+    
+MALE
+----
+.. autoattribute:: Gender.MALE
+    
+OTHER
+-----
+.. autoattribute:: Gender.OTHER
+    

@@ -1,0 +1,6 @@
+﻿is\_segmented\_index\(\)
+========================
+
+.. currentmodule:: audformat
+
+.. autofunction:: audformat.is_segmented_index

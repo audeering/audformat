@@ -1,0 +1,6 @@
+﻿index\_type\(\)
+===============
+
+.. currentmodule:: audformat
+
+.. autofunction:: audformat.index_type

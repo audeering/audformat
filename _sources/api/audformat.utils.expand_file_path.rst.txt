@@ -1,0 +1,6 @@
+﻿expand\_file\_path\(\)
+======================
+
+.. currentmodule:: audformat.utils
+
+.. autofunction:: audformat.utils.expand_file_path

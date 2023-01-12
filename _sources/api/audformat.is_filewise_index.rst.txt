@@ -1,0 +1,6 @@
+﻿is\_filewise\_index\(\)
+=======================
+
+.. currentmodule:: audformat
+
+.. autofunction:: audformat.is_filewise_index

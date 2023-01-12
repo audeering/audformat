@@ -1,0 +1,6 @@
+﻿read\_csv\(\)
+=============
+
+.. currentmodule:: audformat.utils
+
+.. autofunction:: audformat.utils.read_csv

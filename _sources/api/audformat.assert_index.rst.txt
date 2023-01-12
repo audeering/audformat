@@ -1,0 +1,6 @@
+﻿assert\_index\(\)
+=================
+
+.. currentmodule:: audformat
+
+.. autofunction:: audformat.assert_index

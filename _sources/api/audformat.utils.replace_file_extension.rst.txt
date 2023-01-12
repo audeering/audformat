@@ -1,0 +1,6 @@
+﻿replace\_file\_extension\(\)
+============================
+
+.. currentmodule:: audformat.utils
+
+.. autofunction:: audformat.utils.replace_file_extension

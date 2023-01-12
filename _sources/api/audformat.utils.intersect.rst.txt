@@ -1,0 +1,6 @@
+﻿intersect\(\)
+=============
+
+.. currentmodule:: audformat.utils
+
+.. autofunction:: audformat.utils.intersect

@@ -1,0 +1,68 @@
+﻿Scheme
+======
+
+.. currentmodule:: audformat
+
+.. autoclass:: Scheme
+
+
+\_\_contains\_\_\(\)
+--------------------
+.. automethod:: Scheme.__contains__
+    
+description
+-----------
+.. autoattribute:: Scheme.description
+    
+draw\(\)
+--------
+.. automethod:: Scheme.draw
+    
+dtype
+-----
+.. autoattribute:: Scheme.dtype
+    
+dump\(\)
+--------
+.. automethod:: Scheme.dump
+    
+from\_dict\(\)
+--------------
+.. automethod:: Scheme.from_dict
+    
+is\_numeric
+-----------
+.. autoattribute:: Scheme.is_numeric
+    
+labels
+------
+.. autoattribute:: Scheme.labels
+    
+maximum
+-------
+.. autoattribute:: Scheme.maximum
+    
+meta
+----
+.. autoattribute:: Scheme.meta
+    
+minimum
+-------
+.. autoattribute:: Scheme.minimum
+    
+replace\_labels\(\)
+-------------------
+.. automethod:: Scheme.replace_labels
+    
+to\_dict\(\)
+------------
+.. automethod:: Scheme.to_dict
+    
+to\_pandas\_dtype\(\)
+---------------------
+.. automethod:: Scheme.to_pandas_dtype
+    
+uses\_table
+-----------
+.. autoattribute:: Scheme.uses_table
+    

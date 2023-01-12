@@ -1,0 +1,32 @@
+﻿Split
+=====
+
+.. currentmodule:: audformat
+
+.. autoclass:: Split
+
+
+description
+-----------
+.. autoattribute:: Split.description
+    
+dump\(\)
+--------
+.. automethod:: Split.dump
+    
+from\_dict\(\)
+--------------
+.. automethod:: Split.from_dict
+    
+meta
+----
+.. autoattribute:: Split.meta
+    
+to\_dict\(\)
+------------
+.. automethod:: Split.to_dict
+    
+type
+----
+.. autoattribute:: Split.type
+    

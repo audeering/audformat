@@ -1,0 +1,16 @@
+﻿TableStorageFormat
+==================
+
+.. currentmodule:: audformat.define
+
+.. autoclass:: TableStorageFormat
+
+
+CSV
+---
+.. autoattribute:: TableStorageFormat.CSV
+    
+PICKLE
+------
+.. autoattribute:: TableStorageFormat.PICKLE
+    

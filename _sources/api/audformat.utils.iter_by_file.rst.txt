@@ -1,0 +1,6 @@
+﻿iter\_by\_file\(\)
+==================
+
+.. currentmodule:: audformat.utils
+
+.. autofunction:: audformat.utils.iter_by_file

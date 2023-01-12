@@ -1,0 +1,6 @@
+﻿filewise\_index\(\)
+===================
+
+.. currentmodule:: audformat
+
+.. autofunction:: audformat.filewise_index

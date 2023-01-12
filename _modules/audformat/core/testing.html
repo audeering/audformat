@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>audformat.core.testing &mdash; audformat Documentation</title>
+  <title>audformat.core.testing &mdash; Documentation</title>
   
 
   
@@ -25,18 +25,14 @@
     
 
   
-
-  
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../../_static/css/audeering.css" type="text/css" />
-  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/css/audeering.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/graphviz.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/copybutton.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/jupyter-sphinx.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/thebelab.css" type="text/css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.css" type="text/css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/katex-math.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
@@ -74,7 +70,7 @@
             
             
               <div class="version">
-                v0.15.4
+                v0.16.0
               </div>
             
           
@@ -120,11 +116,11 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Documentation</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../api.html">audformat</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../api-define.html">audformat.define</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../api-errors.html">audformat.errors</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../api-testing.html">audformat.testing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../api-utils.html">audformat.utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/audformat.html">audformat</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/audformat.define.html">audformat.define</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/audformat.errors.html">audformat.errors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/audformat.testing.html">audformat.testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/audformat.utils.html">audformat.utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../genindex.html">Index</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Development</span></p>
@@ -183,9 +179,11 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 
+<span class="kn">import</span> <span class="nn">audeer</span>
 <span class="kn">import</span> <span class="nn">audiofile</span> <span class="k">as</span> <span class="nn">af</span>
 
 <span class="kn">from</span> <span class="nn">audformat.core</span> <span class="kn">import</span> <span class="n">define</span>
+<span class="kn">from</span> <span class="nn">audformat.core.attachment</span> <span class="kn">import</span> <span class="n">Attachment</span>
 <span class="kn">from</span> <span class="nn">audformat.core.column</span> <span class="kn">import</span> <span class="n">Column</span>
 <span class="kn">from</span> <span class="nn">audformat.core.database</span> <span class="kn">import</span> <span class="n">Database</span>
 <span class="kn">from</span> <span class="nn">audformat.core.index</span> <span class="kn">import</span> <span class="p">(</span>
@@ -204,7 +202,7 @@
 <span class="p">)</span>
 
 
-<div class="viewcode-block" id="add_misc_table"><a class="viewcode-back" href="../../../api-testing.html#audformat.testing.add_misc_table">[docs]</a><span class="k">def</span> <span class="nf">add_misc_table</span><span class="p">(</span>
+<div class="viewcode-block" id="add_misc_table"><a class="viewcode-back" href="../../../api/audformat.testing.add_misc_table.html#audformat.testing.add_misc_table">[docs]</a><span class="k">def</span> <span class="nf">add_misc_table</span><span class="p">(</span>
         <span class="n">db</span><span class="p">:</span> <span class="n">Database</span><span class="p">,</span>
         <span class="n">table_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">index</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">,</span>
@@ -220,7 +218,7 @@
         <span class="n">split_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">media_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MiscTable</span><span class="p">:</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Add a miscellaneous table with random values.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Add a miscellaneous table with random values.</span>
 
 <span class="sd">    By default, adds one column for every scheme in the database.</span>
 <span class="sd">    To create a specific set of columns use ``columns``.</span>
@@ -250,7 +248,7 @@
     <span class="k">return</span> <span class="n">db</span><span class="p">[</span><span class="n">table_id</span><span class="p">]</span></div>
 
 
-<div class="viewcode-block" id="add_table"><a class="viewcode-back" href="../../../api-testing.html#audformat.testing.add_table">[docs]</a><span class="k">def</span> <span class="nf">add_table</span><span class="p">(</span>
+<div class="viewcode-block" id="add_table"><a class="viewcode-back" href="../../../api/audformat.testing.add_table.html#audformat.testing.add_table">[docs]</a><span class="k">def</span> <span class="nf">add_table</span><span class="p">(</span>
         <span class="n">db</span><span class="p">:</span> <span class="n">Database</span><span class="p">,</span>
         <span class="n">table_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">index_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -270,7 +268,7 @@
         <span class="n">split_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">media_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Table</span><span class="p">:</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Add a table with random values.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Add a table with random values.</span>
 
 <span class="sd">    By default, adds one column for every scheme in the database.</span>
 <span class="sd">    To create a specific set of columns use ``columns``.</span>
@@ -310,7 +308,7 @@
 
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">num_files</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
         <span class="n">files</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">file_root</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">idx</span> <span class="o">+</span> <span class="mi">1</span><span class="si">:</span><span class="s1">03</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="n">audio_format</span><span class="si">}</span><span class="s1">&#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">file_root</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">idx</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">:</span><span class="s1">03</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="n">audio_format</span><span class="si">}</span><span class="s1">&#39;</span>
             <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_files</span><span class="p">)</span>
         <span class="p">]</span>
     <span class="k">else</span><span class="p">:</span>
@@ -356,7 +354,32 @@
     <span class="k">return</span> <span class="n">db</span><span class="p">[</span><span class="n">table_id</span><span class="p">]</span></div>
 
 
-<div class="viewcode-block" id="create_audio_files"><a class="viewcode-back" href="../../../api-testing.html#audformat.testing.create_audio_files">[docs]</a><span class="k">def</span> <span class="nf">create_audio_files</span><span class="p">(</span>
+<div class="viewcode-block" id="create_attachment_files"><a class="viewcode-back" href="../../../api/audformat.testing.create_attachment_files.html#audformat.testing.create_attachment_files">[docs]</a><span class="k">def</span> <span class="nf">create_attachment_files</span><span class="p">(</span>
+        <span class="n">db</span><span class="p">:</span> <span class="n">Database</span><span class="p">,</span>
+        <span class="n">root</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Create attachment folders and files of a database.</span>
+
+<span class="sd">    If the basename of an attachment path contains a dot (``.``)</span>
+<span class="sd">    it is considered to represent a file,</span>
+<span class="sd">    otherwise a directory.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        db: a database</span>
+<span class="sd">        root: root folder of database</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">attachment_id</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">attachments</span><span class="p">):</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">audeer</span><span class="o">.</span><span class="n">path</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">db</span><span class="o">.</span><span class="n">attachments</span><span class="p">[</span><span class="n">attachment_id</span><span class="p">]</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+            <span class="k">if</span> <span class="s1">&#39;.&#39;</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+                <span class="n">audeer</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">path</span><span class="p">))</span>
+                <span class="n">audeer</span><span class="o">.</span><span class="n">touch</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">audeer</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">path</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="create_audio_files"><a class="viewcode-back" href="../../../api/audformat.testing.create_audio_files.html#audformat.testing.create_audio_files">[docs]</a><span class="k">def</span> <span class="nf">create_audio_files</span><span class="p">(</span>
         <span class="n">db</span><span class="p">:</span> <span class="n">Database</span><span class="p">,</span>
         <span class="n">root</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
@@ -365,7 +388,7 @@
         <span class="n">channels</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
         <span class="n">file_duration</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Timedelta</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;60s&#39;</span><span class="p">,</span>
 <span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Create audio files for a database.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Create audio files for a database.</span>
 
 <span class="sd">    By default, empty files are created. A sample generator function can be</span>
 <span class="sd">    passed to generate the samples. The function gets as input a time stamp</span>
@@ -418,11 +441,11 @@
         <span class="n">af</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">sampling_rate</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="create_db"><a class="viewcode-back" href="../../../api-testing.html#audformat.testing.create_db">[docs]</a><span class="k">def</span> <span class="nf">create_db</span><span class="p">(</span>
+<div class="viewcode-block" id="create_db"><a class="viewcode-back" href="../../../api/audformat.testing.create_db.html#audformat.testing.create_db">[docs]</a><span class="k">def</span> <span class="nf">create_db</span><span class="p">(</span>
         <span class="n">minimal</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Database</span><span class="p">:</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Create test database.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Create test database.</span>
 
 <span class="sd">    Creates a test database called ``unittest`` with a</span>
 <span class="sd">    filewise,</span>
@@ -480,6 +503,13 @@
                 <span class="n">db</span><span class="p">[</span><span class="n">table_id</span><span class="p">][</span><span class="n">column_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">scheme_id</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
             <span class="n">db</span><span class="p">[</span><span class="n">table_id</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">db</span>
+
+    <span class="c1">###############</span>
+    <span class="c1"># Attachments #</span>
+    <span class="c1">###############</span>
+
+    <span class="n">db</span><span class="o">.</span><span class="n">attachments</span><span class="p">[</span><span class="s1">&#39;file&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Attachment</span><span class="p">(</span><span class="s1">&#39;extra/file.txt&#39;</span><span class="p">)</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">attachments</span><span class="p">[</span><span class="s1">&#39;folder&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Attachment</span><span class="p">(</span><span class="s1">&#39;extra/folder&#39;</span><span class="p">)</span>
 
     <span class="c1">#########</span>
     <span class="c1"># Media #</span>
@@ -612,7 +642,7 @@
         <span class="n">n_items</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="n">p_none</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
 <span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Convert &#39;columns&#39; argument of add_[misc_]table() to dict.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Convert &#39;columns&#39; argument of add_[misc_]table() to dict.&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">columns</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">columns</span> <span class="o">=</span> <span class="n">columns</span> <span class="ow">or</span> <span class="p">{</span><span class="n">s</span><span class="p">:</span> <span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">)}</span>
     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">columns</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
@@ -644,7 +674,7 @@
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2022/11/01 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2023/01/12 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
@@ -652,7 +682,7 @@
   <div role="contentinfo">
     <p>
         
-      &copy; 2019-2022 audEERING GmbH
+      &copy; 2019-2023 audEERING GmbH
     </p>
   </div> 
 

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>audformat.core.column &mdash; audformat Documentation</title>
+  <title>audformat.core.column &mdash; Documentation</title>
   
 
   
@@ -25,18 +25,14 @@
     
 
   
-
-  
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../../_static/css/audeering.css" type="text/css" />
-  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/css/audeering.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/graphviz.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/copybutton.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/jupyter-sphinx.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/thebelab.css" type="text/css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.css" type="text/css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/katex-math.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
@@ -74,7 +70,7 @@
             
             
               <div class="version">
-                v0.15.4
+                v0.16.0
               </div>
             
           
@@ -120,11 +116,11 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Documentation</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../api.html">audformat</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../api-define.html">audformat.define</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../api-errors.html">audformat.errors</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../api-testing.html">audformat.testing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../api-utils.html">audformat.utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/audformat.html">audformat</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/audformat.define.html">audformat.define</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/audformat.errors.html">audformat.errors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/audformat.testing.html">audformat.testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/audformat.utils.html">audformat.utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../genindex.html">Index</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Development</span></p>
@@ -197,7 +193,7 @@
         <span class="n">values</span><span class="p">:</span> <span class="n">Values</span><span class="p">,</span>
         <span class="n">scheme</span><span class="p">:</span> <span class="n">Scheme</span><span class="p">,</span>
 <span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Raise error if values do not match scheme.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Raise error if values do not match scheme.&quot;&quot;&quot;</span>
     <span class="n">bad_values</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="k">if</span> <span class="p">(</span>
@@ -236,8 +232,8 @@
         <span class="p">)</span>
 
 
-<div class="viewcode-block" id="Column"><a class="viewcode-back" href="../../../api.html#audformat.Column">[docs]</a><span class="k">class</span> <span class="nc">Column</span><span class="p">(</span><span class="n">HeaderBase</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Table column.</span>
+<div class="viewcode-block" id="Column"><a class="viewcode-back" href="../../../api/audformat.Column.html#audformat.Column">[docs]</a><span class="k">class</span> <span class="nc">Column</span><span class="p">(</span><span class="n">HeaderBase</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Table column.</span>
 
 <span class="sd">    Represents a table column (see :class:`audformat.Table`) and</span>
 <span class="sd">    optionally links it to a scheme (see :class:`audformat.Scheme`) and</span>
@@ -249,7 +245,7 @@
 <span class="sd">        description: table description</span>
 <span class="sd">        meta: additional meta fields</span>
 
-<span class="sd">    Example:</span>
+<span class="sd">    Examples:</span>
 <span class="sd">        &gt;&gt;&gt; Column(scheme_id=&#39;emotion&#39;)</span>
 <span class="sd">        {scheme_id: emotion}</span>
 
@@ -265,15 +261,15 @@
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="n">description</span><span class="p">,</span> <span class="n">meta</span><span class="o">=</span><span class="n">meta</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">scheme_id</span> <span class="o">=</span> <span class="n">scheme_id</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Scheme identifier&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Scheme identifier&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">rater_id</span> <span class="o">=</span> <span class="n">rater_id</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Rater identifier&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Rater identifier&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_table</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_id</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">rater</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">Rater</span><span class="p">]:</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Rater object.</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Rater object.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            rater object or ``None`` if not available</span>
@@ -290,7 +286,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">scheme</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">Scheme</span><span class="p">]:</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Scheme object.</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Scheme object.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            scheme object or ``None`` if not available</span>
@@ -307,7 +303,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">table</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Table object.</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Table object.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            table object or ``None`` if not assigned yet</span>
@@ -315,7 +311,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_table</span>
 
-<div class="viewcode-block" id="Column.get"><a class="viewcode-back" href="../../../api.html#audformat.Column.get">[docs]</a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span>
+<div class="viewcode-block" id="Column.get"><a class="viewcode-back" href="../../../api/audformat.Column.html#audformat.Column.get">[docs]</a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
             <span class="n">index</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
             <span class="o">*</span><span class="p">,</span>
@@ -327,7 +323,7 @@
             <span class="n">num_workers</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
             <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">:</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Get labels.</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Get labels.</span>
 
 <span class="sd">        By default, all labels of the column are returned,</span>
 <span class="sd">        use ``index`` to get a subset.</span>
@@ -443,13 +439,13 @@
 
         <span class="k">return</span> <span class="n">result</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span> <span class="k">if</span> <span class="n">copy</span> <span class="k">else</span> <span class="n">result</span></div>
 
-<div class="viewcode-block" id="Column.set"><a class="viewcode-back" href="../../../api.html#audformat.Column.set">[docs]</a>    <span class="k">def</span> <span class="nf">set</span><span class="p">(</span>
+<div class="viewcode-block" id="Column.set"><a class="viewcode-back" href="../../../api/audformat.Column.html#audformat.Column.set">[docs]</a>    <span class="k">def</span> <span class="nf">set</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
             <span class="n">values</span><span class="p">:</span> <span class="n">Values</span><span class="p">,</span>
             <span class="o">*</span><span class="p">,</span>
             <span class="n">index</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Set labels.</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Set labels.</span>
 
 <span class="sd">        By default, all labels of the column are replaced,</span>
 <span class="sd">        use ``index`` to set a subset.</span>
@@ -543,7 +539,7 @@
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2022/11/01 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2023/01/12 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
@@ -551,7 +547,7 @@
   <div role="contentinfo">
     <p>
         
-      &copy; 2019-2022 audEERING GmbH
+      &copy; 2019-2023 audEERING GmbH
     </p>
   </div> 
 

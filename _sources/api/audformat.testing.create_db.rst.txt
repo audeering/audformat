@@ -1,0 +1,6 @@
+﻿create\_db\(\)
+==============
+
+.. currentmodule:: audformat.testing
+
+.. autofunction:: audformat.testing.create_db

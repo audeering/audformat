@@ -1,0 +1,152 @@
+﻿Table
+=====
+
+.. currentmodule:: audformat
+
+.. autoclass:: Table
+
+
+\_\_add\_\_\(\)
+---------------
+.. automethod:: Table.__add__
+    
+\_\_getitem\_\_\(\)
+-------------------
+.. automethod:: Table.__getitem__
+    
+\_\_setitem\_\_\(\)
+-------------------
+.. automethod:: Table.__setitem__
+    
+columns
+-------
+.. autoattribute:: Table.columns
+    
+copy\(\)
+--------
+.. automethod:: Table.copy
+    
+db
+--
+.. autoattribute:: Table.db
+    
+description
+-----------
+.. autoattribute:: Table.description
+    
+df
+--
+.. autoattribute:: Table.df
+    
+drop\_columns\(\)
+-----------------
+.. automethod:: Table.drop_columns
+    
+drop\_files\(\)
+---------------
+.. automethod:: Table.drop_files
+    
+drop\_index\(\)
+---------------
+.. automethod:: Table.drop_index
+    
+dump\(\)
+--------
+.. automethod:: Table.dump
+    
+ends
+----
+.. autoattribute:: Table.ends
+    
+extend\_index\(\)
+-----------------
+.. automethod:: Table.extend_index
+    
+files
+-----
+.. autoattribute:: Table.files
+    
+from\_dict\(\)
+--------------
+.. automethod:: Table.from_dict
+    
+get\(\)
+-------
+.. automethod:: Table.get
+    
+index
+-----
+.. autoattribute:: Table.index
+    
+is\_filewise
+------------
+.. autoattribute:: Table.is_filewise
+    
+is\_segmented
+-------------
+.. autoattribute:: Table.is_segmented
+    
+load\(\)
+--------
+.. automethod:: Table.load
+    
+map\_files\(\)
+--------------
+.. automethod:: Table.map_files
+    
+media
+-----
+.. autoattribute:: Table.media
+    
+media\_id
+---------
+.. autoattribute:: Table.media_id
+    
+meta
+----
+.. autoattribute:: Table.meta
+    
+pick\_columns\(\)
+-----------------
+.. automethod:: Table.pick_columns
+    
+pick\_files\(\)
+---------------
+.. automethod:: Table.pick_files
+    
+pick\_index\(\)
+---------------
+.. automethod:: Table.pick_index
+    
+save\(\)
+--------
+.. automethod:: Table.save
+    
+set\(\)
+-------
+.. automethod:: Table.set
+    
+split
+-----
+.. autoattribute:: Table.split
+    
+split\_id
+---------
+.. autoattribute:: Table.split_id
+    
+starts
+------
+.. autoattribute:: Table.starts
+    
+to\_dict\(\)
+------------
+.. automethod:: Table.to_dict
+    
+type
+----
+.. autoattribute:: Table.type
+    
+update\(\)
+----------
+.. automethod:: Table.update
+    

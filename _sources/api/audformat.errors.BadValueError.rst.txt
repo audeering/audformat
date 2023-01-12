@@ -1,0 +1,6 @@
+﻿BadValueError
+=============
+
+.. currentmodule:: audformat.errors
+
+.. autoexception:: audformat.errors.BadValueError

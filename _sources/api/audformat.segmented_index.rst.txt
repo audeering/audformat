@@ -1,0 +1,6 @@
+﻿segmented\_index\(\)
+====================
+
+.. currentmodule:: audformat
+
+.. autofunction:: audformat.segmented_index

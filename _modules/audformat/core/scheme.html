@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>audformat.core.scheme &mdash; audformat Documentation</title>
+  <title>audformat.core.scheme &mdash; Documentation</title>
   
 
   
@@ -25,18 +25,14 @@
     
 
   
-
-  
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../../_static/css/audeering.css" type="text/css" />
-  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/css/audeering.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/graphviz.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/copybutton.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/jupyter-sphinx.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/thebelab.css" type="text/css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.css" type="text/css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/katex-math.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
@@ -74,7 +70,7 @@
             
             
               <div class="version">
-                v0.15.4
+                v0.16.0
               </div>
             
           
@@ -120,11 +116,11 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Documentation</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../api.html">audformat</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../api-define.html">audformat.define</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../api-errors.html">audformat.errors</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../api-testing.html">audformat.testing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../api-utils.html">audformat.utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/audformat.html">audformat</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/audformat.define.html">audformat.define</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/audformat.errors.html">audformat.errors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/audformat.testing.html">audformat.testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/audformat.utils.html">audformat.utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../genindex.html">Index</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Development</span></p>
@@ -181,8 +177,8 @@
 <span class="p">)</span>
 
 
-<div class="viewcode-block" id="Scheme"><a class="viewcode-back" href="../../../api.html#audformat.Scheme">[docs]</a><span class="k">class</span> <span class="nc">Scheme</span><span class="p">(</span><span class="n">common</span><span class="o">.</span><span class="n">HeaderBase</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;A scheme defines valid values of an annotation.</span>
+<div class="viewcode-block" id="Scheme"><a class="viewcode-back" href="../../../api/audformat.Scheme.html#audformat.Scheme">[docs]</a><span class="k">class</span> <span class="nc">Scheme</span><span class="p">(</span><span class="n">common</span><span class="o">.</span><span class="n">HeaderBase</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;A scheme defines valid values of an annotation.</span>
 
 <span class="sd">    Allowed values for ``dtype`` are:</span>
 <span class="sd">    ``&#39;bool&#39;``,</span>
@@ -236,7 +232,7 @@
 <span class="sd">            that is already assigned to a scheme</span>
 <span class="sd">            with labels from another misc table</span>
 
-<span class="sd">    Example:</span>
+<span class="sd">    Examples:</span>
 <span class="sd">        &gt;&gt;&gt; Scheme()</span>
 <span class="sd">        {dtype: str}</span>
 <span class="sd">        &gt;&gt;&gt; Scheme(labels=[&#39;a&#39;, &#39;b&#39;, &#39;c&#39;])</span>
@@ -294,7 +290,7 @@
         <span class="k">if</span> <span class="n">dtype</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">dtype</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dtypes</span><span class="p">:</span>
                 <span class="n">dtype</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dtypes</span><span class="p">[</span><span class="n">dtype</span><span class="p">]</span>
-            <span class="n">define</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">assert_has_attribute_value</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span>
+            <span class="n">define</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">_assert_has_attribute_value</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">dtype</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">labels</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">dtype</span> <span class="o">=</span> <span class="n">define</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">STRING</span>
@@ -329,17 +325,22 @@
                 <span class="n">dtype</span> <span class="o">=</span> <span class="n">dtype_labels</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span> <span class="o">=</span> <span class="n">dtype</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Data type&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Data type.</span>
+
+<span class="sd">        Possible return values are given by</span>
+<span class="sd">        :class:`audformat.define.DataType`.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">labels</span> <span class="o">=</span> <span class="n">labels</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Labels or ID of misc table holding the labels&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Labels or ID of misc table holding the labels&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">minimum</span> <span class="o">=</span> <span class="n">minimum</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_numeric</span> <span class="k">else</span> <span class="kc">None</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Minimum value&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Minimum value&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">maximum</span> <span class="o">=</span> <span class="n">maximum</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_numeric</span> <span class="k">else</span> <span class="kc">None</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Maximum value&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Maximum value&quot;&quot;&quot;</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">uses_table</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Scheme has labels stored in a misc table.</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Scheme has labels stored in a misc table.</span>
 
 <span class="sd">        If property is ``True``</span>
 <span class="sd">        the attribute ``labels``</span>
@@ -356,7 +357,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">is_numeric</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Data type is numeric.</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Data type is numeric.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            ``True`` if data type is numeric</span>
@@ -364,14 +365,14 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span> <span class="ow">in</span> <span class="p">(</span><span class="n">define</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">INTEGER</span><span class="p">,</span> <span class="n">define</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">FLOAT</span><span class="p">)</span>
 
-<div class="viewcode-block" id="Scheme.draw"><a class="viewcode-back" href="../../../api.html#audformat.Scheme.draw">[docs]</a>    <span class="k">def</span> <span class="nf">draw</span><span class="p">(</span>
+<div class="viewcode-block" id="Scheme.draw"><a class="viewcode-back" href="../../../api/audformat.Scheme.html#audformat.Scheme.draw">[docs]</a>    <span class="k">def</span> <span class="nf">draw</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
             <span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
             <span class="o">*</span><span class="p">,</span>
             <span class="n">str_len</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
             <span class="n">p_none</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Randomly draws values from scheme.</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Randomly draws values from scheme.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            n: number of values</span>
@@ -417,10 +418,10 @@
 
         <span class="k">return</span> <span class="n">x</span></div>
 
-<div class="viewcode-block" id="Scheme.to_pandas_dtype"><a class="viewcode-back" href="../../../api.html#audformat.Scheme.to_pandas_dtype">[docs]</a>    <span class="k">def</span> <span class="nf">to_pandas_dtype</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span>
+<div class="viewcode-block" id="Scheme.to_pandas_dtype"><a class="viewcode-back" href="../../../api/audformat.Scheme.html#audformat.Scheme.to_pandas_dtype">[docs]</a>    <span class="k">def</span> <span class="nf">to_pandas_dtype</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span>
         <span class="nb">str</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">CategoricalDtype</span><span class="p">,</span>
     <span class="p">]:</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Convert data type to :mod:`pandas` data type.</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Convert data type to :mod:`pandas` data type.</span>
 
 <span class="sd">        If ``labels`` is not ``None``, :class:`pandas.CategoricalDtype` is</span>
 <span class="sd">        returned. Otherwise the following rules are applied:</span>
@@ -448,11 +449,11 @@
             <span class="n">dtype</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">to_pandas_dtype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">dtype</span></div>
 
-<div class="viewcode-block" id="Scheme.replace_labels"><a class="viewcode-back" href="../../../api.html#audformat.Scheme.replace_labels">[docs]</a>    <span class="k">def</span> <span class="nf">replace_labels</span><span class="p">(</span>
+<div class="viewcode-block" id="Scheme.replace_labels"><a class="viewcode-back" href="../../../api/audformat.Scheme.html#audformat.Scheme.replace_labels">[docs]</a>    <span class="k">def</span> <span class="nf">replace_labels</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
             <span class="n">labels</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
     <span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Replace labels.</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Replace labels.</span>
 
 <span class="sd">        If scheme is part of a :class:`audformat.Database`</span>
 <span class="sd">        the dtype of all :class:`audformat.Column` objects</span>
@@ -476,7 +477,7 @@
 <span class="sd">                that is already assigned to a scheme</span>
 <span class="sd">                with labels from another misc table</span>
 
-<span class="sd">        Example:</span>
+<span class="sd">        Examples:</span>
 <span class="sd">            &gt;&gt;&gt; speaker = Scheme(</span>
 <span class="sd">            ...     labels={</span>
 <span class="sd">            ...         0: {&#39;gender&#39;: &#39;female&#39;},</span>
@@ -541,7 +542,7 @@
             <span class="bp">self</span><span class="p">,</span>
             <span class="n">labels</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
     <span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Raise label related errors.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Raise label related errors.&quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="p">(</span><span class="nb">dict</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="nb">str</span><span class="p">)):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
@@ -597,7 +598,7 @@
             <span class="bp">self</span><span class="p">,</span>
             <span class="n">labels</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Derive audformat dtype from labels.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Derive audformat dtype from labels.&quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="c1"># misc table</span>
@@ -620,7 +621,7 @@
                     <span class="s1">&#39;All labels must be of the same data type.&#39;</span>
                 <span class="p">)</span>
             <span class="n">dtype</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">to_audformat_dtype</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span>
-        <span class="n">define</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">assert_has_attribute_value</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span>
+        <span class="n">define</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">_assert_has_attribute_value</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">dtype</span>
 
@@ -628,7 +629,7 @@
             <span class="bp">self</span><span class="p">,</span>
             <span class="n">labels</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Dict</span><span class="p">:</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Return actual labels as dict.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Return actual labels as dict.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">labels</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">labels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">labels</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
@@ -644,11 +645,11 @@
             <span class="bp">self</span><span class="p">,</span>
             <span class="n">labels</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">List</span><span class="p">:</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Convert labels to actual labels as list.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Convert labels to actual labels as list.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_labels_to_dict</span><span class="p">(</span><span class="n">labels</span><span class="p">))</span>
 
-    <span class="k">def</span> <span class="fm">__contains__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Check if scheme contains data type of item.</span>
+<div class="viewcode-block" id="Scheme.__contains__"><a class="viewcode-back" href="../../../api/audformat.Scheme.html#audformat.Scheme.__contains__">[docs]</a>    <span class="k">def</span> <span class="fm">__contains__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Check if scheme contains data type of item.</span>
 
 <span class="sd">        ``None``, ``NaT`` and ``NaN`` always match</span>
 
@@ -666,7 +667,7 @@
                     <span class="k">return</span> <span class="kc">False</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">maximum</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">item</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">maximum</span><span class="p">:</span>
                     <span class="k">return</span> <span class="kc">False</span>
-        <span class="k">return</span> <span class="kc">True</span></div>
+        <span class="k">return</span> <span class="kc">True</span></div></div>
 </pre></div>
 
            </div>
@@ -682,7 +683,7 @@
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2022/11/01 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2023/01/12 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
@@ -690,7 +691,7 @@
   <div role="contentinfo">
     <p>
         
-      &copy; 2019-2022 audEERING GmbH
+      &copy; 2019-2023 audEERING GmbH
     </p>
   </div> 
 

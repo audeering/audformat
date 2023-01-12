@@ -1,0 +1,6 @@
+﻿add\_misc\_table\(\)
+====================
+
+.. currentmodule:: audformat.testing
+
+.. autofunction:: audformat.testing.add_misc_table

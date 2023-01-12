@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>audformat.core.index &mdash; audformat Documentation</title>
+  <title>audformat.core.index &mdash; Documentation</title>
   
 
   
@@ -25,18 +25,14 @@
     
 
   
-
-  
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../../_static/css/audeering.css" type="text/css" />
-  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/css/audeering.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/graphviz.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/copybutton.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/jupyter-sphinx.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/thebelab.css" type="text/css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.css" type="text/css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/katex-math.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
@@ -74,7 +70,7 @@
             
             
               <div class="version">
-                v0.15.4
+                v0.16.0
               </div>
             
           
@@ -120,11 +116,11 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Documentation</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../api.html">audformat</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../api-define.html">audformat.define</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../api-errors.html">audformat.errors</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../api-testing.html">audformat.testing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../api-utils.html">audformat.utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/audformat.html">audformat</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/audformat.define.html">audformat.define</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/audformat.errors.html">audformat.errors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/audformat.testing.html">audformat.testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/audformat.utils.html">audformat.utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../genindex.html">Index</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Development</span></p>
@@ -182,13 +178,13 @@
 
 
 <span class="k">def</span> <span class="nf">is_scalar</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Check if value is scalar&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Check if value is scalar&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="p">(</span><span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> \
            <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="s1">&#39;__len__&#39;</span><span class="p">))</span>
 
 
 <span class="k">def</span> <span class="nf">to_array</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">list</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Convert value to list or array.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Convert value to list or array.&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">)):</span>
             <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
@@ -198,17 +194,17 @@
 
 
 <span class="k">def</span> <span class="nf">to_timedelta</span><span class="p">(</span><span class="n">times</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Convert time value to pd.Timedelta.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Convert time value to pd.Timedelta.&quot;&quot;&quot;</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_timedelta</span><span class="p">(</span><span class="n">times</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;s&#39;</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>  <span class="c1"># catches values like &#39;1s&#39;</span>
         <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_timedelta</span><span class="p">(</span><span class="n">times</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="assert_index"><a class="viewcode-back" href="../../../api.html#audformat.assert_index">[docs]</a><span class="k">def</span> <span class="nf">assert_index</span><span class="p">(</span>
+<div class="viewcode-block" id="assert_index"><a class="viewcode-back" href="../../../api/audformat.assert_index.html#audformat.assert_index">[docs]</a><span class="k">def</span> <span class="nf">assert_index</span><span class="p">(</span>
     <span class="n">obj</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">],</span>
 <span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Assert object is conform to :ref:`table specifications</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Assert object is conform to :ref:`table specifications</span>
 <span class="sd">    &lt;data-tables:Tables&gt;`.</span>
 
 <span class="sd">    This does not check for duplicates in the index.</span>
@@ -285,10 +281,10 @@
             <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="assert_no_duplicates"><a class="viewcode-back" href="../../../api.html#audformat.assert_no_duplicates">[docs]</a><span class="k">def</span> <span class="nf">assert_no_duplicates</span><span class="p">(</span>
+<div class="viewcode-block" id="assert_no_duplicates"><a class="viewcode-back" href="../../../api/audformat.assert_no_duplicates.html#audformat.assert_no_duplicates">[docs]</a><span class="k">def</span> <span class="nf">assert_no_duplicates</span><span class="p">(</span>
     <span class="n">obj</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">],</span>
 <span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Assert object contains no duplicates in its index.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Assert object contains no duplicates in its index.</span>
 
 <span class="sd">    The :ref:`table specifications &lt;data-tables:Tables&gt;`</span>
 <span class="sd">    allow no duplicated index entries.</span>
@@ -322,10 +318,10 @@
         <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="filewise_index"><a class="viewcode-back" href="../../../api.html#audformat.filewise_index">[docs]</a><span class="k">def</span> <span class="nf">filewise_index</span><span class="p">(</span>
+<div class="viewcode-block" id="filewise_index"><a class="viewcode-back" href="../../../api/audformat.filewise_index.html#audformat.filewise_index">[docs]</a><span class="k">def</span> <span class="nf">filewise_index</span><span class="p">(</span>
         <span class="n">files</span><span class="p">:</span> <span class="n">Files</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">:</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Creates a filewise index.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Creates a filewise index.</span>
 
 <span class="sd">    Index is conform to :ref:`table specifications &lt;data-tables:Tables&gt;`.</span>
 
@@ -338,7 +334,7 @@
 <span class="sd">    Raises:</span>
 <span class="sd">        ValueError: if created index contains duplicates</span>
 
-<span class="sd">    Example:</span>
+<span class="sd">    Examples:</span>
 <span class="sd">        &gt;&gt;&gt; filewise_index([&#39;a.wav&#39;, &#39;b.wav&#39;])</span>
 <span class="sd">        Index([&#39;a.wav&#39;, &#39;b.wav&#39;], dtype=&#39;string&#39;, name=&#39;file&#39;)</span>
 
@@ -357,10 +353,13 @@
     <span class="k">return</span> <span class="n">index</span></div>
 
 
-<div class="viewcode-block" id="index_type"><a class="viewcode-back" href="../../../api.html#audformat.index_type">[docs]</a><span class="k">def</span> <span class="nf">index_type</span><span class="p">(</span>
+<div class="viewcode-block" id="index_type"><a class="viewcode-back" href="../../../api/audformat.index_type.html#audformat.index_type">[docs]</a><span class="k">def</span> <span class="nf">index_type</span><span class="p">(</span>
         <span class="n">obj</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">],</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">define</span><span class="o">.</span><span class="n">IndexType</span><span class="p">:</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Derive index type.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Derive index type.</span>
+
+<span class="sd">    Possible return values are given by</span>
+<span class="sd">    :class:`audformat.define.IndexType`.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        obj: object conform to</span>
@@ -373,7 +372,7 @@
 <span class="sd">        ValueError: if not conform to</span>
 <span class="sd">            :ref:`table specifications &lt;data-tables:Tables&gt;`</span>
 
-<span class="sd">    Example:</span>
+<span class="sd">    Examples:</span>
 <span class="sd">        &gt;&gt;&gt; index_type(filewise_index())</span>
 <span class="sd">        &#39;filewise&#39;</span>
 <span class="sd">        &gt;&gt;&gt; index_type(segmented_index())</span>
@@ -391,10 +390,10 @@
         <span class="k">return</span> <span class="n">define</span><span class="o">.</span><span class="n">IndexType</span><span class="o">.</span><span class="n">SEGMENTED</span></div>
 
 
-<div class="viewcode-block" id="is_filewise_index"><a class="viewcode-back" href="../../../api.html#audformat.is_filewise_index">[docs]</a><span class="k">def</span> <span class="nf">is_filewise_index</span><span class="p">(</span>
+<div class="viewcode-block" id="is_filewise_index"><a class="viewcode-back" href="../../../api/audformat.is_filewise_index.html#audformat.is_filewise_index">[docs]</a><span class="k">def</span> <span class="nf">is_filewise_index</span><span class="p">(</span>
         <span class="n">obj</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">],</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Check if object has a filewise index.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Check if object has a filewise index.</span>
 
 <span class="sd">    Returns ``True`` if index is a filewise index conform to</span>
 <span class="sd">    :ref:`table specifications &lt;data-tables:Tables&gt;`.</span>
@@ -405,7 +404,7 @@
 <span class="sd">    Returns:</span>
 <span class="sd">        ``True`` if index is filewise, otherwise ``False``</span>
 
-<span class="sd">    Example:</span>
+<span class="sd">    Examples:</span>
 <span class="sd">        &gt;&gt;&gt; is_filewise_index(filewise_index())</span>
 <span class="sd">        True</span>
 <span class="sd">        &gt;&gt;&gt; is_filewise_index(pd.Index([]))</span>
@@ -418,10 +417,10 @@
     <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">names</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">obj</span><span class="o">.</span><span class="n">names</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">define</span><span class="o">.</span><span class="n">IndexField</span><span class="o">.</span><span class="n">FILE</span></div>
 
 
-<div class="viewcode-block" id="is_segmented_index"><a class="viewcode-back" href="../../../api.html#audformat.is_segmented_index">[docs]</a><span class="k">def</span> <span class="nf">is_segmented_index</span><span class="p">(</span>
+<div class="viewcode-block" id="is_segmented_index"><a class="viewcode-back" href="../../../api/audformat.is_segmented_index.html#audformat.is_segmented_index">[docs]</a><span class="k">def</span> <span class="nf">is_segmented_index</span><span class="p">(</span>
         <span class="n">obj</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">],</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Check if object has a segmented index.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Check if object has a segmented index.</span>
 
 <span class="sd">    Returns ``True`` if index is a segmented index conform to</span>
 <span class="sd">    :ref:`table specifications &lt;data-tables:Tables&gt;`.</span>
@@ -432,7 +431,7 @@
 <span class="sd">    Returns:</span>
 <span class="sd">        ``True`` if index is segmented, otherwise ``False``</span>
 
-<span class="sd">    Example:</span>
+<span class="sd">    Examples:</span>
 <span class="sd">        &gt;&gt;&gt; is_segmented_index(segmented_index())</span>
 <span class="sd">        True</span>
 <span class="sd">        &gt;&gt;&gt; is_segmented_index(pd.Index([]))</span>
@@ -450,12 +449,12 @@
     <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="segmented_index"><a class="viewcode-back" href="../../../api.html#audformat.segmented_index">[docs]</a><span class="k">def</span> <span class="nf">segmented_index</span><span class="p">(</span>
+<div class="viewcode-block" id="segmented_index"><a class="viewcode-back" href="../../../api/audformat.segmented_index.html#audformat.segmented_index">[docs]</a><span class="k">def</span> <span class="nf">segmented_index</span><span class="p">(</span>
         <span class="n">files</span><span class="p">:</span> <span class="n">Files</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">starts</span><span class="p">:</span> <span class="n">Timestamps</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">ends</span><span class="p">:</span> <span class="n">Timestamps</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">:</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Create segmented index.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Create segmented index.</span>
 
 <span class="sd">    Index is conform to :ref:`table specifications &lt;data-tables:Tables&gt;`.</span>
 
@@ -480,7 +479,7 @@
 <span class="sd">    Raises:</span>
 <span class="sd">        ValueError: if ``files``, ``start`` and ``ends`` differ in size</span>
 
-<span class="sd">    Example:</span>
+<span class="sd">    Examples:</span>
 <span class="sd">        &gt;&gt;&gt; segmented_index(&#39;a.wav&#39;, 0, 1.1)</span>
 <span class="sd">        MultiIndex([(&#39;a.wav&#39;, &#39;0 days&#39;, &#39;0 days 00:00:01.100000&#39;)],</span>
 <span class="sd">                   names=[&#39;file&#39;, &#39;start&#39;, &#39;end&#39;])</span>
@@ -552,7 +551,7 @@
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2022/11/01 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2023/01/12 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
@@ -560,7 +559,7 @@
   <div role="contentinfo">
     <p>
         
-      &copy; 2019-2022 audEERING GmbH
+      &copy; 2019-2023 audEERING GmbH
     </p>
   </div> 
 

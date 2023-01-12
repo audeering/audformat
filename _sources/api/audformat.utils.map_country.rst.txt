@@ -1,0 +1,6 @@
+﻿map\_country\(\)
+================
+
+.. currentmodule:: audformat.utils
+
+.. autofunction:: audformat.utils.map_country

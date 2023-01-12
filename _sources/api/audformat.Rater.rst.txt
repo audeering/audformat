@@ -1,0 +1,32 @@
+﻿Rater
+=====
+
+.. currentmodule:: audformat
+
+.. autoclass:: Rater
+
+
+description
+-----------
+.. autoattribute:: Rater.description
+    
+dump\(\)
+--------
+.. automethod:: Rater.dump
+    
+from\_dict\(\)
+--------------
+.. automethod:: Rater.from_dict
+    
+meta
+----
+.. autoattribute:: Rater.meta
+    
+to\_dict\(\)
+------------
+.. automethod:: Rater.to_dict
+    
+type
+----
+.. autoattribute:: Rater.type
+    

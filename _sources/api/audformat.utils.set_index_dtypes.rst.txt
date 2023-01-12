@@ -1,0 +1,6 @@
+﻿set\_index\_dtypes\(\)
+======================
+
+.. currentmodule:: audformat.utils
+
+.. autofunction:: audformat.utils.set_index_dtypes

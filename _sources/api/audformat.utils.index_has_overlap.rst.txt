@@ -1,0 +1,6 @@
+﻿index\_has\_overlap\(\)
+=======================
+
+.. currentmodule:: audformat.utils
+
+.. autofunction:: audformat.utils.index_has_overlap

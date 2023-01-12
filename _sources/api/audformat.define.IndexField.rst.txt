@@ -1,0 +1,20 @@
+﻿IndexField
+==========
+
+.. currentmodule:: audformat.define
+
+.. autoclass:: IndexField
+
+
+END
+---
+.. autoattribute:: IndexField.END
+    
+FILE
+----
+.. autoattribute:: IndexField.FILE
+    
+START
+-----
+.. autoattribute:: IndexField.START
+    

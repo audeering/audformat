@@ -1,0 +1,16 @@
+﻿IndexType
+=========
+
+.. currentmodule:: audformat.define
+
+.. autoclass:: IndexType
+
+
+FILEWISE
+--------
+.. autoattribute:: IndexType.FILEWISE
+    
+SEGMENTED
+---------
+.. autoattribute:: IndexType.SEGMENTED
+    

@@ -1,0 +1,36 @@
+﻿DataType
+========
+
+.. currentmodule:: audformat.define
+
+.. autoclass:: DataType
+
+
+BOOL
+----
+.. autoattribute:: DataType.BOOL
+    
+DATE
+----
+.. autoattribute:: DataType.DATE
+    
+FLOAT
+-----
+.. autoattribute:: DataType.FLOAT
+    
+INTEGER
+-------
+.. autoattribute:: DataType.INTEGER
+    
+OBJECT
+------
+.. autoattribute:: DataType.OBJECT
+    
+STRING
+------
+.. autoattribute:: DataType.STRING
+    
+TIME
+----
+.. autoattribute:: DataType.TIME
+    

@@ -1,0 +1,6 @@
+﻿create\_attachment\_files\(\)
+=============================
+
+.. currentmodule:: audformat.testing
+
+.. autofunction:: audformat.testing.create_attachment_files

@@ -1,0 +1,6 @@
+﻿add\_table\(\)
+==============
+
+.. currentmodule:: audformat.testing
+
+.. autofunction:: audformat.testing.add_table

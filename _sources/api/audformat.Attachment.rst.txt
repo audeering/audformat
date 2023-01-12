@@ -1,0 +1,36 @@
+﻿Attachment
+==========
+
+.. currentmodule:: audformat
+
+.. autoclass:: Attachment
+
+
+description
+-----------
+.. autoattribute:: Attachment.description
+    
+dump\(\)
+--------
+.. automethod:: Attachment.dump
+    
+files
+-----
+.. autoattribute:: Attachment.files
+    
+from\_dict\(\)
+--------------
+.. automethod:: Attachment.from_dict
+    
+meta
+----
+.. autoattribute:: Attachment.meta
+    
+path
+----
+.. autoattribute:: Attachment.path
+    
+to\_dict\(\)
+------------
+.. automethod:: Attachment.to_dict
+    

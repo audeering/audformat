@@ -1,0 +1,28 @@
+﻿RaterType
+=========
+
+.. currentmodule:: audformat.define
+
+.. autoclass:: RaterType
+
+
+HUMAN
+-----
+.. autoattribute:: RaterType.HUMAN
+    
+MACHINE
+-------
+.. autoattribute:: RaterType.MACHINE
+    
+OTHER
+-----
+.. autoattribute:: RaterType.OTHER
+    
+TRUTH
+-----
+.. autoattribute:: RaterType.TRUTH
+    
+VOTE
+----
+.. autoattribute:: RaterType.VOTE
+    

@@ -1,0 +1,6 @@
+﻿map\_language\(\)
+=================
+
+.. currentmodule:: audformat.utils
+
+.. autofunction:: audformat.utils.map_language

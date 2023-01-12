@@ -1,0 +1,120 @@
+﻿MiscTable
+=========
+
+.. currentmodule:: audformat
+
+.. autoclass:: MiscTable
+
+
+\_\_add\_\_\(\)
+---------------
+.. automethod:: MiscTable.__add__
+    
+\_\_getitem\_\_\(\)
+-------------------
+.. automethod:: MiscTable.__getitem__
+    
+\_\_setitem\_\_\(\)
+-------------------
+.. automethod:: MiscTable.__setitem__
+    
+columns
+-------
+.. autoattribute:: MiscTable.columns
+    
+copy\(\)
+--------
+.. automethod:: MiscTable.copy
+    
+db
+--
+.. autoattribute:: MiscTable.db
+    
+description
+-----------
+.. autoattribute:: MiscTable.description
+    
+df
+--
+.. autoattribute:: MiscTable.df
+    
+drop\_columns\(\)
+-----------------
+.. automethod:: MiscTable.drop_columns
+    
+drop\_index\(\)
+---------------
+.. automethod:: MiscTable.drop_index
+    
+dump\(\)
+--------
+.. automethod:: MiscTable.dump
+    
+extend\_index\(\)
+-----------------
+.. automethod:: MiscTable.extend_index
+    
+from\_dict\(\)
+--------------
+.. automethod:: MiscTable.from_dict
+    
+get\(\)
+-------
+.. automethod:: MiscTable.get
+    
+index
+-----
+.. autoattribute:: MiscTable.index
+    
+levels
+------
+.. autoattribute:: MiscTable.levels
+    
+load\(\)
+--------
+.. automethod:: MiscTable.load
+    
+media
+-----
+.. autoattribute:: MiscTable.media
+    
+media\_id
+---------
+.. autoattribute:: MiscTable.media_id
+    
+meta
+----
+.. autoattribute:: MiscTable.meta
+    
+pick\_columns\(\)
+-----------------
+.. automethod:: MiscTable.pick_columns
+    
+pick\_index\(\)
+---------------
+.. automethod:: MiscTable.pick_index
+    
+save\(\)
+--------
+.. automethod:: MiscTable.save
+    
+set\(\)
+-------
+.. automethod:: MiscTable.set
+    
+split
+-----
+.. autoattribute:: MiscTable.split
+    
+split\_id
+---------
+.. autoattribute:: MiscTable.split_id
+    
+to\_dict\(\)
+------------
+.. automethod:: MiscTable.to_dict
+    
+update\(\)
+----------
+.. automethod:: MiscTable.update
+    

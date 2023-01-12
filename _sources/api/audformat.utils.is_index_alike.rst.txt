@@ -1,0 +1,6 @@
+﻿is\_index\_alike\(\)
+====================
+
+.. currentmodule:: audformat.utils
+
+.. autofunction:: audformat.utils.is_index_alike

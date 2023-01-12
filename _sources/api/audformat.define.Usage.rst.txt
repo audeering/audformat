@@ -1,0 +1,28 @@
+﻿Usage
+=====
+
+.. currentmodule:: audformat.define
+
+.. autoclass:: Usage
+
+
+COMMERCIAL
+----------
+.. autoattribute:: Usage.COMMERCIAL
+    
+OTHER
+-----
+.. autoattribute:: Usage.OTHER
+    
+RESEARCH
+--------
+.. autoattribute:: Usage.RESEARCH
+    
+RESTRICTED
+----------
+.. autoattribute:: Usage.RESTRICTED
+    
+UNRESTRICTED
+------------
+.. autoattribute:: Usage.UNRESTRICTED
+    

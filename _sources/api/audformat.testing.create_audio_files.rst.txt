@@ -1,0 +1,6 @@
+﻿create\_audio\_files\(\)
+========================
+
+.. currentmodule:: audformat.testing
+
+.. autofunction:: audformat.testing.create_audio_files

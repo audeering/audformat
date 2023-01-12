@@ -1,0 +1,6 @@
+﻿difference\(\)
+==============
+
+.. currentmodule:: audformat.utils
+
+.. autofunction:: audformat.utils.difference

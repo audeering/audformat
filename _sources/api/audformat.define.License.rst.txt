@@ -1,0 +1,28 @@
+﻿License
+=======
+
+.. currentmodule:: audformat.define
+
+.. autoclass:: License
+
+
+CC0\_1\_0
+---------
+.. autoattribute:: License.CC0_1_0
+    
+CC\_BY\_4\_0
+------------
+.. autoattribute:: License.CC_BY_4_0
+    
+CC\_BY\_NC\_4\_0
+----------------
+.. autoattribute:: License.CC_BY_NC_4_0
+    
+CC\_BY\_NC\_SA\_4\_0
+--------------------
+.. autoattribute:: License.CC_BY_NC_SA_4_0
+    
+CC\_BY\_SA\_4\_0
+----------------
+.. autoattribute:: License.CC_BY_SA_4_0
+    

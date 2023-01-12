@@ -1,0 +1,6 @@
+﻿BadKeyError
+===========
+
+.. currentmodule:: audformat.errors
+
+.. autoexception:: audformat.errors.BadKeyError

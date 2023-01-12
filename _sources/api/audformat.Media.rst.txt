@@ -1,0 +1,64 @@
+﻿Media
+=====
+
+.. currentmodule:: audformat
+
+.. autoclass:: Media
+
+
+bit\_depth
+----------
+.. autoattribute:: Media.bit_depth
+    
+channels
+--------
+.. autoattribute:: Media.channels
+    
+description
+-----------
+.. autoattribute:: Media.description
+    
+dump\(\)
+--------
+.. automethod:: Media.dump
+    
+format
+------
+.. autoattribute:: Media.format
+    
+from\_dict\(\)
+--------------
+.. automethod:: Media.from_dict
+    
+meta
+----
+.. autoattribute:: Media.meta
+    
+sampling\_rate
+--------------
+.. autoattribute:: Media.sampling_rate
+    
+to\_dict\(\)
+------------
+.. automethod:: Media.to_dict
+    
+type
+----
+.. autoattribute:: Media.type
+    
+video\_channels
+---------------
+.. autoattribute:: Media.video_channels
+    
+video\_depth
+------------
+.. autoattribute:: Media.video_depth
+    
+video\_fps
+----------
+.. autoattribute:: Media.video_fps
+    
+video\_resolution
+-----------------
+.. autoattribute:: Media.video_resolution
+    

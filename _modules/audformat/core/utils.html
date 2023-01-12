@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>audformat.core.utils &mdash; audformat Documentation</title>
+  <title>audformat.core.utils &mdash; Documentation</title>
   
 
   
@@ -25,18 +25,14 @@
     
 
   
-
-  
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../../_static/css/audeering.css" type="text/css" />
-  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/css/audeering.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/graphviz.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/copybutton.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/jupyter-sphinx.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/thebelab.css" type="text/css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.css" type="text/css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/katex-math.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
@@ -74,7 +70,7 @@
             
             
               <div class="version">
-                v0.15.4
+                v0.16.0
               </div>
             
           
@@ -120,11 +116,11 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Documentation</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../api.html">audformat</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../api-define.html">audformat.define</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../api-errors.html">audformat.errors</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../api-testing.html">audformat.testing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../api-utils.html">audformat.utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/audformat.html">audformat</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/audformat.define.html">audformat.define</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/audformat.errors.html">audformat.errors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/audformat.testing.html">audformat.testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/audformat.utils.html">audformat.utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../genindex.html">Index</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Development</span></p>
@@ -195,12 +191,12 @@
 <span class="kn">from</span> <span class="nn">audformat.core.scheme</span> <span class="kn">import</span> <span class="n">Scheme</span>
 
 
-<div class="viewcode-block" id="concat"><a class="viewcode-back" href="../../../api-utils.html#audformat.utils.concat">[docs]</a><span class="k">def</span> <span class="nf">concat</span><span class="p">(</span>
+<div class="viewcode-block" id="concat"><a class="viewcode-back" href="../../../api/audformat.utils.concat.html#audformat.utils.concat">[docs]</a><span class="k">def</span> <span class="nf">concat</span><span class="p">(</span>
         <span class="n">objs</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">]],</span>
         <span class="o">*</span><span class="p">,</span>
         <span class="n">overwrite</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">]:</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Concatenate objects.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Concatenate objects.</span>
 
 <span class="sd">    If all objects are conform to</span>
 <span class="sd">    :ref:`table specifications &lt;data-tables:Tables&gt;`</span>
@@ -239,7 +235,7 @@
 <span class="sd">        ValueError: if columns with the same name have different dtypes</span>
 <span class="sd">        ValueError: if values in the same position do not match</span>
 
-<span class="sd">    Example:</span>
+<span class="sd">    Examples:</span>
 <span class="sd">        &gt;&gt;&gt; concat(</span>
 <span class="sd">        ...     [</span>
 <span class="sd">        ...         pd.Series([0], index=pd.Index([0])),</span>
@@ -439,10 +435,10 @@
         <span class="k">return</span> <span class="n">df</span></div>
 
 
-<div class="viewcode-block" id="difference"><a class="viewcode-back" href="../../../api-utils.html#audformat.utils.difference">[docs]</a><span class="k">def</span> <span class="nf">difference</span><span class="p">(</span>
+<div class="viewcode-block" id="difference"><a class="viewcode-back" href="../../../api/audformat.utils.difference.html#audformat.utils.difference">[docs]</a><span class="k">def</span> <span class="nf">difference</span><span class="p">(</span>
         <span class="n">objs</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">]],</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">:</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Difference of index objects.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Difference of index objects.</span>
 
 <span class="sd">    Returns index items</span>
 <span class="sd">    that are not shared by two or more objects.</span>
@@ -485,7 +481,7 @@
 <span class="sd">    Raises:</span>
 <span class="sd">        ValueError: if level and dtypes of objects do not match</span>
 
-<span class="sd">    Example:</span>
+<span class="sd">    Examples:</span>
 <span class="sd">        &gt;&gt;&gt; difference(</span>
 <span class="sd">        ...     [</span>
 <span class="sd">        ...         pd.Index([1, 2, 3], name=&#39;idx&#39;),</span>
@@ -572,14 +568,14 @@
     <span class="k">return</span> <span class="n">index</span></div>
 
 
-<div class="viewcode-block" id="duration"><a class="viewcode-back" href="../../../api-utils.html#audformat.utils.duration">[docs]</a><span class="k">def</span> <span class="nf">duration</span><span class="p">(</span>
+<div class="viewcode-block" id="duration"><a class="viewcode-back" href="../../../api/audformat.utils.duration.html#audformat.utils.duration">[docs]</a><span class="k">def</span> <span class="nf">duration</span><span class="p">(</span>
         <span class="n">obj</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">],</span>
         <span class="o">*</span><span class="p">,</span>
         <span class="n">root</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">num_workers</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
         <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Timedelta</span><span class="p">:</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Total duration of all entries present in the object.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Total duration of all entries present in the object.</span>
 
 <span class="sd">    The object might contain a segmented or a filewise index.</span>
 <span class="sd">    For a segmented index the duration is calculated</span>
@@ -608,8 +604,7 @@
 <span class="sd">    Returns:</span>
 <span class="sd">        duration</span>
 
-<span class="sd">    Example:</span>
-
+<span class="sd">    Examples:</span>
 <span class="sd">        &gt;&gt;&gt; index = segmented_index(</span>
 <span class="sd">        ...     files=[&#39;a&#39;, &#39;b&#39;, &#39;c&#39;],</span>
 <span class="sd">        ...     starts=[0, 1, 3],</span>
@@ -639,11 +634,11 @@
     <span class="k">return</span> <span class="p">(</span><span class="n">ends</span> <span class="o">-</span> <span class="n">starts</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span></div>
 
 
-<div class="viewcode-block" id="expand_file_path"><a class="viewcode-back" href="../../../api-utils.html#audformat.utils.expand_file_path">[docs]</a><span class="k">def</span> <span class="nf">expand_file_path</span><span class="p">(</span>
+<div class="viewcode-block" id="expand_file_path"><a class="viewcode-back" href="../../../api/audformat.utils.expand_file_path.html#audformat.utils.expand_file_path">[docs]</a><span class="k">def</span> <span class="nf">expand_file_path</span><span class="p">(</span>
         <span class="n">index</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">,</span>
         <span class="n">root</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">:</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Expand relative path in index with root.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Expand relative path in index with root.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        index: index with relative file path conform to</span>
@@ -657,7 +652,7 @@
 <span class="sd">        ValueError: if index is not conform to</span>
 <span class="sd">            :ref:`table specifications &lt;data-tables:Tables&gt;`</span>
 
-<span class="sd">    Example:</span>
+<span class="sd">    Examples:</span>
 <span class="sd">        &gt;&gt;&gt; index = filewise_index([&#39;f1&#39;, &#39;f2&#39;])</span>
 <span class="sd">        &gt;&gt;&gt; index</span>
 <span class="sd">        Index([&#39;f1&#39;, &#39;f2&#39;], dtype=&#39;string&#39;, name=&#39;file&#39;)</span>
@@ -678,10 +673,10 @@
     <span class="k">return</span> <span class="n">index</span></div>
 
 
-<div class="viewcode-block" id="hash"><a class="viewcode-back" href="../../../api-utils.html#audformat.utils.hash">[docs]</a><span class="k">def</span> <span class="nf">hash</span><span class="p">(</span>
+<div class="viewcode-block" id="hash"><a class="viewcode-back" href="../../../api/audformat.utils.hash.html#audformat.utils.hash">[docs]</a><span class="k">def</span> <span class="nf">hash</span><span class="p">(</span>
         <span class="n">obj</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">],</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Create hash from object.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Create hash from object.</span>
 
 <span class="sd">    Objects with the same elements</span>
 <span class="sd">    produce the same hash string</span>
@@ -693,7 +688,7 @@
 <span class="sd">    Returns:</span>
 <span class="sd">        hash string</span>
 
-<span class="sd">    Example:</span>
+<span class="sd">    Examples:</span>
 <span class="sd">        &gt;&gt;&gt; index = filewise_index([&#39;f1&#39;, &#39;f2&#39;])</span>
 <span class="sd">        &gt;&gt;&gt; hash(index)</span>
 <span class="sd">        &#39;-4231615416436839963&#39;</span>
@@ -705,10 +700,10 @@
     <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">hash_pandas_object</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span></div>
 
 
-<div class="viewcode-block" id="index_has_overlap"><a class="viewcode-back" href="../../../api-utils.html#audformat.utils.index_has_overlap">[docs]</a><span class="k">def</span> <span class="nf">index_has_overlap</span><span class="p">(</span>
+<div class="viewcode-block" id="index_has_overlap"><a class="viewcode-back" href="../../../api/audformat.utils.index_has_overlap.html#audformat.utils.index_has_overlap">[docs]</a><span class="k">def</span> <span class="nf">index_has_overlap</span><span class="p">(</span>
         <span class="n">obj</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">],</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Check if one or more segments in the index overlap.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Check if one or more segments in the index overlap.</span>
 
 <span class="sd">    If the index is filewise, the result will always be ``False``.</span>
 
@@ -719,7 +714,7 @@
 <span class="sd">    Returns:</span>
 <span class="sd">        ``True`` if overlap is detected, otherwise ``False``</span>
 
-<span class="sd">    Example:</span>
+<span class="sd">    Examples:</span>
 <span class="sd">        &gt;&gt;&gt; index = filewise_index([&#39;f1&#39;, &#39;f2&#39;])</span>
 <span class="sd">        &gt;&gt;&gt; index_has_overlap(index)</span>
 <span class="sd">        False</span>
@@ -755,10 +750,10 @@
     <span class="k">return</span> <span class="kc">False</span></div>
 
 
-<div class="viewcode-block" id="intersect"><a class="viewcode-back" href="../../../api-utils.html#audformat.utils.intersect">[docs]</a><span class="k">def</span> <span class="nf">intersect</span><span class="p">(</span>
+<div class="viewcode-block" id="intersect"><a class="viewcode-back" href="../../../api/audformat.utils.intersect.html#audformat.utils.intersect">[docs]</a><span class="k">def</span> <span class="nf">intersect</span><span class="p">(</span>
         <span class="n">objs</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">]],</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">:</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Intersect index objects.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Intersect index objects.</span>
 
 <span class="sd">    If all index objects are conform to</span>
 <span class="sd">    :ref:`table specifications &lt;data-tables:Tables&gt;`</span>
@@ -794,7 +789,7 @@
 <span class="sd">        ValueError: if level and dtypes of objects do not match</span>
 
 
-<span class="sd">    Example:</span>
+<span class="sd">    Examples:</span>
 <span class="sd">        &gt;&gt;&gt; intersect(</span>
 <span class="sd">        ...     [</span>
 <span class="sd">        ...         pd.Index([1, 2, 3], name=&#39;idx&#39;),</span>
@@ -891,10 +886,10 @@
     <span class="k">return</span> <span class="n">index</span></div>
 
 
-<div class="viewcode-block" id="is_index_alike"><a class="viewcode-back" href="../../../api-utils.html#audformat.utils.is_index_alike">[docs]</a><span class="k">def</span> <span class="nf">is_index_alike</span><span class="p">(</span>
+<div class="viewcode-block" id="is_index_alike"><a class="viewcode-back" href="../../../api/audformat.utils.is_index_alike.html#audformat.utils.is_index_alike">[docs]</a><span class="k">def</span> <span class="nf">is_index_alike</span><span class="p">(</span>
         <span class="n">objs</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">]],</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Check if index objects are alike.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Check if index objects are alike.</span>
 
 <span class="sd">    Two index objects are alike</span>
 <span class="sd">    if they have the same number of levels</span>
@@ -909,7 +904,7 @@
 <span class="sd">    Returns:</span>
 <span class="sd">        ``True`` if index objects are alike, otherwise ``False``</span>
 
-<span class="sd">    Example:</span>
+<span class="sd">    Examples:</span>
 <span class="sd">        &gt;&gt;&gt; index1 = pd.Index([1, 2, 3], dtype=&#39;Int64&#39;, name=&#39;l&#39;)</span>
 <span class="sd">        &gt;&gt;&gt; index2 = pd.MultiIndex.from_arrays([[10, 20]], names=[&#39;l&#39;])</span>
 <span class="sd">        &gt;&gt;&gt; is_index_alike([index1, index2])</span>
@@ -948,7 +943,7 @@
     <span class="k">return</span> <span class="kc">True</span></div>
 
 
-<div class="viewcode-block" id="iter_by_file"><a class="viewcode-back" href="../../../api-utils.html#audformat.utils.iter_by_file">[docs]</a><span class="k">def</span> <span class="nf">iter_by_file</span><span class="p">(</span>
+<div class="viewcode-block" id="iter_by_file"><a class="viewcode-back" href="../../../api/audformat.utils.iter_by_file.html#audformat.utils.iter_by_file">[docs]</a><span class="k">def</span> <span class="nf">iter_by_file</span><span class="p">(</span>
         <span class="n">obj</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span>
             <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">,</span>
             <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span>
@@ -960,7 +955,7 @@
         <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">],</span>
     <span class="p">],</span>
 <span class="p">]:</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Iterate over object by file.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Iterate over object by file.</span>
 
 <span class="sd">    Each iteration returns a file and the according sub-object.</span>
 
@@ -971,7 +966,7 @@
 <span class="sd">    Returns:</span>
 <span class="sd">        iterator in form of (file, sub_obj)</span>
 
-<span class="sd">    Example:</span>
+<span class="sd">    Examples:</span>
 <span class="sd">        &gt;&gt;&gt; index = filewise_index([&#39;f1&#39;, &#39;f1&#39;, &#39;f2&#39;])</span>
 <span class="sd">        &gt;&gt;&gt; next(iter_by_file(index))</span>
 <span class="sd">        (&#39;f1&#39;, Index([&#39;f1&#39;], dtype=&#39;string&#39;, name=&#39;file&#39;))</span>
@@ -1006,10 +1001,10 @@
                 <span class="k">yield</span> <span class="n">file</span><span class="p">,</span> <span class="n">sub_obj</span></div>
 
 
-<div class="viewcode-block" id="join_labels"><a class="viewcode-back" href="../../../api-utils.html#audformat.utils.join_labels">[docs]</a><span class="k">def</span> <span class="nf">join_labels</span><span class="p">(</span>
+<div class="viewcode-block" id="join_labels"><a class="viewcode-back" href="../../../api/audformat.utils.join_labels.html#audformat.utils.join_labels">[docs]</a><span class="k">def</span> <span class="nf">join_labels</span><span class="p">(</span>
         <span class="n">labels</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">List</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Dict</span><span class="p">]],</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">List</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Dict</span><span class="p">]:</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Combine scheme labels.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Combine scheme labels.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        labels: sequence of labels to join.</span>
@@ -1024,7 +1019,7 @@
 <span class="sd">        ValueError: if labels are of different dtype</span>
 <span class="sd">            or not ``list`` or ``dict``</span>
 
-<span class="sd">    Example:</span>
+<span class="sd">    Examples:</span>
 <span class="sd">        &gt;&gt;&gt; join_labels([{&#39;a&#39;: 0, &#39;b&#39;: 1}, {&#39;b&#39;: 2, &#39;c&#39;: 2}])</span>
 <span class="sd">        {&#39;a&#39;: 0, &#39;b&#39;: 2, &#39;c&#39;: 2}</span>
 
@@ -1085,11 +1080,11 @@
     <span class="k">return</span> <span class="n">joined_labels</span></div>
 
 
-<div class="viewcode-block" id="join_schemes"><a class="viewcode-back" href="../../../api-utils.html#audformat.utils.join_schemes">[docs]</a><span class="k">def</span> <span class="nf">join_schemes</span><span class="p">(</span>
+<div class="viewcode-block" id="join_schemes"><a class="viewcode-back" href="../../../api/audformat.utils.join_schemes.html#audformat.utils.join_schemes">[docs]</a><span class="k">def</span> <span class="nf">join_schemes</span><span class="p">(</span>
         <span class="n">dbs</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">Database</span><span class="p">],</span>
         <span class="n">scheme_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
 <span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Join and update scheme of databases.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Join and update scheme of databases.</span>
 
 <span class="sd">    This joins the given scheme of several databases</span>
 <span class="sd">    using :func:`audformat.utils.join_labels`</span>
@@ -1119,7 +1114,7 @@
 <span class="sd">        ValueError: if scheme labels are of different dtype</span>
 <span class="sd">            or not ``list`` or ``dict``</span>
 
-<span class="sd">    Example:</span>
+<span class="sd">    Examples:</span>
 <span class="sd">        &gt;&gt;&gt; db1 = Database(&#39;db1&#39;)</span>
 <span class="sd">        &gt;&gt;&gt; db2 = Database(&#39;db2&#39;)</span>
 <span class="sd">        &gt;&gt;&gt; db1.schemes[&#39;scheme_id&#39;] = Scheme(labels=[&#39;a&#39;])</span>
@@ -1136,8 +1131,8 @@
         <span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="n">scheme_id</span><span class="p">]</span><span class="o">.</span><span class="n">replace_labels</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="map_country"><a class="viewcode-back" href="../../../api-utils.html#audformat.utils.map_country">[docs]</a><span class="k">def</span> <span class="nf">map_country</span><span class="p">(</span><span class="n">country</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Map country to ISO 3166-1.</span>
+<div class="viewcode-block" id="map_country"><a class="viewcode-back" href="../../../api/audformat.utils.map_country.html#audformat.utils.map_country">[docs]</a><span class="k">def</span> <span class="nf">map_country</span><span class="p">(</span><span class="n">country</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Map country to ISO 3166-1.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        country: country string</span>
@@ -1148,7 +1143,7 @@
 <span class="sd">    Raises:</span>
 <span class="sd">        ValueError: if country is not supported</span>
 
-<span class="sd">    Example:</span>
+<span class="sd">    Examples:</span>
 <span class="sd">        &gt;&gt;&gt; map_country(&#39;gb&#39;)</span>
 <span class="sd">        &#39;GBR&#39;</span>
 <span class="sd">        &gt;&gt;&gt; map_country(&#39;gbr&#39;)</span>
@@ -1167,11 +1162,11 @@
     <span class="k">return</span> <span class="n">result</span><span class="o">.</span><span class="n">alpha3</span></div>
 
 
-<div class="viewcode-block" id="map_file_path"><a class="viewcode-back" href="../../../api-utils.html#audformat.utils.map_file_path">[docs]</a><span class="k">def</span> <span class="nf">map_file_path</span><span class="p">(</span>
+<div class="viewcode-block" id="map_file_path"><a class="viewcode-back" href="../../../api/audformat.utils.map_file_path.html#audformat.utils.map_file_path">[docs]</a><span class="k">def</span> <span class="nf">map_file_path</span><span class="p">(</span>
         <span class="n">index</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">,</span>
         <span class="n">func</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Callable</span><span class="p">[[</span><span class="nb">str</span><span class="p">],</span> <span class="nb">str</span><span class="p">],</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">:</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Apply callable to file path in index.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Apply callable to file path in index.</span>
 
 <span class="sd">    Relies on :meth:`pandas.Index.map`,</span>
 <span class="sd">    which can be slow.</span>
@@ -1208,7 +1203,7 @@
 <span class="sd">        ValueError: if index is not conform to</span>
 <span class="sd">            :ref:`table specifications &lt;data-tables:Tables&gt;`</span>
 
-<span class="sd">    Example:</span>
+<span class="sd">    Examples:</span>
 <span class="sd">        &gt;&gt;&gt; index = filewise_index([&#39;a/f1&#39;, &#39;a/f2&#39;])</span>
 <span class="sd">        &gt;&gt;&gt; index</span>
 <span class="sd">        Index([&#39;a/f1&#39;, &#39;a/f2&#39;], dtype=&#39;string&#39;, name=&#39;file&#39;)</span>
@@ -1230,8 +1225,8 @@
     <span class="k">return</span> <span class="n">index</span></div>
 
 
-<div class="viewcode-block" id="map_language"><a class="viewcode-back" href="../../../api-utils.html#audformat.utils.map_language">[docs]</a><span class="k">def</span> <span class="nf">map_language</span><span class="p">(</span><span class="n">language</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Map language to ISO 639-3.</span>
+<div class="viewcode-block" id="map_language"><a class="viewcode-back" href="../../../api/audformat.utils.map_language.html#audformat.utils.map_language">[docs]</a><span class="k">def</span> <span class="nf">map_language</span><span class="p">(</span><span class="n">language</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Map language to ISO 639-3.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        language: language string</span>
@@ -1242,7 +1237,7 @@
 <span class="sd">    Raises:</span>
 <span class="sd">        ValueError: if language is not supported</span>
 
-<span class="sd">    Example:</span>
+<span class="sd">    Examples:</span>
 <span class="sd">        &gt;&gt;&gt; map_language(&#39;en&#39;)</span>
 <span class="sd">        &#39;eng&#39;</span>
 <span class="sd">        &gt;&gt;&gt; map_language(&#39;eng&#39;)</span>
@@ -1280,11 +1275,11 @@
     <span class="k">return</span> <span class="n">result</span></div>
 
 
-<div class="viewcode-block" id="read_csv"><a class="viewcode-back" href="../../../api-utils.html#audformat.utils.read_csv">[docs]</a><span class="k">def</span> <span class="nf">read_csv</span><span class="p">(</span>
+<div class="viewcode-block" id="read_csv"><a class="viewcode-back" href="../../../api/audformat.utils.read_csv.html#audformat.utils.read_csv">[docs]</a><span class="k">def</span> <span class="nf">read_csv</span><span class="p">(</span>
         <span class="o">*</span><span class="n">args</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">]:</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Read object from CSV file.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Read object from CSV file.</span>
 
 <span class="sd">    Automatically detects the index type and returns an object that is</span>
 <span class="sd">    conform to :ref:`table specifications &lt;data-tables:Tables&gt;`.</span>
@@ -1303,7 +1298,7 @@
 <span class="sd">        ValueError: if CSV file is not conform to</span>
 <span class="sd">            :ref:`table specifications &lt;data-tables:Tables&gt;`</span>
 
-<span class="sd">    Example:</span>
+<span class="sd">    Examples:</span>
 <span class="sd">        &gt;&gt;&gt; from io import StringIO</span>
 <span class="sd">        &gt;&gt;&gt; string = StringIO(&#39;&#39;&#39;file,start,end,value</span>
 <span class="sd">        ... f1,00:00:00,00:00:01,0.0</span>
@@ -1351,12 +1346,12 @@
         <span class="k">return</span> <span class="n">frame</span></div>
 
 
-<div class="viewcode-block" id="replace_file_extension"><a class="viewcode-back" href="../../../api-utils.html#audformat.utils.replace_file_extension">[docs]</a><span class="k">def</span> <span class="nf">replace_file_extension</span><span class="p">(</span>
+<div class="viewcode-block" id="replace_file_extension"><a class="viewcode-back" href="../../../api/audformat.utils.replace_file_extension.html#audformat.utils.replace_file_extension">[docs]</a><span class="k">def</span> <span class="nf">replace_file_extension</span><span class="p">(</span>
         <span class="n">index</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">,</span>
         <span class="n">extension</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">pattern</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">:</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Change the file extension of index entries.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Change the file extension of index entries.</span>
 
 <span class="sd">    It replaces all existing file extensions</span>
 <span class="sd">    in the index file path</span>
@@ -1376,7 +1371,7 @@
 <span class="sd">    Returns:</span>
 <span class="sd">        updated index</span>
 
-<span class="sd">    Example:</span>
+<span class="sd">    Examples:</span>
 <span class="sd">        &gt;&gt;&gt; index = filewise_index([&#39;f1.wav&#39;, &#39;f2.flac&#39;])</span>
 <span class="sd">        &gt;&gt;&gt; replace_file_extension(index, &#39;mp3&#39;)</span>
 <span class="sd">        Index([&#39;f1.mp3&#39;, &#39;f2.mp3&#39;], dtype=&#39;string&#39;, name=&#39;file&#39;)</span>
@@ -1409,14 +1404,14 @@
     <span class="k">return</span> <span class="n">index</span></div>
 
 
-<div class="viewcode-block" id="set_index_dtypes"><a class="viewcode-back" href="../../../api-utils.html#audformat.utils.set_index_dtypes">[docs]</a><span class="k">def</span> <span class="nf">set_index_dtypes</span><span class="p">(</span>
+<div class="viewcode-block" id="set_index_dtypes"><a class="viewcode-back" href="../../../api/audformat.utils.set_index_dtypes.html#audformat.utils.set_index_dtypes">[docs]</a><span class="k">def</span> <span class="nf">set_index_dtypes</span><span class="p">(</span>
         <span class="n">index</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">,</span>
         <span class="n">dtypes</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span>
             <span class="nb">str</span><span class="p">,</span>
             <span class="n">typing</span><span class="o">.</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
         <span class="p">],</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">:</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Set the dtypes of an index for the given level names.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Set the dtypes of an index for the given level names.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        index: index object</span>
@@ -1521,7 +1516,7 @@
     <span class="k">return</span> <span class="n">index</span></div>
 
 
-<div class="viewcode-block" id="to_filewise_index"><a class="viewcode-back" href="../../../api-utils.html#audformat.utils.to_filewise_index">[docs]</a><span class="k">def</span> <span class="nf">to_filewise_index</span><span class="p">(</span>
+<div class="viewcode-block" id="to_filewise_index"><a class="viewcode-back" href="../../../api/audformat.utils.to_filewise_index.html#audformat.utils.to_filewise_index">[docs]</a><span class="k">def</span> <span class="nf">to_filewise_index</span><span class="p">(</span>
         <span class="n">obj</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">],</span>
         <span class="n">root</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">output_folder</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -1529,7 +1524,7 @@
         <span class="n">num_workers</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
         <span class="n">progress_bar</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">]:</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Convert to filewise index.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Convert to filewise index.</span>
 
 <span class="sd">    If input is segmented, each segment is saved to a separate file</span>
 <span class="sd">    in ``output_folder``. The directory structure of the original data is</span>
@@ -1640,7 +1635,7 @@
     <span class="k">return</span> <span class="n">obj</span></div>
 
 
-<div class="viewcode-block" id="to_segmented_index"><a class="viewcode-back" href="../../../api-utils.html#audformat.utils.to_segmented_index">[docs]</a><span class="k">def</span> <span class="nf">to_segmented_index</span><span class="p">(</span>
+<div class="viewcode-block" id="to_segmented_index"><a class="viewcode-back" href="../../../api/audformat.utils.to_segmented_index.html#audformat.utils.to_segmented_index">[docs]</a><span class="k">def</span> <span class="nf">to_segmented_index</span><span class="p">(</span>
         <span class="n">obj</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">],</span>
         <span class="o">*</span><span class="p">,</span>
         <span class="n">allow_nat</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
@@ -1649,7 +1644,7 @@
         <span class="n">num_workers</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
         <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">]:</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Convert to segmented index.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Convert to segmented index.</span>
 
 <span class="sd">    If the input a filewise table,</span>
 <span class="sd">    ``start`` and ``end`` will be added as new levels to the index.</span>
@@ -1692,7 +1687,7 @@
 <span class="sd">            :ref:`table specifications &lt;data-tables:Tables&gt;`</span>
 <span class="sd">        FileNotFoundError: if file is not found</span>
 
-<span class="sd">    Example:</span>
+<span class="sd">    Examples:</span>
 <span class="sd">        &gt;&gt;&gt; index = filewise_index([&#39;f1&#39;, &#39;f2&#39;])</span>
 <span class="sd">        &gt;&gt;&gt; to_segmented_index(index)</span>
 <span class="sd">        MultiIndex([(&#39;f1&#39;, &#39;0 days&#39;, NaT),</span>
@@ -1781,10 +1776,10 @@
     <span class="k">return</span> <span class="n">obj</span></div>
 
 
-<div class="viewcode-block" id="union"><a class="viewcode-back" href="../../../api-utils.html#audformat.utils.union">[docs]</a><span class="k">def</span> <span class="nf">union</span><span class="p">(</span>
+<div class="viewcode-block" id="union"><a class="viewcode-back" href="../../../api/audformat.utils.union.html#audformat.utils.union">[docs]</a><span class="k">def</span> <span class="nf">union</span><span class="p">(</span>
     <span class="n">objs</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">],</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">:</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Create union of index objects.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Create union of index objects.</span>
 
 <span class="sd">    If all index objects are conform to</span>
 <span class="sd">    :ref:`table specifications &lt;data-tables:Tables&gt;`</span>
@@ -1819,7 +1814,7 @@
 <span class="sd">    Raises:</span>
 <span class="sd">        ValueError: if level and dtypes of objects do not match</span>
 
-<span class="sd">    Example:</span>
+<span class="sd">    Examples:</span>
 <span class="sd">        &gt;&gt;&gt; union(</span>
 <span class="sd">        ...     [</span>
 <span class="sd">        ...         pd.Index([0, 1], name=&#39;idx&#39;),</span>
@@ -1923,7 +1918,7 @@
 <span class="k">def</span> <span class="nf">_assert_index_alike</span><span class="p">(</span>
         <span class="n">objs</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">]],</span>
 <span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Raise if index objects are not alike.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Raise if index objects are not alike.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        objs: objects</span>
@@ -1966,7 +1961,7 @@
 
 
 <span class="k">def</span> <span class="nf">_dtypes</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;List of dtypes of object.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;List of dtypes of object.&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">MultiIndex</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">dtypes</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
@@ -1974,7 +1969,7 @@
 
 
 <span class="k">def</span> <span class="nf">_is_same_dtype</span><span class="p">(</span><span class="n">d1</span><span class="p">,</span> <span class="n">d2</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Helper function to compare pandas dtype.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Helper function to compare pandas dtype.&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">d1</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;bool&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">d2</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;bool&#39;</span><span class="p">):</span>
         <span class="c1"># match different bool types, i.e. bool and boolean</span>
         <span class="k">return</span> <span class="kc">True</span>
@@ -1991,7 +1986,7 @@
 
 
 <span class="k">def</span> <span class="nf">_levels</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;List of dtypes of object.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;List of dtypes of object.&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">MultiIndex</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">names</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
@@ -2001,7 +1996,7 @@
 <span class="k">def</span> <span class="nf">_maybe_convert_filewise_index</span><span class="p">(</span>
         <span class="n">objs</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">]],</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">]]:</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Convert filewise to segmented index.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Convert filewise to segmented index.</span>
 
 <span class="sd">    Checks if all index objects are either filewise or segmented,</span>
 <span class="sd">    if this is the case possibly convert filewise to segmented indices</span>
@@ -2025,7 +2020,7 @@
 <span class="k">def</span> <span class="nf">_maybe_convert_int_dtype</span><span class="p">(</span>
         <span class="n">index</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">:</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Convert integer dtypes to Int64.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Convert integer dtypes to Int64.&quot;&quot;&quot;</span>
     <span class="c1"># Ensure integers are always stored as Int64</span>
     <span class="n">levels</span> <span class="o">=</span> <span class="n">_levels</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
     <span class="n">dtypes</span> <span class="o">=</span> <span class="n">_dtypes</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
@@ -2039,7 +2034,7 @@
 <span class="k">def</span> <span class="nf">_maybe_convert_single_level_multi_index</span><span class="p">(</span>
         <span class="n">objs</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">]],</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">]]:</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Convert single-level pd.MultiIndex to pd.Index.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Convert single-level pd.MultiIndex to pd.Index.</span>
 
 <span class="sd">    If input is a mixture of single-level</span>
 <span class="sd">    pd.MultiIndex and pd.Index objects,</span>
@@ -2085,7 +2080,7 @@
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2022/11/01 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2023/01/12 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
@@ -2093,7 +2088,7 @@
   <div role="contentinfo">
     <p>
         
-      &copy; 2019-2022 audEERING GmbH
+      &copy; 2019-2023 audEERING GmbH
     </p>
   </div> 
 

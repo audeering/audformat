@@ -1,0 +1,160 @@
+﻿Database
+========
+
+.. currentmodule:: audformat
+
+.. autoclass:: Database
+
+
+\_\_contains\_\_\(\)
+--------------------
+.. automethod:: Database.__contains__
+    
+\_\_getitem\_\_\(\)
+-------------------
+.. automethod:: Database.__getitem__
+    
+\_\_setitem\_\_\(\)
+-------------------
+.. automethod:: Database.__setitem__
+    
+attachments
+-----------
+.. autoattribute:: Database.attachments
+    
+author
+------
+.. autoattribute:: Database.author
+    
+description
+-----------
+.. autoattribute:: Database.description
+    
+drop\_files\(\)
+---------------
+.. automethod:: Database.drop_files
+    
+drop\_tables\(\)
+----------------
+.. automethod:: Database.drop_tables
+    
+dump\(\)
+--------
+.. automethod:: Database.dump
+    
+expires
+-------
+.. autoattribute:: Database.expires
+    
+files
+-----
+.. autoattribute:: Database.files
+    
+files\_duration\(\)
+-------------------
+.. automethod:: Database.files_duration
+    
+from\_dict\(\)
+--------------
+.. automethod:: Database.from_dict
+    
+is\_portable
+------------
+.. autoattribute:: Database.is_portable
+    
+languages
+---------
+.. autoattribute:: Database.languages
+    
+license
+-------
+.. autoattribute:: Database.license
+    
+license\_url
+------------
+.. autoattribute:: Database.license_url
+    
+load\(\)
+--------
+.. automethod:: Database.load
+    
+load\_header\_from\_yaml\(\)
+----------------------------
+.. automethod:: Database.load_header_from_yaml
+    
+map\_files\(\)
+--------------
+.. automethod:: Database.map_files
+    
+media
+-----
+.. autoattribute:: Database.media
+    
+meta
+----
+.. autoattribute:: Database.meta
+    
+misc\_tables
+------------
+.. autoattribute:: Database.misc_tables
+    
+name
+----
+.. autoattribute:: Database.name
+    
+organization
+------------
+.. autoattribute:: Database.organization
+    
+pick\_files\(\)
+---------------
+.. automethod:: Database.pick_files
+    
+pick\_tables\(\)
+----------------
+.. automethod:: Database.pick_tables
+    
+raters
+------
+.. autoattribute:: Database.raters
+    
+root
+----
+.. autoattribute:: Database.root
+    
+save\(\)
+--------
+.. automethod:: Database.save
+    
+schemes
+-------
+.. autoattribute:: Database.schemes
+    
+segments
+--------
+.. autoattribute:: Database.segments
+    
+source
+------
+.. autoattribute:: Database.source
+    
+splits
+------
+.. autoattribute:: Database.splits
+    
+tables
+------
+.. autoattribute:: Database.tables
+    
+to\_dict\(\)
+------------
+.. automethod:: Database.to_dict
+    
+update\(\)
+----------
+.. automethod:: Database.update
+    
+usage
+-----
+.. autoattribute:: Database.usage
+    

@@ -1,0 +1,56 @@
+﻿Column
+======
+
+.. currentmodule:: audformat
+
+.. autoclass:: Column
+
+
+description
+-----------
+.. autoattribute:: Column.description
+    
+dump\(\)
+--------
+.. automethod:: Column.dump
+    
+from\_dict\(\)
+--------------
+.. automethod:: Column.from_dict
+    
+get\(\)
+-------
+.. automethod:: Column.get
+    
+meta
+----
+.. autoattribute:: Column.meta
+    
+rater
+-----
+.. autoattribute:: Column.rater
+    
+rater\_id
+---------
+.. autoattribute:: Column.rater_id
+    
+scheme
+------
+.. autoattribute:: Column.scheme
+    
+scheme\_id
+----------
+.. autoattribute:: Column.scheme_id
+    
+set\(\)
+-------
+.. automethod:: Column.set
+    
+table
+-----
+.. autoattribute:: Column.table
+    
+to\_dict\(\)
+------------
+.. automethod:: Column.to_dict
+    
