@@ -59,14 +59,24 @@ def test_items_order():
     assert list(d) == ['b']
 
 
-def test_meta_dict():
-    meta = {
-        'key': 'value',
-        'meta': 1234,
-    }
+@pytest.mark.parametrize(
+    'meta',
+    [
+        {},
+        {
+            'key': 'value',
+            'meta': 1234,
+        },
+    ]
+)
+def test_meta_dict(meta):
+
     header = audformat.core.common.HeaderBase(meta=meta)
-    d = header.to_dict()
-    header.from_dict(d)
+    assert header.meta == meta
+
+    header_2 = audformat.core.common.HeaderBase()
+    header_2.from_dict(header.to_dict())
+    assert header_2.meta == meta
 
 
 @pytest.mark.parametrize(
