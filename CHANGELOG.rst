@@ -7,7 +7,7 @@ The format is based on `Keep a Changelog`_,
 and this project adheres to `Semantic Versioning`_.
 
 
-Version 1.0.0 (2023-01-12)
+Version 0.16.0 (2023-01-12)
 ---------------------------
 
 * Added: ``audformat.Attachment`` to store
@@ -17,6 +17,9 @@ Version 1.0.0 (2023-01-12)
 * Changed: require ``audeer>=1.19.0``
 * Changed: split API documentation into sub-pages
   for each function
+* Fixed: support ``'meta'`` as key in meta dictionaries
+  like the one passed as ``meta`` argument
+  to ``audformat.Database``
 
 
 Version 0.15.4 (2022-11-01)
