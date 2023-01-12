@@ -954,6 +954,7 @@ class Database(HeaderBase):
             FileNotFoundError: if a file or folder
                 associated with an attachment
                 cannot be found
+                when using ``load_data=True``
 
         """
         ext = '.yaml'
@@ -972,8 +973,9 @@ class Database(HeaderBase):
             table_ids = []
 
             if 'attachments' in header and header['attachments']:
-                for attachment_id in header['attachments']:
-                    db.attachments[attachment_id]._check_path(root)
+                if load_data:
+                    for attachment_id in header['attachments']:
+                        db.attachments[attachment_id]._check_path(root)
 
             if 'tables' in header and header['tables']:
                 for table_id in header['tables']:
