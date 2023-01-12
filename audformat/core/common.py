@@ -235,7 +235,7 @@ class HeaderBase:
         for key, value in d.items():
             if ignore_keys and key in ignore_keys:
                 continue
-            if key in self.__dict__:
+            if key in self.__dict__ and key != 'meta':
                 if self.__dict__[key] is not None:
                     assert isinstance(value, type(self.__dict__[key]))
                 self.__dict__[key] = value
