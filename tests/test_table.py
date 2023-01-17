@@ -1093,6 +1093,18 @@ def test_get_as_segmented():
     db._files_duration = {}
 
 
+def test_get_preserves_dtypes():
+
+    db = pytest.DB
+
+    for table in [db['files'], db['segments']]:
+        df = table.get()
+        pd.testing.assert_series_equal(df.dtypes, table.df.dtypes)
+        for index in [table.files, db.segments]:
+            df = table.get(index)
+            pd.testing.assert_series_equal(df.dtypes, table.df.dtypes)
+
+
 def test_load(tmpdir):
 
     path_pkl = os.path.join(tmpdir, 'db.table.pkl')
