@@ -1102,15 +1102,15 @@ def test_get_from_index():
         for index in [db[table_id].files, db.segments]:
             df_from_index = db[table_id].get(index)
             # if table is filewise and index is segmented
-            # index does not change
+            # the index of the table will be kept
             if (
                 audformat.is_segmented_index(df.index) and
                 audformat.is_filewise_index(index)
             ):
-                pd.testing.assert_index_equal(df.index, df_from_index.index)
-            # otherwise result has the requested index
+                pd.testing.assert_index_equal(df_from_index.index, df.index)
+            # otherwise the result gets a new index
             else:
-                pd.testing.assert_index_equal(index, df_from_index.index)
+                pd.testing.assert_index_equal(df_from_index.index, index)
             # assert dtypes are preserved
             pd.testing.assert_series_equal(df.dtypes, df_from_index.dtypes)
 

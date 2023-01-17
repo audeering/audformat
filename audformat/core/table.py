@@ -418,7 +418,7 @@ class Base(HeaderBase):
         if index is None:
             result = self.df
         else:
-            result, result_is_copy = self._get_by_index(index)
+            result = self._get_by_index(index)
 
         if map is not None:
 
@@ -1136,8 +1136,8 @@ class MiscTable(Base):
             meta=meta,
         )
 
-    def _get_by_index(self, index: pd.Index) -> (pd.DataFrame, bool):
-        return self.df.loc[index], False
+    def _get_by_index(self, index: pd.Index) -> pd.DataFrame:
+        return self.df.loc[index]
 
 
 class Table(Base):
@@ -1533,26 +1533,20 @@ class Table(Base):
     def _get_by_index(
             self,
             index: pd.Index,
-    ) -> (pd.DataFrame, bool):
-
-        result_is_copy = False
+    ) -> pd.DataFrame:
 
         if index_type(self.index) == index_type(index):
             result = self.df.loc[index]
         else:
             files = index.get_level_values(define.IndexField.FILE)
             if self.is_filewise:  # index is segmented
-                result = pd.DataFrame(
-                    self.df.loc[files].values,
-                    index,
-                    columns=self.columns
-                )
-                result_is_copy = True  # to avoid another copy
+                result = self.df.loc[files]
+                result.index = index
             else:  # index is filewise
                 files = list(dict.fromkeys(files))  # remove duplicates
                 result = self.df.loc[files]
 
-        return result, result_is_copy
+        return result
 
 
 def _assert_table_index(
