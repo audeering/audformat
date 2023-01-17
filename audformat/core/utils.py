@@ -1019,10 +1019,9 @@ def map_file_path(
             table.df.index = root + table.df.index + ext
             table.df.index.name = audformat.define.IndexField.FILE
         elif len(table.df.index) > 0:
-            table.df.index.set_levels(
+            table.df.index = table.df.index.set_levels(
                 root + table.df.index.levels[0] + ext,
                 level=audformat.define.IndexField.FILE,
-                inplace=True,
             )
 
     Args:
