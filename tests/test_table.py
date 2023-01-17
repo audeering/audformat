@@ -1093,6 +1093,28 @@ def test_get_as_segmented():
     db._files_duration = {}
 
 
+def test_get_from_index():
+
+    db = pytest.DB
+
+    for table_id in ['files', 'segments']:
+        df = db[table_id].get()
+        for index in [db[table_id].files, db.segments]:
+            df_from_index = db[table_id].get(index)
+            # if table is filewise and index is segmented
+            # index does not change
+            if (
+                audformat.is_segmented_index(df.index) and
+                audformat.is_filewise_index(index)
+            ):
+                pd.testing.assert_index_equal(df.index, df_from_index.index)
+            # otherwise result has the requested index
+            else:
+                pd.testing.assert_index_equal(index, df_from_index.index)
+            # assert dtypes are preserved
+            pd.testing.assert_series_equal(df.dtypes, df_from_index.dtypes)
+
+
 def test_load(tmpdir):
 
     path_pkl = os.path.join(tmpdir, 'db.table.pkl')
