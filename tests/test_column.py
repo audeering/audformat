@@ -196,6 +196,73 @@ def test_map(column, map):
     pd.testing.assert_series_equal(result, expected)
 
 
+def test_map_returns_categorical_dtype():
+
+    # See https://github.com/audeering/audformat/issues/317
+
+    # use scheme with labels
+
+    db = audformat.testing.create_db(minimal=True)
+
+    db.schemes['scheme'] = audformat.Scheme(
+        labels={
+            'a': {'alias': 'A'},
+            'b': {'alias': 'B'},
+            'c': {'alias': 'C'},
+        },
+    )
+
+    db['table'] = audformat.Table(audformat.filewise_index(['f1', 'f2', 'f3']))
+    db['table']['column'] = audformat.Column(scheme_id='scheme')
+    db['table']['column'].set(['a', 'b', 'c'])
+
+    y = db['table']['column'].get()
+    assert y.dtype == pd.Series(['a', 'b', 'c']).astype('category').dtype
+
+    y = db['table']['column'].get(map='alias')
+    assert y.dtype == pd.Series(['A', 'B', 'C']).astype('category').dtype
+
+    db.schemes['scheme'].replace_labels(  # set one label to None
+        {
+            'a': {'alias': 'A'},
+            'b': {'alias': 'B'},
+        }
+    )
+
+    y = db['table']['column'].get(map='alias')
+    assert y.dtype == pd.Series(['A', 'B']).astype('category').dtype
+
+    # repeat using a misc table
+
+    db = audformat.testing.create_db(minimal=True)
+
+    db['misc'] = audformat.MiscTable(
+        pd.Index(
+            ['a', 'b', 'c'],
+            name='index',
+            dtype='string',
+        ),
+    )
+    db['misc']['alias'] = audformat.Column()
+    db['misc']['alias'].set(['A', 'B', 'C'])
+
+    db.schemes['scheme'] = audformat.Scheme('str', labels='misc')
+    db['table'] = audformat.Table(audformat.filewise_index(['f1', 'f2', 'f3']))
+    db['table']['column'] = audformat.Column(scheme_id='scheme')
+    db['table']['column'].set(['a', 'b', 'c'])
+
+    y = db['table']['column'].get()
+    assert y.dtype == pd.Series(['a', 'b', 'c']).astype('category').dtype
+
+    y = db['table']['column'].get(map='alias')
+    assert y.dtype == pd.Series(['A', 'B', 'C']).astype('category').dtype
+
+    db['misc']['alias'].set(['A', 'B', None])  # set one label to None
+
+    y = db['table']['column'].get(map='alias')
+    assert y.dtype == pd.Series(['A', 'B']).astype('category').dtype
+
+
 @pytest.mark.parametrize(
     'num_files, num_segments_per_file, values', [
         (3, 2, [0.0, 1.0, 2.0, 3.0, 4.0, 5.0]),

@@ -268,7 +268,7 @@ class Column(HeaderBase):
                             f"{list(value)}."
                         )
                 mapping[key] = value
-            result = result.map(mapping)
+            result = result.map(mapping).astype('category')
             result.name = map
 
         return result.copy() if copy else result
