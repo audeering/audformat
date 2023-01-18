@@ -199,7 +199,7 @@ def test_map(column, map):
 def test_map_returns_categorical_dtype():
 
     # See https://github.com/audeering/audformat/issues/317
-    
+
     # use scheme with labels
 
     db = audformat.testing.create_db(minimal=True)
