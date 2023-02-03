@@ -605,7 +605,7 @@ class Database(HeaderBase):
             self,
             others: typing.Union['Database', typing.Sequence['Database']],
             *,
-            copy_attachment: bool = False,
+            copy_attachments: bool = False,
             copy_media: bool = False,
             overwrite: bool = False,
     ) -> 'Database':
@@ -638,7 +638,7 @@ class Database(HeaderBase):
 
         Args:
             others: database object(s)
-            copy_attachment: if ``True`` it copies the attachment files
+            copy_attachments: if ``True`` it copies the attachment files
                 associated with ``others`` to the current database root folder
             copy_media: if ``True`` it copies the media files
                 associated with ``others`` to the current database root folder
@@ -656,7 +656,9 @@ class Database(HeaderBase):
             ValueError: if tables cannot be combined
                 (e.g. values in same position overlap or
                 level and dtypes of table indices do not match)
-            RuntimeError: if ``copy_media`` or ``copy_attachment`` is ``True``,
+            RuntimeError: if ``copy_media``
+                or ``copy_attachments``
+                is ``True``,
                 but one of the involved databases was not saved
                 (contains files but no root folder)
             RuntimeError: if any involved database is not portable
@@ -826,19 +828,16 @@ class Database(HeaderBase):
                 else:
                     self[table_id] = table.copy()
 
-        if (
-                copy_attachment
-                or copy_media
-                and self.root is None
-        ):
-            raise RuntimeError(
-                f"You can only update a saved database. "
-                f"'{self.name}' was not saved yet."
-            )
+        if copy_attachments or copy_media:
+            if self.root is None:
+                raise RuntimeError(
+                    f"You can only update a saved database. "
+                    f"'{self.name}' was not saved yet."
+                )
 
         # copy attachment files
 
-        if copy_attachment:
+        if copy_attachments:
             for other in others:
                 if other.root is None:
                     raise RuntimeError(
@@ -846,7 +845,7 @@ class Database(HeaderBase):
                         f"The database '{other.name}' was not saved yet."
                     )
                 for attachment_id in other.attachments:
-                    for file in other.attachments[attachment_id]:
+                    for file in other.attachments[attachment_id].files:
                         src_file = os.path.join(other.root, file)
                         dst_file = os.path.join(self.root, file)
                         dst_dir = os.path.dirname(dst_file)
