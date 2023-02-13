@@ -1,4 +1,4 @@
-name: Flake8
+name: PEP8
 
 on:
   push:

@@ -1,0 +1,81 @@
+[build-system]
+requires = ["setuptools>=45", "setuptools_scm[toml]>=6.2"]
+
+[project]
+name = "audformat"
+authors = [
+    {name = "Johannes Wagner", email = "jwagner@audeering.com"},
+    {name = "Hagen Wierstorf", email = "hwierstorf@audeering.com"},
+    {name = "Baha Eddine Abrougui", email = "beddine@audeering.com"},
+]
+description = "Python implementation of audformat"
+readme = [
+    "README.rst",
+    "CHANGELOG.rst",
+]
+license = {text = "MIT", file = "LICENSE"}
+keywords = [
+    "audio",
+    "database",
+    "annotation",
+]
+platforms= "any"
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Scientific/Engineering",
+]
+requires-python = ">=3.8"
+dependencies = [
+    "audeer >=1.19.0,<2.0.0",
+    "audiofile >=0.4.0",
+    "iso-639",
+    "iso3166",
+    "oyaml",
+    "pyyaml >=5.4.1",
+    "pandas >=1.4.1",
+]
+# Version from setuptools_scm
+# https://github.com/pypa/setuptools_scm
+dynamic = ["version"]
+[project.urls]
+repository = "https://github.com/audeering/audformat/"
+documentation = "https://audeering.github.io/audformat/"
+
+[tool.setuptools.packages.find]
+
+[tool.pytest]
+addopts = """
+--doctest-plus
+--cov=audformat
+--cov-fail-under=100
+--cov-report xml
+--cov-report term-missing
+"""
+xfail_strict = true
+
+
+# setuptools_scm heading to enable automatic versioning
+[tool.setuptools_scm]
+
+# ruff for PEP8 checks
+# https://github.com/charliermarsh/ruff
+[tool.ruff]
+exclude = [
+    ".eggs",
+    "build",
+]
+[tool.ruff.per-file-ignores]
+"__init__.py" = [
+    # ignore unused imports
+    "F401",
+] 

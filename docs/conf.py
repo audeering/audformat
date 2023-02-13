@@ -49,8 +49,6 @@ extensions = [
 ]
 
 napoleon_use_ivar = True  # List of class attributes
-autodoc_inherit_docstrings = True  # disable docstring inheritance
-# autosummary_generate_overwrite = True
 
 intersphinx_mapping = {
     'audeer': ('https://audeering.github.io/audeer/', None),
