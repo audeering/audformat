@@ -680,11 +680,15 @@ def test_update(tmpdir):
 
     # original database
 
+    db_root = audeer.mkdir(audeer.path(tmpdir, 'db'))
     db = audformat.testing.create_db(minimal=True)
     db.author = 'author'
     db.organization = 'organization'
     db.meta['key'] = 'value'
     db.raters['rater'] = audformat.Rater()
+    db.attachments['attachment'] = audformat.Attachment('file.txt')
+    with open(audeer.path(db_root, 'file.txt'), 'w') as fp:
+        fp.write('db')
     db.schemes['float'] = audformat.Scheme('float')
     db.schemes['labels'] = audformat.Scheme(labels=['a', 'b'])
     audformat.testing.add_misc_table(
@@ -708,7 +712,6 @@ def test_update(tmpdir):
         },
     )
 
-    db_root = audeer.mkdir(os.path.join(tmpdir, 'db'))
     db.save(db_root)
     audformat.testing.create_audio_files(db, file_duration='0.1s')
 
@@ -749,9 +752,13 @@ def test_update(tmpdir):
 
     # database with same table, but extra column
 
+    other1_root = audeer.mkdir(audeer.path(tmpdir, 'other1'))
     other1 = audformat.testing.create_db(minimal=True)
     other1.raters['rater'] = audformat.Rater()
     other1.raters['rater2'] = audformat.Rater()
+    other1.attachments['attachment'] = audformat.Attachment('file.txt')
+    with open(audeer.path(other1_root, 'file.txt'), 'w') as fp:
+        fp.write('other1')
     other1.schemes['int'] = audformat.Scheme(audformat.define.DataType.INTEGER)
     other1.schemes['float'] = audformat.Scheme(audformat.define.DataType.FLOAT)
     other1.schemes['labels'] = audformat.Scheme(labels=['b', 'c'])
@@ -777,14 +784,17 @@ def test_update(tmpdir):
             'misc': ('misc', None),
         },
     )
-    other1_root = audeer.mkdir(os.path.join(tmpdir, 'other1'))
     other1.save(other1_root)
     audformat.testing.create_audio_files(other1, file_duration='0.1s')
 
     # database with new table
 
+    other2_root = audeer.mkdir(audeer.path(tmpdir, 'other2'))
     other2 = audformat.testing.create_db(minimal=True)
     other2.raters['rater2'] = audformat.Rater()
+    other2.attachments['attachment2'] = audformat.Attachment('file2.txt')
+    with open(audeer.path(other2_root, 'file2.txt'), 'w') as fp:
+        fp.write('other2')
     other2.schemes['str'] = audformat.Scheme('str')
     audformat.testing.add_table(
         other2,
@@ -798,7 +808,6 @@ def test_update(tmpdir):
         pd.Index([0, 1], dtype='string', name='idx'),
         columns={'str': ('str', 'rater2')},
     )
-    other2_root = audeer.mkdir(os.path.join(tmpdir, 'other2'))
     other2.save(other2_root)
     audformat.testing.create_audio_files(other2, file_duration='0.1s')
 
@@ -816,12 +825,19 @@ def test_update(tmpdir):
     db_root = db.root
     db._root = None
     with pytest.raises(RuntimeError):
+        db.update(others, overwrite=True, copy_attachments=True)
+    with pytest.raises(RuntimeError):
         db.update(others, overwrite=True, copy_media=True)
     db._root = db_root
 
     # now should work...
 
-    db.update(others, overwrite=True, copy_media=True)
+    db.update(
+        others,
+        overwrite=True,
+        copy_attachments=True,
+        copy_media=True,
+    )
 
     assert 'int' in db['table'].columns
     assert 'labels' in db['misc'].columns
@@ -829,6 +845,8 @@ def test_update(tmpdir):
     assert db['misc_new'] == other2['misc_new']
 
     for other in others:
+        for attachment_id, attachment in other.attachments.items():
+            assert db.attachments[attachment_id] == attachment
         for rater_id, rater in other.raters.items():
             assert db.raters[rater_id] == rater
         for scheme_id, scheme in other.schemes.items():
@@ -839,8 +857,23 @@ def test_update(tmpdir):
     db_root = other1._root
     other1._root = None
     with pytest.raises(RuntimeError):
+        db.update(others, overwrite=True, copy_attachments=True)
+    with pytest.raises(RuntimeError):
         db.update(others, overwrite=True, copy_media=True)
     other1._root = db_root
+
+    # test attachment files
+
+    expected_content = {
+        'file.txt': 'other1',
+        'file2.txt': 'other2',
+    }
+    for attachment_id in db.attachments:
+        for file in db.attachments[attachment_id].files:
+            assert os.path.exists(os.path.join(db.root, file))
+            if file in expected_content:
+                with open(audeer.path(db.root, file), 'r') as fp:
+                    assert fp.read() == expected_content[file]
 
     # test media files
 
@@ -849,8 +882,10 @@ def test_update(tmpdir):
 
     # fail if other has absolute path
 
+    full_path(other2, other2_root)
     with pytest.raises(RuntimeError):
-        full_path(other2, other2_root)
+        db.update(other2, overwrite=True, copy_attachments=True)
+    with pytest.raises(RuntimeError):
         db.update(other2, overwrite=True, copy_media=True)
 
     # test other fields
@@ -875,7 +910,7 @@ def test_update(tmpdir):
         organization='other',
         source='other',
     )
-    db.update(other, copy_media=True)
+    db.update(other)
 
     assert db.author == f'{db_author}, {other.author}'
     assert db.name == db_name
@@ -918,6 +953,8 @@ def test_update(tmpdir):
         db.update(other)
 
     # fail if self has absolute path
+    full_path(db, db_root)
     with pytest.raises(RuntimeError):
-        full_path(db, db_root)
+        db.update(other1, overwrite=True, copy_attachments=True)
+    with pytest.raises(RuntimeError):
         db.update(other1, overwrite=True, copy_media=True)

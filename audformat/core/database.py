@@ -605,6 +605,7 @@ class Database(HeaderBase):
             self,
             others: typing.Union['Database', typing.Sequence['Database']],
             *,
+            copy_attachments: bool = False,
             copy_media: bool = False,
             overwrite: bool = False,
     ) -> 'Database':
@@ -614,7 +615,9 @@ class Database(HeaderBase):
         *license* and *usage* have to match.
         Labels and values of *schemes*
         with the same ID are combined.
-        *Media*, *raters*, *schemes* and *splits* that are not part of
+        *Media*, *raters*, *schemes*, *splits*,
+        and *attachments*
+        that are not part of
         the database yet are added.
         Other fields will be updated by
         applying the following rules:
@@ -635,6 +638,8 @@ class Database(HeaderBase):
 
         Args:
             others: database object(s)
+            copy_attachments: if ``True`` it copies the attachment files
+                associated with ``others`` to the current database root folder
             copy_media: if ``True`` it copies the media files
                 associated with ``others`` to the current database root folder
             overwrite: overwrite table values where indices overlap
@@ -644,14 +649,16 @@ class Database(HeaderBase):
 
         Raises:
             ValueError: if database has different license or usage
-            ValueError: if different media, rater, scheme or split with
-                same ID is found
+            ValueError: if different media, rater, scheme, split, or attachment
+                with same ID is found
             ValueError: if schemes cannot be combined,
                 e.g. labels have different dtype
             ValueError: if tables cannot be combined
                 (e.g. values in same position overlap or
                 level and dtypes of table indices do not match)
-            RuntimeError: if ``copy_media=True``,
+            RuntimeError: if ``copy_media``
+                or ``copy_attachments``
+                is ``True``,
                 but one of the involved databases was not saved
                 (contains files but no root folder)
             RuntimeError: if any involved database is not portable
@@ -806,6 +813,11 @@ class Database(HeaderBase):
             join_field(other, 'source', ', '.join)
             join_field(other, 'splits', lambda x: join_dict('splits', x))
             join_field(other, 'raters', lambda x: join_dict('raters', x))
+            join_field(
+                other,
+                'attachments',
+                lambda x: join_dict('attachments', x),
+            )
 
         # join tables
         for other in others:
@@ -816,14 +828,33 @@ class Database(HeaderBase):
                 else:
                     self[table_id] = table.copy()
 
-        # copy media files
-
-        if copy_media:
+        if copy_attachments or copy_media:
             if self.root is None:
                 raise RuntimeError(
                     f"You can only update a saved database. "
                     f"'{self.name}' was not saved yet."
                 )
+
+        # copy attachment files
+
+        if copy_attachments:
+            for other in others:
+                if other.root is None:
+                    raise RuntimeError(
+                        f"You can only update with saved databases. "
+                        f"The database '{other.name}' was not saved yet."
+                    )
+                for attachment_id in other.attachments:
+                    for file in other.attachments[attachment_id].files:
+                        src_file = os.path.join(other.root, file)
+                        dst_file = os.path.join(self.root, file)
+                        dst_dir = os.path.dirname(dst_file)
+                        audeer.mkdir(dst_dir)
+                        shutil.copy(src_file, dst_file)
+
+        # copy media files
+
+        if copy_media:
             for other in others:
                 if len(other.files) > 0 and other.root is None:
                     raise RuntimeError(
