@@ -34,9 +34,9 @@ Coding Convention
 -----------------
 
 We follow the PEP8_ convention for Python code
-and check for correct syntax with flake8_.
-Exceptions are defined under the ``[flake8]`` section
-in :file:`setup.cfg`.
+and check for correct syntax with ruff_.
+Exceptions are defined under the ``[tools.ruff]`` section
+in :file:`puproject.toml`.
 
 The checks are executed in the CI using `pre-commit`_.
 You can enable those checks locally by executing::
@@ -45,21 +45,17 @@ You can enable those checks locally by executing::
     pre-commit install
     pre-commit run --all-files
 
-Afterwards flake8_ is executed
+Afterwards ruff_ is executed
 every time you create a commit.
 
-You can also install flake8_
+You can also install ruff_
 and call it directly::
 
-    pip install flake8  # consider system wide installation
-    flake8
-
-It can be restricted to specific folders::
-
-    flake8 audfoo/ tests/
+    pip install ruff  # consider system wide installation
+    ruff audformat
 
 .. _PEP8: http://www.python.org/dev/peps/pep-0008/
-.. _flake8: https://flake8.pycqa.org/en/latest/index.html
+.. _ruff: https://beta.ruff.rs/docs/
 .. _pre-commit: https://pre-commit.com
 
 
