@@ -9,17 +9,13 @@ authors = [
     {name = "Baha Eddine Abrougui", email = "beddine@audeering.com"},
 ]
 description = "Python implementation of audformat"
-readme = [
-    "README.rst",
-    "CHANGELOG.rst",
-]
-license = {text = "MIT", file = "LICENSE"}
+readme = "README.rst"
+license = {file = "LICENSE"}
 keywords = [
     "audio",
     "database",
     "annotation",
 ]
-platforms= "any"
 classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Science/Research",
