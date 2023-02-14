@@ -36,7 +36,7 @@ Coding Convention
 We follow the PEP8_ convention for Python code
 and check for correct syntax with ruff_.
 Exceptions are defined under the ``[tools.ruff]`` section
-in :file:`puproject.toml`.
+in :file:`pyproject.toml`.
 
 The checks are executed in the CI using `pre-commit`_.
 You can enable those checks locally by executing::
