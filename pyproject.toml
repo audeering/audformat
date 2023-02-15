@@ -2,6 +2,7 @@
 requires = ["setuptools>=45", "setuptools_scm[toml]>=6.2"]
 build-backend = "setuptools.build_meta"
 
+
 [project]
 name = "audformat"
 authors = [
@@ -41,14 +42,15 @@ dependencies = [
     "pyyaml >=5.4.1",
     "pandas >=1.4.1",
 ]
-# Version from setuptools_scm
-# https://github.com/pypa/setuptools_scm
 dynamic = ["version"]
+
 [project.urls]
 repository = "https://github.com/audeering/audformat/"
 documentation = "https://audeering.github.io/audformat/"
 
+
 [tool.setuptools.packages.find]
+
 
 [tool.pytest]
 addopts = """
@@ -67,10 +69,8 @@ xfail_strict = true
 # ruff for PEP8 checks
 # https://github.com/charliermarsh/ruff
 [tool.ruff]
-exclude = [
-    ".eggs",
-    "build",
-]
+line-length = 79
+
 [tool.ruff.per-file-ignores]
 "__init__.py" = [
     # ignore unused imports
