@@ -1753,8 +1753,6 @@ def union(
         index = pd.Index(values, name=name)
         index = set_index_dtypes(index, objs[0].dtype)
 
-    # df = pd.concat([o.to_frame() for o in objs])
-    # index = df.index
     index = index.drop_duplicates()
 
     return index
