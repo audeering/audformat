@@ -1724,8 +1724,37 @@ def union(
     # Combine all MultiIndex entries and drop duplicates afterwards,
     # faster than using index.union(),
     # compare https://github.com/audeering/audformat/pull/98
-    df = pd.concat([o.to_frame() for o in objs])
-    index = df.index
+
+    if isinstance(objs[0], pd.MultiIndex):
+
+        names = objs[0].names
+        num_levels = len(names)
+        dtypes = {name: dtype for name, dtype in zip(names, objs[0].dtypes)}
+        values = [[] for _ in range(num_levels)]
+
+        for obj in objs:
+            for idx in range(num_levels):
+                values[idx].extend(obj.get_level_values(idx))
+
+        index = pd.MultiIndex.from_arrays(
+            values,
+            names=names,
+        )
+        index = set_index_dtypes(index, dtypes)
+
+    else:
+
+        name = objs[0].name
+        values = []
+
+        for obj in objs:
+            values.extend(obj.to_list())
+
+        index = pd.Index(values, name=name)
+        index = set_index_dtypes(index, objs[0].dtype)
+
+    # df = pd.concat([o.to_frame() for o in objs])
+    # index = df.index
     index = index.drop_duplicates()
 
     return index
