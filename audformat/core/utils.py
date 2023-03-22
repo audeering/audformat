@@ -1609,6 +1609,9 @@ def to_segmented_index(
     return obj
 
 
+UNION_MAX_NUM_SEG_THRES = 500
+
+
 def union(
     objs: typing.Sequence[pd.Index],
 ) -> pd.Index:
@@ -1721,11 +1724,18 @@ def union(
     objs = _maybe_convert_single_level_multi_index(objs)
     _assert_index_alike(objs)
 
-    # Combine all MultiIndex entries and drop duplicates afterwards,
-    # faster than using index.union(),
-    # compare https://github.com/audeering/audformat/pull/98
+    # Use pd.concat() if at least one index has
+    # more than 500 segments
+    # otherwise create index from lists,
+    # compare https://github.com/audeering/audformat/pull/354
 
-    if isinstance(objs[0], pd.MultiIndex):
+    max_num_seg = max([len(obj) for obj in objs])
+    if max_num_seg > UNION_MAX_NUM_SEG_THRES:
+
+        df = pd.concat([o.to_frame() for o in objs])
+        index = df.index
+
+    elif isinstance(objs[0], pd.MultiIndex):
 
         names = objs[0].names
         num_levels = len(names)
@@ -1752,6 +1762,10 @@ def union(
 
         index = pd.Index(values, name=name)
         index = set_index_dtypes(index, objs[0].dtype)
+
+    # Combine all MultiIndex entries and drop duplicates afterwards,
+    # faster than using index.union(),
+    # compare https://github.com/audeering/audformat/pull/98
 
     index = index.drop_duplicates()
 

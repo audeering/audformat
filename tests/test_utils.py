@@ -2707,6 +2707,13 @@ def test_to_filewise_index(tmpdir, obj, expected_file_names):
 
 
 @pytest.mark.parametrize(
+    'max_num_seg_thres',
+    [
+        None,  # default
+        0,     # force pd.concat() solution
+    ],
+)
+@pytest.mark.parametrize(
     'objs, expected',
     [
         # empty
@@ -2959,7 +2966,12 @@ def test_to_filewise_index(tmpdir, obj, expected_file_names):
         ),
     ]
 )
-def test_union(objs, expected):
+def test_union(max_num_seg_thres, objs, expected):
+
+    max_num_seg_thres_default = audformat.core.utils.UNION_MAX_NUM_SEG_THRES
+    if max_num_seg_thres is not None:
+        audformat.core.utils.UNION_MAX_NUM_SEG_THRES = max_num_seg_thres
+
     pd.testing.assert_index_equal(
         audformat.utils.union(objs),
         expected,
@@ -2980,3 +2992,5 @@ def test_union(objs, expected):
                 ]
             ),
         )
+
+    audformat.core.utils.UNION_MAX_NUM_SEG_THRES = max_num_seg_thres_default
