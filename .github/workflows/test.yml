@@ -64,6 +64,7 @@ jobs:
 
     - name: Test building documentation
       run: |
+        python -m jupyter kernelspec list
         # Disable -W until
         # https://github.com/audeering/audformat/issues/328
         # is solved
