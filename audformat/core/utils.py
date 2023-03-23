@@ -1724,6 +1724,10 @@ def union(
     objs = _maybe_convert_single_level_multi_index(objs)
     _assert_index_alike(objs)
 
+    # Combine all MultiIndex entries and drop duplicates afterwards,
+    # faster than using index.union(),
+    # compare https://github.com/audeering/audformat/pull/98
+
     # Use pd.concat() if at least one index has
     # more than 500 segments
     # otherwise create index from lists,
@@ -1762,10 +1766,6 @@ def union(
 
         index = pd.Index(values, name=name)
         index = set_index_dtypes(index, objs[0].dtype)
-
-    # Combine all MultiIndex entries and drop duplicates afterwards,
-    # faster than using index.union(),
-    # compare https://github.com/audeering/audformat/pull/98
 
     index = index.drop_duplicates()
 
