@@ -2968,9 +2968,9 @@ def test_to_filewise_index(tmpdir, obj, expected_file_names):
 )
 def test_union(max_num_seg_thres, objs, expected):
 
-    max_num_seg_thres_default = audformat.core.utils.UNION_MAX_NUM_SEG_THRES
+    max_num_seg_thres_default = audformat.core.utils.UNION_MAX_INDEX_LEN_THRES
     if max_num_seg_thres is not None:
-        audformat.core.utils.UNION_MAX_NUM_SEG_THRES = max_num_seg_thres
+        audformat.core.utils.UNION_MAX_INDEX_LEN_THRES = max_num_seg_thres
 
     pd.testing.assert_index_equal(
         audformat.utils.union(objs),
@@ -2993,4 +2993,4 @@ def test_union(max_num_seg_thres, objs, expected):
             ),
         )
 
-    audformat.core.utils.UNION_MAX_NUM_SEG_THRES = max_num_seg_thres_default
+    audformat.core.utils.UNION_MAX_INDEX_LEN_THRES = max_num_seg_thres_default

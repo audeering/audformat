@@ -1609,7 +1609,7 @@ def to_segmented_index(
     return obj
 
 
-UNION_MAX_NUM_SEG_THRES = 500
+UNION_MAX_INDEX_LEN_THRES = 500
 
 
 def union(
@@ -1734,7 +1734,7 @@ def union(
     # compare https://github.com/audeering/audformat/pull/354
 
     max_num_seg = max([len(obj) for obj in objs])
-    if max_num_seg > UNION_MAX_NUM_SEG_THRES:
+    if max_num_seg > UNION_MAX_INDEX_LEN_THRES:
 
         df = pd.concat([o.to_frame() for o in objs])
         index = df.index

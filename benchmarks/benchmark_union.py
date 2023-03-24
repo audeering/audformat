@@ -43,7 +43,7 @@ def benchmark(
     if os.path.exists(cache_path):
         return pd.read_pickle(cache_path)
 
-    audformat.core.utils.UNION_MAX_NUM_SEG_THRES = threshold
+    audformat.core.utils.UNION_MAX_INDEX_LEN_THRES = threshold
 
     ds = []
 
@@ -81,7 +81,7 @@ def benchmark(
 
 def main():
 
-    default_threshold = audformat.core.utils.UNION_MAX_NUM_SEG_THRES
+    default_threshold = audformat.core.utils.UNION_MAX_INDEX_LEN_THRES
 
     num_segs = tuple(range(100, 1000, 100))
     num_objs = (10, 100, 1000)
