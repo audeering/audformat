@@ -101,7 +101,7 @@ def main():
         )
 
         # use pd.concat() only when at least one index
-        # has more than UNION_MAX_NUM_SEG_THRES elements
+        # has more than UNION_MAX_INDEX_LEN_THRES entries
         # otherwise create index from lists
         y_audformat = benchmark(
             segmented,
