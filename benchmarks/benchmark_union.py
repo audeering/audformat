@@ -8,6 +8,18 @@ import audeer
 import audformat
 
 
+# Benchmark for the utility function
+# audformat.utils.union()
+# that concatenates a list of index objects.
+# This can be achieved with pd.concat().
+# However,
+# for indices with less than 500 entries,
+# it is faster to convert the level values to lists
+# and create the index from those.
+#
+# See also https://github.com/audeering/audformat/pull/354
+
+
 cache_root = audeer.mkdir('cache')
 
 
