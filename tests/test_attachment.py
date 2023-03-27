@@ -27,7 +27,7 @@ def test_attachment(tmpdir):
         with pytest.raises(ValueError, match=re.escape(error_msg)):
             audformat.Attachment(path)
 
-    # Create database (path does not need to exist)
+    # Create database, path does not need to exist
     file_path = 'attachments/file.txt'
     folder_path = 'attachments/folder'
     db = audformat.Database('db')
@@ -53,29 +53,19 @@ def test_attachment(tmpdir):
     db_path = audeer.path(tmpdir, 'db')
     audeer.mkdir(db_path)
 
-    # Save database, path needs to exist
-    error_msg = (
-        f"The provided path '{file_path}' "
-        f"of attachment 'file' "
-        "does not exist."
-    )
-    with pytest.raises(FileNotFoundError, match=error_msg):
-        db.save(db_path)
+    # Save database, path does not need to exist
+    db.save(db_path)
 
-    # Save database, path is not allowed to be a symlink
+    # Save database, path is allowed to be a symlink
+    audeer.rmdir(db_path)
     audeer.mkdir(audeer.path(db_path, folder_path))
     os.symlink(
         audeer.path(db_path, folder_path),
         audeer.path(db_path, file_path),
     )
-    error_msg = (
-        f"The provided path '{file_path}' "
-        f"of attachment 'file' "
-        "must not be a symlink."
-    )
-    with pytest.raises(RuntimeError, match=error_msg):
-        db.save(db_path)
+    db.save(db_path)
 
+    # Replace symlink by file
     os.remove(os.path.join(db_path, file_path))
     audeer.touch(audeer.path(db_path, file_path))
     db.save(db_path)

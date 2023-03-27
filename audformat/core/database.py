@@ -555,14 +555,6 @@ class Database(HeaderBase):
                 on the machine multiplied by 5
             verbose: show progress bar
 
-        Raises:
-            FileNotFoundError: if a file or folder
-                associated with an attachment
-                cannot be found
-            RuntimeError: if a file or folder
-                associated with an attachment
-                is a symlink
-
         """
         root = audeer.mkdir(root)
 
@@ -593,10 +585,6 @@ class Database(HeaderBase):
                 progress_bar=verbose,
                 task_description='Save tables',
             )
-
-            # Check attachments exist
-            for attachment_id in list(self.attachments):
-                self.attachments[attachment_id]._check_path(root)
 
         self._name = name
         self._root = root
