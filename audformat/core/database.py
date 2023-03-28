@@ -969,10 +969,6 @@ class Database(HeaderBase):
         Returns:
             database object
 
-        Raises:
-            FileNotFoundError: if the header file of the database
-                cannot be found
-
         """
         ext = '.yaml'
         root = audeer.path(root)
