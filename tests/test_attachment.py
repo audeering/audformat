@@ -88,7 +88,7 @@ def test_attachment(tmpdir):
 
     # Load database
     #
-    # path needs not to exist when loading the database
+    # path must not exist when loading the database
     audeer.rmdir(audeer.path(db_path, os.path.dirname(file_path)))
     assert not os.path.exists(audeer.path(db_path, file_path))
     audformat.Database.load(db_path, load_data=True)
