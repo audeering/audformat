@@ -555,14 +555,6 @@ class Database(HeaderBase):
                 on the machine multiplied by 5
             verbose: show progress bar
 
-        Raises:
-            FileNotFoundError: if a file or folder
-                associated with an attachment
-                cannot be found
-            RuntimeError: if a file or folder
-                associated with an attachment
-                is a symlink
-
         """
         root = audeer.mkdir(root)
 
@@ -593,10 +585,6 @@ class Database(HeaderBase):
                 progress_bar=verbose,
                 task_description='Save tables',
             )
-
-            # Check attachments exist
-            for attachment_id in list(self.attachments):
-                self.attachments[attachment_id]._check_path(root)
 
         self._name = name
         self._root = root
@@ -981,12 +969,6 @@ class Database(HeaderBase):
         Returns:
             database object
 
-        Raises:
-            FileNotFoundError: if a file or folder
-                associated with an attachment
-                cannot be found
-                when using ``load_data=True``
-
         """
         ext = '.yaml'
         root = audeer.path(root)
@@ -1002,11 +984,6 @@ class Database(HeaderBase):
 
             params = []
             table_ids = []
-
-            if 'attachments' in header and header['attachments']:
-                if load_data:
-                    for attachment_id in header['attachments']:
-                        db.attachments[attachment_id]._check_path(root)
 
             if 'tables' in header and header['tables']:
                 for table_id in header['tables']:
@@ -1181,8 +1158,6 @@ class Database(HeaderBase):
     ) -> Attachment:
         attachment._db = self
         attachment._id = attachment_id
-        if self.root is not None:
-            attachment._check_path(self.root)
         for other_id in list(self.attachments):
             attachment._check_overlap(self.attachments[other_id])
         return attachment
