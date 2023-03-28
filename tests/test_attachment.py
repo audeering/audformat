@@ -88,18 +88,11 @@ def test_attachment(tmpdir):
 
     # Load database
     #
-    # path needs to exist when requesting data
+    # path needs not to exist when loading the database
     audeer.rmdir(audeer.path(db_path, os.path.dirname(file_path)))
     assert not os.path.exists(audeer.path(db_path, file_path))
-    error_msg = (
-        f"The provided path '{file_path}' "
-        f"of attachment 'file' "
-        "does not exist."
-    )
-    with pytest.raises(FileNotFoundError, match=error_msg):
-        db = audformat.Database.load(db_path, load_data=True)
-    # but not when not requesting data
-    db = audformat.Database.load(db_path, load_data=False)
+    audformat.Database.load(db_path, load_data=True)
+    audformat.Database.load(db_path, load_data=False)
 
 
 @pytest.mark.parametrize(
