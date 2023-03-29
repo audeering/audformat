@@ -7,6 +7,19 @@ The format is based on `Keep a Changelog`_,
 and this project adheres to `Semantic Versioning`_.
 
 
+Version 0.16.1 (2023-03-29)
+---------------------------
+
+* Added: ``copy_attachments`` argument
+  to ``audformat.Database.update()``
+* Changed: preserve ``dtypes``
+  when ``audformat.Table.get()``
+  is called with an index
+* Changed: speed up ``audformat.utils.union()``
+* Changed: allow to save a database
+  with missing attachments
+
+
 Version 0.16.0 (2023-01-12)
 ---------------------------
 
