@@ -70,7 +70,7 @@
             
             
               <div class="version">
-                v0.16.0
+                v0.16.1
               </div>
             
           
@@ -721,14 +721,6 @@
 <span class="sd">                on the machine multiplied by 5</span>
 <span class="sd">            verbose: show progress bar</span>
 
-<span class="sd">        Raises:</span>
-<span class="sd">            FileNotFoundError: if a file or folder</span>
-<span class="sd">                associated with an attachment</span>
-<span class="sd">                cannot be found</span>
-<span class="sd">            RuntimeError: if a file or folder</span>
-<span class="sd">                associated with an attachment</span>
-<span class="sd">                is a symlink</span>
-
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">root</span> <span class="o">=</span> <span class="n">audeer</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
 
@@ -760,10 +752,6 @@
                 <span class="n">task_description</span><span class="o">=</span><span class="s1">&#39;Save tables&#39;</span><span class="p">,</span>
             <span class="p">)</span>
 
-            <span class="c1"># Check attachments exist</span>
-            <span class="k">for</span> <span class="n">attachment_id</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">attachments</span><span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">attachments</span><span class="p">[</span><span class="n">attachment_id</span><span class="p">]</span><span class="o">.</span><span class="n">_check_path</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
-
         <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_root</span> <span class="o">=</span> <span class="n">root</span></div>
 
@@ -771,6 +759,7 @@
             <span class="bp">self</span><span class="p">,</span>
             <span class="n">others</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="s1">&#39;Database&#39;</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="s1">&#39;Database&#39;</span><span class="p">]],</span>
             <span class="o">*</span><span class="p">,</span>
+            <span class="n">copy_attachments</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
             <span class="n">copy_media</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
             <span class="n">overwrite</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Database&#39;</span><span class="p">:</span>
@@ -780,7 +769,9 @@
 <span class="sd">        *license* and *usage* have to match.</span>
 <span class="sd">        Labels and values of *schemes*</span>
 <span class="sd">        with the same ID are combined.</span>
-<span class="sd">        *Media*, *raters*, *schemes* and *splits* that are not part of</span>
+<span class="sd">        *Media*, *raters*, *schemes*, *splits*,</span>
+<span class="sd">        and *attachments*</span>
+<span class="sd">        that are not part of</span>
 <span class="sd">        the database yet are added.</span>
 <span class="sd">        Other fields will be updated by</span>
 <span class="sd">        applying the following rules:</span>
@@ -801,6 +792,8 @@
 
 <span class="sd">        Args:</span>
 <span class="sd">            others: database object(s)</span>
+<span class="sd">            copy_attachments: if ``True`` it copies the attachment files</span>
+<span class="sd">                associated with ``others`` to the current database root folder</span>
 <span class="sd">            copy_media: if ``True`` it copies the media files</span>
 <span class="sd">                associated with ``others`` to the current database root folder</span>
 <span class="sd">            overwrite: overwrite table values where indices overlap</span>
@@ -810,14 +803,16 @@
 
 <span class="sd">        Raises:</span>
 <span class="sd">            ValueError: if database has different license or usage</span>
-<span class="sd">            ValueError: if different media, rater, scheme or split with</span>
-<span class="sd">                same ID is found</span>
+<span class="sd">            ValueError: if different media, rater, scheme, split, or attachment</span>
+<span class="sd">                with same ID is found</span>
 <span class="sd">            ValueError: if schemes cannot be combined,</span>
 <span class="sd">                e.g. labels have different dtype</span>
 <span class="sd">            ValueError: if tables cannot be combined</span>
 <span class="sd">                (e.g. values in same position overlap or</span>
 <span class="sd">                level and dtypes of table indices do not match)</span>
-<span class="sd">            RuntimeError: if ``copy_media=True``,</span>
+<span class="sd">            RuntimeError: if ``copy_media``</span>
+<span class="sd">                or ``copy_attachments``</span>
+<span class="sd">                is ``True``,</span>
 <span class="sd">                but one of the involved databases was not saved</span>
 <span class="sd">                (contains files but no root folder)</span>
 <span class="sd">            RuntimeError: if any involved database is not portable</span>
@@ -972,6 +967,11 @@
             <span class="n">join_field</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="s1">&#39;source&#39;</span><span class="p">,</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">)</span>
             <span class="n">join_field</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="s1">&#39;splits&#39;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">join_dict</span><span class="p">(</span><span class="s1">&#39;splits&#39;</span><span class="p">,</span> <span class="n">x</span><span class="p">))</span>
             <span class="n">join_field</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="s1">&#39;raters&#39;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">join_dict</span><span class="p">(</span><span class="s1">&#39;raters&#39;</span><span class="p">,</span> <span class="n">x</span><span class="p">))</span>
+            <span class="n">join_field</span><span class="p">(</span>
+                <span class="n">other</span><span class="p">,</span>
+                <span class="s1">&#39;attachments&#39;</span><span class="p">,</span>
+                <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">join_dict</span><span class="p">(</span><span class="s1">&#39;attachments&#39;</span><span class="p">,</span> <span class="n">x</span><span class="p">),</span>
+            <span class="p">)</span>
 
         <span class="c1"># join tables</span>
         <span class="k">for</span> <span class="n">other</span> <span class="ow">in</span> <span class="n">others</span><span class="p">:</span>
@@ -982,14 +982,33 @@
                 <span class="k">else</span><span class="p">:</span>
                     <span class="bp">self</span><span class="p">[</span><span class="n">table_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 
-        <span class="c1"># copy media files</span>
-
-        <span class="k">if</span> <span class="n">copy_media</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">copy_attachments</span> <span class="ow">or</span> <span class="n">copy_media</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">root</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
                     <span class="sa">f</span><span class="s2">&quot;You can only update a saved database. &quot;</span>
                     <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39; was not saved yet.&quot;</span>
                 <span class="p">)</span>
+
+        <span class="c1"># copy attachment files</span>
+
+        <span class="k">if</span> <span class="n">copy_attachments</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">other</span> <span class="ow">in</span> <span class="n">others</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">other</span><span class="o">.</span><span class="n">root</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;You can only update with saved databases. &quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot;The database &#39;</span><span class="si">{</span><span class="n">other</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39; was not saved yet.&quot;</span>
+                    <span class="p">)</span>
+                <span class="k">for</span> <span class="n">attachment_id</span> <span class="ow">in</span> <span class="n">other</span><span class="o">.</span><span class="n">attachments</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">other</span><span class="o">.</span><span class="n">attachments</span><span class="p">[</span><span class="n">attachment_id</span><span class="p">]</span><span class="o">.</span><span class="n">files</span><span class="p">:</span>
+                        <span class="n">src_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">root</span><span class="p">,</span> <span class="n">file</span><span class="p">)</span>
+                        <span class="n">dst_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">,</span> <span class="n">file</span><span class="p">)</span>
+                        <span class="n">dst_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">dst_file</span><span class="p">)</span>
+                        <span class="n">audeer</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">dst_dir</span><span class="p">)</span>
+                        <span class="n">shutil</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">src_file</span><span class="p">,</span> <span class="n">dst_file</span><span class="p">)</span>
+
+        <span class="c1"># copy media files</span>
+
+        <span class="k">if</span> <span class="n">copy_media</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">other</span> <span class="ow">in</span> <span class="n">others</span><span class="p">:</span>
                 <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">files</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">other</span><span class="o">.</span><span class="n">root</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
@@ -1116,12 +1135,6 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            database object</span>
 
-<span class="sd">        Raises:</span>
-<span class="sd">            FileNotFoundError: if a file or folder</span>
-<span class="sd">                associated with an attachment</span>
-<span class="sd">                cannot be found</span>
-<span class="sd">                when using ``load_data=True``</span>
-
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">ext</span> <span class="o">=</span> <span class="s1">&#39;.yaml&#39;</span>
         <span class="n">root</span> <span class="o">=</span> <span class="n">audeer</span><span class="o">.</span><span class="n">path</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
@@ -1137,11 +1150,6 @@
 
             <span class="n">params</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="n">table_ids</span> <span class="o">=</span> <span class="p">[]</span>
-
-            <span class="k">if</span> <span class="s1">&#39;attachments&#39;</span> <span class="ow">in</span> <span class="n">header</span> <span class="ow">and</span> <span class="n">header</span><span class="p">[</span><span class="s1">&#39;attachments&#39;</span><span class="p">]:</span>
-                <span class="k">if</span> <span class="n">load_data</span><span class="p">:</span>
-                    <span class="k">for</span> <span class="n">attachment_id</span> <span class="ow">in</span> <span class="n">header</span><span class="p">[</span><span class="s1">&#39;attachments&#39;</span><span class="p">]:</span>
-                        <span class="n">db</span><span class="o">.</span><span class="n">attachments</span><span class="p">[</span><span class="n">attachment_id</span><span class="p">]</span><span class="o">.</span><span class="n">_check_path</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="s1">&#39;tables&#39;</span> <span class="ow">in</span> <span class="n">header</span> <span class="ow">and</span> <span class="n">header</span><span class="p">[</span><span class="s1">&#39;tables&#39;</span><span class="p">]:</span>
                 <span class="k">for</span> <span class="n">table_id</span> <span class="ow">in</span> <span class="n">header</span><span class="p">[</span><span class="s1">&#39;tables&#39;</span><span class="p">]:</span>
@@ -1316,8 +1324,6 @@
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Attachment</span><span class="p">:</span>
         <span class="n">attachment</span><span class="o">.</span><span class="n">_db</span> <span class="o">=</span> <span class="bp">self</span>
         <span class="n">attachment</span><span class="o">.</span><span class="n">_id</span> <span class="o">=</span> <span class="n">attachment_id</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">root</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">attachment</span><span class="o">.</span><span class="n">_check_path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">other_id</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">attachments</span><span class="p">):</span>
             <span class="n">attachment</span><span class="o">.</span><span class="n">_check_overlap</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">attachments</span><span class="p">[</span><span class="n">other_id</span><span class="p">])</span>
         <span class="k">return</span> <span class="n">attachment</span>
@@ -1364,7 +1370,7 @@
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2023/01/12 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2023/03/29 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>

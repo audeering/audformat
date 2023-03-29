@@ -72,7 +72,7 @@
             
             
               <div class="version">
-                v0.16.0
+                v0.16.1
               </div>
             
           
@@ -216,7 +216,7 @@ information about the speakers in the database.</p>
 </div>
 </div>
 <p>If we request the <code class="docutils literal notranslate"><span class="pre">transcription</span></code> column,
-we get a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Series.html#pandas.Series" title="(in pandas v1.5.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.Series</span></code></a> with the word IDs:</p>
+we get a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Series.html#pandas.Series" title="(in pandas v1.5.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.Series</span></code></a> with the word IDs:</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="p">[</span><span class="s1">&#39;files&#39;</span><span class="p">][</span><span class="s1">&#39;transcription&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
@@ -238,7 +238,7 @@ we get a <a class="reference external" href="https://pandas.pydata.org/pandas-do
   <tbody>
     <tr>
       <th>audio/001.wav</th>
-      <td>0</td>
+      <td>1</td>
     </tr>
     <tr>
       <th>audio/002.wav</th>
@@ -246,7 +246,7 @@ we get a <a class="reference external" href="https://pandas.pydata.org/pandas-do
     </tr>
     <tr>
       <th>audio/003.wav</th>
-      <td>1</td>
+      <td>0</td>
     </tr>
     <tr>
       <th>audio/004.wav</th>
@@ -254,7 +254,7 @@ we get a <a class="reference external" href="https://pandas.pydata.org/pandas-do
     </tr>
     <tr>
       <th>audio/005.wav</th>
-      <td>0</td>
+      <td>1</td>
     </tr>
   </tbody>
 </table></div></div>
@@ -282,7 +282,7 @@ we can use the <code class="docutils literal notranslate"><span class="pre">map<
   <tbody>
     <tr>
       <th>audio/001.wav</th>
-      <td>hello</td>
+      <td>goodbye</td>
     </tr>
     <tr>
       <th>audio/002.wav</th>
@@ -290,7 +290,7 @@ we can use the <code class="docutils literal notranslate"><span class="pre">map<
     </tr>
     <tr>
       <th>audio/003.wav</th>
-      <td>goodbye</td>
+      <td>hello</td>
     </tr>
     <tr>
       <th>audio/004.wav</th>
@@ -298,14 +298,14 @@ we can use the <code class="docutils literal notranslate"><span class="pre">map<
     </tr>
     <tr>
       <th>audio/005.wav</th>
-      <td>hello</td>
+      <td>goodbye</td>
     </tr>
   </tbody>
 </table></div></div>
 </div>
 <p>Note that we can pass any string to <code class="docutils literal notranslate"><span class="pre">map</span></code>.
 It will be used as the name of
-the returned <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Series.html#pandas.Series" title="(in pandas v1.5.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.Series</span></code></a>.</p>
+the returned <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Series.html#pandas.Series" title="(in pandas v1.5.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.Series</span></code></a>.</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="p">[</span><span class="s1">&#39;files&#39;</span><span class="p">][</span><span class="s1">&#39;transcription&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">map</span><span class="o">=</span><span class="s1">&#39;word&#39;</span><span class="p">)</span>
@@ -327,7 +327,7 @@ the returned <a class="reference external" href="https://pandas.pydata.org/panda
   <tbody>
     <tr>
       <th>audio/001.wav</th>
-      <td>hello</td>
+      <td>goodbye</td>
     </tr>
     <tr>
       <th>audio/002.wav</th>
@@ -335,7 +335,7 @@ the returned <a class="reference external" href="https://pandas.pydata.org/panda
     </tr>
     <tr>
       <th>audio/003.wav</th>
-      <td>goodbye</td>
+      <td>hello</td>
     </tr>
     <tr>
       <th>audio/004.wav</th>
@@ -343,7 +343,7 @@ the returned <a class="reference external" href="https://pandas.pydata.org/panda
     </tr>
     <tr>
       <th>audio/005.wav</th>
-      <td>hello</td>
+      <td>goodbye</td>
     </tr>
   </tbody>
 </table></div></div>
@@ -375,15 +375,15 @@ a list of names is returned:</p>
     </tr>
     <tr>
       <th>audio/002.wav</th>
-      <td>spk3</td>
+      <td>spk1</td>
     </tr>
     <tr>
       <th>audio/003.wav</th>
-      <td>spk2</td>
+      <td>spk3</td>
     </tr>
     <tr>
       <th>audio/004.wav</th>
-      <td>spk3</td>
+      <td>spk1</td>
     </tr>
     <tr>
       <th>audio/005.wav</th>
@@ -418,15 +418,15 @@ a list of names is returned:</p>
     </tr>
     <tr>
       <th>audio/002.wav</th>
-      <td>37</td>
+      <td>33</td>
     </tr>
     <tr>
       <th>audio/003.wav</th>
-      <td>30</td>
+      <td>37</td>
     </tr>
     <tr>
       <th>audio/004.wav</th>
-      <td>37</td>
+      <td>33</td>
     </tr>
     <tr>
       <th>audio/005.wav</th>
@@ -478,27 +478,27 @@ as keys and scheme fields as values.</p>
   <tbody>
     <tr>
       <th>audio/001.wav</th>
-      <td>0</td>
+      <td>1</td>
       <td>30</td>
     </tr>
     <tr>
       <th>audio/002.wav</th>
       <td>1</td>
-      <td>37</td>
+      <td>33</td>
     </tr>
     <tr>
       <th>audio/003.wav</th>
-      <td>1</td>
-      <td>30</td>
+      <td>0</td>
+      <td>37</td>
     </tr>
     <tr>
       <th>audio/004.wav</th>
       <td>0</td>
-      <td>37</td>
+      <td>33</td>
     </tr>
     <tr>
       <th>audio/005.wav</th>
-      <td>0</td>
+      <td>1</td>
       <td>30</td>
     </tr>
   </tbody>
@@ -550,31 +550,31 @@ and to map the same column to multiple fields.</p>
   <tbody>
     <tr>
       <th>audio/001.wav</th>
-      <td>hello</td>
+      <td>goodbye</td>
       <td>30</td>
       <td>female</td>
     </tr>
     <tr>
       <th>audio/002.wav</th>
       <td>goodbye</td>
-      <td>37</td>
+      <td>33</td>
       <td>male</td>
     </tr>
     <tr>
       <th>audio/003.wav</th>
-      <td>goodbye</td>
-      <td>30</td>
-      <td>female</td>
-    </tr>
-    <tr>
-      <th>audio/004.wav</th>
       <td>hello</td>
       <td>37</td>
       <td>male</td>
     </tr>
     <tr>
-      <th>audio/005.wav</th>
+      <th>audio/004.wav</th>
       <td>hello</td>
+      <td>33</td>
+      <td>male</td>
+    </tr>
+    <tr>
+      <th>audio/005.wav</th>
+      <td>goodbye</td>
       <td>30</td>
       <td>female</td>
     </tr>
@@ -632,40 +632,40 @@ we can include the column name in the list.</p>
     <tr>
       <th>audio/001.wav</th>
       <td>spk2</td>
-      <td>0</td>
-      <td>hello</td>
+      <td>1</td>
+      <td>goodbye</td>
       <td>30</td>
       <td>female</td>
     </tr>
     <tr>
       <th>audio/002.wav</th>
-      <td>spk3</td>
+      <td>spk1</td>
       <td>1</td>
       <td>goodbye</td>
-      <td>37</td>
+      <td>33</td>
       <td>male</td>
     </tr>
     <tr>
       <th>audio/003.wav</th>
-      <td>spk2</td>
-      <td>1</td>
-      <td>goodbye</td>
-      <td>30</td>
-      <td>female</td>
-    </tr>
-    <tr>
-      <th>audio/004.wav</th>
       <td>spk3</td>
       <td>0</td>
       <td>hello</td>
       <td>37</td>
+      <td>male</td>
+    </tr>
+    <tr>
+      <th>audio/004.wav</th>
+      <td>spk1</td>
+      <td>0</td>
+      <td>hello</td>
+      <td>33</td>
       <td>male</td>
     </tr>
     <tr>
       <th>audio/005.wav</th>
       <td>spk2</td>
-      <td>0</td>
-      <td>hello</td>
+      <td>1</td>
+      <td>goodbye</td>
       <td>30</td>
       <td>female</td>
     </tr>
@@ -698,7 +698,7 @@ we can include the column name in the list.</p>
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2023/01/12 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2023/03/29 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
