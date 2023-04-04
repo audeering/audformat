@@ -343,6 +343,12 @@ class Column(HeaderBase):
                 # as introduced at
                 # https://pandas.pydata.org/docs/dev/whatsnew/v1.5.0.html#inplace-operation-when-setting-values-with-loc-and-iloc
                 warnings.simplefilter(action='ignore', category=FutureWarning)
+                # Avoid DeprecationWarning
+                # for newer versions of pandas (<2.0.0)
+                warnings.simplefilter(
+                    action='ignore',
+                    category=DeprecationWarning,
+                )
                 df.loc[index, column_id] = pd.Series(
                     values,
                     index=index,
