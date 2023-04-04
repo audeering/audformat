@@ -261,6 +261,8 @@ def concat(
             )
         columns_reindex[column.name][column.index] = column
 
+    # Use `None` to force `{}` return the correct index, see
+    # https://github.com/pandas-dev/pandas/issues/52404
     df = pd.DataFrame(columns_reindex or None, index=index)
 
     if not return_as_frame and len(df.columns) == 1:
