@@ -2261,13 +2261,13 @@ def test_replace_file_extension(index, extension, pattern, expected_index):
         ),
         (
             audformat.filewise_index(['1', '2']),
-            'int',
+            'int64',
             pd.Index([1, 2], name='file'),
         ),
         (
             audformat.segmented_index(['1', '2'], [0, 0], [1, 1]),
             {
-                'file': 'int',
+                'file': 'int64',
                 'start': 'str',
                 'end': 'str',
             },
@@ -2289,7 +2289,7 @@ def test_replace_file_extension(index, extension, pattern, expected_index):
                 names=['idx', 'time'],
             ),
             {
-                'idx': 'int',
+                'idx': 'int64',
                 'time': 'timedelta64[ns]',
             },
             pd.MultiIndex.from_arrays(
@@ -2309,7 +2309,7 @@ def test_replace_file_extension(index, extension, pattern, expected_index):
                 names=['idx', 'date'],
             ),
             {
-                'idx': 'int',
+                'idx': 'int64',
                 'date': 'datetime64[ns]',
             },
             pd.MultiIndex.from_arrays(

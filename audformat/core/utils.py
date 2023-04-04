@@ -261,7 +261,9 @@ def concat(
             )
         columns_reindex[column.name][column.index] = column
 
-    df = pd.DataFrame(columns_reindex, index=index)
+    # Use `None` to force `{}` return the correct index, see
+    # https://github.com/pandas-dev/pandas/issues/52404
+    df = pd.DataFrame(columns_reindex or None, index=index)
 
     if not return_as_frame and len(df.columns) == 1:
         return df[df.columns[0]]
@@ -1281,8 +1283,8 @@ def set_index_dtypes(
         dtype: object
         >>> index5 = set_index_dtypes(index3, 'string')
         >>> index5.dtypes
-        level1    string
-        level2    string
+        level1    string[python]
+        level2    string[python]
         dtype: object
 
     """
