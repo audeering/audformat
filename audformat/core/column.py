@@ -339,16 +339,14 @@ class Column(HeaderBase):
                 values = [values] * len(index)
             values = to_array(values)
             with warnings.catch_warnings():
-                # Avoid FutureWarning for setting values in place
+                # Avoid FutureWarning and DeprecationWarning
+                # for pandas 1.5.0 to 1.5.3
+                # for setting values in place
                 # as introduced at
                 # https://pandas.pydata.org/docs/dev/whatsnew/v1.5.0.html#inplace-operation-when-setting-values-with-loc-and-iloc
-                warnings.simplefilter(action='ignore', category=FutureWarning)
-                # Avoid DeprecationWarning
-                # for newer versions of pandas (<2.0.0)
-                warnings.simplefilter(
-                    action='ignore',
-                    category=DeprecationWarning,
-                )
+                # For pandas >=2.0.0 values are always set in place
+                for warning in [FutureWarning, DeprecationWarning]:
+                    warnings.simplefilter(action='ignore', category=warning)
                 df.loc[index, column_id] = pd.Series(
                     values,
                     index=index,
