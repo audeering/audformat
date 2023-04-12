@@ -969,6 +969,12 @@ class Database(HeaderBase):
         Returns:
             database object
 
+        Raises:
+            FileNotFoundError: if the database header file cannot be found
+                under ``root``
+            RuntimeError: if a CSV table file is newer
+                than the corresponding PKL file
+
         """
         ext = '.yaml'
         root = audeer.path(root)
