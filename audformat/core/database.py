@@ -188,7 +188,13 @@ class Database(HeaderBase):
             value_type=Attachment,
             set_callback=self._set_attachment,
         )
-        r"""Dictionary of attachments"""
+        r"""Dictionary of attachments.
+
+        Raises:
+            RuntimeError: if the path of a newly assigned attachment
+                overlaps with the path of already assigned attachments
+
+        """
         self.media = HeaderDict(value_type=Media)
         r"""Dictionary of media information"""
         self.raters = HeaderDict(value_type=Rater)
