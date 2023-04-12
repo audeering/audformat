@@ -359,6 +359,35 @@ def test_segmented(num_files, num_segments_per_file, values):
     pd.testing.assert_series_equal(table.df[column_id], series)
 
 
+@pytest.mark.parametrize(
+    'timezone, values, expected_dates',
+    [
+        (
+            'UTC',
+            [1],
+            [pd.Timestamp('1970-01-01T00:00:00.000000001')],
+        ),
+        (
+            'Europe/Berlin',
+            [1],
+            [pd.Timestamp('1970-01-01T01:00:00.000000001')],
+        ),
+    ]
+)
+def test_set_dates(timezone, values, expected_dates):
+    # Ensure we handle dates with different time zones,
+    # see https://github.com/audeering/audformat/issues/364
+    db = audformat.Database('db')
+    db.schemes['date'] = audformat.Scheme('date')
+    index = audformat.filewise_index([f'f{n}' for n in range(len(values))])
+    db['table'] = audformat.Table(index)
+    db['table']['column'] = audformat.Column(scheme_id='date')
+    dates = pd.to_datetime(values, utc=True)
+    dates = dates.tz_convert(timezone)
+    db['table']['column'].set(dates)
+    assert list(db['table'].df.column) == expected_dates
+
+
 def test_set_labels():
     # Ensure we handle NaN when setting labels
     # from Series and ndarray,

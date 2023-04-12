@@ -338,6 +338,14 @@ class Column(HeaderBase):
             if is_scalar(values):
                 values = [values] * len(index)
             values = to_array(values)
+            if dtype == 'datetime64[ns]':
+                # Ensure all date values are timezone unaware,
+                # see https://github.com/audeering/audformat/issues/364
+                values = [
+                    pd.to_datetime(value).tz_localize(None)
+                    if value is not None else value
+                    for value in values
+                ]
             with warnings.catch_warnings():
                 # Avoid FutureWarning and DeprecationWarning
                 # for pandas 1.5.0 to 1.5.3
