@@ -359,6 +359,17 @@ def test_segmented(num_files, num_segments_per_file, values):
     pd.testing.assert_series_equal(table.df[column_id], series)
 
 
+def test_set_dates():
+    # Ensure we handle dates with different time zones,
+    # see https://github.com/audeering/audformat/issues/364
+    db = audformat.Database('db')
+    db.schemes['date'] = audformat.Scheme('date')
+    db['table'] = audformat.Table(audformat.filewise_index(['f1', 'f2']))
+    db['table']['column'] = audformat.Column(scheme_id='date')
+    db['table']['column'].set(pd.to_datetime([1, 1], utc=True))
+    # TODO: add assert statement
+
+
 def test_set_labels():
     # Ensure we handle NaN when setting labels
     # from Series and ndarray,
