@@ -192,7 +192,7 @@ class Database(HeaderBase):
 
         Raises:
             RuntimeError: if the path of a newly assigned attachment
-                overlaps with the path of already assigned attachments
+                overlaps with the path of an existing attachment
 
         """
         self.media = HeaderDict(value_type=Media)
