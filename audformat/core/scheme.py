@@ -173,6 +173,21 @@ class Scheme(common.HeaderBase):
         r"""Maximum value"""
 
     @property
+    def is_numeric(self) -> bool:
+        r"""Data type is numeric.
+
+        Returns:
+            ``True`` if data type is numeric
+
+        """
+        return self.dtype in (define.DataType.INTEGER, define.DataType.FLOAT)
+
+    @property
+    def labels_as_list(self) -> typing.List:
+        r"""Scheme labels as list"""
+        return self._labels_to_list(self.labels)
+
+    @property
     def uses_table(self) -> bool:
         r"""Scheme has labels stored in a misc table.
 
@@ -188,16 +203,6 @@ class Scheme(common.HeaderBase):
 
         """
         return isinstance(self.labels, str)
-
-    @property
-    def is_numeric(self) -> bool:
-        r"""Data type is numeric.
-
-        Returns:
-            ``True`` if data type is numeric
-
-        """
-        return self.dtype in (define.DataType.INTEGER, define.DataType.FLOAT)
 
     def draw(
             self,
@@ -251,11 +256,6 @@ class Scheme(common.HeaderBase):
                     x[idx] = None
 
         return x
-
-    @property
-    def labels_as_list(self) -> typing.List:
-        r"""Scheme labels as list."""
-        return self._labels_to_list(self.labels)
 
     def to_pandas_dtype(self) -> typing.Union[
         str, pd.api.types.CategoricalDtype,
