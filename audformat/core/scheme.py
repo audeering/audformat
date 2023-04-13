@@ -252,6 +252,11 @@ class Scheme(common.HeaderBase):
 
         return x
 
+    @property
+    def labels_as_list(self) -> typing.List:
+        r"""Scheme labels as list."""
+        return self._labels_to_list(self.labels)
+
     def to_pandas_dtype(self) -> typing.Union[
         str, pd.api.types.CategoricalDtype,
     ]:
