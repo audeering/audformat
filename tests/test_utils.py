@@ -910,31 +910,11 @@ def test_duration(obj, expected_duration):
         ),
         (
             audformat.filewise_index(['f1', 'f2']),
-            '/some/where',
+            audeer.path('/some', 'where'),
             audformat.filewise_index(
                 [
-                    '/some/where/f1',
-                    '/some/where/f2',
-                ]
-            ),
-        ),
-        (
-            audformat.filewise_index(['f1', 'f2']),
-            'some/where',
-            audformat.filewise_index(
-                [
-                    'some/where/f1',
-                    'some/where/f2',
-                ]
-            ),
-        ),
-        (
-            audformat.filewise_index(['f1', 'f2']),
-            os.path.join('some', 'where'),
-            audformat.filewise_index(
-                [
-                    os.path.join('some', 'where', 'f1'),
-                    os.path.join('some', 'where', 'f2'),
+                    audeer.path('/some', 'where', 'f1'),
+                    audeer.path('/some', 'where', 'f2'),
                 ]
             ),
         ),
@@ -945,6 +925,16 @@ def test_duration(obj, expected_duration):
                 [
                     audeer.path('some', 'where', 'f1'),
                     audeer.path('some', 'where', 'f2'),
+                ]
+            ),
+        ),
+        (
+            audformat.filewise_index(['f1', 'f2']),
+            os.path.join('some', 'where'),
+            audformat.filewise_index(
+                [
+                    os.path.join('some', 'where', 'f1'),
+                    os.path.join('some', 'where', 'f2'),
                 ]
             ),
         ),
@@ -983,11 +973,11 @@ def test_duration(obj, expected_duration):
                 ['1s', '3s'],
                 ['2s', '4s'],
             ),
-            '/some/where',
+            audeer.path('/some', 'where'),
             audformat.segmented_index(
                 [
-                    '/some/where/f1',
-                    '/some/where/f2',
+                    audeer.path('/some', 'where', 'f1'),
+                    audeer.path('/some', 'where', 'f2'),
                 ],
                 ['1s', '3s'],
                 ['2s', '4s'],
