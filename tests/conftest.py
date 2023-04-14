@@ -28,4 +28,5 @@ def create_audio_files():
     # Clean up docstring generated files
     # from audformat.utils.to_filewise_index()
     audeer.rmdir('split')
-    os.remove('f.wav')
+    if os.path.exists('f.wav'):
+        os.remove('f.wav')
