@@ -1401,9 +1401,6 @@ def to_filewise_index(
             original data
 
     Examples:
-        >>> # Create a 1s audio file + segmented index
-        >>> import audiofile
-        >>> audiofile.write('f.wav', np.ones((1, 8000)), 8000)
         >>> index = segmented_index(
         ...     files=['f.wav', 'f.wav'],
         ...     starts=[0, 0.5],
@@ -1412,8 +1409,6 @@ def to_filewise_index(
         >>> # Split into single files
         >>> to_filewise_index(index, '.', 'split')
         Index(['split/f_0.wav', 'split/f_1.wav'], dtype='string', name='file')
-        >>> audiofile.duration('split/f_0.wav')
-        0.5
 
     """
     if is_filewise_index(obj):

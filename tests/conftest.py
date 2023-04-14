@@ -1,9 +1,9 @@
 import os
+import shutil
 
 import pandas as pd
 import pytest
 
-import audeer
 import audformat.testing
 
 
@@ -24,9 +24,4 @@ def create_audio_files():
         file_duration=pytest.FILE_DUR,
     )
     yield
-    audeer.rmdir(pytest.DB_ROOT)
-    # Clean up docstring generated files
-    # from audformat.utils.to_filewise_index()
-    audeer.rmdir('split')
-    if os.path.exists('f.wav'):
-        os.remove('f.wav')
+    shutil.rmtree(pytest.DB_ROOT)
