@@ -412,6 +412,11 @@ def test_scheme_errors():
 
 def test_scheme_labels():
 
+    # No labels
+    s = audformat.Scheme('str')
+    assert s.labels is None
+    assert s.labels_as_list == []
+
     # List of labels
     labels = ['a', 'b']
     s = audformat.Scheme('str', labels=labels)

@@ -185,7 +185,10 @@ class Scheme(common.HeaderBase):
     @property
     def labels_as_list(self) -> typing.List:
         r"""Scheme labels as list"""
-        return self._labels_to_list(self.labels)
+        if self.labels is None:
+            return []
+        else:
+            return self._labels_to_list(self.labels)
 
     @property
     def uses_table(self) -> bool:
