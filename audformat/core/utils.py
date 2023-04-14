@@ -1407,7 +1407,7 @@ def to_filewise_index(
         ...     ends=[0.5, 1],
         ... )
         >>> # Split into single files
-        >>> to_filewise_index(index, tmp, os.path.join(tmp, 'split'))
+        >>> to_filewise_index(index, '.', 'split')
         Index(['split/f_0.wav', 'split/f_1.wav'], dtype='string', name='file')
 
     """
