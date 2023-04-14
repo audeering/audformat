@@ -31,6 +31,7 @@ from audformat.core.scheme import Scheme
 if platform.system() in ['Windows']:  # pragma: no cover
     __doctest_skip__ = [
         'expand_file_path',
+        'to_filewise_index',
     ]
 
 
