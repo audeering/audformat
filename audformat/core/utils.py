@@ -1,6 +1,7 @@
 import collections
 import errno
 import os
+import platform
 import re
 import sys
 import typing as typing
@@ -23,6 +24,14 @@ from audformat.core.index import (
     segmented_index,
 )
 from audformat.core.scheme import Scheme
+
+
+# Exclude examples that return a path containing `\`
+# from doctest on Windows
+if platform.system() in ['Windows']:  # pragma: no cover
+    __doctest_skip__ = [
+        'expand_file_path',
+    ]
 
 
 def concat(
@@ -477,12 +486,14 @@ def expand_file_path(
     r"""Expand relative path in index with root.
 
     Args:
-        index: index with relative file path conform to
+        index: index with absolute or relative file path
+            conform to
             :ref:`table specifications <data-tables:Tables>`
-        root: directory added in front of the relative file path
+        root: relative or absolute path added in front
+            of the index file path
 
     Returns:
-        index with absolute file path
+        index with root added to file path
 
     Raises:
         ValueError: if index is not conform to
@@ -492,14 +503,19 @@ def expand_file_path(
         >>> index = filewise_index(['f1', 'f2'])
         >>> index
         Index(['f1', 'f2'], dtype='string', name='file')
-        >>> expand_file_path(index, '/some/where')  # doctest: +SKIP
+        >>> expand_file_path(index, '/some/where')
         Index(['/some/where/f1', '/some/where/f2'], dtype='string', name='file')
+        >>> index = filewise_index(['/b/f1', '/b/f2'])
+        >>> index
+        Index(['/b/f1', '/b/f2'], dtype='string', name='file')
+        >>> expand_file_path(index, './a')
+        Index(['a/b/f1', 'a/b/f2'], dtype='string', name='file')
 
     """  # noqa: E501
     if len(index) == 0:
         return index
 
-    root = audeer.path(root) + os.path.sep
+    root = os.path.normpath(root) + os.path.sep
 
     if is_segmented_index(index):
         index = index.set_levels(root + index.levels[0], level=0)
