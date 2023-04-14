@@ -1408,6 +1408,7 @@ def to_filewise_index(
         ...     starts=[0, 0.5],
         ...     ends=[0.5, 1],
         ... )
+        >>> # Split into single files
         >>> to_filewise_index(index, '.', 'split')
         Index(['split/f_0.wav', 'split/f_1.wav'], dtype='string', name='file')
         >>> audiofile.duration('split/f_0.wav')
