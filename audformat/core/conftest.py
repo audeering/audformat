@@ -15,11 +15,11 @@ def prepare_docstring_tests(doctest_namespace):
     with tempfile.TemporaryDirectory() as tmp:
         doctest_namespace['tmp'] = tmp
 
-        # audformat.utils.to_filewise_index()
-        audiofile.write(audeer.path(tmp, 'f.wav'), np.ones((1, 8000)), 8000)
-
         current_dir = os.getcwd()
         os.chdir(tmp)
+
+        # audformat.utils.to_filewise_index()
+        audiofile.write('f.wav', np.ones((1, 8000)), 8000)
 
         yield
 
