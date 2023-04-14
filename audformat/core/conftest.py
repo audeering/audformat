@@ -4,7 +4,6 @@ import tempfile
 import numpy as np
 import pytest
 
-import audeer
 import audiofile
 
 
