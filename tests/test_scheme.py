@@ -410,6 +410,35 @@ def test_scheme_errors():
         db.schemes['scheme3'] = scheme
 
 
+def test_scheme_labels():
+
+    # No labels
+    s = audformat.Scheme('str')
+    assert s.labels is None
+    assert s.labels_as_list == []
+
+    # List of labels
+    labels = ['a', 'b']
+    s = audformat.Scheme('str', labels=labels)
+    assert s.labels == labels
+    assert s.labels_as_list == labels
+
+    # Dict of labels
+    labels = {'a': 0, 'b': 1}
+    s = audformat.Scheme('str', labels=labels)
+    assert s.labels == labels
+    assert s.labels_as_list == list(labels)
+
+    # Misc table as labels
+    labels = ['a', 'b']
+    db = audformat.Database('db')
+    index = pd.Index(labels, name='labels', dtype='string')
+    db['labels'] = audformat.MiscTable(index)
+    db.schemes['s'] = audformat.Scheme('str', labels='labels')
+    assert db.schemes['s'].labels == 'labels'
+    assert db.schemes['s'].labels_as_list == labels
+
+
 @pytest.mark.parametrize(
     'values, labels, new_labels, expected',
     [
