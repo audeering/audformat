@@ -25,3 +25,7 @@ def create_audio_files():
     )
     yield
     shutil.rmtree(pytest.DB_ROOT)
+    # Clean up docstring generated files
+    # from audformat.utils.to_filewise_index()
+    shutil.rmtree('split')
+    os.remove('f.wav')
