@@ -7,7 +7,7 @@ import pytest
 import audiofile
 
 
-@pytest.fixture(scope='session', autouse=True)
+@pytest.fixture(scope='package', autouse=True)
 def prepare_docstring_tests(doctest_namespace):
 
     # Prepare files and tmp folder needed in doctests
