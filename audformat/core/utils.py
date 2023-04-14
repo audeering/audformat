@@ -31,6 +31,7 @@ from audformat.core.scheme import Scheme
 if platform.system() in ['Windows']:  # pragma: no cover
     __doctest_skip__ = [
         'expand_file_path',
+        'to_filewise_index',
     ]
 
 
@@ -1398,6 +1399,15 @@ def to_filewise_index(
     Raises:
         ValueError: if ``output_folder`` contained in path to files of
             original data
+
+    Examples:
+        >>> index = segmented_index(
+        ...     files=['f.wav', 'f.wav'],
+        ...     starts=[0, 0.5],
+        ...     ends=[0.5, 1],
+        ... )
+        >>> to_filewise_index(index, '.', 'split')
+        Index(['split/f_0.wav', 'split/f_1.wav'], dtype='string', name='file')
 
     """
     if is_filewise_index(obj):
