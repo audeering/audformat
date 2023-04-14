@@ -491,8 +491,7 @@ def expand_file_path(
     and puts it in front of the file path in the index.
 
     Args:
-        index: index with absolute or relative file path
-            conform to
+        index: index conform to
             :ref:`table specifications <data-tables:Tables>`
         root: relative or absolute path added in front
             of the index file path
@@ -507,8 +506,8 @@ def expand_file_path(
     Examples:
         >>> expand_file_path(filewise_index(['f1', 'f2']), '/a')
         Index(['/a/f1', '/a/f2'], dtype='string', name='file')
-        >>> expand_file_path(filewise_index(['/f1', '/f2']), './a')
-        Index(['a//f1', 'a//f2'], dtype='string', name='file')
+        >>> expand_file_path(filewise_index(['f1', 'f2']), './a')
+        Index(['a/f1', 'a/f2'], dtype='string', name='file')
 
     """  # noqa: E501
     if len(index) == 0:
