@@ -184,10 +184,14 @@ class Scheme(common.HeaderBase):
 
     @property
     def labels_as_list(self) -> typing.List:
-        r"""Scheme labels as list
+        r"""Scheme labels as list.
+
+
+        If scheme does not define labels
+        an empty list is returned.
 
         Returns:
-            list of scheme labels
+            list of labels
 
         """
         if self.labels is None:
