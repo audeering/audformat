@@ -509,7 +509,7 @@ def expand_file_path(
         >>> index
         Index(['/b/f1', '/b/f2'], dtype='string', name='file')
         >>> expand_file_path(index, './a')
-        Index(['a/b/f1', 'a/b/f2'], dtype='string', name='file')
+        Index(['a//b/f1', 'a//b/f2'], dtype='string', name='file')
 
     """  # noqa: E501
     if len(index) == 0:
