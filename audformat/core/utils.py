@@ -483,7 +483,12 @@ def expand_file_path(
         index: pd.Index,
         root: str,
 ) -> pd.Index:
-    r"""Expand relative path in index with root.
+    r"""Expand path in index with root.
+
+    It applies :func:`os.path.normpath`
+    to the provided path ``root``,
+    adds a file separator at its end
+    and puts it in front of the file path in the index.
 
     Args:
         index: index with absolute or relative file path
@@ -500,16 +505,10 @@ def expand_file_path(
             :ref:`table specifications <data-tables:Tables>`
 
     Examples:
-        >>> index = filewise_index(['f1', 'f2'])
-        >>> index
-        Index(['f1', 'f2'], dtype='string', name='file')
-        >>> expand_file_path(index, '/some/where')
-        Index(['/some/where/f1', '/some/where/f2'], dtype='string', name='file')
-        >>> index = filewise_index(['/b/f1', '/b/f2'])
-        >>> index
-        Index(['/b/f1', '/b/f2'], dtype='string', name='file')
-        >>> expand_file_path(index, './a')
-        Index(['a//b/f1', 'a//b/f2'], dtype='string', name='file')
+        >>> expand_file_path(filewise_index(['f1', 'f2']), '/a')
+        Index(['/a/f1', '/a/f2'], dtype='string', name='file')
+        >>> expand_file_path(filewise_index(['/f1', '/f2']), './a')
+        Index(['a//f1', 'a//f2'], dtype='string', name='file')
 
     """  # noqa: E501
     if len(index) == 0:
