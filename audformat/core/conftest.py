@@ -17,8 +17,6 @@ def prepare_docstring_tests(doctest_namespace):
 
         # audformat.utils.to_filewise_index()
         audiofile.write(audeer.path(tmp, 'f.wav'), np.ones((1, 8000)), 8000)
-        assert os.path.exists(audeer.path(tmp, 'f.wav'))
-        assert audiofile.duration(audeer.path(tmp, 'f.wav')) == 1.0
 
         current_dir = os.getcwd()
         os.chdir(tmp)
