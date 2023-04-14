@@ -1,4 +1,4 @@
-import os
+import tempfile
 
 import numpy as np
 import pytest
@@ -8,19 +8,13 @@ import audiofile
 
 
 @pytest.fixture(scope='session', autouse=True)
-def prepare_docstring_tests():
+def prepare_docstring_tests(doctest_namespace):
 
-    # Prepare WAV files needed in doctests
-    #
-    # audformat.utils.to_filewise_index()
-    audiofile.write('f.wav', np.ones((1, 8000)), 8000)
+    # Prepare files and tmp folder needed in doctests
+    with tempfile.TemporaryDirectory() as tmp:
+        doctest_namespace['tmp'] = tmp
+
+        # audformat.utils.to_filewise_index()
+        audiofile.write(audeer.path(tmp, 'f.wav'), np.ones((1, 8000)), 8000)
 
     yield
-
-    # Remove WAV files
-    # and files generated during the doctests
-    #
-    # audformat.utils.to_filewise_index()
-    audeer.rmdir('split')
-    if os.path.exists('f.wav'):
-        os.remove('f.wav')
