@@ -7,7 +7,7 @@ The format is based on `Keep a Changelog`_,
 and this project adheres to `Semantic Versioning`_.
 
 
-Version 1.0.0 (2023-04-17)
+Version 1.0.0 (2023-04-25)
 --------------------------
 
 * Added: ``audformat.Scheme.labels_as_list`` property
