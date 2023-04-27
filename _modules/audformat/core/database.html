@@ -70,7 +70,7 @@
             
             
               <div class="version">
-                v0.16.1
+                v1.0.0
               </div>
             
           
@@ -354,7 +354,13 @@
             <span class="n">value_type</span><span class="o">=</span><span class="n">Attachment</span><span class="p">,</span>
             <span class="n">set_callback</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_set_attachment</span><span class="p">,</span>
         <span class="p">)</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Dictionary of attachments&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Dictionary of attachments.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            RuntimeError: if the path of a newly assigned attachment</span>
+<span class="sd">                overlaps with the path of an existing attachment</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">media</span> <span class="o">=</span> <span class="n">HeaderDict</span><span class="p">(</span><span class="n">value_type</span><span class="o">=</span><span class="n">Media</span><span class="p">)</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Dictionary of media information&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">raters</span> <span class="o">=</span> <span class="n">HeaderDict</span><span class="p">(</span><span class="n">value_type</span><span class="o">=</span><span class="n">Rater</span><span class="p">)</span>
@@ -1135,6 +1141,12 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            database object</span>
 
+<span class="sd">        Raises:</span>
+<span class="sd">            FileNotFoundError: if the database header file cannot be found</span>
+<span class="sd">                under ``root``</span>
+<span class="sd">            RuntimeError: if a CSV table file is newer</span>
+<span class="sd">                than the corresponding PKL file</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">ext</span> <span class="o">=</span> <span class="s1">&#39;.yaml&#39;</span>
         <span class="n">root</span> <span class="o">=</span> <span class="n">audeer</span><span class="o">.</span><span class="n">path</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
@@ -1370,7 +1382,7 @@
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2023/03/29 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2023/04/27 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>

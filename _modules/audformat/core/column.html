@@ -70,7 +70,7 @@
             
             
               <div class="version">
-                v0.16.1
+                v1.0.0
               </div>
             
           
@@ -504,11 +504,23 @@
             <span class="k">if</span> <span class="n">is_scalar</span><span class="p">(</span><span class="n">values</span><span class="p">):</span>
                 <span class="n">values</span> <span class="o">=</span> <span class="p">[</span><span class="n">values</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
             <span class="n">values</span> <span class="o">=</span> <span class="n">to_array</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">dtype</span> <span class="o">==</span> <span class="s1">&#39;datetime64[ns]&#39;</span><span class="p">:</span>
+                <span class="c1"># Ensure all date values are timezone unaware,</span>
+                <span class="c1"># see https://github.com/audeering/audformat/issues/364</span>
+                <span class="n">values</span> <span class="o">=</span> <span class="p">[</span>
+                    <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">tz_localize</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">value</span>
+                    <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">values</span>
+                <span class="p">]</span>
             <span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">():</span>
-                <span class="c1"># Avoid FutureWarning for setting values in place</span>
+                <span class="c1"># Avoid FutureWarning and DeprecationWarning</span>
+                <span class="c1"># for pandas 1.5.0 to 1.5.3</span>
+                <span class="c1"># for setting values in place</span>
                 <span class="c1"># as introduced at</span>
                 <span class="c1"># https://pandas.pydata.org/docs/dev/whatsnew/v1.5.0.html#inplace-operation-when-setting-values-with-loc-and-iloc</span>
-                <span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="n">action</span><span class="o">=</span><span class="s1">&#39;ignore&#39;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="ne">FutureWarning</span><span class="p">)</span>
+                <span class="c1"># For pandas &gt;=2.0.0 values are always set in place</span>
+                <span class="k">for</span> <span class="n">warning</span> <span class="ow">in</span> <span class="p">[</span><span class="ne">FutureWarning</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">]:</span>
+                    <span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="n">action</span><span class="o">=</span><span class="s1">&#39;ignore&#39;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="n">warning</span><span class="p">)</span>
                 <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">index</span><span class="p">,</span> <span class="n">column_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span>
                     <span class="n">values</span><span class="p">,</span>
                     <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">,</span>
@@ -539,7 +551,7 @@
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2023/03/29 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2023/04/27 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>

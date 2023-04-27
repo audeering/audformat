@@ -72,7 +72,7 @@
             
             
               <div class="version">
-                v0.16.1
+                v1.0.0
               </div>
             
           
@@ -134,6 +134,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#from-dict">from_dict()</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#is-numeric">is_numeric</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#labels">labels</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#labels-as-list">labels_as_list</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#maximum">maximum</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#meta">meta</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#minimum">minimum</a></li>
@@ -412,6 +413,22 @@ labels</p></li>
 </dd></dl>
 
 </div>
+<div class="section" id="labels-as-list">
+<h2>labels_as_list<a class="headerlink" href="#labels-as-list" title="Permalink to this heading">¶</a></h2>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="audformat.Scheme.labels_as_list">
+<span class="sig-prename descclassname"><span class="pre">Scheme.</span></span><span class="sig-name descname"><span class="pre">labels_as_list</span></span><a class="headerlink" href="#audformat.Scheme.labels_as_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Scheme labels as list.</p>
+<p>If scheme does not define labels
+an empty list is returned.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>list of labels</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
 <div class="section" id="maximum">
 <h2>maximum<a class="headerlink" href="#maximum" title="Permalink to this heading">¶</a></h2>
 <dl class="py attribute">
@@ -520,8 +537,8 @@ Removed labels are set to <code class="docutils literal notranslate"><span class
 <dl class="py method">
 <dt class="sig sig-object py" id="audformat.Scheme.to_pandas_dtype">
 <span class="sig-prename descclassname"><span class="pre">Scheme.</span></span><span class="sig-name descname"><span class="pre">to_pandas_dtype</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/audformat/core/scheme.html#Scheme.to_pandas_dtype"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.Scheme.to_pandas_dtype" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convert data type to <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/index.html#module-pandas" title="(in pandas v1.5.3)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pandas</span></code></a> data type.</p>
-<p>If <code class="docutils literal notranslate"><span class="pre">labels</span></code> is not <code class="docutils literal notranslate"><span class="pre">None</span></code>, <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.CategoricalDtype.html#pandas.CategoricalDtype" title="(in pandas v1.5.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.CategoricalDtype</span></code></a> is
+<dd><p>Convert data type to <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/index.html#module-pandas" title="(in pandas v2.0.1)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pandas</span></code></a> data type.</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">labels</span></code> is not <code class="docutils literal notranslate"><span class="pre">None</span></code>, <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.CategoricalDtype.html#pandas.CategoricalDtype" title="(in pandas v2.0.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.CategoricalDtype</span></code></a> is
 returned. Otherwise the following rules are applied:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">str</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">str</span></code></p></li>
@@ -532,10 +549,10 @@ returned. Otherwise the following rules are applied:</p>
 </ul>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.11)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.CategoricalDtype.html#pandas.CategoricalDtype" title="(in pandas v1.5.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CategoricalDtype</span></code></a>]</p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.11)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.CategoricalDtype.html#pandas.CategoricalDtype" title="(in pandas v2.0.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CategoricalDtype</span></code></a>]</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/index.html#module-pandas" title="(in pandas v1.5.3)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pandas</span></code></a> data type</p>
+<dd class="field-even"><p><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/index.html#module-pandas" title="(in pandas v2.0.1)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pandas</span></code></a> data type</p>
 </dd>
 </dl>
 </dd></dl>
@@ -586,7 +603,7 @@ values are stored.</p>
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2023/03/29 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2023/04/27 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>

@@ -71,7 +71,7 @@
             
             
               <div class="version">
-                v0.16.1
+                v1.0.0
               </div>
             
           
@@ -128,6 +128,7 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Changelog</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#version-1-0-0-2023-04-27">Version 1.0.0 (2023-04-27)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#version-0-16-1-2023-03-29">Version 0.16.1 (2023-03-29)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#version-0-16-0-2023-01-12">Version 0.16.0 (2023-01-12)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#version-0-15-4-2022-11-01">Version 0.15.4 (2022-11-01)</a></li>
@@ -210,6 +211,32 @@
 <p>All notable changes to this project will be documented in this file.</p>
 <p>The format is based on <a class="reference external" href="https://keepachangelog.com/en/1.0.0/">Keep a Changelog</a>,
 and this project adheres to <a class="reference external" href="https://semver.org/spec/v2.0.0.html">Semantic Versioning</a>.</p>
+<div class="section" id="version-1-0-0-2023-04-27">
+<h2>Version 1.0.0 (2023-04-27)<a class="headerlink" href="#version-1-0-0-2023-04-27" title="Permalink to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Added: <code class="docutils literal notranslate"><span class="pre">audformat.Scheme.labels_as_list</span></code> property
+to list all scheme labels</p></li>
+<li><p>Added: example to the documentation of
+<code class="docutils literal notranslate"><span class="pre">audformat.utils.to_filewise_index()</span></code></p></li>
+<li><p>Changed: convert dates to UTC timezone
+in <code class="docutils literal notranslate"><span class="pre">audformat.Column.set()</span></code>
+when using a scheme of type <code class="docutils literal notranslate"><span class="pre">'date'</span></code></p></li>
+<li><p>Fixed: support <code class="docutils literal notranslate"><span class="pre">pandas&gt;=2.0.0</span></code></p></li>
+<li><p>Fixed: mention <code class="docutils literal notranslate"><span class="pre">author</span></code>,
+<code class="docutils literal notranslate"><span class="pre">license</span></code>,
+<code class="docutils literal notranslate"><span class="pre">license_url</span></code>,
+<code class="docutils literal notranslate"><span class="pre">organization</span></code>
+in the specification documentation
+of the database header</p></li>
+<li><p>Fixed: missing <code class="docutils literal notranslate"><span class="pre">Raises</span></code> section
+in the documentation of <code class="docutils literal notranslate"><span class="pre">audformat.Database.load()</span></code>
+and <code class="docutils literal notranslate"><span class="pre">audformat.Database.attachments</span></code></p></li>
+<li><p>Fixed: when the <code class="docutils literal notranslate"><span class="pre">root</span></code> argument
+of <code class="docutils literal notranslate"><span class="pre">audformat.utils.expand_file_path()</span></code>
+is a relative path
+it is no longer expanded to an absolute path</p></li>
+</ul>
+</div>
 <div class="section" id="version-0-16-1-2023-03-29">
 <h2>Version 0.16.1 (2023-03-29)<a class="headerlink" href="#version-0-16-1-2023-03-29" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
@@ -691,7 +718,7 @@ and <code class="docutils literal notranslate"><span class="pre">audformat.Colum
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2023/03/29 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2023/04/27 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>

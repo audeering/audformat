@@ -32,11 +32,15 @@ source          yes        Original source,
 usage           yes        What the database can be used for,
                            one of ``'commercial'``, ``'other'``,
                            ``'research'``, ``'restricted'``, ``'unrestricted'``
+author                     Author(s) of the database
 description                Description of the database
 expires                    Until when we are allowed to use the data
 languages                  List of languages that appear in the media files
+license                    License of the database
+license_url                Link to license statement
 attachments                Dictionary of attachment objects (see below)
 media                      Dictionary of media objects (see below)
+organization               Organization that created the database
 raters                     Dictionary of rater objects (see below)
 schemes                    Dictionary of scheme objects (see below)
 splits                     Dictionary of rater objects (see below)

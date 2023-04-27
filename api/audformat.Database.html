@@ -72,7 +72,7 @@
             
             
               <div class="version">
-                v0.16.1
+                v1.0.0
               </div>
             
           
@@ -400,7 +400,13 @@ if it is not given</p></li>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="audformat.Database.attachments">
 <span class="sig-prename descclassname"><span class="pre">Database.</span></span><span class="sig-name descname"><span class="pre">attachments</span></span><a class="headerlink" href="#audformat.Database.attachments" title="Permalink to this definition">¶</a></dt>
-<dd><p>Dictionary of attachments</p>
+<dd><p>Dictionary of attachments.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.11)"><strong>RuntimeError</strong></a> – if the path of a newly assigned attachment
+    overlaps with the path of an existing attachment</p>
+</dd>
+</dl>
 </dd></dl>
 
 </div>
@@ -543,7 +549,7 @@ If <code class="docutils literal notranslate"><span class="pre">None</span></cod
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Series.html#pandas.Series" title="(in pandas v1.5.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Series</span></code></a></p>
+<dd class="field-even"><p><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Series.html#pandas.Series" title="(in pandas v2.0.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Series</span></code></a></p>
 </dd>
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>mapping from file to duration</p>
@@ -658,6 +664,14 @@ on the machine multiplied by 5</p></li>
 </dd>
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>database object</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#FileNotFoundError" title="(in Python v3.11)"><strong>FileNotFoundError</strong></a> – if the database header file cannot be found
+    under <code class="docutils literal notranslate"><span class="pre">root</span></code></p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.11)"><strong>RuntimeError</strong></a> – if a CSV table file is newer
+    than the corresponding PKL file</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -1050,7 +1064,7 @@ associated with <code class="docutils literal notranslate"><span class="pre">oth
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2023/03/29 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2023/04/27 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>

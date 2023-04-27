@@ -72,7 +72,7 @@
             
             
               <div class="version">
-                v0.16.1
+                v1.0.0
               </div>
             
           
@@ -193,20 +193,25 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="audformat.utils.expand_file_path">
 <span class="sig-prename descclassname"><span class="pre">audformat.utils.</span></span><span class="sig-name descname"><span class="pre">expand_file_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">root</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/audformat/core/utils.html#expand_file_path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.utils.expand_file_path" title="Permalink to this definition">¶</a></dt>
-<dd><p>Expand relative path in index with root.</p>
+<dd><p>Expand path in index with root.</p>
+<p>It applies <a class="reference external" href="https://docs.python.org/3/library/os.path.html#os.path.normpath" title="(in Python v3.11)"><code class="xref py py-func docutils literal notranslate"><span class="pre">os.path.normpath()</span></code></a>
+to the provided path <code class="docutils literal notranslate"><span class="pre">root</span></code>,
+adds a file separator at its end
+and puts it in front of the file path in the index.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>index</strong> (<a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Index.html#pandas.Index" title="(in pandas v1.5.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Index</span></code></a>) – index with relative file path conform to
+<li><p><strong>index</strong> (<a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Index.html#pandas.Index" title="(in pandas v2.0.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Index</span></code></a>) – index conform to
 <a class="reference internal" href="../data-tables.html#tables"><span class="std std-ref">table specifications</span></a></p></li>
-<li><p><strong>root</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – directory added in front of the relative file path</p></li>
+<li><p><strong>root</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – relative or absolute path added in front
+of the index file path</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Index.html#pandas.Index" title="(in pandas v1.5.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Index</span></code></a></p>
+<dd class="field-even"><p><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Index.html#pandas.Index" title="(in pandas v2.0.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Index</span></code></a></p>
 </dd>
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>index with absolute file path</p>
+<dd class="field-odd"><p>index with root added to file path</p>
 </dd>
 <dt class="field-even">Raises</dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.11)"><strong>ValueError</strong></a> – if index is not conform to
@@ -214,11 +219,10 @@
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">index</span> <span class="o">=</span> <span class="n">filewise_index</span><span class="p">([</span><span class="s1">&#39;f1&#39;</span><span class="p">,</span> <span class="s1">&#39;f2&#39;</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">index</span>
-<span class="go">Index([&#39;f1&#39;, &#39;f2&#39;], dtype=&#39;string&#39;, name=&#39;file&#39;)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">expand_file_path</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="s1">&#39;/some/where&#39;</span><span class="p">)</span>  
-<span class="go">Index([&#39;/some/where/f1&#39;, &#39;/some/where/f2&#39;], dtype=&#39;string&#39;, name=&#39;file&#39;)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">expand_file_path</span><span class="p">(</span><span class="n">filewise_index</span><span class="p">([</span><span class="s1">&#39;f1&#39;</span><span class="p">,</span> <span class="s1">&#39;f2&#39;</span><span class="p">]),</span> <span class="s1">&#39;/a&#39;</span><span class="p">)</span>
+<span class="go">Index([&#39;/a/f1&#39;, &#39;/a/f2&#39;], dtype=&#39;string&#39;, name=&#39;file&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">expand_file_path</span><span class="p">(</span><span class="n">filewise_index</span><span class="p">([</span><span class="s1">&#39;f1&#39;</span><span class="p">,</span> <span class="s1">&#39;f2&#39;</span><span class="p">]),</span> <span class="s1">&#39;./a&#39;</span><span class="p">)</span>
+<span class="go">Index([&#39;a/f1&#39;, &#39;a/f2&#39;], dtype=&#39;string&#39;, name=&#39;file&#39;)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -248,7 +252,7 @@
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2023/03/29 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2023/04/27 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>

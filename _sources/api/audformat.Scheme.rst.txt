@@ -38,6 +38,10 @@ labels
 ------
 .. autoattribute:: Scheme.labels
     
+labels\_as\_list
+----------------
+.. autoattribute:: Scheme.labels_as_list
+    
 maximum
 -------
 .. autoattribute:: Scheme.maximum

@@ -70,7 +70,7 @@
             
             
               <div class="version">
-                v0.16.1
+                v1.0.0
               </div>
             
           
@@ -167,6 +167,7 @@
 <span></span><span class="kn">import</span> <span class="nn">collections</span>
 <span class="kn">import</span> <span class="nn">errno</span>
 <span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">platform</span>
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">typing</span> <span class="k">as</span> <span class="nn">typing</span>
@@ -189,6 +190,15 @@
     <span class="n">segmented_index</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">audformat.core.scheme</span> <span class="kn">import</span> <span class="n">Scheme</span>
+
+
+<span class="c1"># Exclude examples that return a path containing `\`</span>
+<span class="c1"># from doctest on Windows</span>
+<span class="k">if</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;Windows&#39;</span><span class="p">]:</span>  <span class="c1"># pragma: no cover</span>
+    <span class="n">__doctest_skip__</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s1">&#39;expand_file_path&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;to_filewise_index&#39;</span><span class="p">,</span>
+    <span class="p">]</span>
 
 
 <div class="viewcode-block" id="concat"><a class="viewcode-back" href="../../../api/audformat.utils.concat.html#audformat.utils.concat">[docs]</a><span class="k">def</span> <span class="nf">concat</span><span class="p">(</span>
@@ -427,7 +437,9 @@
             <span class="p">)</span>
         <span class="n">columns_reindex</span><span class="p">[</span><span class="n">column</span><span class="o">.</span><span class="n">name</span><span class="p">][</span><span class="n">column</span><span class="o">.</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">column</span>
 
-    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">columns_reindex</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">)</span>
+    <span class="c1"># Use `None` to force `{}` return the correct index, see</span>
+    <span class="c1"># https://github.com/pandas-dev/pandas/issues/52404</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">columns_reindex</span> <span class="ow">or</span> <span class="kc">None</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="n">return_as_frame</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
@@ -638,32 +650,37 @@
         <span class="n">index</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">,</span>
         <span class="n">root</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">:</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Expand relative path in index with root.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Expand path in index with root.</span>
+
+<span class="sd">    It applies :func:`os.path.normpath`</span>
+<span class="sd">    to the provided path ``root``,</span>
+<span class="sd">    adds a file separator at its end</span>
+<span class="sd">    and puts it in front of the file path in the index.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        index: index with relative file path conform to</span>
+<span class="sd">        index: index conform to</span>
 <span class="sd">            :ref:`table specifications &lt;data-tables:Tables&gt;`</span>
-<span class="sd">        root: directory added in front of the relative file path</span>
+<span class="sd">        root: relative or absolute path added in front</span>
+<span class="sd">            of the index file path</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        index with absolute file path</span>
+<span class="sd">        index with root added to file path</span>
 
 <span class="sd">    Raises:</span>
 <span class="sd">        ValueError: if index is not conform to</span>
 <span class="sd">            :ref:`table specifications &lt;data-tables:Tables&gt;`</span>
 
 <span class="sd">    Examples:</span>
-<span class="sd">        &gt;&gt;&gt; index = filewise_index([&#39;f1&#39;, &#39;f2&#39;])</span>
-<span class="sd">        &gt;&gt;&gt; index</span>
-<span class="sd">        Index([&#39;f1&#39;, &#39;f2&#39;], dtype=&#39;string&#39;, name=&#39;file&#39;)</span>
-<span class="sd">        &gt;&gt;&gt; expand_file_path(index, &#39;/some/where&#39;)  # doctest: +SKIP</span>
-<span class="sd">        Index([&#39;/some/where/f1&#39;, &#39;/some/where/f2&#39;], dtype=&#39;string&#39;, name=&#39;file&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; expand_file_path(filewise_index([&#39;f1&#39;, &#39;f2&#39;]), &#39;/a&#39;)</span>
+<span class="sd">        Index([&#39;/a/f1&#39;, &#39;/a/f2&#39;], dtype=&#39;string&#39;, name=&#39;file&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; expand_file_path(filewise_index([&#39;f1&#39;, &#39;f2&#39;]), &#39;./a&#39;)</span>
+<span class="sd">        Index([&#39;a/f1&#39;, &#39;a/f2&#39;], dtype=&#39;string&#39;, name=&#39;file&#39;)</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>  <span class="c1"># noqa: E501</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">index</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">index</span>
 
-    <span class="n">root</span> <span class="o">=</span> <span class="n">audeer</span><span class="o">.</span><span class="n">path</span><span class="p">(</span><span class="n">root</span><span class="p">)</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">sep</span>
+    <span class="n">root</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">normpath</span><span class="p">(</span><span class="n">root</span><span class="p">)</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">sep</span>
 
     <span class="k">if</span> <span class="n">is_segmented_index</span><span class="p">(</span><span class="n">index</span><span class="p">):</span>
         <span class="n">index</span> <span class="o">=</span> <span class="n">index</span><span class="o">.</span><span class="n">set_levels</span><span class="p">(</span><span class="n">root</span> <span class="o">+</span> <span class="n">index</span><span class="o">.</span><span class="n">levels</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">level</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
@@ -1447,8 +1464,8 @@
 <span class="sd">        dtype: object</span>
 <span class="sd">        &gt;&gt;&gt; index5 = set_index_dtypes(index3, &#39;string&#39;)</span>
 <span class="sd">        &gt;&gt;&gt; index5.dtypes</span>
-<span class="sd">        level1    string</span>
-<span class="sd">        level2    string</span>
+<span class="sd">        level1    string[python]</span>
+<span class="sd">        level2    string[python]</span>
 <span class="sd">        dtype: object</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -1548,6 +1565,15 @@
 <span class="sd">    Raises:</span>
 <span class="sd">        ValueError: if ``output_folder`` contained in path to files of</span>
 <span class="sd">            original data</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        &gt;&gt;&gt; index = segmented_index(</span>
+<span class="sd">        ...     files=[&#39;f.wav&#39;, &#39;f.wav&#39;],</span>
+<span class="sd">        ...     starts=[0, 0.5],</span>
+<span class="sd">        ...     ends=[0.5, 1],</span>
+<span class="sd">        ... )</span>
+<span class="sd">        &gt;&gt;&gt; to_filewise_index(index, &#39;.&#39;, &#39;split&#39;)</span>
+<span class="sd">        Index([&#39;split/f_0.wav&#39;, &#39;split/f_1.wav&#39;], dtype=&#39;string&#39;, name=&#39;file&#39;)</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">is_filewise_index</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
@@ -2120,7 +2146,7 @@
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2023/03/29 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2023/04/27 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
