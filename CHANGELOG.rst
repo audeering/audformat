@@ -7,6 +7,32 @@ The format is based on `Keep a Changelog`_,
 and this project adheres to `Semantic Versioning`_.
 
 
+Version 1.0.0 (2023-04-27)
+--------------------------
+
+* Added: ``audformat.Scheme.labels_as_list`` property
+  to list all scheme labels
+* Added: example to the documentation of
+  ``audformat.utils.to_filewise_index()``
+* Changed: convert dates to UTC timezone
+  in ``audformat.Column.set()``
+  when using a scheme of type ``'date'``
+* Fixed: support ``pandas>=2.0.0``
+* Fixed: mention ``author``,
+  ``license``,
+  ``license_url``,
+  ``organization``
+  in the specification documentation
+  of the database header
+* Fixed: missing ``Raises`` section
+  in the documentation of ``audformat.Database.load()``
+  and ``audformat.Database.attachments``
+* Fixed: when the ``root`` argument
+  of ``audformat.utils.expand_file_path()``
+  is a relative path
+  it is no longer expanded to an absolute path
+
+  
 Version 0.16.1 (2023-03-29)
 ---------------------------
 
