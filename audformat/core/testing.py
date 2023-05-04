@@ -25,6 +25,7 @@ from audformat.core.index import (
     is_filewise_index,
     is_segmented_index,
     segmented_index,
+    to_timedelta,
 )
 from audformat.core.media import Media
 from audformat.core.rater import Rater
@@ -170,8 +171,10 @@ def add_table(
 
         for file in files:
 
-            times = [pd.to_timedelta(random.random() * file_duration, unit='s')
-                     for _ in range(num_segments_per_file * 2)]
+            times = [
+                to_timedelta(random.random() * file_duration)
+                for _ in range(num_segments_per_file * 2)
+            ]
             times.sort()
             starts.extend(times[::2])
             ends.extend(times[1::2])
@@ -259,7 +262,7 @@ def create_audio_files(
             "Cannot create files if databases is not portable."
         )
 
-    file_duration = pd.to_timedelta(file_duration)
+    file_duration = to_timedelta(file_duration)
 
     for file in db.files:
         path = os.path.join(db.root, file)

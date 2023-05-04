@@ -28,6 +28,7 @@ from audformat.core.errors import (
     BadIdError,
     TableExistsError,
 )
+from audformat.core.index import to_timedelta
 from audformat.core.media import Media
 from audformat.core.rater import Rater
 from audformat.core.scheme import Scheme
@@ -423,7 +424,7 @@ class Database(HeaderBase):
 
             # calculate duration and cache it
             dur = audiofile.duration(full_file)
-            dur = pd.to_timedelta(dur, unit='s')
+            dur = to_timedelta(dur)
             self._files_duration[full_file] = dur
 
             return dur
