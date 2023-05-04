@@ -3,6 +3,8 @@ import typing
 import numpy as np
 import pandas as pd
 
+import audmath
+
 from audformat.core import define
 from audformat.core import utils
 from audformat.core.typing import (
@@ -27,12 +29,15 @@ def to_array(value: typing.Any) -> typing.Union[list, np.ndarray]:
     return value
 
 
-def to_timedelta(times):
+def to_timedelta(time):
     r"""Convert time value to pd.Timedelta."""
-    try:
-        return pd.to_timedelta(times, unit='s')
-    except ValueError:  # catches values like '1s'
-        return pd.to_timedelta(times)
+    time = audmath.duration_in_seconds(time)
+    # Convert to milliseconds and round
+    # to avoid rounding error in index
+    # compare https://github.com/audeering/audinterface/issues/113
+    time = round(float(time) * 10 ** 3, 3)
+    time = pd.to_timedelta(time, unit='ms')
+    return time
 
 
 def assert_index(
@@ -359,8 +364,10 @@ def segmented_index(
             "'starts', and 'ends' differ in size",
         )
 
+    starts = pd.TimedeltaIndex([to_timedelta(start) for start in starts])
+    ends = pd.TimedeltaIndex([to_timedelta(end) for end in ends])
     index = pd.MultiIndex.from_arrays(
-        [files, to_timedelta(starts), to_timedelta(ends)],
+        [files, starts, ends],
         names=[
             define.IndexField.FILE,
             define.IndexField.START,
