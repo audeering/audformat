@@ -279,3 +279,12 @@ def test_create_segmented_index(files, starts, ends):
 )
 def test_index_type(index, index_type):
     assert audformat.index_type(index) == index_type
+
+
+def test_to_timedelta():
+    # Test precision of time values stored in segmented index,
+    # see https://github.com/audeering/audinterface/issues/113
+    duration = 2.5225
+    times = [duration]
+    times = audformat.core.index.to_timedelta(times)
+    assert times[0].total_seconds() == duration
