@@ -32,7 +32,8 @@ def to_array(value: typing.Any) -> typing.Union[list, np.ndarray]:
 def to_timedelta(time):
     r"""Convert time value to pd.Timedelta."""
     time = audmath.duration_in_seconds(time)
-    # Convert to milliseconds and round
+    # Limit precision to 6 digits
+    # by converting to milliseconds and rounding
     # to avoid rounding error in index
     # compare https://github.com/audeering/audinterface/issues/113
     time = round(float(time) * 10 ** 3, 3)
