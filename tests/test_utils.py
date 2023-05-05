@@ -2509,7 +2509,8 @@ def test_set_index_dtypes(index, dtypes, expected):
                 [pytest.FILE_DUR, pytest.FILE_DUR * 2],
             ),
         ),
-        # file duration and precision problem
+        # file duration with high precision
+        # covering https://github.com/audeering/audformat/issues/379
         (
             audformat.segmented_index(
                 [pytest.DB.files[0]],
