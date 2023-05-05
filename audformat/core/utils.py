@@ -1648,7 +1648,7 @@ def to_segmented_index(
                 return x
 
             # Create a new index
-            # as index.set_levels() doe snot work
+            # as index.set_levels() does not work
             # if the level contains only NaT entries
             index = segmented_index(files, starts, ends.map(replace_nan))
 
