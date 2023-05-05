@@ -2509,6 +2509,25 @@ def test_set_index_dtypes(index, dtypes, expected):
                 [pytest.FILE_DUR, pytest.FILE_DUR * 2],
             ),
         ),
+        # file duration and precision problem
+        (
+            audformat.segmented_index(
+                [pytest.DB.files[0]],
+                [0],
+                [pd.NaT],
+            ),
+            False,
+            {
+                os.path.join(pytest.DB_ROOT, pytest.DB.files[0]):
+                pd.to_timedelta(2.5225, unit='s'),
+            },
+            pytest.DB_ROOT,
+            audformat.segmented_index(
+                [pytest.DB.files[0]],
+                [0],
+                [2.5225],
+            ),
+        ),
         # file not found
         pytest.param(
             audformat.filewise_index(pytest.DB.files[:2]),
