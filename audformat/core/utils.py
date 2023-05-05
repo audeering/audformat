@@ -1647,6 +1647,9 @@ def to_segmented_index(
                     x = pd.to_timedelta(durs.pop(), unit='s')
                 return x
 
+            # Create a new index
+            # as index.set_levels() doe snot work
+            # if the level contains only NaT entries
             index = segmented_index(files, starts, ends.map(replace_nan))
 
     if isinstance(obj, pd.Index):
