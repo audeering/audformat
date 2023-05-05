@@ -1627,7 +1627,9 @@ def to_segmented_index(
             )
 
             # Now replace all NaT entries in end
-            # by the collected duration values
+            # by the collected duration values.
+            # We have to convert ends to a series first
+            # in order to preserve precision of duration values
 
             ends = ends.to_series()
             ends[idx_nat] = durs
