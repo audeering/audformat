@@ -1629,28 +1629,13 @@ def to_segmented_index(
             # Now replace all NaT entries in end
             # by the collected duration values
 
-            # Reverse durs list as pop()
-            # will return last entry first
-            durs.reverse()
-
-            # Add an additional entry to the list
-            # as the very first entry
-            # passed by map() is the whole index
-            # which will also trigger a call
-            # to durs.pop()
-            # if ends contains only a single entry
-            if len(ends) == 1:
-                durs.append(0)
-
-            def replace_nan(x):
-                if pd.isna(x):
-                    x = pd.to_timedelta(durs.pop(), unit='s')
-                return x
+            ends = ends.to_series()
+            ends[idx_nat] = durs
 
             # Create a new index
             # as index.set_levels() does not work
             # if the level contains only NaT entries
-            index = segmented_index(files, starts, ends.map(replace_nan))
+            index = segmented_index(files, starts, ends)
 
     if isinstance(obj, pd.Index):
         return index
