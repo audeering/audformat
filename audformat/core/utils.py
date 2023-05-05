@@ -1630,7 +1630,7 @@ def to_segmented_index(
             # by the collected duration values
 
             # Reverse durs list as pop()
-            # will return last enrty first
+            # will return last entry first
             durs.reverse()
 
             # Add an additional entry to the list
