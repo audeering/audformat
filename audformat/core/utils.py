@@ -1589,6 +1589,9 @@ def to_segmented_index(
 
         if any(has_nat):
 
+            # First gather duration values
+            # for all NaT end entries
+
             idx_nat = np.where(has_nat)[0]
             files = index.get_level_values(define.IndexField.FILE)
             starts = index.get_level_values(define.IndexField.START)
@@ -1622,9 +1625,29 @@ def to_segmented_index(
                 progress_bar=verbose,
                 task_description='Read duration',
             )
-            ends.values[idx_nat] = durs
 
-            index = segmented_index(files, starts, ends)
+            # Now replace all NaT entries in end
+            # by the collected duration values
+
+            # Reverse durs list as pop()
+            # will return last enrty first
+            durs.reverse()
+
+            # Add an additional entry to the list
+            # as the very first entry
+            # passed by map() is the whole index
+            # which will also trigger a call
+            # to durs.pop()
+            # if ends contains only a single entry
+            if len(ends) == 1:
+                durs.append(0)
+
+            def replace_nan(x):
+                if pd.isna(x):
+                    x = pd.to_timedelta(durs.pop(), unit='s')
+                return x
+
+            index = segmented_index(files, starts, ends.map(replace_nan))
 
     if isinstance(obj, pd.Index):
         return index
