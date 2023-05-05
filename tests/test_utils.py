@@ -2539,9 +2539,9 @@ def test_set_index_dtypes(index, dtypes, expected):
             {
                 os.path.join(pytest.DB_ROOT, pytest.DB.files[0]):
                 pd.to_timedelta(2.5225, unit='s'),
-                os.path.join(pytest.DB_ROOT, pytest.DB.files[0]):
+                os.path.join(pytest.DB_ROOT, pytest.DB.files[1]):
                 pd.to_timedelta(2.37485, unit='s'),
-                os.path.join(pytest.DB_ROOT, pytest.DB.files[0]):
+                os.path.join(pytest.DB_ROOT, pytest.DB.files[2]):
                 pd.to_timedelta(3.458697083, unit='s'),
             },
             pytest.DB_ROOT,
