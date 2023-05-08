@@ -10,12 +10,10 @@ and this project adheres to `Semantic Versioning`_.
 Version 1.0.1 (2023-05-08)
 --------------------------
 
-* Fixed: ensure the number of digits in ``end``
-  of a segmented index
-  is identical
-  when creating the index with ``audformat.segmented_index()``
-  or with the ``as_segmented``
-  argument of ``audformat.Table.get()``
+* Fixed: ensure ``audformat.Table.get()``
+  with ``as_segmented=True``
+  uses same precision for ``end`` values
+  as ``audformat.segmented_index()``
 
 
 Version 1.0.0 (2023-04-27)
