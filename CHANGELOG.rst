@@ -14,7 +14,7 @@ Version 1.0.1 (2023-05-08)
   of a segmented index
   is identical
   when creating the index manually
-  or with the ``to_segmented``
+  or with the ``as_segmented``
   argument of ``audformat.Table.get()``
 
 
