@@ -7,6 +7,17 @@ The format is based on `Keep a Changelog`_,
 and this project adheres to `Semantic Versioning`_.
 
 
+Version 1.0.1 (2023-05-08)
+--------------------------
+
+* Fixed: ensure the number of digits in ``end``
+  of a segmented index
+  is identical
+  when creating the index manually
+  or with the ``to_segmented``
+  argument of ``audformat.Table.get()``
+
+
 Version 1.0.0 (2023-04-27)
 --------------------------
 
