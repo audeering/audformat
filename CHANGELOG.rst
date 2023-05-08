@@ -7,6 +7,16 @@ The format is based on `Keep a Changelog`_,
 and this project adheres to `Semantic Versioning`_.
 
 
+Version 1.0.1 (2023-05-08)
+--------------------------
+
+* Fixed: ensure ``audformat.utils.to_segmented_index()``
+  and ``audformat.Table.get()``
+  with ``as_segmented=True``
+  uses same precision for ``end`` values
+  as ``audformat.segmented_index()``
+
+
 Version 1.0.0 (2023-04-27)
 --------------------------
 
