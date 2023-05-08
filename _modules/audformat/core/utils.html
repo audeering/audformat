@@ -70,7 +70,7 @@
             
             
               <div class="version">
-                v1.0.0
+                v1.0.1
               </div>
             
           
@@ -1755,6 +1755,9 @@
 
         <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">has_nat</span><span class="p">):</span>
 
+            <span class="c1"># Gather duration values</span>
+            <span class="c1"># for all NaT end entries</span>
+
             <span class="n">idx_nat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">has_nat</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
             <span class="n">files</span> <span class="o">=</span> <span class="n">index</span><span class="o">.</span><span class="n">get_level_values</span><span class="p">(</span><span class="n">define</span><span class="o">.</span><span class="n">IndexField</span><span class="o">.</span><span class="n">FILE</span><span class="p">)</span>
             <span class="n">starts</span> <span class="o">=</span> <span class="n">index</span><span class="o">.</span><span class="n">get_level_values</span><span class="p">(</span><span class="n">define</span><span class="o">.</span><span class="n">IndexField</span><span class="o">.</span><span class="n">START</span><span class="p">)</span>
@@ -1788,8 +1791,16 @@
                 <span class="n">progress_bar</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span>
                 <span class="n">task_description</span><span class="o">=</span><span class="s1">&#39;Read duration&#39;</span><span class="p">,</span>
             <span class="p">)</span>
-            <span class="n">ends</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">idx_nat</span><span class="p">]</span> <span class="o">=</span> <span class="n">durs</span>
 
+            <span class="c1"># Replace all NaT entries in end</span>
+            <span class="c1"># by the collected duration values.</span>
+            <span class="c1"># We have to convert ends to a series first</span>
+            <span class="c1"># in order to preserve precision of duration values</span>
+
+            <span class="n">ends</span> <span class="o">=</span> <span class="n">ends</span><span class="o">.</span><span class="n">to_series</span><span class="p">()</span>
+            <span class="n">ends</span><span class="p">[</span><span class="n">idx_nat</span><span class="p">]</span> <span class="o">=</span> <span class="n">durs</span>
+
+            <span class="c1"># Create a new index</span>
             <span class="n">index</span> <span class="o">=</span> <span class="n">segmented_index</span><span class="p">(</span><span class="n">files</span><span class="p">,</span> <span class="n">starts</span><span class="p">,</span> <span class="n">ends</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">):</span>
@@ -2146,7 +2157,7 @@
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2023/04/27 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2023/05/08 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
