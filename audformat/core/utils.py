@@ -1589,6 +1589,9 @@ def to_segmented_index(
 
         if any(has_nat):
 
+            # Gather duration values
+            # for all NaT end entries
+
             idx_nat = np.where(has_nat)[0]
             files = index.get_level_values(define.IndexField.FILE)
             starts = index.get_level_values(define.IndexField.START)
@@ -1622,8 +1625,16 @@ def to_segmented_index(
                 progress_bar=verbose,
                 task_description='Read duration',
             )
-            ends.values[idx_nat] = durs
 
+            # Replace all NaT entries in end
+            # by the collected duration values.
+            # We have to convert ends to a series first
+            # in order to preserve precision of duration values
+
+            ends = ends.to_series()
+            ends[idx_nat] = durs
+
+            # Create a new index
             index = segmented_index(files, starts, ends)
 
     if isinstance(obj, pd.Index):
