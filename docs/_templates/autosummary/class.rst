@@ -6,7 +6,7 @@
 
 {% block methods %}
 {%- for item in (all_methods + attributes)|sort %}
-    {%- if not item.startswith('_') or item in ['__add__', '__call__', '__contains__', '__getitem__', '__setitem__'] %}
+    {%- if not item.startswith('_') or item in ['__add__', '__call__', '__contains__', '__eq__', '__getitem__', '__iter__', '__len__', '__setitem__'] %}
         {%- if item in all_methods %}
 {{ (item + '()') | escape | underline(line='-') }}
 .. automethod:: {{ name }}.{{ item }}
