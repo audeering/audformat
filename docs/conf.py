@@ -72,6 +72,7 @@ copybutton_prompt_is_regexp = True
 
 linkcheck_ignore = [
     'https://www.isca-speech.org',
+    'http://emodb.bilderbar.info',
 ]
 
 # Graphviz figures
