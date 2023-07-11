@@ -12,6 +12,8 @@ import numpy as np
 import pandas as pd
 
 import audeer
+import audiofile
+
 from audformat.core import define
 from audformat.core.common import to_audformat_dtype
 from audformat.core.database import Database
@@ -20,7 +22,6 @@ from audformat.core.index import is_filewise_index
 from audformat.core.index import is_segmented_index
 from audformat.core.index import segmented_index
 from audformat.core.scheme import Scheme
-import audiofile
 
 
 # Exclude examples that return a path containing `\`

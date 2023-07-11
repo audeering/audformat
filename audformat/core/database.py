@@ -14,6 +14,8 @@ except ImportError:  # pragma: nocover
 import pandas as pd
 
 import audeer
+import audiofile
+
 from audformat.core import define
 from audformat.core import utils
 from audformat.core.attachment import Attachment
@@ -30,7 +32,6 @@ from audformat.core.scheme import Scheme
 from audformat.core.split import Split
 from audformat.core.table import MiscTable
 from audformat.core.table import Table
-import audiofile
 
 
 class Database(HeaderBase):

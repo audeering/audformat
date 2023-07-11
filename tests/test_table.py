@@ -6,6 +6,7 @@ import pandas as pd
 import pytest
 
 import audeer
+
 import audformat
 import audformat.testing
 

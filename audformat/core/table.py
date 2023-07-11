@@ -8,6 +8,7 @@ import typing
 import pandas as pd
 
 import audeer
+
 from audformat.core import define
 from audformat.core import utils
 from audformat.core.column import Column
