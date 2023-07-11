@@ -8,13 +8,12 @@ import pandas as pd
 
 from audformat.core import define
 from audformat.core.common import HeaderBase
-from audformat.core.index import (
-    index_type,
-    is_scalar,
-    to_array,
-)
+from audformat.core.index import index_type
+from audformat.core.index import is_scalar
+from audformat.core.index import to_array
 from audformat.core.rater import Rater
 from audformat.core.typing import Values
+
 
 if typing.TYPE_CHECKING:
     # Fix to make mypy work without circular imports,
@@ -365,6 +364,7 @@ class Column(HeaderBase):
             self,
             other: 'Column',
     ) -> bool:
+        r"""Compare if column equals another column."""
         if self.dump() != other.dump():
             return False
         if self._table is not None and other._table is not None:

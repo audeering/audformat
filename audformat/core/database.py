@@ -5,6 +5,8 @@ import shutil
 import typing
 
 import oyaml as yaml
+
+
 try:
     from yaml import CLoader as Loader
 except ImportError:  # pragma: nocover
@@ -12,30 +14,23 @@ except ImportError:  # pragma: nocover
 import pandas as pd
 
 import audeer
-import audiofile
-
 from audformat.core import define
 from audformat.core import utils
 from audformat.core.attachment import Attachment
 from audformat.core.column import Column
-from audformat.core.common import (
-    is_relative_path,
-    HeaderBase,
-    HeaderDict,
-)
-from audformat.core.errors import (
-    BadKeyError,
-    BadIdError,
-    TableExistsError,
-)
+from audformat.core.common import HeaderBase
+from audformat.core.common import HeaderDict
+from audformat.core.common import is_relative_path
+from audformat.core.errors import BadIdError
+from audformat.core.errors import BadKeyError
+from audformat.core.errors import TableExistsError
 from audformat.core.media import Media
 from audformat.core.rater import Rater
 from audformat.core.scheme import Scheme
 from audformat.core.split import Split
-from audformat.core.table import (
-    MiscTable,
-    Table,
-)
+from audformat.core.table import MiscTable
+from audformat.core.table import Table
+import audiofile
 
 
 class Database(HeaderBase):
@@ -658,7 +653,6 @@ class Database(HeaderBase):
             RuntimeError: if any involved database is not portable
 
         """
-
         if isinstance(others, Database):
             others = [others]
 
@@ -903,6 +897,7 @@ class Database(HeaderBase):
             self,
             other: 'Database',
     ) -> bool:
+        r"""Comparison if database equals another database."""
         if self.dump() != other.dump():
             return False
         for table_id in list(self.tables) + list(self.misc_tables):
@@ -913,6 +908,7 @@ class Database(HeaderBase):
     def __iter__(
             self,
     ) -> typing.Union[MiscTable, Table]:
+        r"""Iterate over (miscellaneous) tables of database."""
         yield from sorted(list(self.tables) + list(self.misc_tables))
 
     def __setitem__(

@@ -1,38 +1,31 @@
 import os
 import random
-from typing import (
-    Union,
-    Sequence,
-    Callable,
-    Dict,
-    Tuple,
-    Optional,
-)
+from typing import Callable
+from typing import Dict
+from typing import Optional
+from typing import Sequence
+from typing import Tuple
+from typing import Union
 
 import numpy as np
 import pandas as pd
 
 import audeer
-import audiofile as af
-
 from audformat.core import define
 from audformat.core.attachment import Attachment
 from audformat.core.column import Column
 from audformat.core.database import Database
-from audformat.core.index import (
-    filewise_index,
-    is_filewise_index,
-    is_segmented_index,
-    segmented_index,
-)
+from audformat.core.index import filewise_index
+from audformat.core.index import is_filewise_index
+from audformat.core.index import is_segmented_index
+from audformat.core.index import segmented_index
 from audformat.core.media import Media
 from audformat.core.rater import Rater
 from audformat.core.scheme import Scheme
 from audformat.core.split import Split
-from audformat.core.table import (
-    MiscTable,
-    Table,
-)
+from audformat.core.table import MiscTable
+from audformat.core.table import Table
+import audiofile as af
 
 
 def add_misc_table(

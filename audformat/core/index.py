@@ -5,14 +5,12 @@ import pandas as pd
 
 from audformat.core import define
 from audformat.core import utils
-from audformat.core.typing import (
-    Files,
-    Timestamps,
-)
+from audformat.core.typing import Files
+from audformat.core.typing import Timestamps
 
 
 def is_scalar(value: typing.Any) -> bool:
-    r"""Check if value is scalar"""
+    r"""Check if value is scalar."""
     return (value is not None) and \
            (isinstance(value, str) or not hasattr(value, '__len__'))
 
@@ -52,7 +50,7 @@ def assert_index(
         ValueError: if not conform to
             :ref:`table specifications <data-tables:Tables>`
 
-    """
+    """  # noqa: D205
     if isinstance(obj, (pd.Series, pd.DataFrame)):
         obj = obj.index
 

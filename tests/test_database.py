@@ -3,13 +3,13 @@ import filecmp
 import os
 import re
 
-import audeer
-import audiofile
 import pandas as pd
 import pytest
 
+import audeer
 import audformat
 import audformat.testing
+import audiofile
 
 
 def full_path(
@@ -416,7 +416,7 @@ def test_license(license, license_url, expected_license, expected_url):
 
 
 def test_load(tmpdir):
-    # Test loading a database containg a misc table as scheme,
+    # Test loading a database containing a misc table as scheme,
     # see https://github.com/audeering/audformat/issues/294
     db = audformat.testing.create_db(minimal=True)
     db.schemes['scheme3'] = audformat.Scheme('str')

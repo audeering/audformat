@@ -8,34 +8,25 @@ import typing
 import pandas as pd
 
 import audeer
-
 from audformat.core import define
 from audformat.core import utils
 from audformat.core.column import Column
-from audformat.core.common import (
-    HeaderBase,
-    HeaderDict,
-    to_audformat_dtype,
-    to_pandas_dtype,
-)
-from audformat.core.errors import (
-    BadIdError,
-)
-from audformat.core.index import (
-    filewise_index,
-    index_type,
-    is_filewise_index,
-    is_segmented_index,
-)
+from audformat.core.common import HeaderBase
+from audformat.core.common import HeaderDict
+from audformat.core.common import to_audformat_dtype
+from audformat.core.common import to_pandas_dtype
+from audformat.core.errors import BadIdError
+from audformat.core.index import filewise_index
+from audformat.core.index import index_type
+from audformat.core.index import is_filewise_index
+from audformat.core.index import is_segmented_index
 from audformat.core.media import Media
 from audformat.core.split import Split
-from audformat.core.typing import (
-    Values,
-)
+from audformat.core.typing import Values
 
 
 class Base(HeaderBase):
-    r"""Table base class"""
+    r"""Table base class."""
     def __init__(
             self,
             index: pd.Index = None,
@@ -119,11 +110,13 @@ class Base(HeaderBase):
             self,
             other: Base,
     ) -> bool:
+        r"""Compare if table equals other table."""
         if self.dump() != other.dump():
             return False
         return self.df.equals(other.df)
 
     def __len__(self) -> int:
+        r"""Number of rows in table."""
         return len(self.df)
 
     def __setitem__(self, column_id: str, column: Column) -> Column:
@@ -143,7 +136,6 @@ class Base(HeaderBase):
                 is already used by the same or another scheme
 
         """
-
         if (
                 column.scheme_id is not None
                 and self.db is not None
@@ -1555,7 +1547,6 @@ def _assert_table_index(
         operation: str,
 ):
     r"""Raise error if index does not match table."""
-
     if isinstance(table, Table):
         input_type = index_type(index)
         if table.type != input_type:

@@ -1,19 +1,19 @@
-import configparser
 from datetime import date
 import os
 import shutil
 
+import toml
+
 import audeer
 
 
-config = configparser.ConfigParser()
-config.read(os.path.join('..', 'setup.cfg'))
+config = toml.load(audeer.path('..', 'pyproject.toml'))
 
 
 # Project -----------------------------------------------------------------
-author = config['metadata']['author']
+project = config['project']['name']
 copyright = f'2019-{date.today().year} audEERING GmbH'
-project = config['metadata']['name']
+author = ', '.join(author['name'] for author in config['project']['authors'])
 version = audeer.git_repo_version()
 title = 'Documentation'
 
@@ -72,6 +72,7 @@ copybutton_prompt_is_regexp = True
 
 linkcheck_ignore = [
     'https://www.isca-speech.org',
+    'http://emodb.bilderbar.info',
 ]
 
 # Graphviz figures

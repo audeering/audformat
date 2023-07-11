@@ -7,10 +7,9 @@ import pandas as pd
 import pytest
 
 import audeer
-
 import audformat
-from audformat import utils
 from audformat import define
+from audformat import utils
 
 
 @pytest.mark.parametrize(
