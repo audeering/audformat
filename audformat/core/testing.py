@@ -8,7 +8,6 @@ from typing import (
     Tuple,
     Optional,
 )
-import warnings
 
 import numpy as np
 import pandas as pd
@@ -215,7 +214,6 @@ def create_attachment_files(
 
 def create_audio_files(
         db: Database,
-        root: str = None,
         *,
         sample_generator: Callable[[float], float] = None,
         sampling_rate: int = 16000,
@@ -240,15 +238,6 @@ def create_audio_files(
         RuntimeError: if database is not portable
 
     """
-    if root is not None:  # pragma: no cover
-        warnings.warn(
-            "The argument 'root' is deprecated, "
-            " and will be removed with version 1.0.0. "
-            "'db.root' will be used instead.'",
-            category=UserWarning,
-            stacklevel=2,
-        )
-
     if db.root is None:  # pragma: no cover
         raise RuntimeError(
             "Cannot create files if databases was not saved."
