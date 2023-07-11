@@ -2,11 +2,8 @@ import os
 import typing
 
 import audeer
-
-from audformat.core.common import (
-    HeaderBase,
-    is_relative_path,
-)
+from audformat.core.common import HeaderBase
+from audformat.core.common import is_relative_path
 
 
 class Attachment(HeaderBase):

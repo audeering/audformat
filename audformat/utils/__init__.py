@@ -1,22 +1,20 @@
-from audformat.core.utils import (
-    concat,
-    difference,
-    duration,
-    expand_file_path,
-    hash,
-    index_has_overlap,
-    intersect,
-    is_index_alike,
-    iter_by_file,
-    join_labels,
-    join_schemes,
-    map_country,
-    map_file_path,
-    map_language,
-    read_csv,
-    replace_file_extension,
-    set_index_dtypes,
-    to_filewise_index,
-    to_segmented_index,
-    union,
-)
+from audformat.core.utils import concat
+from audformat.core.utils import difference
+from audformat.core.utils import duration
+from audformat.core.utils import expand_file_path
+from audformat.core.utils import hash
+from audformat.core.utils import index_has_overlap
+from audformat.core.utils import intersect
+from audformat.core.utils import is_index_alike
+from audformat.core.utils import iter_by_file
+from audformat.core.utils import join_labels
+from audformat.core.utils import join_schemes
+from audformat.core.utils import map_country
+from audformat.core.utils import map_file_path
+from audformat.core.utils import map_language
+from audformat.core.utils import read_csv
+from audformat.core.utils import replace_file_extension
+from audformat.core.utils import set_index_dtypes
+from audformat.core.utils import to_filewise_index
+from audformat.core.utils import to_segmented_index
+from audformat.core.utils import union

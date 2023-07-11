@@ -4,23 +4,19 @@ from audformat import utils
 from audformat.core.attachment import Attachment
 from audformat.core.column import Column
 from audformat.core.database import Database
-from audformat.core.index import (
-    assert_index,
-    assert_no_duplicates,
-    filewise_index,
-    index_type,
-    is_filewise_index,
-    is_segmented_index,
-    segmented_index,
-)
+from audformat.core.index import assert_index
+from audformat.core.index import assert_no_duplicates
+from audformat.core.index import filewise_index
+from audformat.core.index import index_type
+from audformat.core.index import is_filewise_index
+from audformat.core.index import is_segmented_index
+from audformat.core.index import segmented_index
 from audformat.core.media import Media
 from audformat.core.rater import Rater
 from audformat.core.scheme import Scheme
 from audformat.core.split import Split
-from audformat.core.table import (
-    MiscTable,
-    Table,
-)
+from audformat.core.table import MiscTable
+from audformat.core.table import Table
 
 
 # Discourage from audformat import *

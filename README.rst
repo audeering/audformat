@@ -34,14 +34,14 @@ and the `format specifications`_ as a starting point.
 .. |tests| image:: https://github.com/audeering/audformat/workflows/Test/badge.svg
     :target: https://github.com/audeering/audformat/actions?query=workflow%3ATest
     :alt: Test status
-.. |coverage| image:: https://codecov.io/gh/audeering/audformat/branch/master/graph/badge.svg?token=1FEG9P5XS0
+.. |coverage| image:: https://codecov.io/gh/audeering/audformat/branch/main/graph/badge.svg?token=1FEG9P5XS0
     :target: https://codecov.io/gh/audeering/audformat/
     :alt: code coverage
 .. |docs| image:: https://img.shields.io/pypi/v/audformat?label=docs
     :target: https://audeering.github.io/audformat/
     :alt: audformat's documentation
 .. |license| image:: https://img.shields.io/badge/license-MIT-green.svg
-    :target: https://github.com/audeering/audformat/blob/master/LICENSE
+    :target: https://github.com/audeering/audformat/blob/main/LICENSE
     :alt: audformat's MIT license
 .. |python-versions| image:: https://img.shields.io/pypi/pyversions/audformat.svg
     :target: https://pypi.org/project/audformat/

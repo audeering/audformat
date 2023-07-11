@@ -1,18 +1,16 @@
+from collections import OrderedDict
 import inspect
 import os
-import oyaml as yaml
-import typing
 import textwrap
-from collections import OrderedDict
+import typing
 
+import oyaml as yaml
 import pandas as pd
 
 from audformat import define
-from audformat.core.errors import (
-    BadKeyError,
-    BadTypeError,
-    BadValueError,
-)
+from audformat.core.errors import BadKeyError
+from audformat.core.errors import BadTypeError
+from audformat.core.errors import BadValueError
 
 
 class HeaderDict(OrderedDict):

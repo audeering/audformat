@@ -5,10 +5,8 @@ import typing
 
 import pandas as pd
 
-from audformat.core import (
-    common,
-    define,
-)
+from audformat.core import common
+from audformat.core import define
 
 
 class Scheme(common.HeaderBase):
@@ -185,7 +183,6 @@ class Scheme(common.HeaderBase):
     @property
     def labels_as_list(self) -> typing.List:
         r"""Scheme labels as list.
-
 
         If scheme does not define labels
         an empty list is returned.
@@ -394,7 +391,6 @@ class Scheme(common.HeaderBase):
             labels: typing.Union[dict, list, str],
     ):
         r"""Raise label related errors."""
-
         if not isinstance(labels, (dict, list, str)):
             raise ValueError(
                 'Labels must be passed '
@@ -450,7 +446,6 @@ class Scheme(common.HeaderBase):
             labels: typing.Union[dict, list, str],
     ) -> str:
         r"""Derive audformat dtype from labels."""
-
         if isinstance(labels, str):
             # misc table
             # dtype is stored in the levels dictionary

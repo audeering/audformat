@@ -63,6 +63,7 @@ build-backend = 'setuptools.build_meta'
 [tool.codespell]
 builtin = 'clear,rare,informal,usage,names'
 skip = './audformat.egg-info,./build,./docs/api,./docs/_templates,./docs/pics'
+ignore-words-list = 'Sie,sie,unter,ist'
 
 
 # ----- pytest ------------------------------------------------------------
@@ -108,6 +109,9 @@ cache-dir = '.cache/ruff'
 [tool.ruff.per-file-ignores]
 '__init__.py' = [
     'F401',  # * imported but unused
+]
+'common.py' = [
+    'D105',  # Missing docstring in magic method
 ]
 
 
