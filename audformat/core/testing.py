@@ -11,6 +11,8 @@ import numpy as np
 import pandas as pd
 
 import audeer
+import audiofile as af
+
 from audformat.core import define
 from audformat.core.attachment import Attachment
 from audformat.core.column import Column
@@ -25,7 +27,6 @@ from audformat.core.scheme import Scheme
 from audformat.core.split import Split
 from audformat.core.table import MiscTable
 from audformat.core.table import Table
-import audiofile as af
 
 
 def add_misc_table(

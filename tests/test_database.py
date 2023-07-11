@@ -7,9 +7,10 @@ import pandas as pd
 import pytest
 
 import audeer
+import audiofile
+
 import audformat
 import audformat.testing
-import audiofile
 
 
 def full_path(

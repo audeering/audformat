@@ -163,7 +163,7 @@ section-order = [
     'audeer',
     'audiofile',
     'audfactory',
-    'audformat',
+    'audinterface',
     'audmath',
     'audmetric',
     'audobject',
