@@ -26,7 +26,6 @@ def prepare_tests():
 
         audformat.testing.create_audio_files(
             pytest.DB,
-            pytest.DB.root,
             file_duration=pytest.FILE_DUR,
         )
         audformat.testing.create_attachment_files(
