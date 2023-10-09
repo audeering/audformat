@@ -32,7 +32,7 @@
   <link rel="stylesheet" href="../../../_static/copybutton.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/jupyter-sphinx.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/thebelab.css" type="text/css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css" type="text/css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/katex-math.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
@@ -70,7 +70,7 @@
             
             
               <div class="version">
-                v1.0.1
+                v1.0.2
               </div>
             
           
@@ -171,6 +171,8 @@
 <span class="kn">import</span> <span class="nn">typing</span>
 
 <span class="kn">import</span> <span class="nn">oyaml</span> <span class="k">as</span> <span class="nn">yaml</span>
+
+
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">yaml</span> <span class="kn">import</span> <span class="n">CLoader</span> <span class="k">as</span> <span class="n">Loader</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>  <span class="c1"># pragma: nocover</span>
@@ -184,24 +186,18 @@
 <span class="kn">from</span> <span class="nn">audformat.core</span> <span class="kn">import</span> <span class="n">utils</span>
 <span class="kn">from</span> <span class="nn">audformat.core.attachment</span> <span class="kn">import</span> <span class="n">Attachment</span>
 <span class="kn">from</span> <span class="nn">audformat.core.column</span> <span class="kn">import</span> <span class="n">Column</span>
-<span class="kn">from</span> <span class="nn">audformat.core.common</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">is_relative_path</span><span class="p">,</span>
-    <span class="n">HeaderBase</span><span class="p">,</span>
-    <span class="n">HeaderDict</span><span class="p">,</span>
-<span class="p">)</span>
-<span class="kn">from</span> <span class="nn">audformat.core.errors</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">BadKeyError</span><span class="p">,</span>
-    <span class="n">BadIdError</span><span class="p">,</span>
-    <span class="n">TableExistsError</span><span class="p">,</span>
-<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">audformat.core.common</span> <span class="kn">import</span> <span class="n">HeaderBase</span>
+<span class="kn">from</span> <span class="nn">audformat.core.common</span> <span class="kn">import</span> <span class="n">HeaderDict</span>
+<span class="kn">from</span> <span class="nn">audformat.core.common</span> <span class="kn">import</span> <span class="n">is_relative_path</span>
+<span class="kn">from</span> <span class="nn">audformat.core.errors</span> <span class="kn">import</span> <span class="n">BadIdError</span>
+<span class="kn">from</span> <span class="nn">audformat.core.errors</span> <span class="kn">import</span> <span class="n">BadKeyError</span>
+<span class="kn">from</span> <span class="nn">audformat.core.errors</span> <span class="kn">import</span> <span class="n">TableExistsError</span>
 <span class="kn">from</span> <span class="nn">audformat.core.media</span> <span class="kn">import</span> <span class="n">Media</span>
 <span class="kn">from</span> <span class="nn">audformat.core.rater</span> <span class="kn">import</span> <span class="n">Rater</span>
 <span class="kn">from</span> <span class="nn">audformat.core.scheme</span> <span class="kn">import</span> <span class="n">Scheme</span>
 <span class="kn">from</span> <span class="nn">audformat.core.split</span> <span class="kn">import</span> <span class="n">Split</span>
-<span class="kn">from</span> <span class="nn">audformat.core.table</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">MiscTable</span><span class="p">,</span>
-    <span class="n">Table</span><span class="p">,</span>
-<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">audformat.core.table</span> <span class="kn">import</span> <span class="n">MiscTable</span>
+<span class="kn">from</span> <span class="nn">audformat.core.table</span> <span class="kn">import</span> <span class="n">Table</span>
 
 
 <div class="viewcode-block" id="Database"><a class="viewcode-back" href="../../../api/audformat.Database.html#audformat.Database">[docs]</a><span class="k">class</span> <span class="nc">Database</span><span class="p">(</span><span class="n">HeaderBase</span><span class="p">):</span>
@@ -824,7 +820,6 @@
 <span class="sd">            RuntimeError: if any involved database is not portable</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">others</span><span class="p">,</span> <span class="n">Database</span><span class="p">):</span>
             <span class="n">others</span> <span class="o">=</span> <span class="p">[</span><span class="n">others</span><span class="p">]</span>
 
@@ -1065,21 +1060,23 @@
             <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tables</span><span class="p">)</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">misc_tables</span><span class="p">),</span>
         <span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span>
+<div class="viewcode-block" id="Database.__eq__"><a class="viewcode-back" href="../../../api/audformat.Database.html#audformat.Database.__eq__">[docs]</a>    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
             <span class="n">other</span><span class="p">:</span> <span class="s1">&#39;Database&#39;</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Comparison if database equals another database.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dump</span><span class="p">()</span> <span class="o">!=</span> <span class="n">other</span><span class="o">.</span><span class="n">dump</span><span class="p">():</span>
             <span class="k">return</span> <span class="kc">False</span>
         <span class="k">for</span> <span class="n">table_id</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tables</span><span class="p">)</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">misc_tables</span><span class="p">):</span>
             <span class="k">if</span> <span class="bp">self</span><span class="p">[</span><span class="n">table_id</span><span class="p">]</span> <span class="o">!=</span> <span class="n">other</span><span class="p">[</span><span class="n">table_id</span><span class="p">]:</span>
                 <span class="k">return</span> <span class="kc">False</span>
-        <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
 
-    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span>
+<div class="viewcode-block" id="Database.__iter__"><a class="viewcode-back" href="../../../api/audformat.Database.html#audformat.Database.__iter__">[docs]</a>    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">MiscTable</span><span class="p">,</span> <span class="n">Table</span><span class="p">]:</span>
-        <span class="k">yield from</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tables</span><span class="p">)</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">misc_tables</span><span class="p">))</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Iterate over (miscellaneous) tables of database.&quot;&quot;&quot;</span>
+        <span class="k">yield from</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tables</span><span class="p">)</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">misc_tables</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="Database.__setitem__"><a class="viewcode-back" href="../../../api/audformat.Database.html#audformat.Database.__setitem__">[docs]</a>    <span class="k">def</span> <span class="fm">__setitem__</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
@@ -1382,7 +1379,7 @@
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2023/05/08 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2023/10/09 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>

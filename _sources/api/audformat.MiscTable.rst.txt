@@ -10,9 +10,17 @@
 ---------------
 .. automethod:: MiscTable.__add__
     
+\_\_eq\_\_\(\)
+--------------
+.. automethod:: MiscTable.__eq__
+    
 \_\_getitem\_\_\(\)
 -------------------
 .. automethod:: MiscTable.__getitem__
+    
+\_\_len\_\_\(\)
+---------------
+.. automethod:: MiscTable.__len__
     
 \_\_setitem\_\_\(\)
 -------------------

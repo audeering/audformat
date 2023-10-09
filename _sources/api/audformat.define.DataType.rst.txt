@@ -6,6 +6,10 @@
 .. autoclass:: DataType
 
 
+\_\_eq\_\_\(\)
+--------------
+.. automethod:: DataType.__eq__
+    
 BOOL
 ----
 .. autoattribute:: DataType.BOOL

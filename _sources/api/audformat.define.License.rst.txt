@@ -6,6 +6,10 @@
 .. autoclass:: License
 
 
+\_\_eq\_\_\(\)
+--------------
+.. automethod:: License.__eq__
+    
 CC0\_1\_0
 ---------
 .. autoattribute:: License.CC0_1_0

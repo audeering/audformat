@@ -6,6 +6,10 @@
 .. autoclass:: IndexType
 
 
+\_\_eq\_\_\(\)
+--------------
+.. automethod:: IndexType.__eq__
+    
 FILEWISE
 --------
 .. autoattribute:: IndexType.FILEWISE

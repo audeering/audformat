@@ -6,6 +6,10 @@
 .. autoclass:: Rater
 
 
+\_\_eq\_\_\(\)
+--------------
+.. automethod:: Rater.__eq__
+    
 description
 -----------
 .. autoattribute:: Rater.description

@@ -6,6 +6,10 @@
 .. autoclass:: Attachment
 
 
+\_\_eq\_\_\(\)
+--------------
+.. automethod:: Attachment.__eq__
+    
 description
 -----------
 .. autoattribute:: Attachment.description

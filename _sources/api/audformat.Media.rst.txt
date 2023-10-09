@@ -6,6 +6,10 @@
 .. autoclass:: Media
 
 
+\_\_eq\_\_\(\)
+--------------
+.. automethod:: Media.__eq__
+    
 bit\_depth
 ----------
 .. autoattribute:: Media.bit_depth

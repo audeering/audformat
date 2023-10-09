@@ -6,6 +6,10 @@
 .. autoclass:: Column
 
 
+\_\_eq\_\_\(\)
+--------------
+.. automethod:: Column.__eq__
+    
 description
 -----------
 .. autoattribute:: Column.description

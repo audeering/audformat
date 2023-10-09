@@ -6,6 +6,10 @@
 .. autoclass:: Split
 
 
+\_\_eq\_\_\(\)
+--------------
+.. automethod:: Split.__eq__
+    
 description
 -----------
 .. autoattribute:: Split.description

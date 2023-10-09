@@ -6,6 +6,10 @@
 .. autoclass:: RaterType
 
 
+\_\_eq\_\_\(\)
+--------------
+.. automethod:: RaterType.__eq__
+    
 HUMAN
 -----
 .. autoattribute:: RaterType.HUMAN

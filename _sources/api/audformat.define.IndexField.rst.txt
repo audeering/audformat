@@ -6,6 +6,10 @@
 .. autoclass:: IndexField
 
 
+\_\_eq\_\_\(\)
+--------------
+.. automethod:: IndexField.__eq__
+    
 END
 ---
 .. autoattribute:: IndexField.END

@@ -6,6 +6,10 @@
 .. autoclass:: Usage
 
 
+\_\_eq\_\_\(\)
+--------------
+.. automethod:: Usage.__eq__
+    
 COMMERCIAL
 ----------
 .. autoattribute:: Usage.COMMERCIAL

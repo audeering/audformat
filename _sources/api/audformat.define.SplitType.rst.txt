@@ -6,6 +6,10 @@
 .. autoclass:: SplitType
 
 
+\_\_eq\_\_\(\)
+--------------
+.. automethod:: SplitType.__eq__
+    
 DEVELOP
 -------
 .. autoattribute:: SplitType.DEVELOP

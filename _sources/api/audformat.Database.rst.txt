@@ -10,9 +10,17 @@
 --------------------
 .. automethod:: Database.__contains__
     
+\_\_eq\_\_\(\)
+--------------
+.. automethod:: Database.__eq__
+    
 \_\_getitem\_\_\(\)
 -------------------
 .. automethod:: Database.__getitem__
+    
+\_\_iter\_\_\(\)
+----------------
+.. automethod:: Database.__iter__
     
 \_\_setitem\_\_\(\)
 -------------------

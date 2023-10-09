@@ -6,6 +6,10 @@
 .. autoclass:: TableStorageFormat
 
 
+\_\_eq\_\_\(\)
+--------------
+.. automethod:: TableStorageFormat.__eq__
+    
 CSV
 ---
 .. autoattribute:: TableStorageFormat.CSV

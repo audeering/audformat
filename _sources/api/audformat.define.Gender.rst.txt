@@ -6,6 +6,10 @@
 .. autoclass:: Gender
 
 
+\_\_eq\_\_\(\)
+--------------
+.. automethod:: Gender.__eq__
+    
 CHILD
 -----
 .. autoattribute:: Gender.CHILD

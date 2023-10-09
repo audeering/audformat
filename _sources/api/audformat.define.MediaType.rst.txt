@@ -6,6 +6,10 @@
 .. autoclass:: MediaType
 
 
+\_\_eq\_\_\(\)
+--------------
+.. automethod:: MediaType.__eq__
+    
 AUDIO
 -----
 .. autoattribute:: MediaType.AUDIO
