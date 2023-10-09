@@ -7,6 +7,17 @@ The format is based on `Keep a Changelog`_,
 and this project adheres to `Semantic Versioning`_.
 
 
+Version 1.0.2 (2023-10-09)
+--------------------------
+
+* Fixed: require ``pandas<2.1.0``
+  as ``pandas`` 2.1.0 introduced a bug
+  in calculating the hash of an index,
+  which is not yet fixed
+* Removed: deprecated ``root`` argument
+  from ``audformat.testing.create_audio_files()``
+
+
 Version 1.0.1 (2023-05-08)
 --------------------------
 
@@ -42,7 +53,7 @@ Version 1.0.0 (2023-04-27)
   is a relative path
   it is no longer expanded to an absolute path
 
-  
+
 Version 0.16.1 (2023-03-29)
 ---------------------------
 
