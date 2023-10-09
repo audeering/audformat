@@ -66,10 +66,10 @@ def test_filewise(num_files, values):
     # set single
     series[:] = np.nan
     table.df['column'] = np.nan
-    series[0] = values[0]
+    series.iloc[0] = values[0]
     index = audformat.filewise_index(table.files[0])
     column.set(values[0], index=index)
-    pd.testing.assert_series_equal(column.get(index), series[[0]])
+    pd.testing.assert_series_equal(column.get(index), series.iloc[[0]])
     pd.testing.assert_series_equal(column.get(), series)
 
     # set slice
@@ -299,14 +299,14 @@ def test_segmented(num_files, num_segments_per_file, values):
     # set single
     series[:] = np.nan
     table.df['column'] = np.nan
-    series[0] = values[0]
+    series.iloc[0] = values[0]
     index = audformat.segmented_index(
         table.files[0],
         starts=table.starts[0],
         ends=table.ends[0],
     )
     column.set(values[0], index=index)
-    pd.testing.assert_series_equal(column.get(index), series[[0]])
+    pd.testing.assert_series_equal(column.get(index), series.iloc[[0]])
     pd.testing.assert_series_equal(column.get(), series)
 
     # set slice

@@ -1630,7 +1630,7 @@ def to_segmented_index(
             # in order to preserve precision of duration values
 
             ends = ends.to_series()
-            ends[idx_nat] = durs
+            ends.iloc[idx_nat] = durs
 
             # Create a new index
             index = segmented_index(files, starts, ends)
