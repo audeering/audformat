@@ -11,9 +11,8 @@ Version 1.0.2 (2023-10-09)
 --------------------------
 
 * Fixed: require ``pandas<2.1.0``
-  as ``pandas`` 2.1.0 introduced a bug
-  in calculating the hash of an index,
-  which is not yet fixed
+  as ``pandas>=2.1.0`` introduced a bug
+  in calculating the hash of an index
 * Removed: deprecated ``root`` argument
   from ``audformat.testing.create_audio_files()``
 
