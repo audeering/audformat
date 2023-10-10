@@ -37,7 +37,7 @@ dependencies = [
     'iso3166',
     'oyaml',
     'pyyaml >=5.4.1',
-    'pandas >=1.4.1,<2.1.0',
+    'pandas >=1.4.1',
 ]
 # Get version dynamically from git
 # (needs setuptools_scm tools config below)
