@@ -70,7 +70,7 @@
             
             
               <div class="version">
-                v1.0.2
+                v1.0.3
               </div>
             
           
@@ -712,7 +712,12 @@
 <span class="sd">        &#39;5251663970176285425&#39;</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">hash_pandas_object</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span></div>
+    <span class="c1"># Convert to int64</span>
+    <span class="c1"># to enforce same behavior</span>
+    <span class="c1"># across different pandas versions,</span>
+    <span class="c1"># see</span>
+    <span class="c1"># https://github.com/pandas-dev/pandas/issues/55452</span>
+    <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">hash_pandas_object</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;int64&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span></div>
 
 
 <div class="viewcode-block" id="index_has_overlap"><a class="viewcode-back" href="../../../api/audformat.utils.index_has_overlap.html#audformat.utils.index_has_overlap">[docs]</a><span class="k">def</span> <span class="nf">index_has_overlap</span><span class="p">(</span>
@@ -2155,7 +2160,7 @@
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2023/10/09 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2023/10/11 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
