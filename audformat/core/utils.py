@@ -546,7 +546,12 @@ def hash(
         '5251663970176285425'
 
     """
-    return str(pd.util.hash_pandas_object(obj).sum())
+    # Convert to int64
+    # to enforce same behavior
+    # across different pandas versions,
+    # see
+    # https://github.com/pandas-dev/pandas/issues/55452
+    return str(pd.util.hash_pandas_object(obj).astype('int64').sum())
 
 
 def index_has_overlap(
