@@ -7,6 +7,13 @@ The format is based on `Keep a Changelog`_,
 and this project adheres to `Semantic Versioning`_.
 
 
+Version 1.0.3 (2023-10-11)
+--------------------------
+
+* Fixed: ``audformat.utils.hash()`` for ``pandas>=2.1.0``
+* Fixed: remove upper limit of ``pandas`` dependency
+
+
 Version 1.0.2 (2023-10-09)
 --------------------------
 
