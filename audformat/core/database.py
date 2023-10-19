@@ -26,6 +26,9 @@ from audformat.core.common import is_relative_path
 from audformat.core.errors import BadIdError
 from audformat.core.errors import BadKeyError
 from audformat.core.errors import TableExistsError
+from audformat.core.index import filewise_index
+from audformat.core.index import is_filewise_index
+from audformat.core.index import is_segmented_index
 from audformat.core.media import Media
 from audformat.core.rater import Rater
 from audformat.core.scheme import Scheme
@@ -432,6 +435,247 @@ class Database(HeaderBase):
         ).map(duration)
 
         return y
+
+    def get(
+            self,
+            schemes: typing.Union[str, typing.Sequence],
+            *,
+            tables: typing.Union[str, typing.Sequence] = None,
+            splits: typing.Union[str, typing.Sequence] = None,
+            aggregate_function: typing.Callable[
+                [pd.Series, 'Database', str, str],
+                pd.Series
+            ] = None,
+    ) -> pd.DataFrame:
+        r"""Get labels by scheme(s).
+
+        Return all labels
+        that match the requested schemes.
+        A scheme is defined more broadly
+        and does not only match
+        schemes of the database,
+        but also columns with the same name
+        or labels of a scheme with the requested name.
+
+        If at least one returned label belongs to a segmented table,
+        the returned data frame has a segmented index.
+
+        A custom ``aggregate_function`` can be provided
+        that modifies how the labels are stored.
+        The first argument of the function
+        is a series ``y``
+        with the labels
+        for each table and column
+        that matches the requested schemes.
+        In addition,
+        a database object ``db``,
+        ``table_id``,
+        and ``column_id``
+        are its arguments.
+        For example,
+        to handle a database with stereo files,
+        that has the labels for the different channels
+        stored in tables with the IDs
+        ``'channel0'``
+        and ``'channel1'``
+        one can provide an ``aggregate_function``
+        that adds the table name to the scheme name::
+
+            def add_channel_name(y, db, table_id, column_id):
+                y.name = f'{y.name}-{table_id}'
+                return y
+
+        Alternatively,
+        a user might select only labels for the first channel::
+
+            def select_channel0(y, db, table_id, column_id):
+                if table_id != 'channel0':
+                    if audformat.is_filewise_index(y.index):
+                        index = audformat.filewise_index()
+                    else:
+                        index = audformat.segmented_index()
+                    y = pd.Series(index=index, name=y.name, dtype=y.dtype)
+                return y
+
+        Args:
+            schemes: scheme or sequence of scheme
+            tables: limit returned samples to selected tables
+            splits: limit returned samples to selected splits
+            aggregate_function: callable to handle collection
+                of scheme for certain tables and columns,
+                see discussion above
+
+        Returns:
+            data frame with labels
+
+        """
+
+        def append_series(
+                ys,
+                y,
+                table_id,
+                column_id,
+                aggregate_function,
+        ):
+            if y is not None:
+                if aggregate_function is not None:
+                    y = aggregate_function(y, self, table_id, column_id)
+                ys.append(y)
+
+        def scheme_in_column(scheme_id, column, column_id):
+            # Check if scheme_id
+            # is attached to a column,
+            # or identical with the column name
+            return (
+                scheme_id == column_id
+                or (
+                    column.scheme_id is not None
+                    and scheme_id == column.scheme_id
+                )
+            )
+
+        requested_schemes = audeer.to_list(schemes)
+
+        ys = []
+        for requested_scheme in requested_schemes:
+
+            # --- Check if requested scheme is stored as label in other schemes
+            scheme_mappings = []
+            for scheme_id, scheme in self.schemes.items():
+
+                # Labels stored as misc table
+                if scheme.uses_table and scheme_id in self.misc_tables:
+                    for column_id, column in self[scheme_id].columns.items():
+                        if scheme_in_column(
+                                requested_scheme,
+                                column,
+                                column_id,
+                        ):
+                            scheme_mappings.append((scheme_id, column_id))
+
+                # Labels stored in scheme
+                elif isinstance(scheme.labels, dict):
+                    labels = pd.DataFrame.from_dict(
+                        scheme.labels,
+                        orient='index',
+                    )
+                    if requested_scheme in labels:
+                        scheme_mappings.append((scheme_id, requested_scheme))
+
+            # --- Get data for requested schemes
+            ys_requested_scheme = []
+            for table_id, table in self.tables.items():
+
+                for column_id, column in table.columns.items():
+                    y = None
+                    # Scheme directly stored in column
+                    if scheme_in_column(requested_scheme, column, column_id):
+                        y = self[table_id][column_id].get()
+                        append_series(
+                            ys_requested_scheme,
+                            y,
+                            table_id,
+                            column_id,
+                            aggregate_function,
+                        )
+                    # Get series based on label of scheme
+                    else:
+                        for (scheme_id, mapping) in scheme_mappings:
+                            if scheme_in_column(scheme_id, column, column_id):
+                                y = self[table_id][column_id].get(map=mapping)
+                                append_series(
+                                    ys_requested_scheme,
+                                    y,
+                                    table_id,
+                                    column_id,
+                                    aggregate_function,
+                                )
+
+            # Ensure we have a common dtype for requested scheme
+            categorical_dtypes = [
+                y.dtype for y in ys_requested_scheme
+                if isinstance(y.dtype, pd.CategoricalDtype)
+            ]
+            dtypes_of_categories = [
+                dtype.categories.dtype
+                for dtype in categorical_dtypes
+            ]
+            if len(categorical_dtypes) > 0:
+                if len(set(dtypes_of_categories)) > 1:
+                    raise ValueError(
+                        'All categorical data must have the same dtype.'
+                    )
+                dtype = dtypes_of_categories[0]
+                # Convert everything to categorical data
+                for n, y in enumerate(ys_requested_scheme):
+                    if not isinstance(y.dtype, pd.CategoricalDtype):
+                        ys_requested_scheme[n] = y.astype(
+                            pd.CategoricalDtype(set(y.array.astype(dtype)))
+                        )
+                # Find union of categorical data
+                data = [y.array for y in ys_requested_scheme]
+                data = pd.api.types.union_categoricals(data)
+                ys_requested_scheme = [
+                    y.astype(data.dtype)
+                    for y in ys_requested_scheme
+                ]
+
+            ys += ys_requested_scheme
+
+        index = utils.union([y.index for y in ys])
+        obj = utils.concat(ys).loc[index]
+
+        if len(obj) == 0:
+            obj = pd.DataFrame()
+
+        if isinstance(obj, pd.Series):
+            obj = obj.to_frame()
+
+        # Start with column names matching requested schemes
+        matching_columns = [
+            column for column in requested_schemes
+            if column in obj.columns
+        ]
+        additional_columns = [
+            column for column in obj.columns
+            if column not in requested_schemes
+        ]
+        obj = obj[matching_columns + additional_columns]
+
+        # Limit returned samples by selected tables and splits
+        indices = []
+        if tables is not None or splits is not None:
+
+            if tables is None:
+                tables = list(self.tables)
+            else:
+                tables = audeer.to_list(tables)
+            if splits is not None:
+                splits = audeer.to_list(splits)
+
+            for table_id, table in self.tables.items():
+                if splits is None:
+                    if table_id in tables:
+                        indices.append(self[table_id].index)
+                else:
+                    if table_id in tables and table.split_id in splits:
+                        indices.append(self[table_id].index)
+
+            index = utils.union(indices)
+
+            # Avoid matching segments in obj
+            # by a filewise index
+            if is_segmented_index(obj.index):
+                return_filewise_index = is_filewise_index(index)
+                index = utils.to_segmented_index(index)
+                obj = obj.loc[index]
+                if return_filewise_index:
+                    index = filewise_index(index.get_level_values('file'))
+                    obj = obj.set_index(index)
+            else:
+                obj = obj.loc[index]
+
+        return obj
 
     def map_files(
             self,
