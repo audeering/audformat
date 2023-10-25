@@ -584,6 +584,14 @@ def test_concat(objs, overwrite, expected):
                 pd.Series([1, 2], pd.Index(['a', 'b']), dtype='float'),
                 pd.Series([1, 2], pd.Index(['a', 'b']), dtype='float'),
             ],
+            lambda x: tuple(x.to_list()),
+            pd.Series([(1, 1), (2, 2)], pd.Index(['a', 'b']), dtype='object'),
+        ),
+        (
+            [
+                pd.Series([1, 2], pd.Index(['a', 'b']), dtype='float'),
+                pd.Series([1, 2], pd.Index(['a', 'b']), dtype='float'),
+            ],
             np.sum,
             pd.Series([2, 4], pd.Index(['a', 'b']), dtype='float'),
         ),

@@ -69,15 +69,21 @@ def concat(
     a custom aggregation function can be provided
     with ``aggregate_function``
     that converts the overlapping values
-    into a single one.
+    into a single value.
 
     Args:
         objs: objects
         overwrite: overwrite values where indices overlap
-        aggregate_function: function to be applied on all entries
-            that contain more then one data point per index.
-            The function gets a dataframe row as input,
-            and is expected to return a single value
+        aggregate_function: function to aggregate values
+            for all entries
+            that contain more than one value per index.
+            The function gets a dataframe row as input.
+            E.g. set to
+            :func:`numpy.mean`
+            to average the values
+            or to
+            ``lambda row: tuple(row.to_list())``
+            to return all values as a tuple
 
     Returns:
         concatenated objects
