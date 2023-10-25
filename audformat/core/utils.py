@@ -280,7 +280,7 @@ def concat(
                                 'left':
                                 columns_reindex[column.name][intersection],
                                 'right':
-                                column[intersection]
+                                column[intersection],
                             }
                         )
                         combine.dropna(inplace=True)
