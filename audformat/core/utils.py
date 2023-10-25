@@ -82,7 +82,7 @@ def concat(
             :func:`numpy.mean`
             to average the values
             or to
-            ``lambda row: tuple(row.to_list())``
+            ``lambda y: tuple(y)``
             to return them as a tuple
 
     Returns:
