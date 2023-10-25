@@ -983,6 +983,36 @@ def test_concat(objs, overwrite, expected):
                 dtype='float',
             ),
         ),
+        # different index
+        (
+            [
+                pd.DataFrame(
+                    {
+                        'A': [1, 1, 1],
+                        'B': [1, 1, 1],
+                    },
+                    index=pd.Index(['a', 'b', 'c']),
+                    dtype='float',
+                ),
+                pd.DataFrame(
+                    {
+                        'A': [2, 2, 2],
+                        'B': [2, 2, 2],
+                    },
+                    index=pd.Index(['b', 'c', 'd']),
+                    dtype='float',
+                ),
+            ],
+            np.sum,
+            pd.DataFrame(
+                {
+                    'A': [1, 3, 3, 2],
+                    'B': [1, 3, 3, 2],
+                },
+                index=pd.Index(['a', 'b', 'c', 'd']),
+                dtype='float',
+            ),
+        ),
     ]
 )
 def test_concat_aggregate_function(objs, aggregate_function, expected):
