@@ -220,8 +220,9 @@ def concat(
                 columns.append(obj[column])
 
     # reindex all columns to the new index
-    columns_reindex = {}
-    overlapping_values = {}
+    columns_index = {}  # original column indices
+    columns_reindex = {}  # new columns
+    overlapping_values = {}  # overlapping values per column
     for column in columns:
 
         # if we already have a column with that name, we have to merge them
@@ -255,7 +256,7 @@ def concat(
             if not overwrite:
                 intersection = intersect(
                     [
-                        columns_reindex[column.name].index,
+                        columns_index[column.name],
                         column.index,
                     ]
                 )
@@ -310,6 +311,7 @@ def concat(
                 index=index,
                 dtype=dtype,
             )
+            columns_index[column.name] = column.index
         columns_reindex[column.name][column.index] = column
 
     # Apply custom aggregation function
@@ -324,12 +326,15 @@ def concat(
                 ignore_index=True,
             )
             dtype = columns_reindex[column].dtype
-            columns_reindex[column] = df.apply(aggregate_function, axis=1)
+            y = df.apply(aggregate_function, axis=1)
             # Restore the original dtype if possible
             try:
-                columns_reindex[column] = columns_reindex[column].astype(dtype)
+                y = y.astype(dtype)
             except (TypeError, ValueError):
-                pass
+                columns_reindex[column] = columns_reindex[column].astype(
+                    y.dtype
+                )
+            columns_reindex[column].loc[y.index] = y
 
     # Use `None` to force `{}` return the correct index, see
     # https://github.com/pandas-dev/pandas/issues/52404

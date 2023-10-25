@@ -1013,6 +1013,61 @@ def test_concat(objs, overwrite, expected):
                 dtype='float',
             ),
         ),
+        (
+            [
+                pd.DataFrame(
+                    {
+                        'A': [1, 1, 1],
+                        'B': [1, 1, 1],
+                    },
+                    index=pd.Index(['b', 'c', 'd']),
+                    dtype='float',
+                ),
+                pd.DataFrame(
+                    {
+                        'A': [2, 2, 2],
+                        'B': [2, 2, 2],
+                    },
+                    index=pd.Index(['a', 'b', 'c']),
+                    dtype='float',
+                ),
+            ],
+            np.sum,
+            pd.DataFrame(
+                {
+                    'A': [3, 3, 1, 2],
+                    'B': [3, 3, 1, 2],
+                },
+                index=pd.Index(['b', 'c', 'd', 'a']),
+                dtype='float',
+            ),
+        ),
+        (
+            [
+                pd.DataFrame(
+                    {
+                        'A': [1., 1., 1.],
+                        'B': ['A', 'A', 'A'],
+                    },
+                    index=pd.Index(['a', 'b', 'c']),
+                ),
+                pd.DataFrame(
+                    {
+                        'A': [2., 2., 2.],
+                        'B': ['B', 'B', 'B'],
+                    },
+                    index=pd.Index(['b', 'c', 'd']),
+                ),
+            ],
+            lambda row: row[0],
+            pd.DataFrame(
+                {
+                    'A': [1., 1., 1., 2.],
+                    'B': ['A', 'A', 'A', 'B'],
+                },
+                index=pd.Index(['a', 'b', 'c', 'd']),
+            ),
+        ),
     ]
 )
 def test_concat_aggregate_function(objs, aggregate_function, expected):
@@ -1021,6 +1076,7 @@ def test_concat_aggregate_function(objs, aggregate_function, expected):
         pd.testing.assert_series_equal(obj, expected)
     else:
         pd.testing.assert_frame_equal(obj, expected)
+        assert False
 
 
 @pytest.mark.parametrize(
