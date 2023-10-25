@@ -1076,7 +1076,6 @@ def test_concat_aggregate_function(objs, aggregate_function, expected):
         pd.testing.assert_series_equal(obj, expected)
     else:
         pd.testing.assert_frame_equal(obj, expected)
-        assert False
 
 
 @pytest.mark.parametrize(
