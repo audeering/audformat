@@ -91,7 +91,8 @@ def concat(
     Raises:
         ValueError: if level and dtypes of object indices do not match
         ValueError: if columns with the same name have different dtypes
-        ValueError: if ``aggregate_function`` is ``None``
+        ValueError: if ``aggregate_function`` is ``None``,
+            ``overwrite`` is ``False``,
             and values in the same position do not match
 
     Examples:
