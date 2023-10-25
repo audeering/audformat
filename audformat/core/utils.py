@@ -74,9 +74,7 @@ def concat(
     Args:
         objs: objects
         overwrite: overwrite values where indices overlap
-        aggregate_function: function to aggregate values
-            for all entries
-            that contain more than one value per index.
+        aggregate_function: function to aggregate overlapping values.
             The function gets a dataframe row as input.
             E.g. set to
             :func:`numpy.mean`
