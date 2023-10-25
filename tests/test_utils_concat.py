@@ -550,3 +550,285 @@ def test_concat(objs, overwrite, expected):
         pd.testing.assert_series_equal(obj, expected)
     else:
         pd.testing.assert_frame_equal(obj, expected)
+
+
+#
+@pytest.mark.parametrize(
+    'objs, aggregate_function, expected',
+    [
+        # empty
+        (
+            [],
+            None,
+            pd.Series([], pd.Index([]), dtype='object'),
+        ),
+        # identical values
+        (
+            [
+                pd.Series([1, 2], pd.Index(['a', 'b']), dtype='float'),
+                pd.Series([1, 2], pd.Index(['a', 'b']), dtype='float'),
+            ],
+            None,
+            pd.Series([1, 2], pd.Index(['a', 'b']), dtype='float'),
+        ),
+        (
+            [
+                pd.Series([1, 2], pd.Index(['a', 'b']), dtype='float'),
+                pd.Series([1, 2], pd.Index(['a', 'b']), dtype='float'),
+            ],
+            np.mean,
+            pd.Series([1, 2], pd.Index(['a', 'b']), dtype='float'),
+        ),
+        (
+            [
+                pd.Series([1, 2], pd.Index(['a', 'b']), dtype='float'),
+                pd.Series([1, 2], pd.Index(['a', 'b']), dtype='float'),
+            ],
+            np.sum,
+            pd.Series([2, 4], pd.Index(['a', 'b']), dtype='float'),
+        ),
+        (
+            [
+                pd.Series([1, 2], pd.Index(['a', 'b']), dtype='float'),
+                pd.Series([1, 2], pd.Index(['a', 'b']), dtype='float'),
+            ],
+            np.var,
+            pd.Series([0, 0], pd.Index(['a', 'b']), dtype='float'),
+        ),
+        (
+            [
+                pd.Series([1, 2], pd.Index(['a', 'b']), dtype='float'),
+                pd.Series([1, 2], pd.Index(['a', 'b']), dtype='float'),
+                pd.Series([1, 2], pd.Index(['a', 'b']), dtype='float'),
+            ],
+            np.sum,
+            pd.Series([3, 6], pd.Index(['a', 'b']), dtype='float'),
+        ),
+        (
+            [
+                pd.Series(
+                    [1, 2],
+                    audformat.filewise_index(['a', 'b']),
+                    dtype='float',
+                ),
+                pd.Series(
+                    [1, 2],
+                    audformat.filewise_index(['a', 'b']),
+                    dtype='float',
+                ),
+            ],
+            np.sum,
+            pd.Series(
+                [2, 4],
+                audformat.filewise_index(['a', 'b']),
+                dtype='float',
+            ),
+        ),
+        (
+            [
+                pd.Series(['a', 'b'], pd.Index(['a', 'b']), dtype='string'),
+                pd.Series(['a', 'b'], pd.Index(['a', 'b']), dtype='string'),
+            ],
+            lambda x: np.char.add(x[0], x[1]),
+            pd.Series(['aa', 'bb'], pd.Index(['a', 'b']), dtype='string'),
+        ),
+        (
+            [
+                pd.DataFrame(
+                    [[1, 2], [3, 4]],
+                    pd.Index(['a', 'b']),
+                    columns=['A', 'B'],
+                    dtype='float',
+                ),
+                pd.DataFrame(
+                    [[1, 2], [3, 4]],
+                    pd.Index(['a', 'b']),
+                    columns=['A', 'B'],
+                    dtype='float',
+                ),
+            ],
+            None,
+            pd.DataFrame(
+                [[1, 2], [3, 4]],
+                pd.Index(['a', 'b']),
+                columns=['A', 'B'],
+                dtype='float',
+            ),
+        ),
+        (
+            [
+                pd.DataFrame(
+                    [[1, 2], [3, 4]],
+                    pd.Index(['a', 'b']),
+                    columns=['A', 'B'],
+                    dtype='float',
+                ),
+                pd.DataFrame(
+                    [[1, 2], [3, 4]],
+                    pd.Index(['a', 'b']),
+                    columns=['A', 'B'],
+                    dtype='float',
+                ),
+            ],
+            np.sum,
+            pd.DataFrame(
+                [[2, 4], [6, 8]],
+                pd.Index(['a', 'b']),
+                columns=['A', 'B'],
+                dtype='float',
+            ),
+        ),
+        # different values
+        pytest.param(
+            [
+                pd.Series([1, 2], pd.Index(['a', 'b']), dtype='float'),
+                pd.Series([2, 3], pd.Index(['a', 'b']), dtype='float'),
+            ],
+            None,
+            None,
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
+        (
+            [
+                pd.Series([1, 2], pd.Index(['a', 'b']), dtype='float'),
+                pd.Series([2, 3], pd.Index(['a', 'b']), dtype='float'),
+            ],
+            np.mean,
+            pd.Series([1.5, 2.5], pd.Index(['a', 'b']), dtype='float'),
+        ),
+        (
+            [
+                pd.Series([1, 2], pd.Index(['a', 'b']), dtype='float'),
+                pd.Series([2, 3], pd.Index(['a', 'b']), dtype='float'),
+            ],
+            np.sum,
+            pd.Series([3, 5], pd.Index(['a', 'b']), dtype='float'),
+        ),
+        (
+            [
+                pd.Series([1, 2], pd.Index(['a', 'b']), dtype='float'),
+                pd.Series([2, 3], pd.Index(['a', 'b']), dtype='float'),
+                pd.Series([3, 4], pd.Index(['a', 'b']), dtype='float'),
+            ],
+            np.mean,
+            pd.Series([2, 3], pd.Index(['a', 'b']), dtype='float'),
+        ),
+        (
+            [
+                pd.Series([1, 2], pd.Index(['a', 'b']), dtype='float'),
+                pd.Series([2, 3], pd.Index(['a', 'b']), dtype='float'),
+                pd.Series([3, 4], pd.Index(['a', 'b']), dtype='float'),
+            ],
+            np.sum,
+            pd.Series([6, 9], pd.Index(['a', 'b']), dtype='float'),
+        ),
+        (
+            [
+                pd.Series(
+                    [1, 2],
+                    audformat.filewise_index(['a', 'b']),
+                    dtype='float',
+                ),
+                pd.Series(
+                    [2, 3],
+                    audformat.filewise_index(['a', 'b']),
+                    dtype='float',
+                ),
+            ],
+            np.sum,
+            pd.Series(
+                [3, 5],
+                audformat.filewise_index(['a', 'b']),
+                dtype='float',
+            ),
+        ),
+        (
+            [
+                pd.Series(['a', 'b'], pd.Index(['a', 'b']), dtype='string'),
+                pd.Series(['b', 'a'], pd.Index(['a', 'b']), dtype='string'),
+            ],
+            lambda x: np.char.add(x[0], x[1]),
+            pd.Series(['ab', 'ba'], pd.Index(['a', 'b']), dtype='string'),
+        ),
+        (
+            [
+                pd.Series([1, 2], pd.Index(['a', 'b']), dtype='float'),
+                pd.Series([2, 3], pd.Index(['a', 'b']), dtype='float'),
+                pd.Series([3, 4], pd.Index(['a', 'b']), dtype='float'),
+            ],
+            lambda x: x[2],
+            pd.Series([3, 4], pd.Index(['a', 'b']), dtype='float'),
+        ),
+        pytest.param(
+            [
+                pd.DataFrame(
+                    [[1, 2], [3, 4]],
+                    pd.Index(['a', 'b']),
+                    columns=['A', 'B'],
+                    dtype='float',
+                ),
+                pd.DataFrame(
+                    [[2, 3], [4, 5]],
+                    pd.Index(['a', 'b']),
+                    columns=['A', 'B'],
+                    dtype='float',
+                ),
+            ],
+            None,
+            None,
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
+        (
+            [
+                pd.DataFrame(
+                    [[1, 2], [3, 4]],
+                    pd.Index(['a', 'b']),
+                    columns=['A', 'B'],
+                    dtype='float',
+                ),
+                pd.DataFrame(
+                    [[2, 3], [4, 5]],
+                    pd.Index(['a', 'b']),
+                    columns=['A', 'B'],
+                    dtype='float',
+                ),
+            ],
+            np.sum,
+            pd.DataFrame(
+                [[3, 5], [7, 9]],
+                pd.Index(['a', 'b']),
+                columns=['A', 'B'],
+                dtype='float',
+            ),
+        ),
+        (
+            [
+                pd.DataFrame(
+                    [[1, 2], [3, 4]],
+                    pd.Index(['a', 'b']),
+                    columns=['A', 'B'],
+                    dtype='float',
+                ),
+                pd.DataFrame(
+                    [[2, 3], [4, 5]],
+                    pd.Index(['a', 'b']),
+                    columns=['A', 'B'],
+                    dtype='float',
+                ),
+            ],
+            lambda x: x[1],
+            pd.DataFrame(
+                [[2, 3], [4, 5]],
+                pd.Index(['a', 'b']),
+                columns=['A', 'B'],
+                dtype='float',
+            ),
+        ),
+    ]
+)
+def test_concat_aggregate_function(objs, aggregate_function, expected):
+    obj = audformat.utils.concat(objs, aggregate_function=aggregate_function)
+    if isinstance(obj, pd.Series):
+        pd.testing.assert_series_equal(obj, expected)
+    else:
+        pd.testing.assert_frame_equal(obj, expected)

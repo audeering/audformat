@@ -37,6 +37,7 @@ def concat(
         objs: typing.Sequence[typing.Union[pd.Series, pd.DataFrame]],
         *,
         overwrite: bool = False,
+        aggregate_function: typing.Callable[[pd.Series], typing.Any] = None,
 ) -> typing.Union[pd.Series, pd.DataFrame]:
     r"""Concatenate objects.
 
@@ -64,10 +65,19 @@ def concat(
     or one column contains ``NaN``.
     If ``overwrite`` is set to ``True``,
     the value of the last object in the list is kept.
+    If ``overwrite`` is set to ``False``,
+    a custom aggregation function can be provided
+    with ``aggregate_function``
+    that converts the overlapping values
+    into a single one.
 
     Args:
         objs: objects
         overwrite: overwrite values where indices overlap
+        aggregate_function: function to be applied on all entries
+            that contain more then one data point per index.
+            The function gets a dataframe row as input,
+            and is expected to return a single value
 
     Returns:
         concatenated objects
@@ -75,7 +85,8 @@ def concat(
     Raises:
         ValueError: if level and dtypes of object indices do not match
         ValueError: if columns with the same name have different dtypes
-        ValueError: if values in the same position do not match
+        ValueError: if ``aggregate_function`` is ``None``
+            and values in the same position do not match
 
     Examples:
         >>> concat(
@@ -95,6 +106,15 @@ def concat(
         ... )
            col1  col2
         0     0     1
+        >>> concat(
+        ...     [
+        ...         pd.Series([1], index=pd.Index([0])),
+        ...         pd.Series([2], index=pd.Index([0])),
+        ...     ],
+        ...     aggregate_function=np.sum,
+        ... )
+        0    3
+        dtype: Int64
         >>> concat(
         ...     [
         ...         pd.Series(
@@ -194,6 +214,7 @@ def concat(
 
     # reindex all columns to the new index
     columns_reindex = {}
+    overlapping_values = {}
     for column in columns:
 
         # if we already have a column with that name, we have to merge them
@@ -233,26 +254,41 @@ def concat(
                 )
                 # We use len() here as index.empty takes a very long time
                 if len(intersection) > 0:
-                    combine = pd.DataFrame(
-                        {
-                            'left': columns_reindex[column.name][intersection],
-                            'right': column[intersection]
-                        }
-                    )
-                    combine.dropna(inplace=True)
-                    differ = combine['left'] != combine['right']
-                    if np.any(differ):
-                        max_display = 10
-                        overlap = combine[differ]
-                        msg_overlap = str(overlap[:max_display])
-                        msg_tail = '\n...' \
-                            if len(overlap) > max_display \
-                            else ''
-                        raise ValueError(
-                            "Found overlapping data in column "
-                            f"'{column.name}':\n"
-                            f"{msg_overlap}{msg_tail}"
+
+                    # Custom handling of overlapping values
+                    if aggregate_function is not None:
+                        if column.name not in overlapping_values:
+                            overlapping_values[column.name] = [
+                                columns_reindex[column.name].loc[intersection]
+                            ]
+                        overlapping_values[column.name].append(
+                            column.loc[intersection]
                         )
+                        column = column.loc[~column.index.isin(intersection)]
+
+                    else:
+                        combine = pd.DataFrame(
+                            {
+                                'left':
+                                columns_reindex[column.name][intersection],
+                                'right':
+                                column[intersection]
+                            }
+                        )
+                        combine.dropna(inplace=True)
+                        differ = combine['left'] != combine['right']
+                        if np.any(differ):
+                            max_display = 10
+                            overlap = combine[differ]
+                            msg_overlap = str(overlap[:max_display])
+                            msg_tail = '\n...' \
+                                if len(overlap) > max_display \
+                                else ''
+                            raise ValueError(
+                                "Found overlapping data in column "
+                                f"'{column.name}':\n"
+                                f"{msg_overlap}{msg_tail}"
+                            )
 
             # drop NaN to avoid overwriting values from other column
             column = column.dropna()
@@ -268,6 +304,21 @@ def concat(
                 dtype=dtype,
             )
         columns_reindex[column.name][column.index] = column
+
+    # Apply custom aggregation function
+    # on collected overlapping data
+    # (no overlapping data is collected
+    #  when no aggregation function is provided)
+    if len(overlapping_values) > 0:
+        for column in overlapping_values:
+            df = pd.concat(
+                overlapping_values[column],
+                axis=1,
+                ignore_index=True,
+            )
+            dtype = columns_reindex[column].dtype
+            columns_reindex[column] = df.apply(aggregate_function, axis=1)
+            columns_reindex[column] = columns_reindex[column].astype(dtype)
 
     # Use `None` to force `{}` return the correct index, see
     # https://github.com/pandas-dev/pandas/issues/52404
