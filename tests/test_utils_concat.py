@@ -745,6 +745,98 @@ def test_concat(objs, overwrite, expected):
                 dtype='float',
             ),
         ),
+        (
+            [
+                pd.DataFrame(
+                    [[1, 2], [3, 4]],
+                    pd.Index(['a', 'b']),
+                    columns=['A', 'B'],
+                    dtype='float',
+                ),
+                pd.DataFrame(
+                    [1, 3],
+                    pd.Index(['a', 'b']),
+                    columns=['A'],
+                    dtype='float',
+                ),
+            ],
+            np.sum,
+            pd.DataFrame(
+                [[2, 2], [6, 4]],
+                pd.Index(['a', 'b']),
+                columns=['A', 'B'],
+                dtype='float',
+            ),
+        ),
+        (
+            [
+                pd.DataFrame(
+                    [[1, 2], [3, 4]],
+                    pd.Index(['a', 'b']),
+                    columns=['A', 'B'],
+                    dtype='float',
+                ),
+                pd.DataFrame(
+                    [2, 4],
+                    pd.Index(['a', 'b']),
+                    columns=['B'],
+                    dtype='float',
+                ),
+            ],
+            np.sum,
+            pd.DataFrame(
+                [[1, 4], [3, 8]],
+                pd.Index(['a', 'b']),
+                columns=['A', 'B'],
+                dtype='float',
+            ),
+        ),
+        (
+            [
+                pd.DataFrame(
+                    [1, 3],
+                    pd.Index(['a', 'b']),
+                    columns=['A'],
+                    dtype='float',
+                ),
+                pd.DataFrame(
+                    [[1, 2], [3, 4]],
+                    pd.Index(['a', 'b']),
+                    columns=['A', 'B'],
+                    dtype='float',
+                ),
+            ],
+            np.sum,
+            pd.DataFrame(
+                [[2, 2], [6, 4]],
+                pd.Index(['a', 'b']),
+                columns=['A', 'B'],
+                dtype='float',
+            ),
+        ),
+        (
+            [
+                pd.DataFrame(
+                    [2, 4],
+                    pd.Index(['a', 'b']),
+                    columns=['B'],
+                    dtype='float',
+                ),
+                pd.DataFrame(
+                    [[1, 2], [3, 4]],
+                    pd.Index(['a', 'b']),
+                    columns=['A', 'B'],
+                    dtype='float',
+                ),
+            ],
+            np.sum,
+            pd.DataFrame(
+                [[4, 1], [8, 3]],
+                pd.Index(['a', 'b']),
+                columns=['B', 'A'],
+                dtype='float',
+            ),
+        ),
         # different values
         pytest.param(
             [
