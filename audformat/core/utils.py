@@ -83,7 +83,7 @@ def concat(
             to average the values
             or to
             ``lambda row: tuple(row.to_list())``
-            to return all values as a tuple
+            to return them as a tuple
 
     Returns:
         concatenated objects
