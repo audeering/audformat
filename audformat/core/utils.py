@@ -318,7 +318,11 @@ def concat(
             )
             dtype = columns_reindex[column].dtype
             columns_reindex[column] = df.apply(aggregate_function, axis=1)
-            columns_reindex[column] = columns_reindex[column].astype(dtype)
+            # Restore the original dtype if possible
+            try:
+                columns_reindex[column] = columns_reindex[column].astype(dtype)
+            except (TypeError, ValueError):
+                pass
 
     # Use `None` to force `{}` return the correct index, see
     # https://github.com/pandas-dev/pandas/issues/52404

@@ -599,6 +599,66 @@ def test_concat(objs, overwrite, expected):
             [
                 pd.Series([1, 2], pd.Index(['a', 'b']), dtype='float'),
                 pd.Series([1, 2], pd.Index(['a', 'b']), dtype='float'),
+            ],
+            lambda x: 'a',
+            pd.Series(
+                ['a', 'a'],
+                pd.Index(['a', 'b']),
+                dtype='object',
+            ),
+        ),
+        (
+            [
+                pd.Series([1, 2], pd.Index(['a', 'b']), dtype='float'),
+                pd.Series([1, 2], pd.Index(['a', 'b']), dtype='float'),
+            ],
+            lambda x: 0,
+            pd.Series(
+                [0, 0],
+                pd.Index(['a', 'b']),
+                dtype='float',
+            ),
+        ),
+        (
+            [
+                pd.Series([1, 2], pd.Index(['a', 'b']), dtype='int'),
+                pd.Series([1, 2], pd.Index(['a', 'b']), dtype='int'),
+            ],
+            lambda x: 0,
+            pd.Series(
+                [0, 0],
+                pd.Index(['a', 'b']),
+                dtype='Int64',
+            ),
+        ),
+        (
+            [
+                pd.Series([1, 2], pd.Index(['a', 'b']), dtype='int'),
+                pd.Series([1, 2], pd.Index(['a', 'b']), dtype='int'),
+            ],
+            lambda x: 0.5,
+            pd.Series(
+                [0.5, 0.5],
+                pd.Index(['a', 'b']),
+                dtype='float',
+            ),
+        ),
+        (
+            [
+                pd.Series([1, 2], pd.Index(['a', 'b']), dtype='float'),
+                pd.Series([1, 2], pd.Index(['a', 'b']), dtype='float'),
+            ],
+            lambda x: ('a', 'b'),
+            pd.Series(
+                [('a', 'b'), ('a', 'b')],
+                pd.Index(['a', 'b']),
+                dtype='object',
+            ),
+        ),
+        (
+            [
+                pd.Series([1, 2], pd.Index(['a', 'b']), dtype='float'),
+                pd.Series([1, 2], pd.Index(['a', 'b']), dtype='float'),
                 pd.Series([1, 2], pd.Index(['a', 'b']), dtype='float'),
             ],
             np.sum,
