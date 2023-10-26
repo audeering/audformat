@@ -82,7 +82,7 @@ def concat(
             :func:`numpy.mean`
             to average the values
             or to
-            ``lambda y: tuple(y)``
+            :func:`tuple`
             to return them as a tuple
 
     Returns:
@@ -220,9 +220,8 @@ def concat(
                 columns.append(obj[column])
 
     # reindex all columns to the new index
-    columns_index = {}  # original column indices
-    columns_reindex = {}  # new columns
-    overlapping_values = {}  # overlapping values per column
+    columns_reindex = {}
+    overlapping_values = {}
     for column in columns:
 
         # if we already have a column with that name, we have to merge them
@@ -310,7 +309,6 @@ def concat(
                 index=index,
                 dtype=dtype,
             )
-            columns_index[column.name] = column.index
         columns_reindex[column.name][column.index] = column
 
     # Apply custom aggregation function
