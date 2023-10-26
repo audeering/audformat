@@ -583,7 +583,7 @@ def test_concat(objs, overwrite, expected):
                 pd.Series([1, 2], pd.Index(['a', 'b']), dtype='float'),
                 pd.Series([1, 2], pd.Index(['a', 'b']), dtype='float'),
             ],
-            lambda x: tuple(x.to_list()),
+            tuple,
             pd.Series([(1, 1), (2, 2)], pd.Index(['a', 'b']), dtype='object'),
         ),
         (
@@ -607,7 +607,7 @@ def test_concat(objs, overwrite, expected):
                 pd.Series([1, 2], pd.Index(['a', 'b']), dtype='float'),
                 pd.Series([1, 2], pd.Index(['a', 'b']), dtype='float'),
             ],
-            lambda x: 'a',
+            lambda y: 'a',
             pd.Series(
                 ['a', 'a'],
                 pd.Index(['a', 'b']),
@@ -619,7 +619,7 @@ def test_concat(objs, overwrite, expected):
                 pd.Series([1, 2], pd.Index(['a', 'b']), dtype='float'),
                 pd.Series([1, 2], pd.Index(['a', 'b']), dtype='float'),
             ],
-            lambda x: 0,
+            lambda y: 0,
             pd.Series(
                 [0, 0],
                 pd.Index(['a', 'b']),
@@ -631,7 +631,7 @@ def test_concat(objs, overwrite, expected):
                 pd.Series([1, 2], pd.Index(['a', 'b']), dtype='int'),
                 pd.Series([1, 2], pd.Index(['a', 'b']), dtype='int'),
             ],
-            lambda x: 0,
+            lambda y: 0,
             pd.Series(
                 [0, 0],
                 pd.Index(['a', 'b']),
@@ -643,7 +643,7 @@ def test_concat(objs, overwrite, expected):
                 pd.Series([1, 2], pd.Index(['a', 'b']), dtype='int'),
                 pd.Series([1, 2], pd.Index(['a', 'b']), dtype='int'),
             ],
-            lambda x: 0.5,
+            lambda y: 0.5,
             pd.Series(
                 [0.5, 0.5],
                 pd.Index(['a', 'b']),
@@ -655,7 +655,7 @@ def test_concat(objs, overwrite, expected):
                 pd.Series([1, 2], pd.Index(['a', 'b']), dtype='float'),
                 pd.Series([1, 2], pd.Index(['a', 'b']), dtype='float'),
             ],
-            lambda x: ('a', 'b'),
+            lambda y: ('a', 'b'),
             pd.Series(
                 [('a', 'b'), ('a', 'b')],
                 pd.Index(['a', 'b']),
@@ -696,7 +696,7 @@ def test_concat(objs, overwrite, expected):
                 pd.Series(['a', 'b'], pd.Index(['a', 'b']), dtype='string'),
                 pd.Series(['a', 'b'], pd.Index(['a', 'b']), dtype='string'),
             ],
-            lambda x: np.char.add(x[0], x[1]),
+            lambda y: np.char.add(y[0], y[1]),
             pd.Series(['aa', 'bb'], pd.Index(['a', 'b']), dtype='string'),
         ),
         (
@@ -938,7 +938,7 @@ def test_concat(objs, overwrite, expected):
                 pd.Series(['a', 'b'], pd.Index(['a', 'b']), dtype='string'),
                 pd.Series(['b', 'a'], pd.Index(['a', 'b']), dtype='string'),
             ],
-            lambda x: np.char.add(x[0], x[1]),
+            lambda y: np.char.add(y[0], y[1]),
             pd.Series(['ab', 'ba'], pd.Index(['a', 'b']), dtype='string'),
         ),
         (
@@ -947,7 +947,7 @@ def test_concat(objs, overwrite, expected):
                 pd.Series([2, 3], pd.Index(['a', 'b']), dtype='float'),
                 pd.Series([3, 4], pd.Index(['a', 'b']), dtype='float'),
             ],
-            lambda x: x[2],
+            lambda y: y[2],
             pd.Series([3, 4], pd.Index(['a', 'b']), dtype='float'),
         ),
         pytest.param(
@@ -1021,7 +1021,7 @@ def test_concat(objs, overwrite, expected):
                     dtype='float',
                 ),
             ],
-            lambda x: x[1],
+            lambda y: y[1],
             pd.DataFrame(
                 {
                     'A': [2, 4],
@@ -1107,7 +1107,7 @@ def test_concat(objs, overwrite, expected):
                     index=pd.Index(['b', 'c', 'd']),
                 ),
             ],
-            lambda row: row[0],
+            lambda y: y[0],
             pd.DataFrame(
                 {
                     'A': [1., 1., 1., 2.],
