@@ -79,7 +79,7 @@ def concat(
             with overlapping values
             as input.
             E.g. set to
-            ``numpy.mean``
+            ``lambda y: y.mean()``
             to average the values
             or to
             ``tuple``
