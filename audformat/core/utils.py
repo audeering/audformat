@@ -252,28 +252,27 @@ def concat(
                     columns_reindex[column.name].astype('float64')
                 )
 
-            # overlapping values must match or have to be nan in one column
+            # Handle overlapping values
             if not overwrite:
                 intersection = intersect(
                     [
-                        columns_index[column.name],
-                        column.index,
+                        columns_reindex[column.name].dropna().index,
+                        column.dropna().index,
                     ]
                 )
                 # We use len() here as index.empty takes a very long time
                 if len(intersection) > 0:
 
-                    # Custom handling of overlapping values
+                    # Store overlap if custom aggregate function is provided
                     if aggregate_function is not None:
                         if column.name not in overlapping_values:
-                            overlapping_values[column.name] = [
-                                columns_reindex[column.name].loc[intersection]
-                            ]
+                            overlapping_values[column.name] = []
                         overlapping_values[column.name].append(
                             column.loc[intersection]
                         )
                         column = column.loc[~column.index.isin(intersection)]
 
+                    # Raise error if values don't match and are not NaN
                     else:
                         combine = pd.DataFrame(
                             {
@@ -320,6 +319,19 @@ def concat(
     #  when no aggregation function is provided)
     if len(overlapping_values) > 0:
         for column in overlapping_values:
+
+            # Add data of first column
+            # overlapping with all other columns
+            union_index = union(
+                [y.index for y in overlapping_values[column]]
+            )
+            overlapping_values[column].insert(
+                0,
+                columns_reindex[column].loc[union_index]
+            )
+
+            # Convert list of overlapping data series to data frame
+            # and apply aggregate function
             df = pd.concat(
                 overlapping_values[column],
                 axis=1,
@@ -327,6 +339,7 @@ def concat(
             )
             dtype = columns_reindex[column].dtype
             y = df.apply(aggregate_function, axis=1)
+
             # Restore the original dtype if possible
             try:
                 y = y.astype(dtype)
