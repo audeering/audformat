@@ -79,10 +79,10 @@ def concat(
             with overlapping values
             as input.
             E.g. set to
-            :func:`numpy.mean`
+            ``numpy.mean``
             to average the values
             or to
-            :func:`tuple`
+            ``tuple``
             to return them as a tuple
 
     Returns:
