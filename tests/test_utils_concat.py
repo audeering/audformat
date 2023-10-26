@@ -1220,6 +1220,81 @@ def test_concat(objs, overwrite, expected):
                 dtype='Int64',
             ),
         ),
+        (
+            [
+                pd.DataFrame(
+                    {
+                        'A': [1, 1, 1],
+                        'B': [1, 1, 1],
+                        'C': [1, 1, 1],
+                    },
+                    index=pd.Index(['a', 'b', 'c']),
+                    dtype='Int64',
+                ),
+                pd.DataFrame(
+                    {
+                        'A': [2, 2, 2],
+                        'B': [2, 2, 2],
+                    },
+                    index=pd.Index(['b', 'c', 'd']),
+                    dtype='Int64',
+                ),
+                pd.DataFrame(
+                    {
+                        'A': [3, 3, 4],
+                        'B': [3, 3, np.NaN],
+                    },
+                    index=pd.Index(['a', 'd', 'e']),
+                    dtype='Int64',
+                ),
+            ],
+            lambda y: y[0],
+            pd.DataFrame(
+                {
+                    'A': [1, 1, 1, 2, 4],
+                    'B': [1, 1, 1, 2, np.NaN],
+                    'C': [1, 1, 1, np.NaN, np.NaN],
+                },
+                index=pd.Index(['a', 'b', 'c', 'd', 'e']),
+                dtype='Int64',
+            ),
+        ),
+        (
+            [
+                pd.DataFrame(
+                    {
+                        'A': [1, 1, 1],
+                        'B': [1, 1, 1],
+                    },
+                    index=pd.Index(['a', 'b', 'c']),
+                ),
+                pd.DataFrame(
+                    {
+                        'A': [2, 1, 2],
+                        'B': [2, 1, 2],
+                        'C': [2, 1, 2],
+                    },
+                    index=pd.Index(['b', 'c', 'd']),
+                ),
+                pd.DataFrame(
+                    {
+                        'A': [3, 3],
+                        'B': [3, 3],
+                    },
+                    index=pd.Index(['a', 'd']),
+                ),
+            ],
+            np.sum,
+            pd.DataFrame(
+                {
+                    'A': [4, 3, 2, 5],
+                    'B': [4, 3, 2, 5],
+                    'C': [np.NaN, 2, 1, 2],
+                },
+                index=pd.Index(['a', 'b', 'c', 'd']),
+                dtype='Int64',
+            ),
+        ),
     ]
 )
 def test_concat_aggregate_function(objs, aggregate_function, expected):
