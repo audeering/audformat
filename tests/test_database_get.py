@@ -392,21 +392,13 @@ def rename_column(y, db, table_id, column_id):
 
 def select_column(y, db, table_id, column_id, column):
     if column_id != column:
-        if audformat.is_filewise_index(y.index):
-            index = audformat.filewise_index()
-        else:
-            index = audformat.segmented_index()
-        y = pd.Series(index=index, name=y.name, dtype=y.dtype)
+        y = y[0:0]
     return y
 
 
 def select_table(y, db, table_id, column_id, table):
     if table_id != table:
-        if audformat.is_filewise_index(y.index):
-            index = audformat.filewise_index()
-        else:
-            index = audformat.segmented_index()
-        y = pd.Series(index=index, name=y.name, dtype=y.dtype)
+        y = y[0:0]
     return y
 
 def average_rating_segments(y, db, table_id, column_id):
