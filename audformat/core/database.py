@@ -442,6 +442,7 @@ class Database(HeaderBase):
             *,
             tables: typing.Union[str, typing.Sequence] = None,
             splits: typing.Union[str, typing.Sequence] = None,
+            strict: bool = False,
             aggregate_function: typing.Callable[pd.Series, typing.Any] = None,
             modify_function: typing.Callable[
                 [pd.Series, 'Database', str, str],
@@ -452,57 +453,38 @@ class Database(HeaderBase):
 
         Return all labels
         that match the requested schemes.
-        A scheme is defined more broadly
+
+        If ``strict`` is ``False``,
+        a scheme is defined more broadly
         and does not only match
         schemes of the database,
         but also columns with the same name
-        or labels of a scheme with the requested name.
+        or labels of a scheme
+        with the requested name as key.
 
         If at least one returned label belongs to a segmented table,
         the returned data frame has a segmented index.
 
-        A custom ``modify_function`` can be provided
+        An ``aggregate_function`` can be provided
+        that specifies how values are combined
+        if more than one value is returned
+        per index entry.
+
+        An ``modify_function`` can be provided
         that modifies how the labels are stored.
-        The first argument of the function
-        is a series ``y``
-        with the labels
-        for each table and column
-        that matches the requested schemes.
-        In addition,
-        a database object ``db``,
-        ``table_id``,
-        and ``column_id``
-        are its arguments.
-        For example,
-        to handle a database with stereo files,
-        that has the labels for the different channels
-        stored in tables with the IDs
-        ``'channel0'``
-        and ``'channel1'``
-        one can provide an ``modify_function``
-        that adds the table name to the scheme name::
-
-            def add_channel_name(y, db, table_id, column_id):
-                y.name = f'{y.name}-{table_id}'
-                return y
-
-        Alternatively,
-        a user might select only labels for the first channel::
-
-            def select_channel0(y, db, table_id, column_id):
-                if table_id != 'channel0':
-                    if audformat.is_filewise_index(y.index):
-                        index = audformat.filewise_index()
-                    else:
-                        index = audformat.segmented_index()
-                    y = pd.Series(index=index, name=y.name, dtype=y.dtype)
-                return y
 
         Args:
             schemes: scheme or sequence of scheme
             tables: limit returned samples to selected tables
             splits: limit returned samples to selected splits
-            aggregate_function: function to aggregate overlapping values.
+            strict: if ``False``
+                not only values with the associated scheme(s)
+                are returned,
+                but also values
+                from columns with a column ID matchting the scheme
+                and values from from scheme labels,
+                if for matching dictionary keys
+            aggregate_function: callable to aggregate overlapping values.
                 The function gets a :class:`pandas.Series`
                 with overlapping values
                 as input.
@@ -512,12 +494,154 @@ class Database(HeaderBase):
                 or to
                 ``tuple``
                 to return them as a tuple
-            modify_function: callable to handle collection
-                of scheme for certain tables and columns,
-                see discussion above
+            modify_function: callable to handle collection of values.
+                The first argument of the function
+                is the incoming :class:`pandas.Series`
+                matching the requested scheme(s).
+                In addition,
+                the corresponding :class:`audformat.Database`,
+                ``table_id``,
+                and ``column_id``
+                are its arguments.
+                It has to return the modifided series.
 
         Returns:
-            data frame with labels
+            data frame with values
+
+        Examples:
+            Return all labels that match a requested scheme.
+
+            >>> db = Database('mydb')
+            >>> db.schemes['rating'] = Scheme('float')
+            >>> db.schemes['confidence'] = Scheme('float')
+            >>> db['run1'] = Table(filewise_index(['f1', 'f2']))
+            >>> db['run1']['rating'] = Column(scheme_id='rating')
+            >>> db['run1']['rating'].set([0.0, 0.9])
+            >>> db['run1']['confidence'] = Column(scheme_id='confidence')
+            >>> db['run1']['confidence'].set([1, 1])
+            >>> db['run2'] = Table(filewise_index(['f3']))
+            >>> db['run2']['rating'] = Column(scheme_id='rating')
+            >>> db['run2']['rating'].set([0.7])
+            >>> db['run2']['confidence'] = Column(scheme_id='confidence')
+            >>> db['run2']['confidence'].set([1])
+            >>> db.get('rating')
+                 rating
+            file
+            f1       0.0
+            f2       0.9
+            f3       0.7
+            >>> db.get(['rating', 'confidence'])
+                 rating confidence
+            file
+            f1       0.0        1.0
+            f2       0.9        1.0
+            f3       0.7        1.0
+
+            Non-existent schemes are ignored.
+
+            >>> db.get(['rating', 'rater'])
+                 rating
+            file
+            f1       0.0
+            f2       0.9
+            f3       0.7
+
+            Return column name if different from scheme.
+
+            >>> db = Database('mydb')
+            >>> db.schemes['rating'] = Scheme('float')
+            >>> db['run1'] = Table(filewise_index(['f1', 'f2']))
+            >>> db['run1']['rater1'] = Column(scheme_id='rating')
+            >>> db['run1']['rater1'].set([0.0, 0.9])
+            >>> db['run2'] = Table(filewise_index(['f3']))
+            >>> db['run2']['rater1'] = Column(scheme_id='rating')
+            >>> db['run2']['rater1'].set([0.7])
+            >>> db.get('rating')
+                 rater1
+            file
+            f1       0.0
+            f2       0.9
+            f3       0.7
+
+            Return several columns if they use the requested scheme.
+
+            >>> db = Database('mydb')
+            >>> db.schemes['rating'] = Scheme('float')
+            >>> db['run1'] = Table(filewise_index(['f1', 'f2']))
+            >>> db['run1']['rater1'] = Column(scheme_id='rating')
+            >>> db['run1']['rater1'].set([0.0, 0.9])
+            >>> db['run1']['rater2'] = Column(scheme_id='rating')
+            >>> db['run1']['rater2'].set([0.2, 0.7])
+            >>> db.get('rating')
+                 rater1   rater2
+            file
+            f1       0.0      0.2
+            f2       0.9      0.7
+
+            If ``strict`` is ``True``
+            only values that have an attached scheme are returned.
+
+            >>> db = Database('mydb')
+            >>> speakers = {'s1': {'age': 23}, 's2': {'age': 25}}
+            >>> db.schemes['speaker'] = Scheme(labels=speakers)
+            >>> db['files'] = Table(filewise_index(['f1', 'f2']))
+            >>> db['files']['speaker'] = Column(scheme_id='speaker')
+            >>> db['files']['speaker'].set(['s1', 's2'])
+            >>> db['files']['rating'] = Column()
+            >>> db['files']['rating'].set([0.2, 0.7])
+            >>> db.get(['rating', 'age'])
+                 rating age
+            file
+            f1       0.2 23
+            f2       0.7 25
+            >>> db.get(['rating', 'age'], strict=True)
+            Empty DataFrame
+            Columns: []
+            Index: []
+
+            If more then one value exists
+            for the requested scheme
+            and index entry,
+            an error is raised
+            and ``aggregate_function`` can be used
+            to combine the values.
+
+            >>> db = Database('mydb')
+            >>> db.schemes['rating'] = Scheme('float')
+            >>> db['run1'] = Table(filewise_index(['f1', 'f2']))
+            >>> db['run1']['rating'] = Column(scheme_id='rating')
+            >>> db['run1']['rating'].set([0.0, 0.9])
+            >>> db['run2'] = Table(filewise_index(['f1', 'f2']))
+            >>> db['run2']['rating'] = Column(scheme_id='rating')
+            >>> db['run2']['rating'].set([0.2, 0.7])
+            >>> db.get('rating')
+            Traceback (most recent call last):
+                ...
+            ValueError: Found overlapping data in column 'rating':
+                  left  right
+            file
+            f1     0.0    0.2
+            f2     0.9    0.7
+            >>> db.get('rating', aggregate_function=lambda y: y.mean())
+                 rating
+            file
+            f1       0.1
+            f2       0.8
+
+            Alternatively,
+            use ``modify_function``
+            to select a particular run
+            to limit the number of values.
+
+            >>> def select_run1(y, db, table_id, column_id):
+            ...     if table_id != 'run1':
+            ...         y = y[0:0]
+            ...     return y
+            >>> db.get('rating', modify_function=select_run1)
+                 rating
+            file
+            f1       0.0
+            f2       0.9
 
         """
 
@@ -538,7 +662,7 @@ class Database(HeaderBase):
             # is attached to a column,
             # or identical with the column name
             return (
-                scheme_id == column_id
+                scheme_id == column_id and not strict
                 or (
                     column.scheme_id is not None
                     and scheme_id == column.scheme_id
@@ -565,7 +689,7 @@ class Database(HeaderBase):
                             scheme_mappings.append((scheme_id, column_id))
 
                 # Labels stored in scheme
-                elif isinstance(scheme.labels, dict):
+                elif isinstance(scheme.labels, dict) and not strict:
                     labels = pd.DataFrame.from_dict(
                         scheme.labels,
                         orient='index',
