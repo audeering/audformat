@@ -182,21 +182,17 @@ def stereo_db(tmpdir):
         (
             'mono_db',
             'gender',
-            pd.concat(
-                [
-                    pd.Series(
-                        ['female', '', 'male'],
-                        index=audformat.filewise_index(
-                            ['f1.wav', 'f2.wav', 'f3.wav']
-                        ),
-                        dtype=pd.CategoricalDtype(
-                            categories=['female', '', 'male'],
-                            ordered=False,
-                        ),
-                        name='gender',
-                    ),
-                ],
-                axis=1,
+            pd.DataFrame(
+                {
+                    'gender': ['female', '', 'male'],
+                },
+                index=audformat.filewise_index(
+                    ['f1.wav', 'f2.wav', 'f3.wav']
+                ),
+                dtype=pd.CategoricalDtype(
+                    categories=['female', '', 'male'],
+                    ordered=False,
+                ),
             ),
         ),
         (
@@ -253,174 +249,130 @@ def stereo_db(tmpdir):
                     ),
                 ],
                 axis=1,
-            )
+            ),
         ),
         (
             'mono_db',
             'age',
-            pd.concat(
-                [
-                    pd.Series(
-                        [23, np.NaN, 59],
-                        index=audformat.filewise_index(
-                            ['f1.wav', 'f2.wav', 'f3.wav']
-                        ),
-                        dtype=pd.CategoricalDtype(
-                            categories=[23.0, 59.0, 25.0, 34.0, 45.0],
-                            ordered=False,
-                        ),
-                        name='age',
-                    ),
-                    pd.Series(
-                        [25.0, 34.0, 45.0],
-                        index=audformat.filewise_index(
-                            ['f1.wav', 'f2.wav', 'f3.wav']
-                        ),
-                        dtype=pd.CategoricalDtype(
-                            categories=[23.0, 59.0, 25.0, 34.0, 45.0],
-                            ordered=False,
-                        ),
-                        name='perceived-age',
-                    ),
-                ],
-                axis=1,
+            pd.DataFrame(
+                {
+                    'age': [23, np.NaN, 59],
+                    'perceived-age': [25.0, 34.0, 45.0],
+                },
+                index=audformat.filewise_index(
+                    ['f1.wav', 'f2.wav', 'f3.wav']
+                ),
+                dtype=pd.CategoricalDtype(
+                    categories=[23.0, 59.0, 25.0, 34.0, 45.0],
+                    ordered=False,
+                ),
             ),
         ),
         (
             'mono_db',
             'height',
-            pd.concat(
-                [
-                    pd.Series(
-                        [1.12, 1.45, 1.01],
-                        index=audformat.filewise_index(
-                            ['f1.wav', 'f2.wav', 'f3.wav']
-                        ),
-                        dtype=pd.CategoricalDtype(
-                            categories=[1.12, 1.45, 1.01, 1.76, 1.95, 1.8],
-                            ordered=False,
-                        ),
-                        name='height-with-10y',
-                    ),
-                    pd.Series(
-                        [1.76, 1.95, 1.80],
-                        index=audformat.filewise_index(
-                            ['f1.wav', 'f2.wav', 'f3.wav']
-                        ),
-                        dtype=pd.CategoricalDtype(
-                            categories=[1.12, 1.45, 1.01, 1.76, 1.95, 1.8],
-                            ordered=False,
-                        ),
-                        name='current-height',
-                    ),
-                ],
-                axis=1,
+            pd.DataFrame(
+                {
+                    'height-with-10y': [1.12, 1.45, 1.01],
+                    'current-height': [1.76, 1.95, 1.80],
+                },
+                index=audformat.filewise_index(
+                    ['f1.wav', 'f2.wav', 'f3.wav']
+                ),
+                dtype=pd.CategoricalDtype(
+                    categories=[1.12, 1.45, 1.01, 1.76, 1.95, 1.8],
+                    ordered=False,
+                ),
             ),
         ),
         (
             'mono_db',
             'winner',
-            pd.concat(
-                [
-                    pd.Series(
-                        ['w1', 'w1', 'w2', 'w1', 'w1', 'w1', 'w1'],
-                        index=audformat.utils.union(
-                            [
-                                audformat.filewise_index(
-                                    ['f1.wav', 'f2.wav', 'f3.wav']
-                                ),
-                                audformat.segmented_index(
-                                    ['f1.wav', 'f1.wav', 'f1.wav', 'f2.wav'],
-                                    [0, 0.1, 0.3, 0],
-                                    [0.2, 0.2, 0.5, 0.7],
-                                ),
-                            ]
+            pd.DataFrame(
+                {
+                    'winner': ['w1', 'w1', 'w2', 'w1', 'w1', 'w1', 'w1'],
+                },
+                index=audformat.utils.union(
+                    [
+                        audformat.filewise_index(
+                            ['f1.wav', 'f2.wav', 'f3.wav']
                         ),
-                        dtype=pd.CategoricalDtype(
-                            ['w1', 'w2', 'w3'],
-                            ordered=False,
+                        audformat.segmented_index(
+                            ['f1.wav', 'f1.wav', 'f1.wav', 'f2.wav'],
+                            [0, 0.1, 0.3, 0],
+                            [0.2, 0.2, 0.5, 0.7],
                         ),
-                        name='winner',
-                    ),
-                ],
-                axis=1,
+                    ]
+                ),
+                dtype=pd.CategoricalDtype(
+                    ['w1', 'w2', 'w3'],
+                    ordered=False,
+                ),
             ),
         ),
         (
             'mono_db',
             'year',
-            pd.concat(
-                [
-                    pd.Series(
-                        [1995, 1995, 1996, 1995, 1995, 1995, 1995],
-                        index=audformat.utils.union(
-                            [
-                                audformat.filewise_index(
-                                    ['f1.wav', 'f2.wav', 'f3.wav']
-                                ),
-                                audformat.segmented_index(
-                                    ['f1.wav', 'f1.wav', 'f1.wav', 'f2.wav'],
-                                    [0, 0.1, 0.3, 0],
-                                    [0.2, 0.2, 0.5, 0.7],
-                                ),
-                            ]
+            pd.DataFrame(
+                {
+                    'year': [1995, 1995, 1996, 1995, 1995, 1995, 1995],
+                },
+                index=audformat.utils.union(
+                    [
+                        audformat.filewise_index(
+                            ['f1.wav', 'f2.wav', 'f3.wav']
                         ),
-                        dtype=pd.CategoricalDtype(
-                            [1995, 1996, 1997],
-                            ordered=False,
+                        audformat.segmented_index(
+                            ['f1.wav', 'f1.wav', 'f1.wav', 'f2.wav'],
+                            [0, 0.1, 0.3, 0],
+                            [0.2, 0.2, 0.5, 0.7],
                         ),
-                        name='year',
-                    ),
-                ],
-                axis=1,
+                    ]
+                ),
+                dtype=pd.CategoricalDtype(
+                    [1995, 1996, 1997],
+                    ordered=False,
+                ),
             ),
         ),
         (
             'mono_db',
             'rating',
-            pd.concat(
-                [
-                    pd.Series(
-                        [1, 0, 1, 1, 1, 2, 2],
-                        index=audformat.utils.union(
-                            [
-                                audformat.filewise_index(
-                                    ['f3.wav', 'f1.wav', 'f2.wav']
-                                ),
-                                audformat.segmented_index(
-                                    ['f1.wav', 'f1.wav', 'f1.wav', 'f2.wav'],
-                                    [0, 0.1, 0.3, 0],
-                                    [0.2, 0.2, 0.5, 0.7],
-                                ),
-                            ]
+            pd.DataFrame(
+                {
+                    'rating': [1, 0, 1, 1, 1, 2, 2],
+                },
+                index=audformat.utils.union(
+                    [
+                        audformat.filewise_index(
+                            ['f3.wav', 'f1.wav', 'f2.wav']
                         ),
-                        dtype=pd.CategoricalDtype(
-                            [0, 1, 2],
-                            ordered=False,
+                        audformat.segmented_index(
+                            ['f1.wav', 'f1.wav', 'f1.wav', 'f2.wav'],
+                            [0, 0.1, 0.3, 0],
+                            [0.2, 0.2, 0.5, 0.7],
                         ),
-                        name='rating',
-                    ),
-                ],
-                axis=1,
+                    ]
+                ),
+                dtype=pd.CategoricalDtype(
+                    [0, 1, 2],
+                    ordered=False,
+                ),
             ),
         ),
         (
             'mono_db',
             'regression',
-            pd.concat(
-                [
-                    pd.Series(
-                        [0.3, 0.2, 0.6, 0.4],
-                        index=audformat.segmented_index(
-                            ['f1.wav', 'f1.wav', 'f1.wav', 'f2.wav'],
-                            [0, 0.1, 0.3, 0],
-                            [0.2, 0.2, 0.5, 0.7],
-                        ),
-                        dtype='float',
-                        name='regression',
-                    ),
-                ],
-                axis=1,
+            pd.DataFrame(
+                {
+                    'regression': [0.3, 0.2, 0.6, 0.4],
+                },
+                index=audformat.segmented_index(
+                    ['f1.wav', 'f1.wav', 'f1.wav', 'f2.wav'],
+                    [0, 0.1, 0.3, 0],
+                    [0.2, 0.2, 0.5, 0.7],
+                ),
+                dtype='float',
             ),
         ),
     ]
@@ -428,8 +380,6 @@ def stereo_db(tmpdir):
 def test_database_get(request, db, schemes, expected):
     db = request.getfixturevalue(db)
     df = db.get(schemes)
-    print(f'{df=}')
-    print(f'{expected=}')
     pd.testing.assert_frame_equal(df, expected)
 
 
@@ -440,8 +390,8 @@ def rename_column(y, db, table_id, column_id):
     y.name = f'{y.name}-{table_id}-{column_id}'
     return y
 
-def select_run1(y, db, table_id, column_id):
-    if table_id != 'run1':
+def select_column(y, db, table_id, column_id, column):
+    if column_id != column:
         if audformat.is_filewise_index(y.index):
             index = audformat.filewise_index()
         else:
@@ -449,8 +399,9 @@ def select_run1(y, db, table_id, column_id):
         y = pd.Series(index=index, name=y.name, dtype=y.dtype)
     return y
 
-def select_run2(y, db, table_id, column_id):
-    if table_id != 'run2':
+
+def select_table(y, db, table_id, column_id, table):
+    if table_id != table:
         if audformat.is_filewise_index(y.index):
             index = audformat.filewise_index()
         else:
@@ -491,239 +442,309 @@ def rename_sex_to_gender(y, db, table_id, column_id):
     return y
 
 @pytest.mark.parametrize(
-    'db, schemes, aggregate_function, expected',
+    'db, schemes, aggregate_function, modify_function, expected',
     [
+        # Tests based on `stereo_db` and `gender`,
+        # with the following tables, columns.
+        # All have [f1.wav, f2.wav, f3.wav] as index
+        #
+        # | table | column   | values                       |
+        # | ----- | -------- | ---------------------------- |
+        # | run1  | channel0 | ['female', '',       'male'] |
+        # | run1  | channel1 | ['male',   'female', ''    ] |
+        # | run2  | channel0 | ['female', '',       'male'] |
+        # | run2  | channel1 | ['female', '',       'male'] |
+        # | run3  | channel0 | ['',       'female', 'male'] |
+        # | run3  | channel1 | ['female', 'female', 'male'] |
+        #
         (
-            # Choose different names for each run and channel:
-            # run1, channel0: ['female', '', 'male']
-            # run1, channel1: ['male', 'female', '']
-            # run2, channel0: ['female', '', 'male']
-            # run2, channel1: ['female', '', 'male']
-            # run3, channel0: ['', 'female', 'male']
-            # run3, channel1: ['', 'female', 'male']
+            # maxvote
+            #
+            # gender: ['female', 'female', 'male']
+            #
             'stereo_db',
             'gender',
+            lambda y: y.mode()[0],
+            None,
+            pd.DataFrame(
+                {
+                    'gender': ['female', 'female', 'male'],
+                },
+                index=audformat.filewise_index(
+                    ['f1.wav', 'f2.wav', 'f3.wav']
+                ),
+                dtype=pd.CategoricalDtype(
+                    categories=['female', '', 'male'],
+                    ordered=False,
+                ),
+            ),
+        ),
+        (
+            # Rename scheme column based on table and column
+            #
+            # gender-run1-channel0: ['female', '', 'male']
+            # gender-run1-channel1: ['male', 'female', '']
+            # gender-run2-channel0: ['female', '', 'male']
+            # gender-run2-channel1: ['female', '', 'male']
+            # gender-run3-channel0: ['', 'female', 'male']
+            # gender-run3-channel1: ['', 'female', 'male']
+            #
+            'stereo_db',
+            'gender',
+            None,
             rename_column,
-            pd.concat(
-                [
-                    pd.Series(
-                        ['female', '', 'male'],
-                        index=audformat.filewise_index(
-                            ['f1.wav', 'f2.wav', 'f3.wav']
-                        ),
-                        dtype=pd.CategoricalDtype(
-                            categories=['female', '', 'male'],
-                            ordered=False,
-                        ),
-                        name='gender-run1-channel0',
-                    ),
-                    pd.Series(
-                        ['male', 'female', ''],
-                        index=audformat.filewise_index(
-                            ['f1.wav', 'f2.wav', 'f3.wav']
-                        ),
-                        dtype=pd.CategoricalDtype(
-                            categories=['female', '', 'male'],
-                            ordered=False,
-                        ),
-                        name='gender-run1-channel1',
-                    ),
-                    pd.Series(
-                        ['female', '', 'male'],
-                        index=audformat.filewise_index(
-                            ['f1.wav', 'f2.wav', 'f3.wav']
-                        ),
-                        dtype=pd.CategoricalDtype(
-                            categories=['female', '', 'male'],
-                            ordered=False,
-                        ),
-                        name='gender-run2-channel0',
-                    ),
-                    pd.Series(
-                        ['female', '', 'male'],
-                        index=audformat.filewise_index(
-                            ['f1.wav', 'f2.wav', 'f3.wav']
-                        ),
-                        dtype=pd.CategoricalDtype(
-                            categories=['female', '', 'male'],
-                            ordered=False,
-                        ),
-                        name='gender-run2-channel1',
-                    ),
-                    pd.Series(
-                        ['', 'female', 'male'],
-                        index=audformat.filewise_index(
-                            ['f1.wav', 'f2.wav', 'f3.wav']
-                        ),
-                        dtype=pd.CategoricalDtype(
-                            categories=['female', '', 'male'],
-                            ordered=False,
-                        ),
-                        name='gender-run3-channel0',
-                    ),
-                    pd.Series(
-                        ['', 'female', 'male'],
-                        index=audformat.filewise_index(
-                            ['f1.wav', 'f2.wav', 'f3.wav']
-                        ),
-                        dtype=pd.CategoricalDtype(
-                            categories=['female', '', 'male'],
-                            ordered=False,
-                        ),
-                        name='gender-run3-channel1',
-                    ),
-                ],
-                axis=1,
+            pd.DataFrame(
+                {
+                    'gender-run1-channel0': ['female', '', 'male'],
+                    'gender-run1-channel1': ['male', 'female', ''],
+                    'gender-run2-channel0': ['female', '', 'male'],
+                    'gender-run2-channel1': ['female', '', 'male'],
+                    'gender-run3-channel0': ['', 'female', 'male'],
+                    'gender-run3-channel1': ['', 'female', 'male'],
+                },
+                index=audformat.filewise_index(
+                    ['f1.wav', 'f2.wav', 'f3.wav']
+                ),
+                dtype=pd.CategoricalDtype(
+                    categories=['female', '', 'male'],
+                    ordered=False,
+                ),
             ),
         ),
         pytest.param(
-            # Fail as we select runs with different labels:
+            # Fail as we select runs with different labels
+            #
             # run1, channel0: ['female', '', 'male']
             # run1, channel1: ['male', 'female', '']
+            #
+            # gender: ValueError
+            #
             'stereo_db',
             'gender',
-            select_run1,
+            None,
+            lambda *args: select_table(*args, 'run1'),
             None,
             marks=pytest.mark.xfail(raises=ValueError),
         ),
         (
-            # Select run with identical labels:
+            # Select run with identical labels
+            #
             # run2, channel0: ['female', '', 'male']
             # run2, channel1: ['female', '', 'male']
+            #
+            # gender: ['female', '', 'male']
+            #
             'stereo_db',
             'gender',
-            select_run2,
-            pd.concat(
-                [
-                    pd.Series(
-                        ['female', '', 'male'],
-                        index=audformat.filewise_index(
-                            ['f1.wav', 'f2.wav', 'f3.wav']
-                        ),
-                        dtype=pd.CategoricalDtype(
-                            categories=['female', '', 'male'],
-                            ordered=False,
-                        ),
-                        name='gender',
-                    ),
-                ],
-                axis=1,
+            None,
+            lambda y, db, table_id, column_id:
+            select_table(y, db, table_id, column_id, 'run2'),
+            pd.DataFrame(
+                {
+                    'gender': ['female', '', 'male'],
+                },
+                index=audformat.filewise_index(
+                    ['f1.wav', 'f2.wav', 'f3.wav']
+                ),
+                dtype=pd.CategoricalDtype(
+                    categories=['female', '', 'male'],
+                    ordered=False,
+                ),
             ),
         ),
         (
-            # Select segments table
+            # Select channel0 and return maxvote over runs
+            #
+            # run1, channel0: ['female', '',       'male']
+            # run2, channel0: ['female', '',       'male']
+            # run3, channel0: ['',       'female', 'male']
+            #
+            # gender: ['female', '', 'male']
+            #
+            'stereo_db',
+            'gender',
+            lambda y: y.mode()[0],
+            lambda *args: select_column(*args, 'channel0'),
+            pd.DataFrame(
+                {
+                    'gender': ['female', '', 'male'],
+                },
+                index=audformat.filewise_index(
+                    ['f1.wav', 'f2.wav', 'f3.wav']
+                ),
+                dtype=pd.CategoricalDtype(
+                    categories=['female', '', 'male'],
+                    ordered=False,
+                ),
+            ),
+        ),
+
+        # Tests based on `mono_db` and scheme `rating`,
+        # stored in the following tables and columns.
+        #
+        # `rating.train`
+        # | file   | rating |
+        # | ------ | ------ |
+        # | f1.wav |      0 |
+        # | f2.wav |      1 |
+        #
+        # `rating.test`
+        # | file   | rating |
+        # | ------ | ------ |
+        # | f3.wav |      1 |
+        #
+        # `segments`
+        # | file   | start |   end | rating |
+        # | ------ | ----- | ----- | ------ |
+        # | f1.wav |   0.0 |   0.2 |      1 |
+        # | f1.wav |   0.1 |   0.2 |      1 |
+        # | f1.wav |   0.3 |   0.5 |      2 |
+        # | f2.wav |   0.0 |   0.7 |      2 |
+        #
+        (
+            # Select `segments` table
             # and return maxvote for each file
-            # f1: 1, 1, 2
-            # f2: 2
+            #
+            # rating: [1, 2]
+            #
             'mono_db',
             'rating',
+            None,
             average_rating_segments,
-            pd.concat(
-                [
-                    pd.Series(
-                        [1, 2],
-                        index=audformat.filewise_index(
-                            ['f1.wav', 'f2.wav']
-                        ),
-                        dtype=pd.CategoricalDtype(
-                            categories=[0, 1, 2],
-                            ordered=False,
-                        ),
-                        name='rating',
-                    ),
-                ],
-                axis=1,
+            pd.DataFrame(
+                {
+                    'rating': [1, 2],
+                },
+                index=audformat.filewise_index(
+                    ['f1.wav', 'f2.wav']
+                ),
+                dtype=pd.CategoricalDtype(
+                    categories=[0, 1, 2],
+                    ordered=False,
+                ),
             ),
         ),
+
+        # Tests based on `mono_db` and schemes `gender` and `sex`,
+        # stored in the following tables and columns
+        # (considering scheme mappings and column names).
+        #
+        # `files`
+        # | file   | gender |
+        # | ------ | ------ |
+        # | f1.wav | female |
+        # | f2.wav |        |
+        # | f3.wav | male   |
+        #
+        # `files.sub`
+        # | file   | gender |
+        # | ------ | ------ |
+        # | f1.wav | female |
+        #
+        # `gender`
+        # | file   | sex    |
+        # | ------ | ------ |
+        # | f1.wav | female |
+        # | f3.wav | male   |
+        #
         (
             # Add name of database to column name
+            #
+            # gender-mono-db: ['female', '', 'male']
+            #
             'mono_db',
             'gender',
+            None,
             add_db_name,
-            pd.concat(
-                [
-                    pd.Series(
-                        ['female', '', 'male'],
-                        index=audformat.filewise_index(
-                            ['f1.wav', 'f2.wav', 'f3.wav']
-                        ),
-                        dtype=pd.CategoricalDtype(
-                            categories=['female', '', 'male'],
-                            ordered=False,
-                        ),
-                        name='gender-mono-db',
-                    ),
-                ],
-                axis=1,
+            pd.DataFrame(
+                {
+                    'gender-mono-db': ['female', '', 'male'],
+                },
+                index=audformat.filewise_index(
+                    ['f1.wav', 'f2.wav', 'f3.wav']
+                ),
+                dtype=pd.CategoricalDtype(
+                    categories=['female', '', 'male'],
+                    ordered=False,
+                ),
             ),
         ),
         pytest.param(
-            # Rename sex scheme to gender,
-            # however as we don't fix the dtype
+            # Rename sex scheme to gender
+            #
+            # As we don't fix the dtype
             # it will raise an error
+            #
             'mono_db',
             ['sex', 'gender'],
+            None,
             rename_sex_to_gender_without_dtype_adjustment,
             None,
             marks=pytest.mark.xfail(raises=ValueError),
         ),
         (
             # Rename sex scheme to gender
+            #
+            # gender: ['female', '', 'male']
+            #
             'mono_db',
             ['gender', 'sex'],
+            None,
             rename_sex_to_gender,
-            pd.concat(
-                [
-                    pd.Series(
-                        ['female', '', 'male'],
-                        index=audformat.filewise_index(
-                            ['f1.wav', 'f2.wav', 'f3.wav']
-                        ),
-                        dtype=pd.CategoricalDtype(
-                            categories=['female', '', 'male'],
-                            ordered=False,
-                        ),
-                        name='gender',
-                    ),
-                ],
-                axis=1,
+            pd.DataFrame(
+                {
+                    'gender': ['female', '', 'male'],
+                },
+                index=audformat.filewise_index(
+                    ['f1.wav', 'f2.wav', 'f3.wav']
+                ),
+                dtype=pd.CategoricalDtype(
+                    categories=['female', '', 'male'],
+                    ordered=False,
+                ),
             ),
         ),
         (
-            # Rename sex scheme to gender,
-            # the order how we collect schemes
-            # influences the order of the inex
+            # Rename sex scheme to gender
+            #
+            # The order how we collect schemes
+            # influences the order of the index.
+            #
+            # gender: ['female', 'male', '']
+            #
             'mono_db',
             ['sex', 'gender'],
+            None,
             rename_sex_to_gender,
-            pd.concat(
-                [
-                    pd.Series(
-                        ['female', 'male', ''],
-                        index=audformat.filewise_index(
-                            ['f1.wav', 'f3.wav', 'f2.wav']
-                        ),
-                        dtype=pd.CategoricalDtype(
-                            categories=['female', '', 'male'],
-                            ordered=False,
-                        ),
-                        name='gender',
-                    ),
-                ],
-                axis=1,
+            pd.DataFrame(
+                {
+                    'gender': ['female', 'male', ''],
+                },
+                index=audformat.filewise_index(
+                    ['f1.wav', 'f3.wav', 'f2.wav']
+                ),
+                dtype=pd.CategoricalDtype(
+                    categories=['female', '', 'male'],
+                    ordered=False,
+                ),
             ),
         ),
     ]
 )
-def test_database_get_aggregate_function(
+def test_database_get_aggregate_and_modify_function(
         request,
         db,
         schemes,
         aggregate_function,
+        modify_function,
         expected,
 ):
     db = request.getfixturevalue(db)
-    df = db.get(schemes, aggregate_function=aggregate_function)
+    df = db.get(
+        schemes,
+        aggregate_function=aggregate_function,
+        modify_function=modify_function,
+    )
     print(f'{df=}')
     print(f'{expected=}')
     pd.testing.assert_frame_equal(df, expected)
@@ -738,8 +759,9 @@ def test_database_get_aggregate_function(
             [],
             None,
             pd.DataFrame(
-                [],
-                columns=['gender'],
+                {
+                    'gender': [],
+                },
                 index=pd.Index([], dtype='string'),
                 dtype=pd.CategoricalDtype(
                     categories=['female', '', 'male'],
@@ -753,8 +775,9 @@ def test_database_get_aggregate_function(
             None,
             [],
             pd.DataFrame(
-                [],
-                columns=['gender'],
+                {
+                    'gender': [],
+                },
                 index=pd.Index([], dtype='string'),
                 dtype=pd.CategoricalDtype(
                     categories=['female', '', 'male'],
@@ -768,8 +791,9 @@ def test_database_get_aggregate_function(
             [],
             [],
             pd.DataFrame(
-                [],
-                columns=['gender'],
+                {
+                    'gender': [],
+                },
                 index=pd.Index([], dtype='string'),
                 dtype=pd.CategoricalDtype(
                     categories=['female', '', 'male'],
@@ -783,8 +807,9 @@ def test_database_get_aggregate_function(
             'non-existing',
             None,
             pd.DataFrame(
-                [],
-                columns=['gender'],
+                {
+                    'gender': [],
+                },
                 index=pd.Index([], dtype='string'),
                 dtype=pd.CategoricalDtype(
                     categories=['female', '', 'male'],
@@ -798,8 +823,9 @@ def test_database_get_aggregate_function(
             None,
             'non-existing',
             pd.DataFrame(
-                [],
-                columns=['gender'],
+                {
+                    'gender': [],
+                },
                 index=pd.Index([], dtype='string'),
                 dtype=pd.CategoricalDtype(
                     categories=['female', '', 'male'],
@@ -809,12 +835,39 @@ def test_database_get_aggregate_function(
         ),
         (
             'mono_db',
+            ['gender', 'sex'],
+            None,
+            'non-existing',
+            pd.concat(
+                [
+                    pd.Series(
+                        [],
+                        index=pd.Index([], dtype='string'),
+                        dtype=pd.CategoricalDtype(
+                            categories=['female', '', 'male'],
+                            ordered=False,
+                        ),
+                        name='gender',
+                    ),
+                    pd.Series(
+                        [],
+                        index=pd.Index([], dtype='string'),
+                        dtype='object',
+                        name='sex',
+                    ),
+                ],
+                axis=1,
+            ),
+        ),
+        (
+            'mono_db',
             'gender',
             'non-existing',
             'non-existing',
             pd.DataFrame(
-                [],
-                columns=['gender'],
+                {
+                    'gender': [],
+                },
                 index=pd.Index([], dtype='string'),
                 dtype=pd.CategoricalDtype(
                     categories=['female', '', 'male'],
@@ -828,8 +881,9 @@ def test_database_get_aggregate_function(
             ['gender'],
             ['train'],
             pd.DataFrame(
-                [],
-                columns=['gender'],
+                {
+                    'gender': [],
+                },
                 index=pd.Index([], dtype='string'),
                 dtype=pd.CategoricalDtype(
                     categories=['female', '', 'male'],
@@ -843,8 +897,9 @@ def test_database_get_aggregate_function(
             ['gender'],
             None,
             pd.DataFrame(
-                ['female', 'male'],
-                columns=['gender'],
+                {
+                    'gender': ['female', 'male'],
+                },
                 index=audformat.filewise_index(['f1.wav', 'f3.wav']),
                 dtype=pd.CategoricalDtype(
                     categories=['female', '', 'male'],
@@ -857,23 +912,19 @@ def test_database_get_aggregate_function(
             'rating',
             'segments',
             None,
-            pd.concat(
-                [
-                    pd.Series(
-                        [1, 1, 2, 2],
-                        index=audformat.segmented_index(
-                            ['f1.wav', 'f1.wav', 'f1.wav', 'f2.wav'],
-                            [0, 0.1, 0.3, 0],
-                            [0.2, 0.2, 0.5, 0.7],
-                        ),
-                        dtype=pd.CategoricalDtype(
-                            [0, 1, 2],
-                            ordered=False,
-                        ),
-                        name='rating',
-                    ),
-                ],
-                axis=1,
+            pd.DataFrame(
+                {
+                    'rating': [1, 1, 2, 2],
+                },
+                index=audformat.segmented_index(
+                    ['f1.wav', 'f1.wav', 'f1.wav', 'f2.wav'],
+                    [0, 0.1, 0.3, 0],
+                    [0.2, 0.2, 0.5, 0.7],
+                ),
+                dtype=pd.CategoricalDtype(
+                    [0, 1, 2],
+                    ordered=False,
+                ),
             ),
         ),
         (
@@ -881,21 +932,17 @@ def test_database_get_aggregate_function(
             'rating',
             None,
             'train',
-            pd.concat(
-                [
-                    pd.Series(
-                        [0, 1],
-                        index=audformat.filewise_index(
-                            ['f1.wav', 'f2.wav']
-                        ),
-                        dtype=pd.CategoricalDtype(
-                            [0, 1, 2],
-                            ordered=False,
-                        ),
-                        name='rating',
-                    ),
-                ],
-                axis=1,
+            pd.DataFrame(
+                {
+                    'rating': [0, 1],
+                },
+                index=audformat.filewise_index(
+                    ['f1.wav', 'f2.wav']
+                ),
+                dtype=pd.CategoricalDtype(
+                    [0, 1, 2],
+                    ordered=False,
+                ),
             ),
         ),
         (
@@ -903,21 +950,17 @@ def test_database_get_aggregate_function(
             'rating',
             ['rating.train', 'rating.test'],
             'train',
-            pd.concat(
-                [
-                    pd.Series(
-                        [0, 1],
-                        index=audformat.filewise_index(
-                            ['f1.wav', 'f2.wav']
-                        ),
-                        dtype=pd.CategoricalDtype(
-                            [0, 1, 2],
-                            ordered=False,
-                        ),
-                        name='rating',
-                    ),
-                ],
-                axis=1,
+            pd.DataFrame(
+                {
+                    'rating': [0, 1],
+                },
+                index=audformat.filewise_index(
+                    ['f1.wav', 'f2.wav']
+                ),
+                dtype=pd.CategoricalDtype(
+                    [0, 1, 2],
+                    ordered=False,
+                ),
             ),
         ),
         (
@@ -925,21 +968,17 @@ def test_database_get_aggregate_function(
             'rating',
             None,
             ['train', 'test'],
-            pd.concat(
-                [
-                    pd.Series(
-                        [1, 0, 1],
-                        index=audformat.filewise_index(
-                            ['f3.wav', 'f1.wav', 'f2.wav']
-                        ),
-                        dtype=pd.CategoricalDtype(
-                            [0, 1, 2],
-                            ordered=False,
-                        ),
-                        name='rating',
-                    ),
-                ],
-                axis=1,
+            pd.DataFrame(
+                {
+                    'rating': [1, 0, 1],
+                },
+                index=audformat.filewise_index(
+                    ['f3.wav', 'f1.wav', 'f2.wav']
+                ),
+                dtype=pd.CategoricalDtype(
+                    [0, 1, 2],
+                    ordered=False,
+                ),
             ),
         ),
         (
@@ -947,21 +986,17 @@ def test_database_get_aggregate_function(
             'rating',
             ['rating.train', 'rating.test'],
             None,
-            pd.concat(
-                [
-                    pd.Series(
-                        [1, 0, 1],
-                        index=audformat.filewise_index(
-                            ['f3.wav', 'f1.wav', 'f2.wav']
-                        ),
-                        dtype=pd.CategoricalDtype(
-                            [0, 1, 2],
-                            ordered=False,
-                        ),
-                        name='rating',
-                    ),
-                ],
-                axis=1,
+            pd.DataFrame(
+                {
+                    'rating': [1, 0, 1],
+                },
+                index=audformat.filewise_index(
+                    ['f3.wav', 'f1.wav', 'f2.wav']
+                ),
+                dtype=pd.CategoricalDtype(
+                    [0, 1, 2],
+                    ordered=False,
+                ),
             ),
         ),
         (
@@ -969,21 +1004,17 @@ def test_database_get_aggregate_function(
             'rating',
             ['rating.train', 'rating.test'],
             ['train', 'test'],
-            pd.concat(
-                [
-                    pd.Series(
-                        [1, 0, 1],
-                        index=audformat.filewise_index(
-                            ['f3.wav', 'f1.wav', 'f2.wav']
-                        ),
-                        dtype=pd.CategoricalDtype(
-                            [0, 1, 2],
-                            ordered=False,
-                        ),
-                        name='rating',
-                    ),
-                ],
-                axis=1,
+            pd.DataFrame(
+                {
+                    'rating': [1, 0, 1],
+                },
+                index=audformat.filewise_index(
+                    ['f3.wav', 'f1.wav', 'f2.wav']
+                ),
+                dtype=pd.CategoricalDtype(
+                    [0, 1, 2],
+                    ordered=False,
+                ),
             ),
         ),
     ]

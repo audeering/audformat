@@ -442,7 +442,8 @@ class Database(HeaderBase):
             *,
             tables: typing.Union[str, typing.Sequence] = None,
             splits: typing.Union[str, typing.Sequence] = None,
-            aggregate_function: typing.Callable[
+            aggregate_function: typing.Callable[pd.Series, typing.Any] = None,
+            modify_function: typing.Callable[
                 [pd.Series, 'Database', str, str],
                 pd.Series
             ] = None,
@@ -460,7 +461,7 @@ class Database(HeaderBase):
         If at least one returned label belongs to a segmented table,
         the returned data frame has a segmented index.
 
-        A custom ``aggregate_function`` can be provided
+        A custom ``modify_function`` can be provided
         that modifies how the labels are stored.
         The first argument of the function
         is a series ``y``
@@ -478,7 +479,7 @@ class Database(HeaderBase):
         stored in tables with the IDs
         ``'channel0'``
         and ``'channel1'``
-        one can provide an ``aggregate_function``
+        one can provide an ``modify_function``
         that adds the table name to the scheme name::
 
             def add_channel_name(y, db, table_id, column_id):
@@ -501,7 +502,17 @@ class Database(HeaderBase):
             schemes: scheme or sequence of scheme
             tables: limit returned samples to selected tables
             splits: limit returned samples to selected splits
-            aggregate_function: callable to handle collection
+            aggregate_function: function to aggregate overlapping values.
+                The function gets a :class:`pandas.Series`
+                with overlapping values
+                as input.
+                E.g. set to
+                ``lambda y: y.mean()``
+                to average the values
+                or to
+                ``tuple``
+                to return them as a tuple
+            modify_function: callable to handle collection
                 of scheme for certain tables and columns,
                 see discussion above
 
@@ -515,11 +526,11 @@ class Database(HeaderBase):
                 y,
                 table_id,
                 column_id,
-                aggregate_function,
+                modify_function,
         ):
             if y is not None:
-                if aggregate_function is not None:
-                    y = aggregate_function(y, self, table_id, column_id)
+                if modify_function is not None:
+                    y = modify_function(y, self, table_id, column_id)
                 ys.append(y)
 
         def scheme_in_column(scheme_id, column, column_id):
@@ -576,7 +587,7 @@ class Database(HeaderBase):
                             y,
                             table_id,
                             column_id,
-                            aggregate_function,
+                            modify_function,
                         )
                     # Get series based on label of scheme
                     else:
@@ -588,7 +599,7 @@ class Database(HeaderBase):
                                     y,
                                     table_id,
                                     column_id,
-                                    aggregate_function,
+                                    modify_function,
                                 )
 
             # Ensure we have a common dtype for requested scheme
@@ -623,7 +634,10 @@ class Database(HeaderBase):
             ys += ys_requested_scheme
 
         index = utils.union([y.index for y in ys])
-        obj = utils.concat(ys).loc[index]
+        obj = utils.concat(
+            ys,
+            aggregate_function=aggregate_function,
+        ).loc[index]
 
         if len(obj) == 0:
             obj = pd.DataFrame()
