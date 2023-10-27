@@ -443,7 +443,10 @@ class Database(HeaderBase):
             tables: typing.Union[str, typing.Sequence] = None,
             splits: typing.Union[str, typing.Sequence] = None,
             strict: bool = False,
-            aggregate_function: typing.Callable[pd.Series, typing.Any] = None,
+            aggregate_function: typing.Callable[
+                [pd.Series],
+                typing.Any
+            ] = None,
             modify_function: typing.Callable[
                 [pd.Series, 'Database', str, str],
                 pd.Series
