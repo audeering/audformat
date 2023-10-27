@@ -1032,6 +1032,117 @@ def test_database_get_limit_search(
     pd.testing.assert_frame_equal(df, expected)
 
 
+@pytest.mark.parametrize(
+    'db, schemes, strict, expected',
+    [
+        (
+            'mono_db',
+            'sex',
+            False,
+            pd.DataFrame(
+                {
+                    'sex': ['female', 'male'],
+                },
+                index=audformat.filewise_index(
+                    ['f1.wav', 'f3.wav'],
+                ),
+                dtype='object',
+            ),
+        ),
+        (
+            'mono_db',
+            'sex',
+            True,
+            pd.DataFrame(),
+        ),
+        (
+            'mono_db',
+            'year',
+            False,
+            pd.DataFrame(
+                {
+                    'year': [1995, 1995, 1996, 1995, 1995, 1995, 1995],
+                },
+                index=audformat.utils.union(
+                    [
+                        audformat.filewise_index(
+                            ['f1.wav', 'f2.wav', 'f3.wav']
+                        ),
+                        audformat.segmented_index(
+                            ['f1.wav', 'f1.wav', 'f1.wav', 'f2.wav'],
+                            [0, 0.1, 0.3, 0],
+                            [0.2, 0.2, 0.5, 0.7],
+                        ),
+                    ]
+                ),
+                dtype=pd.CategoricalDtype(
+                    [1995, 1996, 1997],
+                    ordered=False,
+                ),
+            ),
+        ),
+        (
+            'mono_db',
+            'year',
+            True,
+            pd.DataFrame(),
+        ),
+        (
+            'mono_db',
+            ['sex', 'year'],
+            True,
+            pd.DataFrame(),
+        ),
+        (
+            'mono_db',
+            ['gender', 'sex', 'year'],
+            True,
+            pd.DataFrame(),
+        ),
+        (
+            'mono_db',
+            ['age', 'year', 'gender'],
+            True,
+            pd.DataFrame(
+                {
+                    'age': [23, np.NaN, 59],
+                    'perceived-age': [25.0, 34.0, 45.0],
+                },
+                index=audformat.filewise_index(
+                    ['f1.wav', 'f2.wav', 'f3.wav']
+                ),
+                dtype=pd.CategoricalDtype(
+                    categories=[23.0, 59.0, 25.0, 34.0, 45.0],
+                    ordered=False,
+                ),
+            ),
+        ),
+        (
+            'mono_db',
+            ['year', 'gender', 'age'],
+            True,
+            pd.DataFrame(
+                {
+                    'age': [23, np.NaN, 59],
+                    'perceived-age': [25.0, 34.0, 45.0],
+                },
+                index=audformat.filewise_index(
+                    ['f1.wav', 'f2.wav', 'f3.wav']
+                ),
+                dtype=pd.CategoricalDtype(
+                    categories=[23.0, 59.0, 25.0, 34.0, 45.0],
+                    ordered=False,
+                ),
+            ),
+        ),
+    ]
+)
+def test_database_get_strict(request, db, schemes, strict, expected):
+    db = request.getfixturevalue(db)
+    df = db.get(schemes, strict=strict)
+    pd.testing.assert_frame_equal(df, expected)
+
+
 def test_database_get_errors():
 
     # Scheme with different categorical dtypes
