@@ -24,6 +24,7 @@ def mono_db(tmpdir):
     db.schemes['height'] = audformat.Scheme('float')
     db.schemes['rating'] = audformat.Scheme('int', labels=[0, 1, 2])
     db.schemes['regression'] = audformat.Scheme('float')
+    db.schemes['selection'] = audformat.Scheme('int', labels=[0, 1])
     db.schemes['speaker.weight'] = audformat.Scheme(
         'str',
         labels=['low', 'normal', 'high'],
@@ -45,8 +46,8 @@ def mono_db(tmpdir):
     index = pd.Index(['s1', 's2', 's3'], name='speaker', dtype='string')
     db['speaker'] = audformat.MiscTable(index)
     db['speaker']['age'] = audformat.Column(scheme_id='age')
-    db['speaker']['gender'] = audformat.Column()
     db['speaker']['age'].set([23, np.NaN, 59])
+    db['speaker']['gender'] = audformat.Column()
     db['speaker']['gender'].set(['female', '', 'male'])
     db['speaker']['height-with-10y'] = audformat.Column(scheme_id='height')
     db['speaker']['height-with-10y'].set([1.12, 1.45, 1.01])
@@ -54,6 +55,8 @@ def mono_db(tmpdir):
     db['speaker']['current-height'].set([1.76, 1.95, 1.80])
     db['speaker']['weight'] = audformat.Column(scheme_id='speaker.weight')
     db['speaker']['weight'].set(['normal', 'high', 'low'])
+    db['speaker']['selection'] = audformat.Column()
+    db['speaker']['selection'].set([1.0, 1.0, 1.0])
 
     index = pd.Index(['today', 'yesterday'], name='day', dtype='string')
     db['weather'] = audformat.MiscTable(index)
@@ -79,9 +82,13 @@ def mono_db(tmpdir):
     db['files.sub']['speaker'].set('s1')
 
     index = audformat.filewise_index(['f1.wav', 'f3.wav'])
-    db['gender'] = audformat.Table(index)
-    db['gender']['sex'] = audformat.Column()
-    db['gender']['sex'].set(['female', 'male'])
+    db['other'] = audformat.Table(index)
+    db['other']['sex'] = audformat.Column()
+    db['other']['sex'].set(['female', 'male'])
+    db['other']['weight'] = audformat.Column()
+    db['other']['weight'].set([87, 86])
+    db['other']['selection'] = audformat.Column(scheme_id='selection')
+    db['other']['selection'].set([1, 1])
 
     index = audformat.filewise_index(['f1.wav', 'f2.wav'])
     db['rating.train'] = audformat.Table(index, split_id='train')
@@ -221,7 +228,7 @@ def stereo_db(tmpdir):
                     ),
                 ],
                 axis=1,
-            )
+            ),
         ),
         (
             'mono_db',
@@ -249,40 +256,6 @@ def stereo_db(tmpdir):
                     ),
                 ],
                 axis=1,
-            ),
-        ),
-        (
-            'mono_db',
-            'age',
-            pd.DataFrame(
-                {
-                    'age': [23, np.NaN, 59],
-                    'perceived-age': [25.0, 34.0, 45.0],
-                },
-                index=audformat.filewise_index(
-                    ['f1.wav', 'f2.wav', 'f3.wav']
-                ),
-                dtype=pd.CategoricalDtype(
-                    categories=[23.0, 59.0, 25.0, 34.0, 45.0],
-                    ordered=False,
-                ),
-            ),
-        ),
-        (
-            'mono_db',
-            'height',
-            pd.DataFrame(
-                {
-                    'height-with-10y': [1.12, 1.45, 1.01],
-                    'current-height': [1.76, 1.95, 1.80],
-                },
-                index=audformat.filewise_index(
-                    ['f1.wav', 'f2.wav', 'f3.wav']
-                ),
-                dtype=pd.CategoricalDtype(
-                    categories=[1.12, 1.45, 1.01, 1.76, 1.95, 1.8],
-                    ordered=False,
-                ),
             ),
         ),
         (
@@ -386,22 +359,11 @@ def test_database_get(request, db, schemes, expected):
 # Aggregate functions
 # that define how to store the labels in the data frame
 
-def rename_column(y, db, table_id, column_id):
-    y.name = f'{y.name}-{table_id}-{column_id}'
+def add_db_name(y, db, table_id, column_id, label_id):
+    y.name = f'{y.name}-{db.name}'
     return y
 
-def select_column(y, db, table_id, column_id, column):
-    if column_id != column:
-        y = y[0:0]
-    return y
-
-
-def select_table(y, db, table_id, column_id, table):
-    if table_id != table:
-        y = y[0:0]
-    return y
-
-def average_rating_segments(y, db, table_id, column_id):
+def average_rating_segments(y, db, table_id, column_id, label_id):
     name = y.name
     dtype = y.dtype
     if table_id == 'segments':
@@ -413,16 +375,15 @@ def average_rating_segments(y, db, table_id, column_id):
         index = audformat.filewise_index()
     return pd.Series(data, index=index, name=name, dtype=dtype)
 
-def add_db_name(y, db, table_id, column_id):
-    y.name = f'{y.name}-{db.name}'
+def column_names(y, db, table_id, column_id, label_id):
+    y.name = column_id
     return y
 
-def rename_sex_to_gender_without_dtype_adjustment(y, db, table_id, column_id):
-    if y.name == 'sex':
-        y.name = 'gender'
+def rename_column(y, db, table_id, column_id, label_id):
+    y.name = f'{y.name}-{table_id}-{column_id}'
     return y
 
-def rename_sex_to_gender(y, db, table_id, column_id):
+def rename_sex_to_gender(y, *args):
     if y.name == 'sex':
         y.name = 'gender'
         # Make sure it uses the correct dtype as well
@@ -433,11 +394,304 @@ def rename_sex_to_gender(y, db, table_id, column_id):
         y = y.astype(dtype)
     return y
 
+def rename_sex_to_gender_without_dtype_adjustment(y, *args):
+    if y.name == 'sex':
+        y.name = 'gender'
+    return y
+
+def select_column(y, db, table_id, column_id, label_id, column):
+    if column_id != column:
+        y = y[0:0]
+    return y
+
+def select_label(y, db, table_id, column_id, label_id, label):
+    if label_id != label:
+        y = y[0:0]
+    return y
+
+def select_table(y, db, table_id, column_id, label_id, table):
+    if table_id != table:
+        y = y[0:0]
+    return y
+
 @pytest.mark.parametrize(
     'db, schemes, aggregate_function, modify_function, expected',
     [
-        # Tests based on `stereo_db` and `gender`,
-        # with the following tables, columns.
+
+        # Tests based on `mono_db`,
+        # with the following tables, columns
+        # matching the scheme `age`.
+        #
+        # `files`
+        # | file   | channel0 (age) | perceived-age |
+        # | ------ | -------------- | ------------- |
+        # | f1.wav |             23 |            25 |
+        # | f2.wav |                |            34 |
+        # | f3.wav |             59 |            45 |
+        #
+        # `files.sub`
+        # | file   | speaker (age) |
+        # | ------ | ------------- |
+        # | f1.wav |            23 |
+        #
+        (
+            # Select first value (based on table/column order)
+            #
+            # files, age: 23, NaN, 59
+            'mono_db',
+            'age',
+            lambda y: y[0],
+            None,
+            pd.DataFrame(
+                {
+                    # NOTE: 34 as second value might not be
+                    # what a user expects.
+                    # Using a modifier to select a column
+                    # is the safer choice.
+                    'age': [23, 34, 59],
+                },
+                index=audformat.filewise_index(
+                    ['f1.wav', 'f2.wav', 'f3.wav']
+                ),
+                dtype=pd.CategoricalDtype(
+                    categories=[23.0, 59.0, 25.0, 34.0, 45.0],
+                    ordered=False,
+                ),
+            ),
+        ),
+        (
+            # Select second value (based on table/column order)
+            #
+            # files, perceived age: 25, 34, 45
+            'mono_db',
+            'age',
+            lambda y: y[1],
+            None,
+            pd.DataFrame(
+                {
+                    'age': [25, 34, 45],
+                },
+                index=audformat.filewise_index(
+                    ['f1.wav', 'f2.wav', 'f3.wav']
+                ),
+                dtype=pd.CategoricalDtype(
+                    categories=[23.0, 59.0, 25.0, 34.0, 45.0],
+                    ordered=False,
+                ),
+            ),
+        ),
+        (
+            # Return all columns using column name
+            #
+            # files, channel0:      23, NaN, 59
+            # files, perceived-age: 25, 34, 45
+            # files.sub, speaker:   23, NaN, NaN
+            'mono_db',
+            'age',
+            None,
+            column_names,
+            pd.DataFrame(
+                {
+                    'channel0': [23, np.NaN, 59],
+                    'perceived-age': [25, 34, 45],
+                    'speaker': [23, np.NaN, np.NaN],
+                },
+                index=audformat.filewise_index(
+                    ['f1.wav', 'f2.wav', 'f3.wav']
+                ),
+                dtype=pd.CategoricalDtype(
+                    categories=[23.0, 59.0, 25.0, 34.0, 45.0],
+                    ordered=False,
+                ),
+            ),
+        ),
+
+        # Tests based on `mono_db`,
+        # with the following tables, columns
+        # matching the scheme `height`.
+        #
+        # `files`
+        # | file   | channel0 (height-with-10y) | channel0 (current-height) |
+        # | ------ | -------------------------- | ------------------------- |
+        # | f1.wav |                       1.12 |                      1.76 |
+        # | f2.wav |                       1.45 |                      1.95 |
+        # | f3.wav |                       1.01 |                      1.80 |
+        #
+        (
+            'mono_db',
+            'height',
+            None,
+            lambda *args: select_label(*args, 'current-height'),
+            pd.DataFrame(
+                {
+                    'height': [1.76, 1.95, 1.80],
+                },
+                index=audformat.filewise_index(
+                    ['f1.wav', 'f2.wav', 'f3.wav']
+                ),
+                dtype=pd.CategoricalDtype(
+                    categories=[1.12, 1.45, 1.01, 1.76, 1.95, 1.8],
+                    ordered=False,
+                ),
+            ),
+        ),
+
+        # Tests based on `mono_db`,
+        # with the following tables, columns
+        # matching the scheme `rating`.
+        #
+        # `rating.train`
+        # | file   | rating |
+        # | ------ | ------ |
+        # | f1.wav |      0 |
+        # | f2.wav |      1 |
+        #
+        # `rating.test`
+        # | file   | rating |
+        # | ------ | ------ |
+        # | f3.wav |      1 |
+        #
+        # `segments`
+        # | file   | start |   end | rating |
+        # | ------ | ----- | ----- | ------ |
+        # | f1.wav |   0.0 |   0.2 |      1 |
+        # | f1.wav |   0.1 |   0.2 |      1 |
+        # | f1.wav |   0.3 |   0.5 |      2 |
+        # | f2.wav |   0.0 |   0.7 |      2 |
+        #
+        (
+            # Select `segments` table
+            # and return maxvote for each file
+            #
+            # rating: [1, 2]
+            #
+            'mono_db',
+            'rating',
+            None,
+            average_rating_segments,
+            pd.DataFrame(
+                {
+                    'rating': [1, 2],
+                },
+                index=audformat.filewise_index(
+                    ['f1.wav', 'f2.wav']
+                ),
+                dtype=pd.CategoricalDtype(
+                    categories=[0, 1, 2],
+                    ordered=False,
+                ),
+            ),
+        ),
+
+        # Tests based on `mono_db`,
+        # with the following tables, columns
+        # matching the schemes `gender` and `sex`
+        # (considering scheme mappings and column names).
+        #
+        # `files`
+        # | file   | channel0 (gender) |
+        # | ------ | ----------------- |
+        # | f1.wav | female            |
+        # | f2.wav |                   |
+        # | f3.wav | male              |
+        #
+        # `files.sub`
+        # | file   | speaker (gender) |
+        # | ------ | ---------------- |
+        # | f1.wav | female           |
+        #
+        # `other`
+        # | file   | sex    |
+        # | ------ | ------ |
+        # | f1.wav | female |
+        # | f3.wav | male   |
+        #
+        (
+            # Add name of database to column name
+            #
+            # gender-mono-db: ['female', '', 'male']
+            #
+            'mono_db',
+            'gender',
+            None,
+            add_db_name,
+            pd.DataFrame(
+                {
+                    'gender-mono-db': ['female', '', 'male'],
+                },
+                index=audformat.filewise_index(
+                    ['f1.wav', 'f2.wav', 'f3.wav']
+                ),
+                dtype=pd.CategoricalDtype(
+                    categories=['female', '', 'male'],
+                    ordered=False,
+                ),
+            ),
+        ),
+        pytest.param(
+            # Rename sex scheme to gender
+            #
+            # As we don't fix the dtype
+            # it will raise an error
+            #
+            'mono_db',
+            ['sex', 'gender'],
+            None,
+            rename_sex_to_gender_without_dtype_adjustment,
+            None,
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
+        (
+            # Rename sex scheme to gender
+            #
+            # gender: ['female', '', 'male']
+            #
+            'mono_db',
+            ['gender', 'sex'],
+            None,
+            rename_sex_to_gender,
+            pd.DataFrame(
+                {
+                    'gender': ['female', '', 'male'],
+                },
+                index=audformat.filewise_index(
+                    ['f1.wav', 'f2.wav', 'f3.wav']
+                ),
+                dtype=pd.CategoricalDtype(
+                    categories=['female', '', 'male'],
+                    ordered=False,
+                ),
+            ),
+        ),
+        (
+            # Rename sex scheme to gender
+            #
+            # The order how we collect schemes
+            # influences the order of the index.
+            #
+            # gender: ['female', 'male', '']
+            #
+            'mono_db',
+            ['sex', 'gender'],
+            None,
+            rename_sex_to_gender,
+            pd.DataFrame(
+                {
+                    'gender': ['female', 'male', ''],
+                },
+                index=audformat.filewise_index(
+                    ['f1.wav', 'f3.wav', 'f2.wav']
+                ),
+                dtype=pd.CategoricalDtype(
+                    categories=['female', '', 'male'],
+                    ordered=False,
+                ),
+            ),
+        ),
+
+        # Tests based on `stereo_db,
+        # with the following tables, columns
+        # matching the scheme `gender`.
         # All have [f1.wav, f2.wav, f3.wav] as index
         #
         # | table | column   | values                       |
@@ -529,8 +783,7 @@ def rename_sex_to_gender(y, db, table_id, column_id):
             'stereo_db',
             'gender',
             None,
-            lambda y, db, table_id, column_id:
-            select_table(y, db, table_id, column_id, 'run2'),
+            lambda *args: select_table(*args, 'run2'),
             pd.DataFrame(
                 {
                     'gender': ['female', '', 'male'],
@@ -571,156 +824,6 @@ def rename_sex_to_gender(y, db, table_id, column_id):
             ),
         ),
 
-        # Tests based on `mono_db` and scheme `rating`,
-        # stored in the following tables and columns.
-        #
-        # `rating.train`
-        # | file   | rating |
-        # | ------ | ------ |
-        # | f1.wav |      0 |
-        # | f2.wav |      1 |
-        #
-        # `rating.test`
-        # | file   | rating |
-        # | ------ | ------ |
-        # | f3.wav |      1 |
-        #
-        # `segments`
-        # | file   | start |   end | rating |
-        # | ------ | ----- | ----- | ------ |
-        # | f1.wav |   0.0 |   0.2 |      1 |
-        # | f1.wav |   0.1 |   0.2 |      1 |
-        # | f1.wav |   0.3 |   0.5 |      2 |
-        # | f2.wav |   0.0 |   0.7 |      2 |
-        #
-        (
-            # Select `segments` table
-            # and return maxvote for each file
-            #
-            # rating: [1, 2]
-            #
-            'mono_db',
-            'rating',
-            None,
-            average_rating_segments,
-            pd.DataFrame(
-                {
-                    'rating': [1, 2],
-                },
-                index=audformat.filewise_index(
-                    ['f1.wav', 'f2.wav']
-                ),
-                dtype=pd.CategoricalDtype(
-                    categories=[0, 1, 2],
-                    ordered=False,
-                ),
-            ),
-        ),
-
-        # Tests based on `mono_db` and schemes `gender` and `sex`,
-        # stored in the following tables and columns
-        # (considering scheme mappings and column names).
-        #
-        # `files`
-        # | file   | gender |
-        # | ------ | ------ |
-        # | f1.wav | female |
-        # | f2.wav |        |
-        # | f3.wav | male   |
-        #
-        # `files.sub`
-        # | file   | gender |
-        # | ------ | ------ |
-        # | f1.wav | female |
-        #
-        # `gender`
-        # | file   | sex    |
-        # | ------ | ------ |
-        # | f1.wav | female |
-        # | f3.wav | male   |
-        #
-        (
-            # Add name of database to column name
-            #
-            # gender-mono-db: ['female', '', 'male']
-            #
-            'mono_db',
-            'gender',
-            None,
-            add_db_name,
-            pd.DataFrame(
-                {
-                    'gender-mono-db': ['female', '', 'male'],
-                },
-                index=audformat.filewise_index(
-                    ['f1.wav', 'f2.wav', 'f3.wav']
-                ),
-                dtype=pd.CategoricalDtype(
-                    categories=['female', '', 'male'],
-                    ordered=False,
-                ),
-            ),
-        ),
-        pytest.param(
-            # Rename sex scheme to gender
-            #
-            # As we don't fix the dtype
-            # it will raise an error
-            #
-            'mono_db',
-            ['sex', 'gender'],
-            None,
-            rename_sex_to_gender_without_dtype_adjustment,
-            None,
-            marks=pytest.mark.xfail(raises=ValueError),
-        ),
-        (
-            # Rename sex scheme to gender
-            #
-            # gender: ['female', '', 'male']
-            #
-            'mono_db',
-            ['gender', 'sex'],
-            None,
-            rename_sex_to_gender,
-            pd.DataFrame(
-                {
-                    'gender': ['female', '', 'male'],
-                },
-                index=audformat.filewise_index(
-                    ['f1.wav', 'f2.wav', 'f3.wav']
-                ),
-                dtype=pd.CategoricalDtype(
-                    categories=['female', '', 'male'],
-                    ordered=False,
-                ),
-            ),
-        ),
-        (
-            # Rename sex scheme to gender
-            #
-            # The order how we collect schemes
-            # influences the order of the index.
-            #
-            # gender: ['female', 'male', '']
-            #
-            'mono_db',
-            ['sex', 'gender'],
-            None,
-            rename_sex_to_gender,
-            pd.DataFrame(
-                {
-                    'gender': ['female', 'male', ''],
-                },
-                index=audformat.filewise_index(
-                    ['f1.wav', 'f3.wav', 'f2.wav']
-                ),
-                dtype=pd.CategoricalDtype(
-                    categories=['female', '', 'male'],
-                    ordered=False,
-                ),
-            ),
-        ),
     ]
 )
 def test_database_get_aggregate_and_modify_function(
@@ -737,8 +840,6 @@ def test_database_get_aggregate_and_modify_function(
         aggregate_function=aggregate_function,
         modify_function=modify_function,
     )
-    print(f'{df=}')
-    print(f'{expected=}')
     pd.testing.assert_frame_equal(df, expected)
 
 
@@ -870,7 +971,7 @@ def test_database_get_aggregate_and_modify_function(
         (
             'mono_db',
             'gender',
-            ['gender'],
+            ['other'],
             ['train'],
             pd.DataFrame(
                 {
@@ -886,7 +987,7 @@ def test_database_get_aggregate_and_modify_function(
         (
             'mono_db',
             'gender',
-            ['gender'],
+            ['other'],
             None,
             pd.DataFrame(
                 {
@@ -1091,42 +1192,6 @@ def test_database_get_limit_search(
             True,
             pd.DataFrame(),
         ),
-        (
-            'mono_db',
-            ['age', 'year', 'gender'],
-            True,
-            pd.DataFrame(
-                {
-                    'age': [23, np.NaN, 59],
-                    'perceived-age': [25.0, 34.0, 45.0],
-                },
-                index=audformat.filewise_index(
-                    ['f1.wav', 'f2.wav', 'f3.wav']
-                ),
-                dtype=pd.CategoricalDtype(
-                    categories=[23.0, 59.0, 25.0, 34.0, 45.0],
-                    ordered=False,
-                ),
-            ),
-        ),
-        (
-            'mono_db',
-            ['year', 'gender', 'age'],
-            True,
-            pd.DataFrame(
-                {
-                    'age': [23, np.NaN, 59],
-                    'perceived-age': [25.0, 34.0, 45.0],
-                },
-                index=audformat.filewise_index(
-                    ['f1.wav', 'f2.wav', 'f3.wav']
-                ),
-                dtype=pd.CategoricalDtype(
-                    categories=[23.0, 59.0, 25.0, 34.0, 45.0],
-                    ordered=False,
-                ),
-            ),
-        ),
     ]
 )
 def test_database_get_strict(request, db, schemes, strict, expected):
@@ -1135,23 +1200,55 @@ def test_database_get_strict(request, db, schemes, strict, expected):
     pd.testing.assert_frame_equal(df, expected)
 
 
-def test_database_get_errors():
-
-    # Scheme with different categorical dtypes
-    db = audformat.Database('db')
-    db.schemes['label'] = audformat.Scheme('int', labels=[0, 1])
-    db['speaker'] = audformat.MiscTable(
-        pd.Index(['s1', 's2'], dtype='string', name='speaker')
-    )
-    db['speaker']['label'] = audformat.Column()
-    db['speaker']['label'].set([1.0, 1.0])
-    db['files'] = audformat.Table(audformat.filewise_index(['f1', 'f2']))
-    db['files']['label'] = audformat.Column(scheme_id='label')
-    db['files']['label'].set([0, 1])
-    db['other'] = audformat.Table(audformat.filewise_index(['f1', 'f2']))
-    db.schemes['speaker'] = audformat.Scheme('str', labels='speaker')
-    db['other']['speaker'] = audformat.Column(scheme_id='speaker')
-    db['other']['speaker'].set(['s1', 's2'])
-    error_msg = 'All categorical data must have the same dtype.'
-    with pytest.raises(ValueError, match=error_msg):
-        db.get('label')
+@pytest.mark.parametrize(
+    'db, schemes, expected_error, expected_error_msg',
+    [
+        (
+            'mono_db',
+            'age',
+            ValueError,
+            (
+                "Found overlapping data in column 'age':\n"
+                "        left right\n"
+                "file              \n"
+                "f1.wav  23.0  25.0\n"
+                "f3.wav  59.0  45.0"
+            ),
+        ),
+        (
+            'mono_db',
+            'height',
+            ValueError,
+            (
+                "Found overlapping data in column 'height':\n"
+                "        left right\n"
+                "file              \n"
+                "f1.wav  1.12  1.76\n"
+                "f2.wav  1.45  1.95\n"
+                "f3.wav  1.01  1.80"
+            ),
+        ),
+        (
+            'mono_db',
+            'weight',
+            TypeError,
+            "dtype of categories must be the same",
+        ),
+        (
+            'mono_db',
+            'selection',
+            ValueError,
+            "All categorical data must have the same dtype."
+        ),
+    ]
+)
+def test_database_get_errors(
+        request,
+        db,
+        schemes,
+        expected_error,
+        expected_error_msg,
+):
+    db = request.getfixturevalue(db)
+    with pytest.raises(expected_error, match=expected_error_msg):
+        db.get(schemes)

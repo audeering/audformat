@@ -504,7 +504,10 @@ class Database(HeaderBase):
                 In addition,
                 the corresponding :class:`audformat.Database`,
                 ``table_id``,
-                and ``column_id``
+                ``column_id``,
+                and ``label_id``
+                (name of the key when storing labels as dictionaries,
+                or column when storing labels in a misc table)
                 are its arguments.
                 It has to return the modifided series.
 
@@ -517,12 +520,14 @@ class Database(HeaderBase):
             >>> db = Database('mydb')
             >>> db.schemes['rating'] = Scheme('float')
             >>> db.schemes['confidence'] = Scheme('float')
-            >>> db['run1'] = Table(filewise_index(['f1', 'f2']))
+            >>> db.splits['train'] = Split('train')
+            >>> db.splits['test'] = Split('test')
+            >>> db['run1'] = Table(filewise_index(['f1', 'f2']), split_id='train')
             >>> db['run1']['rating'] = Column(scheme_id='rating')
             >>> db['run1']['rating'].set([0.0, 0.9])
             >>> db['run1']['confidence'] = Column(scheme_id='confidence')
             >>> db['run1']['confidence'].set([1, 1])
-            >>> db['run2'] = Table(filewise_index(['f3']))
+            >>> db['run2'] = Table(filewise_index(['f3']), split_id='test')
             >>> db['run2']['rating'] = Column(scheme_id='rating')
             >>> db['run2']['rating'].set([0.7])
             >>> db['run2']['confidence'] = Column(scheme_id='confidence')
@@ -549,7 +554,19 @@ class Database(HeaderBase):
             f2       0.9
             f3       0.7
 
-            Return column name if different from scheme.
+            Limit to a particular table or split.
+
+            >>> db.get('rating', tables=['run1'])
+                 rating
+            file
+            f1       0.0
+            f2       0.9
+            >>> db.get('rating', splits=['test'])
+                 rating
+            file
+            f3       0.7
+
+            Return scheme name if column ID is different from scheme.
 
             >>> db = Database('mydb')
             >>> db.schemes['rating'] = Scheme('float')
@@ -560,26 +577,11 @@ class Database(HeaderBase):
             >>> db['run2']['rater1'] = Column(scheme_id='rating')
             >>> db['run2']['rater1'].set([0.7])
             >>> db.get('rating')
-                 rater1
+                 rating
             file
             f1       0.0
             f2       0.9
             f3       0.7
-
-            Return several columns if they use the requested scheme.
-
-            >>> db = Database('mydb')
-            >>> db.schemes['rating'] = Scheme('float')
-            >>> db['run1'] = Table(filewise_index(['f1', 'f2']))
-            >>> db['run1']['rater1'] = Column(scheme_id='rating')
-            >>> db['run1']['rater1'].set([0.0, 0.9])
-            >>> db['run1']['rater2'] = Column(scheme_id='rating')
-            >>> db['run1']['rater2'].set([0.2, 0.7])
-            >>> db.get('rating')
-                 rater1   rater2
-            file
-            f1       0.0      0.2
-            f2       0.9      0.7
 
             If ``strict`` is ``True``
             only values that have an attached scheme are returned.
@@ -636,7 +638,7 @@ class Database(HeaderBase):
             to select a particular run
             to limit the number of values.
 
-            >>> def select_run1(y, db, table_id, column_id):
+            >>> def select_run1(y, db, table_id, column_id, label_id):
             ...     if table_id != 'run1':
             ...         y = y[0:0]
             ...     return y
@@ -646,18 +648,37 @@ class Database(HeaderBase):
             f1       0.0
             f2       0.9
 
-        """
+            Use ``modify_function`` to return column IDs.
+
+            >>> db = Database('mydb')
+            >>> db.schemes['rating'] = Scheme('float')
+            >>> db['run1'] = Table(filewise_index(['f1', 'f2']))
+            >>> db['run1']['rater1'] = Column(scheme_id='rating')
+            >>> db['run1']['rater1'].set([0.0, 0.9])
+            >>> db['run1']['rater2'] = Column(scheme_id='rating')
+            >>> db['run1']['rater2'].set([0.2, 0.7])
+            >>> def column_names(y, db, table_id, column_id, label_id):
+            ...     y.name = column_id
+            ...     return y
+            >>> db.get('rating', modify_function=column_names)
+                 rater1   rater2
+            file
+            f1       0.0      0.2
+            f2       0.9      0.7
+
+        """  # noqa: E501
 
         def append_series(
                 ys,
                 y,
                 table_id,
                 column_id,
+                label_id,
                 modify_function,
         ):
             if y is not None:
                 if modify_function is not None:
-                    y = modify_function(y, self, table_id, column_id)
+                    y = modify_function(y, self, table_id, column_id, label_id)
                 ys.append(y)
 
         def scheme_in_column(scheme_id, column, column_id):
@@ -709,11 +730,13 @@ class Database(HeaderBase):
                     # Scheme directly stored in column
                     if scheme_in_column(requested_scheme, column, column_id):
                         y = self[table_id][column_id].get()
+                        y.name = requested_scheme
                         append_series(
                             ys_requested_scheme,
                             y,
                             table_id,
                             column_id,
+                            None,
                             modify_function,
                         )
                     # Get series based on label of scheme
@@ -721,11 +744,13 @@ class Database(HeaderBase):
                         for (scheme_id, mapping) in scheme_mappings:
                             if scheme_in_column(scheme_id, column, column_id):
                                 y = self[table_id][column_id].get(map=mapping)
+                                y.name = requested_scheme
                                 append_series(
                                     ys_requested_scheme,
                                     y,
                                     table_id,
                                     column_id,
+                                    mapping,
                                     modify_function,
                                 )
 
