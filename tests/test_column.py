@@ -204,9 +204,24 @@ def test_map_dtypes():
 
     db.schemes['scheme'] = audformat.Scheme(
         labels={
-            'a': {'alias': 'A'},
-            'b': {'alias': 'B'},
-            'c': {'alias': 'C'},
+            'a': {
+                'alias': 'A',
+                'age': 45.,
+                'location': 0,
+                'mixed': b'abc',
+            },
+            'b': {
+                'alias': 'B',
+                'age': 67.,
+                'location': 0,
+                'mixed': 2,
+            },
+            'c': {
+                'alias': 'C',
+                'age': 78.,
+                'location': 1,
+                'mixed': 'abc',
+            },
         },
     )
 
@@ -215,20 +230,68 @@ def test_map_dtypes():
     db['table']['column'].set(['a', 'b', 'c'])
 
     y = db['table']['column'].get()
-    assert y.dtype == pd.Series(['a', 'b', 'c']).astype('category').dtype
+    expected = pd.Series(
+        ['a', 'b', 'c'],
+        index=y.index,
+        name='column',
+        dtype=pd.CategoricalDtype(
+            categories=['a', 'b', 'c'],
+            ordered=False,
+        ),
+    )
+    pd.testing.assert_series_equal(y, expected)
 
     y = db['table']['column'].get(map='alias')
-    assert y.dtype == pd.Series(['A', 'B', 'C']).astype('string').dtype
+    expected = pd.Series(
+        ['A', 'B', 'C'],
+        index=y.index,
+        name='alias',
+        dtype='string',
+    )
+    pd.testing.assert_series_equal(y, expected)
 
-    db.schemes['scheme'].replace_labels(  # set one label to None
+    y = db['table']['column'].get(map='age')
+    expected = pd.Series(
+        [45, 67, 78],
+        index=y.index,
+        name='age',
+        dtype='float',
+    )
+    pd.testing.assert_series_equal(y, expected)
+
+    y = db['table']['column'].get(map='location')
+    expected = pd.Series(
+        [0, 0, 1],
+        index=y.index,
+        name='location',
+        dtype='Int64',
+    )
+    pd.testing.assert_series_equal(y, expected)
+
+    y = db['table']['column'].get(map='mixed')
+    expected = pd.Series(
+        [b'abc', 2, 'abc'],
+        index=y.index,
+        name='mixed',
+        dtype='object',
+    )
+    pd.testing.assert_series_equal(y, expected)
+
+    # Change label entry and check that dtype stays the same
+    db.schemes['scheme'].replace_labels(
         {
             'a': {'alias': 'A'},
             'b': {'alias': 'B'},
         }
     )
-
     y = db['table']['column'].get(map='alias')
-    assert y.dtype == pd.Series(['A', 'B']).astype('string').dtype
+    expected = pd.Series(
+        ['A', 'B', None],
+        index=y.index,
+        name='alias',
+        dtype='string',
+    )
+    pd.testing.assert_series_equal(y, expected)
 
     # repeat using a misc table
 
@@ -266,7 +329,16 @@ def test_map_dtypes():
     db['table']['column'].set(['a', 'b', 'c'])
 
     y = db['table']['column'].get()
-    assert y.dtype == pd.Series(['a', 'b', 'c']).astype('category').dtype
+    expected = pd.Series(
+        ['a', 'b', 'c'],
+        index=y.index,
+        name='column',
+        dtype=pd.CategoricalDtype(
+            categories=['a', 'b', 'c'],
+            ordered=False,
+        ),
+    )
+    pd.testing.assert_series_equal(y, expected)
 
     y = db['table']['column'].get(map='alias')
     expected = pd.Series(
@@ -319,7 +391,7 @@ def test_map_dtypes():
     )
     pd.testing.assert_series_equal(y, expected)
 
-    # Change label entry and check that dtype stys the same
+    # Change label entry and check that dtype stays the same
     db['misc']['alias'].set(['A', 'B', None])
     y = db['table']['column'].get(map='alias')
     expected = pd.Series(

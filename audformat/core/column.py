@@ -271,8 +271,6 @@ class Column(HeaderBase):
             result = result.map(mapping)
             result.name = map
 
-            print(f'{mapping=}')
-            print(f'{scheme.uses_table=}')
             if (
                     scheme.uses_table
                     and self._table._db[scheme.labels][map].scheme is not None
@@ -286,21 +284,18 @@ class Column(HeaderBase):
             else:
                 # Infer dtype from actual labels
                 dtype = pd.api.types.infer_dtype(list(result.values))
-                if dtype in ['integer', 'mixed-integer']:
+                if dtype in ['integer']:
                     dtype = 'Int64'
-                elif dtype in ['floating', 'mixed-integer-float', 'decimal']:
+                elif dtype in ['floating', 'decimal']:
                     dtype = 'float'
-                elif dtype in ['mixed', 'unknown-array']:
+                elif dtype in [
+                        'mixed',
+                        'mixed-integer',
+                        'mixed-integer-float',
+                        'unknown-array',
+                ]:
                     dtype = 'object'
-                # df = pd.DataFrame(list(result.values), columns=[result.name])
-                # print(f'{df=}')
-                # dtype = df.infer_objects().dtypes[result.name]
-                print('dtype from labels')
-                print(f'{dtype=}')
-                # dtype = pd.Series(result.values).dtype
             result = result.astype(dtype)
-            # result = result.map(mapping).astype('category')
-            print(f'{result=}')
 
         return result.copy() if copy else result
 
