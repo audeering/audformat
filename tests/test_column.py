@@ -209,6 +209,7 @@ def db_scheme_with_labels():
                 'location': 0,
                 'mixed': b'abc',
                 'date': pd.to_datetime('2018-10-26'),
+                'time': pd.to_timedelta(300, unit='s'),
             },
             'b': {
                 'alias': 'B',
@@ -216,6 +217,7 @@ def db_scheme_with_labels():
                 'location': 0,
                 'mixed': 2,
                 'date': pd.to_datetime('2018-10-27'),
+                'time': pd.to_timedelta(301, unit='s'),
             },
             'c': {
                 'alias': 'C',
@@ -223,6 +225,7 @@ def db_scheme_with_labels():
                 'location': 1,
                 'mixed': 'abc',
                 'date': pd.to_datetime('2018-10-28'),
+                'time': pd.to_timedelta(302, unit='s'),
             },
         },
     )
@@ -245,6 +248,7 @@ def db_scheme_with_misc_table():
     db.schemes['age'] = audformat.Scheme('float', minimum=0)
     db.schemes['name'] = audformat.Scheme('str')
     db.schemes['date'] = audformat.Scheme('date')
+    db.schemes['time'] = audformat.Scheme('time')
     db['misc'] = audformat.MiscTable(
         pd.Index(
             ['a', 'b', 'c'],
@@ -268,6 +272,14 @@ def db_scheme_with_misc_table():
             pd.to_datetime('2018-10-26'),
             pd.to_datetime('2018-10-27'),
             pd.to_datetime('2018-10-28'),
+        ]
+    )
+    db['misc']['time'] = audformat.Column(scheme_id='time')
+    db['misc']['time'].set(
+        [
+            pd.to_timedelta(300, unit='s'),
+            pd.to_timedelta(301, unit='s'),
+            pd.to_timedelta(302, unit='s'),
         ]
     )
     db.schemes['scheme'] = audformat.Scheme('str', labels='misc')
@@ -346,6 +358,20 @@ def db_scheme_with_misc_table():
                 index=audformat.filewise_index(['f1', 'f2', 'f3']),
                 name='date',
                 dtype='datetime64[ns]',
+            ),
+        ),
+        (
+            'db_scheme_with_labels',
+            'time',
+            pd.Series(
+                [
+                    pd.to_timedelta(300, unit='s'),
+                    pd.to_timedelta(301, unit='s'),
+                    pd.to_timedelta(302, unit='s'),
+                ],
+                index=audformat.filewise_index(['f1', 'f2', 'f3']),
+                name='time',
+                dtype='timedelta64[ns]',
             ),
         ),
         (
@@ -429,6 +455,20 @@ def db_scheme_with_misc_table():
                 index=audformat.filewise_index(['f1', 'f2', 'f3']),
                 name='date',
                 dtype='datetime64[ns]',
+            ),
+        ),
+        (
+            'db_scheme_with_misc_table',
+            'time',
+            pd.Series(
+                [
+                    pd.to_timedelta(300, unit='s'),
+                    pd.to_timedelta(301, unit='s'),
+                    pd.to_timedelta(302, unit='s'),
+                ],
+                index=audformat.filewise_index(['f1', 'f2', 'f3']),
+                name='time',
+                dtype='timedelta64[ns]',
             ),
         ),
     ]

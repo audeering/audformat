@@ -286,16 +286,13 @@ class Column(HeaderBase):
                 dtype = pd.api.types.infer_dtype(list(result.values))
                 if dtype in ['integer']:
                     dtype = 'Int64'
-                elif dtype in ['floating', 'decimal']:
+                elif dtype in ['floating', 'decimal', 'mixed-integer-float']:
                     dtype = 'float'
                 elif dtype in ['datetime64', 'datetime', 'date']:
                     dtype = 'datetime64[ns]'
-                elif dtype in [
-                        'mixed',
-                        'mixed-integer',
-                        'mixed-integer-float',
-                        'unknown-array',
-                ]:
+                elif dtype in ['timedelta64', 'timedelta', 'time']:
+                    dtype = 'timedelta64[ns]'
+                elif dtype in ['mixed', 'mixed-integer', 'unknown-array']:
                     dtype = 'object'
             result = result.astype(dtype)
 
