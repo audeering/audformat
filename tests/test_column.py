@@ -204,31 +204,31 @@ def db_scheme_with_labels():
     db.schemes['scheme'] = audformat.Scheme(
         labels={
             'a': {
-                'alias': 'A',
-                'age': 45.,
-                'location': 0,
-                'mixed': b'abc',
-                'date': pd.to_datetime('2018-10-26'),
-                'time': pd.to_timedelta(300, unit='s'),
                 'bool': True,
+                'date': pd.to_datetime('2018-10-26'),
+                'float': 45.,
+                'int': 0,
+                'object': b'abc',
+                'str': 'A',
+                'time': pd.to_timedelta(300, unit='s'),
             },
             'b': {
-                'alias': 'B',
-                'age': 67.,
-                'location': 0,
-                'mixed': 2,
-                'date': pd.to_datetime('2018-10-27'),
-                'time': pd.to_timedelta(301, unit='s'),
                 'bool': False,
+                'date': pd.to_datetime('2018-10-27'),
+                'float': 67.,
+                'int': 0,
+                'object': 2,
+                'str': 'B',
+                'time': pd.to_timedelta(301, unit='s'),
             },
             'c': {
-                'alias': 'C',
-                'age': 78.,
-                'location': 1,
-                'mixed': 'abc',
-                'date': pd.to_datetime('2018-10-28'),
-                'time': pd.to_timedelta(302, unit='s'),
                 'bool': False,
+                'date': pd.to_datetime('2018-10-28'),
+                'float': 78.,
+                'int': 1,
+                'object': 'abc',
+                'str': 'C',
+                'time': pd.to_timedelta(302, unit='s'),
             },
         },
     )
@@ -243,16 +243,21 @@ def db_scheme_with_misc_table():
     r"""Database with different scheme labels stored in misc table."""
     db = audformat.testing.create_db(minimal=True)
     db.name = 'db_scheme_with_misc_table'
-    db.schemes['gender'] = audformat.Scheme('str', labels=['female', 'male'])
-    db.schemes['location'] = audformat.Scheme(
+    # Schemes
+    db.schemes['bool'] = audformat.Scheme('bool')
+    db.schemes['date'] = audformat.Scheme('date')
+    db.schemes['int-categories'] = audformat.Scheme(
         'int',
         labels={0: 'Berlin', 1: 'Gilching'},
     )
-    db.schemes['age'] = audformat.Scheme('float', minimum=0)
-    db.schemes['name'] = audformat.Scheme('str')
-    db.schemes['date'] = audformat.Scheme('date')
+    db.schemes['float'] = audformat.Scheme('float', minimum=0)
+    db.schemes['str'] = audformat.Scheme('str')
+    db.schemes['str-categories'] = audformat.Scheme(
+        'str',
+        labels=['female', 'male'],
+    )
     db.schemes['time'] = audformat.Scheme('time')
-    db.schemes['bool'] = audformat.Scheme('bool')
+    # Misc table
     db['misc'] = audformat.MiscTable(
         pd.Index(
             ['a', 'b', 'c'],
@@ -260,16 +265,8 @@ def db_scheme_with_misc_table():
             dtype='string',
         ),
     )
-    db['misc']['alias'] = audformat.Column()
-    db['misc']['alias'].set(['A', 'B', 'C'])
-    db['misc']['gender'] = audformat.Column(scheme_id='gender')
-    db['misc']['gender'].set(['female', 'male', 'male'])
-    db['misc']['location'] = audformat.Column(scheme_id='location')
-    db['misc']['location'].set([0, 0, 1])
-    db['misc']['age'] = audformat.Column(scheme_id='age')
-    db['misc']['age'].set([45, 67, 78])
-    db['misc']['name'] = audformat.Column(scheme_id='name')
-    db['misc']['name'].set(['Jae', 'Joe', 'John'])
+    db['misc']['bool'] = audformat.Column(scheme_id='bool')
+    db['misc']['bool'].set([True, False, False])
     db['misc']['date'] = audformat.Column(scheme_id='date')
     db['misc']['date'].set(
         [
@@ -278,6 +275,16 @@ def db_scheme_with_misc_table():
             pd.to_datetime('2018-10-28'),
         ]
     )
+    db['misc']['float'] = audformat.Column(scheme_id='float')
+    db['misc']['float'].set([45., 67., 78.])
+    db['misc']['int-categories'] = audformat.Column(scheme_id='int-categories')
+    db['misc']['int-categories'].set([0, 0, 1])
+    db['misc']['str'] = audformat.Column(scheme_id='str')
+    db['misc']['str'].set(['Jae', 'Joe', 'John'])
+    db['misc']['str-categories'] = audformat.Column(scheme_id='str-categories')
+    db['misc']['str-categories'].set(['female', 'male', 'male'])
+    db['misc']['str-without-scheme'] = audformat.Column()
+    db['misc']['str-without-scheme'].set(['A', 'B', 'C'])
     db['misc']['time'] = audformat.Column(scheme_id='time')
     db['misc']['time'].set(
         [
@@ -286,8 +293,7 @@ def db_scheme_with_misc_table():
             pd.to_timedelta(302, unit='s'),
         ]
     )
-    db['misc']['bool'] = audformat.Column(scheme_id='bool')
-    db['misc']['bool'].set([True, False, False])
+    # Scheme using misc table
     db.schemes['scheme'] = audformat.Scheme('str', labels='misc')
     db['table'] = audformat.Table(audformat.filewise_index(['f1', 'f2', 'f3']))
     db['table']['column'] = audformat.Column(scheme_id='scheme')
@@ -313,42 +319,42 @@ def db_scheme_with_misc_table():
         ),
         (
             'db_scheme_with_labels',
-            'alias',
+            'str',
             pd.Series(
                 ['A', 'B', 'C'],
                 index=audformat.filewise_index(['f1', 'f2', 'f3']),
-                name='alias',
+                name='str',
                 dtype='string',
             ),
 
         ),
         (
             'db_scheme_with_labels',
-            'age',
+            'float',
             pd.Series(
-                [45, 67, 78],
+                [45., 67., 78.],
                 index=audformat.filewise_index(['f1', 'f2', 'f3']),
-                name='age',
+                name='float',
                 dtype='float',
             ),
         ),
         (
             'db_scheme_with_labels',
-            'location',
+            'int',
             pd.Series(
                 [0, 0, 1],
                 index=audformat.filewise_index(['f1', 'f2', 'f3']),
-                name='location',
+                name='int',
                 dtype='Int64',
             ),
         ),
         (
             'db_scheme_with_labels',
-            'mixed',
+            'object',
             pd.Series(
                 [b'abc', 2, 'abc'],
                 index=audformat.filewise_index(['f1', 'f2', 'f3']),
-                name='mixed',
+                name='object',
                 dtype='object',
             ),
         ),
@@ -404,21 +410,21 @@ def db_scheme_with_misc_table():
         ),
         (
             'db_scheme_with_misc_table',
-            'alias',
+            'str-without-scheme',
             pd.Series(
                 ['A', 'B', 'C'],
                 index=audformat.filewise_index(['f1', 'f2', 'f3']),
-                name='alias',
+                name='str-without-scheme',
                 dtype='string',
             ),
         ),
         (
             'db_scheme_with_misc_table',
-            'gender',
+            'str-categories',
             pd.Series(
                 ['female', 'male', 'male'],
                 index=audformat.filewise_index(['f1', 'f2', 'f3']),
-                name='gender',
+                name='str-categories',
                 dtype=pd.CategoricalDtype(
                     categories=['female', 'male'],
                     ordered=False,
@@ -427,11 +433,11 @@ def db_scheme_with_misc_table():
         ),
         (
             'db_scheme_with_misc_table',
-            'location',
+            'int-categories',
             pd.Series(
                 [0, 0, 1],
                 index=audformat.filewise_index(['f1', 'f2', 'f3']),
-                name='location',
+                name='int-categories',
                 dtype=pd.CategoricalDtype(
                     categories=[0, 1],
                     ordered=False,
@@ -440,21 +446,21 @@ def db_scheme_with_misc_table():
         ),
         (
             'db_scheme_with_misc_table',
-            'age',
+            'float',
             pd.Series(
-                [45, 67, 78],
+                [45., 67., 78.],
                 index=audformat.filewise_index(['f1', 'f2', 'f3']),
-                name='age',
+                name='float',
                 dtype='float',
             ),
         ),
         (
             'db_scheme_with_misc_table',
-            'name',
+            'str',
             pd.Series(
                 ['Jae', 'Joe', 'John'],
                 index=audformat.filewise_index(['f1', 'f2', 'f3']),
-                name='name',
+                name='str',
                 dtype='string',
             ),
         ),
@@ -503,34 +509,36 @@ def test_map_dtypes(request, db, map, expected):
     y = db['table']['column'].get(map=map)
     pd.testing.assert_series_equal(y, expected)
 
-    if map == 'alias':
-        # Change label entry and check that dtype stays the same
-        if db.name == 'db_scheme_with_labels':
-            db.schemes['scheme'].replace_labels(
-                {
-                    'a': {'alias': 'A'},
-                    'b': {'alias': 'B'},
-                }
-            )
-            y = db['table']['column'].get(map='alias')
-            expected = pd.Series(
-                ['A', 'B', None],
-                index=y.index,
-                name='alias',
-                dtype='string',
-            )
-            pd.testing.assert_series_equal(y, expected)
+    # Change label entry and check that dtype stays the same
+    if map == 'str' and db.name == 'db_scheme_with_labels':
+        db.schemes['scheme'].replace_labels(
+            {
+                'a': {'str': 'A'},
+                'b': {'str': 'B'},
+            }
+        )
+        y = db['table']['column'].get(map=map)
+        expected = pd.Series(
+            ['A', 'B', None],
+            index=y.index,
+            name=map,
+            dtype='string',
+        )
+        pd.testing.assert_series_equal(y, expected)
 
-        elif db.name == 'db_scheme_with_misc_table':
-            db['misc']['alias'].set(['A', 'B', None])
-            y = db['table']['column'].get(map='alias')
-            expected = pd.Series(
-                ['A', 'B', None],
-                index=y.index,
-                name='alias',
-                dtype='string',
-            )
-            pd.testing.assert_series_equal(y, expected)
+    elif (
+            map == 'str-without-scheme'
+            and db.name == 'db_scheme_with_misc_table'
+    ):
+        db['misc']['str-without-scheme'].set(['A', 'B', None])
+        y = db['table']['column'].get(map=map)
+        expected = pd.Series(
+            ['A', 'B', None],
+            index=y.index,
+            name=map,
+            dtype='string',
+        )
+        pd.testing.assert_series_equal(y, expected)
 
 
 @pytest.mark.parametrize(
