@@ -327,22 +327,40 @@ def series_to_html(self):  # pragma: no cover
 
 def to_audformat_dtype(dtype: typing.Union[str, typing.Type]) -> str:
     r"""Convert pandas to audformat dtype."""
+    # bool
     if pd.api.types.is_bool_dtype(dtype):
         return define.DataType.BOOL
-    elif pd.api.types.is_datetime64_dtype(dtype):
+    # date
+    elif (
+            pd.api.types.is_datetime64_dtype(dtype)
+            or dtype in ['datetime64', 'datetime', 'date']
+    ):
         return define.DataType.DATE
-    elif pd.api.types.is_float_dtype(dtype):
+    # float
+    elif (
+            pd.api.types.is_float_dtype(dtype)
+            or dtype in ['floating', 'decimal', 'mixed-integer-float']
+    ):
         return define.DataType.FLOAT
-    elif pd.api.types.is_integer_dtype(dtype):
+    # int
+    elif (
+            pd.api.types.is_integer_dtype(dtype)
+            or dtype == 'integer'
+    ):
         return define.DataType.INTEGER
-    elif pd.api.types.is_timedelta64_dtype(dtype):
+    # time
+    elif (
+            pd.api.types.is_timedelta64_dtype(dtype)
+            or dtype in ['timedelta64', 'timedelta', 'time']
+    ):
         return define.DataType.TIME
+    # string
     # We cannot use pd.api.types.is_string_dtype()
     # as it returns `True` for list, object, etc.
     elif dtype in [str, 'str', 'string']:
         return define.DataType.STRING
+    # object
     else:
-        # default to object
         return define.DataType.OBJECT
 
 

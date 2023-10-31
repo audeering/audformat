@@ -8,6 +8,8 @@ import pandas as pd
 
 from audformat.core import define
 from audformat.core.common import HeaderBase
+from audformat.core.common import to_audformat_dtype
+from audformat.core.common import to_pandas_dtype
 from audformat.core.index import index_type
 from audformat.core.index import is_scalar
 from audformat.core.index import to_array
@@ -284,20 +286,8 @@ class Column(HeaderBase):
             else:
                 # Infer dtype from actual labels
                 dtype = pd.api.types.infer_dtype(list(result.values))
-                if dtype == 'string':
-                    dtype = 'string'
-                elif dtype == 'integer':
-                    dtype = 'Int64'
-                elif dtype == 'boolean':
-                    dtype = 'boolean'
-                elif dtype in ['floating', 'decimal', 'mixed-integer-float']:
-                    dtype = 'float'
-                elif dtype in ['datetime64', 'datetime', 'date']:
-                    dtype = 'datetime64[ns]'
-                elif dtype in ['timedelta64', 'timedelta', 'time']:
-                    dtype = 'timedelta64[ns]'
-                else:
-                    dtype = 'object'
+                dtype = to_pandas_dtype(to_audformat_dtype(dtype))
+
             result = result.astype(dtype)
 
         return result.copy() if copy else result

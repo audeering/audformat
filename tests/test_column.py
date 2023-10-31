@@ -185,12 +185,14 @@ def test_get_as_segmented():
 )
 def test_map(column, map, expected_dtype):
     result = column.get(map=map)
+    print(f'{result=}')
     expected = column.get()
     mapping = {}
     for key, value in pytest.DB.schemes[column.scheme_id].labels.items():
         if isinstance(value, dict):
             value = value[map]
         mapping[key] = value
+    print(f'{mapping=}')
     expected = expected.map(mapping).astype(expected_dtype)
     expected.name = map
     pd.testing.assert_series_equal(result, expected)
