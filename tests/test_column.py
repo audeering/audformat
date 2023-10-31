@@ -155,35 +155,35 @@ def test_get_as_segmented():
 
 
 @pytest.mark.parametrize(
-    'column, map',
+    'column, map, expected_dtype',
     [
-        (pytest.DB['files']['label_map_int'], 'int'),
-        (pytest.DB['files']['label_map_int'], 'label_map_int'),
-        (pytest.DB['files']['label_map_str'], 'prop1'),
-        (pytest.DB['segments']['label_map_str'], 'prop2'),
+        (pytest.DB['files']['label_map_int'], 'int', 'string'),
+        (pytest.DB['files']['label_map_int'], 'label_map_int', 'string'),
+        (pytest.DB['files']['label_map_str'], 'prop1', 'Int64'),
+        (pytest.DB['segments']['label_map_str'], 'prop2', 'string'),
         pytest.param(  # no mappings
-            pytest.DB['files']['label'], 'label1',
+            pytest.DB['files']['label'], 'label1', None,
             marks=pytest.mark.xfail(raises=ValueError),
         ),
         pytest.param(  # no schemes
-            pytest.DB['files']['no_scheme'], 'map',
+            pytest.DB['files']['no_scheme'], 'map', None,
             marks=pytest.mark.xfail(raises=ValueError),
         ),
         pytest.param(  # no labels
-            pytest.DB['files']['string'], 'map',
+            pytest.DB['files']['string'], 'map', None,
             marks=pytest.mark.xfail(raises=ValueError),
         ),
         pytest.param(  # no labels
-            pytest.DB['files']['string'], 'map',
+            pytest.DB['files']['string'], 'map', None,
             marks=pytest.mark.xfail(raises=ValueError),
         ),
         pytest.param(  # no labels
-            pytest.DB['files']['label_map_str'], 'bad',
+            pytest.DB['files']['label_map_str'], 'bad', None,
             marks=pytest.mark.xfail(raises=ValueError),
         ),
     ]
 )
-def test_map(column, map):
+def test_map(column, map, expected_dtype):
     result = column.get(map=map)
     expected = column.get()
     mapping = {}
@@ -191,14 +191,12 @@ def test_map(column, map):
         if isinstance(value, dict):
             value = value[map]
         mapping[key] = value
-    expected = expected.map(mapping)
+    expected = expected.map(mapping).astype(expected_dtype)
     expected.name = map
     pd.testing.assert_series_equal(result, expected)
 
 
-def test_map_returns_categorical_dtype():
-
-    # See https://github.com/audeering/audformat/issues/317
+def test_map_dtypes():
 
     # use scheme with labels
 
@@ -220,7 +218,7 @@ def test_map_returns_categorical_dtype():
     assert y.dtype == pd.Series(['a', 'b', 'c']).astype('category').dtype
 
     y = db['table']['column'].get(map='alias')
-    assert y.dtype == pd.Series(['A', 'B', 'C']).astype('category').dtype
+    assert y.dtype == pd.Series(['A', 'B', 'C']).astype('string').dtype
 
     db.schemes['scheme'].replace_labels(  # set one label to None
         {
@@ -230,11 +228,19 @@ def test_map_returns_categorical_dtype():
     )
 
     y = db['table']['column'].get(map='alias')
-    assert y.dtype == pd.Series(['A', 'B']).astype('category').dtype
+    assert y.dtype == pd.Series(['A', 'B']).astype('string').dtype
 
     # repeat using a misc table
 
     db = audformat.testing.create_db(minimal=True)
+
+    db.schemes['gender'] = audformat.Scheme('str', labels=['female', 'male'])
+    db.schemes['location'] = audformat.Scheme(
+        'int',
+        labels={0: 'Berlin', 1: 'Gilching'},
+    )
+    db.schemes['age'] = audformat.Scheme('float', minimum=0)
+    db.schemes['name'] = audformat.Scheme('str')
 
     db['misc'] = audformat.MiscTable(
         pd.Index(
@@ -245,6 +251,14 @@ def test_map_returns_categorical_dtype():
     )
     db['misc']['alias'] = audformat.Column()
     db['misc']['alias'].set(['A', 'B', 'C'])
+    db['misc']['gender'] = audformat.Column(scheme_id='gender')
+    db['misc']['gender'].set(['female', 'male', 'male'])
+    db['misc']['location'] = audformat.Column(scheme_id='location')
+    db['misc']['location'].set([0, 0, 1])
+    db['misc']['age'] = audformat.Column(scheme_id='age')
+    db['misc']['age'].set([45, 67, 78])
+    db['misc']['name'] = audformat.Column(scheme_id='name')
+    db['misc']['name'].set(['Jae', 'Joe', 'John'])
 
     db.schemes['scheme'] = audformat.Scheme('str', labels='misc')
     db['table'] = audformat.Table(audformat.filewise_index(['f1', 'f2', 'f3']))
@@ -255,12 +269,66 @@ def test_map_returns_categorical_dtype():
     assert y.dtype == pd.Series(['a', 'b', 'c']).astype('category').dtype
 
     y = db['table']['column'].get(map='alias')
-    assert y.dtype == pd.Series(['A', 'B', 'C']).astype('category').dtype
+    expected = pd.Series(
+        ['A', 'B', 'C'],
+        index=y.index,
+        name='alias',
+        dtype='string',
+    )
+    pd.testing.assert_series_equal(y, expected)
 
-    db['misc']['alias'].set(['A', 'B', None])  # set one label to None
+    y = db['table']['column'].get(map='gender')
+    expected = pd.Series(
+        ['female', 'male', 'male'],
+        index=y.index,
+        name='gender',
+        dtype=pd.CategoricalDtype(
+            categories=['female', 'male'],
+            ordered=False,
+        ),
+    )
+    pd.testing.assert_series_equal(y, expected)
 
+    y = db['table']['column'].get(map='location')
+    expected = pd.Series(
+        [0, 0, 1],
+        index=y.index,
+        name='location',
+        dtype=pd.CategoricalDtype(
+            categories=[0, 1],
+            ordered=False,
+        ),
+    )
+    pd.testing.assert_series_equal(y, expected)
+
+    y = db['table']['column'].get(map='age')
+    expected = pd.Series(
+        [45, 67, 78],
+        index=y.index,
+        name='age',
+        dtype='float',
+    )
+    pd.testing.assert_series_equal(y, expected)
+
+    y = db['table']['column'].get(map='name')
+    expected = pd.Series(
+        ['Jae', 'Joe', 'John'],
+        index=y.index,
+        name='name',
+        dtype='string',
+    )
+    pd.testing.assert_series_equal(y, expected)
+
+    # Change label entry and check that dtype stys the same
+    db['misc']['alias'].set(['A', 'B', None])
     y = db['table']['column'].get(map='alias')
-    assert y.dtype == pd.Series(['A', 'B']).astype('category').dtype
+    expected = pd.Series(
+        ['A', 'B', None],
+        index=y.index,
+        name='alias',
+        dtype='string',
+    )
+    pd.testing.assert_series_equal(y, expected)
 
 
 @pytest.mark.parametrize(

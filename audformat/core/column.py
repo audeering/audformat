@@ -267,8 +267,40 @@ class Column(HeaderBase):
                             f"{list(value)}."
                         )
                 mapping[key] = value
-            result = result.map(mapping).astype('category')
+
+            result = result.map(mapping)
             result.name = map
+
+            print(f'{mapping=}')
+            print(f'{scheme.uses_table=}')
+            if (
+                    scheme.uses_table
+                    and self._table._db[scheme.labels][map].scheme is not None
+                    #                       ^           ^
+                    #                   misc table   column
+            ):
+                # Infer dtype from misc table
+                misc_table_id = scheme.labels
+                column = self._table._db[misc_table_id][map]
+                dtype = column.scheme.to_pandas_dtype()
+            else:
+                # Infer dtype from actual labels
+                dtype = pd.api.types.infer_dtype(list(result.values))
+                if dtype in ['integer', 'mixed-integer']:
+                    dtype = 'Int64'
+                elif dtype in ['floating', 'mixed-integer-float', 'decimal']:
+                    dtype = 'float'
+                elif dtype in ['mixed', 'unknown-array']:
+                    dtype = 'object'
+                # df = pd.DataFrame(list(result.values), columns=[result.name])
+                # print(f'{df=}')
+                # dtype = df.infer_objects().dtypes[result.name]
+                print('dtype from labels')
+                print(f'{dtype=}')
+                # dtype = pd.Series(result.values).dtype
+            result = result.astype(dtype)
+            # result = result.map(mapping).astype('category')
+            print(f'{result=}')
 
         return result.copy() if copy else result
 
