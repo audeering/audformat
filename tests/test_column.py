@@ -196,12 +196,11 @@ def test_map(column, map, expected_dtype):
     pd.testing.assert_series_equal(result, expected)
 
 
-def test_map_dtypes():
-
-    # use scheme with labels
-
+@pytest.fixture(scope='function')
+def db_scheme_with_labels():
+    r"""Database with different scheme labels as dictionary."""
     db = audformat.testing.create_db(minimal=True)
-
+    db.name = 'db_scheme_with_labels'
     db.schemes['scheme'] = audformat.Scheme(
         labels={
             'a': {
@@ -224,79 +223,17 @@ def test_map_dtypes():
             },
         },
     )
-
     db['table'] = audformat.Table(audformat.filewise_index(['f1', 'f2', 'f3']))
     db['table']['column'] = audformat.Column(scheme_id='scheme')
     db['table']['column'].set(['a', 'b', 'c'])
+    return db
 
-    y = db['table']['column'].get()
-    expected = pd.Series(
-        ['a', 'b', 'c'],
-        index=y.index,
-        name='column',
-        dtype=pd.CategoricalDtype(
-            categories=['a', 'b', 'c'],
-            ordered=False,
-        ),
-    )
-    pd.testing.assert_series_equal(y, expected)
 
-    y = db['table']['column'].get(map='alias')
-    expected = pd.Series(
-        ['A', 'B', 'C'],
-        index=y.index,
-        name='alias',
-        dtype='string',
-    )
-    pd.testing.assert_series_equal(y, expected)
-
-    y = db['table']['column'].get(map='age')
-    expected = pd.Series(
-        [45, 67, 78],
-        index=y.index,
-        name='age',
-        dtype='float',
-    )
-    pd.testing.assert_series_equal(y, expected)
-
-    y = db['table']['column'].get(map='location')
-    expected = pd.Series(
-        [0, 0, 1],
-        index=y.index,
-        name='location',
-        dtype='Int64',
-    )
-    pd.testing.assert_series_equal(y, expected)
-
-    y = db['table']['column'].get(map='mixed')
-    expected = pd.Series(
-        [b'abc', 2, 'abc'],
-        index=y.index,
-        name='mixed',
-        dtype='object',
-    )
-    pd.testing.assert_series_equal(y, expected)
-
-    # Change label entry and check that dtype stays the same
-    db.schemes['scheme'].replace_labels(
-        {
-            'a': {'alias': 'A'},
-            'b': {'alias': 'B'},
-        }
-    )
-    y = db['table']['column'].get(map='alias')
-    expected = pd.Series(
-        ['A', 'B', None],
-        index=y.index,
-        name='alias',
-        dtype='string',
-    )
-    pd.testing.assert_series_equal(y, expected)
-
-    # repeat using a misc table
-
+@pytest.fixture(scope='function')
+def db_scheme_with_misc_table():
+    r"""Database with different scheme labels stored in misc table."""
     db = audformat.testing.create_db(minimal=True)
-
+    db.name = 'db_scheme_with_misc_table'
     db.schemes['gender'] = audformat.Scheme('str', labels=['female', 'male'])
     db.schemes['location'] = audformat.Scheme(
         'int',
@@ -304,7 +241,6 @@ def test_map_dtypes():
     )
     db.schemes['age'] = audformat.Scheme('float', minimum=0)
     db.schemes['name'] = audformat.Scheme('str')
-
     db['misc'] = audformat.MiscTable(
         pd.Index(
             ['a', 'b', 'c'],
@@ -327,80 +263,171 @@ def test_map_dtypes():
     db['table'] = audformat.Table(audformat.filewise_index(['f1', 'f2', 'f3']))
     db['table']['column'] = audformat.Column(scheme_id='scheme')
     db['table']['column'].set(['a', 'b', 'c'])
+    return db
 
-    y = db['table']['column'].get()
-    expected = pd.Series(
-        ['a', 'b', 'c'],
-        index=y.index,
-        name='column',
-        dtype=pd.CategoricalDtype(
-            categories=['a', 'b', 'c'],
-            ordered=False,
+
+@pytest.mark.parametrize(
+    'db, map, expected',
+    [
+        (
+            'db_scheme_with_labels',
+            None,
+            pd.Series(
+                ['a', 'b', 'c'],
+                index=audformat.filewise_index(['f1', 'f2', 'f3']),
+                name='column',
+                dtype=pd.CategoricalDtype(
+                    categories=['a', 'b', 'c'],
+                    ordered=False,
+                ),
+            ),
         ),
-    )
-    pd.testing.assert_series_equal(y, expected)
+        (
+            'db_scheme_with_labels',
+            'alias',
+            pd.Series(
+                ['A', 'B', 'C'],
+                index=audformat.filewise_index(['f1', 'f2', 'f3']),
+                name='alias',
+                dtype='string',
+            ),
 
-    y = db['table']['column'].get(map='alias')
-    expected = pd.Series(
-        ['A', 'B', 'C'],
-        index=y.index,
-        name='alias',
-        dtype='string',
-    )
-    pd.testing.assert_series_equal(y, expected)
-
-    y = db['table']['column'].get(map='gender')
-    expected = pd.Series(
-        ['female', 'male', 'male'],
-        index=y.index,
-        name='gender',
-        dtype=pd.CategoricalDtype(
-            categories=['female', 'male'],
-            ordered=False,
         ),
-    )
-    pd.testing.assert_series_equal(y, expected)
-
-    y = db['table']['column'].get(map='location')
-    expected = pd.Series(
-        [0, 0, 1],
-        index=y.index,
-        name='location',
-        dtype=pd.CategoricalDtype(
-            categories=[0, 1],
-            ordered=False,
+        (
+            'db_scheme_with_labels',
+            'age',
+            pd.Series(
+                [45, 67, 78],
+                index=audformat.filewise_index(['f1', 'f2', 'f3']),
+                name='age',
+                dtype='float',
+            ),
         ),
-    )
+        (
+            'db_scheme_with_labels',
+            'location',
+            pd.Series(
+                [0, 0, 1],
+                index=audformat.filewise_index(['f1', 'f2', 'f3']),
+                name='location',
+                dtype='Int64',
+            ),
+        ),
+        (
+            'db_scheme_with_labels',
+            'mixed',
+            pd.Series(
+                [b'abc', 2, 'abc'],
+                index=audformat.filewise_index(['f1', 'f2', 'f3']),
+                name='mixed',
+                dtype='object',
+            ),
+        ),
+        (
+            'db_scheme_with_misc_table',
+            None,
+            pd.Series(
+                ['a', 'b', 'c'],
+                index=audformat.filewise_index(['f1', 'f2', 'f3']),
+                name='column',
+                dtype=pd.CategoricalDtype(
+                    categories=['a', 'b', 'c'],
+                    ordered=False,
+                ),
+            ),
+        ),
+        (
+            'db_scheme_with_misc_table',
+            'alias',
+            pd.Series(
+                ['A', 'B', 'C'],
+                index=audformat.filewise_index(['f1', 'f2', 'f3']),
+                name='alias',
+                dtype='string',
+            ),
+        ),
+        (
+            'db_scheme_with_misc_table',
+            'gender',
+            pd.Series(
+                ['female', 'male', 'male'],
+                index=audformat.filewise_index(['f1', 'f2', 'f3']),
+                name='gender',
+                dtype=pd.CategoricalDtype(
+                    categories=['female', 'male'],
+                    ordered=False,
+                ),
+            ),
+        ),
+        (
+            'db_scheme_with_misc_table',
+            'location',
+            pd.Series(
+                [0, 0, 1],
+                index=audformat.filewise_index(['f1', 'f2', 'f3']),
+                name='location',
+                dtype=pd.CategoricalDtype(
+                    categories=[0, 1],
+                    ordered=False,
+                ),
+            ),
+        ),
+        (
+            'db_scheme_with_misc_table',
+            'age',
+            pd.Series(
+                [45, 67, 78],
+                index=audformat.filewise_index(['f1', 'f2', 'f3']),
+                name='age',
+                dtype='float',
+            ),
+        ),
+        (
+            'db_scheme_with_misc_table',
+            'name',
+            pd.Series(
+                ['Jae', 'Joe', 'John'],
+                index=audformat.filewise_index(['f1', 'f2', 'f3']),
+                name='name',
+                dtype='string',
+            ),
+        ),
+    ]
+)
+def test_map_dtypes(request, db, map, expected):
+
+    db = request.getfixturevalue(db)
+    y = db['table']['column'].get(map=map)
     pd.testing.assert_series_equal(y, expected)
 
-    y = db['table']['column'].get(map='age')
-    expected = pd.Series(
-        [45, 67, 78],
-        index=y.index,
-        name='age',
-        dtype='float',
-    )
-    pd.testing.assert_series_equal(y, expected)
+    if map == 'alias':
+        # Change label entry and check that dtype stays the same
+        if db.name == 'db_scheme_with_labels':
+            db.schemes['scheme'].replace_labels(
+                {
+                    'a': {'alias': 'A'},
+                    'b': {'alias': 'B'},
+                }
+            )
+            y = db['table']['column'].get(map='alias')
+            expected = pd.Series(
+                ['A', 'B', None],
+                index=y.index,
+                name='alias',
+                dtype='string',
+            )
+            pd.testing.assert_series_equal(y, expected)
 
-    y = db['table']['column'].get(map='name')
-    expected = pd.Series(
-        ['Jae', 'Joe', 'John'],
-        index=y.index,
-        name='name',
-        dtype='string',
-    )
-    pd.testing.assert_series_equal(y, expected)
-
-    # Change label entry and check that dtype stays the same
-    db['misc']['alias'].set(['A', 'B', None])
-    y = db['table']['column'].get(map='alias')
-    expected = pd.Series(
-        ['A', 'B', None],
-        index=y.index,
-        name='alias',
-        dtype='string',
-    )
-    pd.testing.assert_series_equal(y, expected)
+        elif db.name == 'db_scheme_with_misc_table':
+            db['misc']['alias'].set(['A', 'B', None])
+            y = db['table']['column'].get(map='alias')
+            expected = pd.Series(
+                ['A', 'B', None],
+                index=y.index,
+                name='alias',
+                dtype='string',
+            )
+            pd.testing.assert_series_equal(y, expected)
 
 
 @pytest.mark.parametrize(
