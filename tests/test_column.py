@@ -208,18 +208,21 @@ def db_scheme_with_labels():
                 'age': 45.,
                 'location': 0,
                 'mixed': b'abc',
+                'date': pd.to_datetime('2018-10-26'),
             },
             'b': {
                 'alias': 'B',
                 'age': 67.,
                 'location': 0,
                 'mixed': 2,
+                'date': pd.to_datetime('2018-10-27'),
             },
             'c': {
                 'alias': 'C',
                 'age': 78.,
                 'location': 1,
                 'mixed': 'abc',
+                'date': pd.to_datetime('2018-10-28'),
             },
         },
     )
@@ -241,6 +244,7 @@ def db_scheme_with_misc_table():
     )
     db.schemes['age'] = audformat.Scheme('float', minimum=0)
     db.schemes['name'] = audformat.Scheme('str')
+    db.schemes['date'] = audformat.Scheme('date')
     db['misc'] = audformat.MiscTable(
         pd.Index(
             ['a', 'b', 'c'],
@@ -258,7 +262,14 @@ def db_scheme_with_misc_table():
     db['misc']['age'].set([45, 67, 78])
     db['misc']['name'] = audformat.Column(scheme_id='name')
     db['misc']['name'].set(['Jae', 'Joe', 'John'])
-
+    db['misc']['date'] = audformat.Column(scheme_id='date')
+    db['misc']['date'].set(
+        [
+            pd.to_datetime('2018-10-26'),
+            pd.to_datetime('2018-10-27'),
+            pd.to_datetime('2018-10-28'),
+        ]
+    )
     db.schemes['scheme'] = audformat.Scheme('str', labels='misc')
     db['table'] = audformat.Table(audformat.filewise_index(['f1', 'f2', 'f3']))
     db['table']['column'] = audformat.Column(scheme_id='scheme')
@@ -321,6 +332,20 @@ def db_scheme_with_misc_table():
                 index=audformat.filewise_index(['f1', 'f2', 'f3']),
                 name='mixed',
                 dtype='object',
+            ),
+        ),
+        (
+            'db_scheme_with_labels',
+            'date',
+            pd.Series(
+                [
+                    pd.to_datetime('2018-10-26'),
+                    pd.to_datetime('2018-10-27'),
+                    pd.to_datetime('2018-10-28'),
+                ],
+                index=audformat.filewise_index(['f1', 'f2', 'f3']),
+                name='date',
+                dtype='datetime64[ns]',
             ),
         ),
         (
@@ -390,6 +415,20 @@ def db_scheme_with_misc_table():
                 index=audformat.filewise_index(['f1', 'f2', 'f3']),
                 name='name',
                 dtype='string',
+            ),
+        ),
+        (
+            'db_scheme_with_misc_table',
+            'date',
+            pd.Series(
+                [
+                    pd.to_datetime('2018-10-26'),
+                    pd.to_datetime('2018-10-27'),
+                    pd.to_datetime('2018-10-28'),
+                ],
+                index=audformat.filewise_index(['f1', 'f2', 'f3']),
+                name='date',
+                dtype='datetime64[ns]',
             ),
         ),
     ]

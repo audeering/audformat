@@ -288,6 +288,8 @@ class Column(HeaderBase):
                     dtype = 'Int64'
                 elif dtype in ['floating', 'decimal']:
                     dtype = 'float'
+                elif dtype in ['datetime64', 'datetime', 'date']:
+                    dtype = 'datetime64[ns]'
                 elif dtype in [
                         'mixed',
                         'mixed-integer',
