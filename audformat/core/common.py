@@ -333,7 +333,7 @@ def to_audformat_dtype(dtype: typing.Union[str, typing.Type]) -> str:
     # date
     elif (
             pd.api.types.is_datetime64_dtype(dtype)
-            or dtype in ['datetime64', 'datetime', 'date']
+            or dtype in ['datetime', 'date']
     ):
         return define.DataType.DATE
     # float
@@ -351,7 +351,7 @@ def to_audformat_dtype(dtype: typing.Union[str, typing.Type]) -> str:
     # time
     elif (
             pd.api.types.is_timedelta64_dtype(dtype)
-            or dtype in ['timedelta64', 'timedelta', 'time']
+            or dtype in ['timedelta', 'time']
     ):
         return define.DataType.TIME
     # string
