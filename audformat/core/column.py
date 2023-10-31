@@ -284,15 +284,19 @@ class Column(HeaderBase):
             else:
                 # Infer dtype from actual labels
                 dtype = pd.api.types.infer_dtype(list(result.values))
-                if dtype in ['integer']:
+                if dtype == 'string':
+                    dtype = 'string'
+                elif dtype == 'integer':
                     dtype = 'Int64'
+                elif dtype == 'boolean':
+                    dtype = 'boolean'
                 elif dtype in ['floating', 'decimal', 'mixed-integer-float']:
                     dtype = 'float'
                 elif dtype in ['datetime64', 'datetime', 'date']:
                     dtype = 'datetime64[ns]'
                 elif dtype in ['timedelta64', 'timedelta', 'time']:
                     dtype = 'timedelta64[ns]'
-                elif dtype in ['mixed', 'mixed-integer', 'unknown-array']:
+                else:
                     dtype = 'object'
             result = result.astype(dtype)
 

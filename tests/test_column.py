@@ -210,6 +210,7 @@ def db_scheme_with_labels():
                 'mixed': b'abc',
                 'date': pd.to_datetime('2018-10-26'),
                 'time': pd.to_timedelta(300, unit='s'),
+                'bool': True,
             },
             'b': {
                 'alias': 'B',
@@ -218,6 +219,7 @@ def db_scheme_with_labels():
                 'mixed': 2,
                 'date': pd.to_datetime('2018-10-27'),
                 'time': pd.to_timedelta(301, unit='s'),
+                'bool': False,
             },
             'c': {
                 'alias': 'C',
@@ -226,6 +228,7 @@ def db_scheme_with_labels():
                 'mixed': 'abc',
                 'date': pd.to_datetime('2018-10-28'),
                 'time': pd.to_timedelta(302, unit='s'),
+                'bool': False,
             },
         },
     )
@@ -249,6 +252,7 @@ def db_scheme_with_misc_table():
     db.schemes['name'] = audformat.Scheme('str')
     db.schemes['date'] = audformat.Scheme('date')
     db.schemes['time'] = audformat.Scheme('time')
+    db.schemes['bool'] = audformat.Scheme('bool')
     db['misc'] = audformat.MiscTable(
         pd.Index(
             ['a', 'b', 'c'],
@@ -282,6 +286,8 @@ def db_scheme_with_misc_table():
             pd.to_timedelta(302, unit='s'),
         ]
     )
+    db['misc']['bool'] = audformat.Column(scheme_id='bool')
+    db['misc']['bool'].set([True, False, False])
     db.schemes['scheme'] = audformat.Scheme('str', labels='misc')
     db['table'] = audformat.Table(audformat.filewise_index(['f1', 'f2', 'f3']))
     db['table']['column'] = audformat.Column(scheme_id='scheme')
@@ -372,6 +378,15 @@ def db_scheme_with_misc_table():
                 index=audformat.filewise_index(['f1', 'f2', 'f3']),
                 name='time',
                 dtype='timedelta64[ns]',
+            ),
+        ),
+        (
+            'db_scheme_with_labels',
+            'bool',
+            pd.Series([True, False, False],
+                index=audformat.filewise_index(['f1', 'f2', 'f3']),
+                name='bool',
+                dtype='boolean',
             ),
         ),
         (
@@ -469,6 +484,15 @@ def db_scheme_with_misc_table():
                 index=audformat.filewise_index(['f1', 'f2', 'f3']),
                 name='time',
                 dtype='timedelta64[ns]',
+            ),
+        ),
+        (
+            'db_scheme_with_misc_table',
+            'bool',
+            pd.Series([True, False, False],
+                index=audformat.filewise_index(['f1', 'f2', 'f3']),
+                name='bool',
+                dtype='boolean',
             ),
         ),
     ]
