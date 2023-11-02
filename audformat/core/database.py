@@ -438,7 +438,8 @@ class Database(HeaderBase):
 
     def get(
             self,
-            schemes: typing.Union[str, typing.Sequence],
+            scheme: str,
+            additional_schemes: typing.Union[str, typing.Sequence] = [],
             *,
             tables: typing.Union[str, typing.Sequence] = None,
             splits: typing.Union[str, typing.Sequence] = None,
@@ -477,7 +478,14 @@ class Database(HeaderBase):
         that modifies how the labels are stored.
 
         Args:
-            schemes: scheme or sequence of scheme
+            scheme: scheme ID for which labels should be returned.
+                The search for the labels
+                can be limited
+                by the ``tables`` and ``splits`` arguments
+            additional_schemes: scheme ID or sequence of scheme ID
+                for which additional labels should be returned.
+                The search is not affected
+                by the ``tables`` and ``splits`` arguments
             tables: limit returned samples to selected tables
             splits: limit returned samples to selected splits
             strict: if ``False``
@@ -538,7 +546,7 @@ class Database(HeaderBase):
             f1       0.0
             f2       0.9
             f3       0.7
-            >>> db.get(['rating', 'confidence'])
+            >>> db.get('rating', additional_schemes='confidence')
                  rating confidence
             file
             f1       0.0        1.0
@@ -547,12 +555,12 @@ class Database(HeaderBase):
 
             Non-existent schemes are ignored.
 
-            >>> db.get(['rating', 'rater'])
-                 rating
+            >>> db.get('rating', ['rater'])
+                 rating  rater
             file
-            f1       0.0
-            f2       0.9
-            f3       0.7
+            f1       0.0   NaN
+            f2       0.9   NaN
+            f3       0.7   NaN
 
             Limit to a particular table or split.
 
@@ -693,128 +701,125 @@ class Database(HeaderBase):
                 )
             )
 
-        requested_schemes = audeer.to_list(schemes)
+        requested_scheme = scheme
+        additional_schemes = audeer.to_list(additional_schemes)
 
-        ys = []
-        for requested_scheme in requested_schemes:
+        # --- Check if requested scheme is stored as label in other schemes
+        scheme_mappings = []
+        for scheme_id, scheme in self.schemes.items():
 
-            # --- Check if requested scheme is stored as label in other schemes
-            scheme_mappings = []
-            for scheme_id, scheme in self.schemes.items():
-
-                # Labels stored as misc table
-                if scheme.uses_table and scheme_id in self.misc_tables:
-                    for column_id, column in self[scheme_id].columns.items():
-                        if scheme_in_column(
-                                requested_scheme,
-                                column,
-                                column_id,
-                        ):
-                            scheme_mappings.append((scheme_id, column_id))
-
-                # Labels stored in scheme
-                elif isinstance(scheme.labels, dict) and not strict:
-                    labels = pd.DataFrame.from_dict(
-                        scheme.labels,
-                        orient='index',
-                    )
-                    if requested_scheme in labels:
-                        scheme_mappings.append((scheme_id, requested_scheme))
-
-            # --- Get data for requested schemes
-            ys_requested_scheme = []
-            for table_id, table in self.tables.items():
-
-                for column_id, column in table.columns.items():
-                    y = None
-                    # Scheme directly stored in column
-                    if scheme_in_column(requested_scheme, column, column_id):
-                        y = self[table_id][column_id].get()
-                        y.name = requested_scheme
-                        append_series(
-                            ys_requested_scheme,
-                            y,
-                            table_id,
+            # Labels stored as misc table
+            if scheme.uses_table and scheme_id in self.misc_tables:
+                for column_id, column in self[scheme_id].columns.items():
+                    if scheme_in_column(
+                            requested_scheme,
+                            column,
                             column_id,
-                            None,
-                            modify_function,
-                        )
-                    # Get series based on label of scheme
-                    else:
-                        for (scheme_id, mapping) in scheme_mappings:
-                            if scheme_in_column(scheme_id, column, column_id):
-                                y = self[table_id][column_id].get(map=mapping)
-                                y.name = requested_scheme
-                                append_series(
-                                    ys_requested_scheme,
-                                    y,
-                                    table_id,
-                                    column_id,
-                                    mapping,
-                                    modify_function,
-                                )
+                    ):
+                        scheme_mappings.append((scheme_id, column_id))
 
-            # Ensure we have a common dtype for requested scheme
-            categorical_dtypes = [
-                y.dtype for y in ys_requested_scheme
-                if isinstance(y.dtype, pd.CategoricalDtype)
-            ]
-            dtypes_of_categories = [
-                dtype.categories.dtype
-                for dtype in categorical_dtypes
-            ]
-            if len(categorical_dtypes) > 0:
-                if len(set(dtypes_of_categories)) > 1:
-                    # Don't know if this can ever be triggered,
-                    # but make sure we raise the same error as
-                    # pd.api.types.union_categoricals
-                    raise TypeError(  # pragma: nocover
-                        'dtype of categories must be the same'
+            # Labels stored in scheme
+            elif isinstance(scheme.labels, dict) and not strict:
+                labels = pd.DataFrame.from_dict(
+                    scheme.labels,
+                    orient='index',
+                )
+                if requested_scheme in labels:
+                    scheme_mappings.append((scheme_id, requested_scheme))
+
+        # --- Get data for requested schemes
+        ys_requested_scheme = []
+        for table_id, table in self.tables.items():
+
+            for column_id, column in table.columns.items():
+                y = None
+                # Scheme directly stored in column
+                if scheme_in_column(requested_scheme, column, column_id):
+                    y = self[table_id][column_id].get()
+                    y.name = requested_scheme
+                    append_series(
+                        ys_requested_scheme,
+                        y,
+                        table_id,
+                        column_id,
+                        None,
+                        modify_function,
                     )
-                dtype = dtypes_of_categories[0]
-                # Convert everything to categorical data
-                for n, y in enumerate(ys_requested_scheme):
-                    if not isinstance(y.dtype, pd.CategoricalDtype):
-                        ys_requested_scheme[n] = y.astype(
-                            pd.CategoricalDtype(set(y.array.astype(dtype)))
-                        )
-                # Find union of categorical data
-                data = [y.array for y in ys_requested_scheme]
-                data = pd.api.types.union_categoricals(data)
-                ys_requested_scheme = [
-                    y.astype(data.dtype)
-                    for y in ys_requested_scheme
-                ]
+                # Get series based on label of scheme
+                else:
+                    for (scheme_id, mapping) in scheme_mappings:
+                        if scheme_in_column(scheme_id, column, column_id):
+                            y = self[table_id][column_id].get(map=mapping)
+                            y.name = requested_scheme
+                            append_series(
+                                ys_requested_scheme,
+                                y,
+                                table_id,
+                                column_id,
+                                mapping,
+                                modify_function,
+                            )
 
-            ys += ys_requested_scheme
+        # Ensure we have a common dtype for requested scheme
+        categorical_dtypes = [
+            y.dtype for y in ys_requested_scheme
+            if isinstance(y.dtype, pd.CategoricalDtype)
+        ]
+        dtypes_of_categories = [
+            dtype.categories.dtype
+            for dtype in categorical_dtypes
+        ]
+        if len(categorical_dtypes) > 0:
+            if len(set(dtypes_of_categories)) > 1:
+                # Don't know if this can ever be triggered,
+                # but make sure we raise the same error as
+                # pd.api.types.union_categoricals
+                raise TypeError(  # pragma: nocover
+                    'dtype of categories must be the same'
+                )
+            dtype = dtypes_of_categories[0]
+            # Convert everything to categorical data
+            for n, y in enumerate(ys_requested_scheme):
+                if not isinstance(y.dtype, pd.CategoricalDtype):
+                    ys_requested_scheme[n] = y.astype(
+                        pd.CategoricalDtype(set(y.array.astype(dtype)))
+                    )
+            # Find union of categorical data
+            data = [y.array for y in ys_requested_scheme]
+            data = pd.api.types.union_categoricals(data)
+            ys_requested_scheme = [
+                y.astype(data.dtype)
+                for y in ys_requested_scheme
+            ]
 
-        index = utils.union([y.index for y in ys])
+        index = utils.union([y.index for y in ys_requested_scheme])
         obj = utils.concat(
-            ys,
+            ys_requested_scheme,
             aggregate_function=aggregate_function,
         ).loc[index]
 
         if len(obj) == 0:
             obj = pd.DataFrame(
-                [],
+                {
+                    requested_scheme: [],
+                },
                 index=filewise_index(),
-                columns=requested_schemes,
                 dtype='object',
             )
 
         if isinstance(obj, pd.Series):
             obj = obj.to_frame()
 
-        # Start with column names matching requested schemes
-        matching_columns = [
-            column for column in requested_schemes
-            if column in obj.columns
-        ]
-        additional_columns = [
-            column for column in obj.columns
-            if column not in requested_schemes
-        ]
-        obj = obj[matching_columns + additional_columns]
+        # # Start with column names matching requested schemes
+        # matching_columns = [
+        #     column for column in requested_schemes
+        #     if column in obj.columns
+        # ]
+        # additional_columns = [
+        #     column for column in obj.columns
+        #     if column not in requested_schemes
+        # ]
+        # obj = obj[matching_columns + additional_columns]
 
         # Limit returned samples by selected tables and splits
         indices = []
@@ -851,6 +856,13 @@ class Database(HeaderBase):
 
         if len(obj) == 0:
             obj.index = filewise_index()
+
+        # Append additional schemes
+        objs = [obj]
+        for scheme in additional_schemes:
+            objs.append(self.get(scheme))
+        if len(objs) > 1:
+            obj = utils.concat(objs)
 
         return obj
 

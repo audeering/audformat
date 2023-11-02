@@ -174,11 +174,12 @@ def stereo_db(tmpdir):
 
 
 @pytest.mark.parametrize(
-    'db, schemes, expected',
+    'db, scheme, additional_schemes, expected',
     [
         (
             'mono_db',
             'non-existing',
+            [],
             pd.DataFrame(
                 {
                     'non-existing': [],
@@ -190,6 +191,7 @@ def stereo_db(tmpdir):
         (
             'mono_db',
             'weather',
+            [],
             pd.DataFrame(
                 {
                     'weather': [],
@@ -201,6 +203,7 @@ def stereo_db(tmpdir):
         (
             'mono_db',
             'gender',
+            [],
             pd.DataFrame(
                 {
                     'gender': ['female', '', 'male'],
@@ -213,7 +216,8 @@ def stereo_db(tmpdir):
         ),
         (
             'mono_db',
-            ['sex', 'gender'],
+            'sex',
+            ['gender'],
             pd.concat(
                 [
                     pd.Series(
@@ -238,7 +242,8 @@ def stereo_db(tmpdir):
         ),
         (
             'mono_db',
-            ['gender', 'sex', 'non-existing'],
+            'gender',
+            ['sex', 'non-existing'],
             pd.concat(
                 [
                     pd.Series(
@@ -270,6 +275,7 @@ def stereo_db(tmpdir):
         (
             'mono_db',
             'winner',
+            [],
             pd.DataFrame(
                 {
                     'winner': ['w1', 'w1', 'w2', 'w1', 'w1', 'w1', 'w1'],
@@ -295,6 +301,7 @@ def stereo_db(tmpdir):
         (
             'mono_db',
             'year',
+            [],
             pd.DataFrame(
                 {
                     'year': [1995, 1995, 1996, 1995, 1995, 1995, 1995],
@@ -317,6 +324,7 @@ def stereo_db(tmpdir):
         (
             'mono_db',
             'rating',
+            [],
             pd.DataFrame(
                 {
                     'rating': [1, 0, 1, 1, 1, 2, 2],
@@ -342,6 +350,7 @@ def stereo_db(tmpdir):
         (
             'mono_db',
             'regression',
+            [],
             pd.DataFrame(
                 {
                     'regression': [0.3, 0.2, 0.6, 0.4],
@@ -357,6 +366,7 @@ def stereo_db(tmpdir):
         (
             'mono_db',
             'selection',
+            [],
             pd.DataFrame(
                 {
                     'selection': [1, 1, 1],
@@ -372,9 +382,9 @@ def stereo_db(tmpdir):
         ),
     ]
 )
-def test_database_get(request, db, schemes, expected):
+def test_database_get(request, db, scheme, additional_schemes, expected):
     db = request.getfixturevalue(db)
-    df = db.get(schemes)
+    df = db.get(scheme, additional_schemes)
     pd.testing.assert_frame_equal(df, expected)
 
 
