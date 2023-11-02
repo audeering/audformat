@@ -8,6 +8,8 @@ import pandas as pd
 
 from audformat.core import define
 from audformat.core.common import HeaderBase
+from audformat.core.common import to_audformat_dtype
+from audformat.core.common import to_pandas_dtype
 from audformat.core.index import index_type
 from audformat.core.index import is_scalar
 from audformat.core.index import to_array
@@ -267,8 +269,26 @@ class Column(HeaderBase):
                             f"{list(value)}."
                         )
                 mapping[key] = value
-            result = result.map(mapping).astype('category')
+
+            result = result.map(mapping)
             result.name = map
+
+            if (
+                    scheme.uses_table
+                    and self._table._db[scheme.labels][map].scheme is not None
+                    #                       ^           ^
+                    #                   misc table   column
+            ):
+                # Infer dtype from misc table
+                misc_table_id = scheme.labels
+                column = self._table._db[misc_table_id][map]
+                dtype = column.scheme.to_pandas_dtype()
+            else:
+                # Infer dtype from actual labels
+                dtype = pd.api.types.infer_dtype(list(result.values))
+                dtype = to_pandas_dtype(to_audformat_dtype(dtype))
+
+            result = result.astype(dtype)
 
         return result.copy() if copy else result
 

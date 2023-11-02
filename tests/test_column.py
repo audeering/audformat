@@ -155,35 +155,35 @@ def test_get_as_segmented():
 
 
 @pytest.mark.parametrize(
-    'column, map',
+    'column, map, expected_dtype',
     [
-        (pytest.DB['files']['label_map_int'], 'int'),
-        (pytest.DB['files']['label_map_int'], 'label_map_int'),
-        (pytest.DB['files']['label_map_str'], 'prop1'),
-        (pytest.DB['segments']['label_map_str'], 'prop2'),
+        (pytest.DB['files']['label_map_int'], 'int', 'string'),
+        (pytest.DB['files']['label_map_int'], 'label_map_int', 'string'),
+        (pytest.DB['files']['label_map_str'], 'prop1', 'Int64'),
+        (pytest.DB['segments']['label_map_str'], 'prop2', 'string'),
         pytest.param(  # no mappings
-            pytest.DB['files']['label'], 'label1',
+            pytest.DB['files']['label'], 'label1', None,
             marks=pytest.mark.xfail(raises=ValueError),
         ),
         pytest.param(  # no schemes
-            pytest.DB['files']['no_scheme'], 'map',
+            pytest.DB['files']['no_scheme'], 'map', None,
             marks=pytest.mark.xfail(raises=ValueError),
         ),
         pytest.param(  # no labels
-            pytest.DB['files']['string'], 'map',
+            pytest.DB['files']['string'], 'map', None,
             marks=pytest.mark.xfail(raises=ValueError),
         ),
         pytest.param(  # no labels
-            pytest.DB['files']['string'], 'map',
+            pytest.DB['files']['string'], 'map', None,
             marks=pytest.mark.xfail(raises=ValueError),
         ),
         pytest.param(  # no labels
-            pytest.DB['files']['label_map_str'], 'bad',
+            pytest.DB['files']['label_map_str'], 'bad', None,
             marks=pytest.mark.xfail(raises=ValueError),
         ),
     ]
 )
-def test_map(column, map):
+def test_map(column, map, expected_dtype):
     result = column.get(map=map)
     expected = column.get()
     mapping = {}
@@ -191,51 +191,73 @@ def test_map(column, map):
         if isinstance(value, dict):
             value = value[map]
         mapping[key] = value
-    expected = expected.map(mapping)
+    expected = expected.map(mapping).astype(expected_dtype)
     expected.name = map
     pd.testing.assert_series_equal(result, expected)
 
 
-def test_map_returns_categorical_dtype():
-
-    # See https://github.com/audeering/audformat/issues/317
-
-    # use scheme with labels
-
+@pytest.fixture(scope='function')
+def db_scheme_with_labels():
+    r"""Database with different scheme labels as dictionary."""
     db = audformat.testing.create_db(minimal=True)
-
+    db.name = 'db_scheme_with_labels'
     db.schemes['scheme'] = audformat.Scheme(
         labels={
-            'a': {'alias': 'A'},
-            'b': {'alias': 'B'},
-            'c': {'alias': 'C'},
+            'a': {
+                'bool': True,
+                'date': pd.to_datetime('2018-10-26'),
+                'float': 45.,
+                'int': 0,
+                'object': b'abc',
+                'str': 'A',
+                'time': pd.to_timedelta(300, unit='s'),
+            },
+            'b': {
+                'bool': False,
+                'date': pd.to_datetime('2018-10-27'),
+                'float': 67.,
+                'int': 0,
+                'object': 2,
+                'str': 'B',
+                'time': pd.to_timedelta(301, unit='s'),
+            },
+            'c': {
+                'bool': False,
+                'date': pd.to_datetime('2018-10-28'),
+                'float': 78.,
+                'int': 1,
+                'object': 'abc',
+                'str': 'C',
+                'time': pd.to_timedelta(302, unit='s'),
+            },
         },
     )
-
     db['table'] = audformat.Table(audformat.filewise_index(['f1', 'f2', 'f3']))
     db['table']['column'] = audformat.Column(scheme_id='scheme')
     db['table']['column'].set(['a', 'b', 'c'])
+    return db
 
-    y = db['table']['column'].get()
-    assert y.dtype == pd.Series(['a', 'b', 'c']).astype('category').dtype
 
-    y = db['table']['column'].get(map='alias')
-    assert y.dtype == pd.Series(['A', 'B', 'C']).astype('category').dtype
-
-    db.schemes['scheme'].replace_labels(  # set one label to None
-        {
-            'a': {'alias': 'A'},
-            'b': {'alias': 'B'},
-        }
-    )
-
-    y = db['table']['column'].get(map='alias')
-    assert y.dtype == pd.Series(['A', 'B']).astype('category').dtype
-
-    # repeat using a misc table
-
+@pytest.fixture(scope='function')
+def db_scheme_with_misc_table():
+    r"""Database with different scheme labels stored in misc table."""
     db = audformat.testing.create_db(minimal=True)
-
+    db.name = 'db_scheme_with_misc_table'
+    # Schemes
+    db.schemes['bool'] = audformat.Scheme('bool')
+    db.schemes['date'] = audformat.Scheme('date')
+    db.schemes['int-categories'] = audformat.Scheme(
+        'int',
+        labels={0: 'Berlin', 1: 'Gilching'},
+    )
+    db.schemes['float'] = audformat.Scheme('float', minimum=0)
+    db.schemes['str'] = audformat.Scheme('str')
+    db.schemes['str-categories'] = audformat.Scheme(
+        'str',
+        labels=['female', 'male'],
+    )
+    db.schemes['time'] = audformat.Scheme('time')
+    # Misc table
     db['misc'] = audformat.MiscTable(
         pd.Index(
             ['a', 'b', 'c'],
@@ -243,24 +265,280 @@ def test_map_returns_categorical_dtype():
             dtype='string',
         ),
     )
-    db['misc']['alias'] = audformat.Column()
-    db['misc']['alias'].set(['A', 'B', 'C'])
-
+    db['misc']['bool'] = audformat.Column(scheme_id='bool')
+    db['misc']['bool'].set([True, False, False])
+    db['misc']['date'] = audformat.Column(scheme_id='date')
+    db['misc']['date'].set(
+        [
+            pd.to_datetime('2018-10-26'),
+            pd.to_datetime('2018-10-27'),
+            pd.to_datetime('2018-10-28'),
+        ]
+    )
+    db['misc']['float'] = audformat.Column(scheme_id='float')
+    db['misc']['float'].set([45., 67., 78.])
+    db['misc']['int-categories'] = audformat.Column(scheme_id='int-categories')
+    db['misc']['int-categories'].set([0, 0, 1])
+    db['misc']['str'] = audformat.Column(scheme_id='str')
+    db['misc']['str'].set(['Jae', 'Joe', 'John'])
+    db['misc']['str-categories'] = audformat.Column(scheme_id='str-categories')
+    db['misc']['str-categories'].set(['female', 'male', 'male'])
+    db['misc']['str-without-scheme'] = audformat.Column()
+    db['misc']['str-without-scheme'].set(['A', 'B', 'C'])
+    db['misc']['time'] = audformat.Column(scheme_id='time')
+    db['misc']['time'].set(
+        [
+            pd.to_timedelta(300, unit='s'),
+            pd.to_timedelta(301, unit='s'),
+            pd.to_timedelta(302, unit='s'),
+        ]
+    )
+    # Scheme using misc table
     db.schemes['scheme'] = audformat.Scheme('str', labels='misc')
     db['table'] = audformat.Table(audformat.filewise_index(['f1', 'f2', 'f3']))
     db['table']['column'] = audformat.Column(scheme_id='scheme')
     db['table']['column'].set(['a', 'b', 'c'])
+    return db
 
-    y = db['table']['column'].get()
-    assert y.dtype == pd.Series(['a', 'b', 'c']).astype('category').dtype
 
-    y = db['table']['column'].get(map='alias')
-    assert y.dtype == pd.Series(['A', 'B', 'C']).astype('category').dtype
+@pytest.mark.parametrize(
+    'db, map, expected',
+    [
+        (
+            'db_scheme_with_labels',
+            None,
+            pd.Series(
+                ['a', 'b', 'c'],
+                index=audformat.filewise_index(['f1', 'f2', 'f3']),
+                name='column',
+                dtype=pd.CategoricalDtype(
+                    categories=['a', 'b', 'c'],
+                    ordered=False,
+                ),
+            ),
+        ),
+        (
+            'db_scheme_with_labels',
+            'str',
+            pd.Series(
+                ['A', 'B', 'C'],
+                index=audformat.filewise_index(['f1', 'f2', 'f3']),
+                name='str',
+                dtype='string',
+            ),
 
-    db['misc']['alias'].set(['A', 'B', None])  # set one label to None
+        ),
+        (
+            'db_scheme_with_labels',
+            'float',
+            pd.Series(
+                [45., 67., 78.],
+                index=audformat.filewise_index(['f1', 'f2', 'f3']),
+                name='float',
+                dtype='float',
+            ),
+        ),
+        (
+            'db_scheme_with_labels',
+            'int',
+            pd.Series(
+                [0, 0, 1],
+                index=audformat.filewise_index(['f1', 'f2', 'f3']),
+                name='int',
+                dtype='Int64',
+            ),
+        ),
+        (
+            'db_scheme_with_labels',
+            'object',
+            pd.Series(
+                [b'abc', 2, 'abc'],
+                index=audformat.filewise_index(['f1', 'f2', 'f3']),
+                name='object',
+                dtype='object',
+            ),
+        ),
+        (
+            'db_scheme_with_labels',
+            'date',
+            pd.Series(
+                [
+                    pd.to_datetime('2018-10-26'),
+                    pd.to_datetime('2018-10-27'),
+                    pd.to_datetime('2018-10-28'),
+                ],
+                index=audformat.filewise_index(['f1', 'f2', 'f3']),
+                name='date',
+                dtype='datetime64[ns]',
+            ),
+        ),
+        (
+            'db_scheme_with_labels',
+            'time',
+            pd.Series(
+                [
+                    pd.to_timedelta(300, unit='s'),
+                    pd.to_timedelta(301, unit='s'),
+                    pd.to_timedelta(302, unit='s'),
+                ],
+                index=audformat.filewise_index(['f1', 'f2', 'f3']),
+                name='time',
+                dtype='timedelta64[ns]',
+            ),
+        ),
+        (
+            'db_scheme_with_labels',
+            'bool',
+            pd.Series([True, False, False],
+                index=audformat.filewise_index(['f1', 'f2', 'f3']),
+                name='bool',
+                dtype='boolean',
+            ),
+        ),
+        (
+            'db_scheme_with_misc_table',
+            None,
+            pd.Series(
+                ['a', 'b', 'c'],
+                index=audformat.filewise_index(['f1', 'f2', 'f3']),
+                name='column',
+                dtype=pd.CategoricalDtype(
+                    categories=['a', 'b', 'c'],
+                    ordered=False,
+                ),
+            ),
+        ),
+        (
+            'db_scheme_with_misc_table',
+            'str-without-scheme',
+            pd.Series(
+                ['A', 'B', 'C'],
+                index=audformat.filewise_index(['f1', 'f2', 'f3']),
+                name='str-without-scheme',
+                dtype='string',
+            ),
+        ),
+        (
+            'db_scheme_with_misc_table',
+            'str-categories',
+            pd.Series(
+                ['female', 'male', 'male'],
+                index=audformat.filewise_index(['f1', 'f2', 'f3']),
+                name='str-categories',
+                dtype=pd.CategoricalDtype(
+                    categories=['female', 'male'],
+                    ordered=False,
+                ),
+            ),
+        ),
+        (
+            'db_scheme_with_misc_table',
+            'int-categories',
+            pd.Series(
+                [0, 0, 1],
+                index=audformat.filewise_index(['f1', 'f2', 'f3']),
+                name='int-categories',
+                dtype=pd.CategoricalDtype(
+                    categories=[0, 1],
+                    ordered=False,
+                ),
+            ),
+        ),
+        (
+            'db_scheme_with_misc_table',
+            'float',
+            pd.Series(
+                [45., 67., 78.],
+                index=audformat.filewise_index(['f1', 'f2', 'f3']),
+                name='float',
+                dtype='float',
+            ),
+        ),
+        (
+            'db_scheme_with_misc_table',
+            'str',
+            pd.Series(
+                ['Jae', 'Joe', 'John'],
+                index=audformat.filewise_index(['f1', 'f2', 'f3']),
+                name='str',
+                dtype='string',
+            ),
+        ),
+        (
+            'db_scheme_with_misc_table',
+            'date',
+            pd.Series(
+                [
+                    pd.to_datetime('2018-10-26'),
+                    pd.to_datetime('2018-10-27'),
+                    pd.to_datetime('2018-10-28'),
+                ],
+                index=audformat.filewise_index(['f1', 'f2', 'f3']),
+                name='date',
+                dtype='datetime64[ns]',
+            ),
+        ),
+        (
+            'db_scheme_with_misc_table',
+            'time',
+            pd.Series(
+                [
+                    pd.to_timedelta(300, unit='s'),
+                    pd.to_timedelta(301, unit='s'),
+                    pd.to_timedelta(302, unit='s'),
+                ],
+                index=audformat.filewise_index(['f1', 'f2', 'f3']),
+                name='time',
+                dtype='timedelta64[ns]',
+            ),
+        ),
+        (
+            'db_scheme_with_misc_table',
+            'bool',
+            pd.Series([True, False, False],
+                index=audformat.filewise_index(['f1', 'f2', 'f3']),
+                name='bool',
+                dtype='boolean',
+            ),
+        ),
+    ]
+)
+def test_map_dtypes(request, db, map, expected):
 
-    y = db['table']['column'].get(map='alias')
-    assert y.dtype == pd.Series(['A', 'B']).astype('category').dtype
+    db = request.getfixturevalue(db)
+    y = db['table']['column'].get(map=map)
+    pd.testing.assert_series_equal(y, expected)
+
+    # Change label entry and check that dtype stays the same
+    if map == 'str' and db.name == 'db_scheme_with_labels':
+        db.schemes['scheme'].replace_labels(
+            {
+                'a': {'str': 'A'},
+                'b': {'str': 'B'},
+            }
+        )
+        y = db['table']['column'].get(map=map)
+        expected = pd.Series(
+            ['A', 'B', None],
+            index=y.index,
+            name=map,
+            dtype='string',
+        )
+        pd.testing.assert_series_equal(y, expected)
+
+    elif (
+            map == 'str-without-scheme'
+            and db.name == 'db_scheme_with_misc_table'
+    ):
+        db['misc']['str-without-scheme'].set(['A', 'B', None])
+        y = db['table']['column'].get(map=map)
+        expected = pd.Series(
+            ['A', 'B', None],
+            index=y.index,
+            name=map,
+            dtype='string',
+        )
+        pd.testing.assert_series_equal(y, expected)
 
 
 @pytest.mark.parametrize(
