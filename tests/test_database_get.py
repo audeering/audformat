@@ -179,12 +179,24 @@ def stereo_db(tmpdir):
         (
             'mono_db',
             'non-existing',
-            pd.DataFrame([]),
+            pd.DataFrame(
+                {
+                    'non-existing': [],
+                },
+                index=audformat.filewise_index(),
+                dtype='object',
+            ),
         ),
         (
             'mono_db',
             'weather',
-            pd.DataFrame([]),
+            pd.DataFrame(
+                {
+                    'weather': [],
+                },
+                index=audformat.filewise_index(),
+                dtype='object',
+            ),
         ),
         (
             'mono_db',
@@ -357,7 +369,6 @@ def stereo_db(tmpdir):
 def test_database_get(request, db, schemes, expected):
     db = request.getfixturevalue(db)
     df = db.get(schemes)
-    print(f'{df=}')
     pd.testing.assert_frame_equal(df, expected)
 
 
@@ -808,8 +819,6 @@ def test_database_get_aggregate_and_modify_function(
         aggregate_function=aggregate_function,
         modify_function=modify_function,
     )
-    print(f'{df=}')
-    print(f'{expected=}')
     pd.testing.assert_frame_equal(df, expected)
 
 
@@ -825,7 +834,7 @@ def test_database_get_aggregate_and_modify_function(
                 {
                     'gender': [],
                 },
-                index=pd.Index([], dtype='string'),
+                index=audformat.filewise_index(),
                 dtype='string',
             ),
         ),
@@ -838,7 +847,7 @@ def test_database_get_aggregate_and_modify_function(
                 {
                     'gender': [],
                 },
-                index=pd.Index([], dtype='string'),
+                index=audformat.filewise_index(),
                 dtype='string',
             ),
         ),
@@ -851,7 +860,7 @@ def test_database_get_aggregate_and_modify_function(
                 {
                     'gender': [],
                 },
-                index=pd.Index([], dtype='string'),
+                index=audformat.filewise_index(),
                 dtype='string',
             ),
         ),
@@ -864,7 +873,7 @@ def test_database_get_aggregate_and_modify_function(
                 {
                     'gender': [],
                 },
-                index=pd.Index([], dtype='string'),
+                index=audformat.filewise_index(),
                 dtype='string',
             ),
         ),
@@ -877,7 +886,7 @@ def test_database_get_aggregate_and_modify_function(
                 {
                     'gender': [],
                 },
-                index=pd.Index([], dtype='string'),
+                index=audformat.filewise_index(),
                 dtype='string',
             ),
         ),
@@ -890,13 +899,13 @@ def test_database_get_aggregate_and_modify_function(
                 [
                     pd.Series(
                         [],
-                        index=pd.Index([], dtype='string'),
+                        index=audformat.filewise_index(),
                         dtype='string',
                         name='gender',
                     ),
                     pd.Series(
                         [],
-                        index=pd.Index([], dtype='string'),
+                        index=audformat.filewise_index(),
                         dtype='object',
                         name='sex',
                     ),
@@ -913,7 +922,7 @@ def test_database_get_aggregate_and_modify_function(
                 {
                     'gender': [],
                 },
-                index=pd.Index([], dtype='string'),
+                index=audformat.filewise_index(),
                 dtype='string',
             ),
         ),
@@ -926,7 +935,7 @@ def test_database_get_aggregate_and_modify_function(
                 {
                     'gender': [],
                 },
-                index=pd.Index([], dtype='string'),
+                index=audformat.filewise_index(),
                 dtype='string',
             ),
         ),
@@ -1089,7 +1098,13 @@ def test_database_get_limit_search(
             'mono_db',
             'sex',
             True,
-            pd.DataFrame(),
+            pd.DataFrame(
+                {
+                    'sex': [],
+                },
+                index=audformat.filewise_index(),
+                dtype='object',
+            ),
         ),
         (
             'mono_db',
@@ -1118,19 +1133,40 @@ def test_database_get_limit_search(
             'mono_db',
             'year',
             True,
-            pd.DataFrame(),
+            pd.DataFrame(
+                {
+                    'year': [],
+                },
+                index=audformat.filewise_index(),
+                dtype='object',
+            ),
         ),
         (
             'mono_db',
             ['sex', 'year'],
             True,
-            pd.DataFrame(),
+            pd.DataFrame(
+                {
+                    'sex': [],
+                    'year': [],
+                },
+                index=audformat.filewise_index(),
+                dtype='object',
+            ),
         ),
         (
             'mono_db',
             ['gender', 'sex', 'year'],
             True,
-            pd.DataFrame(),
+            pd.DataFrame(
+                {
+                    'gender': [],
+                    'sex': [],
+                    'year': [],
+                },
+                index=audformat.filewise_index(),
+                dtype='object',
+            ),
         ),
     ]
 )

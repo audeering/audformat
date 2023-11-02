@@ -601,7 +601,7 @@ class Database(HeaderBase):
             f2       0.7 25
             >>> db.get(['rating', 'age'], strict=True)
             Empty DataFrame
-            Columns: []
+            Columns: [rating, age]
             Index: []
 
             If more then one value exists
@@ -795,7 +795,12 @@ class Database(HeaderBase):
         ).loc[index]
 
         if len(obj) == 0:
-            obj = pd.DataFrame()
+            obj = pd.DataFrame(
+                [],
+                index=filewise_index(),
+                columns=requested_schemes,
+                dtype='object',
+            )
 
         if isinstance(obj, pd.Series):
             obj = obj.to_frame()
@@ -843,6 +848,9 @@ class Database(HeaderBase):
                     obj = obj.set_index(index)
             else:
                 obj = obj.loc[index]
+
+        if len(obj) == 0:
+            obj.index = filewise_index()
 
         return obj
 
