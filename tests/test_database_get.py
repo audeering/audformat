@@ -257,6 +257,12 @@ def stereo_db(tmpdir):
                         dtype='object',
                         name='sex',
                     ),
+                    pd.Series(
+                        [],
+                        index=audformat.filewise_index(),
+                        dtype='object',
+                        name='non-existing',
+                    ),
                 ],
                 axis=1,
             ),
