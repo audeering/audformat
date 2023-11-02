@@ -140,8 +140,8 @@ def stereo_db(tmpdir):
     index = pd.Index(['s1', 's2', 's3'], name='speaker', dtype='string')
     db['speaker'] = audformat.MiscTable(index)
     db['speaker']['age'] = audformat.Column(scheme_id='age')
-    db['speaker']['gender'] = audformat.Column()
     db['speaker']['age'].set([23, np.NaN, 59])
+    db['speaker']['gender'] = audformat.Column()
     db['speaker']['gender'].set(['female', '', 'male'])
 
     # --- Schemes with misc tables
@@ -165,7 +165,7 @@ def stereo_db(tmpdir):
     db['run3']['channel0'] = audformat.Column(scheme_id='speaker')
     db['run3']['channel1'] = audformat.Column(scheme_id='speaker')
     db['run3']['channel0'].set(['s2', 's1', 's3'])
-    db['run3']['channel1'].set(['s2', 's1', 's3'])
+    db['run3']['channel1'].set(['s2', 's2', 's3'])
 
     db.save(path)
     audformat.testing.create_audio_files(db, channels=2, file_duration='1s')
@@ -196,10 +196,7 @@ def stereo_db(tmpdir):
                 index=audformat.filewise_index(
                     ['f1.wav', 'f2.wav', 'f3.wav']
                 ),
-                dtype=pd.CategoricalDtype(
-                    categories=['female', '', 'male'],
-                    ordered=False,
-                ),
+                dtype='string',
             ),
         ),
         (
@@ -220,10 +217,7 @@ def stereo_db(tmpdir):
                         index=audformat.filewise_index(
                             ['f1.wav', 'f2.wav', 'f3.wav']
                         ),
-                        dtype=pd.CategoricalDtype(
-                            categories=['female', '', 'male'],
-                            ordered=False,
-                        ),
+                        dtype='string',
                         name='gender',
                     ),
                 ],
@@ -240,10 +234,7 @@ def stereo_db(tmpdir):
                         index=audformat.filewise_index(
                             ['f1.wav', 'f2.wav', 'f3.wav']
                         ),
-                        dtype=pd.CategoricalDtype(
-                            categories=['female', '', 'male'],
-                            ordered=False,
-                        ),
+                        dtype='string',
                         name='gender',
                     ),
                     pd.Series(
@@ -302,10 +293,7 @@ def stereo_db(tmpdir):
                         ),
                     ]
                 ),
-                dtype=pd.CategoricalDtype(
-                    [1995, 1996, 1997],
-                    ordered=False,
-                ),
+                dtype='Int64',
             ),
         ),
         (
@@ -348,11 +336,28 @@ def stereo_db(tmpdir):
                 dtype='float',
             ),
         ),
+        (
+            'mono_db',
+            'selection',
+            pd.DataFrame(
+                {
+                    'selection': [1, 1, 1],
+                },
+                index=audformat.filewise_index(
+                    ['f1.wav', 'f2.wav', 'f3.wav']
+                ),
+                dtype=pd.CategoricalDtype(
+                    [1, 0],
+                    ordered=False,
+                ),
+            ),
+        ),
     ]
 )
 def test_database_get(request, db, schemes, expected):
     db = request.getfixturevalue(db)
     df = db.get(schemes)
+    print(f'{df=}')
     pd.testing.assert_frame_equal(df, expected)
 
 
@@ -387,11 +392,7 @@ def rename_sex_to_gender(y, *args):
     if y.name == 'sex':
         y.name = 'gender'
         # Make sure it uses the correct dtype as well
-        dtype = pd.CategoricalDtype(
-            categories=['female', '', 'male'],
-            ordered=False,
-        )
-        y = y.astype(dtype)
+        y = y.astype('string')
     return y
 
 def rename_sex_to_gender_without_dtype_adjustment(y, *args):
@@ -453,10 +454,7 @@ def select_table(y, db, table_id, column_id, label_id, table):
                 index=audformat.filewise_index(
                     ['f1.wav', 'f2.wav', 'f3.wav']
                 ),
-                dtype=pd.CategoricalDtype(
-                    categories=[23.0, 59.0, 25.0, 34.0, 45.0],
-                    ordered=False,
-                ),
+                dtype='Int64',
             ),
         ),
         (
@@ -474,10 +472,7 @@ def select_table(y, db, table_id, column_id, label_id, table):
                 index=audformat.filewise_index(
                     ['f1.wav', 'f2.wav', 'f3.wav']
                 ),
-                dtype=pd.CategoricalDtype(
-                    categories=[23.0, 59.0, 25.0, 34.0, 45.0],
-                    ordered=False,
-                ),
+                dtype='Int64',
             ),
         ),
         (
@@ -499,10 +494,7 @@ def select_table(y, db, table_id, column_id, label_id, table):
                 index=audformat.filewise_index(
                     ['f1.wav', 'f2.wav', 'f3.wav']
                 ),
-                dtype=pd.CategoricalDtype(
-                    categories=[23.0, 59.0, 25.0, 34.0, 45.0],
-                    ordered=False,
-                ),
+                dtype='Int64',
             ),
         ),
 
@@ -529,10 +521,7 @@ def select_table(y, db, table_id, column_id, label_id, table):
                 index=audformat.filewise_index(
                     ['f1.wav', 'f2.wav', 'f3.wav']
                 ),
-                dtype=pd.CategoricalDtype(
-                    categories=[1.12, 1.45, 1.01, 1.76, 1.95, 1.8],
-                    ordered=False,
-                ),
+                dtype='float',
             ),
         ),
 
@@ -622,10 +611,7 @@ def select_table(y, db, table_id, column_id, label_id, table):
                 index=audformat.filewise_index(
                     ['f1.wav', 'f2.wav', 'f3.wav']
                 ),
-                dtype=pd.CategoricalDtype(
-                    categories=['female', '', 'male'],
-                    ordered=False,
-                ),
+                dtype='string',
             ),
         ),
         pytest.param(
@@ -657,10 +643,7 @@ def select_table(y, db, table_id, column_id, label_id, table):
                 index=audformat.filewise_index(
                     ['f1.wav', 'f2.wav', 'f3.wav']
                 ),
-                dtype=pd.CategoricalDtype(
-                    categories=['female', '', 'male'],
-                    ordered=False,
-                ),
+                dtype='string',
             ),
         ),
         (
@@ -682,10 +665,7 @@ def select_table(y, db, table_id, column_id, label_id, table):
                 index=audformat.filewise_index(
                     ['f1.wav', 'f3.wav', 'f2.wav']
                 ),
-                dtype=pd.CategoricalDtype(
-                    categories=['female', '', 'male'],
-                    ordered=False,
-                ),
+                dtype='string',
             ),
         ),
 
@@ -701,12 +681,12 @@ def select_table(y, db, table_id, column_id, label_id, table):
         # | run2  | channel0 | ['female', '',       'male'] |
         # | run2  | channel1 | ['female', '',       'male'] |
         # | run3  | channel0 | ['',       'female', 'male'] |
-        # | run3  | channel1 | ['female', 'female', 'male'] |
+        # | run3  | channel1 | ['',       '',       'male'] |
         #
         (
             # maxvote
             #
-            # gender: ['female', 'female', 'male']
+            # gender: ['female', '', 'male']
             #
             'stereo_db',
             'gender',
@@ -714,15 +694,12 @@ def select_table(y, db, table_id, column_id, label_id, table):
             None,
             pd.DataFrame(
                 {
-                    'gender': ['female', 'female', 'male'],
+                    'gender': ['female', '', 'male'],
                 },
                 index=audformat.filewise_index(
                     ['f1.wav', 'f2.wav', 'f3.wav']
                 ),
-                dtype=pd.CategoricalDtype(
-                    categories=['female', '', 'male'],
-                    ordered=False,
-                ),
+                dtype='string',
             ),
         ),
         (
@@ -733,7 +710,7 @@ def select_table(y, db, table_id, column_id, label_id, table):
             # gender-run2-channel0: ['female', '', 'male']
             # gender-run2-channel1: ['female', '', 'male']
             # gender-run3-channel0: ['', 'female', 'male']
-            # gender-run3-channel1: ['', 'female', 'male']
+            # gender-run3-channel1: ['', '', 'male']
             #
             'stereo_db',
             'gender',
@@ -746,15 +723,12 @@ def select_table(y, db, table_id, column_id, label_id, table):
                     'gender-run2-channel0': ['female', '', 'male'],
                     'gender-run2-channel1': ['female', '', 'male'],
                     'gender-run3-channel0': ['', 'female', 'male'],
-                    'gender-run3-channel1': ['', 'female', 'male'],
+                    'gender-run3-channel1': ['', '', 'male'],
                 },
                 index=audformat.filewise_index(
                     ['f1.wav', 'f2.wav', 'f3.wav']
                 ),
-                dtype=pd.CategoricalDtype(
-                    categories=['female', '', 'male'],
-                    ordered=False,
-                ),
+                dtype='string',
             ),
         ),
         pytest.param(
@@ -791,10 +765,7 @@ def select_table(y, db, table_id, column_id, label_id, table):
                 index=audformat.filewise_index(
                     ['f1.wav', 'f2.wav', 'f3.wav']
                 ),
-                dtype=pd.CategoricalDtype(
-                    categories=['female', '', 'male'],
-                    ordered=False,
-                ),
+                dtype='string',
             ),
         ),
         (
@@ -817,10 +788,7 @@ def select_table(y, db, table_id, column_id, label_id, table):
                 index=audformat.filewise_index(
                     ['f1.wav', 'f2.wav', 'f3.wav']
                 ),
-                dtype=pd.CategoricalDtype(
-                    categories=['female', '', 'male'],
-                    ordered=False,
-                ),
+                dtype='string',
             ),
         ),
 
@@ -840,6 +808,8 @@ def test_database_get_aggregate_and_modify_function(
         aggregate_function=aggregate_function,
         modify_function=modify_function,
     )
+    print(f'{df=}')
+    print(f'{expected=}')
     pd.testing.assert_frame_equal(df, expected)
 
 
@@ -856,10 +826,7 @@ def test_database_get_aggregate_and_modify_function(
                     'gender': [],
                 },
                 index=pd.Index([], dtype='string'),
-                dtype=pd.CategoricalDtype(
-                    categories=['female', '', 'male'],
-                    ordered=False,
-                ),
+                dtype='string',
             ),
         ),
         (
@@ -872,10 +839,7 @@ def test_database_get_aggregate_and_modify_function(
                     'gender': [],
                 },
                 index=pd.Index([], dtype='string'),
-                dtype=pd.CategoricalDtype(
-                    categories=['female', '', 'male'],
-                    ordered=False,
-                ),
+                dtype='string',
             ),
         ),
         (
@@ -888,10 +852,7 @@ def test_database_get_aggregate_and_modify_function(
                     'gender': [],
                 },
                 index=pd.Index([], dtype='string'),
-                dtype=pd.CategoricalDtype(
-                    categories=['female', '', 'male'],
-                    ordered=False,
-                ),
+                dtype='string',
             ),
         ),
         (
@@ -904,10 +865,7 @@ def test_database_get_aggregate_and_modify_function(
                     'gender': [],
                 },
                 index=pd.Index([], dtype='string'),
-                dtype=pd.CategoricalDtype(
-                    categories=['female', '', 'male'],
-                    ordered=False,
-                ),
+                dtype='string',
             ),
         ),
         (
@@ -920,10 +878,7 @@ def test_database_get_aggregate_and_modify_function(
                     'gender': [],
                 },
                 index=pd.Index([], dtype='string'),
-                dtype=pd.CategoricalDtype(
-                    categories=['female', '', 'male'],
-                    ordered=False,
-                ),
+                dtype='string',
             ),
         ),
         (
@@ -936,10 +891,7 @@ def test_database_get_aggregate_and_modify_function(
                     pd.Series(
                         [],
                         index=pd.Index([], dtype='string'),
-                        dtype=pd.CategoricalDtype(
-                            categories=['female', '', 'male'],
-                            ordered=False,
-                        ),
+                        dtype='string',
                         name='gender',
                     ),
                     pd.Series(
@@ -962,10 +914,7 @@ def test_database_get_aggregate_and_modify_function(
                     'gender': [],
                 },
                 index=pd.Index([], dtype='string'),
-                dtype=pd.CategoricalDtype(
-                    categories=['female', '', 'male'],
-                    ordered=False,
-                ),
+                dtype='string',
             ),
         ),
         (
@@ -978,10 +927,7 @@ def test_database_get_aggregate_and_modify_function(
                     'gender': [],
                 },
                 index=pd.Index([], dtype='string'),
-                dtype=pd.CategoricalDtype(
-                    categories=['female', '', 'male'],
-                    ordered=False,
-                ),
+                dtype='string',
             ),
         ),
         (
@@ -994,10 +940,7 @@ def test_database_get_aggregate_and_modify_function(
                     'gender': ['female', 'male'],
                 },
                 index=audformat.filewise_index(['f1.wav', 'f3.wav']),
-                dtype=pd.CategoricalDtype(
-                    categories=['female', '', 'male'],
-                    ordered=False,
-                ),
+                dtype='string',
             ),
         ),
         (
@@ -1168,10 +1111,7 @@ def test_database_get_limit_search(
                         ),
                     ]
                 ),
-                dtype=pd.CategoricalDtype(
-                    [1995, 1996, 1997],
-                    ordered=False,
-                ),
+                dtype='Int64',
             ),
         ),
         (
@@ -1209,10 +1149,10 @@ def test_database_get_strict(request, db, schemes, strict, expected):
             ValueError,
             (
                 "Found overlapping data in column 'age':\n"
-                "        left right\n"
-                "file              \n"
-                "f1.wav  23.0  25.0\n"
-                "f3.wav  59.0  45.0"
+                "        left  right\n"
+                "file               \n"
+                "f1.wav    23     25\n"
+                "f3.wav    59     45"
             ),
         ),
         (
@@ -1221,11 +1161,11 @@ def test_database_get_strict(request, db, schemes, strict, expected):
             ValueError,
             (
                 "Found overlapping data in column 'height':\n"
-                "        left right\n"
-                "file              \n"
-                "f1.wav  1.12  1.76\n"
-                "f2.wav  1.45  1.95\n"
-                "f3.wav  1.01  1.80"
+                "        left  right\n"
+                "file               \n"
+                "f1.wav  1.12   1.76\n"
+                "f2.wav  1.45   1.95\n"
+                "f3.wav  1.01   1.80"
             ),
         ),
         (
@@ -1233,12 +1173,6 @@ def test_database_get_strict(request, db, schemes, strict, expected):
             'weight',
             TypeError,
             "dtype of categories must be the same",
-        ),
-        (
-            'mono_db',
-            'selection',
-            ValueError,
-            "All categorical data must have the same dtype."
         ),
     ]
 )

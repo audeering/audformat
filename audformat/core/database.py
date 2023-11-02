@@ -765,8 +765,11 @@ class Database(HeaderBase):
             ]
             if len(categorical_dtypes) > 0:
                 if len(set(dtypes_of_categories)) > 1:
-                    raise ValueError(
-                        'All categorical data must have the same dtype.'
+                    # Don't know if this can ever be triggered,
+                    # but make sure we raise the same error as
+                    # pd.api.types.union_categoricals
+                    raise TypeError(  # pragma: nocover
+                        'dtype of categories must be the same'
                     )
                 dtype = dtypes_of_categories[0]
                 # Convert everything to categorical data
