@@ -458,12 +458,11 @@ class Database(HeaderBase):
         r"""Get labels by scheme.
 
         Return all labels
-        that match the requested scheme.
-        The request can be limited to selected tables
-        and/or splits
-        and annotated by additional schemes
+        that match the requested ``scheme``.
+        The request can be limited to selected ``tables``
+        and/or ``splits``
+        and annotated by ``additional_schemes``
         drawn from the whole database.
-
         If ``strict`` is ``False``,
         a scheme is defined more broadly
         and does not only match
@@ -471,10 +470,8 @@ class Database(HeaderBase):
         but also columns with the same name
         or labels of a scheme
         with the requested name as key.
-
         If at least one returned label belongs to a segmented table,
         the returned data frame has a segmented index.
-
         An ``aggregate_function`` can be provided
         that specifies how values are combined
         if more than one value is returned
@@ -496,8 +493,8 @@ class Database(HeaderBase):
                 are returned,
                 but also values
                 from columns with a column ID matchting the scheme
-                and values from from scheme labels,
-                if for matching dictionary keys
+                and values from scheme labels,
+                for matching dictionary keys
             original_column_names: if ``True``
                 return the requested labels
                 under their original column names.
