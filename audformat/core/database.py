@@ -448,10 +448,14 @@ class Database(HeaderBase):
                 typing.Any
             ] = None,
     ) -> pd.DataFrame:
-        r"""Get labels by scheme(s).
+        r"""Get labels by scheme.
 
         Return all labels
-        that match the requested schemes.
+        that match the requested scheme.
+        The request can be limited to selected tables
+        and/or splits
+        and annotated by additional schemes
+        drawn from the whole database.
 
         If ``strict`` is ``False``,
         a scheme is defined more broadly
@@ -478,8 +482,8 @@ class Database(HeaderBase):
                 for which additional labels should be returned.
                 The search is not affected
                 by the ``tables`` and ``splits`` arguments
-            tables: limit returned samples to selected tables
-            splits: limit returned samples to selected splits
+            tables: limit search for ``scheme`` to selected tables
+            splits: limit search for ``scheme`` to selected splits
             strict: if ``False``
                 not only values with the associated scheme(s)
                 are returned,
