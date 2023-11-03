@@ -442,13 +442,10 @@ class Database(HeaderBase):
             tables: typing.Union[str, typing.Sequence] = None,
             splits: typing.Union[str, typing.Sequence] = None,
             strict: bool = False,
+            original_column_names: bool = False,
             aggregate_function: typing.Callable[
                 [pd.Series],
                 typing.Any
-            ] = None,
-            modify_function: typing.Callable[
-                [pd.Series, 'Database', str, str],
-                pd.Series
             ] = None,
     ) -> pd.DataFrame:
         r"""Get labels by scheme(s).
@@ -472,9 +469,6 @@ class Database(HeaderBase):
         if more than one value is returned
         per index entry.
 
-        An ``modify_function`` can be provided
-        that modifies how the labels are stored.
-
         Args:
             scheme: scheme ID for which labels should be returned.
                 The search for the labels
@@ -493,6 +487,13 @@ class Database(HeaderBase):
                 from columns with a column ID matchting the scheme
                 and values from from scheme labels,
                 if for matching dictionary keys
+            original_column_names: if ``True``
+                return the requested labels
+                under their original column names.
+                For mapped schemes,
+                the column name before mapping is returned,
+                e.g. when requesting ``'gender'``
+                it might return a column named ``'speaker'``
             aggregate_function: callable to aggregate overlapping values.
                 The function gets a :class:`pandas.Series`
                 with overlapping values
@@ -503,19 +504,6 @@ class Database(HeaderBase):
                 or to
                 ``tuple``
                 to return them as a tuple
-            modify_function: callable to handle collection of values.
-                The first argument of the function
-                is the incoming :class:`pandas.Series`
-                matching the requested scheme(s).
-                In addition,
-                the corresponding :class:`audformat.Database`,
-                ``table_id``,
-                ``column_id``,
-                and ``label_id``
-                (name of the key when storing labels as dictionaries,
-                or column when storing labels in a misc table)
-                are its arguments.
-                It has to return the modifided series.
 
         Returns:
             data frame with values
@@ -640,21 +628,7 @@ class Database(HeaderBase):
             f2       0.8
 
             Alternatively,
-            use ``modify_function``
-            to select a particular run
-            to limit the number of values.
-
-            >>> def select_run1(y, db, table_id, column_id, label_id):
-            ...     if table_id != 'run1':
-            ...         y = y[0:0]
-            ...     return y
-            >>> db.get('rating', modify_function=select_run1)
-                 rating
-            file
-            f1       0.0
-            f2       0.9
-
-            Use ``modify_function`` to return column IDs.
+            use ``original_column_names`` to return column IDs.
 
             >>> db = Database('mydb')
             >>> db.schemes['rating'] = Scheme('float')
@@ -663,10 +637,7 @@ class Database(HeaderBase):
             >>> db['run1']['rater1'].set([0.0, 0.9])
             >>> db['run1']['rater2'] = Column(scheme_id='rating')
             >>> db['run1']['rater2'].set([0.2, 0.7])
-            >>> def column_names(y, db, table_id, column_id, label_id):
-            ...     y.name = column_id
-            ...     return y
-            >>> db.get('rating', modify_function=column_names)
+            >>> db.get('rating', original_column_names=True)
                  rater1   rater2
             file
             f1       0.0      0.2
@@ -680,11 +651,10 @@ class Database(HeaderBase):
                 table_id,
                 column_id,
                 label_id,
-                modify_function,
         ):
             if y is not None:
-                if modify_function is not None:
-                    y = modify_function(y, self, table_id, column_id, label_id)
+                if original_column_names:
+                    y.name = column_id
                 ys.append(y)
 
         def scheme_in_column(scheme_id, column, column_id):
@@ -758,7 +728,6 @@ class Database(HeaderBase):
                         table_id,
                         column_id,
                         None,
-                        modify_function,
                     )
                 # Get series based on label of scheme
                 else:
@@ -772,7 +741,6 @@ class Database(HeaderBase):
                                 table_id,
                                 column_id,
                                 mapping,
-                                modify_function,
                             )
 
         # Ensure we have a common dtype for requested scheme
@@ -832,8 +800,8 @@ class Database(HeaderBase):
             obj = self.get(
                 scheme,
                 strict=strict,
+                original_column_names=original_column_names,
                 aggregate_function=aggregate_function,
-                modify_function=modify_function,
             )
             objs.append(obj)
         if len(objs) > 1:
