@@ -485,7 +485,7 @@ class Database(HeaderBase):
                 The search for the labels
                 can be limited
                 by the ``tables`` and ``splits`` arguments
-            additional_schemes: scheme ID or sequence of scheme ID
+            additional_schemes: scheme ID or sequence of scheme IDs
                 for which additional labels should be returned.
                 The search is not affected
                 by the ``tables`` and ``splits`` arguments
