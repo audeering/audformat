@@ -458,11 +458,15 @@ class Database(HeaderBase):
         r"""Get labels by scheme.
 
         Return all labels
-        that match the requested ``scheme``.
-        The request can be limited to selected ``tables``
-        and/or ``splits``
-        and annotated by ``additional_schemes``
-        drawn from the whole database.
+        from columns assigned to a 
+        :class:`audformat.Scheme`
+        with name ``scheme``.
+        The request can be limited to specific ``tables``
+        and/or ``splits``.
+        By providing ``additional_schemes``
+        the result can be enriched
+        with labels from other schemes
+        (searched in all tables).
         If ``strict`` is ``False``,
         a scheme is defined more broadly
         and does not only match
@@ -474,14 +478,16 @@ class Database(HeaderBase):
         the returned data frame has a segmented index.
         An ``aggregate_function`` can be provided
         that specifies how values are combined
-        if more than one value is returned
-        per index entry.
+        if more than one value is found
+        for the same file or segment.
 
         Args:
             scheme: scheme ID for which labels should be returned.
-                The search for the labels
-                can be limited
-                by the ``tables`` and ``splits`` arguments
+                The search can be restricted to specific tables and splits
+                by the ``tables`` and ``splits`` arguments.
+                Or extended to columns with that same name
+                or the name of a label in the scheme
+                using the `strict` argument
             additional_schemes: scheme ID or sequence of scheme IDs
                 for which additional labels should be returned.
                 The search is not affected
@@ -489,15 +495,12 @@ class Database(HeaderBase):
             tables: limit search for ``scheme`` to selected tables
             splits: limit search for ``scheme`` to selected splits
             strict: if ``False``
-                not only values with the associated scheme(s)
-                are returned,
-                but also values
-                from columns with a column ID matchting the scheme
-                and values from scheme labels,
-                for matching dictionary keys
+                the search is extended to columns
+                that match the name of the scheme
+                or the name of a label in the scheme
             original_column_names: if ``True``
-                return the requested labels
-                under their original column names.
+                keep the original column names
+                (possibly results in multiple columns).
                 For mapped schemes,
                 the column name before mapping is returned,
                 e.g. when requesting ``'gender'``
