@@ -534,91 +534,91 @@ class Database(HeaderBase):
         Examples:
             Return all labels that match a requested scheme.
 
-            >>> db = Database('mydb')
-            >>> db.schemes['rating'] = Scheme('float')
-            >>> db.schemes['confidence'] = Scheme('float')
-            >>> db.splits['train'] = Split('train')
-            >>> db.splits['test'] = Split('test')
-            >>> db['run1'] = Table(filewise_index(['f1', 'f2']), split_id='train')
-            >>> db['run1']['rating'] = Column(scheme_id='rating')
-            >>> db['run1']['rating'].set([0.0, 0.9])
-            >>> db['run1']['confidence'] = Column(scheme_id='confidence')
-            >>> db['run1']['confidence'].set([1, 1])
-            >>> db['run2'] = Table(filewise_index(['f3']), split_id='test')
-            >>> db['run2']['rating'] = Column(scheme_id='rating')
-            >>> db['run2']['rating'].set([0.7])
-            >>> db['run2']['confidence'] = Column(scheme_id='confidence')
-            >>> db['run2']['confidence'].set([1])
-            >>> db.get('rating')
-                 rating
+            >>> import audb
+            >>> db = audb.load(
+            ...     'emodb',
+            ...     version='1.4.1',
+            ...     only_metadata=True,
+            ...     full_path=False,
+            ...     verbose=False
+            ... )
+            >>> db.get('emotion').head()
+                               emotion
             file
-            f1       0.0
-            f2       0.9
-            f3       0.7
-            >>> db.get('rating', ['confidence'])
-                 rating confidence
+            wav/03a01Fa.wav  happiness
+            wav/03a01Nc.wav    neutral
+            wav/03a01Wa.wav      anger
+            wav/03a02Fc.wav  happiness
+            wav/03a02Nc.wav    neutral
+            >>> db.get('emotion', ['gender']).head()
+                               emotion gender
             file
-            f1       0.0        1.0
-            f2       0.9        1.0
-            f3       0.7        1.0
+            wav/03a01Fa.wav  happiness   male
+            wav/03a01Nc.wav    neutral   male
+            wav/03a01Wa.wav      anger   male
+            wav/03a02Fc.wav  happiness   male
+            wav/03a02Nc.wav    neutral   male
 
             Non-existent schemes are ignored.
 
-            >>> db.get('rating', ['rater'])
-                 rating  rater
+            >>> db.get('emotion', ['non-existing']).head()
+                   emotion non-existing
             file
-            f1       0.0   NaN
-            f2       0.9   NaN
-            f3       0.7   NaN
+            wav/03a01Fa.wav  happiness          NaN
+            wav/03a01Nc.wav    neutral          NaN
+            wav/03a01Wa.wav      anger          NaN
+            wav/03a02Fc.wav  happiness          NaN
+            wav/03a02Nc.wav    neutral          NaN
 
             Limit to a particular table or split.
 
-            >>> db.get('rating', tables=['run1'])
-                 rating
+            >>> db.get('emotion', tables=['emotion.categories.train.gold_standard']).head()
+                               emotion
             file
-            f1       0.0
-            f2       0.9
-            >>> db.get('rating', splits=['test'])
-                 rating
+            wav/03a01Fa.wav  happiness
+            wav/03a01Nc.wav    neutral
+            wav/03a01Wa.wav      anger
+            wav/03a02Fc.wav  happiness
+            wav/03a02Nc.wav    neutral
+            >>> db.get('emotion', splits=['test']).head()
+                               emotion
             file
-            f3       0.7
+            wav/12a01Fb.wav  happiness
+            wav/12a01Lb.wav    boredom
+            wav/12a01Nb.wav    neutral
+            wav/12a01Wc.wav      anger
+            wav/12a02Ac.wav       fear
 
-            Return scheme name if column ID is different from scheme.
+            Return requested scheme name independent of column ID.
 
-            >>> db = Database('mydb')
-            >>> db.schemes['rating'] = Scheme('float')
-            >>> db['run1'] = Table(filewise_index(['f1', 'f2']))
-            >>> db['run1']['rater1'] = Column(scheme_id='rating')
-            >>> db['run1']['rater1'].set([0.0, 0.9])
-            >>> db['run2'] = Table(filewise_index(['f3']))
-            >>> db['run2']['rater1'] = Column(scheme_id='rating')
-            >>> db['run2']['rater1'].set([0.7])
-            >>> db.get('rating')
-                 rating
+            >>> db['emotion'].columns
+            emotion:
+              {scheme_id: emotion, rater_id: gold}
+            emotion.confidence:
+              {scheme_id: confidence, rater_id: gold}
+            >>> db.get('confidence').head()
+                             confidence
             file
-            f1       0.0
-            f2       0.9
-            f3       0.7
+            wav/03a01Fa.wav        0.90
+            wav/03a01Nc.wav        1.00
+            wav/03a01Wa.wav        0.95
+            wav/03a02Fc.wav        0.85
+            wav/03a02Nc.wav        1.00
 
             If ``strict`` is ``True``
             only values that have an attached scheme are returned.
 
-            >>> db = Database('mydb')
-            >>> speakers = {'s1': {'age': 23}, 's2': {'age': 25}}
-            >>> db.schemes['speaker'] = Scheme(labels=speakers)
-            >>> db['files'] = Table(filewise_index(['f1', 'f2']))
-            >>> db['files']['speaker'] = Column(scheme_id='speaker')
-            >>> db['files']['speaker'].set(['s1', 's2'])
-            >>> db['files']['rating'] = Column()
-            >>> db['files']['rating'].set([0.2, 0.7])
-            >>> db.get('rating', ['age'])
-                 rating age
+            >>> db.get('emotion.confidence').head()
+                             emotion.confidence
             file
-            f1       0.2 23
-            f2       0.7 25
-            >>> db.get('rating', ['age'], strict=True)
+            wav/03a01Fa.wav                0.90
+            wav/03a01Nc.wav                1.00
+            wav/03a01Wa.wav                0.95
+            wav/03a02Fc.wav                0.85
+            wav/03a02Nc.wav                1.00
+            >>> db.get('emotion.confidence', strict=True).head()
             Empty DataFrame
-            Columns: [rating, age]
+            Columns: [emotion.confidence]
             Index: []
 
             If more then one value exists
@@ -628,43 +628,42 @@ class Database(HeaderBase):
             and ``aggregate_function`` can be used
             to combine the values.
 
-            >>> db = Database('mydb')
-            >>> db.schemes['rating'] = Scheme('float')
-            >>> db['run1'] = Table(filewise_index(['f1', 'f2']))
-            >>> db['run1']['rating'] = Column(scheme_id='rating')
-            >>> db['run1']['rating'].set([0.0, 0.9])
-            >>> db['run2'] = Table(filewise_index(['f1', 'f2']))
-            >>> db['run2']['rating'] = Column(scheme_id='rating')
-            >>> db['run2']['rating'].set([0.2, 0.7])
-            >>> db.get('rating')
+            >>> # Add a shuffled version of emotion ratings as `random` column
+            >>> db['emotion']['random'] = Column(scheme_id='emotion')
+            >>> db['emotion']['random'].set(
+            ...     db['emotion']['emotion'].get().sample(frac=1, random_state=1)
+            ... )
+            >>> db.get('emotion')
             Traceback (most recent call last):
                 ...
-            ValueError: Found overlapping data in column 'rating':
-                  left  right
+            ValueError: Found overlapping data in column 'emotion':
+                                  left    right
             file
-            f1     0.0    0.2
-            f2     0.9    0.7
-            >>> db.get('rating', aggregate_function=lambda y: y.mean())
-                 rating
-            file
-            f1       0.1
-            f2       0.8
+            wav/03a01Nc.wav    neutral  disgust
+            wav/03a01Wa.wav      anger  neutral
+            wav/03a02Fc.wav  happiness  neutral
+            wav/03a02Ta.wav    sadness  boredom
+            wav/03a02Wb.wav      anger  sadness
+            wav/03a04Ad.wav       fear  neutral
+            wav/03a04Fd.wav  happiness    anger
+            wav/03a04Nc.wav    neutral  sadness
+            wav/03a04Wc.wav      anger  boredom
+            wav/03a05Aa.wav       fear  sadness
+            ...
+            >>> db.get('emotion', aggregate_function=lambda y: y.mode())
+            ...
 
             Alternatively,
             use ``original_column_names`` to return column IDs.
 
-            >>> db = Database('mydb')
-            >>> db.schemes['rating'] = Scheme('float')
-            >>> db['run1'] = Table(filewise_index(['f1', 'f2']))
-            >>> db['run1']['rater1'] = Column(scheme_id='rating')
-            >>> db['run1']['rater1'].set([0.0, 0.9])
-            >>> db['run1']['rater2'] = Column(scheme_id='rating')
-            >>> db['run1']['rater2'].set([0.2, 0.7])
-            >>> db.get('rating', original_column_names=True)
-                 rater1   rater2
+            >>> db.get('emotion', original_column_names=True)
+                               emotion     random
             file
-            f1       0.0      0.2
-            f2       0.9      0.7
+            wav/03a01Fa.wav  happiness  happiness
+            wav/03a01Nc.wav    neutral    disgust
+            wav/03a01Wa.wav      anger    neutral
+            wav/03a02Fc.wav  happiness    neutral
+            wav/03a02Nc.wav    neutral    neutral
 
         """  # noqa: E501
 
