@@ -519,6 +519,18 @@ class Database(HeaderBase):
         Returns:
             data frame with values
 
+        Raises:
+            ValueError: if different labels are found
+                for a requested scheme under the same index entry
+            ValueError: if ``original_column_names`` is ``True``
+                and two columns in the returned data frame
+                have the same name
+                and cannot be joined
+                due to overlapping data
+                or different data type
+            TypeError: if labels of different data type are found
+                for a requested scheme
+
         Examples:
             Return all labels that match a requested scheme.
 
