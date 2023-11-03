@@ -217,21 +217,35 @@ def stereo_db(tmpdir):
         (
             'mono_db',
             'sex',
+            [],
+            pd.DataFrame(
+                {
+                    'sex': ['female', 'male'],
+                },
+                index=audformat.filewise_index(
+                    ['f1.wav', 'f3.wav']
+                ),
+                dtype='object',
+            ),
+        ),
+        (
+            'mono_db',
+            'sex',
             ['gender'],
             pd.concat(
                 [
                     pd.Series(
-                        ['female', 'male', np.NaN],
+                        ['female', 'male'],
                         index=audformat.filewise_index(
-                            ['f1.wav', 'f3.wav', 'f2.wav']
+                            ['f1.wav', 'f3.wav']
                         ),
                         dtype='object',
                         name='sex',
                     ),
                     pd.Series(
-                        ['female', '', 'male'],
+                        ['female', 'male'],
                         index=audformat.filewise_index(
-                            ['f1.wav', 'f2.wav', 'f3.wav']
+                            ['f1.wav', 'f3.wav']
                         ),
                         dtype='string',
                         name='gender',

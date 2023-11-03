@@ -863,6 +863,7 @@ class Database(HeaderBase):
             objs.append(self.get(scheme))
         if len(objs) > 1:
             obj = utils.concat(objs)
+            obj = obj.loc[index]
 
         return obj
 
