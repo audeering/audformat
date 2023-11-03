@@ -27,8 +27,6 @@ from audformat.core.errors import BadIdError
 from audformat.core.errors import BadKeyError
 from audformat.core.errors import TableExistsError
 from audformat.core.index import filewise_index
-from audformat.core.index import is_filewise_index
-from audformat.core.index import is_segmented_index
 from audformat.core.media import Media
 from audformat.core.rater import Rater
 from audformat.core.scheme import Scheme
@@ -546,7 +544,7 @@ class Database(HeaderBase):
             f1       0.0
             f2       0.9
             f3       0.7
-            >>> db.get('rating', additional_schemes='confidence')
+            >>> db.get('rating', ['confidence'])
                  rating confidence
             file
             f1       0.0        1.0
@@ -602,12 +600,12 @@ class Database(HeaderBase):
             >>> db['files']['speaker'].set(['s1', 's2'])
             >>> db['files']['rating'] = Column()
             >>> db['files']['rating'].set([0.2, 0.7])
-            >>> db.get(['rating', 'age'])
+            >>> db.get('rating', ['age'])
                  rating age
             file
             f1       0.2 23
             f2       0.7 25
-            >>> db.get(['rating', 'age'], strict=True)
+            >>> db.get('rating', ['age'], strict=True)
             Empty DataFrame
             Columns: [rating, age]
             Index: []
@@ -704,6 +702,13 @@ class Database(HeaderBase):
         requested_scheme = scheme
         additional_schemes = audeer.to_list(additional_schemes)
 
+        if tables is None:
+            tables = list(self.tables)
+        else:
+            tables = audeer.to_list(tables)
+        if splits is not None:
+            splits = audeer.to_list(splits)
+
         # --- Check if requested scheme is stored as label in other schemes
         scheme_mappings = []
         for scheme_id, scheme in self.schemes.items():
@@ -729,7 +734,17 @@ class Database(HeaderBase):
 
         # --- Get data for requested schemes
         ys_requested_scheme = []
-        for table_id, table in self.tables.items():
+        for table_id in tables:
+
+            # Handle non-existing tables
+            if table_id not in self.tables:
+                continue
+            else:
+                table = self[table_id]
+
+            # Limit search by split
+            if splits is not None and table.split_id not in splits:
+                continue
 
             for column_id, column in table.columns.items():
                 y = None
@@ -793,10 +808,12 @@ class Database(HeaderBase):
             ]
 
         index = utils.union([y.index for y in ys_requested_scheme])
+
         obj = utils.concat(
             ys_requested_scheme,
             aggregate_function=aggregate_function,
-        ).loc[index]
+        )
+        obj = obj.loc[index]
 
         if len(obj) == 0:
             obj = pd.DataFrame(
@@ -806,64 +823,24 @@ class Database(HeaderBase):
                 index=filewise_index(),
                 dtype='object',
             )
-
-        if isinstance(obj, pd.Series):
+        elif isinstance(obj, pd.Series):
             obj = obj.to_frame()
-
-        # # Start with column names matching requested schemes
-        # matching_columns = [
-        #     column for column in requested_schemes
-        #     if column in obj.columns
-        # ]
-        # additional_columns = [
-        #     column for column in obj.columns
-        #     if column not in requested_schemes
-        # ]
-        # obj = obj[matching_columns + additional_columns]
-
-        # Limit returned samples by selected tables and splits
-        indices = []
-        if tables is not None or splits is not None:
-
-            if tables is None:
-                tables = list(self.tables)
-            else:
-                tables = audeer.to_list(tables)
-            if splits is not None:
-                splits = audeer.to_list(splits)
-
-            for table_id, table in self.tables.items():
-                if splits is None:
-                    if table_id in tables:
-                        indices.append(self[table_id].index)
-                else:
-                    if table_id in tables and table.split_id in splits:
-                        indices.append(self[table_id].index)
-
-            index = utils.union(indices)
-
-            # Avoid matching segments in obj
-            # by a filewise index
-            if is_segmented_index(obj.index):
-                return_filewise_index = is_filewise_index(index)
-                index = utils.to_segmented_index(index)
-                obj = obj.loc[index]
-                if return_filewise_index:
-                    index = filewise_index(index.get_level_values('file'))
-                    obj = obj.set_index(index)
-            else:
-                obj = obj.loc[index]
-
-        if len(obj) == 0:
-            obj.index = filewise_index()
 
         # Append additional schemes
         objs = [obj]
         for scheme in additional_schemes:
-            objs.append(self.get(scheme))
+            obj = self.get(
+                scheme,
+                strict=strict,
+                aggregate_function=aggregate_function,
+                modify_function=modify_function,
+            )
+            objs.append(obj)
         if len(objs) > 1:
             obj = utils.concat(objs)
             obj = obj.loc[index]
+            if len(obj) == 0:
+                obj.index = filewise_index()
 
         return obj
 

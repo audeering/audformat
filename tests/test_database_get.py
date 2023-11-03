@@ -399,6 +399,8 @@ def stereo_db(tmpdir):
 def test_database_get(request, db, scheme, additional_schemes, expected):
     db = request.getfixturevalue(db)
     df = db.get(scheme, additional_schemes)
+    print(f'{df=}')
+    print(f'{expected=}')
     pd.testing.assert_frame_equal(df, expected)
 
 
@@ -457,7 +459,8 @@ def select_table(y, db, table_id, column_id, label_id, table):
     return y
 
 @pytest.mark.parametrize(
-    'db, schemes, aggregate_function, modify_function, expected',
+    'db, scheme, additional_schemes, '
+    'aggregate_function, modify_function, expected',
     [
 
         # Tests based on `mono_db`,
@@ -482,6 +485,7 @@ def select_table(y, db, table_id, column_id, label_id, table):
             # files, age: 23, NaN, 59
             'mono_db',
             'age',
+            [],
             lambda y: y[0],
             None,
             pd.DataFrame(
@@ -504,6 +508,7 @@ def select_table(y, db, table_id, column_id, label_id, table):
             # files, perceived age: 25, 34, 45
             'mono_db',
             'age',
+            [],
             lambda y: y[1],
             None,
             pd.DataFrame(
@@ -524,6 +529,7 @@ def select_table(y, db, table_id, column_id, label_id, table):
             # files.sub, speaker:   23, NaN, NaN
             'mono_db',
             'age',
+            [],
             None,
             column_names,
             pd.DataFrame(
@@ -553,6 +559,7 @@ def select_table(y, db, table_id, column_id, label_id, table):
         (
             'mono_db',
             'height',
+            [],
             None,
             lambda *args: select_label(*args, 'current-height'),
             pd.DataFrame(
@@ -597,6 +604,7 @@ def select_table(y, db, table_id, column_id, label_id, table):
             #
             'mono_db',
             'rating',
+            [],
             None,
             average_rating_segments,
             pd.DataFrame(
@@ -643,6 +651,7 @@ def select_table(y, db, table_id, column_id, label_id, table):
             #
             'mono_db',
             'gender',
+            [],
             None,
             add_db_name,
             pd.DataFrame(
@@ -662,7 +671,8 @@ def select_table(y, db, table_id, column_id, label_id, table):
             # it will raise an error
             #
             'mono_db',
-            ['sex', 'gender'],
+            'sex',
+            ['gender'],
             None,
             rename_sex_to_gender_without_dtype_adjustment,
             None,
@@ -674,7 +684,8 @@ def select_table(y, db, table_id, column_id, label_id, table):
             # gender: ['female', '', 'male']
             #
             'mono_db',
-            ['gender', 'sex'],
+            'gender',
+            ['sex'],
             None,
             rename_sex_to_gender,
             pd.DataFrame(
@@ -696,15 +707,16 @@ def select_table(y, db, table_id, column_id, label_id, table):
             # gender: ['female', 'male', '']
             #
             'mono_db',
-            ['sex', 'gender'],
+            'sex',
+            ['gender'],
             None,
             rename_sex_to_gender,
             pd.DataFrame(
                 {
-                    'gender': ['female', 'male', ''],
+                    'gender': ['female', 'male'],
                 },
                 index=audformat.filewise_index(
-                    ['f1.wav', 'f3.wav', 'f2.wav']
+                    ['f1.wav', 'f3.wav']
                 ),
                 dtype='string',
             ),
@@ -731,6 +743,7 @@ def select_table(y, db, table_id, column_id, label_id, table):
             #
             'stereo_db',
             'gender',
+            [],
             lambda y: y.mode()[0],
             None,
             pd.DataFrame(
@@ -755,6 +768,7 @@ def select_table(y, db, table_id, column_id, label_id, table):
             #
             'stereo_db',
             'gender',
+            [],
             None,
             rename_column,
             pd.DataFrame(
@@ -782,6 +796,7 @@ def select_table(y, db, table_id, column_id, label_id, table):
             #
             'stereo_db',
             'gender',
+            [],
             None,
             lambda *args: select_table(*args, 'run1'),
             None,
@@ -797,6 +812,7 @@ def select_table(y, db, table_id, column_id, label_id, table):
             #
             'stereo_db',
             'gender',
+            [],
             None,
             lambda *args: select_table(*args, 'run2'),
             pd.DataFrame(
@@ -820,6 +836,7 @@ def select_table(y, db, table_id, column_id, label_id, table):
             #
             'stereo_db',
             'gender',
+            [],
             lambda y: y.mode()[0],
             lambda *args: select_column(*args, 'channel0'),
             pd.DataFrame(
@@ -838,39 +855,45 @@ def select_table(y, db, table_id, column_id, label_id, table):
 def test_database_get_aggregate_and_modify_function(
         request,
         db,
-        schemes,
+        scheme,
+        additional_schemes,
         aggregate_function,
         modify_function,
         expected,
 ):
     db = request.getfixturevalue(db)
     df = db.get(
-        schemes,
+        scheme,
+        additional_schemes,
         aggregate_function=aggregate_function,
         modify_function=modify_function,
     )
+    print(f'{df=}')
+    print(f'{expected=}')
     pd.testing.assert_frame_equal(df, expected)
 
 
 @pytest.mark.parametrize(
-    'db, schemes, tables, splits, expected',
+    'db, scheme, additional_schemes, tables, splits, expected',
     [
         (
             'mono_db',
             'gender',
             [],
+            [],
             None,
             pd.DataFrame(
                 {
                     'gender': [],
                 },
                 index=audformat.filewise_index(),
-                dtype='string',
+                dtype='object',
             ),
         ),
         (
             'mono_db',
             'gender',
+            [],
             None,
             [],
             pd.DataFrame(
@@ -878,12 +901,13 @@ def test_database_get_aggregate_and_modify_function(
                     'gender': [],
                 },
                 index=audformat.filewise_index(),
-                dtype='string',
+                dtype='object',
             ),
         ),
         (
             'mono_db',
             'gender',
+            [],
             [],
             [],
             pd.DataFrame(
@@ -891,12 +915,13 @@ def test_database_get_aggregate_and_modify_function(
                     'gender': [],
                 },
                 index=audformat.filewise_index(),
-                dtype='string',
+                dtype='object',
             ),
         ),
         (
             'mono_db',
             'gender',
+            [],
             'non-existing',
             None,
             pd.DataFrame(
@@ -904,12 +929,13 @@ def test_database_get_aggregate_and_modify_function(
                     'gender': [],
                 },
                 index=audformat.filewise_index(),
-                dtype='string',
+                dtype='object',
             ),
         ),
         (
             'mono_db',
             'gender',
+            [],
             None,
             'non-existing',
             pd.DataFrame(
@@ -917,12 +943,13 @@ def test_database_get_aggregate_and_modify_function(
                     'gender': [],
                 },
                 index=audformat.filewise_index(),
-                dtype='string',
+                dtype='object',
             ),
         ),
         (
             'mono_db',
-            ['gender', 'sex'],
+            'gender',
+            ['sex'],
             None,
             'non-existing',
             pd.concat(
@@ -930,7 +957,7 @@ def test_database_get_aggregate_and_modify_function(
                     pd.Series(
                         [],
                         index=audformat.filewise_index(),
-                        dtype='string',
+                        dtype='object',
                         name='gender',
                     ),
                     pd.Series(
@@ -946,6 +973,7 @@ def test_database_get_aggregate_and_modify_function(
         (
             'mono_db',
             'gender',
+            [],
             'non-existing',
             'non-existing',
             pd.DataFrame(
@@ -953,12 +981,13 @@ def test_database_get_aggregate_and_modify_function(
                     'gender': [],
                 },
                 index=audformat.filewise_index(),
-                dtype='string',
+                dtype='object',
             ),
         ),
         (
             'mono_db',
             'gender',
+            [],
             ['other'],
             ['train'],
             pd.DataFrame(
@@ -966,25 +995,27 @@ def test_database_get_aggregate_and_modify_function(
                     'gender': [],
                 },
                 index=audformat.filewise_index(),
-                dtype='string',
+                dtype='object',
             ),
         ),
         (
             'mono_db',
-            'gender',
+            'sex',
+            [],
             ['other'],
             None,
             pd.DataFrame(
                 {
-                    'gender': ['female', 'male'],
+                    'sex': ['female', 'male'],
                 },
                 index=audformat.filewise_index(['f1.wav', 'f3.wav']),
-                dtype='string',
+                dtype='object',
             ),
         ),
         (
             'mono_db',
             'rating',
+            [],
             'segments',
             None,
             pd.DataFrame(
@@ -1005,6 +1036,7 @@ def test_database_get_aggregate_and_modify_function(
         (
             'mono_db',
             'rating',
+            [],
             None,
             'train',
             pd.DataFrame(
@@ -1023,6 +1055,7 @@ def test_database_get_aggregate_and_modify_function(
         (
             'mono_db',
             'rating',
+            [],
             ['rating.train', 'rating.test'],
             'train',
             pd.DataFrame(
@@ -1041,6 +1074,7 @@ def test_database_get_aggregate_and_modify_function(
         (
             'mono_db',
             'rating',
+            [],
             None,
             ['train', 'test'],
             pd.DataFrame(
@@ -1059,7 +1093,27 @@ def test_database_get_aggregate_and_modify_function(
         (
             'mono_db',
             'rating',
+            [],
             ['rating.train', 'rating.test'],
+            None,
+            pd.DataFrame(
+                {
+                    'rating': [0, 1, 1],
+                },
+                index=audformat.filewise_index(
+                    ['f1.wav', 'f2.wav', 'f3.wav',]
+                ),
+                dtype=pd.CategoricalDtype(
+                    [0, 1, 2],
+                    ordered=False,
+                ),
+            ),
+        ),
+        (
+            'mono_db',
+            'rating',
+            [],
+            ['rating.test', 'rating.train'],
             None,
             pd.DataFrame(
                 {
@@ -1077,7 +1131,8 @@ def test_database_get_aggregate_and_modify_function(
         (
             'mono_db',
             'rating',
-            ['rating.train', 'rating.test'],
+            [],
+            ['rating.test', 'rating.train'],
             ['train', 'test'],
             pd.DataFrame(
                 {
@@ -1097,22 +1152,33 @@ def test_database_get_aggregate_and_modify_function(
 def test_database_get_limit_search(
         request,
         db,
-        schemes,
+        scheme,
+        additional_schemes,
         tables,
         splits,
         expected,
 ):
     db = request.getfixturevalue(db)
-    df = db.get(schemes, tables=tables, splits=splits)
+    df = db.get(
+        scheme,
+        additional_schemes,
+        tables=tables,
+        splits=splits,
+    )
+    print(f'{df=}')
+    print(f'{expected=}')
+    print(f'{df.index=}')
+    print(f'{expected.index=}')
     pd.testing.assert_frame_equal(df, expected)
 
 
 @pytest.mark.parametrize(
-    'db, schemes, strict, expected',
+    'db, scheme, additional_schemes, strict, expected',
     [
         (
             'mono_db',
             'sex',
+            [],
             False,
             pd.DataFrame(
                 {
@@ -1127,6 +1193,7 @@ def test_database_get_limit_search(
         (
             'mono_db',
             'sex',
+            [],
             True,
             pd.DataFrame(
                 {
@@ -1139,6 +1206,7 @@ def test_database_get_limit_search(
         (
             'mono_db',
             'year',
+            [],
             False,
             pd.DataFrame(
                 {
@@ -1162,6 +1230,7 @@ def test_database_get_limit_search(
         (
             'mono_db',
             'year',
+            [],
             True,
             pd.DataFrame(
                 {
@@ -1173,7 +1242,8 @@ def test_database_get_limit_search(
         ),
         (
             'mono_db',
-            ['sex', 'year'],
+            'sex',
+            ['year'],
             True,
             pd.DataFrame(
                 {
@@ -1186,7 +1256,8 @@ def test_database_get_limit_search(
         ),
         (
             'mono_db',
-            ['gender', 'sex', 'year'],
+            'gender',
+            ['sex', 'year'],
             True,
             pd.DataFrame(
                 {
@@ -1200,9 +1271,16 @@ def test_database_get_limit_search(
         ),
     ]
 )
-def test_database_get_strict(request, db, schemes, strict, expected):
+def test_database_get_strict(
+        request,
+        db,
+        scheme,
+        additional_schemes,
+        strict,
+        expected,
+):
     db = request.getfixturevalue(db)
-    df = db.get(schemes, strict=strict)
+    df = db.get(scheme, additional_schemes, strict=strict)
     pd.testing.assert_frame_equal(df, expected)
 
 
