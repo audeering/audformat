@@ -94,11 +94,13 @@ class Database(HeaderBase):
         ...     format='wav',
         ...     sampling_rate=16000,
         ... )
-        >>> db['table'] = Table(media_id='audio')
+        >>> index = filewise_index(['f1.wav', 'f2.wav'])
+        >>> db['table'] = Table(index, media_id='audio')
         >>> db['table']['column'] = Column(
         ...     scheme_id='emotion',
         ...     rater_id='rater',
         ... )
+        >>> db['table']['column'].set(['neutral', 'positive'])
         >>> index = pd.Index([], dtype='string', name='idx')
         >>> db['misc-table'] = MiscTable(index)
         >>> db['misc-table']['column'] = Column(scheme_id='match')
@@ -129,6 +131,11 @@ class Database(HeaderBase):
               column: {scheme_id: match}
         >>> list(db)
         ['misc-table', 'table']
+        >>> db.get('emotion')
+                 emotion
+        file
+        f1.wav   neutral
+        f2.wav  positive
 
     """
     def __init__(
