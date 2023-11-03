@@ -458,7 +458,7 @@ class Database(HeaderBase):
         r"""Get labels by scheme.
 
         Return all labels
-        from columns assigned to a 
+        from columns assigned to a
         :class:`audformat.Scheme`
         with name ``scheme``.
         The request can be limited to specific ``tables``
