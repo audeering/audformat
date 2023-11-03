@@ -650,13 +650,19 @@ class Database(HeaderBase):
             wav/03a04Wc.wav      anger  boredom
             wav/03a05Aa.wav       fear  sadness
             ...
-            >>> db.get('emotion', aggregate_function=lambda y: y.mode())
-            ...
+            >>> db.get('emotion', aggregate_function=lambda y: y.mode()[0]).head()
+                               emotion
+            file
+            wav/03a01Fa.wav  happiness
+            wav/03a01Nc.wav    neutral
+            wav/03a01Wa.wav      anger
+            wav/03a02Fc.wav  happiness
+            wav/03a02Nc.wav    neutral
 
             Alternatively,
             use ``original_column_names`` to return column IDs.
 
-            >>> db.get('emotion', original_column_names=True)
+            >>> db.get('emotion', original_column_names=True).head()
                                emotion     random
             file
             wav/03a01Fa.wav  happiness  happiness
