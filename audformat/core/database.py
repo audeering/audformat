@@ -762,7 +762,10 @@ class Database(HeaderBase):
                     for (scheme_id, mapping) in scheme_mappings:
                         if scheme_in_column(scheme_id, column, column_id):
                             if column.scheme_id is None:
-                                y = pd.Series(dtype='object')
+                                y = pd.Series(
+                                    index=filewise_index(),
+                                    dtype='object',
+                                )
                             else:
                                 y = self[table_id][column_id].get(map=mapping)
                             y.name = requested_scheme
