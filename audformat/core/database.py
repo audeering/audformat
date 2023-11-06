@@ -761,7 +761,10 @@ class Database(HeaderBase):
                 else:
                     for (scheme_id, mapping) in scheme_mappings:
                         if scheme_in_column(scheme_id, column, column_id):
-                            y = self[table_id][column_id].get(map=mapping)
+                            if column.scheme_id is None:
+                                y = pd.Series(dtype='object')
+                            else:
+                                y = self[table_id][column_id].get(map=mapping)
                             y.name = requested_scheme
                             append_series(
                                 ys_requested_scheme,
