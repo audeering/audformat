@@ -173,6 +173,40 @@ def stereo_db(tmpdir):
     return db
 
 
+@pytest.fixture(scope='function')
+def overlapping_data_db(tmpdir):
+    r"""Database with scheme and scheme labels.
+
+    This databases resulted in an error during development
+    as one of the categories is `NaN`,
+    see https://github.com/audeering/audformat/pull/399#issuecomment-1794435304
+
+    """
+    name = 'overlapping_data_db'
+    path = audeer.mkdir(audeer.path(tmpdir, name))
+    db = audformat.Database(name)
+
+    # --- Schemes
+    db.schemes['speaker'] = audformat.Scheme(
+        'int',
+        labels={0: {'gender': 'female'}},
+    )
+    db.schemes['gender'] = audformat.Scheme('str', labels=['female', 'male'])
+
+    # --- Tables
+    index = audformat.filewise_index(['f1.wav', 'f2.wav'])
+    db['files'] = audformat.Table(index)
+    db['files']['speaker'] = audformat.Column(scheme_id='speaker')
+    db['files']['speaker'].set([0, np.NaN])
+    db['files']['gender'] = audformat.Column(scheme_id='gender')
+    db['files']['gender'].set(['female', np.NaN])
+
+    db.save(path)
+    audformat.testing.create_audio_files(db, channels=1, file_duration='1s')
+
+    return db
+
+
 @pytest.mark.parametrize(
     'db, scheme, additional_schemes, expected',
     [
@@ -390,6 +424,23 @@ def stereo_db(tmpdir):
                 ),
                 dtype=pd.CategoricalDtype(
                     [1, 0],
+                    ordered=False,
+                ),
+            ),
+        ),
+        (
+            'overlapping_data_db',
+            'gender',
+            [],
+            pd.DataFrame(
+                {
+                    'gender': ['female', np.NaN],
+                },
+                index=audformat.filewise_index(
+                    ['f1.wav', 'f2.wav']
+                ),
+                dtype=pd.CategoricalDtype(
+                    ['female', 'male'],
                     ordered=False,
                 ),
             ),

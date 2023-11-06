@@ -793,7 +793,9 @@ class Database(HeaderBase):
             for n, y in enumerate(ys_requested_scheme):
                 if not isinstance(y.dtype, pd.CategoricalDtype):
                     ys_requested_scheme[n] = y.astype(
-                        pd.CategoricalDtype(set(y.array.astype(dtype)))
+                        pd.CategoricalDtype(
+                            y.array.dropna().unique().astype(dtype)
+                        )
                     )
             # Find union of categorical data
             data = [y.array for y in ys_requested_scheme]
