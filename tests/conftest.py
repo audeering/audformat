@@ -8,6 +8,11 @@ import audformat.testing
 
 
 pytest.DB = audformat.testing.create_db()
+# Adjust scheme dictionary to contain one missing label
+labels = pytest.DB.schemes["label_map_str"].labels
+labels['label3'].pop('prop2')
+pytest.DB.schemes["label_map_str"].replace_labels(labels)
+
 pytest.DB_ROOT = 'db'
 pytest.FILE_DUR = pd.to_timedelta('1s')
 

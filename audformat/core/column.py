@@ -254,20 +254,30 @@ class Column(HeaderBase):
                     "for its labels."
                 )
 
+            # Check that at least one key is available for map
+            # if labels are stored as dictionary
+            keys = []
+            for key, value in labels.items():
+                if isinstance(value, dict):
+                    keys += list(value.keys())
+            keys = sorted(list(set(keys)))
+            if len(keys) > 0 and map not in keys:
+                raise ValueError(
+                    f"Cannot map "
+                    f"'{self._id}' "
+                    f"to "
+                    f"'{map}'. "
+                    f"Expected one of "
+                    f"{list(keys)}."
+                )
+
             mapping = {}
             for key, value in labels.items():
                 if isinstance(value, dict):
                     if map in value:
                         value = value[map]
                     else:
-                        raise ValueError(
-                            f"Cannot map "
-                            f"'{self._id}' "
-                            f"to "
-                            f"'{map}'. "
-                            f"Expected one of "
-                            f"{list(value)}."
-                        )
+                        value = np.NaN
                 mapping[key] = value
 
             result = result.map(mapping)
