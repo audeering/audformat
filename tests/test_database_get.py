@@ -521,10 +521,7 @@ def wrong_scheme_labels_db(tmpdir):
                 index=audformat.filewise_index(
                     ['f1.wav', 'f2.wav']
                 ),
-                dtype=pd.CategoricalDtype(
-                    ['female', 'male'],
-                    ordered=False,
-                ),
+                dtype='string',
             ),
         ),
     ]
