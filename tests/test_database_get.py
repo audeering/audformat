@@ -219,12 +219,15 @@ def scheme_not_assigned_db(tmpdir):
         'int',
         labels={0: {'gender': 'female'}},
     )
+    db.schemes['rating'] = audformat.Scheme('int')
 
     # --- Tables
     index = audformat.filewise_index(['f1.wav'])
     db['files'] = audformat.Table(index)
     db['files']['speaker'] = audformat.Column()
     db['files']['speaker'].set([0])
+    db['files']['rater1'] = audformat.Column()
+    db['files']['rater1'].set([1])
 
     db.save(path)
     audformat.testing.create_audio_files(db, channels=1, file_duration='1s')
@@ -507,6 +510,30 @@ def wrong_scheme_labels_db(tmpdir):
                     'gender': [],
                 },
                 index=audformat.filewise_index(),
+                dtype='object',
+            ),
+        ),
+        (
+            'scheme_not_assigned_db',
+            'rating',
+            [],
+            pd.DataFrame(
+                {
+                    'rating': [],
+                },
+                index=audformat.filewise_index(),
+                dtype='object',
+            ),
+        ),
+        (
+            'scheme_not_assigned_db',
+            'rater1',
+            [],
+            pd.DataFrame(
+                {
+                    'rater1': [1],
+                },
+                index=audformat.filewise_index(['f1.wav']),
                 dtype='object',
             ),
         ),
