@@ -177,7 +177,7 @@ def test_get_as_segmented():
             pytest.DB['files']['string'], 'map', None,
             marks=pytest.mark.xfail(raises=ValueError),
         ),
-        pytest.param(  # no labels
+        pytest.param(  # no labels in dict
             pytest.DB['files']['label_map_str'], 'bad', None,
             marks=pytest.mark.xfail(raises=ValueError),
         ),
@@ -189,7 +189,10 @@ def test_map(column, map, expected_dtype):
     mapping = {}
     for key, value in pytest.DB.schemes[column.scheme_id].labels.items():
         if isinstance(value, dict):
-            value = value[map]
+            if map in value:
+                value = value[map]
+            else:
+                value = np.NaN
         mapping[key] = value
     expected = expected.map(mapping).astype(expected_dtype)
     expected.name = map
