@@ -255,7 +255,7 @@ class Column(HeaderBase):
                 )
 
             # Check that at least one key is available for map
-            keys = list(labels.keys())
+            # if labels are stored as dictionary
             keys = []
             for key, value in labels.items():
                 if isinstance(value, dict):
@@ -277,14 +277,6 @@ class Column(HeaderBase):
                     if map in value:
                         value = value[map]
                     else:
-                        # raise ValueError(
-                        #     f"Cannot map "
-                        #     f"'{self._id}' "
-                        #     f"to "
-                        #     f"'{map}'. "
-                        #     f"Expected one of "
-                        #     f"{list(value)}."
-                        # )
                         value = np.NaN
                 mapping[key] = value
 
