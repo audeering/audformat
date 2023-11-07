@@ -834,12 +834,21 @@ class Database(HeaderBase):
         # Append additional schemes
         objs = [obj]
         for scheme in additional_schemes:
-            obj = self.get(
-                scheme,
-                strict=strict,
-                original_column_names=original_column_names,
-                aggregate_function=aggregate_function,
-            )
+            if len(obj) == 0:
+                obj = pd.DataFrame(
+                    {
+                        scheme: [],
+                    },
+                    index=filewise_index(),
+                    dtype='object',
+                )
+            else:
+                obj = self.get(
+                    scheme,
+                    strict=strict,
+                    original_column_names=original_column_names,
+                    aggregate_function=aggregate_function,
+                )
             objs.append(obj)
         if len(objs) > 1:
             obj = utils.concat(objs)
