@@ -262,28 +262,33 @@ def concat(
                 # We use len() here as index.empty takes a very long time
                 if len(intersection) > 0:
 
-                    # Store overlap if custom aggregate function is provided
-                    if aggregate_function is not None:
-                        if column.name not in overlapping_values:
-                            overlapping_values[column.name] = []
-                        overlapping_values[column.name].append(
-                            column.loc[intersection]
-                        )
-                        column = column.loc[~column.index.isin(intersection)]
+                    # Find data that differ and cannot be joined
+                    combine = pd.DataFrame(
+                        {
+                            'left':
+                            columns_reindex[column.name][intersection],
+                            'right':
+                            column[intersection],
+                        }
+                    )
+                    combine.dropna(inplace=True)
+                    differ = combine['left'] != combine['right']
 
-                    # Raise error if values don't match and are not NaN
-                    else:
-                        combine = pd.DataFrame(
-                            {
-                                'left':
-                                columns_reindex[column.name][intersection],
-                                'right':
-                                column[intersection],
-                            }
-                        )
-                        combine.dropna(inplace=True)
-                        differ = combine['left'] != combine['right']
-                        if np.any(differ):
+                    if np.any(differ):
+
+                        # Collect overlap for custom aggregate function
+                        if aggregate_function is not None:
+                            if column.name not in overlapping_values:
+                                overlapping_values[column.name] = []
+                            overlapping_values[column.name].append(
+                                column.loc[intersection]
+                            )
+                            column = column.loc[
+                                ~column.index.isin(intersection)
+                            ]
+
+                        # Raise error if values don't match and are not NaN
+                        else:
                             max_display = 10
                             overlap = combine[differ]
                             msg_overlap = str(overlap[:max_display])
