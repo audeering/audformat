@@ -1842,7 +1842,7 @@ def union(
     objs = _maybe_convert_single_level_multi_index(objs)
     _assert_index_alike(objs)
 
-    # Combine all MultiIndex entries and drop duplicates afterwards,
+    # Combine all index entries and drop duplicates afterwards,
     # faster than using index.union(),
     # compare https://github.com/audeering/audformat/pull/98
 
