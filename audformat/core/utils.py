@@ -74,7 +74,9 @@ def concat(
     Args:
         objs: objects
         overwrite: overwrite values where indices overlap
-        aggregate_function: function to aggregate overlapping values.
+        aggregate_function: function to aggregate overlapping values,
+            that cannot be joined
+            when ``overwrite`` is ``False``.
             The function gets a :class:`pandas.Series`
             with overlapping values
             as input.
