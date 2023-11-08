@@ -961,33 +961,6 @@ def test_database_get_aggregate_and_modify_function(
         ),
         (
             'mono_db',
-            'gender',
-            ['speaker'],
-            ['files.sub'],
-            None,
-            pd.concat(
-                [
-                    pd.Series(
-                        ['female'],
-                        index=audformat.filewise_index(['f1.wav']),
-                        dtype='string',
-                        name='gender',
-                    ),
-                    pd.Series(
-                        ['s1'],
-                        index=audformat.filewise_index(['f1.wav']),
-                        dtype=pd.CategoricalDtype(
-                            ['s1', 's2', 's3'],
-                            ordered=False,
-                        ),
-                        name='speaker',
-                    ),
-                ],
-                axis=1,
-            ),
-        ),
-        (
-            'mono_db',
             'sex',
             [],
             ['other'],

@@ -702,9 +702,9 @@ class Database(HeaderBase):
         additional_schemes = audeer.to_list(additional_schemes)
 
         if tables is None:
-            selected_tables = list(self.tables)
+            tables = list(self.tables)
         else:
-            selected_tables = audeer.to_list(tables)
+            tables = audeer.to_list(tables)
         if splits is not None:
             splits = audeer.to_list(splits)
 
@@ -733,7 +733,7 @@ class Database(HeaderBase):
 
         # --- Get data for requested schemes
         ys_requested_scheme = []
-        for table_id in selected_tables:
+        for table_id in tables:
 
             # Handle non-existing tables
             if table_id not in self.tables:
@@ -832,42 +832,29 @@ class Database(HeaderBase):
             obj = obj.to_frame()
 
         # Append additional schemes
-        if len(additional_schemes) > 0:
-
-            # Limit available index in database
-            if (
-                    (tables is not None or splits is not None)
-                    and len(obj) > 0
-            ):
-                for _, table in self.tables.items():
-                    table._df = table.get(
-                        utils.intersect([table.index, index]),
-                        copy=False,
-                    )
-
-            objs = [obj]
-            for scheme in additional_schemes:
-                if len(obj) == 0:
-                    obj = pd.DataFrame(
-                        {
-                            scheme: [],
-                        },
-                        index=filewise_index(),
-                        dtype='object',
-                    )
-                else:
-                    obj = self.get(
-                        scheme,
-                        strict=strict,
-                        original_column_names=original_column_names,
-                        aggregate_function=aggregate_function,
-                    )
-                objs.append(obj)
-            if len(objs) > 1:
-                obj = utils.concat(objs)
-                obj = obj.loc[index]
-                if len(obj) == 0:
-                    obj.index = filewise_index()
+        objs = [obj]
+        for scheme in additional_schemes:
+            if len(obj) == 0:
+                obj = pd.DataFrame(
+                    {
+                        scheme: [],
+                    },
+                    index=filewise_index(),
+                    dtype='object',
+                )
+            else:
+                obj = self.get(
+                    scheme,
+                    strict=strict,
+                    original_column_names=original_column_names,
+                    aggregate_function=aggregate_function,
+                )
+            objs.append(obj)
+        if len(objs) > 1:
+            obj = utils.concat(objs)
+            obj = obj.loc[index]
+            if len(obj) == 0:
+                obj.index = filewise_index()
 
         return obj
 
