@@ -602,6 +602,41 @@ def test_concat(objs, overwrite, expected):
             np.var,
             pd.Series([1, 2], pd.Index(['a', 'b']), dtype='float'),
         ),
+        # one value different
+        (
+            [
+                pd.Series([1, 2], pd.Index(['a', 'b']), dtype='float'),
+                pd.Series([1, 3], pd.Index(['a', 'b']), dtype='float'),
+            ],
+            np.mean,
+            pd.Series([1, 2.5], pd.Index(['a', 'b']), dtype='float'),
+        ),
+        (
+            [
+                pd.Series([1, 2], pd.Index(['a', 'b']), dtype='float'),
+                pd.Series([1, 3], pd.Index(['a', 'b']), dtype='float'),
+            ],
+            np.sum,
+            pd.Series([2, 5], pd.Index(['a', 'b']), dtype='float'),
+        ),
+        (
+            [
+                pd.Series([1, 2], pd.Index(['a', 'b']), dtype='float'),
+                pd.Series([1, 3], pd.Index(['a', 'b']), dtype='float'),
+                pd.Series([1, 4], pd.Index(['a', 'b']), dtype='float'),
+            ],
+            np.mean,
+            pd.Series([1, 3], pd.Index(['a', 'b']), dtype='float'),
+        ),
+        (
+            [
+                pd.Series([1, 2], pd.Index(['a', 'b']), dtype='float'),
+                pd.Series([1, 3], pd.Index(['a', 'b']), dtype='float'),
+                pd.Series([1, 4], pd.Index(['a', 'b']), dtype='float'),
+            ],
+            np.sum,
+            pd.Series([3, 9], pd.Index(['a', 'b']), dtype='float'),
+        ),
         # different values
         pytest.param(
             [
