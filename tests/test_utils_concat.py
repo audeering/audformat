@@ -667,6 +667,30 @@ def test_concat(objs, overwrite, expected):
             [
                 pd.Series([1, 2], pd.Index(['a', 'b']), dtype='float'),
                 pd.Series([2, 3], pd.Index(['a', 'b']), dtype='float'),
+            ],
+            lambda y: ('a', 'b'),
+            pd.Series(
+                [('a', 'b'), ('a', 'b')],
+                pd.Index(['a', 'b']),
+                dtype='object',
+            ),
+        ),
+        (
+            [
+                pd.Series([1, 2], pd.Index(['a', 'b']), dtype='float'),
+                pd.Series([2, 3], pd.Index(['a', 'b']), dtype='float'),
+            ],
+            lambda y: ('a', 'b'),
+            pd.Series(
+                [('a', 'b'), ('a', 'b')],
+                pd.Index(['a', 'b']),
+                dtype='object',
+            ),
+        ),
+        (
+            [
+                pd.Series([1, 2], pd.Index(['a', 'b']), dtype='float'),
+                pd.Series([2, 3], pd.Index(['a', 'b']), dtype='float'),
                 pd.Series([3, 4], pd.Index(['a', 'b']), dtype='float'),
             ],
             np.mean,
