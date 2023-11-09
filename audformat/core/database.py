@@ -454,7 +454,6 @@ class Database(HeaderBase):
                 [pd.Series],
                 typing.Any
             ] = None,
-            num_workers: int = 1,
     ) -> pd.DataFrame:
         r"""Get labels by scheme.
 
@@ -516,10 +515,6 @@ class Database(HeaderBase):
                 or to
                 ``tuple``
                 to return them as a tuple
-            num_workers: number of parallel jobs,
-                when retrieving ``additional_schemes``.
-                If ``None`` will be set to the number of processors
-                on the machine multiplied by 5
 
         Returns:
             data frame with values
@@ -819,23 +814,18 @@ class Database(HeaderBase):
             obj = obj.to_frame()
 
         # --- Append additional schemes
-        def add_additional_scheme(scheme):
-            return self.get(
-                scheme,
-                strict=strict,
-                original_column_names=original_column_names,
-                aggregate_function=aggregate_function,
-            )
-
-        if len(obj) == 0:
-            objs = [empty_frame(scheme) for scheme in additional_schemes]
-        else:
-            objs = audeer.run_tasks(
-                add_additional_scheme,
-                params=[([scheme], {}) for scheme in additional_schemes],
-                num_workers=num_workers,
-            )
-        objs = [obj] + [obj for obj in objs if obj is not None]
+        objs = [obj]
+        for scheme in additional_schemes:
+            if len(obj) == 0:
+                obj = empty_frame(scheme)
+            else:
+                obj = self.get(
+                    scheme,
+                    strict=strict,
+                    original_column_names=original_column_names,
+                    aggregate_function=aggregate_function,
+                )
+            objs.append(obj)
         if len(objs) > 1:
             obj = utils.concat(objs)
             obj = obj.loc[index]
