@@ -454,6 +454,7 @@ class Database(HeaderBase):
                 [pd.Series],
                 typing.Any
             ] = None,
+            num_workers: int = 1,
     ) -> pd.DataFrame:
         r"""Get labels by scheme.
 
@@ -515,6 +516,10 @@ class Database(HeaderBase):
                 or to
                 ``tuple``
                 to return them as a tuple
+            num_workers: number of parallel jobs,
+                when retrieving ``additional_schemes``.
+                If ``None`` will be set to the number of processors
+                on the machine multiplied by 5
 
         Returns:
             data frame with values
@@ -673,18 +678,26 @@ class Database(HeaderBase):
 
         """  # noqa: E501
 
-        def append_series(
-                ys,
-                y,
-                table_id,
-                column_id,
-                label_id,
-        ):
+        def append_series(ys, y, column_id):
             if y is not None:
                 if original_column_names:
                     y.name = column_id
                 y = y[~y.index.duplicated(keep='first')]
                 ys.append(y)
+
+        def empty_frame(name):
+            return pd.DataFrame(
+                {name: []},
+                index=filewise_index(),
+                dtype='object',
+            )
+
+        def empty_series(name):
+            return pd.Series(
+                index=filewise_index(),
+                dtype='object',
+                name=name,
+            )
 
         def scheme_in_column(scheme_id, column, column_id):
             # Check if scheme_id
@@ -732,7 +745,7 @@ class Database(HeaderBase):
                     scheme_mappings.append((scheme_id, requested_scheme))
 
         # --- Get data for requested schemes
-        ys_requested_scheme = []
+        ys = []
         for table_id in tables:
 
             # Handle non-existing tables
@@ -751,36 +764,21 @@ class Database(HeaderBase):
                 if scheme_in_column(requested_scheme, column, column_id):
                     y = self[table_id][column_id].get()
                     y.name = requested_scheme
-                    append_series(
-                        ys_requested_scheme,
-                        y,
-                        table_id,
-                        column_id,
-                        None,
-                    )
+                    append_series(ys, y, column_id)
                 # Get series based on label of scheme
                 else:
                     for (scheme_id, mapping) in scheme_mappings:
                         if scheme_in_column(scheme_id, column, column_id):
                             if column.scheme_id is None:
-                                y = pd.Series(
-                                    index=filewise_index(),
-                                    dtype='object',
-                                )
+                                y = empty_series(requested_scheme)
                             else:
                                 y = self[table_id][column_id].get(map=mapping)
-                            y.name = requested_scheme
-                            append_series(
-                                ys_requested_scheme,
-                                y,
-                                table_id,
-                                column_id,
-                                mapping,
-                            )
+                                y.name = requested_scheme
+                            append_series(ys, y, column_id)
 
-        # Ensure we have a common dtype for requested scheme
+        # --- Ensure we have a common dtype for requested scheme
         categorical_dtypes = [
-            y.dtype for y in ys_requested_scheme
+            y.dtype for y in ys
             if isinstance(y.dtype, pd.CategoricalDtype)
         ]
         dtypes_of_categories = [
@@ -797,59 +795,47 @@ class Database(HeaderBase):
                 )
             dtype = dtypes_of_categories[0]
             # Convert everything to categorical data
-            for n, y in enumerate(ys_requested_scheme):
+            for n, y in enumerate(ys):
                 if not isinstance(y.dtype, pd.CategoricalDtype):
-                    ys_requested_scheme[n] = y.astype(
+                    ys[n] = y.astype(
                         pd.CategoricalDtype(
                             y.array.dropna().unique().astype(dtype)
                         )
                     )
             # Find union of categorical data
-            data = [y.array for y in ys_requested_scheme]
+            data = [y.array for y in ys]
             data = pd.api.types.union_categoricals(data)
-            ys_requested_scheme = [
-                y.astype(data.dtype)
-                for y in ys_requested_scheme
-            ]
+            ys = [y.astype(data.dtype) for y in ys]
 
-        index = utils.union([y.index for y in ys_requested_scheme])
+        # --- Combine all labels
+        index = utils.union([y.index for y in ys])
 
-        obj = utils.concat(
-            ys_requested_scheme,
-            aggregate_function=aggregate_function,
-        )
+        obj = utils.concat(ys, aggregate_function=aggregate_function)
         obj = obj.loc[index]
 
         if len(obj) == 0:
-            obj = pd.DataFrame(
-                {
-                    requested_scheme: [],
-                },
-                index=filewise_index(),
-                dtype='object',
-            )
+            obj = empty_frame(requested_scheme)
         elif isinstance(obj, pd.Series):
             obj = obj.to_frame()
 
-        # Append additional schemes
-        objs = [obj]
-        for scheme in additional_schemes:
-            if len(obj) == 0:
-                obj = pd.DataFrame(
-                    {
-                        scheme: [],
-                    },
-                    index=filewise_index(),
-                    dtype='object',
-                )
-            else:
-                obj = self.get(
-                    scheme,
-                    strict=strict,
-                    original_column_names=original_column_names,
-                    aggregate_function=aggregate_function,
-                )
-            objs.append(obj)
+        # --- Append additional schemes
+        def add_additional_scheme(scheme):
+            return self.get(
+                scheme,
+                strict=strict,
+                original_column_names=original_column_names,
+                aggregate_function=aggregate_function,
+            )
+
+        if len(obj) == 0:
+            objs = [empty_frame(scheme) for scheme in additional_schemes]
+        else:
+            objs = audeer.run_tasks(
+                add_additional_scheme,
+                params=[([scheme], {}) for scheme in additional_schemes],
+                num_workers=num_workers,
+            )
+        objs = [obj] + [obj for obj in objs if obj is not None]
         if len(objs) > 1:
             obj = utils.concat(objs)
             obj = obj.loc[index]
