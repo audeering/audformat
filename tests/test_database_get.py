@@ -263,49 +263,6 @@ def wrong_scheme_labels_db(tmpdir):
     return db
 
 
-@pytest.fixture(scope='function')
-def duplicated_index_db(tmpdir):
-    r"""Database with duplicated segmented index.
-
-    Note, not every database that stores labels
-    with a duplicated index results in an error
-    with `audformat.utils.concat()`,
-    but this one does.
-
-    """
-    name = 'duplicated_index_db'
-    path = audeer.mkdir(audeer.path(tmpdir, name))
-    db = audformat.Database(name)
-
-    # --- Schemes
-    db.schemes['speaker'] = audformat.Scheme(
-        'int',
-        labels={
-            0: {'gender': 'female'},
-            1: {'gender': 'male'},
-        },
-    )
-    db.schemes['gender'] = audformat.Scheme('str', labels=['female', 'male'])
-
-    # --- Tables
-    index = audformat.segmented_index(
-        ['f1.wav', 'f1.wav', 'f2.wav'],
-        [0, 0, 0],
-        [1, 1, 1],
-    )
-    db['files'] = audformat.Table(index)
-    db['files']['speaker'] = audformat.Column(scheme_id='speaker')
-    db['files'].df['speaker'] = [0, 0, 1]
-    db['files']['gender'] = audformat.Column(scheme_id='gender')
-    db['files'].df['gender'] = ['female', np.NaN, 'male']
-    db['files'].df['gender'] = db['files'].df['gender'].astype('string')
-
-    db.save(path)
-    audformat.testing.create_audio_files(db, channels=1, file_duration='1s')
-
-    return db
-
-
 @pytest.mark.parametrize(
     'db, scheme, additional_schemes, expected',
     [
@@ -590,22 +547,6 @@ def duplicated_index_db(tmpdir):
                 },
                 index=audformat.filewise_index(
                     ['f1.wav', 'f2.wav']
-                ),
-                dtype='string',
-            ),
-        ),
-        (
-            'duplicated_index_db',
-            'gender',
-            [],
-            pd.DataFrame(
-                {
-                    'gender': ['female', 'male'],
-                },
-                index=audformat.segmented_index(
-                    ['f1.wav', 'f2.wav'],
-                    [0, 0],
-                    [1, 1],
                 ),
                 dtype='string',
             ),

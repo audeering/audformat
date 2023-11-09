@@ -677,7 +677,6 @@ class Database(HeaderBase):
             if y is not None:
                 if original_column_names:
                     y.name = column_id
-                y = y[~y.index.duplicated(keep='first')]
                 ys.append(y)
 
         def empty_frame(name):
