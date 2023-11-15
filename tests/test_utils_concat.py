@@ -1785,8 +1785,7 @@ def test_concat_overwrite_aggregate_function(
             ValueError,
             re.escape(
                 "Found two columns with name 'None' but different dtypes:\n"
-                "Int64 != CategoricalDtype(categories=['a', 'b'], "
-                "ordered=False, categories_dtype=object)."
+                "Int64 != CategoricalDtype(categories=['a', 'b']"
             ),
         ),
         (
@@ -1807,8 +1806,7 @@ def test_concat_overwrite_aggregate_function(
             ValueError,
             re.escape(
                 "Found two columns with name 'None' but different dtypes:\n"
-                "string != CategoricalDtype(categories=['a', 'b'], "
-                "ordered=False, categories_dtype=object)."
+                "string != CategoricalDtype(categories=['a', 'b']"
             ),
         ),
         (
@@ -1827,12 +1825,11 @@ def test_concat_overwrite_aggregate_function(
             None,
             'always',
             ValueError,
-            re.escape(
+            (
                 "Found two columns with name 'None' but different dtypes:\n"
-                "CategoricalDtype(categories=['a', 'b'], ordered=False, "
-                "categories_dtype=object) "
-                "!= CategoricalDtype(categories=['a', 'b', 'c'], "
-                "ordered=False, categories_dtype=object)."
+                "CategoricalDtype\(categories=\['a', 'b'\],"  # noqa: W605
+                ".*"
+                "!= CategoricalDtype\(categories=\['a', 'b', 'c'\]"  # noqa: W605, E501
             ),
         ),
         # values do not match
