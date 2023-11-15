@@ -1,5 +1,5 @@
 audiofile >=1.1.0
-pandas >=2.0.0
+pandas >=2.1.3
 pytest
 pytest-doctestplus
 pytest-console-scripts
