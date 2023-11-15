@@ -804,7 +804,11 @@ class Database(HeaderBase):
         # --- Combine all labels
         index = utils.union([y.index for y in ys])
 
-        obj = utils.concat(ys, aggregate_function=aggregate_function)
+        # Apply aggregate_function only if we cannot join labels
+        try:
+            obj = utils.concat(ys)
+        except ValueError:
+            obj = utils.concat(ys, aggregate_function=aggregate_function)
         obj = obj.loc[index]
 
         if len(obj) == 0:
