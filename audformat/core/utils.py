@@ -129,11 +129,21 @@ def concat(
         >>> concat(
         ...     [
         ...         pd.Series([1], index=pd.Index([0])),
-        ...         pd.Series([2], index=pd.Index([0])),
+        ...         pd.Series([1], index=pd.Index([0])),
         ...     ],
         ...     aggregate_function=np.sum,
         ... )
-        0    3
+        0    2
+        dtype: Int64
+        >>> concat(
+        ...     [
+        ...         pd.Series([1], index=pd.Index([0])),
+        ...         pd.Series([1], index=pd.Index([0])),
+        ...     ],
+        ...     aggregate_function=np.sum,
+        ...     aggregate='non-matching',
+        ... )
+        0    1
         dtype: Int64
         >>> concat(
         ...     [
