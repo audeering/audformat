@@ -78,8 +78,7 @@ def concat(
         aggregate: if ``aggregate_function`` is not ``None``,
             ``aggregate`` decides
             when ``aggregate_function`` is applied.
-            ``'always'``: apply to all samples;
-            ``'duplicates'``: apply to all samples
+            ``'always'``: apply to all samples
             that have an overlapping index;
             ``'non-matching'``: apply to all samples
             that have an overlapping index
@@ -104,7 +103,7 @@ def concat(
         ValueError: if level and dtypes of object indices do not match
         ValueError: if columns with the same name have different dtypes
         ValueError: if ``aggregate`` is not one of
-            ``'always'``, ``'duplicates'``, ``'non-matching'``
+            ``'always'``, ``'non-matching'``
         ValueError: if ``aggregate_function`` is ``None``,
             ``overwrite`` is ``False``,
             and values in the same position do not match
@@ -212,7 +211,7 @@ def concat(
     allowed_values = ['always', 'non-matching']
     if aggregate not in allowed_values:
         raise ValueError(
-            "aggregate needs to be one of '{'\', '.join(allowed_values)}'"
+            f"aggregate needs to be one of: {', '.join(allowed_values)}"
         )
 
     if not objs:
@@ -259,7 +258,7 @@ def concat(
                 raise ValueError(
                     "Found two columns with name "
                     f"'{column.name}' "
-                    "buf different dtypes:\n"
+                    "but different dtypes:\n"
                     f"{dtype_1} "
                     "!= "
                     f"{dtype_2}."
@@ -289,15 +288,17 @@ def concat(
                         overlapping_values[column.name].append(
                             column.loc[intersection]
                         )
-                        column = column.loc[
-                            ~column.index.isin(intersection)
-                        ]
+                        column = column.loc[~column.index.isin(intersection)]
+                        return column, overlapping_values
 
                     if (
                             aggregate_function is not None
                             and aggregate == 'always'
                     ):
-                        collect_overlap(column, overlapping_values)
+                        column, overlapping_values = collect_overlap(
+                            column,
+                            overlapping_values,
+                        )
 
                     else:
                         # Find data that differ and cannot be joined
@@ -318,7 +319,10 @@ def concat(
                                     aggregate_function is not None
                                     and aggregate == 'non-matching'
                             ):
-                                collect_overlap(column, overlapping_values)
+                                column, overlapping_values = collect_overlap(
+                                    column,
+                                    overlapping_values,
+                                )
 
                             # Raise error if values don't match and are not NaN
                             else:

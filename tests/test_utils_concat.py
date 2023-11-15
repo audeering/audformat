@@ -1,3 +1,5 @@
+import re
+
 import numpy as np
 import pandas as pd
 import pytest
@@ -1744,6 +1746,95 @@ def test_concat_overwrite_aggregate_function(
 @pytest.mark.parametrize(
     'objs, aggregate_function, aggregate, expected_error, expected_error_msg',
     [
+        # wrong aggregate argument
+        (
+            [],
+            None,
+            'non-existent',
+            ValueError,
+            "aggregate needs to be one of: always, non-matching",
+        ),
+        # dtypes do not match
+        (
+            [
+                pd.Series([1], audformat.filewise_index('f1')),
+                pd.Series([1.], audformat.filewise_index('f1')),
+            ],
+            None,
+            'always',
+            ValueError,
+            (
+                "Found two columns with name 'None' but different dtypes:\n"
+                "Int64 != float64."
+            ),
+        ),
+        (
+            [
+                pd.Series(
+                    [1, 2, 3],
+                    index=audformat.filewise_index(['f1', 'f2', 'f3']),
+                ),
+                pd.Series(
+                    ['a', 'b', 'a'],
+                    index=audformat.filewise_index(['f1', 'f2', 'f3']),
+                    dtype='category',
+                ),
+            ],
+            None,
+            'always',
+            ValueError,
+            re.escape(
+                "Found two columns with name 'None' but different dtypes:\n"
+                "Int64 != CategoricalDtype(categories=['a', 'b'], "
+                "ordered=False)."
+            ),
+        ),
+        (
+            [
+                pd.Series(
+                    ['a', 'b', 'a'],
+                    index=audformat.filewise_index(['f1', 'f2', 'f3']),
+                    dtype='string',
+                ),
+                pd.Series(
+                    ['a', 'b', 'a'],
+                    index=audformat.filewise_index(['f1', 'f2', 'f3']),
+                    dtype='category',
+                ),
+            ],
+            None,
+            'always',
+            ValueError,
+            re.escape(
+                "Found two columns with name 'None' but different dtypes:\n"
+                "string != CategoricalDtype(categories=['a', 'b'], "
+                "ordered=False)."
+            ),
+        ),
+        (
+            [
+                pd.Series(
+                    ['a', 'b', 'a'],
+                    index=audformat.filewise_index(['f1', 'f2', 'f3']),
+                    dtype='category',
+                ),
+                pd.Series(
+                    ['a', 'b', 'c'],
+                    index=audformat.filewise_index(['f1', 'f2', 'f3']),
+                    dtype='category',
+                ),
+            ],
+            None,
+            'always',
+            ValueError,
+            re.escape(
+                "Found two columns with name 'None' but different dtypes:\n"
+                "CategoricalDtype(categories=['a', 'b'], ordered=False) "
+                "!= CategoricalDtype(categories=['a', 'b', 'c'], "
+                "ordered=False)."
+            ),
+        ),
+        # values do not match
         (
             [
                 pd.DataFrame(
@@ -1766,14 +1857,12 @@ def test_concat_overwrite_aggregate_function(
             None,
             'non-matching',
             ValueError,
-            '',
-        ),
-        (
-            [],
-            None,
-            'non-existent',
-            ValueError,
-            "aggregate needs to be one of 'always', 'non-matching'",
+            (
+                "Found overlapping data in column 'A':\n   "
+                "left  right\n"
+                "a   1.0    2.0\n"
+                "b   3.0    4.0"
+            ),
         ),
         (
             [
@@ -1783,71 +1872,47 @@ def test_concat_overwrite_aggregate_function(
             None,
             'non-matching',
             ValueError,
-            '',
+            (
+                "Found overlapping data in column 'None':\n   "
+                "left  right\n"
+                "a   1.0    2.0\n"
+                "b   2.0    3.0"
+            ),
         ),
-        # error: dtypes do not match
         (
             [
-                pd.Series([1], audformat.filewise_index('f1')),
                 pd.Series([1.], audformat.filewise_index('f1')),
+                pd.Series([2.], audformat.filewise_index('f1')),
             ],
             None,
             'always',
             ValueError,
-            '',
+            (
+                "Found overlapping data in column 'None':\n      "
+                "left  right\n"
+                "file             \n"
+                "f1     1.0    2.0"
+            ),
         ),
         (
             [
+                pd.Series([1.], pd.Index(['f1'], name='idx')),
                 pd.Series(
-                    [1, 2, 3],
-                    index=audformat.filewise_index(['f1', 'f2', 'f3']),
-                ),
-                pd.Series(
-                    ['a', 'b', 'a'],
-                    index=audformat.filewise_index(['f1', 'f2', 'f3']),
-                    dtype='category',
+                    [2.],
+                    pd.MultiIndex.from_arrays([['f1']], names=['idx']),
                 ),
             ],
             None,
             'always',
             ValueError,
-            '',
+            (
+                "Found overlapping data in column 'None':\n     "
+                "left  right\n"
+                "idx             \n"
+                "f1    1.0    2.0"
+            ),
         ),
-        (
-            [
-                pd.Series(
-                    ['a', 'b', 'a'],
-                    index=audformat.filewise_index(['f1', 'f2', 'f3']),
-                ),
-                pd.Series(
-                    ['a', 'b', 'a'],
-                    index=audformat.filewise_index(['f1', 'f2', 'f3']),
-                    dtype='category',
-                ),
-            ],
-            None,
-            'always',
-            ValueError,
-            '',
-        ),
-        (
-            [
-                pd.Series(
-                    ['a', 'b', 'a'],
-                    index=audformat.filewise_index(['f1', 'f2', 'f3']),
-                    dtype='category',
-                ),
-                pd.Series(
-                    ['a', 'b', 'c'],
-                    index=audformat.filewise_index(['f1', 'f2', 'f3']),
-                    dtype='category',
-                ),
-            ],
-            None,
-            'always',
-            ValueError,
-            '',
-        ),
+        # index names do not match
         (
             [
                 pd.Series(
@@ -1862,34 +1927,12 @@ def test_concat_overwrite_aggregate_function(
             None,
             'always',
             ValueError,
-            '',
-        ),
-        # error: values do not match
-        pytest.param(
-            [
-                pd.Series([1.], audformat.filewise_index('f1')),
-                pd.Series([2.], audformat.filewise_index('f1')),
-            ],
-            None,
-            'always',
-            ValueError,
-            '',
+            re.escape(
+                "Levels and dtypes of all objects must match. "
+                "Found different level dtypes: ['str', 'object']."
+            ),
         ),
         (
-            [
-                pd.Series([1.], pd.Index(['f1'], name='idx')),
-                pd.Series(
-                    [2.],
-                    pd.MultiIndex.from_arrays([['f1']], names=['idx']),
-                ),
-            ],
-            None,
-            'always',
-            ValueError,
-            '',
-        ),
-        # error: index names do not match
-        pytest.param(
             [
                 pd.Series([], index=pd.Index([], name='idx1'), dtype='object'),
                 pd.Series([], index=pd.Index([], name='idx2'), dtype='object'),
@@ -1897,7 +1940,10 @@ def test_concat_overwrite_aggregate_function(
             None,
             'always',
             ValueError,
-            '',
+            re.escape(
+                "Levels and dtypes of all objects must match. "
+                "Found different level names: ['idx1', 'idx2']."
+            ),
         ),
         (
             [
@@ -1910,7 +1956,10 @@ def test_concat_overwrite_aggregate_function(
             None,
             'always',
             ValueError,
-            '',
+            re.escape(
+                "Levels and dtypes of all objects must match. "
+                "Found different level names: ['idx1', 'idx2']."
+            ),
         ),
     ],
 )
