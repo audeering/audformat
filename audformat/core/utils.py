@@ -94,7 +94,7 @@ def concat(
             that have an overlapping index;
             ``'non-matching'``: apply to all samples
             that have an overlapping index
-            and the same value
+            and a different value
 
     Returns:
         concatenated objects
