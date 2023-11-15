@@ -37,8 +37,8 @@ def concat(
         objs: typing.Sequence[typing.Union[pd.Series, pd.DataFrame]],
         *,
         overwrite: bool = False,
-        aggregate: str = 'always',
         aggregate_function: typing.Callable[[pd.Series], typing.Any] = None,
+        aggregate: str = 'always',
 ) -> typing.Union[pd.Series, pd.DataFrame]:
     r"""Concatenate objects.
 
@@ -75,14 +75,6 @@ def concat(
     Args:
         objs: objects
         overwrite: overwrite values where indices overlap
-        aggregate: if ``aggregate_function`` is not ``None``,
-            ``aggregate`` decides
-            when ``aggregate_function`` is applied.
-            ``'always'``: apply to all samples
-            that have an overlapping index;
-            ``'non-matching'``: apply to all samples
-            that have an overlapping index
-            and the same value
         aggregate_function: function to aggregate overlapping values,
             that cannot be joined
             when ``overwrite`` is ``False``.
@@ -95,6 +87,14 @@ def concat(
             or to
             ``tuple``
             to return them as a tuple
+        aggregate: if ``aggregate_function`` is not ``None``,
+            ``aggregate`` decides
+            when ``aggregate_function`` is applied.
+            ``'always'``: apply to all samples
+            that have an overlapping index;
+            ``'non-matching'``: apply to all samples
+            that have an overlapping index
+            and the same value
 
     Returns:
         concatenated objects
