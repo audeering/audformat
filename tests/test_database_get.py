@@ -41,6 +41,10 @@ def mono_db(tmpdir):
         'str',
         labels=['cloudy', 'rainy', 'sunny'],
     )
+    db.schemes['text'] = audformat.Scheme(
+        'str',
+        labels={'a': 'A text', 'b': 'B text'},
+    )
 
     # --- Misc tables
     index = pd.Index(['s1', 's2', 's3'], name='speaker', dtype='string')
@@ -75,11 +79,15 @@ def mono_db(tmpdir):
     db['files']['winner'].set(['w1', 'w1', 'w2'])
     db['files']['perceived-age'] = audformat.Column(scheme_id='age')
     db['files']['perceived-age'].set([25, 34, 45])
+    db['files']['text'] = audformat.Column(scheme_id='text')
+    db['files']['text'].set(['a', 'a', 'b'])
 
     index = audformat.filewise_index(['f1.wav'])
     db['files.sub'] = audformat.Table(index)
     db['files.sub']['speaker'] = audformat.Column(scheme_id='speaker')
     db['files.sub']['speaker'].set('s1')
+    db['files.sub']['text'] = audformat.Column()
+    db['files.sub']['text'].set('a')
 
     index = audformat.filewise_index(['f1.wav', 'f3.wav'])
     db['other'] = audformat.Table(index)
@@ -747,6 +755,22 @@ def test_database_get(request, db, scheme, additional_schemes, expected):
             pd.DataFrame(
                 {
                     'gender': ['female', '', 'male'],
+                },
+                index=audformat.filewise_index(
+                    ['f1.wav', 'f2.wav', 'f3.wav']
+                ),
+                dtype='string',
+            ),
+        ),
+        (
+            'mono_db',
+            'text',
+            [],
+            False,
+            lambda y: y[0],
+            pd.DataFrame(
+                {
+                    'text': ['A text', 'A text', 'B text'],
                 },
                 index=audformat.filewise_index(
                     ['f1.wav', 'f2.wav', 'f3.wav']

@@ -449,6 +449,7 @@ class Database(HeaderBase):
             tables: typing.Union[str, typing.Sequence] = None,
             splits: typing.Union[str, typing.Sequence] = None,
             strict: bool = False,
+            map: bool = True,
             original_column_names: bool = False,
             aggregate_function: typing.Callable[
                 [pd.Series],
@@ -498,6 +499,10 @@ class Database(HeaderBase):
                 the search is extended to columns
                 that match the name of the scheme
                 or the name of a label in the scheme
+            map: if ``True``
+                and a requested scheme
+                has labels with mappings,
+                those will be returned
             original_column_names: if ``True``
                 keep the original column names
                 (possibly results in multiple columns).
@@ -558,6 +563,22 @@ class Database(HeaderBase):
             wav/03a01Wa.wav      anger   male
             wav/03a02Fc.wav  happiness   male
             wav/03a02Nc.wav    neutral   male
+            >>> db.get('transcription').head()
+                                                    transcription
+            file
+            wav/03a01Fa.wav  Der Lappen liegt auf dem Eisschrank.
+            wav/03a01Nc.wav  Der Lappen liegt auf dem Eisschrank.
+            wav/03a01Wa.wav  Der Lappen liegt auf dem Eisschrank.
+            wav/03a02Fc.wav     Das will sie am Mittwoch abgeben.
+            wav/03a02Nc.wav     Das will sie am Mittwoch abgeben.
+            >>> db.get('transcription', map=False).head()
+                            transcription
+            file
+            wav/03a01Fa.wav           a01
+            wav/03a01Nc.wav           a01
+            wav/03a01Wa.wav           a01
+            wav/03a02Fc.wav           a02
+            wav/03a02Nc.wav           a02
 
             Non-existent schemes are ignored.
 
@@ -764,7 +785,20 @@ class Database(HeaderBase):
                 y = None
                 # Scheme directly stored in column
                 if scheme_in_column(requested_scheme, column, column_id):
-                    y = self[table_id][column_id].get()
+                    if requested_scheme in self.schemes:
+                        labels = self.schemes[requested_scheme].labels
+                    if (
+                            map is True
+                            and requested_scheme in self.schemes
+                            and isinstance(labels, dict)
+                            and not isinstance(list(labels.values())[0], dict)
+                            and self[table_id][column_id].scheme_id == requested_scheme
+                    ):
+                        # {'a': 'Full a', 'b': 'Full b'} is mapped
+                        # {'a': {'d': 1}, 'b': {'d': 2}} is not mapped
+                        y = self[table_id][column_id].get(map=requested_scheme)
+                    else:
+                        y = self[table_id][column_id].get()
                     y.name = requested_scheme
                     append_series(ys, y, column_id)
                 # Get series based on label of scheme
