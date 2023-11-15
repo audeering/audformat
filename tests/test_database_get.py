@@ -1274,7 +1274,10 @@ def test_database_get_strict(
             None,
             False,
             TypeError,
-            "dtype of categories must be the same",
+            (
+                "Cannot join labels for scheme 'weight' "
+                "with different data types: int64, object"
+            ),
         ),
         (
             # Fail as both schemes result in same original column name,

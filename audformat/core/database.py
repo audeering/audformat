@@ -679,6 +679,14 @@ class Database(HeaderBase):
                     y.name = column_id
                 ys.append(y)
 
+        def dtypes_of_categories(objs):
+            dtypes = [
+                obj.dtype.categories.dtype
+                for obj in objs
+                if isinstance(obj.dtype, pd.CategoricalDtype)
+            ]
+            return sorted(list(set(dtypes)))
+
         def empty_frame(name):
             return pd.DataFrame(
                 {name: []},
@@ -771,23 +779,18 @@ class Database(HeaderBase):
                             append_series(ys, y, column_id)
 
         # --- Ensure we have a common dtype for requested scheme
-        categorical_dtypes = [
-            y.dtype for y in ys
-            if isinstance(y.dtype, pd.CategoricalDtype)
-        ]
-        dtypes_of_categories = [
-            dtype.categories.dtype
-            for dtype in categorical_dtypes
-        ]
-        if len(categorical_dtypes) > 0:
-            if len(set(dtypes_of_categories)) > 1:
+        dtypes = dtypes_of_categories(ys)
+        if len(dtypes) > 0:
+            if len(dtypes) > 1:
                 # Don't know if this can ever be triggered,
                 # but make sure we raise the same error as
                 # pd.api.types.union_categoricals
                 raise TypeError(  # pragma: nocover
-                    'dtype of categories must be the same'
+                    f"Cannot join labels for scheme '{requested_scheme}' "
+                    "with different data types: "
+                    f"{', '.join(dtypes)}"
                 )
-            dtype = dtypes_of_categories[0]
+            dtype = dtypes[0]
             # Convert everything to categorical data
             for n, y in enumerate(ys):
                 if not isinstance(y.dtype, pd.CategoricalDtype):
@@ -798,7 +801,15 @@ class Database(HeaderBase):
                     )
             # Find union of categorical data
             data = [y.array for y in ys]
-            data = pd.api.types.union_categoricals(data)
+            try:
+                data = pd.api.types.union_categoricals(data)
+            except TypeError:
+                dtypes = [str(dtype) for dtype in dtypes_of_categories(data)]
+                raise TypeError(
+                    f"Cannot join labels for scheme '{requested_scheme}' "
+                    "with different data types: "
+                    f"{', '.join(dtypes)}"
+                )
             ys = [y.astype(data.dtype) for y in ys]
 
         # --- Combine all labels
