@@ -128,22 +128,24 @@ def concat(
         0     0     1
         >>> concat(
         ...     [
-        ...         pd.Series([1], index=pd.Index([0])),
-        ...         pd.Series([1], index=pd.Index([0])),
+        ...         pd.Series([1, 1], index=pd.Index([0, 1])),
+        ...         pd.Series([1, 1], index=pd.Index([0, 1])),
         ...     ],
         ...     aggregate_function=np.sum,
         ... )
         0    2
+        1    2
         dtype: Int64
         >>> concat(
         ...     [
-        ...         pd.Series([1], index=pd.Index([0])),
-        ...         pd.Series([1], index=pd.Index([0])),
+        ...         pd.Series([1, 1], index=pd.Index([0, 1])),
+        ...         pd.Series([1, 2], index=pd.Index([0, 1])),
         ...     ],
         ...     aggregate_function=np.sum,
         ...     aggregate='non-matching',
         ... )
         0    1
+        1    3
         dtype: Int64
         >>> concat(
         ...     [
@@ -291,14 +293,14 @@ def concat(
                 # We use len() here as index.empty takes a very long time
                 if len(intersection) > 0:
 
-                    def collect_overlap(column, overlapping_values):
+                    def collect_overlap(overlapping_values, column, index):
                         """Collect overlap for aggregate function."""
                         if column.name not in overlapping_values:
                             overlapping_values[column.name] = []
                         overlapping_values[column.name].append(
-                            column.loc[intersection]
+                            column.loc[index]
                         )
-                        column = column.loc[~column.index.isin(intersection)]
+                        column = column.loc[~column.index.isin(index)]
                         return column, overlapping_values
 
                     if (
@@ -306,8 +308,9 @@ def concat(
                             and aggregate == 'always'
                     ):
                         column, overlapping_values = collect_overlap(
-                            column,
                             overlapping_values,
+                            column,
+                            intersection,
                         )
 
                     else:
@@ -330,8 +333,9 @@ def concat(
                                     and aggregate == 'non-matching'
                             ):
                                 column, overlapping_values = collect_overlap(
-                                    column,
                                     overlapping_values,
+                                    column,
+                                    intersection[differ],
                                 )
 
                             # Raise error if values don't match and are not NaN

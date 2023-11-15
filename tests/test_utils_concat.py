@@ -1226,7 +1226,7 @@ def test_concat_aggregate_function_always(objs, aggregate_function, expected):
                 pd.Series([1, 3], pd.Index(['a', 'b']), dtype='float'),
             ],
             np.sum,
-            pd.Series([2, 5], pd.Index(['a', 'b']), dtype='float'),
+            pd.Series([1, 5], pd.Index(['a', 'b']), dtype='float'),
         ),
         (
             [
@@ -1244,7 +1244,7 @@ def test_concat_aggregate_function_always(objs, aggregate_function, expected):
                 pd.Series([1, 4], pd.Index(['a', 'b']), dtype='float'),
             ],
             np.sum,
-            pd.Series([3, 9], pd.Index(['a', 'b']), dtype='float'),
+            pd.Series([1, 9], pd.Index(['a', 'b']), dtype='float'),
         ),
         # different values
         (
@@ -1656,8 +1656,8 @@ def test_concat_aggregate_function_always(objs, aggregate_function, expected):
             np.sum,
             pd.DataFrame(
                 {
-                    'A': [4, 3, 2, 5],
-                    'B': [4, 3, 2, 5],
+                    'A': [4, 3, 1, 5],
+                    'B': [4, 3, 1, 5],
                     'C': [np.NaN, 2, 1, 2],
                 },
                 index=pd.Index(['a', 'b', 'c', 'd']),
