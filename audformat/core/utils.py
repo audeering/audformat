@@ -37,6 +37,7 @@ def concat(
         objs: typing.Sequence[typing.Union[pd.Series, pd.DataFrame]],
         *,
         overwrite: bool = False,
+        aggregate: str = 'always',
         aggregate_function: typing.Callable[[pd.Series], typing.Any] = None,
 ) -> typing.Union[pd.Series, pd.DataFrame]:
     r"""Concatenate objects.
@@ -74,6 +75,15 @@ def concat(
     Args:
         objs: objects
         overwrite: overwrite values where indices overlap
+        aggregate: if ``aggregate_function`` is not ``None``,
+            ``aggregate`` decides
+            when ``aggregate_function`` is applied.
+            ``'always'``: apply to all samples;
+            ``'duplicates'``: apply to all samples
+            that have an overlapping index;
+            ``'non-matching'``: apply to all samples
+            that have an overlapping index
+            and the same value
         aggregate_function: function to aggregate overlapping values,
             that cannot be joined
             when ``overwrite`` is ``False``.
@@ -93,6 +103,8 @@ def concat(
     Raises:
         ValueError: if level and dtypes of object indices do not match
         ValueError: if columns with the same name have different dtypes
+        ValueError: if ``aggregate`` is not one of
+            ``'always'``, ``'duplicates'``, ``'non-matching'``
         ValueError: if ``aggregate_function`` is ``None``,
             ``overwrite`` is ``False``,
             and values in the same position do not match
@@ -197,6 +209,12 @@ def concat(
         f3   0 days NaT    2.0      b
 
     """
+    allowed_values = ['always', 'non-matching']
+    if aggregate not in allowed_values:
+        raise ValueError(
+            "aggregate needs to be one of '{'\', '.join(allowed_values)}'"
+        )
+
     if not objs:
         return pd.Series([], index=pd.Index([]), dtype='object')
 
@@ -264,44 +282,57 @@ def concat(
                 # We use len() here as index.empty takes a very long time
                 if len(intersection) > 0:
 
-                    # Find data that differ and cannot be joined
-                    combine = pd.DataFrame(
-                        {
-                            'left':
-                            columns_reindex[column.name][intersection],
-                            'right':
-                            column[intersection],
-                        }
-                    )
-                    combine.dropna(inplace=True)
-                    differ = combine['left'] != combine['right']
+                    def collect_overlap(column, overlapping_values):
+                        """Collect overlap for aggregate function."""
+                        if column.name not in overlapping_values:
+                            overlapping_values[column.name] = []
+                        overlapping_values[column.name].append(
+                            column.loc[intersection]
+                        )
+                        column = column.loc[
+                            ~column.index.isin(intersection)
+                        ]
 
-                    if np.any(differ):
+                    if (
+                            aggregate_function is not None
+                            and aggregate == 'always'
+                    ):
+                        collect_overlap(column, overlapping_values)
 
-                        # Collect overlap for custom aggregate function
-                        if aggregate_function is not None:
-                            if column.name not in overlapping_values:
-                                overlapping_values[column.name] = []
-                            overlapping_values[column.name].append(
-                                column.loc[intersection]
-                            )
-                            column = column.loc[
-                                ~column.index.isin(intersection)
-                            ]
+                    else:
+                        # Find data that differ and cannot be joined
+                        combine = pd.DataFrame(
+                            {
+                                'left':
+                                columns_reindex[column.name][intersection],
+                                'right':
+                                column[intersection],
+                            }
+                        )
+                        combine.dropna(inplace=True)
+                        differ = combine['left'] != combine['right']
 
-                        # Raise error if values don't match and are not NaN
-                        else:
-                            max_display = 10
-                            overlap = combine[differ]
-                            msg_overlap = str(overlap[:max_display])
-                            msg_tail = '\n...' \
-                                if len(overlap) > max_display \
-                                else ''
-                            raise ValueError(
-                                "Found overlapping data in column "
-                                f"'{column.name}':\n"
-                                f"{msg_overlap}{msg_tail}"
-                            )
+                        if np.any(differ):
+
+                            if (
+                                    aggregate_function is not None
+                                    and aggregate == 'non-matching'
+                            ):
+                                collect_overlap(column, overlapping_values)
+
+                            # Raise error if values don't match and are not NaN
+                            else:
+                                max_display = 10
+                                overlap = combine[differ]
+                                msg_overlap = str(overlap[:max_display])
+                                msg_tail = '\n...' \
+                                    if len(overlap) > max_display \
+                                    else ''
+                                raise ValueError(
+                                    "Found overlapping data in column "
+                                    f"'{column.name}':\n"
+                                    f"{msg_overlap}{msg_tail}"
+                                )
 
             # drop NaN to avoid overwriting values from other column
             column = column.dropna()

@@ -424,124 +424,6 @@ import audformat
                 audformat.segmented_index(['f1', 'f2', 'f3', 'f4']),
             ),
         ),
-        # error: dtypes do not match
-        pytest.param(
-            [
-                pd.Series([1], audformat.filewise_index('f1')),
-                pd.Series([1.], audformat.filewise_index('f1')),
-            ],
-            False,
-            None,
-            marks=pytest.mark.xfail(raises=ValueError),
-        ),
-        pytest.param(
-            [
-                pd.Series(
-                    [1, 2, 3],
-                    index=audformat.filewise_index(['f1', 'f2', 'f3']),
-                ),
-                pd.Series(
-                    ['a', 'b', 'a'],
-                    index=audformat.filewise_index(['f1', 'f2', 'f3']),
-                    dtype='category',
-                ),
-            ],
-            False,
-            None,
-            marks=pytest.mark.xfail(raises=ValueError),
-        ),
-        pytest.param(
-            [
-                pd.Series(
-                    ['a', 'b', 'a'],
-                    index=audformat.filewise_index(['f1', 'f2', 'f3']),
-                ),
-                pd.Series(
-                    ['a', 'b', 'a'],
-                    index=audformat.filewise_index(['f1', 'f2', 'f3']),
-                    dtype='category',
-                ),
-            ],
-            False,
-            None,
-            marks=pytest.mark.xfail(raises=ValueError),
-        ),
-        pytest.param(
-            [
-                pd.Series(
-                    ['a', 'b', 'a'],
-                    index=audformat.filewise_index(['f1', 'f2', 'f3']),
-                    dtype='category',
-                ),
-                pd.Series(
-                    ['a', 'b', 'c'],
-                    index=audformat.filewise_index(['f1', 'f2', 'f3']),
-                    dtype='category',
-                ),
-            ],
-            False,
-            None,
-            marks=pytest.mark.xfail(raises=ValueError),
-        ),
-        pytest.param(
-            [
-                pd.Series(
-                    [1.],
-                    pd.Index(['f1'], name='idx', dtype='string'),
-                ),
-                pd.Series(  # default dtype is object
-                    [2.],
-                    pd.MultiIndex.from_arrays([['f1']], names=['idx']),
-                ),
-            ],
-            False,
-            None,
-            marks=pytest.mark.xfail(raises=ValueError),
-        ),
-        # error: values do not match
-        pytest.param(
-            [
-                pd.Series([1.], audformat.filewise_index('f1')),
-                pd.Series([2.], audformat.filewise_index('f1')),
-            ],
-            False,
-            None,
-            marks=pytest.mark.xfail(raises=ValueError),
-        ),
-        pytest.param(
-            [
-                pd.Series([1.], pd.Index(['f1'], name='idx')),
-                pd.Series(
-                    [2.],
-                    pd.MultiIndex.from_arrays([['f1']], names=['idx']),
-                ),
-            ],
-            False,
-            None,
-            marks=pytest.mark.xfail(raises=ValueError),
-        ),
-        # error: index names do not match
-        pytest.param(
-            [
-                pd.Series([], index=pd.Index([], name='idx1'), dtype='object'),
-                pd.Series([], index=pd.Index([], name='idx2'), dtype='object'),
-            ],
-            False,
-            None,
-            marks=pytest.mark.xfail(raises=ValueError),
-        ),
-        pytest.param(
-            [
-                pd.Series([1.], pd.Index(['f1'], name='idx1')),
-                pd.Series(
-                    [2.],
-                    pd.MultiIndex.from_arrays([['f2']], names=['idx2']),
-                ),
-            ],
-            False,
-            None,
-            marks=pytest.mark.xfail(raises=ValueError),
-        ),
     ],
 )
 def test_concat(objs, overwrite, expected):
@@ -638,15 +520,6 @@ def test_concat(objs, overwrite, expected):
             pd.Series([3, 9], pd.Index(['a', 'b']), dtype='float'),
         ),
         # different values
-        pytest.param(
-            [
-                pd.Series([1, 2], pd.Index(['a', 'b']), dtype='float'),
-                pd.Series([2, 3], pd.Index(['a', 'b']), dtype='float'),
-            ],
-            None,
-            None,
-            marks=pytest.mark.xfail(raises=ValueError),
-        ),
         (
             [
                 pd.Series([1, 2], pd.Index(['a', 'b']), dtype='float'),
@@ -741,29 +614,6 @@ def test_concat(objs, overwrite, expected):
             ],
             lambda y: y[2],
             pd.Series([3, 4], pd.Index(['a', 'b']), dtype='float'),
-        ),
-        pytest.param(
-            [
-                pd.DataFrame(
-                    {
-                        'A': [1, 3],
-                        'B': [2, 4],
-                    },
-                    pd.Index(['a', 'b']),
-                    dtype='float',
-                ),
-                pd.DataFrame(
-                    {
-                        'A': [2, 4],
-                        'B': [3, 5],
-                    },
-                    pd.Index(['a', 'b']),
-                    dtype='float',
-                ),
-            ],
-            None,
-            None,
-            marks=pytest.mark.xfail(raises=ValueError),
         ),
         (
             [
@@ -1089,8 +939,16 @@ def test_concat(objs, overwrite, expected):
         ),
     ]
 )
-def test_concat_aggregate_function(objs, aggregate_function, expected):
-    obj = audformat.utils.concat(objs, aggregate_function=aggregate_function)
+def test_concat_aggregate_function_non_matching(
+        objs,
+        aggregate_function,
+        expected,
+):
+    obj = audformat.utils.concat(
+        objs,
+        aggregate_function=aggregate_function,
+        aggregate='non-matching',
+    )
     if isinstance(obj, pd.Series):
         pd.testing.assert_series_equal(obj, expected)
     else:
@@ -1156,3 +1014,191 @@ def test_concat_overwrite_aggregate_function(
         pd.testing.assert_series_equal(obj, expected)
     else:
         pd.testing.assert_frame_equal(obj, expected)
+
+
+@pytest.mark.parametrize(
+    'objs, aggregate_function, aggregate, expected_error, expected_error_msg',
+    [
+        (
+            [
+                pd.DataFrame(
+                    {
+                        'A': [1, 3],
+                        'B': [2, 4],
+                    },
+                    pd.Index(['a', 'b']),
+                    dtype='float',
+                ),
+                pd.DataFrame(
+                    {
+                        'A': [2, 4],
+                        'B': [3, 5],
+                    },
+                    pd.Index(['a', 'b']),
+                    dtype='float',
+                ),
+            ],
+            None,
+            'non-matching',
+            ValueError,
+            '',
+        ),
+        (
+            [],
+            None,
+            'non-existent',
+            ValueError,
+            "aggregate needs to be one of 'always', 'non-matching'",
+        ),
+        (
+            [
+                pd.Series([1, 2], pd.Index(['a', 'b']), dtype='float'),
+                pd.Series([2, 3], pd.Index(['a', 'b']), dtype='float'),
+            ],
+            None,
+            'non-matching',
+            ValueError,
+            '',
+        ),
+        # error: dtypes do not match
+        (
+            [
+                pd.Series([1], audformat.filewise_index('f1')),
+                pd.Series([1.], audformat.filewise_index('f1')),
+            ],
+            None,
+            'always',
+            ValueError,
+            '',
+        ),
+        (
+            [
+                pd.Series(
+                    [1, 2, 3],
+                    index=audformat.filewise_index(['f1', 'f2', 'f3']),
+                ),
+                pd.Series(
+                    ['a', 'b', 'a'],
+                    index=audformat.filewise_index(['f1', 'f2', 'f3']),
+                    dtype='category',
+                ),
+            ],
+            None,
+            'always',
+            ValueError,
+            '',
+        ),
+        (
+            [
+                pd.Series(
+                    ['a', 'b', 'a'],
+                    index=audformat.filewise_index(['f1', 'f2', 'f3']),
+                ),
+                pd.Series(
+                    ['a', 'b', 'a'],
+                    index=audformat.filewise_index(['f1', 'f2', 'f3']),
+                    dtype='category',
+                ),
+            ],
+            None,
+            'always',
+            ValueError,
+            '',
+        ),
+        (
+            [
+                pd.Series(
+                    ['a', 'b', 'a'],
+                    index=audformat.filewise_index(['f1', 'f2', 'f3']),
+                    dtype='category',
+                ),
+                pd.Series(
+                    ['a', 'b', 'c'],
+                    index=audformat.filewise_index(['f1', 'f2', 'f3']),
+                    dtype='category',
+                ),
+            ],
+            None,
+            'always',
+            ValueError,
+            '',
+        ),
+        (
+            [
+                pd.Series(
+                    [1.],
+                    pd.Index(['f1'], name='idx', dtype='string'),
+                ),
+                pd.Series(  # default dtype is object
+                    [2.],
+                    pd.MultiIndex.from_arrays([['f1']], names=['idx']),
+                ),
+            ],
+            None,
+            'always',
+            ValueError,
+            '',
+        ),
+        # error: values do not match
+        pytest.param(
+            [
+                pd.Series([1.], audformat.filewise_index('f1')),
+                pd.Series([2.], audformat.filewise_index('f1')),
+            ],
+            None,
+            'always',
+            ValueError,
+            '',
+        ),
+        (
+            [
+                pd.Series([1.], pd.Index(['f1'], name='idx')),
+                pd.Series(
+                    [2.],
+                    pd.MultiIndex.from_arrays([['f1']], names=['idx']),
+                ),
+            ],
+            None,
+            'always',
+            ValueError,
+            '',
+        ),
+        # error: index names do not match
+        pytest.param(
+            [
+                pd.Series([], index=pd.Index([], name='idx1'), dtype='object'),
+                pd.Series([], index=pd.Index([], name='idx2'), dtype='object'),
+            ],
+            None,
+            'always',
+            ValueError,
+            '',
+        ),
+        (
+            [
+                pd.Series([1.], pd.Index(['f1'], name='idx1')),
+                pd.Series(
+                    [2.],
+                    pd.MultiIndex.from_arrays([['f2']], names=['idx2']),
+                ),
+            ],
+            None,
+            'always',
+            ValueError,
+            '',
+        ),
+    ],
+)
+def test_concat_errors(
+        objs,
+        aggregate_function,
+        aggregate,
+        expected_error,
+        expected_error_msg,
+):
+    with pytest.raises(expected_error, match=expected_error_msg):
+        audformat.utils.concat(
+            objs,
+            aggregate_function=aggregate_function,
+            aggregate=aggregate,
+        )
