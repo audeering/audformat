@@ -466,6 +466,731 @@ def test_concat(objs, overwrite, expected):
                 pd.Series([1, 2], pd.Index(['a', 'b']), dtype='float'),
             ],
             tuple,
+            pd.Series([(1, 1), (2, 2)], pd.Index(['a', 'b']), dtype='object'),
+        ),
+        (
+            [
+                pd.Series([1, 2], pd.Index(['a', 'b']), dtype='float'),
+                pd.Series([1, 2], pd.Index(['a', 'b']), dtype='float'),
+            ],
+            np.sum,
+            pd.Series([2, 4], pd.Index(['a', 'b']), dtype='float'),
+        ),
+        (
+            [
+                pd.Series([1, 2], pd.Index(['a', 'b']), dtype='float'),
+                pd.Series([1, 2], pd.Index(['a', 'b']), dtype='float'),
+            ],
+            np.var,
+            pd.Series([0, 0], pd.Index(['a', 'b']), dtype='float'),
+        ),
+        (
+            [
+                pd.Series([1, 2], pd.Index(['a', 'b']), dtype='float'),
+                pd.Series([1, 2], pd.Index(['a', 'b']), dtype='float'),
+            ],
+            lambda y: 'a',
+            pd.Series(
+                ['a', 'a'],
+                pd.Index(['a', 'b']),
+                dtype='object',
+            ),
+        ),
+        (
+            [
+                pd.Series([1, 2], pd.Index(['a', 'b']), dtype='float'),
+                pd.Series([1, 2], pd.Index(['a', 'b']), dtype='float'),
+            ],
+            lambda y: 0,
+            pd.Series(
+                [0, 0],
+                pd.Index(['a', 'b']),
+                dtype='float',
+            ),
+        ),
+        (
+            [
+                pd.Series([1, 2], pd.Index(['a', 'b']), dtype='int'),
+                pd.Series([1, 2], pd.Index(['a', 'b']), dtype='int'),
+            ],
+            lambda y: 0,
+            pd.Series(
+                [0, 0],
+                pd.Index(['a', 'b']),
+                dtype='Int64',
+            ),
+        ),
+        (
+            [
+                pd.Series([1, 2], pd.Index(['a', 'b']), dtype='int'),
+                pd.Series([1, 2], pd.Index(['a', 'b']), dtype='int'),
+            ],
+            lambda y: 0.5,
+            pd.Series(
+                [0.5, 0.5],
+                pd.Index(['a', 'b']),
+                dtype='float',
+            ),
+        ),
+        (
+            [
+                pd.Series([1, 2], pd.Index(['a', 'b']), dtype='float'),
+                pd.Series([1, 2], pd.Index(['a', 'b']), dtype='float'),
+            ],
+            lambda y: ('a', 'b'),
+            pd.Series(
+                [('a', 'b'), ('a', 'b')],
+                pd.Index(['a', 'b']),
+                dtype='object',
+            ),
+        ),
+        (
+            [
+                pd.Series([1, 2], pd.Index(['a', 'b']), dtype='float'),
+                pd.Series([1, 2], pd.Index(['a', 'b']), dtype='float'),
+                pd.Series([1, 2], pd.Index(['a', 'b']), dtype='float'),
+            ],
+            np.sum,
+            pd.Series([3, 6], pd.Index(['a', 'b']), dtype='float'),
+        ),
+        (
+            [
+                pd.Series(
+                    [1, 2],
+                    audformat.filewise_index(['a', 'b']),
+                    dtype='float',
+                ),
+                pd.Series(
+                    [1, 2],
+                    audformat.filewise_index(['a', 'b']),
+                    dtype='float',
+                ),
+            ],
+            np.sum,
+            pd.Series(
+                [2, 4],
+                audformat.filewise_index(['a', 'b']),
+                dtype='float',
+            ),
+        ),
+        (
+            [
+                pd.Series(['a', 'b'], pd.Index(['a', 'b']), dtype='string'),
+                pd.Series(['a', 'b'], pd.Index(['a', 'b']), dtype='string'),
+            ],
+            lambda y: np.char.add(y[0], y[1]),
+            pd.Series(['aa', 'bb'], pd.Index(['a', 'b']), dtype='string'),
+        ),
+        (
+            [
+                pd.DataFrame(
+                    {
+                        'A': [1, 3],
+                        'B': [2, 4],
+                    },
+                    pd.Index(['a', 'b']),
+                    dtype='float',
+                ),
+                pd.DataFrame(
+                    {
+                        'A': [1, 3],
+                        'B': [2, 4],
+                    },
+                    pd.Index(['a', 'b']),
+                    dtype='float',
+                ),
+            ],
+            None,
+            pd.DataFrame(
+                {
+                    'A': [1, 3],
+                    'B': [2, 4],
+                },
+                pd.Index(['a', 'b']),
+                dtype='float',
+            ),
+        ),
+        (
+            [
+                pd.DataFrame(
+                    {
+                        'A': [1, 3],
+                        'B': [2, 4],
+                    },
+                    pd.Index(['a', 'b']),
+                    dtype='float',
+                ),
+                pd.DataFrame(
+                    {
+                        'A': [1, 3],
+                        'B': [2, 4],
+                    },
+                    pd.Index(['a', 'b']),
+                    dtype='float',
+                ),
+            ],
+            np.sum,
+            pd.DataFrame(
+                {
+                    'A': [2, 6],
+                    'B': [4, 8],
+                },
+                pd.Index(['a', 'b']),
+                dtype='float',
+            ),
+        ),
+        (
+            [
+                pd.DataFrame(
+                    {
+                        'A': [1, 3],
+                        'B': [2, 4],
+                    },
+                    pd.Index(['a', 'b']),
+                    dtype='float',
+                ),
+                pd.DataFrame(
+                    {
+                        'A': [1, 3],
+                    },
+                    pd.Index(['a', 'b']),
+                    dtype='float',
+                ),
+            ],
+            np.sum,
+            pd.DataFrame(
+                {
+                    'A': [2, 6],
+                    'B': [2, 4],
+                },
+                pd.Index(['a', 'b']),
+                dtype='float',
+            ),
+        ),
+        (
+            [
+                pd.DataFrame(
+                    {
+                        'A': [1, 3],
+                        'B': [2, 4],
+                    },
+                    pd.Index(['a', 'b']),
+                    dtype='float',
+                ),
+                pd.DataFrame(
+                    {
+                        'B': [2, 4],
+                    },
+                    pd.Index(['a', 'b']),
+                    dtype='float',
+                ),
+            ],
+            np.sum,
+            pd.DataFrame(
+                {
+                    'A': [1, 3],
+                    'B': [4, 8],
+                },
+                pd.Index(['a', 'b']),
+                dtype='float',
+            ),
+        ),
+        (
+            [
+                pd.DataFrame(
+                    {
+                        'A': [1, 3],
+                    },
+                    pd.Index(['a', 'b']),
+                    dtype='float',
+                ),
+                pd.DataFrame(
+                    {
+                        'A': [1, 3],
+                        'B': [2, 4],
+                    },
+                    pd.Index(['a', 'b']),
+                    dtype='float',
+                ),
+            ],
+            np.sum,
+            pd.DataFrame(
+                {
+                    'A': [2, 6],
+                    'B': [2, 4],
+                },
+                pd.Index(['a', 'b']),
+                dtype='float',
+            ),
+        ),
+        (
+            [
+                pd.DataFrame(
+                    {
+                        'B': [2, 4],
+                    },
+                    pd.Index(['a', 'b']),
+                    dtype='float',
+                ),
+                pd.DataFrame(
+                    {
+                        'A': [1, 3],
+                        'B': [2, 4],
+                    },
+                    pd.Index(['a', 'b']),
+                    dtype='float',
+                ),
+            ],
+            np.sum,
+            pd.DataFrame(
+                {
+                    'B': [4, 8],
+                    'A': [1, 3],
+                },
+                pd.Index(['a', 'b']),
+                dtype='float',
+            ),
+        ),
+        # different values
+        (
+            [
+                pd.Series([1, 2], pd.Index(['a', 'b']), dtype='float'),
+                pd.Series([2, 3], pd.Index(['a', 'b']), dtype='float'),
+            ],
+            np.mean,
+            pd.Series([1.5, 2.5], pd.Index(['a', 'b']), dtype='float'),
+        ),
+        (
+            [
+                pd.Series([1, 2], pd.Index(['a', 'b']), dtype='float'),
+                pd.Series([2, 3], pd.Index(['a', 'b']), dtype='float'),
+            ],
+            np.sum,
+            pd.Series([3, 5], pd.Index(['a', 'b']), dtype='float'),
+        ),
+        (
+            [
+                pd.Series([1, 2], pd.Index(['a', 'b']), dtype='float'),
+                pd.Series([2, 3], pd.Index(['a', 'b']), dtype='float'),
+                pd.Series([3, 4], pd.Index(['a', 'b']), dtype='float'),
+            ],
+            np.mean,
+            pd.Series([2, 3], pd.Index(['a', 'b']), dtype='float'),
+        ),
+        (
+            [
+                pd.Series([1, 2], pd.Index(['a', 'b']), dtype='float'),
+                pd.Series([2, 3], pd.Index(['a', 'b']), dtype='float'),
+                pd.Series([3, 4], pd.Index(['a', 'b']), dtype='float'),
+            ],
+            np.sum,
+            pd.Series([6, 9], pd.Index(['a', 'b']), dtype='float'),
+        ),
+        (
+            [
+                pd.Series(
+                    [1, 2],
+                    audformat.filewise_index(['a', 'b']),
+                    dtype='float',
+                ),
+                pd.Series(
+                    [2, 3],
+                    audformat.filewise_index(['a', 'b']),
+                    dtype='float',
+                ),
+            ],
+            np.sum,
+            pd.Series(
+                [3, 5],
+                audformat.filewise_index(['a', 'b']),
+                dtype='float',
+            ),
+        ),
+        (
+            [
+                pd.Series(['a', 'b'], pd.Index(['a', 'b']), dtype='string'),
+                pd.Series(['b', 'a'], pd.Index(['a', 'b']), dtype='string'),
+            ],
+            lambda y: np.char.add(y[0], y[1]),
+            pd.Series(['ab', 'ba'], pd.Index(['a', 'b']), dtype='string'),
+        ),
+        (
+            [
+                pd.Series([1, 2], pd.Index(['a', 'b']), dtype='float'),
+                pd.Series([2, 3], pd.Index(['a', 'b']), dtype='float'),
+                pd.Series([3, 4], pd.Index(['a', 'b']), dtype='float'),
+            ],
+            lambda y: y[2],
+            pd.Series([3, 4], pd.Index(['a', 'b']), dtype='float'),
+        ),
+        (
+            [
+                pd.DataFrame(
+                    {
+                        'A': [1, 3],
+                        'B': [2, 4],
+                    },
+                    pd.Index(['a', 'b']),
+                    dtype='float',
+                ),
+                pd.DataFrame(
+                    {
+                        'A': [2, 4],
+                        'B': [3, 5],
+                    },
+                    pd.Index(['a', 'b']),
+                    dtype='float',
+                ),
+            ],
+            np.sum,
+            pd.DataFrame(
+                {
+                    'A': [3, 7],
+                    'B': [5, 9],
+                },
+                pd.Index(['a', 'b']),
+                dtype='float',
+            ),
+        ),
+        (
+            [
+                pd.DataFrame(
+                    {
+                        'A': [1, 3],
+                        'B': [2, 4],
+                    },
+                    pd.Index(['a', 'b']),
+                    dtype='float',
+                ),
+                pd.DataFrame(
+                    {
+                        'A': [2, 4],
+                        'B': [3, 5],
+                    },
+                    pd.Index(['a', 'b']),
+                    dtype='float',
+                ),
+            ],
+            lambda y: y[1],
+            pd.DataFrame(
+                {
+                    'A': [2, 4],
+                    'B': [3, 5],
+                },
+                pd.Index(['a', 'b']),
+                dtype='float',
+            ),
+        ),
+        # different index
+        (
+            [
+                pd.DataFrame(
+                    {
+                        'A': [1, 1, 1],
+                        'B': [1, 1, 1],
+                    },
+                    index=pd.Index(['a', 'b', 'c']),
+                    dtype='float',
+                ),
+                pd.DataFrame(
+                    {
+                        'A': [2, 2, 2],
+                        'B': [2, 2, 2],
+                    },
+                    index=pd.Index(['b', 'c', 'd']),
+                    dtype='float',
+                ),
+            ],
+            np.sum,
+            pd.DataFrame(
+                {
+                    'A': [1, 3, 3, 2],
+                    'B': [1, 3, 3, 2],
+                },
+                index=pd.Index(['a', 'b', 'c', 'd']),
+                dtype='float',
+            ),
+        ),
+        (
+            [
+                pd.DataFrame(
+                    {
+                        'A': [1, 1, 1],
+                        'B': [1, 1, 1],
+                    },
+                    index=pd.Index(['b', 'c', 'd']),
+                    dtype='float',
+                ),
+                pd.DataFrame(
+                    {
+                        'A': [2, 2, 2],
+                        'B': [2, 2, 2],
+                    },
+                    index=pd.Index(['a', 'b', 'c']),
+                    dtype='float',
+                ),
+            ],
+            np.sum,
+            pd.DataFrame(
+                {
+                    'A': [3, 3, 1, 2],
+                    'B': [3, 3, 1, 2],
+                },
+                index=pd.Index(['b', 'c', 'd', 'a']),
+                dtype='float',
+            ),
+        ),
+        (
+            [
+                pd.DataFrame(
+                    {
+                        'A': [1., 1., 1.],
+                        'B': ['A', 'A', 'A'],
+                    },
+                    index=pd.Index(['a', 'b', 'c']),
+                ),
+                pd.DataFrame(
+                    {
+                        'A': [2., 2., 2.],
+                        'B': ['B', 'B', 'B'],
+                    },
+                    index=pd.Index(['b', 'c', 'd']),
+                ),
+            ],
+            lambda y: y[0],
+            pd.DataFrame(
+                {
+                    'A': [1., 1., 1., 2.],
+                    'B': ['A', 'A', 'A', 'B'],
+                },
+                index=pd.Index(['a', 'b', 'c', 'd']),
+            ),
+        ),
+        (
+            [
+                pd.DataFrame(
+                    {
+                        'A': [1, 1, 1],
+                        'B': [1, 1, 1],
+                    },
+                    index=pd.Index(['a', 'b', 'c']),
+                ),
+                pd.DataFrame(
+                    {
+                        'A': [2, 2, 2],
+                        'B': [2, 2, 2],
+                    },
+                    index=pd.Index(['b', 'c', 'd']),
+                ),
+                pd.DataFrame(
+                    {
+                        'A': [3],
+                        'B': [3],
+                    },
+                    index=pd.Index(['a']),
+                ),
+            ],
+            np.sum,
+            pd.DataFrame(
+                {
+                    'A': [4, 3, 3, 2],
+                    'B': [4, 3, 3, 2],
+                },
+                index=pd.Index(['a', 'b', 'c', 'd']),
+                dtype='Int64',
+            ),
+        ),
+        (
+            [
+                pd.DataFrame(
+                    {
+                        'A': [1, 1, 1],
+                        'B': [1, 1, 1],
+                    },
+                    index=pd.Index(['a', 'b', 'c']),
+                ),
+                pd.DataFrame(
+                    {
+                        'A': [2, 2, 2],
+                        'B': [2, 2, 2],
+                    },
+                    index=pd.Index(['b', 'c', 'd']),
+                ),
+                pd.DataFrame(
+                    {
+                        'A': [3, 3],
+                        'B': [3, 3],
+                    },
+                    index=pd.Index(['a', 'd']),
+                ),
+            ],
+            np.sum,
+            pd.DataFrame(
+                {
+                    'A': [4, 3, 3, 5],
+                    'B': [4, 3, 3, 5],
+                },
+                index=pd.Index(['a', 'b', 'c', 'd']),
+                dtype='Int64',
+            ),
+        ),
+        (
+            [
+                pd.DataFrame(
+                    {
+                        'A': [1, 1, 1],
+                        'B': [1, 1, 1],
+                        'C': [1, 1, 1],
+                    },
+                    index=pd.Index(['a', 'b', 'c']),
+                ),
+                pd.DataFrame(
+                    {
+                        'A': [2, 2, 2],
+                        'B': [2, 2, 2],
+                    },
+                    index=pd.Index(['b', 'c', 'd']),
+                ),
+                pd.DataFrame(
+                    {
+                        'A': [3, 3],
+                        'B': [3, 3],
+                    },
+                    index=pd.Index(['a', 'd']),
+                ),
+            ],
+            np.sum,
+            pd.DataFrame(
+                {
+                    'A': [4, 3, 3, 5],
+                    'B': [4, 3, 3, 5],
+                    'C': [1, 1, 1, np.NaN],
+                },
+                index=pd.Index(['a', 'b', 'c', 'd']),
+                dtype='Int64',
+            ),
+        ),
+        (
+            [
+                pd.DataFrame(
+                    {
+                        'A': [1, 1, 1],
+                        'B': [1, 1, 1],
+                        'C': [1, 1, 1],
+                    },
+                    index=pd.Index(['a', 'b', 'c']),
+                    dtype='Int64',
+                ),
+                pd.DataFrame(
+                    {
+                        'A': [2, 2, 2],
+                        'B': [2, 2, 2],
+                    },
+                    index=pd.Index(['b', 'c', 'd']),
+                    dtype='Int64',
+                ),
+                pd.DataFrame(
+                    {
+                        'A': [3, 3, 4],
+                        'B': [3, 3, np.NaN],
+                    },
+                    index=pd.Index(['a', 'd', 'e']),
+                    dtype='Int64',
+                ),
+            ],
+            lambda y: y[0],
+            pd.DataFrame(
+                {
+                    'A': [1, 1, 1, 2, 4],
+                    'B': [1, 1, 1, 2, np.NaN],
+                    'C': [1, 1, 1, np.NaN, np.NaN],
+                },
+                index=pd.Index(['a', 'b', 'c', 'd', 'e']),
+                dtype='Int64',
+            ),
+        ),
+        (
+            [
+                pd.DataFrame(
+                    {
+                        'A': [1, 1, 1],
+                        'B': [1, 1, 1],
+                    },
+                    index=pd.Index(['a', 'b', 'c']),
+                ),
+                pd.DataFrame(
+                    {
+                        'A': [2, 1, 2],
+                        'B': [2, 1, 2],
+                        'C': [2, 1, 2],
+                    },
+                    index=pd.Index(['b', 'c', 'd']),
+                ),
+                pd.DataFrame(
+                    {
+                        'A': [3, 3],
+                        'B': [3, 3],
+                    },
+                    index=pd.Index(['a', 'd']),
+                ),
+            ],
+            np.sum,
+            pd.DataFrame(
+                {
+                    'A': [4, 3, 2, 5],
+                    'B': [4, 3, 2, 5],
+                    'C': [np.NaN, 2, 1, 2],
+                },
+                index=pd.Index(['a', 'b', 'c', 'd']),
+                dtype='Int64',
+            ),
+        ),
+    ]
+)
+def test_concat_aggregate_function_always(objs, aggregate_function, expected):
+    obj = audformat.utils.concat(
+        objs,
+        aggregate_function=aggregate_function,
+        aggregate='always',
+    )
+    if isinstance(obj, pd.Series):
+        pd.testing.assert_series_equal(obj, expected)
+    else:
+        pd.testing.assert_frame_equal(obj, expected)
+
+
+@pytest.mark.parametrize(
+    'objs, aggregate_function, expected',
+    [
+        # empty
+        (
+            [],
+            None,
+            pd.Series([], pd.Index([]), dtype='object'),
+        ),
+        # identical values
+        (
+            [
+                pd.Series([1, 2], pd.Index(['a', 'b']), dtype='float'),
+                pd.Series([1, 2], pd.Index(['a', 'b']), dtype='float'),
+            ],
+            None,
+            pd.Series([1, 2], pd.Index(['a', 'b']), dtype='float'),
+        ),
+        (
+            [
+                pd.Series([1, 2], pd.Index(['a', 'b']), dtype='float'),
+                pd.Series([1, 2], pd.Index(['a', 'b']), dtype='float'),
+            ],
+            np.mean,
+            pd.Series([1, 2], pd.Index(['a', 'b']), dtype='float'),
+        ),
+        (
+            [
+                pd.Series([1, 2], pd.Index(['a', 'b']), dtype='float'),
+                pd.Series([1, 2], pd.Index(['a', 'b']), dtype='float'),
+            ],
+            tuple,
             pd.Series([1, 2], pd.Index(['a', 'b']), dtype='float'),
         ),
         (
