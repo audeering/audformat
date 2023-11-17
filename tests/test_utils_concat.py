@@ -1540,8 +1540,6 @@ def test_concat_aggregate_function_aggregate(
         aggregate_function=aggregate_function,
         aggregate=aggregate,
     )
-    print(f'{obj=}')
-    print(f'{expected=}')
     if isinstance(obj, pd.Series):
         pd.testing.assert_series_equal(obj, expected)
     else:
