@@ -555,14 +555,6 @@ class Database(HeaderBase):
             wav/03a01Wa.wav      anger
             wav/03a02Fc.wav  happiness
             wav/03a02Nc.wav    neutral
-            >>> db.get('emotion', ['gender']).head()
-                               emotion gender
-            file
-            wav/03a01Fa.wav  happiness   male
-            wav/03a01Nc.wav    neutral   male
-            wav/03a01Wa.wav      anger   male
-            wav/03a02Fc.wav  happiness   male
-            wav/03a02Nc.wav    neutral   male
             >>> db.get('transcription').head()
                                                     transcription
             file
@@ -571,14 +563,14 @@ class Database(HeaderBase):
             wav/03a01Wa.wav  Der Lappen liegt auf dem Eisschrank.
             wav/03a02Fc.wav     Das will sie am Mittwoch abgeben.
             wav/03a02Nc.wav     Das will sie am Mittwoch abgeben.
-            >>> db.get('transcription', map=False).head()
-                            transcription
+            >>> db.get('emotion', ['transcription'], map=False).head()
+                               emotion transcription
             file
-            wav/03a01Fa.wav           a01
-            wav/03a01Nc.wav           a01
-            wav/03a01Wa.wav           a01
-            wav/03a02Fc.wav           a02
-            wav/03a02Nc.wav           a02
+            wav/03a01Fa.wav  happiness           a01
+            wav/03a01Nc.wav    neutral           a01
+            wav/03a01Wa.wav      anger           a01
+            wav/03a02Fc.wav  happiness           a02
+            wav/03a02Nc.wav    neutral           a02
 
             Non-existent schemes are ignored.
 
@@ -880,6 +872,7 @@ class Database(HeaderBase):
                 obj = self.get(
                     scheme,
                     strict=strict,
+                    map=map,
                     original_column_names=original_column_names,
                     aggregate_function=aggregate_function,
                 )
