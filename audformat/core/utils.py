@@ -38,7 +38,7 @@ def concat(
         *,
         overwrite: bool = False,
         aggregate_function: typing.Callable[[pd.Series], typing.Any] = None,
-        aggregate: str = 'always',
+        aggregate: str = 'mismatch',
 ) -> typing.Union[pd.Series, pd.DataFrame]:
     r"""Concatenate objects.
 
@@ -90,9 +90,9 @@ def concat(
         aggregate: if ``aggregate_function`` is not ``None``,
             ``aggregate`` decides
             when ``aggregate_function`` is applied.
-            ``'always'``: apply to all samples
+            ``'overlap'``: apply to all samples
             that have an overlapping index;
-            ``'non-matching'``: apply to all samples
+            ``'mismatch'``: apply to all samples
             that have an overlapping index
             and a different value
 
@@ -103,7 +103,7 @@ def concat(
         ValueError: if level and dtypes of object indices do not match
         ValueError: if columns with the same name have different dtypes
         ValueError: if ``aggregate`` is not one of
-            ``'always'``, ``'non-matching'``
+            ``'overlap'``, ``'mismatch'``
         ValueError: if ``aggregate_function`` is ``None``,
             ``overwrite`` is ``False``,
             and values in the same position do not match
@@ -133,8 +133,8 @@ def concat(
         ...     ],
         ...     aggregate_function=np.sum,
         ... )
-        0    2
-        1    2
+        0    1
+        1    1
         dtype: Int64
         >>> concat(
         ...     [
@@ -142,10 +142,20 @@ def concat(
         ...         pd.Series([1, 2], index=pd.Index([0, 1])),
         ...     ],
         ...     aggregate_function=np.sum,
-        ...     aggregate='non-matching',
         ... )
         0    1
         1    3
+        dtype: Int64
+        >>> concat(
+        ...     [
+        ...         pd.Series([1, 1], index=pd.Index([0, 1])),
+        ...         pd.Series([1, 1], index=pd.Index([0, 1])),
+        ...     ],
+        ...     aggregate_function=np.sum,
+        ...     aggregate='overlap',
+        ... )
+        0    2
+        1    2
         dtype: Int64
         >>> concat(
         ...     [
@@ -220,7 +230,7 @@ def concat(
         f3   0 days NaT    2.0      b
 
     """
-    allowed_values = ['always', 'duplicates', 'mismatch']
+    allowed_values = ['overlap', 'mismatch']
     if aggregate not in allowed_values:
         raise ValueError(
             f"aggregate needs to be one of: {', '.join(allowed_values)}"
@@ -293,83 +303,75 @@ def concat(
                         column.loc[index]
                     )
                     column = column.loc[~column.index.isin(index)]
+                    column = column.dropna()
                     return column, overlapping_values
 
-                # Apply aggregate function to all entries in column
-                if (
-                        aggregate_function is not None
-                        and aggregate == 'always'
-                ):
-                    column, overlapping_values = collect_overlap(
-                        overlapping_values,
-                        column,
-                        column.dropna().index,
-                    )
-
                 # Apply aggregate function only to overlapping entries
-                else:
+                intersection = intersect(
+                    [
+                        columns_reindex[column.name].dropna().index,
+                        column.dropna().index,
+                    ]
+                )
+                # We use len() here as index.empty takes a very long time
+                if len(intersection) > 0:
 
-                    intersection = intersect(
-                        [
-                            columns_reindex[column.name].dropna().index,
-                            column.dropna().index,
-                        ]
-                    )
-                    # We use len() here as index.empty takes a very long time
-                    if len(intersection) > 0:
-
-                        # Find data that differ and cannot be joined
-                        combine = pd.DataFrame(
-                            {
-                                'left':
-                                columns_reindex[column.name][intersection],
-                                'right':
-                                column[intersection],
-                            }
+                    # Apply aggregate function
+                    # to all overlapping entries
+                    if (
+                            aggregate_function is not None
+                            and aggregate == 'overlap'
+                    ):
+                        column, overlapping_values = collect_overlap(
+                            overlapping_values,
+                            column,
+                            intersection,
                         )
-                        combine.dropna(inplace=True)
-                        differ = combine['left'] != combine['right']
+                        columns_reindex[column.name][column.index] = column
+                        continue
 
-                        if np.any(differ):
+                    # Find data that differ and cannot be joined
+                    combine = pd.DataFrame(
+                        {
+                            'left':
+                            columns_reindex[column.name][intersection],
+                            'right':
+                            column[intersection],
+                        }
+                    )
+                    combine.dropna(inplace=True)
+                    differ = combine['left'] != combine['right']
 
-                            # Apply aggregate function
-                            # to all overlapping entries
-                            if (
-                                    aggregate_function is not None
-                                    and aggregate == 'duplicates'
-                            ):
-                                column, overlapping_values = collect_overlap(
-                                    overlapping_values,
-                                    column,
-                                    intersection,
-                                )
+                    if np.any(differ):
 
-                            # Apply aggregate function
-                            # to overlapping entries
-                            # that do not match in value
-                            elif (
-                                    aggregate_function is not None
-                                    and aggregate == 'mismatch'
-                            ):
-                                column, overlapping_values = collect_overlap(
-                                    overlapping_values,
-                                    column,
-                                    intersection[differ],
-                                )
+                        # Apply aggregate function
+                        # to overlapping entries
+                        # that do not match in value
+                        if (
+                                aggregate_function is not None
+                                and aggregate == 'mismatch'
+                        ):
+                            column, overlapping_values = collect_overlap(
+                                overlapping_values,
+                                column,
+                                intersection[differ],
+                            )
+                            columns_reindex[column.name][column.index] = column
+                            continue
 
-                            # Raise error if values don't match and are not NaN
-                            else:
-                                max_display = 10
-                                overlap = combine[differ]
-                                msg_overlap = str(overlap[:max_display])
-                                msg_tail = '\n...' \
-                                    if len(overlap) > max_display \
-                                    else ''
-                                raise ValueError(
-                                    "Found overlapping data in column "
-                                    f"'{column.name}':\n"
-                                    f"{msg_overlap}{msg_tail}"
-                                )
+                        # Raise error if values don't match and are not NaN
+                        else:
+                            max_display = 10
+                            overlap = combine[differ]
+                            msg_overlap = str(overlap[:max_display])
+                            msg_tail = '\n...' \
+                                if len(overlap) > max_display \
+                                else ''
+                            raise ValueError(
+                                "Found overlapping data in column "
+                                f"'{column.name}':\n"
+                                f"{msg_overlap}{msg_tail}"
+                            )
 
             # drop NaN to avoid overwriting values from other column
             column = column.dropna()
