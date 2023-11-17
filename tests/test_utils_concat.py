@@ -1691,9 +1691,9 @@ def test_concat_overwrite_aggregate_function(
             ValueError,
             (
                 "Found two columns with name 'None' but different dtypes:\n"
-                "CategoricalDtype\(categories=\['a', 'b'\],"  # noqa: W605
+                r"CategoricalDtype\(categories=\['a', 'b'\],"
                 ".*"
-                "!= CategoricalDtype\(categories=\['a', 'b', 'c'\]"  # noqa: W605, E501
+                r"!= CategoricalDtype\(categories=\['a', 'b', 'c'\]"
             ),
         ),
         # values do not match
