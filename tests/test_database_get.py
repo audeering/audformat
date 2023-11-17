@@ -597,149 +597,6 @@ def test_database_get(request, db, scheme, additional_schemes, expected):
 
 
 @pytest.mark.parametrize(
-    'db, scheme, additional_schemes, map, expected',
-    [
-        (
-            'mono_db',
-            'month',
-            [],
-            True,
-            pd.DataFrame(
-                {
-                    'month': ['jan', 'feb', 'mar'],
-                },
-                index=audformat.filewise_index(
-                    ['f1.wav', 'f2.wav', 'f3.wav']
-                ),
-                dtype='string',
-            ),
-        ),
-        (
-            'mono_db',
-            'month',
-            [],
-            False,
-            pd.DataFrame(
-                {
-                    'month': [1, 2, 3],
-                },
-                index=audformat.filewise_index(
-                    ['f1.wav', 'f2.wav', 'f3.wav']
-                ),
-                dtype=pd.CategoricalDtype(
-                    categories=[1, 2, 3],
-                    ordered=False,
-                ),
-            ),
-        ),
-        (
-            'mono_db',
-            'month',
-            ['gender'],
-            True,
-            pd.DataFrame(
-                {
-                    'month': ['jan', 'feb', 'mar'],
-                    'gender': ['female', '', 'male'],
-                },
-                index=audformat.filewise_index(
-                    ['f1.wav', 'f2.wav', 'f3.wav']
-                ),
-                dtype='string',
-            ),
-        ),
-        (
-            'mono_db',
-            'month',
-            ['gender'],
-            False,
-            pd.concat(
-                [
-                    pd.Series(
-                        [1, 2, 3],
-                        index=audformat.filewise_index(
-                            ['f1.wav', 'f2.wav', 'f3.wav']
-                        ),
-                        dtype=pd.CategoricalDtype(
-                            categories=[1, 2, 3],
-                            ordered=False,
-                        ),
-                        name='month',
-                    ),
-                    pd.Series(
-                        ['female', '', 'male'],
-                        index=audformat.filewise_index(
-                            ['f1.wav', 'f2.wav', 'f3.wav']
-                        ),
-                        dtype='string',
-                        name='gender',
-                    ),
-                ],
-                axis=1,
-            ),
-        ),
-        (
-            'mono_db',
-            'gender',
-            ['month'],
-            True,
-            pd.DataFrame(
-                {
-                    'gender': ['female', '', 'male'],
-                    'month': ['jan', 'feb', 'mar'],
-                },
-                index=audformat.filewise_index(
-                    ['f1.wav', 'f2.wav', 'f3.wav']
-                ),
-                dtype='string',
-            ),
-        ),
-        (
-            'mono_db',
-            'gender',
-            ['month'],
-            False,
-            pd.concat(
-                [
-                    pd.Series(
-                        ['female', '', 'male'],
-                        index=audformat.filewise_index(
-                            ['f1.wav', 'f2.wav', 'f3.wav']
-                        ),
-                        dtype='string',
-                        name='gender',
-                    ),
-                    pd.Series(
-                        [1, 2, 3],
-                        index=audformat.filewise_index(
-                            ['f1.wav', 'f2.wav', 'f3.wav']
-                        ),
-                        dtype=pd.CategoricalDtype(
-                            categories=[1, 2, 3],
-                            ordered=False,
-                        ),
-                        name='month',
-                    ),
-                ],
-                axis=1,
-            ),
-        ),
-    ],
-)
-def test_database_get_map(
-        request,
-        db,
-        scheme,
-        additional_schemes,
-        map,
-        expected,
-):
-    db = request.getfixturevalue(db)
-    df = db.get(scheme, additional_schemes, map=map)
-    pd.testing.assert_frame_equal(df, expected)
-
-
-@pytest.mark.parametrize(
     'db, scheme, additional_schemes, '
     'original_column_names, aggregate_function, expected',
     [
@@ -1315,6 +1172,149 @@ def test_database_get_limit_search(
         tables=tables,
         splits=splits,
     )
+    pd.testing.assert_frame_equal(df, expected)
+
+
+@pytest.mark.parametrize(
+    'db, scheme, additional_schemes, map, expected',
+    [
+        (
+            'mono_db',
+            'month',
+            [],
+            True,
+            pd.DataFrame(
+                {
+                    'month': ['jan', 'feb', 'mar'],
+                },
+                index=audformat.filewise_index(
+                    ['f1.wav', 'f2.wav', 'f3.wav']
+                ),
+                dtype='string',
+            ),
+        ),
+        (
+            'mono_db',
+            'month',
+            [],
+            False,
+            pd.DataFrame(
+                {
+                    'month': [1, 2, 3],
+                },
+                index=audformat.filewise_index(
+                    ['f1.wav', 'f2.wav', 'f3.wav']
+                ),
+                dtype=pd.CategoricalDtype(
+                    categories=[1, 2, 3],
+                    ordered=False,
+                ),
+            ),
+        ),
+        (
+            'mono_db',
+            'month',
+            ['gender'],
+            True,
+            pd.DataFrame(
+                {
+                    'month': ['jan', 'feb', 'mar'],
+                    'gender': ['female', '', 'male'],
+                },
+                index=audformat.filewise_index(
+                    ['f1.wav', 'f2.wav', 'f3.wav']
+                ),
+                dtype='string',
+            ),
+        ),
+        (
+            'mono_db',
+            'month',
+            ['gender'],
+            False,
+            pd.concat(
+                [
+                    pd.Series(
+                        [1, 2, 3],
+                        index=audformat.filewise_index(
+                            ['f1.wav', 'f2.wav', 'f3.wav']
+                        ),
+                        dtype=pd.CategoricalDtype(
+                            categories=[1, 2, 3],
+                            ordered=False,
+                        ),
+                        name='month',
+                    ),
+                    pd.Series(
+                        ['female', '', 'male'],
+                        index=audformat.filewise_index(
+                            ['f1.wav', 'f2.wav', 'f3.wav']
+                        ),
+                        dtype='string',
+                        name='gender',
+                    ),
+                ],
+                axis=1,
+            ),
+        ),
+        (
+            'mono_db',
+            'gender',
+            ['month'],
+            True,
+            pd.DataFrame(
+                {
+                    'gender': ['female', '', 'male'],
+                    'month': ['jan', 'feb', 'mar'],
+                },
+                index=audformat.filewise_index(
+                    ['f1.wav', 'f2.wav', 'f3.wav']
+                ),
+                dtype='string',
+            ),
+        ),
+        (
+            'mono_db',
+            'gender',
+            ['month'],
+            False,
+            pd.concat(
+                [
+                    pd.Series(
+                        ['female', '', 'male'],
+                        index=audformat.filewise_index(
+                            ['f1.wav', 'f2.wav', 'f3.wav']
+                        ),
+                        dtype='string',
+                        name='gender',
+                    ),
+                    pd.Series(
+                        [1, 2, 3],
+                        index=audformat.filewise_index(
+                            ['f1.wav', 'f2.wav', 'f3.wav']
+                        ),
+                        dtype=pd.CategoricalDtype(
+                            categories=[1, 2, 3],
+                            ordered=False,
+                        ),
+                        name='month',
+                    ),
+                ],
+                axis=1,
+            ),
+        ),
+    ],
+)
+def test_database_get_map(
+        request,
+        db,
+        scheme,
+        additional_schemes,
+        map,
+        expected,
+):
+    db = request.getfixturevalue(db)
+    df = db.get(scheme, additional_schemes, map=map)
     pd.testing.assert_frame_equal(df, expected)
 
 
