@@ -759,7 +759,12 @@ class Database(HeaderBase):
                         scheme_mappings.append((scheme_id, column_id))
 
             # Labels stored in scheme
-            elif isinstance(scheme.labels, dict) and not strict:
+            elif (
+                    not strict
+                    and isinstance(scheme.labels, dict)
+                    # Skip simple mappings like {'a0': 'a text'}
+                    and isinstance(list(scheme.labels.values())[0], dict)
+            ):
                 labels = pd.DataFrame.from_dict(
                     scheme.labels,
                     orient='index',
@@ -787,18 +792,23 @@ class Database(HeaderBase):
                 if scheme_in_column(requested_scheme, column, column_id):
                     if requested_scheme in self.schemes:
                         labels = self.schemes[requested_scheme].labels
+                    # If map=True we want to expand scheme labels like
+                    # {'a': 'Full a', 'b': 'Full b'},
+                    # nut not scheme labels like
+                    # {'a': {'d': 1}, 'b': {'d': 2}}
                     if (
                             map is True
                             and requested_scheme in self.schemes
                             and isinstance(labels, dict)
+                            # Ensure simple mappings like {'a0': 'a text'}
                             and not isinstance(list(labels.values())[0], dict)
-                            and self[table_id][column_id].scheme_id == requested_scheme
+                            # map=requested_scheme can only be performed
+                            # if scheme is assigned
+                            and column.scheme_id == requested_scheme
                     ):
-                        # {'a': 'Full a', 'b': 'Full b'} is mapped
-                        # {'a': {'d': 1}, 'b': {'d': 2}} is not mapped
-                        y = self[table_id][column_id].get(map=requested_scheme)
+                        y = column.get(map=requested_scheme)
                     else:
-                        y = self[table_id][column_id].get()
+                        y = column.get()
                     y.name = requested_scheme
                     append_series(ys, y, column_id)
                 # Get series based on label of scheme
@@ -808,7 +818,7 @@ class Database(HeaderBase):
                             if column.scheme_id is None:
                                 y = empty_series(requested_scheme)
                             else:
-                                y = self[table_id][column_id].get(map=mapping)
+                                y = column.get(map=mapping)
                                 y.name = requested_scheme
                             append_series(ys, y, column_id)
 

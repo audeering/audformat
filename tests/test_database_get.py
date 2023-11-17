@@ -22,6 +22,7 @@ def mono_db(tmpdir):
     # --- Schemes
     db.schemes['age'] = audformat.Scheme('int', minimum=0)
     db.schemes['height'] = audformat.Scheme('float')
+    db.schemes['int'] = audformat.Scheme('int')
     db.schemes['rating'] = audformat.Scheme('int', labels=[0, 1, 2])
     db.schemes['regression'] = audformat.Scheme('float')
     db.schemes['selection'] = audformat.Scheme('int', labels=[0, 1])
@@ -44,6 +45,10 @@ def mono_db(tmpdir):
     db.schemes['text'] = audformat.Scheme(
         'str',
         labels={'a': 'A text', 'b': 'B text'},
+    )
+    db.schemes['numbers'] = audformat.Scheme(
+        'str',
+        labels={'0': 0, '1': 1, '2': 2},
     )
 
     # --- Misc tables
@@ -81,6 +86,8 @@ def mono_db(tmpdir):
     db['files']['perceived-age'].set([25, 34, 45])
     db['files']['text'] = audformat.Column(scheme_id='text')
     db['files']['text'].set(['a', 'a', 'b'])
+    db['files']['numbers'] = audformat.Column(scheme_id='numbers')
+    db['files']['numbers'].set(['0', '1', '2'])
 
     index = audformat.filewise_index(['f1.wav'])
     db['files.sub'] = audformat.Table(index)
@@ -88,6 +95,8 @@ def mono_db(tmpdir):
     db['files.sub']['speaker'].set('s1')
     db['files.sub']['text'] = audformat.Column()
     db['files.sub']['text'].set('a')
+    db['files.sub']['numbers'] = audformat.Column(scheme_id='int')
+    db['files.sub']['numbers'].set(0)
 
     index = audformat.filewise_index(['f1.wav', 'f3.wav'])
     db['other'] = audformat.Table(index)
@@ -493,6 +502,20 @@ def wrong_scheme_labels_db(tmpdir):
             ),
         ),
         (
+            'mono_db',
+            'numbers',
+            [],
+            pd.DataFrame(
+                {
+                    'numbers': [0, 1, 2],
+                },
+                index=audformat.filewise_index(
+                    ['f1.wav', 'f2.wav', 'f3.wav']
+                ),
+                dtype='Int64',
+            ),
+        ),
+        (
             'overlapping_data_db',
             'gender',
             [],
@@ -755,22 +778,6 @@ def test_database_get(request, db, scheme, additional_schemes, expected):
             pd.DataFrame(
                 {
                     'gender': ['female', '', 'male'],
-                },
-                index=audformat.filewise_index(
-                    ['f1.wav', 'f2.wav', 'f3.wav']
-                ),
-                dtype='string',
-            ),
-        ),
-        (
-            'mono_db',
-            'text',
-            [],
-            False,
-            lambda y: y[0],
-            pd.DataFrame(
-                {
-                    'text': ['A text', 'A text', 'B text'],
                 },
                 index=audformat.filewise_index(
                     ['f1.wav', 'f2.wav', 'f3.wav']
@@ -1123,6 +1130,24 @@ def test_database_get_aggregate_and_modify_function(
                 dtype='string',
             ),
         ),
+        (
+            # Limit table to files
+            # to avoid error due to non-matching dtypes
+            'mono_db',
+            'text',
+            [],
+            ['files'],
+            None,
+            pd.DataFrame(
+                {
+                    'text': ['A text', 'A text', 'B text'],
+                },
+                index=audformat.filewise_index(
+                    ['f1.wav', 'f2.wav', 'f3.wav']
+                ),
+                dtype='string',
+            ),
+        ),
     ]
 )
 def test_database_get_limit_search(
@@ -1344,6 +1369,21 @@ def test_database_get_strict(
                 "f1.wav  female    male\n"
                 "f2.wav          female\n"
                 "f3.wav    male        "
+            ),
+        ),
+        (
+            # Fail a dtype does no longer match after mapping of labels
+            #
+            'mono_db',
+            'text',
+            [],
+            None,
+            False,
+            # lambda y: y[0],
+            ValueError,
+            (
+                "Found two columns with name 'text' but different dtypes:\n"
+                "string != object."
             ),
         ),
     ]
