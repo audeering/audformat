@@ -50,6 +50,10 @@ def mono_db(tmpdir):
         'str',
         labels={'0': 0, '1': 1, '2': 2},
     )
+    db.schemes['month'] = audformat.Scheme(
+        'int',
+        labels={1: 'jan', 2: 'feb', 3: 'mar'},
+    )
 
     # --- Misc tables
     index = pd.Index(['s1', 's2', 's3'], name='speaker', dtype='string')
@@ -88,6 +92,8 @@ def mono_db(tmpdir):
     db['files']['text'].set(['a', 'a', 'b'])
     db['files']['numbers'] = audformat.Column(scheme_id='numbers')
     db['files']['numbers'].set(['0', '1', '2'])
+    db['files']['month'] = audformat.Column(scheme_id='month')
+    db['files']['month'].set([1, 2, 3])
 
     index = audformat.filewise_index(['f1.wav'])
     db['files.sub'] = audformat.Table(index)
@@ -587,6 +593,149 @@ def wrong_scheme_labels_db(tmpdir):
 def test_database_get(request, db, scheme, additional_schemes, expected):
     db = request.getfixturevalue(db)
     df = db.get(scheme, additional_schemes)
+    pd.testing.assert_frame_equal(df, expected)
+
+
+@pytest.mark.parametrize(
+    'db, scheme, additional_schemes, map, expected',
+    [
+        (
+            'mono_db',
+            'month',
+            [],
+            True,
+            pd.DataFrame(
+                {
+                    'month': ['jan', 'feb', 'mar'],
+                },
+                index=audformat.filewise_index(
+                    ['f1.wav', 'f2.wav', 'f3.wav']
+                ),
+                dtype='string',
+            ),
+        ),
+        (
+            'mono_db',
+            'month',
+            [],
+            False,
+            pd.DataFrame(
+                {
+                    'month': [1, 2, 3],
+                },
+                index=audformat.filewise_index(
+                    ['f1.wav', 'f2.wav', 'f3.wav']
+                ),
+                dtype=pd.CategoricalDtype(
+                    categories=[1, 2, 3],
+                    ordered=False,
+                ),
+            ),
+        ),
+        (
+            'mono_db',
+            'month',
+            ['gender'],
+            True,
+            pd.DataFrame(
+                {
+                    'month': ['jan', 'feb', 'mar'],
+                    'gender': ['female', '', 'male'],
+                },
+                index=audformat.filewise_index(
+                    ['f1.wav', 'f2.wav', 'f3.wav']
+                ),
+                dtype='string',
+            ),
+        ),
+        (
+            'mono_db',
+            'month',
+            ['gender'],
+            False,
+            pd.concat(
+                [
+                    pd.Series(
+                        [1, 2, 3],
+                        index=audformat.filewise_index(
+                            ['f1.wav', 'f2.wav', 'f3.wav']
+                        ),
+                        dtype=pd.CategoricalDtype(
+                            categories=[1, 2, 3],
+                            ordered=False,
+                        ),
+                        name='month',
+                    ),
+                    pd.Series(
+                        ['female', '', 'male'],
+                        index=audformat.filewise_index(
+                            ['f1.wav', 'f2.wav', 'f3.wav']
+                        ),
+                        dtype='string',
+                        name='gender',
+                    ),
+                ],
+                axis=1,
+            ),
+        ),
+        (
+            'mono_db',
+            'gender',
+            ['month'],
+            True,
+            pd.DataFrame(
+                {
+                    'gender': ['female', '', 'male'],
+                    'month': ['jan', 'feb', 'mar'],
+                },
+                index=audformat.filewise_index(
+                    ['f1.wav', 'f2.wav', 'f3.wav']
+                ),
+                dtype='string',
+            ),
+        ),
+        (
+            'mono_db',
+            'gender',
+            ['month'],
+            False,
+            pd.concat(
+                [
+                    pd.Series(
+                        ['female', '', 'male'],
+                        index=audformat.filewise_index(
+                            ['f1.wav', 'f2.wav', 'f3.wav']
+                        ),
+                        dtype='string',
+                        name='gender',
+                    ),
+                    pd.Series(
+                        [1, 2, 3],
+                        index=audformat.filewise_index(
+                            ['f1.wav', 'f2.wav', 'f3.wav']
+                        ),
+                        dtype=pd.CategoricalDtype(
+                            categories=[1, 2, 3],
+                            ordered=False,
+                        ),
+                        name='month',
+                    ),
+                ],
+                axis=1,
+            ),
+        ),
+    ],
+)
+def test_database_get_map(
+        request,
+        db,
+        scheme,
+        additional_schemes,
+        map,
+        expected,
+):
+    db = request.getfixturevalue(db)
+    df = db.get(scheme, additional_schemes, map=map)
     pd.testing.assert_frame_equal(df, expected)
 
 
