@@ -1133,7 +1133,7 @@ def test_concat_aggregate_function(objs, aggregate_function, expected):
 
 
 @pytest.mark.parametrize(
-    'objs, aggregate_function, aggregate, expected',
+    'objs, aggregate_function, aggregate_strategy, expected',
     [
         (
             [
@@ -1532,13 +1532,13 @@ def test_concat_aggregate_function(objs, aggregate_function, expected):
 def test_concat_aggregate_function_aggregate(
         objs,
         aggregate_function,
-        aggregate,
+        aggregate_strategy,
         expected,
 ):
     obj = audformat.utils.concat(
         objs,
         aggregate_function=aggregate_function,
-        aggregate=aggregate,
+        aggregate_strategy=aggregate_strategy,
     )
     if isinstance(obj, pd.Series):
         pd.testing.assert_series_equal(obj, expected)
@@ -1608,15 +1608,16 @@ def test_concat_overwrite_aggregate_function(
 
 
 @pytest.mark.parametrize(
-    'objs, aggregate_function, aggregate, expected_error, expected_error_msg',
+    'objs, aggregate_function, aggregate_strategy, '
+    'expected_error, expected_error_msg',
     [
-        # wrong aggregate argument
+        # wrong aggregate_strategy argument
         (
             [],
             None,
             'non-existent',
             ValueError,
-            "aggregate needs to be one of: overlap, mismatch",
+            "aggregate_strategy needs to be one of: overlap, mismatch",
         ),
         # dtypes do not match
         (
@@ -1828,7 +1829,7 @@ def test_concat_overwrite_aggregate_function(
 def test_concat_errors(
         objs,
         aggregate_function,
-        aggregate,
+        aggregate_strategy,
         expected_error,
         expected_error_msg,
 ):
@@ -1836,5 +1837,5 @@ def test_concat_errors(
         audformat.utils.concat(
             objs,
             aggregate_function=aggregate_function,
-            aggregate=aggregate,
+            aggregate_strategy=aggregate_strategy,
         )

@@ -38,7 +38,7 @@ def concat(
         *,
         overwrite: bool = False,
         aggregate_function: typing.Callable[[pd.Series], typing.Any] = None,
-        aggregate: str = 'mismatch',
+        aggregate_strategy: str = 'mismatch',
 ) -> typing.Union[pd.Series, pd.DataFrame]:
     r"""Concatenate objects.
 
@@ -87,8 +87,8 @@ def concat(
             or to
             ``tuple``
             to return them as a tuple
-        aggregate: if ``aggregate_function`` is not ``None``,
-            ``aggregate`` decides
+        aggregate_strategy: if ``aggregate_function`` is not ``None``,
+            ``aggregate_strategy`` decides
             when ``aggregate_function`` is applied.
             ``'overlap'``: apply to all samples
             that have an overlapping index;
@@ -102,7 +102,7 @@ def concat(
     Raises:
         ValueError: if level and dtypes of object indices do not match
         ValueError: if columns with the same name have different dtypes
-        ValueError: if ``aggregate`` is not one of
+        ValueError: if ``aggregate_strategy`` is not one of
             ``'overlap'``, ``'mismatch'``
         ValueError: if ``aggregate_function`` is ``None``,
             ``overwrite`` is ``False``,
@@ -152,7 +152,7 @@ def concat(
         ...         pd.Series([1, 1], index=pd.Index([0, 1])),
         ...     ],
         ...     aggregate_function=np.sum,
-        ...     aggregate='overlap',
+        ...     aggregate_strategy='overlap',
         ... )
         0    2
         1    2
@@ -231,9 +231,10 @@ def concat(
 
     """
     allowed_values = ['overlap', 'mismatch']
-    if aggregate not in allowed_values:
+    if aggregate_strategy not in allowed_values:
         raise ValueError(
-            f"aggregate needs to be one of: {', '.join(allowed_values)}"
+            "aggregate_strategy needs to be one of: "
+            f"{', '.join(allowed_values)}"
         )
 
     if not objs:
@@ -320,7 +321,7 @@ def concat(
                     # to all overlapping entries
                     if (
                             aggregate_function is not None
-                            and aggregate == 'overlap'
+                            and aggregate_strategy == 'overlap'
                     ):
                         column, overlapping_values = collect_overlap(
                             overlapping_values,
@@ -349,7 +350,7 @@ def concat(
                         # that do not match in value
                         if (
                                 aggregate_function is not None
-                                and aggregate == 'mismatch'
+                                and aggregate_strategy == 'mismatch'
                         ):
                             column, overlapping_values = collect_overlap(
                                 overlapping_values,
