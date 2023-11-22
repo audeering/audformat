@@ -598,7 +598,7 @@ def test_database_get(request, db, scheme, additional_schemes, expected):
 
 @pytest.mark.parametrize(
     'db, scheme, additional_schemes, '
-    'original_column_names, aggregate_function, expected',
+    'original_column_names, aggregate_function, aggregate_strategy, expected',
     [
 
         # Tests based on `mono_db`,
@@ -626,12 +626,9 @@ def test_database_get(request, db, scheme, additional_schemes, expected):
             [],
             False,
             lambda y: y[0],
+            'mismatch',
             pd.DataFrame(
                 {
-                    # NOTE: 34 as second value might not be
-                    # what a user expects.
-                    # Using a modifier to select a column
-                    # is the safer choice.
                     'age': [23, 34, 59],
                 },
                 index=audformat.filewise_index(
@@ -649,6 +646,7 @@ def test_database_get(request, db, scheme, additional_schemes, expected):
             [],
             False,
             lambda y: y[1],
+            'mismatch',
             pd.DataFrame(
                 {
                     'age': [25, 34, 45],
@@ -670,6 +668,7 @@ def test_database_get(request, db, scheme, additional_schemes, expected):
             [],
             True,
             None,
+            'mismatch',
             pd.DataFrame(
                 {
                     'channel0': [23, np.NaN, 59],
@@ -718,6 +717,7 @@ def test_database_get(request, db, scheme, additional_schemes, expected):
             ['age'],
             True,
             None,
+            'mismatch',
             pd.concat(
                 [
                     pd.Series(
@@ -781,6 +781,7 @@ def test_database_get(request, db, scheme, additional_schemes, expected):
             [],
             False,
             lambda y: y.mode()[0],
+            'overlap',
             pd.DataFrame(
                 {
                     'gender': ['female', '', 'male'],
@@ -800,6 +801,7 @@ def test_database_get_aggregate_and_modify_function(
         additional_schemes,
         original_column_names,
         aggregate_function,
+        aggregate_strategy,
         expected,
 ):
     db = request.getfixturevalue(db)
@@ -808,6 +810,7 @@ def test_database_get_aggregate_and_modify_function(
         additional_schemes,
         original_column_names=original_column_names,
         aggregate_function=aggregate_function,
+        aggregate_strategy=aggregate_strategy,
     )
     pd.testing.assert_frame_equal(df, expected)
 

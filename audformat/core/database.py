@@ -455,6 +455,7 @@ class Database(HeaderBase):
                 [pd.Series],
                 typing.Any
             ] = None,
+            aggregate_strategy: str = 'mismatch',
     ) -> pd.DataFrame:
         r"""Get labels by scheme.
 
@@ -520,6 +521,14 @@ class Database(HeaderBase):
                 or to
                 ``tuple``
                 to return them as a tuple
+            aggregate_strategy: if ``aggregate_function`` is not ``None``,
+                ``aggregate_strategy`` decides
+                when ``aggregate_function`` is applied.
+                ``'overlap'``: apply to all samples
+                that have an overlapping index;
+                ``'mismatch'``: apply to all samples
+                that have an overlapping index
+                and a different value
 
         Returns:
             data frame with values
@@ -663,7 +672,7 @@ class Database(HeaderBase):
             wav/03a04Wc.wav      anger  boredom
             wav/03a05Aa.wav       fear  sadness
             ...
-            >>> db.get('emotion', aggregate_function=lambda y: y.mode()[0]).head()
+            >>> db.get('emotion', aggregate_function=lambda y: y[0]).head()
                                emotion
             file
             wav/03a01Fa.wav  happiness
@@ -850,12 +859,11 @@ class Database(HeaderBase):
 
         # --- Combine all labels
         index = utils.union([y.index for y in ys])
-
-        # Apply aggregate_function only if we cannot join labels
-        try:
-            obj = utils.concat(ys)
-        except ValueError:
-            obj = utils.concat(ys, aggregate_function=aggregate_function)
+        obj = utils.concat(
+            ys,
+            aggregate_function=aggregate_function,
+            aggregate_strategy=aggregate_strategy,
+        )
         obj = obj.loc[index]
 
         if len(obj) == 0:
