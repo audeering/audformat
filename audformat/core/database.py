@@ -26,6 +26,7 @@ from audformat.core.common import is_relative_path
 from audformat.core.errors import BadIdError
 from audformat.core.errors import BadKeyError
 from audformat.core.errors import TableExistsError
+from audformat.core.index import filewise_index
 from audformat.core.media import Media
 from audformat.core.rater import Rater
 from audformat.core.scheme import Scheme
@@ -93,11 +94,13 @@ class Database(HeaderBase):
         ...     format='wav',
         ...     sampling_rate=16000,
         ... )
-        >>> db['table'] = Table(media_id='audio')
+        >>> index = filewise_index(['f1.wav', 'f2.wav'])
+        >>> db['table'] = Table(index, media_id='audio')
         >>> db['table']['column'] = Column(
         ...     scheme_id='emotion',
         ...     rater_id='rater',
         ... )
+        >>> db['table']['column'].set(['neutral', 'positive'])
         >>> index = pd.Index([], dtype='string', name='idx')
         >>> db['misc-table'] = MiscTable(index)
         >>> db['misc-table']['column'] = Column(scheme_id='match')
@@ -128,6 +131,11 @@ class Database(HeaderBase):
               column: {scheme_id: match}
         >>> list(db)
         ['misc-table', 'table']
+        >>> db.get('emotion')
+                 emotion
+        file
+        f1.wav   neutral
+        f2.wav  positive
 
     """
     def __init__(
@@ -432,6 +440,458 @@ class Database(HeaderBase):
         ).map(duration)
 
         return y
+
+    def get(
+            self,
+            scheme: str,
+            additional_schemes: typing.Union[str, typing.Sequence] = [],
+            *,
+            tables: typing.Union[str, typing.Sequence] = None,
+            splits: typing.Union[str, typing.Sequence] = None,
+            strict: bool = False,
+            map: bool = True,
+            original_column_names: bool = False,
+            aggregate_function: typing.Callable[
+                [pd.Series],
+                typing.Any
+            ] = None,
+            aggregate_strategy: str = 'mismatch',
+    ) -> pd.DataFrame:
+        r"""Get labels by scheme.
+
+        Return all labels
+        from columns assigned to a
+        :class:`audformat.Scheme`
+        with name ``scheme``.
+        The request can be limited to specific ``tables``
+        and/or ``splits``.
+        By providing ``additional_schemes``
+        the result can be enriched
+        with labels from other schemes
+        (searched in all tables).
+        If ``strict`` is ``False``,
+        a scheme is defined more broadly
+        and does not only match
+        schemes of the database,
+        but also columns with the same name
+        or labels of a scheme
+        with the requested name as key.
+        If at least one returned label belongs to a segmented table,
+        the returned data frame has a segmented index.
+        An ``aggregate_function`` can be provided
+        that specifies how values are combined
+        if more than one value is found
+        for the same file or segment.
+
+        Args:
+            scheme: scheme ID for which labels should be returned.
+                The search can be restricted to specific tables and splits
+                by the ``tables`` and ``splits`` arguments.
+                Or extended to columns with that same name
+                or the name of a label in the scheme
+                using the `strict` argument
+            additional_schemes: scheme ID or sequence of scheme IDs
+                for which additional labels should be returned.
+                The search is not affected
+                by the ``tables`` and ``splits`` arguments
+            tables: limit search for ``scheme`` to selected tables
+            splits: limit search for ``scheme`` to selected splits
+            strict: if ``False``
+                the search is extended to columns
+                that match the name of the scheme
+                or the name of a label in the scheme
+            map: if ``True``
+                and a requested scheme
+                has labels with mappings,
+                those will be returned
+            original_column_names: if ``True``
+                keep the original column names
+                (possibly results in multiple columns).
+                For mapped schemes,
+                the column name before mapping is returned,
+                e.g. when requesting ``'gender'``
+                it might return a column named ``'speaker'``
+            aggregate_function: callable to aggregate overlapping values.
+                The function gets a :class:`pandas.Series`
+                with overlapping values
+                as input.
+                E.g. set to
+                ``lambda y: y.mean()``
+                to average the values
+                or to
+                ``tuple``
+                to return them as a tuple
+            aggregate_strategy: if ``aggregate_function`` is not ``None``,
+                ``aggregate_strategy`` decides
+                when ``aggregate_function`` is applied.
+                ``'overlap'``: apply to all samples
+                that have an overlapping index;
+                ``'mismatch'``: apply to all samples
+                that have an overlapping index
+                and a different value
+
+        Returns:
+            data frame with values
+
+        Raises:
+            ValueError: if different labels are found
+                for a requested scheme under the same index entry
+            ValueError: if ``original_column_names`` is ``True``
+                and two columns in the returned data frame
+                have the same name
+                and cannot be joined
+                due to overlapping data
+                or different data type
+            TypeError: if labels of different data type are found
+                for a requested scheme
+
+        Examples:
+            Return all labels that match a requested scheme.
+
+            >>> import audb
+            >>> db = audb.load(
+            ...     'emodb',
+            ...     version='1.4.1',
+            ...     only_metadata=True,
+            ...     full_path=False,
+            ...     verbose=False
+            ... )
+            >>> db.get('emotion').head()
+                               emotion
+            file
+            wav/03a01Fa.wav  happiness
+            wav/03a01Nc.wav    neutral
+            wav/03a01Wa.wav      anger
+            wav/03a02Fc.wav  happiness
+            wav/03a02Nc.wav    neutral
+            >>> db.get('transcription').head()
+                                                    transcription
+            file
+            wav/03a01Fa.wav  Der Lappen liegt auf dem Eisschrank.
+            wav/03a01Nc.wav  Der Lappen liegt auf dem Eisschrank.
+            wav/03a01Wa.wav  Der Lappen liegt auf dem Eisschrank.
+            wav/03a02Fc.wav     Das will sie am Mittwoch abgeben.
+            wav/03a02Nc.wav     Das will sie am Mittwoch abgeben.
+            >>> db.get('emotion', ['transcription'], map=False).head()
+                               emotion transcription
+            file
+            wav/03a01Fa.wav  happiness           a01
+            wav/03a01Nc.wav    neutral           a01
+            wav/03a01Wa.wav      anger           a01
+            wav/03a02Fc.wav  happiness           a02
+            wav/03a02Nc.wav    neutral           a02
+
+            Non-existent schemes are ignored.
+
+            >>> db.get('emotion', ['non-existing']).head()
+                   emotion non-existing
+            file
+            wav/03a01Fa.wav  happiness          NaN
+            wav/03a01Nc.wav    neutral          NaN
+            wav/03a01Wa.wav      anger          NaN
+            wav/03a02Fc.wav  happiness          NaN
+            wav/03a02Nc.wav    neutral          NaN
+
+            Limit to a particular table or split.
+
+            >>> db.get('emotion', tables=['emotion.categories.train.gold_standard']).head()
+                               emotion
+            file
+            wav/03a01Fa.wav  happiness
+            wav/03a01Nc.wav    neutral
+            wav/03a01Wa.wav      anger
+            wav/03a02Fc.wav  happiness
+            wav/03a02Nc.wav    neutral
+            >>> db.get('emotion', splits=['test']).head()
+                               emotion
+            file
+            wav/12a01Fb.wav  happiness
+            wav/12a01Lb.wav    boredom
+            wav/12a01Nb.wav    neutral
+            wav/12a01Wc.wav      anger
+            wav/12a02Ac.wav       fear
+
+            Return requested scheme name independent of column ID.
+
+            >>> db['emotion'].columns
+            emotion:
+              {scheme_id: emotion, rater_id: gold}
+            emotion.confidence:
+              {scheme_id: confidence, rater_id: gold}
+            >>> db.get('confidence').head()
+                             confidence
+            file
+            wav/03a01Fa.wav        0.90
+            wav/03a01Nc.wav        1.00
+            wav/03a01Wa.wav        0.95
+            wav/03a02Fc.wav        0.85
+            wav/03a02Nc.wav        1.00
+
+            If ``strict`` is ``True``
+            only values that have an attached scheme are returned.
+
+            >>> db.get('emotion.confidence').head()
+                             emotion.confidence
+            file
+            wav/03a01Fa.wav                0.90
+            wav/03a01Nc.wav                1.00
+            wav/03a01Wa.wav                0.95
+            wav/03a02Fc.wav                0.85
+            wav/03a02Nc.wav                1.00
+            >>> db.get('emotion.confidence', strict=True).head()
+            Empty DataFrame
+            Columns: [emotion.confidence]
+            Index: []
+
+            If more then one value exists
+            for the requested scheme
+            and index entry,
+            an error is raised
+            and ``aggregate_function`` can be used
+            to combine the values.
+
+            >>> # Add a shuffled version of emotion ratings as `random` column
+            >>> db['emotion']['random'] = Column(scheme_id='emotion')
+            >>> db['emotion']['random'].set(
+            ...     db['emotion']['emotion'].get().sample(frac=1, random_state=1)
+            ... )
+            >>> db.get('emotion')
+            Traceback (most recent call last):
+                ...
+            ValueError: Found overlapping data in column 'emotion':
+                                  left    right
+            file
+            wav/03a01Nc.wav    neutral  disgust
+            wav/03a01Wa.wav      anger  neutral
+            wav/03a02Fc.wav  happiness  neutral
+            wav/03a02Ta.wav    sadness  boredom
+            wav/03a02Wb.wav      anger  sadness
+            wav/03a04Ad.wav       fear  neutral
+            wav/03a04Fd.wav  happiness    anger
+            wav/03a04Nc.wav    neutral  sadness
+            wav/03a04Wc.wav      anger  boredom
+            wav/03a05Aa.wav       fear  sadness
+            ...
+            >>> db.get('emotion', aggregate_function=lambda y: y[0]).head()
+                               emotion
+            file
+            wav/03a01Fa.wav  happiness
+            wav/03a01Nc.wav    neutral
+            wav/03a01Wa.wav      anger
+            wav/03a02Fc.wav  happiness
+            wav/03a02Nc.wav    neutral
+
+            Alternatively,
+            use ``original_column_names`` to return column IDs.
+
+            >>> db.get('emotion', original_column_names=True).head()
+                               emotion     random
+            file
+            wav/03a01Fa.wav  happiness  happiness
+            wav/03a01Nc.wav    neutral    disgust
+            wav/03a01Wa.wav      anger    neutral
+            wav/03a02Fc.wav  happiness    neutral
+            wav/03a02Nc.wav    neutral    neutral
+
+        """  # noqa: E501
+
+        def append_series(ys, y, column_id):
+            if y is not None:
+                if original_column_names:
+                    y.name = column_id
+                ys.append(y)
+
+        def dtypes_of_categories(objs):
+            dtypes = [
+                obj.dtype.categories.dtype
+                for obj in objs
+                if isinstance(obj.dtype, pd.CategoricalDtype)
+            ]
+            return sorted(list(set(dtypes)))
+
+        def empty_frame(name):
+            return pd.DataFrame(
+                {name: []},
+                index=filewise_index(),
+                dtype='object',
+            )
+
+        def empty_series(name):
+            return pd.Series(
+                index=filewise_index(),
+                dtype='object',
+                name=name,
+            )
+
+        def scheme_in_column(scheme_id, column, column_id):
+            # Check if scheme_id
+            # is attached to a column,
+            # or identical with the column name
+            return (
+                scheme_id == column_id and not strict
+                or (
+                    column.scheme_id is not None
+                    and scheme_id == column.scheme_id
+                )
+            )
+
+        requested_scheme = scheme
+        additional_schemes = audeer.to_list(additional_schemes)
+
+        if tables is None:
+            tables = list(self.tables)
+        else:
+            tables = audeer.to_list(tables)
+        if splits is not None:
+            splits = audeer.to_list(splits)
+
+        # --- Check if requested scheme is stored as label in other schemes
+        scheme_mappings = []
+        for scheme_id, scheme in self.schemes.items():
+
+            # Labels stored as misc table
+            if scheme.uses_table and scheme_id in self.misc_tables:
+                for column_id, column in self[scheme_id].columns.items():
+                    if scheme_in_column(
+                            requested_scheme,
+                            column,
+                            column_id,
+                    ):
+                        scheme_mappings.append((scheme_id, column_id))
+
+            # Labels stored in scheme
+            elif (
+                    not strict
+                    and isinstance(scheme.labels, dict)
+                    # Skip simple mappings like {'a0': 'a text'}
+                    and isinstance(list(scheme.labels.values())[0], dict)
+            ):
+                labels = pd.DataFrame.from_dict(
+                    scheme.labels,
+                    orient='index',
+                )
+                if requested_scheme in labels:
+                    scheme_mappings.append((scheme_id, requested_scheme))
+
+        # --- Get data for requested schemes
+        ys = []
+        for table_id in tables:
+
+            # Handle non-existing tables
+            if table_id not in self.tables:
+                continue
+            else:
+                table = self[table_id]
+
+            # Limit search by split
+            if splits is not None and table.split_id not in splits:
+                continue
+
+            for column_id, column in table.columns.items():
+                y = None
+                # Scheme directly stored in column
+                if scheme_in_column(requested_scheme, column, column_id):
+                    if requested_scheme in self.schemes:
+                        labels = self.schemes[requested_scheme].labels
+                    # If map=True we want to expand scheme labels like
+                    # {'a': 'Full a', 'b': 'Full b'},
+                    # nut not scheme labels like
+                    # {'a': {'d': 1}, 'b': {'d': 2}}
+                    if (
+                            map is True
+                            and requested_scheme in self.schemes
+                            and isinstance(labels, dict)
+                            # Ensure simple mappings like {'a0': 'a text'}
+                            and not isinstance(list(labels.values())[0], dict)
+                            # map=requested_scheme can only be performed
+                            # if scheme is assigned
+                            and column.scheme_id == requested_scheme
+                    ):
+                        y = column.get(map=requested_scheme)
+                    else:
+                        y = column.get()
+                    y.name = requested_scheme
+                    append_series(ys, y, column_id)
+                # Get series based on label of scheme
+                else:
+                    for (scheme_id, mapping) in scheme_mappings:
+                        if scheme_in_column(scheme_id, column, column_id):
+                            if column.scheme_id is None:
+                                y = empty_series(requested_scheme)
+                            else:
+                                y = column.get(map=mapping)
+                                y.name = requested_scheme
+                            append_series(ys, y, column_id)
+
+        # --- Ensure we have a common dtype for requested scheme
+        dtypes = dtypes_of_categories(ys)
+        if len(dtypes) > 0:
+            if len(dtypes) > 1:
+                # Don't know if this can ever be triggered,
+                # but make sure we raise the same error as
+                # pd.api.types.union_categoricals
+                raise TypeError(  # pragma: nocover
+                    f"Cannot join labels for scheme '{requested_scheme}' "
+                    "with different data types: "
+                    f"{', '.join(dtypes)}"
+                )
+            dtype = dtypes[0]
+            # Convert everything to categorical data
+            for n, y in enumerate(ys):
+                if not isinstance(y.dtype, pd.CategoricalDtype):
+                    ys[n] = y.astype(
+                        pd.CategoricalDtype(
+                            y.array.dropna().unique().astype(dtype)
+                        )
+                    )
+            # Find union of categorical data
+            data = [y.array for y in ys]
+            try:
+                data = pd.api.types.union_categoricals(data)
+            except TypeError:
+                dtypes = [str(dtype) for dtype in dtypes_of_categories(data)]
+                raise TypeError(
+                    f"Cannot join labels for scheme '{requested_scheme}' "
+                    "with different data types: "
+                    f"{', '.join(dtypes)}"
+                )
+            ys = [y.astype(data.dtype) for y in ys]
+
+        # --- Combine all labels
+        index = utils.union([y.index for y in ys])
+        obj = utils.concat(
+            ys,
+            aggregate_function=aggregate_function,
+            aggregate_strategy=aggregate_strategy,
+        )
+        obj = obj.loc[index]
+
+        if len(obj) == 0:
+            obj = empty_frame(requested_scheme)
+        elif isinstance(obj, pd.Series):
+            obj = obj.to_frame()
+
+        # --- Append additional schemes
+        objs = [obj]
+        for scheme in additional_schemes:
+            if len(obj) == 0:
+                obj = empty_frame(scheme)
+            else:
+                obj = self.get(
+                    scheme,
+                    strict=strict,
+                    map=map,
+                    original_column_names=original_column_names,
+                    aggregate_function=aggregate_function,
+                )
+            objs.append(obj)
+        if len(objs) > 1:
+            obj = utils.concat(objs)
+            obj = obj.loc[index]
+            if len(obj) == 0:
+                obj.index = filewise_index()
+
+        return obj
 
     def map_files(
             self,

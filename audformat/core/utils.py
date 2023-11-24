@@ -377,6 +377,7 @@ def concat(
             # drop NaN to avoid overwriting values from other column
             column = column.dropna()
         else:
+            # Adjust dtype and initialize empty column
             if pd.api.types.is_integer_dtype(column.dtype):
                 dtype = 'Int64'
             elif pd.api.types.is_bool_dtype(column.dtype):
