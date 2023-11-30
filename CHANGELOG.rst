@@ -7,6 +7,34 @@ The format is based on `Keep a Changelog`_,
 and this project adheres to `Semantic Versioning`_.
 
 
+Version 1.1.0 (2023-11-30)
+--------------------------
+
+* Added: ``audformat.Database.get()`` method
+  to retrieve labels based on their schemes
+  and independent of the tables
+  in which they are stored
+* Added: ``aggregate_function``
+  and ``aggregate_strategy``
+  arguments to ``audformat.utils.concat()``
+  to support overlapping values
+  in the objects
+  that should be concatenated
+* Changed: ``audformat.Column.get(map=...)``
+  now returns dtype of labels
+* Changed: ``audformat.Column.get(map=...)``
+  does no longer raise an error
+  if some of the mapped values
+  are not available
+  when stored in a dictionary
+  as scheme labels
+* Fixed: avoid deprecation warning
+  by replacing
+  ``pkg_resources``
+  internally with
+  ``importlib.metadata``
+
+
 Version 1.0.3 (2023-10-11)
 --------------------------
 
