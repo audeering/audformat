@@ -66,6 +66,10 @@ from\_dict\(\)
 --------------
 .. automethod:: Database.from_dict
     
+get\(\)
+-------
+.. automethod:: Database.get
+    
 is\_portable
 ------------
 .. autoattribute:: Database.is_portable

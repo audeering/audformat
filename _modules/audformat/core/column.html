@@ -32,7 +32,7 @@
   <link rel="stylesheet" href="../../../_static/copybutton.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/jupyter-sphinx.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/thebelab.css" type="text/css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css" type="text/css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/katex-math.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
@@ -70,7 +70,7 @@
             
             
               <div class="version">
-                v1.0.3
+                v1.1.0
               </div>
             
           
@@ -174,6 +174,8 @@
 
 <span class="kn">from</span> <span class="nn">audformat.core</span> <span class="kn">import</span> <span class="n">define</span>
 <span class="kn">from</span> <span class="nn">audformat.core.common</span> <span class="kn">import</span> <span class="n">HeaderBase</span>
+<span class="kn">from</span> <span class="nn">audformat.core.common</span> <span class="kn">import</span> <span class="n">to_audformat_dtype</span>
+<span class="kn">from</span> <span class="nn">audformat.core.common</span> <span class="kn">import</span> <span class="n">to_pandas_dtype</span>
 <span class="kn">from</span> <span class="nn">audformat.core.index</span> <span class="kn">import</span> <span class="n">index_type</span>
 <span class="kn">from</span> <span class="nn">audformat.core.index</span> <span class="kn">import</span> <span class="n">is_scalar</span>
 <span class="kn">from</span> <span class="nn">audformat.core.index</span> <span class="kn">import</span> <span class="n">to_array</span>
@@ -418,23 +420,51 @@
                     <span class="s2">&quot;for its labels.&quot;</span>
                 <span class="p">)</span>
 
+            <span class="c1"># Check that at least one key is available for map</span>
+            <span class="c1"># if labels are stored as dictionary</span>
+            <span class="n">keys</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">labels</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+                    <span class="n">keys</span> <span class="o">+=</span> <span class="nb">list</span><span class="p">(</span><span class="n">value</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+            <span class="n">keys</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">keys</span><span class="p">)))</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">keys</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="nb">map</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Cannot map &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_id</span><span class="si">}</span><span class="s2">&#39; &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;to &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="nb">map</span><span class="si">}</span><span class="s2">&#39;. &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;Expected one of &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">keys</span><span class="p">)</span><span class="si">}</span><span class="s2">.&quot;</span>
+                <span class="p">)</span>
+
             <span class="n">mapping</span> <span class="o">=</span> <span class="p">{}</span>
             <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">labels</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                 <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
                     <span class="k">if</span> <span class="nb">map</span> <span class="ow">in</span> <span class="n">value</span><span class="p">:</span>
                         <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="p">[</span><span class="nb">map</span><span class="p">]</span>
                     <span class="k">else</span><span class="p">:</span>
-                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                            <span class="sa">f</span><span class="s2">&quot;Cannot map &quot;</span>
-                            <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_id</span><span class="si">}</span><span class="s2">&#39; &quot;</span>
-                            <span class="sa">f</span><span class="s2">&quot;to &quot;</span>
-                            <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="nb">map</span><span class="si">}</span><span class="s2">&#39;. &quot;</span>
-                            <span class="sa">f</span><span class="s2">&quot;Expected one of &quot;</span>
-                            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="si">}</span><span class="s2">.&quot;</span>
-                        <span class="p">)</span>
+                        <span class="n">value</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">NaN</span>
                 <span class="n">mapping</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
-            <span class="n">result</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">mapping</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;category&#39;</span><span class="p">)</span>
+
+            <span class="n">result</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">mapping</span><span class="p">)</span>
             <span class="n">result</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="nb">map</span>
+
+            <span class="k">if</span> <span class="p">(</span>
+                    <span class="n">scheme</span><span class="o">.</span><span class="n">uses_table</span>
+                    <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_table</span><span class="o">.</span><span class="n">_db</span><span class="p">[</span><span class="n">scheme</span><span class="o">.</span><span class="n">labels</span><span class="p">][</span><span class="nb">map</span><span class="p">]</span><span class="o">.</span><span class="n">scheme</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+                    <span class="c1">#                       ^           ^</span>
+                    <span class="c1">#                   misc table   column</span>
+            <span class="p">):</span>
+                <span class="c1"># Infer dtype from misc table</span>
+                <span class="n">misc_table_id</span> <span class="o">=</span> <span class="n">scheme</span><span class="o">.</span><span class="n">labels</span>
+                <span class="n">column</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_table</span><span class="o">.</span><span class="n">_db</span><span class="p">[</span><span class="n">misc_table_id</span><span class="p">][</span><span class="nb">map</span><span class="p">]</span>
+                <span class="n">dtype</span> <span class="o">=</span> <span class="n">column</span><span class="o">.</span><span class="n">scheme</span><span class="o">.</span><span class="n">to_pandas_dtype</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># Infer dtype from actual labels</span>
+                <span class="n">dtype</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">infer_dtype</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">values</span><span class="p">))</span>
+                <span class="n">dtype</span> <span class="o">=</span> <span class="n">to_pandas_dtype</span><span class="p">(</span><span class="n">to_audformat_dtype</span><span class="p">(</span><span class="n">dtype</span><span class="p">))</span>
+
+            <span class="n">result</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">result</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span> <span class="k">if</span> <span class="n">copy</span> <span class="k">else</span> <span class="n">result</span></div>
 
@@ -551,7 +581,7 @@
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2023/10/11 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2023/11/30 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>

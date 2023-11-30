@@ -32,7 +32,7 @@
   <link rel="stylesheet" href="../../../_static/copybutton.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/jupyter-sphinx.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/thebelab.css" type="text/css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css" type="text/css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/katex-math.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
@@ -70,7 +70,7 @@
             
             
               <div class="version">
-                v1.0.3
+                v1.1.0
               </div>
             
           
@@ -203,6 +203,8 @@
         <span class="n">objs</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">]],</span>
         <span class="o">*</span><span class="p">,</span>
         <span class="n">overwrite</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">aggregate_function</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Callable</span><span class="p">[[</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">],</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">aggregate_strategy</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;mismatch&#39;</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">]:</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Concatenate objects.</span>
 
@@ -230,10 +232,35 @@
 <span class="sd">    or one column contains ``NaN``.</span>
 <span class="sd">    If ``overwrite`` is set to ``True``,</span>
 <span class="sd">    the value of the last object in the list is kept.</span>
+<span class="sd">    If ``overwrite`` is set to ``False``,</span>
+<span class="sd">    a custom aggregation function can be provided</span>
+<span class="sd">    with ``aggregate_function``</span>
+<span class="sd">    that converts the overlapping values</span>
+<span class="sd">    into a single value.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        objs: objects</span>
 <span class="sd">        overwrite: overwrite values where indices overlap</span>
+<span class="sd">        aggregate_function: function to aggregate overlapping values,</span>
+<span class="sd">            that cannot be joined</span>
+<span class="sd">            when ``overwrite`` is ``False``.</span>
+<span class="sd">            The function gets a :class:`pandas.Series`</span>
+<span class="sd">            with overlapping values</span>
+<span class="sd">            as input.</span>
+<span class="sd">            E.g. set to</span>
+<span class="sd">            ``lambda y: y.mean()``</span>
+<span class="sd">            to average the values</span>
+<span class="sd">            or to</span>
+<span class="sd">            ``tuple``</span>
+<span class="sd">            to return them as a tuple</span>
+<span class="sd">        aggregate_strategy: if ``aggregate_function`` is not ``None``,</span>
+<span class="sd">            ``aggregate_strategy`` decides</span>
+<span class="sd">            when ``aggregate_function`` is applied.</span>
+<span class="sd">            ``&#39;overlap&#39;``: apply to all samples</span>
+<span class="sd">            that have an overlapping index;</span>
+<span class="sd">            ``&#39;mismatch&#39;``: apply to all samples</span>
+<span class="sd">            that have an overlapping index</span>
+<span class="sd">            and a different value</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        concatenated objects</span>
@@ -241,7 +268,11 @@
 <span class="sd">    Raises:</span>
 <span class="sd">        ValueError: if level and dtypes of object indices do not match</span>
 <span class="sd">        ValueError: if columns with the same name have different dtypes</span>
-<span class="sd">        ValueError: if values in the same position do not match</span>
+<span class="sd">        ValueError: if ``aggregate_strategy`` is not one of</span>
+<span class="sd">            ``&#39;overlap&#39;``, ``&#39;mismatch&#39;``</span>
+<span class="sd">        ValueError: if ``aggregate_function`` is ``None``,</span>
+<span class="sd">            ``overwrite`` is ``False``,</span>
+<span class="sd">            and values in the same position do not match</span>
 
 <span class="sd">    Examples:</span>
 <span class="sd">        &gt;&gt;&gt; concat(</span>
@@ -261,6 +292,37 @@
 <span class="sd">        ... )</span>
 <span class="sd">           col1  col2</span>
 <span class="sd">        0     0     1</span>
+<span class="sd">        &gt;&gt;&gt; concat(</span>
+<span class="sd">        ...     [</span>
+<span class="sd">        ...         pd.Series([1, 1], index=pd.Index([0, 1])),</span>
+<span class="sd">        ...         pd.Series([1, 1], index=pd.Index([0, 1])),</span>
+<span class="sd">        ...     ],</span>
+<span class="sd">        ...     aggregate_function=np.sum,</span>
+<span class="sd">        ... )</span>
+<span class="sd">        0    1</span>
+<span class="sd">        1    1</span>
+<span class="sd">        dtype: Int64</span>
+<span class="sd">        &gt;&gt;&gt; concat(</span>
+<span class="sd">        ...     [</span>
+<span class="sd">        ...         pd.Series([1, 1], index=pd.Index([0, 1])),</span>
+<span class="sd">        ...         pd.Series([1, 2], index=pd.Index([0, 1])),</span>
+<span class="sd">        ...     ],</span>
+<span class="sd">        ...     aggregate_function=np.sum,</span>
+<span class="sd">        ... )</span>
+<span class="sd">        0    1</span>
+<span class="sd">        1    3</span>
+<span class="sd">        dtype: Int64</span>
+<span class="sd">        &gt;&gt;&gt; concat(</span>
+<span class="sd">        ...     [</span>
+<span class="sd">        ...         pd.Series([1, 1], index=pd.Index([0, 1])),</span>
+<span class="sd">        ...         pd.Series([1, 1], index=pd.Index([0, 1])),</span>
+<span class="sd">        ...     ],</span>
+<span class="sd">        ...     aggregate_function=np.sum,</span>
+<span class="sd">        ...     aggregate_strategy=&#39;overlap&#39;,</span>
+<span class="sd">        ... )</span>
+<span class="sd">        0    2</span>
+<span class="sd">        1    2</span>
+<span class="sd">        dtype: Int64</span>
 <span class="sd">        &gt;&gt;&gt; concat(</span>
 <span class="sd">        ...     [</span>
 <span class="sd">        ...         pd.Series(</span>
@@ -334,6 +396,13 @@
 <span class="sd">        f3   0 days NaT    2.0      b</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">allowed_values</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;overlap&#39;</span><span class="p">,</span> <span class="s1">&#39;mismatch&#39;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">aggregate_strategy</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">allowed_values</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">&quot;aggregate_strategy needs to be one of: &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">allowed_values</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+
     <span class="k">if</span> <span class="ow">not</span> <span class="n">objs</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">([],</span> <span class="n">index</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">([]),</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;object&#39;</span><span class="p">)</span>
 
@@ -360,6 +429,7 @@
 
     <span class="c1"># reindex all columns to the new index</span>
     <span class="n">columns_reindex</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">overlapping_values</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="n">columns</span><span class="p">:</span>
 
         <span class="c1"># if we already have a column with that name, we have to merge them</span>
@@ -377,7 +447,7 @@
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                     <span class="s2">&quot;Found two columns with name &quot;</span>
                     <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">column</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39; &quot;</span>
-                    <span class="s2">&quot;buf different dtypes:</span><span class="se">\n</span><span class="s2">&quot;</span>
+                    <span class="s2">&quot;but different dtypes:</span><span class="se">\n</span><span class="s2">&quot;</span>
                     <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">dtype_1</span><span class="si">}</span><span class="s2"> &quot;</span>
                     <span class="s2">&quot;!= &quot;</span>
                     <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">dtype_2</span><span class="si">}</span><span class="s2">.&quot;</span>
@@ -389,40 +459,91 @@
                     <span class="n">columns_reindex</span><span class="p">[</span><span class="n">column</span><span class="o">.</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;float64&#39;</span><span class="p">)</span>
                 <span class="p">)</span>
 
-            <span class="c1"># overlapping values must match or have to be nan in one column</span>
+            <span class="c1"># Handle overlapping values</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">overwrite</span><span class="p">:</span>
+
+                <span class="k">def</span> <span class="nf">collect_overlap</span><span class="p">(</span><span class="n">overlapping_values</span><span class="p">,</span> <span class="n">column</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+<span class="w">                    </span><span class="sd">&quot;&quot;&quot;Collect overlap for aggregate function.&quot;&quot;&quot;</span>
+                    <span class="k">if</span> <span class="n">column</span><span class="o">.</span><span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">overlapping_values</span><span class="p">:</span>
+                        <span class="n">overlapping_values</span><span class="p">[</span><span class="n">column</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+                    <span class="n">overlapping_values</span><span class="p">[</span><span class="n">column</span><span class="o">.</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                        <span class="n">column</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+                    <span class="p">)</span>
+                    <span class="n">column</span> <span class="o">=</span> <span class="n">column</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="o">~</span><span class="n">column</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">index</span><span class="p">)]</span>
+                    <span class="n">column</span> <span class="o">=</span> <span class="n">column</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
+                    <span class="k">return</span> <span class="n">column</span><span class="p">,</span> <span class="n">overlapping_values</span>
+
+                <span class="c1"># Apply aggregate function only to overlapping entries</span>
                 <span class="n">intersection</span> <span class="o">=</span> <span class="n">intersect</span><span class="p">(</span>
                     <span class="p">[</span>
-                        <span class="n">columns_reindex</span><span class="p">[</span><span class="n">column</span><span class="o">.</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">,</span>
-                        <span class="n">column</span><span class="o">.</span><span class="n">index</span><span class="p">,</span>
+                        <span class="n">columns_reindex</span><span class="p">[</span><span class="n">column</span><span class="o">.</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span><span class="o">.</span><span class="n">index</span><span class="p">,</span>
+                        <span class="n">column</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span><span class="o">.</span><span class="n">index</span><span class="p">,</span>
                     <span class="p">]</span>
                 <span class="p">)</span>
                 <span class="c1"># We use len() here as index.empty takes a very long time</span>
                 <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">intersection</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+
+                    <span class="c1"># Apply aggregate function</span>
+                    <span class="c1"># to all overlapping entries</span>
+                    <span class="k">if</span> <span class="p">(</span>
+                            <span class="n">aggregate_function</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+                            <span class="ow">and</span> <span class="n">aggregate_strategy</span> <span class="o">==</span> <span class="s1">&#39;overlap&#39;</span>
+                    <span class="p">):</span>
+                        <span class="n">column</span><span class="p">,</span> <span class="n">overlapping_values</span> <span class="o">=</span> <span class="n">collect_overlap</span><span class="p">(</span>
+                            <span class="n">overlapping_values</span><span class="p">,</span>
+                            <span class="n">column</span><span class="p">,</span>
+                            <span class="n">intersection</span><span class="p">,</span>
+                        <span class="p">)</span>
+                        <span class="n">columns_reindex</span><span class="p">[</span><span class="n">column</span><span class="o">.</span><span class="n">name</span><span class="p">][</span><span class="n">column</span><span class="o">.</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">column</span>
+                        <span class="k">continue</span>
+
+                    <span class="c1"># Find data that differ and cannot be joined</span>
                     <span class="n">combine</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
                         <span class="p">{</span>
-                            <span class="s1">&#39;left&#39;</span><span class="p">:</span> <span class="n">columns_reindex</span><span class="p">[</span><span class="n">column</span><span class="o">.</span><span class="n">name</span><span class="p">][</span><span class="n">intersection</span><span class="p">],</span>
-                            <span class="s1">&#39;right&#39;</span><span class="p">:</span> <span class="n">column</span><span class="p">[</span><span class="n">intersection</span><span class="p">]</span>
+                            <span class="s1">&#39;left&#39;</span><span class="p">:</span>
+                            <span class="n">columns_reindex</span><span class="p">[</span><span class="n">column</span><span class="o">.</span><span class="n">name</span><span class="p">][</span><span class="n">intersection</span><span class="p">],</span>
+                            <span class="s1">&#39;right&#39;</span><span class="p">:</span>
+                            <span class="n">column</span><span class="p">[</span><span class="n">intersection</span><span class="p">],</span>
                         <span class="p">}</span>
                     <span class="p">)</span>
                     <span class="n">combine</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
                     <span class="n">differ</span> <span class="o">=</span> <span class="n">combine</span><span class="p">[</span><span class="s1">&#39;left&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="n">combine</span><span class="p">[</span><span class="s1">&#39;right&#39;</span><span class="p">]</span>
+
                     <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">differ</span><span class="p">):</span>
-                        <span class="n">max_display</span> <span class="o">=</span> <span class="mi">10</span>
-                        <span class="n">overlap</span> <span class="o">=</span> <span class="n">combine</span><span class="p">[</span><span class="n">differ</span><span class="p">]</span>
-                        <span class="n">msg_overlap</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">overlap</span><span class="p">[:</span><span class="n">max_display</span><span class="p">])</span>
-                        <span class="n">msg_tail</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">...&#39;</span> \
-                            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">overlap</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">max_display</span> \
-                            <span class="k">else</span> <span class="s1">&#39;&#39;</span>
-                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                            <span class="s2">&quot;Found overlapping data in column &quot;</span>
-                            <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">column</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39;:</span><span class="se">\n</span><span class="s2">&quot;</span>
-                            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">msg_overlap</span><span class="si">}{</span><span class="n">msg_tail</span><span class="si">}</span><span class="s2">&quot;</span>
-                        <span class="p">)</span>
+
+                        <span class="c1"># Apply aggregate function</span>
+                        <span class="c1"># to overlapping entries</span>
+                        <span class="c1"># that do not match in value</span>
+                        <span class="k">if</span> <span class="p">(</span>
+                                <span class="n">aggregate_function</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+                                <span class="ow">and</span> <span class="n">aggregate_strategy</span> <span class="o">==</span> <span class="s1">&#39;mismatch&#39;</span>
+                        <span class="p">):</span>
+                            <span class="n">column</span><span class="p">,</span> <span class="n">overlapping_values</span> <span class="o">=</span> <span class="n">collect_overlap</span><span class="p">(</span>
+                                <span class="n">overlapping_values</span><span class="p">,</span>
+                                <span class="n">column</span><span class="p">,</span>
+                                <span class="n">intersection</span><span class="p">[</span><span class="n">differ</span><span class="p">],</span>
+                            <span class="p">)</span>
+                            <span class="n">columns_reindex</span><span class="p">[</span><span class="n">column</span><span class="o">.</span><span class="n">name</span><span class="p">][</span><span class="n">column</span><span class="o">.</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">column</span>
+                            <span class="k">continue</span>
+
+                        <span class="c1"># Raise error if values don&#39;t match and are not NaN</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">max_display</span> <span class="o">=</span> <span class="mi">10</span>
+                            <span class="n">overlap</span> <span class="o">=</span> <span class="n">combine</span><span class="p">[</span><span class="n">differ</span><span class="p">]</span>
+                            <span class="n">msg_overlap</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">overlap</span><span class="p">[:</span><span class="n">max_display</span><span class="p">])</span>
+                            <span class="n">msg_tail</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">...&#39;</span> \
+                                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">overlap</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">max_display</span> \
+                                <span class="k">else</span> <span class="s1">&#39;&#39;</span>
+                            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                                <span class="s2">&quot;Found overlapping data in column &quot;</span>
+                                <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">column</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39;:</span><span class="se">\n</span><span class="s2">&quot;</span>
+                                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">msg_overlap</span><span class="si">}{</span><span class="n">msg_tail</span><span class="si">}</span><span class="s2">&quot;</span>
+                            <span class="p">)</span>
 
             <span class="c1"># drop NaN to avoid overwriting values from other column</span>
             <span class="n">column</span> <span class="o">=</span> <span class="n">column</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Adjust dtype and initialize empty column</span>
             <span class="k">if</span> <span class="n">pd</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">is_integer_dtype</span><span class="p">(</span><span class="n">column</span><span class="o">.</span><span class="n">dtype</span><span class="p">):</span>
                 <span class="n">dtype</span> <span class="o">=</span> <span class="s1">&#39;Int64&#39;</span>
             <span class="k">elif</span> <span class="n">pd</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">is_bool_dtype</span><span class="p">(</span><span class="n">column</span><span class="o">.</span><span class="n">dtype</span><span class="p">):</span>
@@ -434,6 +555,42 @@
                 <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span>
             <span class="p">)</span>
         <span class="n">columns_reindex</span><span class="p">[</span><span class="n">column</span><span class="o">.</span><span class="n">name</span><span class="p">][</span><span class="n">column</span><span class="o">.</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">column</span>
+
+    <span class="c1"># Apply custom aggregation function</span>
+    <span class="c1"># on collected overlapping data</span>
+    <span class="c1"># (no overlapping data is collected</span>
+    <span class="c1">#  when no aggregation function is provided)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">overlapping_values</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="n">overlapping_values</span><span class="p">:</span>
+
+            <span class="c1"># Add data of first column</span>
+            <span class="c1"># overlapping with all other columns</span>
+            <span class="n">union_index</span> <span class="o">=</span> <span class="n">union</span><span class="p">(</span>
+                <span class="p">[</span><span class="n">y</span><span class="o">.</span><span class="n">index</span> <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">overlapping_values</span><span class="p">[</span><span class="n">column</span><span class="p">]]</span>
+            <span class="p">)</span>
+            <span class="n">overlapping_values</span><span class="p">[</span><span class="n">column</span><span class="p">]</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span>
+                <span class="mi">0</span><span class="p">,</span>
+                <span class="n">columns_reindex</span><span class="p">[</span><span class="n">column</span><span class="p">]</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">union_index</span><span class="p">]</span>
+            <span class="p">)</span>
+
+            <span class="c1"># Convert list of overlapping data series to data frame</span>
+            <span class="c1"># and apply aggregate function</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span>
+                <span class="n">overlapping_values</span><span class="p">[</span><span class="n">column</span><span class="p">],</span>
+                <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">dtype</span> <span class="o">=</span> <span class="n">columns_reindex</span><span class="p">[</span><span class="n">column</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">aggregate_function</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+            <span class="c1"># Restore the original dtype if possible</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">y</span> <span class="o">=</span> <span class="n">y</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span>
+            <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">):</span>
+                <span class="n">columns_reindex</span><span class="p">[</span><span class="n">column</span><span class="p">]</span> <span class="o">=</span> <span class="n">columns_reindex</span><span class="p">[</span><span class="n">column</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span>
+                    <span class="n">y</span><span class="o">.</span><span class="n">dtype</span>
+                <span class="p">)</span>
+            <span class="n">columns_reindex</span><span class="p">[</span><span class="n">column</span><span class="p">]</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">y</span><span class="o">.</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">y</span>
 
     <span class="c1"># Use `None` to force `{}` return the correct index, see</span>
     <span class="c1"># https://github.com/pandas-dev/pandas/issues/52404</span>
@@ -1930,7 +2087,7 @@
     <span class="n">objs</span> <span class="o">=</span> <span class="n">_maybe_convert_single_level_multi_index</span><span class="p">(</span><span class="n">objs</span><span class="p">)</span>
     <span class="n">_assert_index_alike</span><span class="p">(</span><span class="n">objs</span><span class="p">)</span>
 
-    <span class="c1"># Combine all MultiIndex entries and drop duplicates afterwards,</span>
+    <span class="c1"># Combine all index entries and drop duplicates afterwards,</span>
     <span class="c1"># faster than using index.union(),</span>
     <span class="c1"># compare https://github.com/audeering/audformat/pull/98</span>
 
@@ -2160,7 +2317,7 @@
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2023/10/11 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2023/11/30 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>

@@ -32,7 +32,7 @@
   <link rel="stylesheet" href="../../../_static/copybutton.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/jupyter-sphinx.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/thebelab.css" type="text/css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css" type="text/css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/katex-math.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
@@ -70,7 +70,7 @@
             
             
               <div class="version">
-                v1.0.3
+                v1.1.0
               </div>
             
           
@@ -192,6 +192,7 @@
 <span class="kn">from</span> <span class="nn">audformat.core.errors</span> <span class="kn">import</span> <span class="n">BadIdError</span>
 <span class="kn">from</span> <span class="nn">audformat.core.errors</span> <span class="kn">import</span> <span class="n">BadKeyError</span>
 <span class="kn">from</span> <span class="nn">audformat.core.errors</span> <span class="kn">import</span> <span class="n">TableExistsError</span>
+<span class="kn">from</span> <span class="nn">audformat.core.index</span> <span class="kn">import</span> <span class="n">filewise_index</span>
 <span class="kn">from</span> <span class="nn">audformat.core.media</span> <span class="kn">import</span> <span class="n">Media</span>
 <span class="kn">from</span> <span class="nn">audformat.core.rater</span> <span class="kn">import</span> <span class="n">Rater</span>
 <span class="kn">from</span> <span class="nn">audformat.core.scheme</span> <span class="kn">import</span> <span class="n">Scheme</span>
@@ -259,11 +260,13 @@
 <span class="sd">        ...     format=&#39;wav&#39;,</span>
 <span class="sd">        ...     sampling_rate=16000,</span>
 <span class="sd">        ... )</span>
-<span class="sd">        &gt;&gt;&gt; db[&#39;table&#39;] = Table(media_id=&#39;audio&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; index = filewise_index([&#39;f1.wav&#39;, &#39;f2.wav&#39;])</span>
+<span class="sd">        &gt;&gt;&gt; db[&#39;table&#39;] = Table(index, media_id=&#39;audio&#39;)</span>
 <span class="sd">        &gt;&gt;&gt; db[&#39;table&#39;][&#39;column&#39;] = Column(</span>
 <span class="sd">        ...     scheme_id=&#39;emotion&#39;,</span>
 <span class="sd">        ...     rater_id=&#39;rater&#39;,</span>
 <span class="sd">        ... )</span>
+<span class="sd">        &gt;&gt;&gt; db[&#39;table&#39;][&#39;column&#39;].set([&#39;neutral&#39;, &#39;positive&#39;])</span>
 <span class="sd">        &gt;&gt;&gt; index = pd.Index([], dtype=&#39;string&#39;, name=&#39;idx&#39;)</span>
 <span class="sd">        &gt;&gt;&gt; db[&#39;misc-table&#39;] = MiscTable(index)</span>
 <span class="sd">        &gt;&gt;&gt; db[&#39;misc-table&#39;][&#39;column&#39;] = Column(scheme_id=&#39;match&#39;)</span>
@@ -294,6 +297,11 @@
 <span class="sd">              column: {scheme_id: match}</span>
 <span class="sd">        &gt;&gt;&gt; list(db)</span>
 <span class="sd">        [&#39;misc-table&#39;, &#39;table&#39;]</span>
+<span class="sd">        &gt;&gt;&gt; db.get(&#39;emotion&#39;)</span>
+<span class="sd">                 emotion</span>
+<span class="sd">        file</span>
+<span class="sd">        f1.wav   neutral</span>
+<span class="sd">        f2.wav  positive</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
@@ -598,6 +606,458 @@
         <span class="p">)</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">duration</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">y</span></div>
+
+<div class="viewcode-block" id="Database.get"><a class="viewcode-back" href="../../../api/audformat.Database.html#audformat.Database.get">[docs]</a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">scheme</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+            <span class="n">additional_schemes</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">]</span> <span class="o">=</span> <span class="p">[],</span>
+            <span class="o">*</span><span class="p">,</span>
+            <span class="n">tables</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">splits</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">strict</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+            <span class="nb">map</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="n">original_column_names</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+            <span class="n">aggregate_function</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Callable</span><span class="p">[</span>
+                <span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">],</span>
+                <span class="n">typing</span><span class="o">.</span><span class="n">Any</span>
+            <span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">aggregate_strategy</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;mismatch&#39;</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Get labels by scheme.</span>
+
+<span class="sd">        Return all labels</span>
+<span class="sd">        from columns assigned to a</span>
+<span class="sd">        :class:`audformat.Scheme`</span>
+<span class="sd">        with name ``scheme``.</span>
+<span class="sd">        The request can be limited to specific ``tables``</span>
+<span class="sd">        and/or ``splits``.</span>
+<span class="sd">        By providing ``additional_schemes``</span>
+<span class="sd">        the result can be enriched</span>
+<span class="sd">        with labels from other schemes</span>
+<span class="sd">        (searched in all tables).</span>
+<span class="sd">        If ``strict`` is ``False``,</span>
+<span class="sd">        a scheme is defined more broadly</span>
+<span class="sd">        and does not only match</span>
+<span class="sd">        schemes of the database,</span>
+<span class="sd">        but also columns with the same name</span>
+<span class="sd">        or labels of a scheme</span>
+<span class="sd">        with the requested name as key.</span>
+<span class="sd">        If at least one returned label belongs to a segmented table,</span>
+<span class="sd">        the returned data frame has a segmented index.</span>
+<span class="sd">        An ``aggregate_function`` can be provided</span>
+<span class="sd">        that specifies how values are combined</span>
+<span class="sd">        if more than one value is found</span>
+<span class="sd">        for the same file or segment.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            scheme: scheme ID for which labels should be returned.</span>
+<span class="sd">                The search can be restricted to specific tables and splits</span>
+<span class="sd">                by the ``tables`` and ``splits`` arguments.</span>
+<span class="sd">                Or extended to columns with that same name</span>
+<span class="sd">                or the name of a label in the scheme</span>
+<span class="sd">                using the `strict` argument</span>
+<span class="sd">            additional_schemes: scheme ID or sequence of scheme IDs</span>
+<span class="sd">                for which additional labels should be returned.</span>
+<span class="sd">                The search is not affected</span>
+<span class="sd">                by the ``tables`` and ``splits`` arguments</span>
+<span class="sd">            tables: limit search for ``scheme`` to selected tables</span>
+<span class="sd">            splits: limit search for ``scheme`` to selected splits</span>
+<span class="sd">            strict: if ``False``</span>
+<span class="sd">                the search is extended to columns</span>
+<span class="sd">                that match the name of the scheme</span>
+<span class="sd">                or the name of a label in the scheme</span>
+<span class="sd">            map: if ``True``</span>
+<span class="sd">                and a requested scheme</span>
+<span class="sd">                has labels with mappings,</span>
+<span class="sd">                those will be returned</span>
+<span class="sd">            original_column_names: if ``True``</span>
+<span class="sd">                keep the original column names</span>
+<span class="sd">                (possibly results in multiple columns).</span>
+<span class="sd">                For mapped schemes,</span>
+<span class="sd">                the column name before mapping is returned,</span>
+<span class="sd">                e.g. when requesting ``&#39;gender&#39;``</span>
+<span class="sd">                it might return a column named ``&#39;speaker&#39;``</span>
+<span class="sd">            aggregate_function: callable to aggregate overlapping values.</span>
+<span class="sd">                The function gets a :class:`pandas.Series`</span>
+<span class="sd">                with overlapping values</span>
+<span class="sd">                as input.</span>
+<span class="sd">                E.g. set to</span>
+<span class="sd">                ``lambda y: y.mean()``</span>
+<span class="sd">                to average the values</span>
+<span class="sd">                or to</span>
+<span class="sd">                ``tuple``</span>
+<span class="sd">                to return them as a tuple</span>
+<span class="sd">            aggregate_strategy: if ``aggregate_function`` is not ``None``,</span>
+<span class="sd">                ``aggregate_strategy`` decides</span>
+<span class="sd">                when ``aggregate_function`` is applied.</span>
+<span class="sd">                ``&#39;overlap&#39;``: apply to all samples</span>
+<span class="sd">                that have an overlapping index;</span>
+<span class="sd">                ``&#39;mismatch&#39;``: apply to all samples</span>
+<span class="sd">                that have an overlapping index</span>
+<span class="sd">                and a different value</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            data frame with values</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError: if different labels are found</span>
+<span class="sd">                for a requested scheme under the same index entry</span>
+<span class="sd">            ValueError: if ``original_column_names`` is ``True``</span>
+<span class="sd">                and two columns in the returned data frame</span>
+<span class="sd">                have the same name</span>
+<span class="sd">                and cannot be joined</span>
+<span class="sd">                due to overlapping data</span>
+<span class="sd">                or different data type</span>
+<span class="sd">            TypeError: if labels of different data type are found</span>
+<span class="sd">                for a requested scheme</span>
+
+<span class="sd">        Examples:</span>
+<span class="sd">            Return all labels that match a requested scheme.</span>
+
+<span class="sd">            &gt;&gt;&gt; import audb</span>
+<span class="sd">            &gt;&gt;&gt; db = audb.load(</span>
+<span class="sd">            ...     &#39;emodb&#39;,</span>
+<span class="sd">            ...     version=&#39;1.4.1&#39;,</span>
+<span class="sd">            ...     only_metadata=True,</span>
+<span class="sd">            ...     full_path=False,</span>
+<span class="sd">            ...     verbose=False</span>
+<span class="sd">            ... )</span>
+<span class="sd">            &gt;&gt;&gt; db.get(&#39;emotion&#39;).head()</span>
+<span class="sd">                               emotion</span>
+<span class="sd">            file</span>
+<span class="sd">            wav/03a01Fa.wav  happiness</span>
+<span class="sd">            wav/03a01Nc.wav    neutral</span>
+<span class="sd">            wav/03a01Wa.wav      anger</span>
+<span class="sd">            wav/03a02Fc.wav  happiness</span>
+<span class="sd">            wav/03a02Nc.wav    neutral</span>
+<span class="sd">            &gt;&gt;&gt; db.get(&#39;transcription&#39;).head()</span>
+<span class="sd">                                                    transcription</span>
+<span class="sd">            file</span>
+<span class="sd">            wav/03a01Fa.wav  Der Lappen liegt auf dem Eisschrank.</span>
+<span class="sd">            wav/03a01Nc.wav  Der Lappen liegt auf dem Eisschrank.</span>
+<span class="sd">            wav/03a01Wa.wav  Der Lappen liegt auf dem Eisschrank.</span>
+<span class="sd">            wav/03a02Fc.wav     Das will sie am Mittwoch abgeben.</span>
+<span class="sd">            wav/03a02Nc.wav     Das will sie am Mittwoch abgeben.</span>
+<span class="sd">            &gt;&gt;&gt; db.get(&#39;emotion&#39;, [&#39;transcription&#39;], map=False).head()</span>
+<span class="sd">                               emotion transcription</span>
+<span class="sd">            file</span>
+<span class="sd">            wav/03a01Fa.wav  happiness           a01</span>
+<span class="sd">            wav/03a01Nc.wav    neutral           a01</span>
+<span class="sd">            wav/03a01Wa.wav      anger           a01</span>
+<span class="sd">            wav/03a02Fc.wav  happiness           a02</span>
+<span class="sd">            wav/03a02Nc.wav    neutral           a02</span>
+
+<span class="sd">            Non-existent schemes are ignored.</span>
+
+<span class="sd">            &gt;&gt;&gt; db.get(&#39;emotion&#39;, [&#39;non-existing&#39;]).head()</span>
+<span class="sd">                   emotion non-existing</span>
+<span class="sd">            file</span>
+<span class="sd">            wav/03a01Fa.wav  happiness          NaN</span>
+<span class="sd">            wav/03a01Nc.wav    neutral          NaN</span>
+<span class="sd">            wav/03a01Wa.wav      anger          NaN</span>
+<span class="sd">            wav/03a02Fc.wav  happiness          NaN</span>
+<span class="sd">            wav/03a02Nc.wav    neutral          NaN</span>
+
+<span class="sd">            Limit to a particular table or split.</span>
+
+<span class="sd">            &gt;&gt;&gt; db.get(&#39;emotion&#39;, tables=[&#39;emotion.categories.train.gold_standard&#39;]).head()</span>
+<span class="sd">                               emotion</span>
+<span class="sd">            file</span>
+<span class="sd">            wav/03a01Fa.wav  happiness</span>
+<span class="sd">            wav/03a01Nc.wav    neutral</span>
+<span class="sd">            wav/03a01Wa.wav      anger</span>
+<span class="sd">            wav/03a02Fc.wav  happiness</span>
+<span class="sd">            wav/03a02Nc.wav    neutral</span>
+<span class="sd">            &gt;&gt;&gt; db.get(&#39;emotion&#39;, splits=[&#39;test&#39;]).head()</span>
+<span class="sd">                               emotion</span>
+<span class="sd">            file</span>
+<span class="sd">            wav/12a01Fb.wav  happiness</span>
+<span class="sd">            wav/12a01Lb.wav    boredom</span>
+<span class="sd">            wav/12a01Nb.wav    neutral</span>
+<span class="sd">            wav/12a01Wc.wav      anger</span>
+<span class="sd">            wav/12a02Ac.wav       fear</span>
+
+<span class="sd">            Return requested scheme name independent of column ID.</span>
+
+<span class="sd">            &gt;&gt;&gt; db[&#39;emotion&#39;].columns</span>
+<span class="sd">            emotion:</span>
+<span class="sd">              {scheme_id: emotion, rater_id: gold}</span>
+<span class="sd">            emotion.confidence:</span>
+<span class="sd">              {scheme_id: confidence, rater_id: gold}</span>
+<span class="sd">            &gt;&gt;&gt; db.get(&#39;confidence&#39;).head()</span>
+<span class="sd">                             confidence</span>
+<span class="sd">            file</span>
+<span class="sd">            wav/03a01Fa.wav        0.90</span>
+<span class="sd">            wav/03a01Nc.wav        1.00</span>
+<span class="sd">            wav/03a01Wa.wav        0.95</span>
+<span class="sd">            wav/03a02Fc.wav        0.85</span>
+<span class="sd">            wav/03a02Nc.wav        1.00</span>
+
+<span class="sd">            If ``strict`` is ``True``</span>
+<span class="sd">            only values that have an attached scheme are returned.</span>
+
+<span class="sd">            &gt;&gt;&gt; db.get(&#39;emotion.confidence&#39;).head()</span>
+<span class="sd">                             emotion.confidence</span>
+<span class="sd">            file</span>
+<span class="sd">            wav/03a01Fa.wav                0.90</span>
+<span class="sd">            wav/03a01Nc.wav                1.00</span>
+<span class="sd">            wav/03a01Wa.wav                0.95</span>
+<span class="sd">            wav/03a02Fc.wav                0.85</span>
+<span class="sd">            wav/03a02Nc.wav                1.00</span>
+<span class="sd">            &gt;&gt;&gt; db.get(&#39;emotion.confidence&#39;, strict=True).head()</span>
+<span class="sd">            Empty DataFrame</span>
+<span class="sd">            Columns: [emotion.confidence]</span>
+<span class="sd">            Index: []</span>
+
+<span class="sd">            If more then one value exists</span>
+<span class="sd">            for the requested scheme</span>
+<span class="sd">            and index entry,</span>
+<span class="sd">            an error is raised</span>
+<span class="sd">            and ``aggregate_function`` can be used</span>
+<span class="sd">            to combine the values.</span>
+
+<span class="sd">            &gt;&gt;&gt; # Add a shuffled version of emotion ratings as `random` column</span>
+<span class="sd">            &gt;&gt;&gt; db[&#39;emotion&#39;][&#39;random&#39;] = Column(scheme_id=&#39;emotion&#39;)</span>
+<span class="sd">            &gt;&gt;&gt; db[&#39;emotion&#39;][&#39;random&#39;].set(</span>
+<span class="sd">            ...     db[&#39;emotion&#39;][&#39;emotion&#39;].get().sample(frac=1, random_state=1)</span>
+<span class="sd">            ... )</span>
+<span class="sd">            &gt;&gt;&gt; db.get(&#39;emotion&#39;)</span>
+<span class="sd">            Traceback (most recent call last):</span>
+<span class="sd">                ...</span>
+<span class="sd">            ValueError: Found overlapping data in column &#39;emotion&#39;:</span>
+<span class="sd">                                  left    right</span>
+<span class="sd">            file</span>
+<span class="sd">            wav/03a01Nc.wav    neutral  disgust</span>
+<span class="sd">            wav/03a01Wa.wav      anger  neutral</span>
+<span class="sd">            wav/03a02Fc.wav  happiness  neutral</span>
+<span class="sd">            wav/03a02Ta.wav    sadness  boredom</span>
+<span class="sd">            wav/03a02Wb.wav      anger  sadness</span>
+<span class="sd">            wav/03a04Ad.wav       fear  neutral</span>
+<span class="sd">            wav/03a04Fd.wav  happiness    anger</span>
+<span class="sd">            wav/03a04Nc.wav    neutral  sadness</span>
+<span class="sd">            wav/03a04Wc.wav      anger  boredom</span>
+<span class="sd">            wav/03a05Aa.wav       fear  sadness</span>
+<span class="sd">            ...</span>
+<span class="sd">            &gt;&gt;&gt; db.get(&#39;emotion&#39;, aggregate_function=lambda y: y[0]).head()</span>
+<span class="sd">                               emotion</span>
+<span class="sd">            file</span>
+<span class="sd">            wav/03a01Fa.wav  happiness</span>
+<span class="sd">            wav/03a01Nc.wav    neutral</span>
+<span class="sd">            wav/03a01Wa.wav      anger</span>
+<span class="sd">            wav/03a02Fc.wav  happiness</span>
+<span class="sd">            wav/03a02Nc.wav    neutral</span>
+
+<span class="sd">            Alternatively,</span>
+<span class="sd">            use ``original_column_names`` to return column IDs.</span>
+
+<span class="sd">            &gt;&gt;&gt; db.get(&#39;emotion&#39;, original_column_names=True).head()</span>
+<span class="sd">                               emotion     random</span>
+<span class="sd">            file</span>
+<span class="sd">            wav/03a01Fa.wav  happiness  happiness</span>
+<span class="sd">            wav/03a01Nc.wav    neutral    disgust</span>
+<span class="sd">            wav/03a01Wa.wav      anger    neutral</span>
+<span class="sd">            wav/03a02Fc.wav  happiness    neutral</span>
+<span class="sd">            wav/03a02Nc.wav    neutral    neutral</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>  <span class="c1"># noqa: E501</span>
+
+        <span class="k">def</span> <span class="nf">append_series</span><span class="p">(</span><span class="n">ys</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">column_id</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">y</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">original_column_names</span><span class="p">:</span>
+                    <span class="n">y</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">column_id</span>
+                <span class="n">ys</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">dtypes_of_categories</span><span class="p">(</span><span class="n">objs</span><span class="p">):</span>
+            <span class="n">dtypes</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">obj</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">categories</span><span class="o">.</span><span class="n">dtype</span>
+                <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">objs</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">CategoricalDtype</span><span class="p">)</span>
+            <span class="p">]</span>
+            <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">dtypes</span><span class="p">)))</span>
+
+        <span class="k">def</span> <span class="nf">empty_frame</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+                <span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="p">[]},</span>
+                <span class="n">index</span><span class="o">=</span><span class="n">filewise_index</span><span class="p">(),</span>
+                <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;object&#39;</span><span class="p">,</span>
+            <span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">empty_series</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span>
+                <span class="n">index</span><span class="o">=</span><span class="n">filewise_index</span><span class="p">(),</span>
+                <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;object&#39;</span><span class="p">,</span>
+                <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+            <span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">scheme_in_column</span><span class="p">(</span><span class="n">scheme_id</span><span class="p">,</span> <span class="n">column</span><span class="p">,</span> <span class="n">column_id</span><span class="p">):</span>
+            <span class="c1"># Check if scheme_id</span>
+            <span class="c1"># is attached to a column,</span>
+            <span class="c1"># or identical with the column name</span>
+            <span class="k">return</span> <span class="p">(</span>
+                <span class="n">scheme_id</span> <span class="o">==</span> <span class="n">column_id</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">strict</span>
+                <span class="ow">or</span> <span class="p">(</span>
+                    <span class="n">column</span><span class="o">.</span><span class="n">scheme_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+                    <span class="ow">and</span> <span class="n">scheme_id</span> <span class="o">==</span> <span class="n">column</span><span class="o">.</span><span class="n">scheme_id</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+
+        <span class="n">requested_scheme</span> <span class="o">=</span> <span class="n">scheme</span>
+        <span class="n">additional_schemes</span> <span class="o">=</span> <span class="n">audeer</span><span class="o">.</span><span class="n">to_list</span><span class="p">(</span><span class="n">additional_schemes</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">tables</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">tables</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tables</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">tables</span> <span class="o">=</span> <span class="n">audeer</span><span class="o">.</span><span class="n">to_list</span><span class="p">(</span><span class="n">tables</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">splits</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">splits</span> <span class="o">=</span> <span class="n">audeer</span><span class="o">.</span><span class="n">to_list</span><span class="p">(</span><span class="n">splits</span><span class="p">)</span>
+
+        <span class="c1"># --- Check if requested scheme is stored as label in other schemes</span>
+        <span class="n">scheme_mappings</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">scheme_id</span><span class="p">,</span> <span class="n">scheme</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">schemes</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+
+            <span class="c1"># Labels stored as misc table</span>
+            <span class="k">if</span> <span class="n">scheme</span><span class="o">.</span><span class="n">uses_table</span> <span class="ow">and</span> <span class="n">scheme_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">misc_tables</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">column_id</span><span class="p">,</span> <span class="n">column</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">[</span><span class="n">scheme_id</span><span class="p">]</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="k">if</span> <span class="n">scheme_in_column</span><span class="p">(</span>
+                            <span class="n">requested_scheme</span><span class="p">,</span>
+                            <span class="n">column</span><span class="p">,</span>
+                            <span class="n">column_id</span><span class="p">,</span>
+                    <span class="p">):</span>
+                        <span class="n">scheme_mappings</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">scheme_id</span><span class="p">,</span> <span class="n">column_id</span><span class="p">))</span>
+
+            <span class="c1"># Labels stored in scheme</span>
+            <span class="k">elif</span> <span class="p">(</span>
+                    <span class="ow">not</span> <span class="n">strict</span>
+                    <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">scheme</span><span class="o">.</span><span class="n">labels</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span>
+                    <span class="c1"># Skip simple mappings like {&#39;a0&#39;: &#39;a text&#39;}</span>
+                    <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">scheme</span><span class="o">.</span><span class="n">labels</span><span class="o">.</span><span class="n">values</span><span class="p">())[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">dict</span><span class="p">)</span>
+            <span class="p">):</span>
+                <span class="n">labels</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span>
+                    <span class="n">scheme</span><span class="o">.</span><span class="n">labels</span><span class="p">,</span>
+                    <span class="n">orient</span><span class="o">=</span><span class="s1">&#39;index&#39;</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="k">if</span> <span class="n">requested_scheme</span> <span class="ow">in</span> <span class="n">labels</span><span class="p">:</span>
+                    <span class="n">scheme_mappings</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">scheme_id</span><span class="p">,</span> <span class="n">requested_scheme</span><span class="p">))</span>
+
+        <span class="c1"># --- Get data for requested schemes</span>
+        <span class="n">ys</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">table_id</span> <span class="ow">in</span> <span class="n">tables</span><span class="p">:</span>
+
+            <span class="c1"># Handle non-existing tables</span>
+            <span class="k">if</span> <span class="n">table_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tables</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">table</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="n">table_id</span><span class="p">]</span>
+
+            <span class="c1"># Limit search by split</span>
+            <span class="k">if</span> <span class="n">splits</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">table</span><span class="o">.</span><span class="n">split_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">splits</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="k">for</span> <span class="n">column_id</span><span class="p">,</span> <span class="n">column</span> <span class="ow">in</span> <span class="n">table</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">y</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="c1"># Scheme directly stored in column</span>
+                <span class="k">if</span> <span class="n">scheme_in_column</span><span class="p">(</span><span class="n">requested_scheme</span><span class="p">,</span> <span class="n">column</span><span class="p">,</span> <span class="n">column_id</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">requested_scheme</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">schemes</span><span class="p">:</span>
+                        <span class="n">labels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="n">requested_scheme</span><span class="p">]</span><span class="o">.</span><span class="n">labels</span>
+                    <span class="c1"># If map=True we want to expand scheme labels like</span>
+                    <span class="c1"># {&#39;a&#39;: &#39;Full a&#39;, &#39;b&#39;: &#39;Full b&#39;},</span>
+                    <span class="c1"># nut not scheme labels like</span>
+                    <span class="c1"># {&#39;a&#39;: {&#39;d&#39;: 1}, &#39;b&#39;: {&#39;d&#39;: 2}}</span>
+                    <span class="k">if</span> <span class="p">(</span>
+                            <span class="nb">map</span> <span class="ow">is</span> <span class="kc">True</span>
+                            <span class="ow">and</span> <span class="n">requested_scheme</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">schemes</span>
+                            <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span>
+                            <span class="c1"># Ensure simple mappings like {&#39;a0&#39;: &#39;a text&#39;}</span>
+                            <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">labels</span><span class="o">.</span><span class="n">values</span><span class="p">())[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">dict</span><span class="p">)</span>
+                            <span class="c1"># map=requested_scheme can only be performed</span>
+                            <span class="c1"># if scheme is assigned</span>
+                            <span class="ow">and</span> <span class="n">column</span><span class="o">.</span><span class="n">scheme_id</span> <span class="o">==</span> <span class="n">requested_scheme</span>
+                    <span class="p">):</span>
+                        <span class="n">y</span> <span class="o">=</span> <span class="n">column</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">map</span><span class="o">=</span><span class="n">requested_scheme</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">y</span> <span class="o">=</span> <span class="n">column</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+                    <span class="n">y</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">requested_scheme</span>
+                    <span class="n">append_series</span><span class="p">(</span><span class="n">ys</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">column_id</span><span class="p">)</span>
+                <span class="c1"># Get series based on label of scheme</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="p">(</span><span class="n">scheme_id</span><span class="p">,</span> <span class="n">mapping</span><span class="p">)</span> <span class="ow">in</span> <span class="n">scheme_mappings</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">scheme_in_column</span><span class="p">(</span><span class="n">scheme_id</span><span class="p">,</span> <span class="n">column</span><span class="p">,</span> <span class="n">column_id</span><span class="p">):</span>
+                            <span class="k">if</span> <span class="n">column</span><span class="o">.</span><span class="n">scheme_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                                <span class="n">y</span> <span class="o">=</span> <span class="n">empty_series</span><span class="p">(</span><span class="n">requested_scheme</span><span class="p">)</span>
+                            <span class="k">else</span><span class="p">:</span>
+                                <span class="n">y</span> <span class="o">=</span> <span class="n">column</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">map</span><span class="o">=</span><span class="n">mapping</span><span class="p">)</span>
+                                <span class="n">y</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">requested_scheme</span>
+                            <span class="n">append_series</span><span class="p">(</span><span class="n">ys</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">column_id</span><span class="p">)</span>
+
+        <span class="c1"># --- Ensure we have a common dtype for requested scheme</span>
+        <span class="n">dtypes</span> <span class="o">=</span> <span class="n">dtypes_of_categories</span><span class="p">(</span><span class="n">ys</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">dtypes</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">dtypes</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="c1"># Don&#39;t know if this can ever be triggered,</span>
+                <span class="c1"># but make sure we raise the same error as</span>
+                <span class="c1"># pd.api.types.union_categoricals</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>  <span class="c1"># pragma: nocover</span>
+                    <span class="sa">f</span><span class="s2">&quot;Cannot join labels for scheme &#39;</span><span class="si">{</span><span class="n">requested_scheme</span><span class="si">}</span><span class="s2">&#39; &quot;</span>
+                    <span class="s2">&quot;with different data types: &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dtypes</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
+            <span class="n">dtype</span> <span class="o">=</span> <span class="n">dtypes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="c1"># Convert everything to categorical data</span>
+            <span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">ys</span><span class="p">):</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">CategoricalDtype</span><span class="p">):</span>
+                    <span class="n">ys</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">y</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span>
+                        <span class="n">pd</span><span class="o">.</span><span class="n">CategoricalDtype</span><span class="p">(</span>
+                            <span class="n">y</span><span class="o">.</span><span class="n">array</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span>
+                        <span class="p">)</span>
+                    <span class="p">)</span>
+            <span class="c1"># Find union of categorical data</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">y</span><span class="o">.</span><span class="n">array</span> <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">ys</span><span class="p">]</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">union_categoricals</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+                <span class="n">dtypes</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span> <span class="k">for</span> <span class="n">dtype</span> <span class="ow">in</span> <span class="n">dtypes_of_categories</span><span class="p">(</span><span class="n">data</span><span class="p">)]</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Cannot join labels for scheme &#39;</span><span class="si">{</span><span class="n">requested_scheme</span><span class="si">}</span><span class="s2">&#39; &quot;</span>
+                    <span class="s2">&quot;with different data types: &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dtypes</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
+            <span class="n">ys</span> <span class="o">=</span> <span class="p">[</span><span class="n">y</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span> <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">ys</span><span class="p">]</span>
+
+        <span class="c1"># --- Combine all labels</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">union</span><span class="p">([</span><span class="n">y</span><span class="o">.</span><span class="n">index</span> <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">ys</span><span class="p">])</span>
+        <span class="n">obj</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span>
+            <span class="n">ys</span><span class="p">,</span>
+            <span class="n">aggregate_function</span><span class="o">=</span><span class="n">aggregate_function</span><span class="p">,</span>
+            <span class="n">aggregate_strategy</span><span class="o">=</span><span class="n">aggregate_strategy</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">obj</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">obj</span> <span class="o">=</span> <span class="n">empty_frame</span><span class="p">(</span><span class="n">requested_scheme</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">):</span>
+            <span class="n">obj</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">to_frame</span><span class="p">()</span>
+
+        <span class="c1"># --- Append additional schemes</span>
+        <span class="n">objs</span> <span class="o">=</span> <span class="p">[</span><span class="n">obj</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">scheme</span> <span class="ow">in</span> <span class="n">additional_schemes</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">obj</span> <span class="o">=</span> <span class="n">empty_frame</span><span class="p">(</span><span class="n">scheme</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">obj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                    <span class="n">scheme</span><span class="p">,</span>
+                    <span class="n">strict</span><span class="o">=</span><span class="n">strict</span><span class="p">,</span>
+                    <span class="nb">map</span><span class="o">=</span><span class="nb">map</span><span class="p">,</span>
+                    <span class="n">original_column_names</span><span class="o">=</span><span class="n">original_column_names</span><span class="p">,</span>
+                    <span class="n">aggregate_function</span><span class="o">=</span><span class="n">aggregate_function</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="n">objs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">objs</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">obj</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">objs</span><span class="p">)</span>
+            <span class="n">obj</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">obj</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">filewise_index</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">obj</span></div>
 
 <div class="viewcode-block" id="Database.map_files"><a class="viewcode-back" href="../../../api/audformat.Database.html#audformat.Database.map_files">[docs]</a>    <span class="k">def</span> <span class="nf">map_files</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
@@ -1379,7 +1839,7 @@
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2023/10/11 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2023/11/30 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
