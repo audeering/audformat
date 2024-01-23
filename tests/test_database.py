@@ -637,6 +637,15 @@ def test_save_and_load(tmpdir, db, storage_format, load_data, num_workers):
             db[table_id].get()
 
 
+def test_save_symlink(tmpdir):
+    folder = audeer.mkdir(tmpdir, "folder")
+    link = audeer.path(tmpdir, "link")
+    os.symlink(folder, link)
+    db = audformat.testing.create_db()
+    db.save(link)
+    assert db.root == folder
+
+
 def test_segments():
     db = audformat.testing.create_db()
     df = pytest.DB["segments"].get()
