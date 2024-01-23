@@ -355,7 +355,7 @@ class Base(HeaderBase):
         if fill_values is not None:
             if isinstance(fill_values, dict):
                 for key, value in fill_values.items():
-                    table.df[key].fillna(value, inplace=True)
+                    table.df.fillna({key: value}, inplace=True)
             else:
                 table.df.fillna(fill_values, inplace=True)
 

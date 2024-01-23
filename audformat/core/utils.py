@@ -388,7 +388,7 @@ def concat(
                 index=index,
                 dtype=dtype,
             )
-        columns_reindex[column.name][column.index] = column
+        columns_reindex[column.name].loc[column.index] = column
 
     # Apply custom aggregation function
     # on collected overlapping data

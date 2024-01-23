@@ -1013,7 +1013,8 @@ def test_filewise(num_files, values):
     # slice
     df['column'] = np.nan
     table.df['column'] = np.nan
-    df['column'][1:-1] = values[1:-1]
+    rows = df.index[1:-1]
+    df.loc[rows, 'column'] = values[1:-1]
     index = audformat.filewise_index(table.files[1:-1])
     table.set({'column': values[1:-1]}, index=index)
     pd.testing.assert_frame_equal(
@@ -1025,7 +1026,8 @@ def test_filewise(num_files, values):
     # dtype of file level is object
     df['column'] = np.nan
     table.df['column'] = np.nan
-    df['column'][1:-1] = values[1:-1]
+    rows = df.index[1:-1]
+    df.loc[rows, 'column'] = values[1:-1]
     index = pd.Index(table.files[1:-1], dtype='object', name='file')
     table.set({'column': values[1:-1]}, index=index)
     pd.testing.assert_frame_equal(

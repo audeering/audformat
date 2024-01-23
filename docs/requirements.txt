@@ -1,6 +1,7 @@
 graphviz
 ipykernel
 jupyter-sphinx
+pyarrow  # https://github.com/pandas-dev/pandas/issues/54466
 sphinx
 sphinx-audeering-theme >=1.2.1
 sphinx-autodoc-typehints
