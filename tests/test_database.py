@@ -14,58 +14,58 @@ import audformat.testing
 
 
 def full_path(
-        db: audformat.Database,
-        db_root: str,
+    db: audformat.Database,
+    db_root: str,
 ):
     # Faster solution then using db.map_files()
     root = db_root + os.path.sep
     for table in db.tables.values():
         if table.is_filewise:
             table.df.index = root + table.df.index
-            table.df.index.name = 'file'
+            table.df.index.name = "file"
         elif len(table.df.index) > 0:
             table.df.index = table.df.index.set_levels(
                 root + table.df.index.levels[0],
-                level='file',
+                level="file",
             )
 
 
 def test_create_db():
     db = audformat.testing.create_db()
-    assert all(['\\' not in file for file in db.files])
+    assert all(["\\" not in file for file in db.files])
 
 
 @pytest.mark.parametrize(
-    'db, table_id, expected',
+    "db, table_id, expected",
     [
         (
-            audformat.Database('test'),
-            'non-existing',
+            audformat.Database("test"),
+            "non-existing",
             False,
         ),
         (
             audformat.testing.create_db(),
-            'non-existing',
+            "non-existing",
             False,
         ),
         (
             audformat.testing.create_db(),
-            'misc',
+            "misc",
             True,
         ),
         (
             audformat.testing.create_db(),
-            'files',
+            "files",
             True,
         ),
-    ]
+    ],
 )
 def test_contains(db, table_id, expected):
     assert (table_id in db) == expected
 
 
 @pytest.mark.parametrize(
-    'files, num_workers',
+    "files, num_workers",
     [
         (
             pytest.DB.files,
@@ -80,13 +80,12 @@ def test_contains(db, table_id, expected):
             4,
         ),
         (
-            lambda x: '1' in x,
+            lambda x: "1" in x,
             None,
         ),
-    ]
+    ],
 )
 def test_drop_files(files, num_workers):
-
     db = audformat.testing.create_db()
     db.drop_files(files, num_workers=num_workers)
     if callable(files):
@@ -100,74 +99,72 @@ def test_drop_files(files, num_workers):
 def test_files():
     db = audformat.testing.create_db()
     # Shuffle order of files
-    db['files']._df = db['files'].df.sample(frac=1, random_state=0)
+    db["files"]._df = db["files"].df.sample(frac=1, random_state=0)
     # Check output is sorted
     assert list(db.files) == sorted(list(db.files))
 
 
 @pytest.mark.parametrize(
-    'files, expected',
+    "files, expected",
     [
         (
             [],
             True,
         ),
         (
-            ['file.txt'],
+            ["file.txt"],
             True,
         ),
         (
-            ['.file.txt'],
+            [".file.txt"],
             True,
         ),
         (
-            ['file..txt'],
+            ["file..txt"],
             True,
         ),
         (
-            ['/a/b/c/.file.txt'],
+            ["/a/b/c/.file.txt"],
             False,
         ),
         (
-            ['a/b/c/.file.txt'],
+            ["a/b/c/.file.txt"],
             True,
         ),
         (
-            ['./file.txt'],
+            ["./file.txt"],
             False,
         ),
         (
-            ['../file.txt'],
+            ["../file.txt"],
             False,
         ),
         (
-            ['a/b/c/./file.txt'],
+            ["a/b/c/./file.txt"],
             False,
         ),
         (
-            ['a/b/c/../file.txt'],
+            ["a/b/c/../file.txt"],
             False,
         ),
         (
-            ['D:\\absolute\\windows\\path'],
+            ["D:\\absolute\\windows\\path"],
             False,
         ),
         (
-            ['relative\\windows\\path'],
+            ["relative\\windows\\path"],
             False,
         ),
-    ]
+    ],
 )
 def test_is_portable(files, expected):
     db = audformat.testing.create_db(minimal=True)
-    db['table'] = audformat.Table(
-        index=audformat.filewise_index(files)
-    )
+    db["table"] = audformat.Table(index=audformat.filewise_index(files))
     assert db.is_portable == expected
 
 
 @pytest.mark.parametrize(
-    'files, num_workers',
+    "files, num_workers",
     [
         (
             pytest.DB.files,
@@ -182,13 +179,12 @@ def test_is_portable(files, expected):
             4,
         ),
         (
-            lambda x: '1' in x,
+            lambda x: "1" in x,
             None,
         ),
-    ]
+    ],
 )
 def test_pick_files(files, num_workers):
-
     db = audformat.testing.create_db()
     db.pick_files(files, num_workers=num_workers)
     if callable(files):
@@ -203,39 +199,38 @@ def test_pick_files(files, num_workers):
 
 
 @pytest.mark.parametrize(
-    'db, tables, expected_tables',
+    "db, tables, expected_tables",
     [
         (
             audformat.testing.create_db(),
-            'segments',
-            ['files', 'misc'],
+            "segments",
+            ["files", "misc"],
         ),
         (
             audformat.testing.create_db(),
-            'misc',
-            ['files', 'segments'],
+            "misc",
+            ["files", "segments"],
         ),
         (
             audformat.testing.create_db(),
-            ['segments'],
-            ['files', 'misc'],
+            ["segments"],
+            ["files", "misc"],
         ),
         (
             audformat.testing.create_db(),
-            ['segments', 'misc'],
-            ['files'],
+            ["segments", "misc"],
+            ["files"],
         ),
         pytest.param(  # non-existent table ID
             audformat.testing.create_db(),
-            ['segments', 'misc', 'non-existing'],
+            ["segments", "misc", "non-existing"],
             None,
             marks=pytest.mark.xfail(raises=audformat.errors.BadIdError),
         ),
-    ]
+    ],
 )
 def test_drop_tables(db, tables, expected_tables):
-
-    if 'misc' in audeer.to_list(tables):
+    if "misc" in audeer.to_list(tables):
 
         def error_msg(table_id):
             return re.escape(
@@ -244,84 +239,79 @@ def test_drop_tables(db, tables, expected_tables):
                 "and cannot be removed."
             )
 
-        with pytest.raises(RuntimeError, match=error_msg('misc')):
-            db.drop_tables('misc')
+        with pytest.raises(RuntimeError, match=error_msg("misc")):
+            db.drop_tables("misc")
 
         # Replace scheme with other misc table
-        db['misc_copy'] = db['misc'].copy()
-        db.schemes['label_map_misc'].replace_labels('misc_copy')
-        db.drop_tables('misc')
-        with pytest.raises(RuntimeError, match=error_msg('misc_copy')):
-            db.drop_tables('misc_copy')
+        db["misc_copy"] = db["misc"].copy()
+        db.schemes["label_map_misc"].replace_labels("misc_copy")
+        db.drop_tables("misc")
+        with pytest.raises(RuntimeError, match=error_msg("misc_copy")):
+            db.drop_tables("misc_copy")
 
         # Delete scheme and remove copied table as well
-        del db.schemes['label_map_misc']
-        db.drop_tables('misc_copy')
+        del db.schemes["label_map_misc"]
+        db.drop_tables("misc_copy")
 
-        tables = [t for t in audeer.to_list(tables) if t != 'misc']
+        tables = [t for t in audeer.to_list(tables) if t != "misc"]
 
     db.drop_tables(tables)
     assert list(db) == expected_tables
 
 
 @pytest.mark.parametrize(
-    'db, tables, expected_tables',
+    "db, tables, expected_tables",
     [
         pytest.param(
             audformat.testing.create_db(),
-            'segments',
-            ['segments'],
+            "segments",
+            ["segments"],
         ),
         (
             audformat.testing.create_db(),
-            'misc',
-            ['misc'],
+            "misc",
+            ["misc"],
         ),
         (
             audformat.testing.create_db(),
-            ['segments'],
-            ['segments'],
+            ["segments"],
+            ["segments"],
         ),
         (
             audformat.testing.create_db(),
-            ['segments', 'misc'],
-            ['misc', 'segments'],
+            ["segments", "misc"],
+            ["misc", "segments"],
         ),
         pytest.param(  # non-existent table ID
             audformat.testing.create_db(),
-            ['segments', 'misc', 'non-existing'],
+            ["segments", "misc", "non-existing"],
             None,
             marks=pytest.mark.xfail(raises=audformat.errors.BadIdError),
         ),
-    ]
+    ],
 )
 def test_pick_tables(db, tables, expected_tables):
-
-    if expected_tables is not None and 'misc' not in expected_tables:
+    if expected_tables is not None and "misc" not in expected_tables:
         error_msg = (
             "Misc table 'misc' is used as scheme(s): 'label_map_misc', "
             "and cannot be removed."
         )
         with pytest.raises(RuntimeError, match=re.escape(error_msg)):
             db.pick_tables(tables)
-        del db.schemes['label_map_misc']
+        del db.schemes["label_map_misc"]
 
     db.pick_tables(tables)
     assert list(db) == expected_tables
 
 
 def test_files_duration():
-
     db = pytest.DB
 
     # prepare file names
 
     files_rel = db.files
     files_abs = [os.path.join(db.root, file) for file in files_rel]
-    durs = [
-        pd.to_timedelta(audiofile.duration(file), unit='s')
-        for file in files_abs
-    ]
+    durs = [pd.to_timedelta(audiofile.duration(file), unit="s") for file in files_abs]
 
     # test with relative file names
 
@@ -359,9 +349,7 @@ def test_files_duration():
 
     # make sure we have only absolute file names in cache
 
-    expected_cache = {
-        os.path.normpath(file): dur for file, dur in zip(files_abs, durs)
-    }
+    expected_cache = {os.path.normpath(file): dur for file, dur in zip(files_abs, durs)}
     assert db._files_duration == expected_cache
 
     # reset db
@@ -374,41 +362,41 @@ def test_iter():
     db = audformat.testing.create_db(minimal=True)
     assert list(db) == []
     db = audformat.testing.create_db()
-    assert list(db) == ['files', 'misc', 'segments']
+    assert list(db) == ["files", "misc", "segments"]
 
 
 @pytest.mark.parametrize(
-    'license, license_url, expected_license, expected_url',
+    "license, license_url, expected_license, expected_url",
     [
         (
             audformat.define.License.CC0_1_0,
             None,
-            'CC0-1.0',
-            'https://creativecommons.org/publicdomain/zero/1.0/',
+            "CC0-1.0",
+            "https://creativecommons.org/publicdomain/zero/1.0/",
         ),
         (
             audformat.define.License.CC0_1_0,
-            'https://custom.org',
-            'CC0-1.0',
-            'https://custom.org',
+            "https://custom.org",
+            "CC0-1.0",
+            "https://custom.org",
         ),
         (
-            'custom',
+            "custom",
             None,
-            'custom',
+            "custom",
             None,
         ),
         (
-            'custom',
-            'https://custom.org',
-            'custom',
-            'https://custom.org',
+            "custom",
+            "https://custom.org",
+            "custom",
+            "https://custom.org",
         ),
-    ]
+    ],
 )
 def test_license(license, license_url, expected_license, expected_url):
     db = audformat.Database(
-        'test',
+        "test",
         license=license,
         license_url=license_url,
     )
@@ -420,37 +408,34 @@ def test_load(tmpdir):
     # Test loading a database containing a misc table as scheme,
     # see https://github.com/audeering/audformat/issues/294
     db = audformat.testing.create_db(minimal=True)
-    db.schemes['scheme3'] = audformat.Scheme('str')
-    db.schemes['scheme1'] = audformat.Scheme(
-        labels=['some', 'test', 'labels']
-    )
+    db.schemes["scheme3"] = audformat.Scheme("str")
+    db.schemes["scheme1"] = audformat.Scheme(labels=["some", "test", "labels"])
     audformat.testing.add_misc_table(
         db,
-        'misc-in-scheme',
-        pd.Index([0, 1, 2], dtype='Int64', name='idx'),
-        columns={'emotion': ('scheme1', None)}
+        "misc-in-scheme",
+        pd.Index([0, 1, 2], dtype="Int64", name="idx"),
+        columns={"emotion": ("scheme1", None)},
     )
-    db.schemes['misc'] = audformat.Scheme(
-        'int',
-        labels='misc-in-scheme',
+    db.schemes["misc"] = audformat.Scheme(
+        "int",
+        labels="misc-in-scheme",
     )
-    db.schemes['scheme2'] = audformat.Scheme('float')
-    assert list(db.schemes) == ['misc', 'scheme1', 'scheme2', 'scheme3']
+    db.schemes["scheme2"] = audformat.Scheme("float")
+    assert list(db.schemes) == ["misc", "scheme1", "scheme2", "scheme3"]
     db.save(tmpdir)
     db = audformat.Database.load(tmpdir)
-    assert list(db.schemes) == ['misc', 'scheme1', 'scheme2', 'scheme3']
+    assert list(db.schemes) == ["misc", "scheme1", "scheme2", "scheme3"]
 
 
 @pytest.mark.parametrize(
-    'num_workers',
+    "num_workers",
     [
         1,
         4,
         None,
-    ]
+    ],
 )
 def test_map_files(num_workers):
-
     db = audformat.testing.create_db()
 
     files = sorted(db.files)
@@ -459,7 +444,7 @@ def test_map_files(num_workers):
 
 
 @pytest.mark.parametrize(
-    'db, storage_format, load_data, num_workers',
+    "db, storage_format, load_data, num_workers",
     [
         (
             audformat.testing.create_db(minimal=True),
@@ -494,7 +479,6 @@ def test_map_files(num_workers):
     ],
 )
 def test_save_and_load(tmpdir, db, storage_format, load_data, num_workers):
-
     assert db.root is None
     audformat.testing.create_attachment_files(db, tmpdir)
     db.save(
@@ -507,17 +491,14 @@ def test_save_and_load(tmpdir, db, storage_format, load_data, num_workers):
     expected_formats = [storage_format]
     for table_id in db.tables:
         for ext in audformat.define.TableStorageFormat._attribute_values():
-            table_file = os.path.join(tmpdir, f'db.{table_id}.{ext}')
+            table_file = os.path.join(tmpdir, f"db.{table_id}.{ext}")
             if ext in expected_formats:
                 assert os.path.exists(table_file)
             else:
                 assert not os.path.exists(table_file)
 
     # Test update other formats
-    if (
-            storage_format == audformat.define.TableStorageFormat.CSV
-            and db.tables
-    ):
+    if storage_format == audformat.define.TableStorageFormat.CSV and db.tables:
         db2 = audformat.testing.create_db()
         assert db2.root is None
         db2.save(
@@ -557,8 +538,8 @@ def test_save_and_load(tmpdir, db, storage_format, load_data, num_workers):
             update_other_formats=False,
         )
         # The replace part handles Windows paths
-        table_file = os.path.join(tmpdir, 'db.files')
-        table_path = table_file.replace('\\', '\\\\')
+        table_file = os.path.join(tmpdir, "db.files")
+        table_path = table_file.replace("\\", "\\\\")
         error_msg = (
             f"The table CSV file '{table_path}.csv' is newer "
             f"than the table PKL file '{table_path}.pkl'. "
@@ -572,7 +553,7 @@ def test_save_and_load(tmpdir, db, storage_format, load_data, num_workers):
                 tmpdir,
                 load_data=load_data,
             )
-            db_load['files'].get()
+            db_load["files"].get()
 
         # Save and update PKL files
         db.save(
@@ -604,14 +585,14 @@ def test_save_and_load(tmpdir, db, storage_format, load_data, num_workers):
     )
     db_load.save(
         tmpdir,
-        name='db-2',
+        name="db-2",
         storage_format=storage_format,
         num_workers=num_workers,
     )
 
     assert filecmp.cmp(
-        os.path.join(tmpdir, 'db.yaml'),
-        os.path.join(tmpdir, 'db-2.yaml'),
+        os.path.join(tmpdir, "db.yaml"),
+        os.path.join(tmpdir, "db-2.yaml"),
     )
 
     for table_id, table in db.tables.items():
@@ -641,16 +622,13 @@ def test_save_and_load(tmpdir, db, storage_format, load_data, num_workers):
     if db.tables:
         table_id = list(db.tables)[0]
         for ext in audformat.define.TableStorageFormat._attribute_values():
-            table_file = os.path.join(tmpdir, f'db.{table_id}.{ext}')
+            table_file = os.path.join(tmpdir, f"db.{table_id}.{ext}")
             if os.path.exists(table_file):
                 os.remove(table_file)
 
         # The replace part handles Windows paths
-        table_path = table_file[:-4].replace('\\', '\\\\')
-        error_msg = (
-            r"No file found for table with path "
-            rf"'{table_path}.{{pkl|csv}}'"
-        )
+        table_path = table_file[:-4].replace("\\", "\\\\")
+        error_msg = r"No file found for table with path " rf"'{table_path}.{{pkl|csv}}'"
         with pytest.raises(RuntimeError, match=error_msg):
             db = audformat.Database.load(
                 tmpdir,
@@ -661,73 +639,73 @@ def test_save_and_load(tmpdir, db, storage_format, load_data, num_workers):
 
 def test_segments():
     db = audformat.testing.create_db()
-    df = pytest.DB['segments'].get()
+    df = pytest.DB["segments"].get()
     # Shuffle order of segments
-    db['segments']._df = df.sample(frac=1, random_state=0)
+    db["segments"]._df = df.sample(frac=1, random_state=0)
     # Check output is sorted
     assert db.segments.equals(pytest.DB.segments)
 
 
 def test_string():
-
     db = audformat.testing.create_db(minimal=True)
-    assert str(db) == 'name: unittest\n' \
-                      'source: internal\n' \
-                      'usage: unrestricted\n' \
-                      'languages: [deu, eng]'
+    assert (
+        str(db) == "name: unittest\n"
+        "source: internal\n"
+        "usage: unrestricted\n"
+        "languages: [deu, eng]"
+    )
 
 
 def test_update(tmpdir):
-
     # original database
 
-    db_root = audeer.mkdir(audeer.path(tmpdir, 'db'))
+    db_root = audeer.mkdir(audeer.path(tmpdir, "db"))
     db = audformat.testing.create_db(minimal=True)
-    db.author = 'author'
-    db.organization = 'organization'
-    db.meta['key'] = 'value'
-    db.raters['rater'] = audformat.Rater()
-    db.attachments['attachment'] = audformat.Attachment('file.txt')
-    with open(audeer.path(db_root, 'file.txt'), 'w') as fp:
-        fp.write('db')
-    db.schemes['float'] = audformat.Scheme('float')
-    db.schemes['labels'] = audformat.Scheme(labels=['a', 'b'])
+    db.author = "author"
+    db.organization = "organization"
+    db.meta["key"] = "value"
+    db.raters["rater"] = audformat.Rater()
+    db.attachments["attachment"] = audformat.Attachment("file.txt")
+    with open(audeer.path(db_root, "file.txt"), "w") as fp:
+        fp.write("db")
+    db.schemes["float"] = audformat.Scheme("float")
+    db.schemes["labels"] = audformat.Scheme(labels=["a", "b"])
     audformat.testing.add_misc_table(
         db,
-        'misc',
-        pd.Index(['a', 'b'], dtype='string', name='idx'),
+        "misc",
+        pd.Index(["a", "b"], dtype="string", name="idx"),
         columns={
-            'float': ('float', 'rater'),
+            "float": ("float", "rater"),
         },
     )
-    db.schemes['misc'] = audformat.Scheme(dtype='str', labels='misc')
+    db.schemes["misc"] = audformat.Scheme(dtype="str", labels="misc")
     audformat.testing.add_table(
         db,
-        'table',
+        "table",
         audformat.define.IndexType.FILEWISE,
         num_files=[0, 1],
         columns={
-            'float': ('float', 'rater'),
-            'labels': ('labels', None),
-            'misc': ('misc', None),
+            "float": ("float", "rater"),
+            "labels": ("labels", None),
+            "misc": ("misc", None),
         },
     )
 
     db.save(db_root)
-    audformat.testing.create_audio_files(db, file_duration='0.1s')
+    audformat.testing.create_audio_files(db, file_duration="0.1s")
 
     assert db.update(db) == db
 
     # databases with schemes that are not compatible
 
     other_bad = audformat.testing.create_db(minimal=True)
-    other_bad.schemes['labels'] = audformat.Scheme(labels=[1, 2, 3])
+    other_bad.schemes["labels"] = audformat.Scheme(labels=[1, 2, 3])
     error_msg = "Elements or keys must have the same dtype"
     with pytest.raises(ValueError, match=error_msg):
         db.update(other_bad)
 
     other_bad = audformat.testing.create_db(minimal=True)
-    other_bad.schemes['misc'] = audformat.Scheme('str')
+    other_bad.schemes["misc"] = audformat.Scheme("str")
     error_msg = (
         "Cannot join scheme 'misc' when one "
         "is using a misc table and the other is not."
@@ -736,12 +714,12 @@ def test_update(tmpdir):
         db.update(other_bad)
 
     other_bad = audformat.testing.create_db(minimal=True)
-    other_bad['misc-bla'] = audformat.MiscTable(
-        pd.Index(['b', 'c'], dtype='string', name='idx'),
+    other_bad["misc-bla"] = audformat.MiscTable(
+        pd.Index(["b", "c"], dtype="string", name="idx"),
     )
-    other_bad.schemes['misc'] = audformat.Scheme(
-        dtype='str',
-        labels='misc-bla',
+    other_bad.schemes["misc"] = audformat.Scheme(
+        dtype="str",
+        labels="misc-bla",
     )
     error_msg = (
         "Cannot join scheme 'misc' "
@@ -753,64 +731,64 @@ def test_update(tmpdir):
 
     # database with same table, but extra column
 
-    other1_root = audeer.mkdir(audeer.path(tmpdir, 'other1'))
+    other1_root = audeer.mkdir(audeer.path(tmpdir, "other1"))
     other1 = audformat.testing.create_db(minimal=True)
-    other1.raters['rater'] = audformat.Rater()
-    other1.raters['rater2'] = audformat.Rater()
-    other1.attachments['attachment'] = audformat.Attachment('file.txt')
-    with open(audeer.path(other1_root, 'file.txt'), 'w') as fp:
-        fp.write('other1')
-    other1.schemes['int'] = audformat.Scheme(audformat.define.DataType.INTEGER)
-    other1.schemes['float'] = audformat.Scheme(audformat.define.DataType.FLOAT)
-    other1.schemes['labels'] = audformat.Scheme(labels=['b', 'c'])
+    other1.raters["rater"] = audformat.Rater()
+    other1.raters["rater2"] = audformat.Rater()
+    other1.attachments["attachment"] = audformat.Attachment("file.txt")
+    with open(audeer.path(other1_root, "file.txt"), "w") as fp:
+        fp.write("other1")
+    other1.schemes["int"] = audformat.Scheme(audformat.define.DataType.INTEGER)
+    other1.schemes["float"] = audformat.Scheme(audformat.define.DataType.FLOAT)
+    other1.schemes["labels"] = audformat.Scheme(labels=["b", "c"])
     audformat.testing.add_misc_table(
         other1,
-        'misc',
-        pd.Index(['b', 'c'], dtype='string', name='idx'),
+        "misc",
+        pd.Index(["b", "c"], dtype="string", name="idx"),
         columns={
-            'float': ('float', 'rater'),
-            'labels': ('labels', None),
+            "float": ("float", "rater"),
+            "labels": ("labels", None),
         },
     )
-    other1.schemes['misc'] = audformat.Scheme(dtype='str', labels='misc')
+    other1.schemes["misc"] = audformat.Scheme(dtype="str", labels="misc")
     audformat.testing.add_table(
         other1,
-        'table',
+        "table",
         audformat.define.IndexType.FILEWISE,
         num_files=[1, 2],
         columns={
-            'int': ('int', 'rater'),
-            'float': ('float', 'rater2'),
-            'labels': ('labels', None),
-            'misc': ('misc', None),
+            "int": ("int", "rater"),
+            "float": ("float", "rater2"),
+            "labels": ("labels", None),
+            "misc": ("misc", None),
         },
     )
     other1.save(other1_root)
-    audformat.testing.create_audio_files(other1, file_duration='0.1s')
+    audformat.testing.create_audio_files(other1, file_duration="0.1s")
 
     # database with new table
 
-    other2_root = audeer.mkdir(audeer.path(tmpdir, 'other2'))
+    other2_root = audeer.mkdir(audeer.path(tmpdir, "other2"))
     other2 = audformat.testing.create_db(minimal=True)
-    other2.raters['rater2'] = audformat.Rater()
-    other2.attachments['attachment2'] = audformat.Attachment('file2.txt')
-    with open(audeer.path(other2_root, 'file2.txt'), 'w') as fp:
-        fp.write('other2')
-    other2.schemes['str'] = audformat.Scheme('str')
+    other2.raters["rater2"] = audformat.Rater()
+    other2.attachments["attachment2"] = audformat.Attachment("file2.txt")
+    with open(audeer.path(other2_root, "file2.txt"), "w") as fp:
+        fp.write("other2")
+    other2.schemes["str"] = audformat.Scheme("str")
     audformat.testing.add_table(
         other2,
-        'table_new',
+        "table_new",
         audformat.define.IndexType.SEGMENTED,
-        columns={'str': ('str', 'rater2')},
+        columns={"str": ("str", "rater2")},
     )
     audformat.testing.add_misc_table(
         other2,
-        'misc_new',
-        pd.Index([0, 1], dtype='string', name='idx'),
-        columns={'str': ('str', 'rater2')},
+        "misc_new",
+        pd.Index([0, 1], dtype="string", name="idx"),
+        columns={"str": ("str", "rater2")},
     )
     other2.save(other2_root)
-    audformat.testing.create_audio_files(other2, file_duration='0.1s')
+    audformat.testing.create_audio_files(other2, file_duration="0.1s")
 
     # update db with [other1, other2]
 
@@ -840,10 +818,10 @@ def test_update(tmpdir):
         copy_media=True,
     )
 
-    assert 'int' in db['table'].columns
-    assert 'labels' in db['misc'].columns
-    assert db['table_new'] == other2['table_new']
-    assert db['misc_new'] == other2['misc_new']
+    assert "int" in db["table"].columns
+    assert "labels" in db["misc"].columns
+    assert db["table_new"] == other2["table_new"]
+    assert db["misc_new"] == other2["misc_new"]
 
     for other in others:
         for attachment_id, attachment in other.attachments.items():
@@ -866,14 +844,14 @@ def test_update(tmpdir):
     # test attachment files
 
     expected_content = {
-        'file.txt': 'other1',
-        'file2.txt': 'other2',
+        "file.txt": "other1",
+        "file2.txt": "other2",
     }
     for attachment_id in db.attachments:
         for file in db.attachments[attachment_id].files:
             assert os.path.exists(os.path.join(db.root, file))
             if file in expected_content:
-                with open(audeer.path(db.root, file), 'r') as fp:
+                with open(audeer.path(db.root, file), "r") as fp:
                     assert fp.read() == expected_content[file]
 
     # test media files
@@ -901,19 +879,19 @@ def test_update(tmpdir):
     db_source = db.source
 
     other = audformat.Database(
-        author='other',
-        description='other',
+        author="other",
+        description="other",
         expires=datetime.date.today(),
-        languages=audformat.utils.map_language('french'),
-        license_url='other',
-        meta={'other': 'other'},
-        name='other',
-        organization='other',
-        source='other',
+        languages=audformat.utils.map_language("french"),
+        license_url="other",
+        meta={"other": "other"},
+        name="other",
+        organization="other",
+        source="other",
     )
     db.update(other)
 
-    assert db.author == f'{db_author}, {other.author}'
+    assert db.author == f"{db_author}, {other.author}"
     assert db.name == db_name
     assert db.description == db_description
     assert db.expires == other.expires
@@ -921,36 +899,34 @@ def test_update(tmpdir):
     assert db.license_url == db_license_url
     db_meta.update(other.meta)
     assert db.meta == db_meta
-    assert db.organization == f'{db_organization}, {other.organization}'
-    assert db.source == f'{db_source}, {other.source}'
+    assert db.organization == f"{db_organization}, {other.organization}"
+    assert db.source == f"{db_source}, {other.source}"
 
     # errors
 
     with pytest.raises(ValueError):
         other = audformat.testing.create_db(minimal=True)
-        other.license = 'other'
+        other.license = "other"
         db.update(other)
 
     with pytest.raises(ValueError):
         other = audformat.testing.create_db(minimal=True)
-        other.usage = 'other'
+        other.usage = "other"
         db.update(other)
 
     with pytest.raises(ValueError):
         other = audformat.testing.create_db(minimal=True)
-        other.raters['rater'] = audformat.Rater(
-            type=audformat.define.RaterType.MACHINE
-        )
+        other.raters["rater"] = audformat.Rater(type=audformat.define.RaterType.MACHINE)
         db.update(other)
 
     with pytest.raises(ValueError):
         other = audformat.testing.create_db(minimal=True)
-        other.schemes['int'] = audformat.Scheme(str)
+        other.schemes["int"] = audformat.Scheme(str)
         db.update(other)
 
     with pytest.raises(ValueError):
         other = audformat.testing.create_db(minimal=True)
-        other.meta['key'] = 'other'
+        other.meta["key"] = "other"
         db.update(other)
 
     # fail if self has absolute path

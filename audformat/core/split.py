@@ -23,12 +23,13 @@ class Split(HeaderBase):
         {type: test}
 
     """
+
     def __init__(
-            self,
-            type: str = define.SplitType.OTHER,
-            *,
-            description: str = None,
-            meta: dict = None,
+        self,
+        type: str = define.SplitType.OTHER,
+        *,
+        description: str = None,
+        meta: dict = None,
     ):
         super().__init__(description=description, meta=meta)
         define.SplitType._assert_has_attribute_value(type)

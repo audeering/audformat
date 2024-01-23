@@ -26,10 +26,10 @@ class DataType(DefineBase):
 
     """
 
-    BOOL = 'bool'
+    BOOL = "bool"
     """Bool data type."""
 
-    DATE = 'date'
+    DATE = "date"
     """Date data type.
 
     Data type to store date information,
@@ -37,13 +37,13 @@ class DataType(DefineBase):
 
     """
 
-    INTEGER = 'int'
+    INTEGER = "int"
     """Integer data type."""
 
-    FLOAT = 'float'
+    FLOAT = "float"
     """Float data type."""
 
-    OBJECT = 'object'
+    OBJECT = "object"
     """Object data type.
 
     This should be used if no other data type fits.
@@ -53,10 +53,10 @@ class DataType(DefineBase):
 
     """
 
-    STRING = 'str'
+    STRING = "str"
     """String data type."""
 
-    TIME = 'time'
+    TIME = "time"
     """Time data type.
 
     Data type to store durations,
@@ -80,7 +80,7 @@ class Gender(DefineBase):
 
     """
 
-    CHILD = 'child'
+    CHILD = "child"
     """Child gender label.
 
     Female and male children
@@ -91,13 +91,13 @@ class Gender(DefineBase):
 
     """
 
-    FEMALE = 'female'
+    FEMALE = "female"
     """Female gender label."""
 
-    MALE = 'male'
+    MALE = "male"
     """Male gender label."""
 
-    OTHER = 'other'
+    OTHER = "other"
     """Other gender label.
 
     Should include labels
@@ -121,7 +121,7 @@ class IndexField(DefineBase):
 
     """
 
-    FILE = 'file'
+    FILE = "file"
     """File index field.
 
     Name of the index column
@@ -130,7 +130,7 @@ class IndexField(DefineBase):
 
     """
 
-    START = 'start'
+    START = "start"
     """Start index field.
 
     Name of the index column
@@ -139,7 +139,7 @@ class IndexField(DefineBase):
 
     """
 
-    END = 'end'
+    END = "end"
     """End index field.
 
     Name of the index column
@@ -163,10 +163,10 @@ class IndexType(DefineBase):
 
     """
 
-    FILEWISE = 'filewise'
+    FILEWISE = "filewise"
     """Filewise index type."""
 
-    SEGMENTED = 'segmented'
+    SEGMENTED = "segmented"
     """Segmented index type."""
 
 
@@ -190,29 +190,28 @@ class License(DefineBase):
 
     """
 
-    CC0_1_0 = 'CC0-1.0'
+    CC0_1_0 = "CC0-1.0"
     """Creative Commons 1.0 Universal."""
 
-    CC_BY_4_0 = 'CC-BY-4.0'
+    CC_BY_4_0 = "CC-BY-4.0"
     """Creative Commons Attribution 4.0."""
 
-    CC_BY_NC_4_0 = 'CC-BY-NC-4.0'
+    CC_BY_NC_4_0 = "CC-BY-NC-4.0"
     """Creative Commons Attribution-NonCommercial 4.0."""
 
-    CC_BY_NC_SA_4_0 = 'CC-BY-NC-SA-4.0'
+    CC_BY_NC_SA_4_0 = "CC-BY-NC-SA-4.0"
     """Creative Commons Attribution-NonCommercial-ShareAlike 4.0."""
 
-    CC_BY_SA_4_0 = 'CC-BY-SA-4.0'
+    CC_BY_SA_4_0 = "CC-BY-SA-4.0"
     """Creative Commons Attribution-ShareAlike 4.0."""
 
 
 LICENSE_URLS = {
-    License.CC0_1_0: 'https://creativecommons.org/publicdomain/zero/1.0/',
-    License.CC_BY_4_0: 'https://creativecommons.org/licenses/by/4.0/',
-    License.CC_BY_NC_4_0: 'https://creativecommons.org/licenses/by-nc/4.0/',
-    License.CC_BY_NC_SA_4_0:
-        'https://creativecommons.org/licenses/by-nc-sa/4.0/',
-    License.CC_BY_SA_4_0: 'https://creativecommons.org/licenses/by-sa/4.0/',
+    License.CC0_1_0: "https://creativecommons.org/publicdomain/zero/1.0/",
+    License.CC_BY_4_0: "https://creativecommons.org/licenses/by/4.0/",
+    License.CC_BY_NC_4_0: "https://creativecommons.org/licenses/by-nc/4.0/",
+    License.CC_BY_NC_SA_4_0: "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    License.CC_BY_SA_4_0: "https://creativecommons.org/licenses/by-sa/4.0/",
 }
 
 
@@ -233,13 +232,13 @@ class MediaType(DefineBase):
 
     """
 
-    AUDIO = 'audio'
+    AUDIO = "audio"
     """Audio media type."""
 
-    OTHER = 'other'
+    OTHER = "other"
     """Other media type."""
 
-    VIDEO = 'video'
+    VIDEO = "video"
     """Video media type."""
 
 
@@ -260,19 +259,19 @@ class RaterType(DefineBase):
 
     """
 
-    HUMAN = 'human'
+    HUMAN = "human"
     """Human rater type."""
 
-    MACHINE = 'machine'
+    MACHINE = "machine"
     """Machine rater type."""
 
-    OTHER = 'other'
+    OTHER = "other"
     """Other rater type."""
 
-    TRUTH = 'ground truth'
+    TRUTH = "ground truth"
     """Ground truth rater type."""
 
-    VOTE = 'vote'
+    VOTE = "vote"
     """Vote rater type."""
 
 
@@ -293,16 +292,16 @@ class SplitType(DefineBase):
 
     """
 
-    TRAIN = 'train'
+    TRAIN = "train"
     """Train split type."""
 
-    DEVELOP = 'dev'
+    DEVELOP = "dev"
     """Dev split type."""
 
-    OTHER = 'other'
+    OTHER = "other"
     """Other split type."""
 
-    TEST = 'test'
+    TEST = "test"
     """Test split type."""
 
 
@@ -335,10 +334,10 @@ class TableStorageFormat(DefineBase):
 
     """
 
-    CSV = 'csv'
+    CSV = "csv"
     """File extension for tables stored in CSV format."""
 
-    PICKLE = 'pkl'
+    PICKLE = "pkl"
     """File extension for tables stored in PKL format."""
 
 
@@ -360,17 +359,17 @@ class Usage(DefineBase):
 
     """
 
-    COMMERCIAL = 'commercial'
+    COMMERCIAL = "commercial"
     """Commercial usage."""
 
-    OTHER = 'other'
+    OTHER = "other"
     """Other usage."""
 
-    RESEARCH = 'research'
+    RESEARCH = "research"
     """Research only usage."""
 
-    RESTRICTED = 'restricted'
+    RESTRICTED = "restricted"
     """Restricted usage."""
 
-    UNRESTRICTED = 'unrestricted'
+    UNRESTRICTED = "unrestricted"
     """Unrestricted usage."""

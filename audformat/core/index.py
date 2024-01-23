@@ -11,8 +11,9 @@ from audformat.core.typing import Timestamps
 
 def is_scalar(value: typing.Any) -> bool:
     r"""Check if value is scalar."""
-    return (value is not None) and \
-           (isinstance(value, str) or not hasattr(value, '__len__'))
+    return (value is not None) and (
+        isinstance(value, str) or not hasattr(value, "__len__")
+    )
 
 
 def to_array(value: typing.Any) -> typing.Union[list, np.ndarray]:
@@ -28,7 +29,7 @@ def to_array(value: typing.Any) -> typing.Union[list, np.ndarray]:
 def to_timedelta(times):
     r"""Convert time value to pd.Timedelta."""
     try:
-        return pd.to_timedelta(times, unit='s')
+        return pd.to_timedelta(times, unit="s")
     except ValueError:  # catches values like '1s'
         return pd.to_timedelta(times)
 
@@ -58,19 +59,19 @@ def assert_index(
 
     if num != 1 and num != 3:
         raise ValueError(
-            'Index not conform to audformat. '
-            f'Found '
-            f'{num} '
-            f'levels, but expected 1 or 3 levels.'
+            "Index not conform to audformat. "
+            f"Found "
+            f"{num} "
+            f"levels, but expected 1 or 3 levels."
         )
 
     if num == 1:
         if obj.names[0] != define.IndexField.FILE:
             raise ValueError(
-                'Index not conform to audformat. '
-                'Found single level with name '
-                f'{obj.names[0]}, '
-                f'but expected name '
+                "Index not conform to audformat. "
+                "Found single level with name "
+                f"{obj.names[0]}, "
+                f"but expected name "
                 f"'{define.IndexField.FILE}'."
             )
         if not pd.api.types.is_string_dtype(obj.dtype):
@@ -80,9 +81,9 @@ def assert_index(
             )
     elif num == 3:
         if not (
-                obj.names[0] == define.IndexField.FILE
-                and obj.names[1] == define.IndexField.START
-                and obj.names[2] == define.IndexField.END
+            obj.names[0] == define.IndexField.FILE
+            and obj.names[1] == define.IndexField.START
+            and obj.names[2] == define.IndexField.END
         ):
             expected_names = [
                 define.IndexField.FILE,
@@ -90,11 +91,11 @@ def assert_index(
                 define.IndexField.END,
             ]
             raise ValueError(
-                'Index not conform to audformat. '
-                'Found three levels with names '
-                f'{obj.names}, '
-                f'but expected names '
-                f'{expected_names}.'
+                "Index not conform to audformat. "
+                "Found three levels with names "
+                f"{obj.names}, "
+                f"but expected names "
+                f"{expected_names}."
             )
         if not pd.api.types.is_string_dtype(obj.levels[0].dtype):
             raise ValueError(
@@ -136,22 +137,19 @@ def assert_no_duplicates(
     if obj.has_duplicates:
         max_display = 10
         duplicates = obj[obj.duplicated()]
-        msg_tail = '\n...' if len(duplicates) > max_display else ''
-        msg_duplicates = '\n'.join(
-            [
-                str(duplicate) for duplicate
-                in duplicates[:max_display].tolist()
-            ]
+        msg_tail = "\n..." if len(duplicates) > max_display else ""
+        msg_duplicates = "\n".join(
+            [str(duplicate) for duplicate in duplicates[:max_display].tolist()]
         )
         raise ValueError(
-            'Index not conform to audformat. '
-            'Found duplicates:\n'
-            f'{msg_duplicates}{msg_tail}'
+            "Index not conform to audformat. "
+            "Found duplicates:\n"
+            f"{msg_duplicates}{msg_tail}"
         )
 
 
 def filewise_index(
-        files: Files = None,
+    files: Files = None,
 ) -> pd.Index:
     r"""Creates a filewise index.
 
@@ -167,7 +165,7 @@ def filewise_index(
         ValueError: if created index contains duplicates
 
     Examples:
-        >>> filewise_index(['a.wav', 'b.wav'])
+        >>> filewise_index(["a.wav", "b.wav"])
         Index(['a.wav', 'b.wav'], dtype='string', name='file')
 
     """
@@ -178,7 +176,7 @@ def filewise_index(
     index = pd.Index(
         files,
         name=define.IndexField.FILE,
-        dtype='string',
+        dtype="string",
     )
     assert_index(index)
 
@@ -186,7 +184,7 @@ def filewise_index(
 
 
 def index_type(
-        obj: typing.Union[pd.Index, pd.Series, pd.DataFrame],
+    obj: typing.Union[pd.Index, pd.Series, pd.DataFrame],
 ) -> define.IndexType:
     r"""Derive index type.
 
@@ -223,7 +221,7 @@ def index_type(
 
 
 def is_filewise_index(
-        obj: typing.Union[pd.Index, pd.Series, pd.DataFrame],
+    obj: typing.Union[pd.Index, pd.Series, pd.DataFrame],
 ) -> bool:
     r"""Check if object has a filewise index.
 
@@ -250,7 +248,7 @@ def is_filewise_index(
 
 
 def is_segmented_index(
-        obj: typing.Union[pd.Index, pd.Series, pd.DataFrame],
+    obj: typing.Union[pd.Index, pd.Series, pd.DataFrame],
 ) -> bool:
     r"""Check if object has a segmented index.
 
@@ -282,9 +280,9 @@ def is_segmented_index(
 
 
 def segmented_index(
-        files: Files = None,
-        starts: Timestamps = None,
-        ends: Timestamps = None,
+    files: Files = None,
+    starts: Timestamps = None,
+    ends: Timestamps = None,
 ) -> pd.Index:
     r"""Create segmented index.
 
@@ -312,24 +310,24 @@ def segmented_index(
         ValueError: if ``files``, ``start`` and ``ends`` differ in size
 
     Examples:
-        >>> segmented_index('a.wav', 0, 1.1)
+        >>> segmented_index("a.wav", 0, 1.1)
         MultiIndex([('a.wav', '0 days', '0 days 00:00:01.100000')],
                    names=['file', 'start', 'end'])
-        >>> segmented_index('a.wav', '0ms', '1ms')
+        >>> segmented_index("a.wav", "0ms", "1ms")
         MultiIndex([('a.wav', '0 days', '0 days 00:00:00.001000')],
                    names=['file', 'start', 'end'])
-        >>> segmented_index(['a.wav', 'b.wav'])
+        >>> segmented_index(["a.wav", "b.wav"])
         MultiIndex([('a.wav', '0 days', NaT),
                     ('b.wav', '0 days', NaT)],
                    names=['file', 'start', 'end'])
-        >>> segmented_index(['a.wav', 'b.wav'], [None, 1], [1, None])
+        >>> segmented_index(["a.wav", "b.wav"], [None, 1], [1, None])
         MultiIndex([('a.wav',               NaT, '0 days 00:00:01'),
                     ('b.wav', '0 days 00:00:01',               NaT)],
                    names=['file', 'start', 'end'])
         >>> segmented_index(
-        ...     files=['a.wav', 'a.wav'],
+        ...     files=["a.wav", "a.wav"],
         ...     starts=[0, 1],
-        ...     ends=pd.to_timedelta([1000, 2000], unit='ms'),
+        ...     ends=pd.to_timedelta([1000, 2000], unit="ms"),
         ... )
         MultiIndex([('a.wav', '0 days 00:00:00', '0 days 00:00:01'),
                     ('a.wav', '0 days 00:00:01', '0 days 00:00:02')],
@@ -363,8 +361,9 @@ def segmented_index(
             define.IndexField.FILE,
             define.IndexField.START,
             define.IndexField.END,
-        ])
-    index = utils.set_index_dtypes(index, {define.IndexField.FILE: 'string'})
+        ],
+    )
+    index = utils.set_index_dtypes(index, {define.IndexField.FILE: "string"})
     assert_index(index)
 
     return index

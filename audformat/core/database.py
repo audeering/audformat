@@ -75,35 +75,35 @@ class Database(HeaderBase):
 
     Examples:
         >>> db = Database(
-        ...     'mydb',
-        ...     'https://www.audeering.com/',
+        ...     "mydb",
+        ...     "https://www.audeering.com/",
         ...     define.Usage.COMMERCIAL,
-        ...     languages=['English', 'de'],
+        ...     languages=["English", "de"],
         ... )
         >>> db
         name: mydb
         source: https://www.audeering.com/
         usage: commercial
         languages: [eng, deu]
-        >>> labels = ['positive', 'neutral', 'negative']
-        >>> db.schemes['emotion'] = Scheme(labels=labels)
-        >>> db.schemes['match'] = Scheme(dtype='bool')
-        >>> db.raters['rater'] = Rater()
-        >>> db.media['audio'] = Media(
+        >>> labels = ["positive", "neutral", "negative"]
+        >>> db.schemes["emotion"] = Scheme(labels=labels)
+        >>> db.schemes["match"] = Scheme(dtype="bool")
+        >>> db.raters["rater"] = Rater()
+        >>> db.media["audio"] = Media(
         ...     define.MediaType.AUDIO,
-        ...     format='wav',
+        ...     format="wav",
         ...     sampling_rate=16000,
         ... )
-        >>> index = filewise_index(['f1.wav', 'f2.wav'])
-        >>> db['table'] = Table(index, media_id='audio')
-        >>> db['table']['column'] = Column(
-        ...     scheme_id='emotion',
-        ...     rater_id='rater',
+        >>> index = filewise_index(["f1.wav", "f2.wav"])
+        >>> db["table"] = Table(index, media_id="audio")
+        >>> db["table"]["column"] = Column(
+        ...     scheme_id="emotion",
+        ...     rater_id="rater",
         ... )
-        >>> db['table']['column'].set(['neutral', 'positive'])
-        >>> index = pd.Index([], dtype='string', name='idx')
-        >>> db['misc-table'] = MiscTable(index)
-        >>> db['misc-table']['column'] = Column(scheme_id='match')
+        >>> db["table"]["column"].set(["neutral", "positive"])
+        >>> index = pd.Index([], dtype="string", name="idx")
+        >>> db["misc-table"] = MiscTable(index)
+        >>> db["misc-table"]["column"] = Column(scheme_id="match")
         >>> db
         name: mydb
         source: https://www.audeering.com/
@@ -131,33 +131,31 @@ class Database(HeaderBase):
               column: {scheme_id: match}
         >>> list(db)
         ['misc-table', 'table']
-        >>> db.get('emotion')
+        >>> db.get("emotion")
                  emotion
         file
         f1.wav   neutral
         f2.wav  positive
 
     """
+
     def __init__(
-            self,
-            name: str,
-            source: str = '',
-            usage: str = define.Usage.UNRESTRICTED,
-            *,
-            expires: datetime.date = None,
-            languages: typing.Union[str, typing.Sequence[str]] = None,
-            description: str = None,
-            author: str = None,
-            organization: str = None,
-            license: typing.Union[str, define.License] = None,
-            license_url: str = None,
-            meta: dict = None,
+        self,
+        name: str,
+        source: str = "",
+        usage: str = define.Usage.UNRESTRICTED,
+        *,
+        expires: datetime.date = None,
+        languages: typing.Union[str, typing.Sequence[str]] = None,
+        description: str = None,
+        author: str = None,
+        organization: str = None,
+        license: typing.Union[str, define.License] = None,
+        license_url: str = None,
+        meta: dict = None,
     ):
         define.Usage._assert_has_attribute_value(usage)
-        if (
-                license_url is None
-                and license in define.License._attribute_values()
-        ):
+        if license_url is None and license in define.License._attribute_values():
             license_url = define.LICENSE_URLS[license]
 
         languages = [] if languages is None else audeer.to_list(languages)
@@ -286,25 +284,21 @@ class Database(HeaderBase):
 
         """
         index = utils.union(
-            [
-                table.df.index
-                for table in self.tables.values()
-                if table.is_segmented
-            ]
+            [table.df.index for table in self.tables.values() if table.is_segmented]
         )
         # Sort alphabetical
         index, _ = index.sortlevel()
         return index
 
     def drop_files(
-            self,
-            files: typing.Union[
-                str,
-                typing.Sequence[str],
-                typing.Callable[[str], bool],
-            ],
-            num_workers: typing.Optional[int] = 1,
-            verbose: bool = False,
+        self,
+        files: typing.Union[
+            str,
+            typing.Sequence[str],
+            typing.Callable[[str], bool],
+        ],
+        num_workers: typing.Optional[int] = 1,
+        verbose: bool = False,
     ):
         r"""Drop files from tables.
 
@@ -324,12 +318,12 @@ class Database(HeaderBase):
             params=[([table], {}) for table in self.tables.values()],
             num_workers=num_workers,
             progress_bar=verbose,
-            task_description='Drop files',
+            task_description="Drop files",
         )
 
     def drop_tables(
-            self,
-            table_ids: typing.Union[str, typing.Sequence[str]],
+        self,
+        table_ids: typing.Union[str, typing.Sequence[str]],
     ):
         r"""Drop (miscellaneous) tables by ID.
 
@@ -350,7 +344,8 @@ class Database(HeaderBase):
                 self.tables.pop(table_id)
             elif table_id in self.misc_tables:
                 schemes = [
-                    scheme._id for scheme in self.schemes.values()
+                    scheme._id
+                    for scheme in self.schemes.values()
                     if scheme.labels == table_id
                 ]
                 if len(schemes) > 0:
@@ -364,13 +359,13 @@ class Database(HeaderBase):
                 self.misc_tables.pop(table_id)
             else:
                 available_tables = {**self.tables, **self.misc_tables}
-                raise BadIdError('table', table_id, available_tables)
+                raise BadIdError("table", table_id, available_tables)
 
     def files_duration(
-            self,
-            files: typing.Union[str, typing.Sequence[str]],
-            *,
-            root: str = None,
+        self,
+        files: typing.Union[str, typing.Sequence[str]],
+        *,
+        root: str = None,
     ) -> pd.Series:
         r"""Duration of files in the database.
 
@@ -405,7 +400,6 @@ class Database(HeaderBase):
         root = root or self.root
 
         def duration(file: str) -> pd.Timedelta:
-
             # expand file path
             if os.path.isabs(file):
                 full_file = file
@@ -427,7 +421,7 @@ class Database(HeaderBase):
 
             # calculate duration and cache it
             dur = audiofile.duration(full_file)
-            dur = pd.to_timedelta(dur, unit='s')
+            dur = pd.to_timedelta(dur, unit="s")
             self._files_duration[full_file] = dur
 
             return dur
@@ -442,20 +436,17 @@ class Database(HeaderBase):
         return y
 
     def get(
-            self,
-            scheme: str,
-            additional_schemes: typing.Union[str, typing.Sequence] = [],
-            *,
-            tables: typing.Union[str, typing.Sequence] = None,
-            splits: typing.Union[str, typing.Sequence] = None,
-            strict: bool = False,
-            map: bool = True,
-            original_column_names: bool = False,
-            aggregate_function: typing.Callable[
-                [pd.Series],
-                typing.Any
-            ] = None,
-            aggregate_strategy: str = 'mismatch',
+        self,
+        scheme: str,
+        additional_schemes: typing.Union[str, typing.Sequence] = [],
+        *,
+        tables: typing.Union[str, typing.Sequence] = None,
+        splits: typing.Union[str, typing.Sequence] = None,
+        strict: bool = False,
+        map: bool = True,
+        original_column_names: bool = False,
+        aggregate_function: typing.Callable[[pd.Series], typing.Any] = None,
+        aggregate_strategy: str = "mismatch",
     ) -> pd.DataFrame:
         r"""Get labels by scheme.
 
@@ -550,13 +541,9 @@ class Database(HeaderBase):
 
             >>> import audb
             >>> db = audb.load(
-            ...     'emodb',
-            ...     version='1.4.1',
-            ...     only_metadata=True,
-            ...     full_path=False,
-            ...     verbose=False
+            ...     "emodb", version="1.4.1", only_metadata=True, full_path=False, verbose=False
             ... )
-            >>> db.get('emotion').head()
+            >>> db.get("emotion").head()
                                emotion
             file
             wav/03a01Fa.wav  happiness
@@ -564,7 +551,7 @@ class Database(HeaderBase):
             wav/03a01Wa.wav      anger
             wav/03a02Fc.wav  happiness
             wav/03a02Nc.wav    neutral
-            >>> db.get('transcription').head()
+            >>> db.get("transcription").head()
                                                     transcription
             file
             wav/03a01Fa.wav  Der Lappen liegt auf dem Eisschrank.
@@ -572,7 +559,7 @@ class Database(HeaderBase):
             wav/03a01Wa.wav  Der Lappen liegt auf dem Eisschrank.
             wav/03a02Fc.wav     Das will sie am Mittwoch abgeben.
             wav/03a02Nc.wav     Das will sie am Mittwoch abgeben.
-            >>> db.get('emotion', ['transcription'], map=False).head()
+            >>> db.get("emotion", ["transcription"], map=False).head()
                                emotion transcription
             file
             wav/03a01Fa.wav  happiness           a01
@@ -583,7 +570,7 @@ class Database(HeaderBase):
 
             Non-existent schemes are ignored.
 
-            >>> db.get('emotion', ['non-existing']).head()
+            >>> db.get("emotion", ["non-existing"]).head()
                    emotion non-existing
             file
             wav/03a01Fa.wav  happiness          NaN
@@ -594,7 +581,7 @@ class Database(HeaderBase):
 
             Limit to a particular table or split.
 
-            >>> db.get('emotion', tables=['emotion.categories.train.gold_standard']).head()
+            >>> db.get("emotion", tables=["emotion.categories.train.gold_standard"]).head()
                                emotion
             file
             wav/03a01Fa.wav  happiness
@@ -602,7 +589,7 @@ class Database(HeaderBase):
             wav/03a01Wa.wav      anger
             wav/03a02Fc.wav  happiness
             wav/03a02Nc.wav    neutral
-            >>> db.get('emotion', splits=['test']).head()
+            >>> db.get("emotion", splits=["test"]).head()
                                emotion
             file
             wav/12a01Fb.wav  happiness
@@ -613,12 +600,12 @@ class Database(HeaderBase):
 
             Return requested scheme name independent of column ID.
 
-            >>> db['emotion'].columns
+            >>> db["emotion"].columns
             emotion:
               {scheme_id: emotion, rater_id: gold}
             emotion.confidence:
               {scheme_id: confidence, rater_id: gold}
-            >>> db.get('confidence').head()
+            >>> db.get("confidence").head()
                              confidence
             file
             wav/03a01Fa.wav        0.90
@@ -630,7 +617,7 @@ class Database(HeaderBase):
             If ``strict`` is ``True``
             only values that have an attached scheme are returned.
 
-            >>> db.get('emotion.confidence').head()
+            >>> db.get("emotion.confidence").head()
                              emotion.confidence
             file
             wav/03a01Fa.wav                0.90
@@ -638,7 +625,7 @@ class Database(HeaderBase):
             wav/03a01Wa.wav                0.95
             wav/03a02Fc.wav                0.85
             wav/03a02Nc.wav                1.00
-            >>> db.get('emotion.confidence', strict=True).head()
+            >>> db.get("emotion.confidence", strict=True).head()
             Empty DataFrame
             Columns: [emotion.confidence]
             Index: []
@@ -651,11 +638,11 @@ class Database(HeaderBase):
             to combine the values.
 
             >>> # Add a shuffled version of emotion ratings as `random` column
-            >>> db['emotion']['random'] = Column(scheme_id='emotion')
-            >>> db['emotion']['random'].set(
-            ...     db['emotion']['emotion'].get().sample(frac=1, random_state=1)
+            >>> db["emotion"]["random"] = Column(scheme_id="emotion")
+            >>> db["emotion"]["random"].set(
+            ...     db["emotion"]["emotion"].get().sample(frac=1, random_state=1)
             ... )
-            >>> db.get('emotion')
+            >>> db.get("emotion")
             Traceback (most recent call last):
                 ...
             ValueError: Found overlapping data in column 'emotion':
@@ -672,7 +659,7 @@ class Database(HeaderBase):
             wav/03a04Wc.wav      anger  boredom
             wav/03a05Aa.wav       fear  sadness
             ...
-            >>> db.get('emotion', aggregate_function=lambda y: y[0]).head()
+            >>> db.get("emotion", aggregate_function=lambda y: y[0]).head()
                                emotion
             file
             wav/03a01Fa.wav  happiness
@@ -684,7 +671,7 @@ class Database(HeaderBase):
             Alternatively,
             use ``original_column_names`` to return column IDs.
 
-            >>> db.get('emotion', original_column_names=True).head()
+            >>> db.get("emotion", original_column_names=True).head()
                                emotion     random
             file
             wav/03a01Fa.wav  happiness  happiness
@@ -713,13 +700,13 @@ class Database(HeaderBase):
             return pd.DataFrame(
                 {name: []},
                 index=filewise_index(),
-                dtype='object',
+                dtype="object",
             )
 
         def empty_series(name):
             return pd.Series(
                 index=filewise_index(),
-                dtype='object',
+                dtype="object",
                 name=name,
             )
 
@@ -728,11 +715,9 @@ class Database(HeaderBase):
             # is attached to a column,
             # or identical with the column name
             return (
-                scheme_id == column_id and not strict
-                or (
-                    column.scheme_id is not None
-                    and scheme_id == column.scheme_id
-                )
+                scheme_id == column_id
+                and not strict
+                or (column.scheme_id is not None and scheme_id == column.scheme_id)
             )
 
         requested_scheme = scheme
@@ -748,27 +733,26 @@ class Database(HeaderBase):
         # --- Check if requested scheme is stored as label in other schemes
         scheme_mappings = []
         for scheme_id, scheme in self.schemes.items():
-
             # Labels stored as misc table
             if scheme.uses_table and scheme_id in self.misc_tables:
                 for column_id, column in self[scheme_id].columns.items():
                     if scheme_in_column(
-                            requested_scheme,
-                            column,
-                            column_id,
+                        requested_scheme,
+                        column,
+                        column_id,
                     ):
                         scheme_mappings.append((scheme_id, column_id))
 
             # Labels stored in scheme
             elif (
-                    not strict
-                    and isinstance(scheme.labels, dict)
-                    # Skip simple mappings like {'a0': 'a text'}
-                    and isinstance(list(scheme.labels.values())[0], dict)
+                not strict
+                and isinstance(scheme.labels, dict)
+                # Skip simple mappings like {'a0': 'a text'}
+                and isinstance(list(scheme.labels.values())[0], dict)
             ):
                 labels = pd.DataFrame.from_dict(
                     scheme.labels,
-                    orient='index',
+                    orient="index",
                 )
                 if requested_scheme in labels:
                     scheme_mappings.append((scheme_id, requested_scheme))
@@ -776,7 +760,6 @@ class Database(HeaderBase):
         # --- Get data for requested schemes
         ys = []
         for table_id in tables:
-
             # Handle non-existing tables
             if table_id not in self.tables:
                 continue
@@ -798,14 +781,14 @@ class Database(HeaderBase):
                     # nut not scheme labels like
                     # {'a': {'d': 1}, 'b': {'d': 2}}
                     if (
-                            map is True
-                            and requested_scheme in self.schemes
-                            and isinstance(labels, dict)
-                            # Ensure simple mappings like {'a0': 'a text'}
-                            and not isinstance(list(labels.values())[0], dict)
-                            # map=requested_scheme can only be performed
-                            # if scheme is assigned
-                            and column.scheme_id == requested_scheme
+                        map is True
+                        and requested_scheme in self.schemes
+                        and isinstance(labels, dict)
+                        # Ensure simple mappings like {'a0': 'a text'}
+                        and not isinstance(list(labels.values())[0], dict)
+                        # map=requested_scheme can only be performed
+                        # if scheme is assigned
+                        and column.scheme_id == requested_scheme
                     ):
                         y = column.get(map=requested_scheme)
                     else:
@@ -814,7 +797,7 @@ class Database(HeaderBase):
                     append_series(ys, y, column_id)
                 # Get series based on label of scheme
                 else:
-                    for (scheme_id, mapping) in scheme_mappings:
+                    for scheme_id, mapping in scheme_mappings:
                         if scheme_in_column(scheme_id, column, column_id):
                             if column.scheme_id is None:
                                 y = empty_series(requested_scheme)
@@ -840,9 +823,7 @@ class Database(HeaderBase):
             for n, y in enumerate(ys):
                 if not isinstance(y.dtype, pd.CategoricalDtype):
                     ys[n] = y.astype(
-                        pd.CategoricalDtype(
-                            y.array.dropna().unique().astype(dtype)
-                        )
+                        pd.CategoricalDtype(y.array.dropna().unique().astype(dtype))
                     )
             # Find union of categorical data
             data = [y.array for y in ys]
@@ -894,10 +875,10 @@ class Database(HeaderBase):
         return obj
 
     def map_files(
-            self,
-            func: typing.Callable[[str], str],
-            num_workers: typing.Optional[int] = 1,
-            verbose: bool = False,
+        self,
+        func: typing.Callable[[str], str],
+        num_workers: typing.Optional[int] = 1,
+        verbose: bool = False,
     ):
         r"""Apply function to file names in all tables.
 
@@ -913,6 +894,7 @@ class Database(HeaderBase):
             verbose: show progress bar
 
         """
+
         def job(table):
             table.map_files(func)
 
@@ -921,18 +903,18 @@ class Database(HeaderBase):
             params=[([table], {}) for table in self.tables.values()],
             num_workers=num_workers,
             progress_bar=verbose,
-            task_description='Map files',
+            task_description="Map files",
         )
 
     def pick_files(
-            self,
-            files: typing.Union[
-                str,
-                typing.Sequence[str],
-                typing.Callable[[str], bool],
-            ],
-            num_workers: typing.Optional[int] = 1,
-            verbose: bool = False,
+        self,
+        files: typing.Union[
+            str,
+            typing.Sequence[str],
+            typing.Callable[[str], bool],
+        ],
+        num_workers: typing.Optional[int] = 1,
+        verbose: bool = False,
     ):
         r"""Pick files from tables.
 
@@ -952,12 +934,12 @@ class Database(HeaderBase):
             params=[([table], {}) for table in self.tables.values()],
             num_workers=num_workers,
             progress_bar=verbose,
-            task_description='Pick files',
+            task_description="Pick files",
         )
 
     def pick_tables(
-            self,
-            table_ids: typing.Union[str, typing.Sequence[str]],
+        self,
+        table_ids: typing.Union[str, typing.Sequence[str]],
     ):
         r"""Pick (miscellaneous) tables by ID.
 
@@ -976,21 +958,21 @@ class Database(HeaderBase):
         available_tables = {**self.tables, **self.misc_tables}
         for table_id in table_ids:
             if table_id not in available_tables:
-                raise BadIdError('table', table_id, available_tables)
+                raise BadIdError("table", table_id, available_tables)
         drop_ids = [t for t in list(self) if t not in table_ids]
         self.drop_tables(drop_ids)
 
     def save(
-            self,
-            root: str,
-            *,
-            name: str = 'db',
-            indent: int = 2,
-            storage_format: str = define.TableStorageFormat.CSV,
-            update_other_formats: bool = True,
-            header_only: bool = False,
-            num_workers: typing.Optional[int] = 1,
-            verbose: bool = False,
+        self,
+        root: str,
+        *,
+        name: str = "db",
+        indent: int = 2,
+        storage_format: str = define.TableStorageFormat.CSV,
+        update_other_formats: bool = True,
+        header_only: bool = False,
+        num_workers: typing.Optional[int] = 1,
+        verbose: bool = False,
     ):
         r"""Save database to disk.
 
@@ -1020,16 +1002,15 @@ class Database(HeaderBase):
         """
         root = audeer.mkdir(root)
 
-        ext = '.yaml'
+        ext = ".yaml"
         header_path = os.path.join(root, name + ext)
-        with open(header_path, 'w') as fp:
+        with open(header_path, "w") as fp:
             self.dump(fp, indent=indent)
 
         if not header_only:
-
             # Store (misc) tables
             def job(obj_id, obj):
-                path = audeer.path(root, f'{name}.{obj_id}')
+                path = audeer.path(root, f"{name}.{obj_id}")
                 obj.save(
                     path,
                     storage_format=storage_format,
@@ -1039,26 +1020,23 @@ class Database(HeaderBase):
             objs = {**self.tables, **self.misc_tables}
             audeer.run_tasks(
                 job,
-                params=[
-                    ([obj_id, obj], {})
-                    for obj_id, obj in objs.items()
-                ],
+                params=[([obj_id, obj], {}) for obj_id, obj in objs.items()],
                 num_workers=num_workers,
                 progress_bar=verbose,
-                task_description='Save tables',
+                task_description="Save tables",
             )
 
         self._name = name
         self._root = root
 
     def update(
-            self,
-            others: typing.Union['Database', typing.Sequence['Database']],
-            *,
-            copy_attachments: bool = False,
-            copy_media: bool = False,
-            overwrite: bool = False,
-    ) -> 'Database':
+        self,
+        others: typing.Union["Database", typing.Sequence["Database"]],
+        *,
+        copy_attachments: bool = False,
+        copy_media: bool = False,
+        overwrite: bool = False,
+    ) -> "Database":
         r"""Update database with other database(s).
 
         In order to :ref:`update a database <update-a-database>`,
@@ -1118,8 +1096,8 @@ class Database(HeaderBase):
             others = [others]
 
         def assert_equal(
-                other: Database,
-                field: str,
+            other: Database,
+            field: str,
         ):
             r"""Assert fields are equal."""
             value1 = self.__dict__[field]
@@ -1135,8 +1113,8 @@ class Database(HeaderBase):
                 )
 
         def join_dict(
-                field: str,
-                ds: typing.Sequence[dict],
+            field: str,
+            ds: typing.Sequence[dict],
         ):
             r"""Join list of dictionaries.
 
@@ -1161,9 +1139,9 @@ class Database(HeaderBase):
             return d
 
         def join_field(
-                other: Database,
-                field: str,
-                op: typing.Callable,
+            other: Database,
+            field: str,
+            op: typing.Callable,
         ):
             r"""Join two fields of db header."""
             value1 = self.__dict__[field]
@@ -1178,8 +1156,8 @@ class Database(HeaderBase):
 
         # assert equal fields
         for other in others:
-            assert_equal(other, 'license')
-            assert_equal(other, 'usage')
+            assert_equal(other, "license")
+            assert_equal(other, "usage")
 
         # can only join databases with relative paths
         for database in [self] + others:
@@ -1200,15 +1178,8 @@ class Database(HeaderBase):
                     # by combining the index of all tables,
                     # column values will be updated
                     # later when the tables are joined
-                    if (
-                        other_scheme.uses_table
-                        or self_scheme.uses_table
-                    ):
-
-                        if (
-                            other_scheme.uses_table
-                            != self_scheme.uses_table
-                        ):
+                    if other_scheme.uses_table or self_scheme.uses_table:
+                        if other_scheme.uses_table != self_scheme.uses_table:
                             raise ValueError(
                                 f"Cannot join scheme "
                                 f"'{scheme_id}' "
@@ -1250,22 +1221,22 @@ class Database(HeaderBase):
 
         # join fields
         for other in others:
-            join_field(other, 'author', ', '.join)
-            join_field(other, 'expires', min)
-            join_field(other, 'languages', itertools.chain.from_iterable)
+            join_field(other, "author", ", ".join)
+            join_field(other, "expires", min)
+            join_field(other, "languages", itertools.chain.from_iterable)
             # remove duplicates whilst preserving order
             self.languages = list(dict.fromkeys(self.languages))
-            join_field(other, 'media', lambda x: join_dict('media', x))
-            join_field(other, 'meta', lambda x: join_dict('meta', x))
-            join_field(other, 'organization', ', '.join)
-            join_field(other, 'schemes', lambda x: join_dict('schemes', x))
-            join_field(other, 'source', ', '.join)
-            join_field(other, 'splits', lambda x: join_dict('splits', x))
-            join_field(other, 'raters', lambda x: join_dict('raters', x))
+            join_field(other, "media", lambda x: join_dict("media", x))
+            join_field(other, "meta", lambda x: join_dict("meta", x))
+            join_field(other, "organization", ", ".join)
+            join_field(other, "schemes", lambda x: join_dict("schemes", x))
+            join_field(other, "source", ", ".join)
+            join_field(other, "splits", lambda x: join_dict("splits", x))
+            join_field(other, "raters", lambda x: join_dict("raters", x))
             join_field(
                 other,
-                'attachments',
-                lambda x: join_dict('attachments', x),
+                "attachments",
+                lambda x: join_dict("attachments", x),
             )
 
         # join tables
@@ -1320,8 +1291,8 @@ class Database(HeaderBase):
         return self
 
     def __contains__(
-            self,
-            table_id: str,
+        self,
+        table_id: str,
     ) -> bool:
         r"""Check if (miscellaneous) table exists.
 
@@ -1332,8 +1303,8 @@ class Database(HeaderBase):
         return table_id in self.tables or table_id in self.misc_tables
 
     def __getitem__(
-            self,
-            table_id: str,
+        self,
+        table_id: str,
     ) -> typing.Union[MiscTable, Table]:
         r"""Get (miscellaneous) table from database.
 
@@ -1355,8 +1326,8 @@ class Database(HeaderBase):
         )
 
     def __eq__(
-            self,
-            other: 'Database',
+        self,
+        other: "Database",
     ) -> bool:
         r"""Comparison if database equals another database."""
         if self.dump() != other.dump():
@@ -1367,15 +1338,15 @@ class Database(HeaderBase):
         return True
 
     def __iter__(
-            self,
+        self,
     ) -> typing.Union[MiscTable, Table]:
         r"""Iterate over (miscellaneous) tables of database."""
         yield from sorted(list(self.tables) + list(self.misc_tables))
 
     def __setitem__(
-            self,
-            table_id: str,
-            table: typing.Union[MiscTable, Table],
+        self,
+        table_id: str,
+        table: typing.Union[MiscTable, Table],
     ) -> typing.Union[MiscTable, Table]:
         r"""Add table to database.
 
@@ -1399,13 +1370,13 @@ class Database(HeaderBase):
 
     @staticmethod
     def load(
-            root: str,
-            *,
-            name: str = 'db',
-            load_data: bool = False,
-            num_workers: typing.Optional[int] = 1,
-            verbose: bool = False,
-    ) -> 'Database':
+        root: str,
+        *,
+        name: str = "db",
+        load_data: bool = False,
+        num_workers: typing.Optional[int] = 1,
+        verbose: bool = False,
+    ) -> "Database":
         r"""Load database from disk.
 
         Expects a header ``<root>/<name>.yaml``
@@ -1439,38 +1410,38 @@ class Database(HeaderBase):
                 than the corresponding PKL file
 
         """
-        ext = '.yaml'
+        ext = ".yaml"
         root = audeer.path(root)
         path = os.path.join(root, name + ext)
 
         if not os.path.exists(path):
             raise FileNotFoundError(path)
 
-        with open(path, 'r') as fp:
-
+        with open(path, "r") as fp:
             header = yaml.load(fp, Loader=Loader)
             db = Database.load_header_from_yaml(header)
 
             params = []
             table_ids = []
 
-            if 'tables' in header and header['tables']:
-                for table_id in header['tables']:
+            if "tables" in header and header["tables"]:
+                for table_id in header["tables"]:
                     table_ids.append(table_id)
 
-            if 'misc_tables' in header and header['misc_tables']:
-                for table_id in header['misc_tables']:
+            if "misc_tables" in header and header["misc_tables"]:
+                for table_id in header["misc_tables"]:
                     table_ids.append(table_id)
 
             for table_id in table_ids:
                 table = db[table_id]
                 if load_data:
-                    table_path = audeer.path(root, name + '.' + table_id)
+                    table_path = audeer.path(root, name + "." + table_id)
                     params.append(([table, table_path], {}))
                 else:
                     table._df = None
 
             if params:
+
                 def job(obj, obj_path):
                     obj.load(obj_path)
 
@@ -1480,7 +1451,7 @@ class Database(HeaderBase):
                     params=params,
                     num_workers=num_workers,
                     progress_bar=verbose,
-                    task_description='Load tables',
+                    task_description="Load tables",
                 )
 
         db._name = name
@@ -1489,7 +1460,7 @@ class Database(HeaderBase):
         return db
 
     @staticmethod
-    def load_header_from_yaml(header: dict) -> 'Database':
+    def load_header_from_yaml(header: dict) -> "Database":
         r"""Load database header from YAML.
 
         Args:
@@ -1503,45 +1474,45 @@ class Database(HeaderBase):
         if len(header) == 1:  # pragma: no cover
             id = next(iter(header))
             header = header[id]
-            header['name'] = id
+            header["name"] = id
 
         db = Database(
-            name=header['name'],
-            source=header['source'],
-            usage=header['usage'],
+            name=header["name"],
+            source=header["source"],
+            usage=header["usage"],
         )
         header_dicts = [
-            'attachments',
-            'media',
-            'misc_tables',
-            'raters',
-            'schemes',
-            'tables',
-            'splits',
+            "attachments",
+            "media",
+            "misc_tables",
+            "raters",
+            "schemes",
+            "tables",
+            "splits",
         ]
         db.from_dict(header, ignore_keys=header_dicts)
 
-        if 'attachments' in header and header['attachments']:
-            for attachment_id, attachment_d in header['attachments'].items():
-                attachment = Attachment(attachment_d['path'])
+        if "attachments" in header and header["attachments"]:
+            for attachment_id, attachment_d in header["attachments"].items():
+                attachment = Attachment(attachment_d["path"])
                 attachment.from_dict(attachment_d)
                 db.attachments[attachment_id] = attachment
 
-        if 'media' in header and header['media']:
-            for media_id, media_d in header['media'].items():
+        if "media" in header and header["media"]:
+            for media_id, media_d in header["media"].items():
                 media = Media()
                 media.from_dict(media_d)
                 db.media[media_id] = media
 
-        if 'misc_tables' in header and header['misc_tables']:
-            for table_id, table_d in header['misc_tables'].items():
+        if "misc_tables" in header and header["misc_tables"]:
+            for table_id, table_d in header["misc_tables"].items():
                 table = MiscTable(None)
-                table.from_dict(table_d, ignore_keys=['columns'])
+                table.from_dict(table_d, ignore_keys=["columns"])
 
-                if 'columns' in table_d and table_d['columns']:
+                if "columns" in table_d and table_d["columns"]:
                     tmp_callback = table.columns.set_callback
                     table.columns.set_callback = None
-                    for column_id, column_d in table_d['columns'].items():
+                    for column_id, column_d in table_d["columns"].items():
                         column = Column()
                         column.from_dict(column_d)
                         column._id = column_id
@@ -1551,15 +1522,15 @@ class Database(HeaderBase):
 
                 db.misc_tables[table_id] = table
 
-        if 'raters' in header and header['raters']:
-            for rater_id, rater_d in header['raters'].items():
+        if "raters" in header and header["raters"]:
+            for rater_id, rater_d in header["raters"].items():
                 rater = Rater()
                 rater.from_dict(rater_d)
                 db.raters[rater_id] = rater
 
-        if 'schemes' in header and header['schemes']:
+        if "schemes" in header and header["schemes"]:
             misc_table_schemes = {}
-            for scheme_id, scheme_d in header['schemes'].items():
+            for scheme_id, scheme_d in header["schemes"].items():
                 # ensure to load first all non misc table schemes
                 # as they might be needed
                 # when checking the column schemes
@@ -1573,7 +1544,7 @@ class Database(HeaderBase):
             for scheme_id, scheme in misc_table_schemes.items():
                 db.schemes[scheme_id] = scheme
             # restore order of scheme IDs
-            order = list(header['schemes'])
+            order = list(header["schemes"])
             db.schemes = HeaderDict(
                 sorted(
                     db.schemes.items(),
@@ -1583,37 +1554,33 @@ class Database(HeaderBase):
                 set_callback=db._set_scheme,
             )
 
-        if 'splits' in header and header['splits']:
-            for split_id, split_d in header['splits'].items():
+        if "splits" in header and header["splits"]:
+            for split_id, split_d in header["splits"].items():
                 split = Split()
                 split.from_dict(split_d)
                 db.splits[split_id] = split
 
-        if 'tables' in header and header['tables']:
-            for table_id, table_d in header['tables'].items():
+        if "tables" in header and header["tables"]:
+            for table_id, table_d in header["tables"].items():
                 table = Table()
-                table.from_dict(table_d, ignore_keys=['is_segmented',
-                                                      'columns'])
-                if 'columns' in table_d and table_d['columns']:
+                table.from_dict(table_d, ignore_keys=["is_segmented", "columns"])
+                if "columns" in table_d and table_d["columns"]:
                     tmp_callback = table.columns.set_callback
                     table.columns.set_callback = None
-                    for column_id, column_d in \
-                            table_d['columns'].items():
+                    for column_id, column_d in table_d["columns"].items():
                         column = Column()
-                        column.from_dict(
-                            column_d, ignore_keys=['has_confidence']
-                        )
+                        column.from_dict(column_d, ignore_keys=["has_confidence"])
                         column._id = column_id
                         column._table = table
                         table.columns[column_id] = column
 
                         # for backward compatibility we insert
                         # confidences as a regular column
-                        if 'has_confidence' in column_d:  # pragma: no cover
+                        if "has_confidence" in column_d:  # pragma: no cover
                             column = Column()
-                            column._id = '@' + column_id
+                            column._id = "@" + column_id
                             column._table = table
-                            table.columns['@' + column_id] = column
+                            table.columns["@" + column_id] = column
 
                     table.columns.set_callback = tmp_callback
                 db[table_id] = table
@@ -1621,9 +1588,9 @@ class Database(HeaderBase):
         return db
 
     def _set_attachment(
-            self,
-            attachment_id: str,
-            attachment: Attachment,
+        self,
+        attachment_id: str,
+        attachment: Attachment,
     ) -> Attachment:
         attachment._db = self
         attachment._id = attachment_id
@@ -1632,29 +1599,29 @@ class Database(HeaderBase):
         return attachment
 
     def _set_scheme(
-            self,
-            scheme_id: str,
-            scheme: Scheme,
+        self,
+        scheme_id: str,
+        scheme: Scheme,
     ) -> Scheme:
         scheme._db = self
         scheme._id = scheme_id
-        if hasattr(scheme, 'labels') and scheme.labels is not None:
+        if hasattr(scheme, "labels") and scheme.labels is not None:
             scheme._check_labels(scheme.labels)
         return scheme
 
     def _set_table(
-            self,
-            table_id: str,
-            table: typing.Union[MiscTable, Table],
+        self,
+        table_id: str,
+        table: typing.Union[MiscTable, Table],
     ) -> typing.Union[MiscTable, Table]:
         if isinstance(table, MiscTable) and table_id in self.tables:
             raise TableExistsError(self[table_id].type, table_id)
         elif isinstance(table, Table) and table_id in self.misc_tables:
-            raise TableExistsError('miscellaneous', table_id)
+            raise TableExistsError("miscellaneous", table_id)
         if table.split_id is not None and table.split_id not in self.splits:
-            raise BadIdError('split', table.split_id, self.splits)
+            raise BadIdError("split", table.split_id, self.splits)
         if table.media_id is not None and table.media_id not in self.media:
-            raise BadIdError('media', table.media_id, self.media)
+            raise BadIdError("media", table.media_id, self.media)
         table._db = self
         table._id = table_id
         return table

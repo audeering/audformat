@@ -63,7 +63,7 @@ build-backend = 'setuptools.build_meta'
 [tool.codespell]
 builtin = 'clear,rare,informal,usage,names'
 skip = './audformat.egg-info,./build,./docs/api,./docs/_templates,./docs/pics'
-ignore-words-list = 'Sie,sie,unter,ist'
+ignore-words-list = 'Sie,sie,unter,ist,ba'
 
 
 # ----- pytest ------------------------------------------------------------

@@ -67,52 +67,51 @@ class Scheme(common.HeaderBase):
     Examples:
         >>> Scheme()
         {dtype: str}
-        >>> Scheme(labels=['a', 'b', 'c'])
+        >>> Scheme(labels=["a", "b", "c"])
         dtype: str
         labels: [a, b, c]
         >>> Scheme(define.DataType.INTEGER)
         {dtype: int}
-        >>> Scheme('float', minimum=0, maximum=1)
+        >>> Scheme("float", minimum=0, maximum=1)
         {dtype: float, minimum: 0, maximum: 1}
         >>> # Use index of misc table as labels
         >>> import audformat
-        >>> db = audformat.Database('mydb')
-        >>> db['speaker'] = audformat.MiscTable(
-        ...     pd.Index(['spk1', 'spk2'], name='speaker')
-        ... )
-        >>> Scheme('str', labels='speaker')
+        >>> db = audformat.Database("mydb")
+        >>> db["speaker"] = audformat.MiscTable(pd.Index(["spk1", "spk2"], name="speaker"))
+        >>> Scheme("str", labels="speaker")
         {dtype: str, labels: speaker}
 
-    """
+    """  # noqa: E501
+
     # Mapping for dtype input argument,
     # e.g. to allow `str` besides `'str'`.
     # This behavior is only for convenience
     # and not mentioned in the docstring
     _dtypes = {
-        'bool': define.DataType.BOOL,
+        "bool": define.DataType.BOOL,
         bool: define.DataType.BOOL,
-        'str': define.DataType.STRING,
+        "str": define.DataType.STRING,
         str: define.DataType.STRING,
-        'int': define.DataType.INTEGER,
+        "int": define.DataType.INTEGER,
         int: define.DataType.INTEGER,
-        'float': define.DataType.FLOAT,
+        "float": define.DataType.FLOAT,
         float: define.DataType.FLOAT,
-        'time': define.DataType.TIME,
+        "time": define.DataType.TIME,
         pd.Timedelta: define.DataType.TIME,
-        'date': define.DataType.DATE,
+        "date": define.DataType.DATE,
         datetime.datetime: define.DataType.DATE,
         pd.Timestamp: define.DataType.DATE,
     }
 
     def __init__(
-            self,
-            dtype: str = None,
-            *,
-            labels: typing.Union[dict, list, str] = None,
-            minimum: typing.Union[int, float] = None,
-            maximum: typing.Union[int, float] = None,
-            description: str = None,
-            meta: dict = None,
+        self,
+        dtype: str = None,
+        *,
+        labels: typing.Union[dict, list, str] = None,
+        minimum: typing.Union[int, float] = None,
+        maximum: typing.Union[int, float] = None,
+        description: str = None,
+        meta: dict = None,
     ):
         super().__init__(description=description, meta=meta)
 
@@ -131,7 +130,6 @@ class Scheme(common.HeaderBase):
             self._check_labels(labels)
 
             if isinstance(labels, str):
-
                 # Labels from misc table
                 if dtype is None:
                     raise ValueError(
@@ -140,11 +138,9 @@ class Scheme(common.HeaderBase):
                     )
                 if dtype == define.DataType.BOOL:
                     raise ValueError(
-                        "'dtype' cannot be 'bool' "
-                        "when using a misc table as labels."
+                        "'dtype' cannot be 'bool' " "when using a misc table as labels."
                     )
             else:
-
                 # Labels from list or dictionary
                 dtype_labels = self._dtype_from_labels(labels)
                 if dtype is not None and dtype != dtype_labels:
@@ -214,11 +210,11 @@ class Scheme(common.HeaderBase):
         return isinstance(self.labels, str)
 
     def draw(
-            self,
-            n: int,
-            *,
-            str_len: int = 10,
-            p_none: bool = None,
+        self,
+        n: int,
+        *,
+        str_len: int = 10,
+        p_none: bool = None,
     ) -> list:
         r"""Randomly draws values from scheme.
 
@@ -237,24 +233,29 @@ class Scheme(common.HeaderBase):
             if self.dtype == define.DataType.BOOL:
                 x = [random.choice([False, True]) for _ in range(n)]
             elif self.dtype == define.DataType.DATE:
-                x = [pd.to_datetime(round(random.random(), 2), unit='s')
-                     for _ in range(n)]
+                x = [
+                    pd.to_datetime(round(random.random(), 2), unit="s")
+                    for _ in range(n)
+                ]
             elif self.dtype == define.DataType.INTEGER:
                 minimum = self.minimum or 0
                 maximum = self.maximum or minimum + 100
-                x = [random.randrange(minimum, maximum)
-                     for _ in range(n)]
+                x = [random.randrange(minimum, maximum) for _ in range(n)]
             elif self.dtype == define.DataType.FLOAT:
                 minimum = self.minimum or 0.0
                 maximum = self.maximum or minimum + 1.0
                 x = [random.uniform(minimum, maximum) for _ in range(n)]
             elif self.dtype == define.DataType.TIME:
-                x = [pd.to_timedelta(round(random.random(), 2), unit='s')
-                     for _ in range(n)]
+                x = [
+                    pd.to_timedelta(round(random.random(), 2), unit="s")
+                    for _ in range(n)
+                ]
             else:
                 seq = string.ascii_letters + string.digits
-                x = [''.join([random.choice(seq) for _ in range(str_len)])
-                     for _ in range(n)]
+                x = [
+                    "".join([random.choice(seq) for _ in range(str_len)])
+                    for _ in range(n)
+                ]
         else:
             labels = self._labels_to_list()
             x = [random.choice(labels) for _ in range(n)]
@@ -266,8 +267,11 @@ class Scheme(common.HeaderBase):
 
         return x
 
-    def to_pandas_dtype(self) -> typing.Union[
-        str, pd.api.types.CategoricalDtype,
+    def to_pandas_dtype(
+        self,
+    ) -> typing.Union[
+        str,
+        pd.api.types.CategoricalDtype,
     ]:
         r"""Convert data type to :mod:`pandas` data type.
 
@@ -288,7 +292,7 @@ class Scheme(common.HeaderBase):
             labels = self._labels_to_list()
             if len(labels) > 0 and isinstance(labels[0], int):
                 # allow nullable
-                labels = pd.array(labels, dtype='int64')
+                labels = pd.array(labels, dtype="int64")
             dtype = pd.api.types.CategoricalDtype(
                 categories=labels,
                 ordered=False,
@@ -298,8 +302,8 @@ class Scheme(common.HeaderBase):
         return dtype
 
     def replace_labels(
-            self,
-            labels: typing.Union[dict, list, str],
+        self,
+        labels: typing.Union[dict, list, str],
     ):
         r"""Replace labels.
 
@@ -328,8 +332,8 @@ class Scheme(common.HeaderBase):
         Examples:
             >>> speaker = Scheme(
             ...     labels={
-            ...         0: {'gender': 'female'},
-            ...         1: {'gender': 'male'},
+            ...         0: {"gender": "female"},
+            ...         1: {"gender": "male"},
             ...     }
             ... )
             >>> speaker
@@ -339,8 +343,8 @@ class Scheme(common.HeaderBase):
               1: {gender: male}
             >>> speaker.replace_labels(
             ...     {
-            ...         1: {'gender': 'male', 'age': 33},
-            ...         2: {'gender': 'female', 'age': 44},
+            ...         1: {"gender": "male", "age": 33},
+            ...         2: {"gender": "female", "age": 44},
             ...     }
             ... )
             >>> speaker
@@ -352,8 +356,7 @@ class Scheme(common.HeaderBase):
         """
         if self.labels is None:
             raise ValueError(
-                'Cannot replace labels when '
-                'scheme does not define labels.'
+                "Cannot replace labels when " "scheme does not define labels."
             )
         self._check_labels(labels)
 
@@ -373,9 +376,8 @@ class Scheme(common.HeaderBase):
 
         if self._db is not None and self._id is not None:
             labels = self._labels_to_list(labels)
-            for table in (
-                    list(self._db.tables.values())
-                    + list(self._db.misc_tables.values())
+            for table in list(self._db.tables.values()) + list(
+                self._db.misc_tables.values()
             ):
                 for column in table.columns.values():
                     if column.scheme_id == self._id:
@@ -387,18 +389,16 @@ class Scheme(common.HeaderBase):
                         column._table.df[column._id] = y
 
     def _check_labels(
-            self,
-            labels: typing.Union[dict, list, str],
+        self,
+        labels: typing.Union[dict, list, str],
     ):
         r"""Raise label related errors."""
         if not isinstance(labels, (dict, list, str)):
             raise ValueError(
-                'Labels must be passed '
-                'as a dictionary, list or ID of a misc table.'
+                "Labels must be passed " "as a dictionary, list or ID of a misc table."
             )
 
         if self._db is not None and isinstance(labels, str):
-
             table_id = labels
             if table_id not in self._db:
                 raise ValueError(
@@ -425,12 +425,12 @@ class Scheme(common.HeaderBase):
             if self._db[table_id].index.nlevels > 1:
                 raise ValueError(
                     f"Index of misc table '{table_id}' used as scheme labels "
-                    'is only allowed to have a single level.'
+                    "is only allowed to have a single level."
                 )
             if sum(self._db[table_id].index.duplicated()) > 0:
                 raise ValueError(
                     f"Index of misc table '{table_id}' used as scheme labels "
-                    'is not allowed to contain duplicates.'
+                    "is not allowed to contain duplicates."
                 )
             dtype_labels = self._dtype_from_labels(labels)
             if self.dtype != dtype_labels:
@@ -442,8 +442,8 @@ class Scheme(common.HeaderBase):
                 )
 
     def _dtype_from_labels(
-            self,
-            labels: typing.Union[dict, list, str],
+        self,
+        labels: typing.Union[dict, list, str],
     ) -> str:
         r"""Derive audformat dtype from labels."""
         if isinstance(labels, str):
@@ -461,19 +461,17 @@ class Scheme(common.HeaderBase):
             if len(labels) > 0:
                 dtype = type(labels[0])
             else:
-                dtype = 'str'
+                dtype = "str"
             if not all(isinstance(x, dtype) for x in labels):
-                raise ValueError(
-                    'All labels must be of the same data type.'
-                )
+                raise ValueError("All labels must be of the same data type.")
             dtype = common.to_audformat_dtype(dtype)
         define.DataType._assert_has_attribute_value(dtype)
 
         return dtype
 
     def _labels_to_dict(
-            self,
-            labels: typing.Union[dict, list, str] = None,
+        self,
+        labels: typing.Union[dict, list, str] = None,
     ) -> typing.Dict:
         r"""Return actual labels as dict."""
         if labels is None:
@@ -482,14 +480,14 @@ class Scheme(common.HeaderBase):
             if self._db is None or labels not in self._db:
                 labels = {}
             else:
-                labels = self._db[labels].df.to_dict('index')
+                labels = self._db[labels].df.to_dict("index")
         elif isinstance(labels, list):
             labels = {label: {} for label in labels}
         return labels
 
     def _labels_to_list(
-            self,
-            labels: typing.Union[dict, list, str] = None,
+        self,
+        labels: typing.Union[dict, list, str] = None,
     ) -> typing.List:
         r"""Convert labels to actual labels as list."""
         return list(self._labels_to_dict(labels))

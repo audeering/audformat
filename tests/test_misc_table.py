@@ -19,23 +19,21 @@ def create_db_misc_table(
 ) -> audformat.MiscTable:
     if obj is None:
         obj = pd.Series(
-            index=pd.Index([], name='idx'),
+            index=pd.Index([], name="idx"),
             dtype=float,
         )
-    db = audformat.testing.create_db(
-        data={'misc': obj}
-    )
-    table = db['misc']
+    db = audformat.testing.create_db(data={"misc": obj})
+    table = db["misc"]
     if rater is not None:
-        db.raters['rater'] = rater
+        db.raters["rater"] = rater
         for column in table.columns.values():
-            column.rater_id = 'rater'
+            column.rater_id = "rater"
     if media is not None:
-        db.media['media'] = media
-        table.media_id = 'media'
+        db.media["media"] = media
+        table.media_id = "media"
     if split is not None:
-        db.splits['split'] = split
-        table.split_id = 'split'
+        db.splits["split"] = split
+        table.split_id = "split"
     if scheme_id is not None:
         old_scheme_id = list(db.schemes)[0]
         db.schemes[scheme_id] = db.schemes.pop(old_scheme_id)
@@ -46,7 +44,7 @@ def create_db_misc_table(
 
 
 def create_misc_table(
-        obj: typing.Union[pd.Index, pd.Series, pd.DataFrame],
+    obj: typing.Union[pd.Index, pd.Series, pd.DataFrame],
 ) -> audformat.MiscTable:
     r"""Helper function to create Table."""
     index = obj if isinstance(obj, pd.Index) else obj.index
@@ -59,7 +57,7 @@ def create_misc_table(
             table[name].set(obj[name].values)
         # change 'int64' to 'Int64'
         dtypes = {
-            name: 'Int64' if pd.api.types.is_integer_dtype(dtype) else dtype
+            name: "Int64" if pd.api.types.is_integer_dtype(dtype) else dtype
             for name, dtype in obj.dtypes.items()
         }
         table._df = table.df.astype(dtypes)
@@ -67,22 +65,22 @@ def create_misc_table(
 
 
 @pytest.mark.parametrize(
-    'tables, expected',
+    "tables, expected",
     [
         # empty
         (
             [
                 create_misc_table(
                     pd.Series(
-                        index=pd.Index([], name='idx'),
-                        dtype='float',
+                        index=pd.Index([], name="idx"),
+                        dtype="float",
                     ),
                 ),
             ],
             create_misc_table(
                 pd.Series(
-                    index=pd.Index([], name='idx'),
-                    dtype='float',
+                    index=pd.Index([], name="idx"),
+                    dtype="float",
                 ),
             ),
         ),
@@ -90,15 +88,16 @@ def create_misc_table(
             [
                 create_misc_table(
                     pd.Series(
-                        index=pd.Index([], name='idx'),
-                        dtype='float',
+                        index=pd.Index([], name="idx"),
+                        dtype="float",
                     ),
                 ),
-            ] * 3,
+            ]
+            * 3,
             create_misc_table(
                 pd.Series(
-                    index=pd.Index([], name='idx'),
-                    dtype='float',
+                    index=pd.Index([], name="idx"),
+                    dtype="float",
                 ),
             ),
         ),
@@ -107,21 +106,21 @@ def create_misc_table(
             [
                 create_misc_table(
                     pd.Series(
-                        [1.],
-                        index=pd.Index(['a'], name='idx'),
+                        [1.0],
+                        index=pd.Index(["a"], name="idx"),
                     ),
                 ),
                 create_misc_table(
                     pd.Series(
-                        index=pd.Index([], name='idx'),
-                        dtype='float',
+                        index=pd.Index([], name="idx"),
+                        dtype="float",
                     ),
                 ),
             ],
             create_misc_table(
                 pd.Series(
-                    [1.],
-                    index=pd.Index(['a'], name='idx'),
+                    [1.0],
+                    index=pd.Index(["a"], name="idx"),
                 ),
             ),
         ),
@@ -130,21 +129,21 @@ def create_misc_table(
             [
                 create_misc_table(
                     pd.Series(
-                        index=pd.Index([], name='idx'),
-                        dtype='float',
+                        index=pd.Index([], name="idx"),
+                        dtype="float",
                     )
                 ),
                 create_misc_table(
                     pd.Series(
-                        [1.],
-                        index=pd.Index(['a'], name='idx'),
+                        [1.0],
+                        index=pd.Index(["a"], name="idx"),
                     ),
                 ),
             ],
             create_misc_table(
                 pd.Series(
-                    [1.],
-                    index=pd.Index(['a'], name='idx'),
+                    [1.0],
+                    index=pd.Index(["a"], name="idx"),
                 ),
             ),
         ),
@@ -153,21 +152,21 @@ def create_misc_table(
             [
                 create_misc_table(
                     pd.Series(
-                        [1., 2.],
-                        index=pd.Index(['a', 'b'], name='idx'),
+                        [1.0, 2.0],
+                        index=pd.Index(["a", "b"], name="idx"),
                     ),
                 ),
                 create_misc_table(
                     pd.Series(
-                        [2., 3.],
-                        index=pd.Index(['b', 'c'], name='idx'),
+                        [2.0, 3.0],
+                        index=pd.Index(["b", "c"], name="idx"),
                     ),
                 ),
             ],
             create_misc_table(
                 pd.Series(
-                    [1., 2., 3.],
-                    index=pd.Index(['a', 'b', 'c'], name='idx'),
+                    [1.0, 2.0, 3.0],
+                    index=pd.Index(["a", "b", "c"], name="idx"),
                 ),
             ),
         ),
@@ -176,26 +175,26 @@ def create_misc_table(
             [
                 create_misc_table(
                     pd.Series(
-                        [1., 1.],
-                        index=pd.Index(['a', 'b'], name='idx'),
-                        name='c1',
+                        [1.0, 1.0],
+                        index=pd.Index(["a", "b"], name="idx"),
+                        name="c1",
                     ),
                 ),
                 create_misc_table(
                     pd.Series(
-                        [2., 2.],
-                        index=pd.Index(['b', 'c'], name='idx'),
-                        name='c2',
+                        [2.0, 2.0],
+                        index=pd.Index(["b", "c"], name="idx"),
+                        name="c2",
                     ),
                 ),
             ],
             create_misc_table(
                 pd.DataFrame(
                     {
-                        'c1': [1., 1., np.nan],
-                        'c2': [np.nan, 2., 2.],
+                        "c1": [1.0, 1.0, np.nan],
+                        "c2": [np.nan, 2.0, 2.0],
                     },
-                    index=pd.Index(['a', 'b', 'c'], name='idx'),
+                    index=pd.Index(["a", "b", "c"], name="idx"),
                 ),
             ),
         ),
@@ -203,14 +202,14 @@ def create_misc_table(
             [
                 create_misc_table(
                     pd.Series(
-                        [1., 1.],
-                        index=pd.Index(['a', 'b'], name='idx'),
+                        [1.0, 1.0],
+                        index=pd.Index(["a", "b"], name="idx"),
                     ),
                 ),
                 create_misc_table(
                     pd.Series(
-                        [2., 2.],
-                        index=pd.Index(['b', 'c'], name='idx'),
+                        [2.0, 2.0],
+                        index=pd.Index(["b", "c"], name="idx"),
                     ),
                 ),
             ],
@@ -224,18 +223,18 @@ def create_misc_table(
                         [],
                         index=pd.MultiIndex.from_arrays(
                             [[], []],
-                            names=['idx1', 'idx2'],
+                            names=["idx1", "idx2"],
                         ),
-                        dtype='float',
+                        dtype="float",
                     ),
                 ),
                 create_misc_table(
                     pd.Series(
                         [],
-                        index=pd.Index([], name='idx1'),
-                        dtype='float',
+                        index=pd.Index([], name="idx1"),
+                        dtype="float",
                     ),
-                )
+                ),
             ],
             None,
             marks=pytest.mark.xfail(raises=ValueError),
@@ -245,17 +244,17 @@ def create_misc_table(
                 create_misc_table(
                     pd.Series(
                         [],
-                        index=pd.Index([], name='idx1'),
-                        dtype='float',
+                        index=pd.Index([], name="idx1"),
+                        dtype="float",
                     ),
                 ),
                 create_misc_table(
                     pd.Series(
                         [],
-                        index=pd.Index([], name='idx2'),
-                        dtype='float',
+                        index=pd.Index([], name="idx2"),
+                        dtype="float",
                     ),
-                )
+                ),
             ],
             None,
             marks=pytest.mark.xfail(raises=ValueError),
@@ -265,22 +264,22 @@ def create_misc_table(
                 create_misc_table(
                     pd.Series(
                         [],
-                        index=pd.Index([], name='idx1'),
-                        dtype='string',
+                        index=pd.Index([], name="idx1"),
+                        dtype="string",
                     ),
                 ),
                 create_misc_table(
                     pd.Series(
                         [],
-                        index=pd.Index([], name='idx2'),
-                        dtype='float',
+                        index=pd.Index([], name="idx2"),
+                        dtype="float",
                     ),
-                )
+                ),
             ],
             None,
             marks=pytest.mark.xfail(raises=ValueError),
         ),
-    ]
+    ],
 )
 def test_add(tables, expected):
     table = tables[0]
@@ -295,26 +294,26 @@ def test_add(tables, expected):
 
 
 @pytest.mark.parametrize(
-    'table',
+    "table",
     [
-        audformat.MiscTable(pd.Index([], name='idx')),
+        audformat.MiscTable(pd.Index([], name="idx")),
         audformat.testing.create_db(
             data={
-                'misc': pd.Series(
-                    [0., 1., 2.],
+                "misc": pd.Series(
+                    [0.0, 1.0, 2.0],
                     pd.MultiIndex.from_tuples(
                         [
-                            ('a', 0),
-                            ('b', 1),
-                            ('c', 2),
+                            ("a", 0),
+                            ("b", 1),
+                            ("c", 2),
                         ],
-                        names=['idx1', 'idx2'],
+                        names=["idx1", "idx2"],
                     ),
                 ),
             },
-        )['misc'],
-        pytest.DB['misc'],
-    ]
+        )["misc"],
+        pytest.DB["misc"],
+    ],
 )
 def test_copy(table):
     table_copy = table.copy()
@@ -323,288 +322,285 @@ def test_copy(table):
 
 
 @pytest.mark.parametrize(
-    'column_values, column_dtype, '
-    'expected_pandas_dtype, expected_audformat_dtype',
+    "column_values, column_dtype, " "expected_pandas_dtype, expected_audformat_dtype",
     [
         (
             [],
             None,
-            'object',
+            "object",
             audformat.define.DataType.OBJECT,
         ),
         (
             [],
-            'datetime64[ns]',
-            'datetime64[ns]',
+            "datetime64[ns]",
+            "datetime64[ns]",
             audformat.define.DataType.DATE,
         ),
         (
             [],
             float,
-            'float64',
+            "float64",
             audformat.define.DataType.FLOAT,
         ),
         (
             [],
             int,
-            'Int64',
+            "Int64",
             audformat.define.DataType.INTEGER,
         ),
         (
             [],
-            'int64',
-            'Int64',
+            "int64",
+            "Int64",
             audformat.define.DataType.INTEGER,
         ),
         (
             [],
-            'Int64',
-            'Int64',
+            "Int64",
+            "Int64",
             audformat.define.DataType.INTEGER,
         ),
         (
             [],
             str,
-            'object',
+            "object",
             audformat.define.DataType.OBJECT,
         ),
         (
             [],
-            'string',
-            'string',
+            "string",
+            "string",
             audformat.define.DataType.STRING,
         ),
         (
             [],
-            'timedelta64[ns]',
-            'timedelta64[ns]',
+            "timedelta64[ns]",
+            "timedelta64[ns]",
             audformat.define.DataType.TIME,
         ),
         (
             [0],
-            'datetime64[ns]',
-            'datetime64[ns]',
+            "datetime64[ns]",
+            "datetime64[ns]",
             audformat.define.DataType.DATE,
         ),
         (
             [0.0],
             None,
-            'float64',
+            "float64",
             audformat.define.DataType.FLOAT,
         ),
         (
             [0],
             None,
-            'Int64',
+            "Int64",
             audformat.define.DataType.INTEGER,
         ),
         (
             [np.NaN],
-            'Int64',
-            'Int64',
+            "Int64",
+            "Int64",
             audformat.define.DataType.INTEGER,
         ),
         (
             [0, np.NaN],
-            'Int64',
-            'Int64',
+            "Int64",
+            "Int64",
             audformat.define.DataType.INTEGER,
         ),
         (
             [np.NaN],
-            'Int64',
-            'Int64',
+            "Int64",
+            "Int64",
             audformat.define.DataType.INTEGER,
         ),
         (
-            ['0'],
+            ["0"],
             None,
-            'object',
+            "object",
             audformat.define.DataType.OBJECT,
         ),
         (
             [0],
-            'timedelta64[ns]',
-            'timedelta64[ns]',
+            "timedelta64[ns]",
+            "timedelta64[ns]",
             audformat.define.DataType.TIME,
         ),
-    ]
+    ],
 )
 def test_dtype_column(
-        tmpdir,
-        column_values,
-        column_dtype,
-        expected_pandas_dtype,
-        expected_audformat_dtype,
+    tmpdir,
+    column_values,
+    column_dtype,
+    expected_pandas_dtype,
+    expected_audformat_dtype,
 ):
+    name = "column"
+    y = pd.Series(column_values, dtype=column_dtype or "object", name=name)
 
-    name = 'column'
-    y = pd.Series(column_values, dtype=column_dtype or 'object', name=name)
-
-    name = 'idx'
-    index_values = [f'f{n}' for n in range(len(column_values))]
-    index = pd.Index(index_values, dtype='str', name=name)
+    name = "idx"
+    index_values = [f"f{n}" for n in range(len(column_values))]
+    index = pd.Index(index_values, dtype="str", name=name)
 
     db = audformat.testing.create_db(minimal=True)
-    db['misc'] = audformat.MiscTable(index)
-    db.schemes['column'] = audformat.Scheme(expected_audformat_dtype)
-    db['misc']['column'] = audformat.Column(scheme_id='column')
-    db['misc']['column'].set(y.values)
+    db["misc"] = audformat.MiscTable(index)
+    db.schemes["column"] = audformat.Scheme(expected_audformat_dtype)
+    db["misc"]["column"] = audformat.Column(scheme_id="column")
+    db["misc"]["column"].set(y.values)
 
-    assert db['misc']['column'].scheme.dtype == expected_audformat_dtype
-    assert db['misc'].df['column'].dtype == expected_pandas_dtype
+    assert db["misc"]["column"].scheme.dtype == expected_audformat_dtype
+    assert db["misc"].df["column"].dtype == expected_pandas_dtype
 
     # Store and load table
-    db_root = tmpdir.join('db')
-    db.save(db_root, storage_format='csv')
+    db_root = tmpdir.join("db")
+    db.save(db_root, storage_format="csv")
     db_new = audformat.Database.load(db_root)
 
-    assert db_new['misc']['column'].scheme.dtype == expected_audformat_dtype
-    assert db_new['misc'].df['column'].dtype == expected_pandas_dtype
+    assert db_new["misc"]["column"].scheme.dtype == expected_audformat_dtype
+    assert db_new["misc"].df["column"].dtype == expected_pandas_dtype
 
 
 @pytest.mark.parametrize(
-    'index_object, index_values, index_dtype, '
-    'expected_pandas_dtype, expected_audformat_dtype',
+    "index_object, index_values, index_dtype, "
+    "expected_pandas_dtype, expected_audformat_dtype",
     [
         (
             pd.Index,
             [],
             None,
-            'object',
+            "object",
             audformat.define.DataType.OBJECT,
         ),
         (
             pd.DatetimeIndex,
             [],
-            'datetime64[ns]',
-            'datetime64[ns]',
+            "datetime64[ns]",
+            "datetime64[ns]",
             audformat.define.DataType.DATE,
         ),
         (
             pd.Index,
             [],
             float,
-            'float64',
+            "float64",
             audformat.define.DataType.FLOAT,
         ),
         (
             pd.Index,
             [],
             int,
-            'Int64',
+            "Int64",
             audformat.define.DataType.INTEGER,
         ),
         (
             pd.Index,
             [],
-            'int64',
-            'Int64',
+            "int64",
+            "Int64",
             audformat.define.DataType.INTEGER,
         ),
         (
             pd.Index,
             [],
-            'Int64',
-            'Int64',
+            "Int64",
+            "Int64",
             audformat.define.DataType.INTEGER,
         ),
         (
             pd.Index,
             [],
             str,
-            'object',
+            "object",
             audformat.define.DataType.OBJECT,
         ),
         (
             pd.Index,
             [],
-            'string',
-            'string',
+            "string",
+            "string",
             audformat.define.DataType.STRING,
         ),
         (
             pd.TimedeltaIndex,
             [],
-            'timedelta64[ns]',
-            'timedelta64[ns]',
+            "timedelta64[ns]",
+            "timedelta64[ns]",
             audformat.define.DataType.TIME,
         ),
         (
             pd.DatetimeIndex,
             [0],
-            'datetime64[ns]',
-            'datetime64[ns]',
+            "datetime64[ns]",
+            "datetime64[ns]",
             audformat.define.DataType.DATE,
         ),
         (
             pd.Index,
             [0.0],
             None,
-            'float64',
+            "float64",
             audformat.define.DataType.FLOAT,
         ),
         (
             pd.Index,
             [0],
             None,
-            'Int64',
+            "Int64",
             audformat.define.DataType.INTEGER,
         ),
         (
             pd.Index,
             [np.NaN],
-            'Int64',
-            'Int64',
+            "Int64",
+            "Int64",
             audformat.define.DataType.INTEGER,
         ),
         (
             pd.Index,
             [0, np.NaN],
-            'Int64',
-            'Int64',
+            "Int64",
+            "Int64",
             audformat.define.DataType.INTEGER,
         ),
         (
             pd.Index,
             [np.NaN],
-            'Int64',
-            'Int64',
+            "Int64",
+            "Int64",
             audformat.define.DataType.INTEGER,
         ),
         (
             pd.Index,
-            ['0'],
+            ["0"],
             None,
-            'object',
+            "object",
             audformat.define.DataType.OBJECT,
         ),
         (
             pd.TimedeltaIndex,
             [0],
-            'timedelta64[ns]',
-            'timedelta64[ns]',
+            "timedelta64[ns]",
+            "timedelta64[ns]",
             audformat.define.DataType.TIME,
         ),
         (
             pd.Index,
             [[0]],
-            'object',
-            'object',
+            "object",
+            "object",
             audformat.define.DataType.OBJECT,
         ),
-    ]
+    ],
 )
 def test_dtype_index(
-        tmpdir,
-        index_object,
-        index_values,
-        index_dtype,
-        expected_pandas_dtype,
-        expected_audformat_dtype,
+    tmpdir,
+    index_object,
+    index_values,
+    index_dtype,
+    expected_pandas_dtype,
+    expected_audformat_dtype,
 ):
-
-    name = 'idx'
+    name = "idx"
     index = index_object(index_values, dtype=index_dtype, name=name)
     table = audformat.MiscTable(index)
 
@@ -613,125 +609,124 @@ def test_dtype_index(
 
     # Store and load table
     db = audformat.testing.create_db(minimal=True)
-    db['misc'] = table
-    assert db['misc'].levels[name] == expected_audformat_dtype
-    assert db['misc'].index.dtype == expected_pandas_dtype
+    db["misc"] = table
+    assert db["misc"].levels[name] == expected_audformat_dtype
+    assert db["misc"].index.dtype == expected_pandas_dtype
 
-    db_root = tmpdir.join('db')
-    db.save(db_root, storage_format='csv')
+    db_root = tmpdir.join("db")
+    db.save(db_root, storage_format="csv")
     db_new = audformat.Database.load(db_root)
-    assert db_new['misc'].levels[name] == expected_audformat_dtype
-    assert db_new['misc'].index.dtype == expected_pandas_dtype
+    assert db_new["misc"].levels[name] == expected_audformat_dtype
+    assert db_new["misc"].index.dtype == expected_pandas_dtype
 
 
 @pytest.mark.parametrize(
-    'index_values, index_dtype, '
-    'expected_pandas_dtype, expected_audformat_dtype',
+    "index_values, index_dtype, " "expected_pandas_dtype, expected_audformat_dtype",
     [
         (
             [],
-            'datetime64[ns]',
-            'datetime64[ns]',
+            "datetime64[ns]",
+            "datetime64[ns]",
             audformat.define.DataType.DATE,
         ),
         (
             [],
             float,
-            'float64',
+            "float64",
             audformat.define.DataType.FLOAT,
         ),
         (
             [],
             int,
-            'Int64',
+            "Int64",
             audformat.define.DataType.INTEGER,
         ),
         (
             [],
-            'int64',
-            'Int64',
+            "int64",
+            "Int64",
             audformat.define.DataType.INTEGER,
         ),
         (
             [],
-            'Int64',
-            'Int64',
+            "Int64",
+            "Int64",
             audformat.define.DataType.INTEGER,
         ),
         (
             [],
             str,
-            'object',
+            "object",
             audformat.define.DataType.OBJECT,
         ),
         (
             [],
-            'string',
-            'string',
+            "string",
+            "string",
             audformat.define.DataType.STRING,
         ),
         (
             [],
-            'timedelta64[ns]',
-            'timedelta64[ns]',
+            "timedelta64[ns]",
+            "timedelta64[ns]",
             audformat.define.DataType.TIME,
         ),
         (
             [0],
-            'datetime64[ns]',
-            'datetime64[ns]',
+            "datetime64[ns]",
+            "datetime64[ns]",
             audformat.define.DataType.DATE,
         ),
         (
             [0.0],
             None,
-            'float64',
+            "float64",
             audformat.define.DataType.FLOAT,
         ),
         (
             [0],
             None,
-            'Int64',
+            "Int64",
             audformat.define.DataType.INTEGER,
         ),
         (
             [np.NaN],
-            'Int64',
-            'Int64',
+            "Int64",
+            "Int64",
             audformat.define.DataType.INTEGER,
         ),
         (
             [0, np.NaN],
-            'Int64',
-            'Int64',
+            "Int64",
+            "Int64",
             audformat.define.DataType.INTEGER,
         ),
         (
             [np.NaN],
-            'Int64',
-            'Int64',
+            "Int64",
+            "Int64",
             audformat.define.DataType.INTEGER,
         ),
         (
-            ['0'],
+            ["0"],
             None,
-            'object',
+            "object",
             audformat.define.DataType.OBJECT,
         ),
         (
             [0],
-            'timedelta64[ns]',
-            'timedelta64[ns]',
+            "timedelta64[ns]",
+            "timedelta64[ns]",
             audformat.define.DataType.TIME,
         ),
-    ]
+    ],
 )
 def test_dtype_multiindex(
-        tmpdir,
-        index_values,
-        index_dtype,
-        expected_pandas_dtype,
-        expected_audformat_dtype,
+    tmpdir,
+    index_values,
+    index_dtype,
+    expected_pandas_dtype,
+    expected_audformat_dtype,
 ):
     expected_audformat_dtypes = [expected_audformat_dtype] * 2
     expected_pandas_dtypes = [expected_pandas_dtype] * 2
@@ -740,8 +735,7 @@ def test_dtype_multiindex(
             pd.Series(index_values, dtype=index_dtype),
             pd.Series(index_values, dtype=index_dtype),
         ],
-        names=['idx1', 'idx2'],
-
+        names=["idx1", "idx2"],
     )
     table = audformat.MiscTable(index)
     assert list(table.levels.values()) == expected_audformat_dtypes
@@ -749,127 +743,126 @@ def test_dtype_multiindex(
 
     # Store and load table
     db = audformat.testing.create_db(minimal=True)
-    db['misc'] = table
-    assert list(db['misc'].levels.values()) == expected_audformat_dtypes
-    assert list(db['misc'].index.dtypes) == expected_pandas_dtypes
+    db["misc"] = table
+    assert list(db["misc"].levels.values()) == expected_audformat_dtypes
+    assert list(db["misc"].index.dtypes) == expected_pandas_dtypes
 
-    db_root = tmpdir.join('db')
-    db.save(db_root, storage_format='csv')
+    db_root = tmpdir.join("db")
+    db.save(db_root, storage_format="csv")
     db_new = audformat.Database.load(db_root)
-    assert list(db_new['misc'].levels.values()) == expected_audformat_dtypes
-    assert list(db_new['misc'].index.dtypes) == expected_pandas_dtypes
+    assert list(db_new["misc"].levels.values()) == expected_audformat_dtypes
+    assert list(db_new["misc"].index.dtypes) == expected_pandas_dtypes
 
 
 @pytest.mark.parametrize(
-    'index_values, index_dtype, '
-    'expected_pandas_dtype, expected_audformat_dtype',
+    "index_values, index_dtype, " "expected_pandas_dtype, expected_audformat_dtype",
     [
         (
             [],
-            'datetime64[ns]',
-            'datetime64[ns]',
+            "datetime64[ns]",
+            "datetime64[ns]",
             audformat.define.DataType.DATE,
         ),
         (
             [],
             float,
-            'float64',
+            "float64",
             audformat.define.DataType.FLOAT,
         ),
         (
             [],
             int,
-            'Int64',
+            "Int64",
             audformat.define.DataType.INTEGER,
         ),
         (
             [],
-            'int64',
-            'Int64',
+            "int64",
+            "Int64",
             audformat.define.DataType.INTEGER,
         ),
         (
             [],
-            'Int64',
-            'Int64',
+            "Int64",
+            "Int64",
             audformat.define.DataType.INTEGER,
         ),
         (
             [],
             str,
-            'object',
+            "object",
             audformat.define.DataType.OBJECT,
         ),
         (
             [],
-            'string',
-            'string',
+            "string",
+            "string",
             audformat.define.DataType.STRING,
         ),
         (
             [],
-            'timedelta64[ns]',
-            'timedelta64[ns]',
+            "timedelta64[ns]",
+            "timedelta64[ns]",
             audformat.define.DataType.TIME,
         ),
         (
             [0],
-            'datetime64[ns]',
-            'datetime64[ns]',
+            "datetime64[ns]",
+            "datetime64[ns]",
             audformat.define.DataType.DATE,
         ),
         (
             [0.0],
             None,
-            'float64',
+            "float64",
             audformat.define.DataType.FLOAT,
         ),
         (
             [0],
             None,
-            'Int64',
+            "Int64",
             audformat.define.DataType.INTEGER,
         ),
         (
             [np.NaN],
-            'Int64',
-            'Int64',
+            "Int64",
+            "Int64",
             audformat.define.DataType.INTEGER,
         ),
         (
             [0, np.NaN],
-            'Int64',
-            'Int64',
+            "Int64",
+            "Int64",
             audformat.define.DataType.INTEGER,
         ),
         (
             [np.NaN],
-            'Int64',
-            'Int64',
+            "Int64",
+            "Int64",
             audformat.define.DataType.INTEGER,
         ),
         (
-            ['0'],
+            ["0"],
             None,
-            'object',
+            "object",
             audformat.define.DataType.OBJECT,
         ),
         (
             [0],
-            'timedelta64[ns]',
-            'timedelta64[ns]',
+            "timedelta64[ns]",
+            "timedelta64[ns]",
             audformat.define.DataType.TIME,
         ),
-    ]
+    ],
 )
 def test_dtype_multiindex_single_level(
-        tmpdir,
-        index_values,
-        index_dtype,
-        expected_pandas_dtype,
-        expected_audformat_dtype,
+    tmpdir,
+    index_values,
+    index_dtype,
+    expected_pandas_dtype,
+    expected_audformat_dtype,
 ):
-    name = 'idx'
+    name = "idx"
     index = pd.MultiIndex.from_arrays(
         [
             pd.Series(index_values, dtype=index_dtype),
@@ -882,20 +875,19 @@ def test_dtype_multiindex_single_level(
 
     # Store and load table
     db = audformat.testing.create_db(minimal=True)
-    db['misc'] = table
-    assert db['misc'].levels[name] == expected_audformat_dtype
-    assert db['misc'].index.dtype == expected_pandas_dtype
+    db["misc"] = table
+    assert db["misc"].levels[name] == expected_audformat_dtype
+    assert db["misc"].index.dtype == expected_pandas_dtype
 
-    db_root = tmpdir.join('db')
-    db.save(db_root, storage_format='csv')
+    db_root = tmpdir.join("db")
+    db.save(db_root, storage_format="csv")
     db_new = audformat.Database.load(db_root)
-    assert db_new['misc'].levels[name] == expected_audformat_dtype
-    assert db_new['misc'].index.dtype == expected_pandas_dtype
+    assert db_new["misc"].levels[name] == expected_audformat_dtype
+    assert db_new["misc"].index.dtype == expected_pandas_dtype
 
 
 def test_drop_and_pick_index():
-
-    table_id = 'misc'
+    table_id = "misc"
 
     # drop and pick with pd.Index
 
@@ -913,13 +905,13 @@ def test_drop_and_pick_index():
         [pytest.DB[table_id].index[:2].to_list()],
         names=[pytest.DB[table_id].index.name],
     )
-    index = audformat.utils.set_index_dtypes(index, 'string')
+    index = audformat.utils.set_index_dtypes(index, "string")
     df_pick = pytest.DB[table_id].pick_index(index).get()
     index = pd.MultiIndex.from_arrays(
         [pytest.DB[table_id].index[2:].to_list()],
         names=[pytest.DB[table_id].index.name],
     )
-    index = audformat.utils.set_index_dtypes(index, 'string')
+    index = audformat.utils.set_index_dtypes(index, "string")
     df_drop = pytest.DB[table_id].drop_index(index).get()
 
     assert len(df_pick) == len(df_drop) == 2
@@ -927,109 +919,102 @@ def test_drop_and_pick_index():
 
     # invalid index
 
-    index = pytest.DB['segments'].index[:2]
+    index = pytest.DB["segments"].index[:2]
     with pytest.raises(
         ValueError,
-        match='Cannot drop',
+        match="Cannot drop",
     ):
         pytest.DB[table_id].drop_index(index).get()
     with pytest.raises(
         ValueError,
-        match='Cannot pick',
+        match="Cannot pick",
     ):
         pytest.DB[table_id].pick_index(index).get()
 
 
 def test_drop_extend_and_pick_index_order():
-
     # Ensure order of index is preserved.
-    index = pd.Index([4, 3, 2, 1], name='idx')
+    index = pd.Index([4, 3, 2, 1], name="idx")
     table = audformat.MiscTable(index)
     # pick
-    new_table = table.pick_index(
-        pd.Index([1, 2], name='idx')
-    )
+    new_table = table.pick_index(pd.Index([1, 2], name="idx"))
     pd.testing.assert_index_equal(
         new_table.index,
-        pd.Index([2, 1], dtype='Int64', name='idx'),
+        pd.Index([2, 1], dtype="Int64", name="idx"),
     )
     # extend
-    new_table = table.extend_index(
-        pd.Index([5], name='idx')
-    )
+    new_table = table.extend_index(pd.Index([5], name="idx"))
     pd.testing.assert_index_equal(
         new_table.index,
-        pd.Index([4, 3, 2, 1, 5], dtype='Int64', name='idx'),
+        pd.Index([4, 3, 2, 1, 5], dtype="Int64", name="idx"),
     )
     # drop
-    new_table = table.drop_index(
-        pd.Index([1, 2], name='idx')
-    )
+    new_table = table.drop_index(pd.Index([1, 2], name="idx"))
     pd.testing.assert_index_equal(
         new_table.index,
-        pd.Index([4, 3], dtype='Int64', name='idx'),
+        pd.Index([4, 3], dtype="Int64", name="idx"),
     )
 
 
 @pytest.mark.parametrize(
-    'table, index, expected',
+    "table, index, expected",
     [
         # table and index empty
         (
-            create_misc_table(pd.Index([], name='idx')),
-            pd.Index([], name='idx'),
-            pd.Index([], name='idx'),
+            create_misc_table(pd.Index([], name="idx")),
+            pd.Index([], name="idx"),
+            pd.Index([], name="idx"),
         ),
         # table empty
         (
-            create_misc_table(pd.Index([], name='idx')),
-            pd.Index(['a', 'b'], name='idx'),
-            pd.Index([], name='idx'),
+            create_misc_table(pd.Index([], name="idx")),
+            pd.Index(["a", "b"], name="idx"),
+            pd.Index([], name="idx"),
         ),
         # index empty
         (
-            create_misc_table(pd.Index(['a', 'b'], name='idx')),
-            pd.Index([], name='idx'),
-            pd.Index(['a', 'b'], name='idx'),
+            create_misc_table(pd.Index(["a", "b"], name="idx")),
+            pd.Index([], name="idx"),
+            pd.Index(["a", "b"], name="idx"),
         ),
         # index and table identical
         (
-            create_misc_table(pd.Index(['a', 'b'], name='idx')),
-            pd.Index(['b', 'a'], name='idx'),
-            pd.Index([], name='idx'),
+            create_misc_table(pd.Index(["a", "b"], name="idx")),
+            pd.Index(["b", "a"], name="idx"),
+            pd.Index([], name="idx"),
         ),
         # index within table
         (
-            create_misc_table(pd.Index(['a', 'b'], name='idx')),
-            pd.Index(['b'], name='idx'),
-            pd.Index(['a'], name='idx'),
+            create_misc_table(pd.Index(["a", "b"], name="idx")),
+            pd.Index(["b"], name="idx"),
+            pd.Index(["a"], name="idx"),
         ),
         # table within index
         (
-            create_misc_table(pd.Index(['b'], name='idx')),
-            pd.Index(['a', 'b'], name='idx'),
-            pd.Index([], name='idx'),
+            create_misc_table(pd.Index(["b"], name="idx")),
+            pd.Index(["a", "b"], name="idx"),
+            pd.Index([], name="idx"),
         ),
         # index and table overlap
         (
-            create_misc_table(pd.Index(['a', 'b'], name='idx')),
-            pd.Index(['b', 'c'], name='idx'),
-            pd.Index(['a'], name='idx'),
+            create_misc_table(pd.Index(["a", "b"], name="idx")),
+            pd.Index(["b", "c"], name="idx"),
+            pd.Index(["a"], name="idx"),
         ),
         # index are not alike
         pytest.param(
-            create_misc_table(pd.Index([0, 1], name='idx1')),
-            pd.Index([0, 1], name='idx2'),
+            create_misc_table(pd.Index([0, 1], name="idx1")),
+            pd.Index([0, 1], name="idx2"),
             None,
             marks=pytest.mark.xfail(raises=ValueError),
         ),
         pytest.param(
-            create_misc_table(pd.Index([0, 1], name='idx')),
-            pd.Index(['0', '1'], name='idx'),
+            create_misc_table(pd.Index([0, 1], name="idx")),
+            pd.Index(["0", "1"], name="idx"),
             None,
             marks=pytest.mark.xfail(raises=ValueError),
         ),
-    ]
+    ],
 )
 def test_drop_index(table, index, expected):
     index_org = table.index.copy()
@@ -1041,88 +1026,87 @@ def test_drop_index(table, index, expected):
 
 
 def test_extend_index():
-
     db = audformat.testing.create_db(minimal=True)
-    db.schemes['scheme'] = audformat.Scheme()
+    db.schemes["scheme"] = audformat.Scheme()
 
     # empty and invalid
 
-    db['misc'] = audformat.MiscTable(pd.Index([], name='idx'))
-    db['misc'].extend_index(pd.Index([], name='idx'))
-    assert db['misc'].get().empty
+    db["misc"] = audformat.MiscTable(pd.Index([], name="idx"))
+    db["misc"].extend_index(pd.Index([], name="idx"))
+    assert db["misc"].get().empty
     with pytest.raises(
         ValueError,
-        match='Cannot extend',
+        match="Cannot extend",
     ):
-        db['misc'].extend_index(pd.Index([], name='other'))
+        db["misc"].extend_index(pd.Index([], name="other"))
 
-    db.drop_tables('misc')
+    db.drop_tables("misc")
 
     # extend with pd.Index
 
-    db['misc'] = audformat.MiscTable(pd.Index([], name='idx'))
-    db['misc']['columns'] = audformat.Column(scheme_id='scheme')
-    db['misc'].extend_index(
-        pd.Index(['1', '2'], name='idx'),
-        fill_values='a',
+    db["misc"] = audformat.MiscTable(pd.Index([], name="idx"))
+    db["misc"]["columns"] = audformat.Column(scheme_id="scheme")
+    db["misc"].extend_index(
+        pd.Index(["1", "2"], name="idx"),
+        fill_values="a",
         inplace=True,
     )
     np.testing.assert_equal(
-        db['misc']['columns'].get().values,
-        np.array(['a', 'a']),
+        db["misc"]["columns"].get().values,
+        np.array(["a", "a"]),
     )
-    index = pd.Index(['1', '3'], name='idx')
-    db['misc'].extend_index(
+    index = pd.Index(["1", "3"], name="idx")
+    db["misc"].extend_index(
         index,
-        fill_values='b',
+        fill_values="b",
         inplace=True,
     )
     np.testing.assert_equal(
-        db['misc']['columns'].get().values,
-        np.array(['a', 'a', 'b']),
+        db["misc"]["columns"].get().values,
+        np.array(["a", "a", "b"]),
     )
 
     # extend with pd.MultiIndex
 
-    index = pd.MultiIndex.from_arrays([['1', '4']], names=['idx'])
-    db['misc'].extend_index(
+    index = pd.MultiIndex.from_arrays([["1", "4"]], names=["idx"])
+    db["misc"].extend_index(
         index,
-        fill_values='b',
+        fill_values="b",
         inplace=True,
     )
     np.testing.assert_equal(
-        db['misc']['columns'].get().values,
-        np.array(['a', 'a', 'b', 'b']),
+        db["misc"]["columns"].get().values,
+        np.array(["a", "a", "b", "b"]),
     )
 
-    db.drop_tables('misc')
+    db.drop_tables("misc")
 
 
 @pytest.mark.parametrize(
-    'table, column, expected',
+    "table, column, expected",
     [
         (
-            pytest.DB['misc'],
-            'int',
-            pytest.DB['misc'].df['int'],
+            pytest.DB["misc"],
+            "int",
+            pytest.DB["misc"].df["int"],
         ),
-    ]
+    ],
 )
 def test_get_column(table, column, expected):
     pd.testing.assert_series_equal(table[column].get(), expected)
 
 
 @pytest.mark.parametrize(
-    'index',
+    "index",
     [
-        pd.Index([], name='idx'),
+        pd.Index([], name="idx"),
         pd.MultiIndex.from_tuples(
             [
-                ('a', 0),
-                ('b', 1),
-                ('c', 2),
+                ("a", 0),
+                ("b", 1),
+                ("c", 2),
             ],
-            names=['idx1', 'idx2'],
+            names=["idx1", "idx2"],
         ),
         # invalid level names
         pytest.param(
@@ -1130,48 +1114,48 @@ def test_get_column(table, column, expected):
             marks=pytest.mark.xfail(raises=ValueError),
         ),
         pytest.param(
-            pd.Index([], name=''),
+            pd.Index([], name=""),
             marks=pytest.mark.xfail(raises=ValueError),
         ),
         pytest.param(
             pd.MultiIndex.from_tuples(
                 [
-                    ('a', 0),
-                    ('b', 1),
-                    ('c', 2),
+                    ("a", 0),
+                    ("b", 1),
+                    ("c", 2),
                 ],
-                names=['idx', 'idx'],
+                names=["idx", "idx"],
             ),
             marks=pytest.mark.xfail(raises=ValueError),
         ),
-    ]
+    ],
 )
 def test_level_names(index):
     audformat.MiscTable(index)
 
 
 @pytest.mark.parametrize(
-    'index, columns',
+    "index, columns",
     [
         (
-            pd.Index([], name='idx'),
-            ['column'],
+            pd.Index([], name="idx"),
+            ["column"],
         ),
         (
-            pd.MultiIndex([[], []], [[], []], names=['idx1', 'idx2']),
-            ['column'],
+            pd.MultiIndex([[], []], [[], []], names=["idx1", "idx2"]),
+            ["column"],
         ),
         pytest.param(
-            pd.Index([], name='idx'),
-            ['idx'],
+            pd.Index([], name="idx"),
+            ["idx"],
             marks=pytest.mark.xfail(raises=ValueError),
         ),
         pytest.param(
-            pd.MultiIndex([[], []], [[], []], names=['idx1', 'idx2']),
-            ['column', 'idx2'],
+            pd.MultiIndex([[], []], [[], []], names=["idx1", "idx2"]),
+            ["column", "idx2"],
             marks=pytest.mark.xfail(raises=ValueError),
         ),
-    ]
+    ],
 )
 def test_level_and_column_names(index, columns):
     misc = audformat.MiscTable(index)
@@ -1186,86 +1170,86 @@ def test_load_old_pickle(tmpdir):
     # as there was no MiscTable available.
 
     # Create PKL file containing strings as object
-    y = pd.Series(['c'], dtype='object', name='column')
-    index = pd.Index(['i'], dtype='object', name='idx')
+    y = pd.Series(["c"], dtype="object", name="column")
+    index = pd.Index(["i"], dtype="object", name="idx")
 
     db = audformat.testing.create_db(minimal=True)
-    db['misc'] = audformat.MiscTable(index)
-    db.schemes['column'] = audformat.Scheme(audformat.define.DataType.OBJECT)
-    db['misc']['column'] = audformat.Column(scheme_id='column')
-    db['misc']['column'].set(y.values)
-    db_root = tmpdir.join('db')
-    db.save(db_root, storage_format='pkl')
+    db["misc"] = audformat.MiscTable(index)
+    db.schemes["column"] = audformat.Scheme(audformat.define.DataType.OBJECT)
+    db["misc"]["column"] = audformat.Column(scheme_id="column")
+    db["misc"]["column"].set(y.values)
+    db_root = tmpdir.join("db")
+    db.save(db_root, storage_format="pkl")
 
     # Change scheme dtype to string and store header again
-    db.schemes['column'] = audformat.Scheme(audformat.define.DataType.STRING)
+    db.schemes["column"] = audformat.Scheme(audformat.define.DataType.STRING)
     db.save(db_root, header_only=True)
 
     # Load and check that dtype is string
     db_new = audformat.Database.load(db_root)
-    assert db_new.schemes['column'].dtype == audformat.define.DataType.STRING
-    assert db_new['misc'].df['column'].dtype == 'string'
+    assert db_new.schemes["column"].dtype == audformat.define.DataType.STRING
+    assert db_new["misc"].df["column"].dtype == "string"
 
 
 @pytest.mark.parametrize(
-    'table, index, expected',
+    "table, index, expected",
     [
         # table and index empty
         (
-            create_misc_table(pd.Index([], name='idx')),
-            pd.Index([], name='idx'),
-            pd.Index([], name='idx'),
+            create_misc_table(pd.Index([], name="idx")),
+            pd.Index([], name="idx"),
+            pd.Index([], name="idx"),
         ),
         # table empty
         (
-            create_misc_table(pd.Index([], name='idx')),
-            pd.Index(['a', 'b'], name='idx'),
-            pd.Index([], name='idx'),
+            create_misc_table(pd.Index([], name="idx")),
+            pd.Index(["a", "b"], name="idx"),
+            pd.Index([], name="idx"),
         ),
         # index empty
         (
-            create_misc_table(pd.Index(['a', 'b'], name='idx')),
-            pd.Index([], name='idx'),
-            pd.Index([], name='idx'),
+            create_misc_table(pd.Index(["a", "b"], name="idx")),
+            pd.Index([], name="idx"),
+            pd.Index([], name="idx"),
         ),
         # index and table identical
         (
-            create_misc_table(pd.Index(['a', 'b'], name='idx')),
-            pd.Index(['b', 'a'], name='idx'),
-            pd.Index(['a', 'b'], name='idx'),
+            create_misc_table(pd.Index(["a", "b"], name="idx")),
+            pd.Index(["b", "a"], name="idx"),
+            pd.Index(["a", "b"], name="idx"),
         ),
         # index within table
         (
-            create_misc_table(pd.Index(['a', 'b'], name='idx')),
-            pd.Index(['b'], name='idx'),
-            pd.Index(['b'], name='idx'),
+            create_misc_table(pd.Index(["a", "b"], name="idx")),
+            pd.Index(["b"], name="idx"),
+            pd.Index(["b"], name="idx"),
         ),
         # table within index
         (
-            create_misc_table(pd.Index(['b'], name='idx')),
-            pd.Index(['a', 'b'], name='idx'),
-            pd.Index(['b'], name='idx'),
+            create_misc_table(pd.Index(["b"], name="idx")),
+            pd.Index(["a", "b"], name="idx"),
+            pd.Index(["b"], name="idx"),
         ),
         # index and table overlap
         (
-            create_misc_table(pd.Index(['a', 'b'], name='idx')),
-            pd.Index(['b', 'c'], name='idx'),
-            pd.Index(['b'], name='idx'),
+            create_misc_table(pd.Index(["a", "b"], name="idx")),
+            pd.Index(["b", "c"], name="idx"),
+            pd.Index(["b"], name="idx"),
         ),
         # index are not alike
         pytest.param(
-            create_misc_table(pd.Index([0, 1], name='idx1')),
-            pd.Index([0, 1], name='idx2'),
+            create_misc_table(pd.Index([0, 1], name="idx1")),
+            pd.Index([0, 1], name="idx2"),
             None,
             marks=pytest.mark.xfail(raises=ValueError),
         ),
         pytest.param(
-            create_misc_table(pd.Index([0, 1], name='idx')),
-            pd.Index(['0', '1'], name='idx'),
+            create_misc_table(pd.Index([0, 1], name="idx")),
+            pd.Index(["0", "1"], name="idx"),
             None,
             marks=pytest.mark.xfail(raises=ValueError),
         ),
-    ]
+    ],
 )
 def test_pick_index(table, index, expected):
     index_org = table.index.copy()
@@ -1277,7 +1261,7 @@ def test_pick_index(table, index, expected):
 
 
 @pytest.mark.parametrize(
-    'table, overwrite, others',
+    "table, overwrite, others",
     [
         # empty
         (
@@ -1294,45 +1278,45 @@ def test_pick_index(table, index, expected):
         (
             create_db_misc_table(
                 pd.Series(
-                    [1., 2.],
-                    index=pd.Index(['a', 'b'], name='idx'),
+                    [1.0, 2.0],
+                    index=pd.Index(["a", "b"], name="idx"),
                 )
             ),
             False,
             create_db_misc_table(
                 pd.Series(
-                    [2., 3.],  # ok, value do match
-                    index=pd.Index(['b', 'c'], name='idx'),
+                    [2.0, 3.0],  # ok, value do match
+                    index=pd.Index(["b", "c"], name="idx"),
                 )
             ),
         ),
         (
             create_db_misc_table(
                 pd.Series(
-                    [1., 2.],
-                    index=pd.Index(['a', 'b'], name='idx'),
+                    [1.0, 2.0],
+                    index=pd.Index(["a", "b"], name="idx"),
                 )
             ),
             False,
             create_db_misc_table(
                 pd.Series(
-                    [np.nan, 3.],  # ok, value do match
-                    index=pd.Index(['b', 'c'], name='idx'),
+                    [np.nan, 3.0],  # ok, value do match
+                    index=pd.Index(["b", "c"], name="idx"),
                 )
             ),
         ),
         pytest.param(
             create_db_misc_table(
                 pd.Series(
-                    [1., 2.],
-                    index=pd.Index(['a', 'b'], name='idx'),
+                    [1.0, 2.0],
+                    index=pd.Index(["a", "b"], name="idx"),
                 )
             ),
             False,
             create_db_misc_table(
                 pd.Series(
-                    [99., 3.],  # error, value do not match
-                    index=pd.Index(['b', 'c'], name='idx'),
+                    [99.0, 3.0],  # error, value do not match
+                    index=pd.Index(["b", "c"], name="idx"),
                 )
             ),
             marks=pytest.mark.xfail(raises=ValueError),
@@ -1340,15 +1324,15 @@ def test_pick_index(table, index, expected):
         (
             create_db_misc_table(
                 pd.Series(
-                    [1., 2.],
-                    index=pd.Index(['a', 'b'], name='idx'),
+                    [1.0, 2.0],
+                    index=pd.Index(["a", "b"], name="idx"),
                 )
             ),
             True,
             create_db_misc_table(
                 pd.Series(
-                    [99., 3.],  # ok, will be overwritten
-                    index=pd.Index(['a', 'b'], name='idx'),
+                    [99.0, 3.0],  # ok, will be overwritten
+                    index=pd.Index(["a", "b"], name="idx"),
                 )
             ),
         ),
@@ -1356,25 +1340,25 @@ def test_pick_index(table, index, expected):
         (
             create_db_misc_table(
                 pd.Series(
-                    [1., 2.],
-                    index=pd.Index(['a', 'b'], name='idx'),
-                    name='c1',
+                    [1.0, 2.0],
+                    index=pd.Index(["a", "b"], name="idx"),
+                    name="c1",
                 )
             ),
             False,
             [
                 create_db_misc_table(
                     pd.Series(
-                        ['a', 'b'],
-                        index=pd.Index(['b', 'c'], name='idx'),
-                        name='c2',
+                        ["a", "b"],
+                        index=pd.Index(["b", "c"], name="idx"),
+                        name="c2",
                     )
                 ),
                 create_db_misc_table(
                     pd.Series(
                         [1, 2],
-                        index=pd.Index(['b', 'c'], name='idx'),
-                        name='c3',
+                        index=pd.Index(["b", "c"], name="idx"),
+                        name="c3",
                     )
                 ),
             ],
@@ -1383,15 +1367,15 @@ def test_pick_index(table, index, expected):
         pytest.param(
             create_db_misc_table(
                 pd.Series(
-                    [1., 2.],
-                    index=pd.Index(['a', 'b'], name='idx'),
+                    [1.0, 2.0],
+                    index=pd.Index(["a", "b"], name="idx"),
                 )
             ),
             False,
             create_db_misc_table(  # same column, different scheme
                 pd.Series(
-                    ['a', 'b'],
-                    index=pd.Index(['a', 'b'], name='idx'),
+                    ["a", "b"],
+                    index=pd.Index(["a", "b"], name="idx"),
                 )
             ),
             marks=pytest.mark.xfail(raises=ValueError),
@@ -1399,15 +1383,15 @@ def test_pick_index(table, index, expected):
         pytest.param(
             create_db_misc_table(
                 pd.Series(
-                    [1., 2.],
-                    index=pd.Index(['a', 'b'], name='idx'),
+                    [1.0, 2.0],
+                    index=pd.Index(["a", "b"], name="idx"),
                 )
             ),
             False,
             create_misc_table(  # no scheme
                 pd.Series(
-                    [1., 2.],
-                    index=pd.Index(['a', 'b'], name='idx'),
+                    [1.0, 2.0],
+                    index=pd.Index(["a", "b"], name="idx"),
                 )
             ),
             marks=pytest.mark.xfail(raises=ValueError),
@@ -1415,20 +1399,20 @@ def test_pick_index(table, index, expected):
         pytest.param(
             create_db_misc_table(
                 pd.Series(
-                    [1., 2.],
-                    index=pd.Index(['a', 'b'], name='idx'),
-                    name='c1',
+                    [1.0, 2.0],
+                    index=pd.Index(["a", "b"], name="idx"),
+                    name="c1",
                 ),
-                scheme_id='scheme',
+                scheme_id="scheme",
             ),
             False,
             create_db_misc_table(
                 pd.Series(  # different scheme with same id
-                    ['a', 'b'],
-                    index=pd.Index(['a', 'b'], name='idx'),
-                    name='c2',
+                    ["a", "b"],
+                    index=pd.Index(["a", "b"], name="idx"),
+                    name="c2",
                 ),
-                scheme_id='scheme',
+                scheme_id="scheme",
             ),
             marks=pytest.mark.xfail(raises=ValueError),
         ),
@@ -1436,20 +1420,19 @@ def test_pick_index(table, index, expected):
         (
             create_db_misc_table(
                 pd.Series(
-                    index=pd.Index([], name='idx'),
-                    dtype='float',
-                    name='c1',
+                    index=pd.Index([], name="idx"),
+                    dtype="float",
+                    name="c1",
                 ),
             ),
             False,
             create_db_misc_table(
                 pd.Series(
-                    index=pd.Index([], name='idx'),
-                    dtype='float',
-                    name='c2',
+                    index=pd.Index([], name="idx"),
+                    dtype="float",
+                    name="c2",
                 ),
-                rater=audformat.Rater(
-                    audformat.define.RaterType.HUMAN),
+                rater=audformat.Rater(audformat.define.RaterType.HUMAN),
             ),
         ),
         # error: rater mismatch
@@ -1482,18 +1465,18 @@ def test_pick_index(table, index, expected):
         pytest.param(
             create_db_misc_table(
                 pd.Series(
-                    index=pd.Index([], name='idx'),
-                    dtype='float',
-                    name='c1',
+                    index=pd.Index([], name="idx"),
+                    dtype="float",
+                    name="c1",
                 ),
                 rater=audformat.Rater(audformat.define.RaterType.HUMAN),
             ),
             False,
             create_db_misc_table(
                 pd.Series(
-                    index=pd.Index([], name='idx'),
-                    dtype='float',
-                    name='c2',
+                    index=pd.Index([], name="idx"),
+                    dtype="float",
+                    name="c2",
                 ),
                 rater=audformat.Rater(audformat.define.RaterType.MACHINE),
             ),
@@ -1567,7 +1550,7 @@ def test_pick_index(table, index, expected):
         ),
         # error: not assigned to db
         pytest.param(
-            audformat.MiscTable(pd.Index([], name='idx')),
+            audformat.MiscTable(pd.Index([], name="idx")),
             False,
             [],
             marks=pytest.mark.xfail(raises=RuntimeError),
@@ -1576,8 +1559,8 @@ def test_pick_index(table, index, expected):
         pytest.param(
             create_db_misc_table(
                 pd.Series(
-                    index=pd.Index([], name='idx'),
-                    dtype='object',
+                    index=pd.Index([], name="idx"),
+                    dtype="object",
                 ),
             ),
             False,
@@ -1585,9 +1568,9 @@ def test_pick_index(table, index, expected):
                 pd.Series(
                     index=pd.MultiIndex.from_arrays(
                         [[], []],
-                        names=['idx1', 'idx2'],
+                        names=["idx1", "idx2"],
                     ),
-                    dtype='object',
+                    dtype="object",
                 )
             ),
             marks=pytest.mark.xfail(raises=ValueError),
@@ -1596,15 +1579,15 @@ def test_pick_index(table, index, expected):
         pytest.param(
             create_db_misc_table(
                 pd.Series(
-                    index=pd.Index([], name='idx1'),
-                    dtype='object',
+                    index=pd.Index([], name="idx1"),
+                    dtype="object",
                 ),
             ),
             False,
             create_db_misc_table(
                 pd.Series(
-                    index=pd.Index([], name='idx2'),
-                    dtype='object',
+                    index=pd.Index([], name="idx2"),
+                    dtype="object",
                 ),
             ),
             marks=pytest.mark.xfail(raises=ValueError),
@@ -1613,20 +1596,20 @@ def test_pick_index(table, index, expected):
         pytest.param(
             create_db_misc_table(
                 pd.Series(
-                    index=pd.Index([], dtype='int', name='idx'),
-                    dtype='object',
+                    index=pd.Index([], dtype="int", name="idx"),
+                    dtype="object",
                 ),
             ),
             False,
             create_db_misc_table(
                 pd.Series(
-                    index=pd.Index([], dtype='string', name='idx'),
-                    dtype='object',
+                    index=pd.Index([], dtype="string", name="idx"),
+                    dtype="object",
                 ),
             ),
             marks=pytest.mark.xfail(raises=ValueError),
         ),
-    ]
+    ],
 )
 def test_update(table, overwrite, others):
     df = table.get()

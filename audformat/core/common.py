@@ -42,16 +42,16 @@ class HeaderDict(OrderedDict):
         >>> HeaderDict()
 
         >>> d = HeaderDict()
-        >>> d['b'] = 1
-        >>> d['a'] = 0
+        >>> d["b"] = 1
+        >>> d["a"] = 0
         >>> d
         a:
           0
         b:
           1
         >>> d = HeaderDict(sort_by_key=False)
-        >>> d['b'] = 1
-        >>> d['a'] = 0
+        >>> d["b"] = 1
+        >>> d["a"] = 0
         >>> d
         b:
           1
@@ -60,20 +60,21 @@ class HeaderDict(OrderedDict):
         >>> HeaderDict(
         ...     get_callback=lambda key, value: value + value,
         ...     set_callback=lambda key, value: value.upper(),
-        ...     foo='bar',
+        ...     foo="bar",
         ... )
         foo:
           BARBAR
 
     """
+
     def __init__(
-            self,
-            *args,
-            sort_by_key: bool = True,
-            value_type: type = None,
-            get_callback: typing.Callable = None,
-            set_callback: typing.Callable = None,
-            **kwargs,
+        self,
+        *args,
+        sort_by_key: bool = True,
+        value_type: type = None,
+        get_callback: typing.Callable = None,
+        set_callback: typing.Callable = None,
+        **kwargs,
     ):
         self.sort_by_key = sort_by_key
         r"""Sort items by key"""
@@ -119,12 +120,11 @@ class HeaderDict(OrderedDict):
 
     def dump(self) -> str:
         if not self:
-            return ''
+            return ""
         else:
-            return '\n'.join(
+            return "\n".join(
                 [
-                    '{}:\n{}'.format(
-                        key, textwrap.indent(str(self[key]), '  '))
+                    "{}:\n{}".format(key, textwrap.indent(str(self[key]), "  "))
                     for key in self
                 ]
             )
@@ -162,10 +162,12 @@ class HeaderBase:
         meta: dictionary with meta fields
 
     """
+
     def __init__(
-            self, *,
-            description: str = None,
-            meta: dict = None,
+        self,
+        *,
+        description: str = None,
+        meta: dict = None,
     ):
         self.description = description
         r"""Description"""
@@ -178,7 +180,7 @@ class HeaderBase:
 
     @staticmethod
     def _value(value):
-        if type(value) is list:
+        if isinstance(value, list):
             return [HeaderBase._value(v) for v in value]
         elif dict in inspect.getmro(value.__class__):
             d = OrderedDict()
@@ -192,9 +194,9 @@ class HeaderBase:
 
     @staticmethod
     def _dict_filter(key, value) -> bool:
-        if key == 'meta':
+        if key == "meta":
             return False
-        if key.startswith('_'):
+        if key.startswith("_"):
             return False
         if value is None:
             return False
@@ -219,9 +221,9 @@ class HeaderBase:
         return d
 
     def from_dict(
-            self,
-            d: dict,
-            ignore_keys: typing.Sequence[str] = None,
+        self,
+        d: dict,
+        ignore_keys: typing.Sequence[str] = None,
     ):
         r"""Deserialize object from dictionary.
 
@@ -233,7 +235,7 @@ class HeaderBase:
         for key, value in d.items():
             if ignore_keys and key in ignore_keys:
                 continue
-            if key in self.__dict__ and key != 'meta':
+            if key in self.__dict__ and key != "meta":
                 if self.__dict__[key] is not None:
                     assert isinstance(value, type(self.__dict__[key]))
                 self.__dict__[key] = value
@@ -241,9 +243,9 @@ class HeaderBase:
                 self.meta[key] = value
 
     def dump(
-            self,
-            stream=None,
-            indent: int = 2,
+        self,
+        stream=None,
+        indent: int = 2,
     ) -> str:
         r"""Serialize object to YAML.
 
@@ -256,13 +258,16 @@ class HeaderBase:
 
         """
         return yaml.dump(
-            self.to_dict(), stream=stream, default_flow_style=None,
-            indent=indent, allow_unicode=True,
+            self.to_dict(),
+            stream=stream,
+            default_flow_style=None,
+            indent=indent,
+            allow_unicode=True,
         )
 
     def __eq__(
-            self,
-            other: 'HeaderBase',
+        self,
+        other: "HeaderBase",
     ) -> bool:
         return self.dump() == other.dump()
 
@@ -271,14 +276,13 @@ class HeaderBase:
 
     def __repr__(self):
         s = self.dump()
-        return s[:-1] if s.endswith('\n') else s
+        return s[:-1] if s.endswith("\n") else s
 
     def __str__(self):
         return repr(self)
 
 
 class DefineBase:
-
     @classmethod
     def _assert_has_attribute_value(cls, value):
         valid_values = cls._attribute_values()
@@ -287,20 +291,19 @@ class DefineBase:
 
     @classmethod
     def _attribute_values(cls):
-        attributes = inspect.getmembers(
-            cls, lambda x: not inspect.isroutine(x)
-        )
+        attributes = inspect.getmembers(cls, lambda x: not inspect.isroutine(x))
         return sorted(
             [
-                a[1] for a in attributes
-                if not (a[0].startswith('__') and a[0].endswith('__'))
+                a[1]
+                for a in attributes
+                if not (a[0].startswith("__") and a[0].endswith("__"))
             ]
         )
 
 
 def format_series_as_html():  # pragma: no cover (only used in documentation)
-    setattr(pd.Series, '_repr_html_', series_to_html)
-    setattr(pd.Index, '_repr_html_', index_to_html)
+    setattr(pd.Series, "_repr_html_", series_to_html)
+    setattr(pd.Index, "_repr_html_", index_to_html)
 
 
 def index_to_html(self):  # pragma: no cover
@@ -312,11 +315,11 @@ def index_to_html(self):  # pragma: no cover
 def is_relative_path(path):
     return not (
         os.path.isabs(path)
-        or '\\' in path
-        or path.startswith('./')
-        or '/./' in path
-        or path.startswith('../')
-        or '/../' in path
+        or "\\" in path
+        or path.startswith("./")
+        or "/./" in path
+        or path.startswith("../")
+        or "/../" in path
     )
 
 
@@ -331,33 +334,25 @@ def to_audformat_dtype(dtype: typing.Union[str, typing.Type]) -> str:
     if pd.api.types.is_bool_dtype(dtype):
         return define.DataType.BOOL
     # date
-    elif (
-            pd.api.types.is_datetime64_dtype(dtype)
-            or dtype in ['datetime', 'date']
-    ):
+    elif pd.api.types.is_datetime64_dtype(dtype) or dtype in ["datetime", "date"]:
         return define.DataType.DATE
     # float
-    elif (
-            pd.api.types.is_float_dtype(dtype)
-            or dtype in ['floating', 'decimal', 'mixed-integer-float']
-    ):
+    elif pd.api.types.is_float_dtype(dtype) or dtype in [
+        "floating",
+        "decimal",
+        "mixed-integer-float",
+    ]:
         return define.DataType.FLOAT
     # int
-    elif (
-            pd.api.types.is_integer_dtype(dtype)
-            or dtype == 'integer'
-    ):
+    elif pd.api.types.is_integer_dtype(dtype) or dtype == "integer":
         return define.DataType.INTEGER
     # time
-    elif (
-            pd.api.types.is_timedelta64_dtype(dtype)
-            or dtype in ['timedelta', 'time']
-    ):
+    elif pd.api.types.is_timedelta64_dtype(dtype) or dtype in ["timedelta", "time"]:
         return define.DataType.TIME
     # string
     # We cannot use pd.api.types.is_string_dtype()
     # as it returns `True` for list, object, etc.
-    elif dtype in [str, 'str', 'string']:
+    elif dtype in [str, "str", "string"]:
         return define.DataType.STRING
     # object
     else:
@@ -367,16 +362,16 @@ def to_audformat_dtype(dtype: typing.Union[str, typing.Type]) -> str:
 def to_pandas_dtype(dtype: str) -> str:
     r"""Convert audformat to pandas dtype."""
     if dtype == define.DataType.BOOL:
-        return 'boolean'
+        return "boolean"
     elif dtype == define.DataType.DATE:
-        return 'datetime64[ns]'
+        return "datetime64[ns]"
     elif dtype == define.DataType.FLOAT:
-        return 'float'
+        return "float"
     elif dtype == define.DataType.INTEGER:
-        return 'Int64'
+        return "Int64"
     elif dtype == define.DataType.OBJECT:
-        return 'object'
+        return "object"
     elif dtype == define.DataType.STRING:
-        return 'string'
+        return "string"
     elif dtype == define.DataType.TIME:
-        return 'timedelta64[ns]'
+        return "timedelta64[ns]"

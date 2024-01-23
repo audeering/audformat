@@ -26,19 +26,19 @@ from audformat.core.scheme import Scheme
 
 # Exclude examples that return a path containing `\`
 # from doctest on Windows
-if platform.system() in ['Windows']:  # pragma: no cover
+if platform.system() in ["Windows"]:  # pragma: no cover
     __doctest_skip__ = [
-        'expand_file_path',
-        'to_filewise_index',
+        "expand_file_path",
+        "to_filewise_index",
     ]
 
 
 def concat(
-        objs: typing.Sequence[typing.Union[pd.Series, pd.DataFrame]],
-        *,
-        overwrite: bool = False,
-        aggregate_function: typing.Callable[[pd.Series], typing.Any] = None,
-        aggregate_strategy: str = 'mismatch',
+    objs: typing.Sequence[typing.Union[pd.Series, pd.DataFrame]],
+    *,
+    overwrite: bool = False,
+    aggregate_function: typing.Callable[[pd.Series], typing.Any] = None,
+    aggregate_strategy: str = "mismatch",
 ) -> typing.Union[pd.Series, pd.DataFrame]:
     r"""Concatenate objects.
 
@@ -120,8 +120,8 @@ def concat(
         dtype: Int64
         >>> concat(
         ...     [
-        ...         pd.Series([0], index=pd.Index([0]), name='col1'),
-        ...         pd.Series([1], index=pd.Index([0]), name='col2'),
+        ...         pd.Series([0], index=pd.Index([0]), name="col1"),
+        ...         pd.Series([1], index=pd.Index([0]), name="col2"),
         ...     ]
         ... )
            col1  col2
@@ -152,7 +152,7 @@ def concat(
         ...         pd.Series([1, 1], index=pd.Index([0, 1])),
         ...     ],
         ...     aggregate_function=np.sum,
-        ...     aggregate_strategy='overlap',
+        ...     aggregate_strategy="overlap",
         ... )
         0    2
         1    2
@@ -160,22 +160,22 @@ def concat(
         >>> concat(
         ...     [
         ...         pd.Series(
-        ...             [0., 1.],
+        ...             [0.0, 1.0],
         ...             index=pd.Index(
         ...                 [0, 1],
-        ...                 dtype='int',
-        ...                 name='idx',
+        ...                 dtype="int",
+        ...                 name="idx",
         ...             ),
-        ...             name='float',
+        ...             name="float",
         ...         ),
         ...         pd.DataFrame(
         ...             {
-        ...                 'float': [np.nan, 2.],
-        ...                 'string': ['a', 'b'],
+        ...                 "float": [np.nan, 2.0],
+        ...                 "string": ["a", "b"],
         ...             },
         ...             index=pd.MultiIndex.from_arrays(
         ...                 [[0, 2]],
-        ...                 names=['idx'],
+        ...                 names=["idx"],
         ...             ),
         ...         ),
         ...     ]
@@ -188,16 +188,16 @@ def concat(
         >>> concat(
         ...     [
         ...         pd.Series(
-        ...             [0., 1.],
-        ...             index=filewise_index(['f1', 'f2']),
-        ...             name='float',
+        ...             [0.0, 1.0],
+        ...             index=filewise_index(["f1", "f2"]),
+        ...             name="float",
         ...         ),
         ...         pd.DataFrame(
         ...             {
-        ...                 'float': [1., 2.],
-        ...                 'string': ['a', 'b'],
+        ...                 "float": [1.0, 2.0],
+        ...                 "string": ["a", "b"],
         ...             },
-        ...             index=segmented_index(['f2', 'f3']),
+        ...             index=segmented_index(["f2", "f3"]),
         ...         ),
         ...     ]
         ... )
@@ -209,16 +209,16 @@ def concat(
         >>> concat(
         ...     [
         ...         pd.Series(
-        ...             [0., 0.],
-        ...             index=filewise_index(['f1', 'f2']),
-        ...             name='float',
+        ...             [0.0, 0.0],
+        ...             index=filewise_index(["f1", "f2"]),
+        ...             name="float",
         ...         ),
         ...         pd.DataFrame(
         ...             {
-        ...                 'float': [1., 2.],
-        ...                 'string': ['a', 'b'],
+        ...                 "float": [1.0, 2.0],
+        ...                 "string": ["a", "b"],
         ...             },
-        ...             index=segmented_index(['f2', 'f3']),
+        ...             index=segmented_index(["f2", "f3"]),
         ...         ),
         ...     ],
         ...     overwrite=True,
@@ -230,15 +230,14 @@ def concat(
         f3   0 days NaT    2.0      b
 
     """
-    allowed_values = ['overlap', 'mismatch']
+    allowed_values = ["overlap", "mismatch"]
     if aggregate_strategy not in allowed_values:
         raise ValueError(
-            "aggregate_strategy needs to be one of: "
-            f"{', '.join(allowed_values)}"
+            "aggregate_strategy needs to be one of: " f"{', '.join(allowed_values)}"
         )
 
     if not objs:
-        return pd.Series([], index=pd.Index([]), dtype='object')
+        return pd.Series([], index=pd.Index([]), dtype="object")
 
     if len(objs) == 1:
         return objs[0]
@@ -265,18 +264,16 @@ def concat(
     columns_reindex = {}
     overlapping_values = {}
     for column in columns:
-
         # if we already have a column with that name, we have to merge them
         if column.name in columns_reindex:
-
             dtype_1 = columns_reindex[column.name].dtype
             dtype_2 = column.dtype
 
             # assert same dtype
             if not _is_same_dtype(dtype_1, dtype_2):
-                if dtype_1.name == 'category':
+                if dtype_1.name == "category":
                     dtype_1 = repr(dtype_1)
-                if dtype_2.name == 'category':
+                if dtype_2.name == "category":
                     dtype_2 = repr(dtype_2)
                 raise ValueError(
                     "Found two columns with name "
@@ -288,9 +285,9 @@ def concat(
                 )
 
             # Fix changed handling of float32/float64 in pandas>=1.3
-            if 'float64' in [dtype_1, dtype_2]:
-                columns_reindex[column.name] = (
-                    columns_reindex[column.name].astype('float64')
+            if "float64" in [dtype_1, dtype_2]:
+                columns_reindex[column.name] = columns_reindex[column.name].astype(
+                    "float64"
                 )
 
             # Handle overlapping values
@@ -300,9 +297,7 @@ def concat(
                     """Collect overlap for aggregate function."""
                     if column.name not in overlapping_values:
                         overlapping_values[column.name] = []
-                    overlapping_values[column.name].append(
-                        column.loc[index]
-                    )
+                    overlapping_values[column.name].append(column.loc[index])
                     column = column.loc[~column.index.isin(index)]
                     column = column.dropna()
                     return column, overlapping_values
@@ -316,12 +311,11 @@ def concat(
                 )
                 # We use len() here as index.empty takes a very long time
                 if len(intersection) > 0:
-
                     # Apply aggregate function
                     # to all overlapping entries
                     if (
-                            aggregate_function is not None
-                            and aggregate_strategy == 'overlap'
+                        aggregate_function is not None
+                        and aggregate_strategy == "overlap"
                     ):
                         column, overlapping_values = collect_overlap(
                             overlapping_values,
@@ -334,23 +328,20 @@ def concat(
                     # Find data that differ and cannot be joined
                     combine = pd.DataFrame(
                         {
-                            'left':
-                            columns_reindex[column.name][intersection],
-                            'right':
-                            column[intersection],
+                            "left": columns_reindex[column.name][intersection],
+                            "right": column[intersection],
                         }
                     )
                     combine.dropna(inplace=True)
-                    differ = combine['left'] != combine['right']
+                    differ = combine["left"] != combine["right"]
 
                     if np.any(differ):
-
                         # Apply aggregate function
                         # to overlapping entries
                         # that do not match in value
                         if (
-                                aggregate_function is not None
-                                and aggregate_strategy == 'mismatch'
+                            aggregate_function is not None
+                            and aggregate_strategy == "mismatch"
                         ):
                             column, overlapping_values = collect_overlap(
                                 overlapping_values,
@@ -365,9 +356,7 @@ def concat(
                             max_display = 10
                             overlap = combine[differ]
                             msg_overlap = str(overlap[:max_display])
-                            msg_tail = '\n...' \
-                                if len(overlap) > max_display \
-                                else ''
+                            msg_tail = "\n..." if len(overlap) > max_display else ""
                             raise ValueError(
                                 "Found overlapping data in column "
                                 f"'{column.name}':\n"
@@ -379,9 +368,9 @@ def concat(
         else:
             # Adjust dtype and initialize empty column
             if pd.api.types.is_integer_dtype(column.dtype):
-                dtype = 'Int64'
+                dtype = "Int64"
             elif pd.api.types.is_bool_dtype(column.dtype):
-                dtype = 'boolean'
+                dtype = "boolean"
             else:
                 dtype = column.dtype
             columns_reindex[column.name] = pd.Series(
@@ -396,15 +385,11 @@ def concat(
     #  when no aggregation function is provided)
     if len(overlapping_values) > 0:
         for column in overlapping_values:
-
             # Add data of first column
             # overlapping with all other columns
-            union_index = union(
-                [y.index for y in overlapping_values[column]]
-            )
+            union_index = union([y.index for y in overlapping_values[column]])
             overlapping_values[column].insert(
-                0,
-                columns_reindex[column].loc[union_index]
+                0, columns_reindex[column].loc[union_index]
             )
 
             # Convert list of overlapping data series to data frame
@@ -421,9 +406,7 @@ def concat(
             try:
                 y = y.astype(dtype)
             except (TypeError, ValueError):
-                columns_reindex[column] = columns_reindex[column].astype(
-                    y.dtype
-                )
+                columns_reindex[column] = columns_reindex[column].astype(y.dtype)
             columns_reindex[column].loc[y.index] = y
 
     # Use `None` to force `{}` return the correct index, see
@@ -437,7 +420,7 @@ def concat(
 
 
 def difference(
-        objs: typing.Sequence[typing.Union[pd.Index]],
+    objs: typing.Sequence[typing.Union[pd.Index]],
 ) -> pd.Index:
     r"""Difference of index objects.
 
@@ -485,33 +468,33 @@ def difference(
     Examples:
         >>> difference(
         ...     [
-        ...         pd.Index([1, 2, 3], name='idx'),
+        ...         pd.Index([1, 2, 3], name="idx"),
         ...     ]
         ... )
         Index([1, 2, 3], dtype='Int64', name='idx')
         >>> difference(
         ...     [
-        ...         pd.Index([0, 1], name='idx'),
-        ...         pd.Index([1, np.NaN], dtype='Int64', name='idx'),
+        ...         pd.Index([0, 1], name="idx"),
+        ...         pd.Index([1, np.NaN], dtype="Int64", name="idx"),
         ...     ]
         ... )
         Index([0, <NA>], dtype='Int64', name='idx')
         >>> difference(
         ...     [
-        ...         pd.Index([0, 1], name='idx'),
-        ...         pd.MultiIndex.from_arrays([[1, 2]], names=['idx']),
+        ...         pd.Index([0, 1], name="idx"),
+        ...         pd.MultiIndex.from_arrays([[1, 2]], names=["idx"]),
         ...     ]
         ... )
         Index([0, 2], dtype='Int64', name='idx')
         >>> difference(
         ...     [
         ...         pd.MultiIndex.from_arrays(
-        ...             [['a', 'b', 'c'], [0, 1, 2]],
-        ...             names=['idx1', 'idx2'],
+        ...             [["a", "b", "c"], [0, 1, 2]],
+        ...             names=["idx1", "idx2"],
         ...         ),
         ...         pd.MultiIndex.from_arrays(
-        ...             [['b', 'c'], [1, 3]],
-        ...             names=['idx1', 'idx2'],
+        ...             [["b", "c"], [1, 3]],
+        ...             names=["idx1", "idx2"],
         ...         ),
         ...     ]
         ... )
@@ -521,23 +504,23 @@ def difference(
                    names=['idx1', 'idx2'])
         >>> difference(
         ...     [
-        ...         filewise_index(['f1', 'f2', 'f3']),
-        ...         filewise_index(['f2', 'f3', 'f4']),
+        ...         filewise_index(["f1", "f2", "f3"]),
+        ...         filewise_index(["f2", "f3", "f4"]),
         ...     ]
         ... )
         Index(['f1', 'f4'], dtype='string', name='file')
         >>> difference(
         ...     [
-        ...         segmented_index(['f1'], [0], [1]),
-        ...         segmented_index(['f1', 'f2'], [0, 1], [1, 2]),
+        ...         segmented_index(["f1"], [0], [1]),
+        ...         segmented_index(["f1", "f2"], [0, 1], [1, 2]),
         ...     ]
         ... )
         MultiIndex([('f2', '0 days 00:00:01', '0 days 00:00:02')],
                    names=['file', 'start', 'end'])
         >>> difference(
         ...     [
-        ...         filewise_index(['f1', 'f2']),
-        ...         segmented_index(['f1', 'f2'], [0, 0], [pd.NaT, 1]),
+        ...         filewise_index(["f1", "f2"]),
+        ...         segmented_index(["f1", "f2"], [0, 0], [pd.NaT, 1]),
         ...     ]
         ... )
         MultiIndex([('f2', '0 days',               NaT),
@@ -570,11 +553,11 @@ def difference(
 
 
 def duration(
-        obj: typing.Union[pd.Index, pd.Series, pd.DataFrame],
-        *,
-        root: str = None,
-        num_workers: int = 1,
-        verbose: bool = False,
+    obj: typing.Union[pd.Index, pd.Series, pd.DataFrame],
+    *,
+    root: str = None,
+    num_workers: int = 1,
+    verbose: bool = False,
 ) -> pd.Timedelta:
     r"""Total duration of all entries present in the object.
 
@@ -607,7 +590,7 @@ def duration(
 
     Examples:
         >>> index = segmented_index(
-        ...     files=['a', 'b', 'c'],
+        ...     files=["a", "b", "c"],
         ...     starts=[0, 1, 3],
         ...     ends=[1, 2, 4],
         ... )
@@ -628,7 +611,7 @@ def duration(
 
     # We use len() here as index.empty takes a very long time
     if len(obj) == 0:
-        return pd.Timedelta(0, unit='s')
+        return pd.Timedelta(0, unit="s")
 
     starts = obj.get_level_values(define.IndexField.START)
     ends = obj.get_level_values(define.IndexField.END)
@@ -636,8 +619,8 @@ def duration(
 
 
 def expand_file_path(
-        index: pd.Index,
-        root: str,
+    index: pd.Index,
+    root: str,
 ) -> pd.Index:
     r"""Expand path in index with root.
 
@@ -660,9 +643,9 @@ def expand_file_path(
             :ref:`table specifications <data-tables:Tables>`
 
     Examples:
-        >>> expand_file_path(filewise_index(['f1', 'f2']), '/a')
+        >>> expand_file_path(filewise_index(["f1", "f2"]), "/a")
         Index(['/a/f1', '/a/f2'], dtype='string', name='file')
-        >>> expand_file_path(filewise_index(['f1', 'f2']), './a')
+        >>> expand_file_path(filewise_index(["f1", "f2"]), "./a")
         Index(['a/f1', 'a/f2'], dtype='string', name='file')
 
     """  # noqa: E501
@@ -680,7 +663,7 @@ def expand_file_path(
 
 
 def hash(
-        obj: typing.Union[pd.Index, pd.Series, pd.DataFrame],
+    obj: typing.Union[pd.Index, pd.Series, pd.DataFrame],
 ) -> str:
     r"""Create hash from object.
 
@@ -695,7 +678,7 @@ def hash(
         hash string
 
     Examples:
-        >>> index = filewise_index(['f1', 'f2'])
+        >>> index = filewise_index(["f1", "f2"])
         >>> hash(index)
         '-4231615416436839963'
         >>> y = pd.Series(0, index)
@@ -708,11 +691,11 @@ def hash(
     # across different pandas versions,
     # see
     # https://github.com/pandas-dev/pandas/issues/55452
-    return str(pd.util.hash_pandas_object(obj).astype('int64').sum())
+    return str(pd.util.hash_pandas_object(obj).astype("int64").sum())
 
 
 def index_has_overlap(
-        obj: typing.Union[pd.Index, pd.DataFrame, pd.Series],
+    obj: typing.Union[pd.Index, pd.DataFrame, pd.Series],
 ) -> bool:
     r"""Check if one or more segments in the index overlap.
 
@@ -726,21 +709,21 @@ def index_has_overlap(
         ``True`` if overlap is detected, otherwise ``False``
 
     Examples:
-        >>> index = filewise_index(['f1', 'f2'])
+        >>> index = filewise_index(["f1", "f2"])
         >>> index_has_overlap(index)
         False
         >>> index = segmented_index(
-        ...        ['f1', 'f2'],
-        ...        [0, 1],
-        ...        [2, 3],
-        ...    )
+        ...     ["f1", "f2"],
+        ...     [0, 1],
+        ...     [2, 3],
+        ... )
         >>> index_has_overlap(index)
         False
         >>> index = segmented_index(
-        ...        ['f1'] * 2,
-        ...        [0, 1],
-        ...        [2, 3],
-        ...    )
+        ...     ["f1"] * 2,
+        ...     [0, 1],
+        ...     [2, 3],
+        ... )
         >>> index_has_overlap(index)
         True
 
@@ -762,7 +745,7 @@ def index_has_overlap(
 
 
 def intersect(
-        objs: typing.Sequence[typing.Union[pd.Index]],
+    objs: typing.Sequence[typing.Union[pd.Index]],
 ) -> pd.Index:
     r"""Intersect index objects.
 
@@ -803,33 +786,33 @@ def intersect(
     Examples:
         >>> intersect(
         ...     [
-        ...         pd.Index([1, 2, 3], name='idx'),
+        ...         pd.Index([1, 2, 3], name="idx"),
         ...     ]
         ... )
         Index([], dtype='Int64', name='idx')
         >>> intersect(
         ...     [
-        ...         pd.Index([1, np.nan], dtype='Int64', name='idx'),
-        ...         pd.Index([1, 2, 3], name='idx'),
+        ...         pd.Index([1, np.nan], dtype="Int64", name="idx"),
+        ...         pd.Index([1, 2, 3], name="idx"),
         ...     ]
         ... )
         Index([1], dtype='Int64', name='idx')
         >>> intersect(
         ...     [
-        ...         pd.Index([0, 1], name='idx'),
-        ...         pd.MultiIndex.from_arrays([[1, 2]], names=['idx']),
+        ...         pd.Index([0, 1], name="idx"),
+        ...         pd.MultiIndex.from_arrays([[1, 2]], names=["idx"]),
         ...     ]
         ... )
         Index([1], dtype='Int64', name='idx')
         >>> intersect(
         ...     [
         ...         pd.MultiIndex.from_arrays(
-        ...             [['a', 'b', 'c'], [0, 1, 2]],
-        ...             names=['idx1', 'idx2'],
+        ...             [["a", "b", "c"], [0, 1, 2]],
+        ...             names=["idx1", "idx2"],
         ...         ),
         ...         pd.MultiIndex.from_arrays(
-        ...             [['b', 'c'], [1, 3]],
-        ...             names=['idx1', 'idx2'],
+        ...             [["b", "c"], [1, 3]],
+        ...             names=["idx1", "idx2"],
         ...         ),
         ...     ]
         ... )
@@ -837,23 +820,23 @@ def intersect(
                    names=['idx1', 'idx2'])
         >>> intersect(
         ...     [
-        ...         filewise_index(['f1', 'f2', 'f3']),
-        ...         filewise_index(['f2', 'f3', 'f4']),
+        ...         filewise_index(["f1", "f2", "f3"]),
+        ...         filewise_index(["f2", "f3", "f4"]),
         ...     ]
         ... )
         Index(['f2', 'f3'], dtype='string', name='file')
         >>> intersect(
         ...     [
-        ...         segmented_index(['f1'], [0], [1]),
-        ...         segmented_index(['f1', 'f2'], [0, 1], [1, 2]),
+        ...         segmented_index(["f1"], [0], [1]),
+        ...         segmented_index(["f1", "f2"], [0, 1], [1, 2]),
         ...     ]
         ... )
         MultiIndex([('f1', '0 days', '0 days 00:00:01')],
                    names=['file', 'start', 'end'])
         >>> intersect(
         ...     [
-        ...         filewise_index(['f1', 'f2']),
-        ...         segmented_index(['f1', 'f2'], [0, 0], [pd.NaT, 1]),
+        ...         filewise_index(["f1", "f2"]),
+        ...         segmented_index(["f1", "f2"], [0, 0], [pd.NaT, 1]),
         ...     ]
         ... )
         MultiIndex([('f1', '0 days', NaT)],
@@ -898,7 +881,7 @@ def intersect(
 
 
 def is_index_alike(
-        objs: typing.Sequence[typing.Union[pd.Index, pd.Series, pd.DataFrame]],
+    objs: typing.Sequence[typing.Union[pd.Index, pd.Series, pd.DataFrame]],
 ) -> bool:
     r"""Check if index objects are alike.
 
@@ -916,22 +899,22 @@ def is_index_alike(
         ``True`` if index objects are alike, otherwise ``False``
 
     Examples:
-        >>> index1 = pd.Index([1, 2, 3], dtype='Int64', name='l')
-        >>> index2 = pd.MultiIndex.from_arrays([[10, 20]], names=['l'])
+        >>> index1 = pd.Index([1, 2, 3], dtype="Int64", name="l")
+        >>> index2 = pd.MultiIndex.from_arrays([[10, 20]], names=["l"])
         >>> is_index_alike([index1, index2])
         True
-        >>> is_index_alike([index1, pd.Series(['a', 'b'], index=index2)])
+        >>> is_index_alike([index1, pd.Series(["a", "b"], index=index2)])
         True
-        >>> index3 = index2.set_names(['L'])
+        >>> index3 = index2.set_names(["L"])
         >>> is_index_alike([index2, index3])
         False
-        >>> index4 = index2.set_levels([['10', '20']])
+        >>> index4 = index2.set_levels([["10", "20"]])
         >>> is_index_alike([index2, index4])
         False
-        >>> index5 = pd.MultiIndex.from_arrays([[1], ['a']], names=['l1', 'l2'])
+        >>> index5 = pd.MultiIndex.from_arrays([[1], ["a"]], names=["l1", "l2"])
         >>> is_index_alike([index2, index5])
         False
-        >>> index6 = pd.MultiIndex.from_arrays([['a'], [1]], names=['l2', 'l1'])
+        >>> index6 = pd.MultiIndex.from_arrays([["a"], [1]], names=["l2", "l1"])
         >>> is_index_alike([index5, index6])
         False
 
@@ -955,11 +938,11 @@ def is_index_alike(
 
 
 def iter_by_file(
-        obj: typing.Union[
-            pd.Index,
-            pd.Series,
-            pd.DataFrame,
-        ],
+    obj: typing.Union[
+        pd.Index,
+        pd.Series,
+        pd.DataFrame,
+    ],
 ) -> typing.Iterator[
     typing.Tuple[
         str,
@@ -978,15 +961,15 @@ def iter_by_file(
         iterator in form of (file, sub_obj)
 
     Examples:
-        >>> index = filewise_index(['f1', 'f1', 'f2'])
+        >>> index = filewise_index(["f1", "f1", "f2"])
         >>> next(iter_by_file(index))
         ('f1', Index(['f1'], dtype='string', name='file'))
-        >>> index = segmented_index(['f1', 'f1', 'f2'], [0, 1, 0], [2, 3, 1])
+        >>> index = segmented_index(["f1", "f1", "f2"], [0, 1, 0], [2, 3, 1])
         >>> next(iter_by_file(index))
         ('f1', MultiIndex([('f1', '0 days 00:00:00', '0 days 00:00:02'),
             ('f1', '0 days 00:00:01', '0 days 00:00:03')],
            names=['file', 'start', 'end']))
-        >>> obj = pd.Series(['a', 'b', 'b'], index)
+        >>> obj = pd.Series(["a", "b", "b"], index)
         >>> next(iter_by_file(obj))
         ('f1', file  start            end
         f1    0 days 00:00:00  0 days 00:00:02    a
@@ -999,7 +982,7 @@ def iter_by_file(
 
     # We use len() here as index.empty takes a very long time
     if len(index) != 0:
-        files = index.get_level_values('file').drop_duplicates()
+        files = index.get_level_values("file").drop_duplicates()
         if is_filewise_index(index):
             for file in files:
                 sub_index = filewise_index(file)
@@ -1013,7 +996,7 @@ def iter_by_file(
 
 
 def join_labels(
-        labels: typing.Sequence[typing.Union[typing.List, typing.Dict]],
+    labels: typing.Sequence[typing.Union[typing.List, typing.Dict]],
 ) -> typing.Union[typing.List, typing.Dict]:
     r"""Combine scheme labels.
 
@@ -1031,7 +1014,7 @@ def join_labels(
             or not ``list`` or ``dict``
 
     Examples:
-        >>> join_labels([{'a': 0, 'b': 1}, {'b': 2, 'c': 2}])
+        >>> join_labels([{"a": 0, "b": 1}, {"b": 2, "c": 2}])
         {'a': 0, 'b': 2, 'c': 2}
 
     """
@@ -1055,12 +1038,7 @@ def join_labels(
         all([isinstance(x, list) for x in labels])
         or all([isinstance(x, dict) for x in labels])
     ):
-        raise ValueError(
-            (
-                "All labels must be either "
-                "of type 'list' or 'dict'."
-            )
-        )
+        raise ValueError(("All labels must be either " "of type 'list' or 'dict'."))
 
     if len(labels) == 1:
         return labels[0]
@@ -1092,8 +1070,8 @@ def join_labels(
 
 
 def join_schemes(
-        dbs: typing.Sequence[Database],
-        scheme_id: str,
+    dbs: typing.Sequence[Database],
+    scheme_id: str,
 ):
     r"""Join and update scheme of databases.
 
@@ -1126,11 +1104,11 @@ def join_schemes(
             or not ``list`` or ``dict``
 
     Examples:
-        >>> db1 = Database('db1')
-        >>> db2 = Database('db2')
-        >>> db1.schemes['scheme_id'] = Scheme(labels=['a'])
-        >>> db2.schemes['scheme_id'] = Scheme(labels=['b'])
-        >>> join_schemes([db1, db2], 'scheme_id')
+        >>> db1 = Database("db1")
+        >>> db2 = Database("db2")
+        >>> db1.schemes["scheme_id"] = Scheme(labels=["a"])
+        >>> db2.schemes["scheme_id"] = Scheme(labels=["b"])
+        >>> join_schemes([db1, db2], "scheme_id")
         >>> db1.schemes
         scheme_id:
           dtype: str
@@ -1155,27 +1133,25 @@ def map_country(country: str) -> str:
         ValueError: if country is not supported
 
     Examples:
-        >>> map_country('gb')
+        >>> map_country("gb")
         'GBR'
-        >>> map_country('gbr')
+        >>> map_country("gbr")
         'GBR'
-        >>> map_country('United Kingdom of Great Britain and Northern Ireland')
+        >>> map_country("United Kingdom of Great Britain and Northern Ireland")
         'GBR'
 
     """
     try:
         result = iso3166.countries.get(country.lower())
     except KeyError:
-        raise ValueError(
-            f"'{country}' is not supported by ISO 3166-1."
-        )
+        raise ValueError(f"'{country}' is not supported by ISO 3166-1.")
 
     return result.alpha3
 
 
 def map_file_path(
-        index: pd.Index,
-        func: typing.Callable[[str], str],
+    index: pd.Index,
+    func: typing.Callable[[str], str],
 ) -> pd.Index:
     r"""Apply callable to file path in index.
 
@@ -1190,8 +1166,8 @@ def map_file_path(
 
     .. code-block:: python
 
-        root = '/root/'
-        ext = '.new'
+        root = "/root/"
+        ext = ".new"
         if table.is_filewise:
             table.df.index = root + table.df.index + ext
             table.df.index.name = audformat.define.IndexField.FILE
@@ -1214,10 +1190,10 @@ def map_file_path(
             :ref:`table specifications <data-tables:Tables>`
 
     Examples:
-        >>> index = filewise_index(['a/f1', 'a/f2'])
+        >>> index = filewise_index(["a/f1", "a/f2"])
         >>> index
         Index(['a/f1', 'a/f2'], dtype='string', name='file')
-        >>> map_file_path(index, lambda x: x.replace('a', 'b'))
+        >>> map_file_path(index, lambda x: x.replace("a", "b"))
         Index(['b/f1', 'b/f2'], dtype='string', name='file')
 
     """
@@ -1248,11 +1224,11 @@ def map_language(language: str) -> str:
         ValueError: if language is not supported
 
     Examples:
-        >>> map_language('en')
+        >>> map_language("en")
         'eng'
-        >>> map_language('eng')
+        >>> map_language("eng")
         'eng'
-        >>> map_language('English')
+        >>> map_language("English")
         'eng'
 
     """
@@ -1278,16 +1254,14 @@ def map_language(language: str) -> str:
         result = result.part3
 
     if not result:
-        raise ValueError(
-            f"'{language}' is not supported by ISO 639-3."
-        )
+        raise ValueError(f"'{language}' is not supported by ISO 639-3.")
 
     return result
 
 
 def read_csv(
-        *args,
-        **kwargs,
+    *args,
+    **kwargs,
 ) -> typing.Union[pd.Index, pd.Series, pd.DataFrame]:
     r"""Read object from CSV file.
 
@@ -1310,10 +1284,12 @@ def read_csv(
 
     Examples:
         >>> from io import StringIO
-        >>> string = StringIO('''file,start,end,value
+        >>> string = StringIO(
+        ...     '''file,start,end,value
         ... f1,00:00:00,00:00:01,0.0
         ... f1,00:00:01,00:00:02,1.0
-        ... f2,00:00:02,00:00:03,2.0''')
+        ... f2,00:00:02,00:00:03,2.0'''
+        ... )
         >>> read_csv(string)
         file  start            end
         f1    0 days 00:00:00  0 days 00:00:01    0.0
@@ -1326,9 +1302,9 @@ def read_csv(
 
     drop = [define.IndexField.FILE]
     if define.IndexField.FILE in frame.columns:
-        files = frame[define.IndexField.FILE].astype('string')
+        files = frame[define.IndexField.FILE].astype("string")
     else:
-        raise ValueError('Index not conform to audformat.')
+        raise ValueError("Index not conform to audformat.")
 
     starts = None
     if define.IndexField.START in frame.columns:
@@ -1344,7 +1320,7 @@ def read_csv(
         index = filewise_index(files)
     else:
         index = segmented_index(files, starts=starts, ends=ends)
-    frame.drop(drop, axis='columns', inplace=True)
+    frame.drop(drop, axis="columns", inplace=True)
 
     if len(frame.columns) == 0:
         return index
@@ -1357,9 +1333,9 @@ def read_csv(
 
 
 def replace_file_extension(
-        index: pd.Index,
-        extension: str,
-        pattern: str = None,
+    index: pd.Index,
+    extension: str,
+    pattern: str = None,
 ) -> pd.Index:
     r"""Change the file extension of index entries.
 
@@ -1382,13 +1358,13 @@ def replace_file_extension(
         updated index
 
     Examples:
-        >>> index = filewise_index(['f1.wav', 'f2.flac'])
-        >>> replace_file_extension(index, 'mp3')
+        >>> index = filewise_index(["f1.wav", "f2.flac"])
+        >>> replace_file_extension(index, "mp3")
         Index(['f1.mp3', 'f2.mp3'], dtype='string', name='file')
-        >>> index = filewise_index(['f1.wav.gz', 'f2.wav.gz'])
-        >>> replace_file_extension(index, '')
+        >>> index = filewise_index(["f1.wav.gz", "f2.wav.gz"])
+        >>> replace_file_extension(index, "")
         Index(['f1.wav', 'f2.wav'], dtype='string', name='file')
-        >>> replace_file_extension(index, 'flac', pattern=r'\.wav\.gz$')
+        >>> replace_file_extension(index, "flac", pattern=r"\.wav\.gz$")
         Index(['f1.flac', 'f2.flac'], dtype='string', name='file')
 
     """
@@ -1396,17 +1372,17 @@ def replace_file_extension(
         return index
 
     if pattern is None:
-        pattern = r'\.[a-zA-Z0-9]+$'
+        pattern = r"\.[a-zA-Z0-9]+$"
     cur_ext = re.compile(pattern)
     if extension:
-        new_ext = f'.{extension}'
+        new_ext = f".{extension}"
     else:
-        new_ext = ''
+        new_ext = ""
 
     if is_segmented_index(index):
         index = index.set_levels(
             index.levels[0].str.replace(cur_ext, new_ext, regex=True),
-            level='file',
+            level="file",
         )
     else:
         index = index.str.replace(cur_ext, new_ext, regex=True)
@@ -1415,11 +1391,11 @@ def replace_file_extension(
 
 
 def set_index_dtypes(
-        index: pd.Index,
-        dtypes: typing.Union[
-            str,
-            typing.Dict[str, str],
-        ],
+    index: pd.Index,
+    dtypes: typing.Union[
+        str,
+        typing.Dict[str, str],
+    ],
 ) -> pd.Index:
     r"""Set the dtypes of an index for the given level names.
 
@@ -1437,26 +1413,26 @@ def set_index_dtypes(
         index with new dtypes
 
     Examples:
-        >>> index1 = pd.Index(['a', 'b'])
+        >>> index1 = pd.Index(["a", "b"])
         >>> index1
         Index(['a', 'b'], dtype='object')
-        >>> index2 = set_index_dtypes(index1, 'string')
+        >>> index2 = set_index_dtypes(index1, "string")
         >>> index2
         Index(['a', 'b'], dtype='string')
         >>> index3 = pd.MultiIndex.from_arrays(
-        ...     [['a', 'b'], [1, 2]],
-        ...     names=['level1', 'level2'],
+        ...     [["a", "b"], [1, 2]],
+        ...     names=["level1", "level2"],
         ... )
         >>> index3.dtypes
         level1    object
         level2     int64
         dtype: object
-        >>> index4 = set_index_dtypes(index3, {'level2': 'float'})
+        >>> index4 = set_index_dtypes(index3, {"level2": "float"})
         >>> index4.dtypes
         level1    object
         level2   float64
         dtype: object
-        >>> index5 = set_index_dtypes(index3, 'string')
+        >>> index5 = set_index_dtypes(index3, "string")
         >>> index5.dtypes
         level1    string[python]
         level2    string[python]
@@ -1467,9 +1443,7 @@ def set_index_dtypes(
 
     if len(set(levels)) != len(levels):
         raise ValueError(
-            f'Got index with levels '
-            f'{levels}, '
-            f'but names must be unique.'
+            f"Got index with levels " f"{levels}, " f"but names must be unique."
         )
 
     if not isinstance(dtypes, dict):
@@ -1490,8 +1464,7 @@ def set_index_dtypes(
 
     if isinstance(index, pd.MultiIndex):
         # MultiIndex
-        if any([len(index.levels[index.names.index(level)]) == 0
-                for level in dtypes]):
+        if any([len(index.levels[index.names.index(level)]) == 0 for level in dtypes]):
             # set_levels() does not work on empty levels,
             # so we convert to a dataframe instead
             df = index.to_frame()
@@ -1527,12 +1500,12 @@ def set_index_dtypes(
 
 
 def to_filewise_index(
-        obj: typing.Union[pd.Index, pd.Series, pd.DataFrame],
-        root: str,
-        output_folder: str,
-        *,
-        num_workers: int = 1,
-        progress_bar: bool = False,
+    obj: typing.Union[pd.Index, pd.Series, pd.DataFrame],
+    root: str,
+    output_folder: str,
+    *,
+    num_workers: int = 1,
+    progress_bar: bool = False,
 ) -> typing.Union[pd.Index, pd.Series, pd.DataFrame]:
     r"""Convert to filewise index.
 
@@ -1562,11 +1535,11 @@ def to_filewise_index(
 
     Examples:
         >>> index = segmented_index(
-        ...     files=['f.wav', 'f.wav'],
+        ...     files=["f.wav", "f.wav"],
         ...     starts=[0, 0.5],
         ...     ends=[0.5, 1],
         ... )
-        >>> to_filewise_index(index, '.', 'split')
+        >>> to_filewise_index(index, ".", "split")
         Index(['split/f_0.wav', 'split/f_1.wav'], dtype='string', name='file')
 
     """
@@ -1591,8 +1564,9 @@ def to_filewise_index(
     # keep ``output_folder`` relative if it's relative
     if test_path.startswith(audeer.path(output_folder)):
         raise ValueError(
-            f'``output_folder`` may not be contained in path to files of '
-            f'original data: {audeer.path(output_folder)} != {test_path}')
+            f"``output_folder`` may not be contained in path to files of "
+            f"original data: {audeer.path(output_folder)} != {test_path}"
+        )
 
     original_files = index.get_level_values(define.IndexField.FILE)
     if not is_abs:
@@ -1603,7 +1577,7 @@ def to_filewise_index(
     # order of rows within group is preserved:
     # "https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.groupby.html"  # noqa
     if isinstance(obj, pd.Index):
-        groups = pd.Series(index=obj, dtype='object').groupby(
+        groups = pd.Series(index=obj, dtype="object").groupby(
             define.IndexField.FILE,
             sort=False,
         )
@@ -1616,11 +1590,13 @@ def to_filewise_index(
         f = group.index.get_level_values(define.IndexField.FILE)[0]
         f = os.path.relpath(f, root) if is_abs else f
         new_files.extend(
-            [os.path.join(
-                output_folder,
-                '_{}.'.format(str(count).zfill(width)).join(f.rsplit('.', 1))
-            )
-                for count in range(len(group))]
+            [
+                os.path.join(
+                    output_folder,
+                    "_{}.".format(str(count).zfill(width)).join(f.rsplit(".", 1)),
+                )
+                for count in range(len(group))
+            ]
         )
         audeer.mkdir(os.path.dirname(new_files[-1]))
 
@@ -1628,19 +1604,19 @@ def to_filewise_index(
         signal, sr = audiofile.read(
             file=original,
             duration=end.total_seconds() - start.total_seconds(),
-            offset=start.total_seconds())
+            offset=start.total_seconds(),
+        )
         audiofile.write(file=segment, signal=signal, sampling_rate=sr)
 
     params = [
-        ([file, start, end, segment], {}) for
-        file, start, end, segment in
-        zip(original_files, starts, ends, new_files)
+        ([file, start, end, segment], {})
+        for file, start, end, segment in zip(original_files, starts, ends, new_files)
     ]
 
     audeer.run_tasks(
         task_func=_split_files,
         params=params,
-        task_description='To filewise index',
+        task_description="To filewise index",
         num_workers=num_workers,
         progress_bar=progress_bar,
     )
@@ -1655,13 +1631,13 @@ def to_filewise_index(
 
 
 def to_segmented_index(
-        obj: typing.Union[pd.Index, pd.Series, pd.DataFrame],
-        *,
-        allow_nat: bool = True,
-        files_duration: typing.MutableMapping[str, pd.Timedelta] = None,
-        root: str = None,
-        num_workers: typing.Optional[int] = 1,
-        verbose: bool = False,
+    obj: typing.Union[pd.Index, pd.Series, pd.DataFrame],
+    *,
+    allow_nat: bool = True,
+    files_duration: typing.MutableMapping[str, pd.Timedelta] = None,
+    root: str = None,
+    num_workers: typing.Optional[int] = 1,
+    verbose: bool = False,
 ) -> typing.Union[pd.Index, pd.Series, pd.DataFrame]:
     r"""Convert to segmented index.
 
@@ -1707,7 +1683,7 @@ def to_segmented_index(
         FileNotFoundError: if file is not found
 
     Examples:
-        >>> index = filewise_index(['f1', 'f2'])
+        >>> index = filewise_index(["f1", "f2"])
         >>> to_segmented_index(index)
         MultiIndex([('f1', '0 days', NaT),
                     ('f2', '0 days', NaT)],
@@ -1716,8 +1692,8 @@ def to_segmented_index(
         ...     index,
         ...     allow_nat=False,
         ...     files_duration={
-        ...         'f1': pd.to_timedelta(1.1, unit='s'),
-        ...         'f2': pd.to_timedelta(2.2, unit='s'),
+        ...         "f1": pd.to_timedelta(1.1, unit="s"),
+        ...         "f2": pd.to_timedelta(2.2, unit="s"),
         ...     },
         ... )
         MultiIndex([('f1', '0 days', '0 days 00:00:01.100000'),
@@ -1743,12 +1719,10 @@ def to_segmented_index(
         )
 
     if not allow_nat:
-
         ends = index.get_level_values(define.IndexField.END)
         has_nat = pd.isna(ends)
 
         if any(has_nat):
-
             # Gather duration values
             # for all NaT end entries
 
@@ -1757,7 +1731,6 @@ def to_segmented_index(
             starts = index.get_level_values(define.IndexField.START)
 
             def job(file: str) -> pd.Timedelta:
-
                 if root is not None and not os.path.isabs(file):
                     file = os.path.join(root, file)
                 if files_duration is not None and file in files_duration:
@@ -1770,7 +1743,7 @@ def to_segmented_index(
                         file,
                     )
                 dur = audiofile.duration(file)
-                dur = pd.to_timedelta(dur, unit='s')
+                dur = pd.to_timedelta(dur, unit="s")
 
                 if files_duration is not None:
                     files_duration[file] = dur
@@ -1783,7 +1756,7 @@ def to_segmented_index(
                 params,
                 num_workers=num_workers,
                 progress_bar=verbose,
-                task_description='Read duration',
+                task_description="Read duration",
             )
 
             # Replace all NaT entries in end
@@ -1850,29 +1823,29 @@ def union(
     Examples:
         >>> union(
         ...     [
-        ...         pd.Index([0, 1], name='idx'),
-        ...         pd.Index([1, 2], dtype='Int64', name='idx'),
+        ...         pd.Index([0, 1], name="idx"),
+        ...         pd.Index([1, 2], dtype="Int64", name="idx"),
         ...     ]
         ... )
         Index([0, 1, 2], dtype='Int64', name='idx')
         >>> union(
         ...     [
-        ...         pd.Index([0, 1], name='idx'),
-        ...         pd.MultiIndex.from_arrays([[1, 2]], names=['idx']),
+        ...         pd.Index([0, 1], name="idx"),
+        ...         pd.MultiIndex.from_arrays([[1, 2]], names=["idx"]),
         ...     ]
         ... )
         Index([0, 1, 2], dtype='Int64', name='idx')
         >>> union(
         ...     [
         ...         pd.MultiIndex.from_arrays(
-        ...             [['a', 'b', 'c'], [0, 1, 2]],
-        ...             names=['idx1', 'idx2'],
+        ...             [["a", "b", "c"], [0, 1, 2]],
+        ...             names=["idx1", "idx2"],
         ...         ),
         ...         pd.MultiIndex.from_arrays(
-        ...             [['b', 'c'], [1, 3]],
-        ...             names=['idx1', 'idx2'],
+        ...             [["b", "c"], [1, 3]],
+        ...             names=["idx1", "idx2"],
         ...         ),
-        ...    ]
+        ...     ]
         ... )
         MultiIndex([('a', 0),
                     ('b', 1),
@@ -1881,15 +1854,15 @@ def union(
                    names=['idx1', 'idx2'])
         >>> union(
         ...     [
-        ...         filewise_index(['f1', 'f2', 'f3']),
-        ...         filewise_index(['f2', 'f3', 'f4']),
+        ...         filewise_index(["f1", "f2", "f3"]),
+        ...         filewise_index(["f2", "f3", "f4"]),
         ...     ]
         ... )
         Index(['f1', 'f2', 'f3', 'f4'], dtype='string', name='file')
         >>> union(
         ...     [
-        ...         segmented_index(['f2'], [0], [1]),
-        ...         segmented_index(['f1', 'f2'], [0, 1], [1, 2]),
+        ...         segmented_index(["f2"], [0], [1]),
+        ...         segmented_index(["f1", "f2"], [0, 1], [1, 2]),
         ...     ]
         ... )
         MultiIndex([('f2', '0 days 00:00:00', '0 days 00:00:01'),
@@ -1898,8 +1871,8 @@ def union(
                    names=['file', 'start', 'end'])
         >>> union(
         ...     [
-        ...         filewise_index(['f1', 'f2']),
-        ...         segmented_index(['f1', 'f2'], [0, 0], [1, 1]),
+        ...         filewise_index(["f1", "f2"]),
+        ...         segmented_index(["f1", "f2"], [0, 0], [1, 1]),
         ...     ]
         ... )
         MultiIndex([('f1', '0 days',               NaT),
@@ -1932,12 +1905,10 @@ def union(
 
     max_num_seg = max([len(obj) for obj in objs])
     if max_num_seg > UNION_MAX_INDEX_LEN_THRES:
-
         df = pd.concat([o.to_frame() for o in objs])
         index = df.index
 
     elif isinstance(objs[0], pd.MultiIndex):
-
         names = objs[0].names
         num_levels = len(names)
         dtypes = {name: dtype for name, dtype in zip(names, objs[0].dtypes)}
@@ -1954,7 +1925,6 @@ def union(
         index = set_index_dtypes(index, dtypes)
 
     else:
-
         name = objs[0].name
         values = []
 
@@ -1970,8 +1940,8 @@ def union(
 
 
 def _alike_index(
-        index: pd.Index,
-        data: typing.Sequence = [],
+    index: pd.Index,
+    data: typing.Sequence = [],
 ) -> pd.Index:
     if isinstance(index, pd.MultiIndex):
         return set_index_dtypes(
@@ -1987,7 +1957,7 @@ def _alike_index(
 
 
 def _assert_index_alike(
-        objs: typing.Sequence[typing.Union[pd.Index, pd.Series, pd.DataFrame]],
+    objs: typing.Sequence[typing.Union[pd.Index, pd.Series, pd.DataFrame]],
 ):
     r"""Raise if index objects are not alike.
 
@@ -2002,11 +1972,11 @@ def _assert_index_alike(
         return
 
     objs = [obj if isinstance(obj, pd.Index) else obj.index for obj in objs]
-    msg = 'Levels and dtypes of all objects must match.'
+    msg = "Levels and dtypes of all objects must match."
 
     dims = list(dict.fromkeys(obj.nlevels for obj in objs))
     if len(dims) > 1:
-        msg += f' Found different number of levels: {dims}.'
+        msg += f" Found different number of levels: {dims}."
         raise ValueError(msg)
 
     names = []
@@ -2017,7 +1987,7 @@ def _assert_index_alike(
             names.append(obj.names[0])
     names = list(dict.fromkeys(names))
     if len(names) > 1:
-        msg += f' Found different level names: {names}.'
+        msg += f" Found different level names: {names}."
         raise ValueError(msg)
 
     dtypes = []
@@ -2026,7 +1996,7 @@ def _assert_index_alike(
         dtypes.append(tuple(ds) if len(ds) > 1 else ds[0])
     dtypes = list(dict.fromkeys(dtypes))
     if len(dtypes) > 1:
-        msg += f' Found different level dtypes: {dtypes}.'
+        msg += f" Found different level dtypes: {dtypes}."
 
     raise ValueError(msg)
 
@@ -2041,16 +2011,16 @@ def _dtypes(obj):
 
 def _is_same_dtype(d1, d2) -> bool:
     r"""Helper function to compare pandas dtype."""
-    if d1.name.startswith('bool') and d2.name.startswith('bool'):
+    if d1.name.startswith("bool") and d2.name.startswith("bool"):
         # match different bool types, i.e. bool and boolean
         return True
-    if d1.name.lower().startswith('int') and d2.name.lower().startswith('int'):
+    if d1.name.lower().startswith("int") and d2.name.lower().startswith("int"):
         # match different int types, e.g. int64 and Int64
         return True
-    if d1.name.startswith('float') and d2.name.startswith('float'):
+    if d1.name.startswith("float") and d2.name.startswith("float"):
         # match different float types, e.g. float32 and float64
         return True
-    if d1.name == 'category' and d2.name == 'category':
+    if d1.name == "category" and d2.name == "category":
         # match only if categories are the same
         return d1 == d2
     return d1.name == d2.name
@@ -2065,7 +2035,7 @@ def _levels(obj):
 
 
 def _maybe_convert_filewise_index(
-        objs: typing.Sequence[typing.Union[pd.Index, pd.Series, pd.DataFrame]],
+    objs: typing.Sequence[typing.Union[pd.Index, pd.Series, pd.DataFrame]],
 ) -> typing.Sequence[typing.Union[pd.Index, pd.Series, pd.DataFrame]]:
     r"""Convert filewise to segmented index.
 
@@ -2089,21 +2059,22 @@ def _maybe_convert_filewise_index(
 
 
 def _maybe_convert_int_dtype(
-        index: pd.Index,
+    index: pd.Index,
 ) -> pd.Index:
     r"""Convert integer dtypes to Int64."""
     # Ensure integers are always stored as Int64
     levels = _levels(index)
     dtypes = _dtypes(index)
     int_dtypes = {
-        level: 'Int64' for level, dtype in zip(levels, dtypes)
+        level: "Int64"
+        for level, dtype in zip(levels, dtypes)
         if pd.api.types.is_integer_dtype(dtype)
     }
     return set_index_dtypes(index, int_dtypes)
 
 
 def _maybe_convert_single_level_multi_index(
-        objs: typing.Sequence[typing.Union[pd.Index, pd.Series, pd.DataFrame]],
+    objs: typing.Sequence[typing.Union[pd.Index, pd.Series, pd.DataFrame]],
 ) -> typing.Sequence[typing.Union[pd.Index, pd.Series, pd.DataFrame]]:
     r"""Convert single-level pd.MultiIndex to pd.Index.
 
@@ -2121,18 +2092,14 @@ def _maybe_convert_single_level_multi_index(
     """
     indices = [obj if isinstance(obj, pd.Index) else obj.index for obj in objs]
     is_single_level = indices[0].nlevels == 1
-    is_mix = len(set(isinstance(index, pd.MultiIndex)
-                     for index in indices)) == 2
+    is_mix = len(set(isinstance(index, pd.MultiIndex) for index in indices)) == 2
 
     if is_single_level and is_mix:
         objs = list(objs)
         for idx, obj in enumerate(objs):
             if isinstance(obj, pd.MultiIndex):
                 objs[idx] = obj.get_level_values(0)
-            elif (
-                    not isinstance(obj, pd.Index)
-                    and isinstance(obj.index, pd.MultiIndex)
-            ):
+            elif not isinstance(obj, pd.Index) and isinstance(obj.index, pd.MultiIndex):
                 objs[idx].index = obj.index.get_level_values(0)
 
     return objs

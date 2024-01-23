@@ -10,16 +10,13 @@ class BadIdError(ValueError):
         dictionary: dictionary with valid identifiers
 
     """
+
     def __init__(self, name: str, invalid_id: str, dictionary: dict):
         if not dictionary:
-            message = (
-                f"Bad {name} ID '{invalid_id}', "
-                f"no {name} objects defined yet"
-            )
+            message = f"Bad {name} ID '{invalid_id}', " f"no {name} objects defined yet"
         else:
             message = (
-                f"Bad {name} ID '{invalid_id}', "
-                f"expected one of {list(dictionary)}"
+                f"Bad {name} ID '{invalid_id}', " f"expected one of {list(dictionary)}"
             )
         super().__init__(message)
 
@@ -32,11 +29,9 @@ class BadKeyError(KeyError):
         valid_keys: list of valid strings
 
     """
+
     def __init__(self, invalid_key: str, valid_keys: typing.Sequence[str]):
-        message = (
-            f"Bad key '{invalid_key}', "
-            f"expected one of {list(valid_keys)}"
-        )
+        message = f"Bad key '{invalid_key}', " f"expected one of {list(valid_keys)}"
         super().__init__(message)
 
 
@@ -48,11 +43,9 @@ class BadTypeError(TypeError):
         expected_type: expected value type
 
     """
+
     def __init__(self, invalid_value: typing.Any, expected_type: type):
-        message = (
-            f"Bad type '{type(invalid_value)}', "
-            f"expected '{expected_type}'"
-        )
+        message = f"Bad type '{type(invalid_value)}', " f"expected '{expected_type}'"
         super().__init__(message)
 
 
@@ -64,10 +57,10 @@ class BadValueError(ValueError):
         valid_values: list of valid strings
 
     """
+
     def __init__(self, invalid_value: str, valid_values: typing.Sequence[str]):
         message = (
-            f"Bad value '{invalid_value}', "
-            f"expected one of {list(valid_values)}"
+            f"Bad value '{invalid_value}', " f"expected one of {list(valid_values)}"
         )
         super().__init__(message)
 
@@ -80,10 +73,8 @@ class TableExistsError(KeyError):
         table_id: table identifier
 
     """
+
     def __init__(self, table_type: str, table_id: str):
         KeyError(
-            f"There is already a "
-            f"{table_type} "
-            f"table with ID "
-            f"'{table_id}'."
+            f"There is already a " f"{table_type} " f"table with ID " f"'{table_id}'."
         )

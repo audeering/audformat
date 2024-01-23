@@ -24,20 +24,18 @@ def create_db_table(
             index=audformat.filewise_index(),
             dtype=float,
         )
-    db = audformat.testing.create_db(
-        data={'table': obj}
-    )
-    table = db['table']
+    db = audformat.testing.create_db(data={"table": obj})
+    table = db["table"]
     if rater is not None:
-        db.raters['rater'] = rater
+        db.raters["rater"] = rater
         for column in table.columns.values():
-            column.rater_id = 'rater'
+            column.rater_id = "rater"
     if media is not None:
-        db.media['media'] = media
-        table.media_id = 'media'
+        db.media["media"] = media
+        table.media_id = "media"
     if split is not None:
-        db.splits['split'] = split
-        table.split_id = 'split'
+        db.splits["split"] = split
+        table.split_id = "split"
     if scheme_id is not None:
         old_scheme_id = list(db.schemes)[0]
         db.schemes[scheme_id] = db.schemes.pop(old_scheme_id)
@@ -48,7 +46,7 @@ def create_db_table(
 
 
 def create_table(
-        obj: typing.Union[pd.Index, pd.Series, pd.DataFrame],
+    obj: typing.Union[pd.Index, pd.Series, pd.DataFrame],
 ) -> audformat.Table:
     r"""Helper function to create Table."""
     index = obj if isinstance(obj, pd.Index) else obj.index
@@ -61,7 +59,7 @@ def create_table(
             table[name].set(obj[name].values)
         # change 'int64' to 'Int64'
         dtypes = {
-            name: 'Int64' if pd.api.types.is_integer_dtype(dtype) else dtype
+            name: "Int64" if pd.api.types.is_integer_dtype(dtype) else dtype
             for name, dtype in obj.dtypes.items()
         }
         table._df = table.df.astype(dtypes)
@@ -84,7 +82,7 @@ def test_access():
 
 
 @pytest.mark.parametrize(
-    'tables, expected',
+    "tables, expected",
     [
         # empty
         (
@@ -111,7 +109,8 @@ def test_access():
                         dtype=float,
                     )
                 ),
-            ] * 3,
+            ]
+            * 3,
             create_table(
                 pd.Series(
                     index=audformat.filewise_index(),
@@ -124,8 +123,8 @@ def test_access():
             [
                 create_table(
                     pd.Series(
-                        [1.],
-                        index=audformat.filewise_index('f1'),
+                        [1.0],
+                        index=audformat.filewise_index("f1"),
                     )
                 ),
                 create_table(
@@ -137,8 +136,8 @@ def test_access():
             ],
             create_table(
                 pd.Series(
-                    [1.],
-                    index=audformat.filewise_index('f1'),
+                    [1.0],
+                    index=audformat.filewise_index("f1"),
                 )
             ),
         ),
@@ -153,15 +152,15 @@ def test_access():
                 ),
                 create_table(
                     pd.Series(
-                        [1.],
-                        index=audformat.filewise_index('f1'),
+                        [1.0],
+                        index=audformat.filewise_index("f1"),
                     )
                 ),
             ],
             create_table(
                 pd.Series(
-                    [1.],
-                    index=audformat.filewise_index('f1'),
+                    [1.0],
+                    index=audformat.filewise_index("f1"),
                 )
             ),
         ),
@@ -172,30 +171,30 @@ def test_access():
                     pd.Series(
                         index=audformat.filewise_index(),
                         dtype=float,
-                        name='c1',
+                        name="c1",
                     )
                 ),
                 create_table(
                     pd.Series(
                         index=audformat.segmented_index(),
                         dtype=float,
-                        name='c2',
+                        name="c2",
                     )
                 ),
             ],
             create_table(
                 pd.DataFrame(
                     {
-                        'c1': pd.Series(
+                        "c1": pd.Series(
                             index=audformat.segmented_index(),
                             dtype=float,
-                            name='c1',
+                            name="c1",
                         ),
-                        'c2': pd.Series(
+                        "c2": pd.Series(
                             index=audformat.segmented_index(),
                             dtype=float,
-                            name='c2',
-                        )
+                            name="c2",
+                        ),
                     },
                 )
             ),
@@ -205,27 +204,27 @@ def test_access():
             [
                 create_table(
                     pd.Series(
-                        [1., np.nan],
-                        index=audformat.filewise_index(['f1', 'f2']),
+                        [1.0, np.nan],
+                        index=audformat.filewise_index(["f1", "f2"]),
                     )
                 ),
                 create_table(
                     pd.Series(
-                        [2., 3.],
-                        index=audformat.filewise_index(['f2', 'f3']),
+                        [2.0, 3.0],
+                        index=audformat.filewise_index(["f2", "f3"]),
                     )
                 ),
                 create_table(
                     pd.Series(
-                        [3., 4.],
-                        index=audformat.filewise_index(['f3', 'f4']),
+                        [3.0, 4.0],
+                        index=audformat.filewise_index(["f3", "f4"]),
                     )
                 ),
             ],
             create_table(
                 pd.Series(
-                    [1., 2., 3., 4.],
-                    index=audformat.filewise_index(['f1', 'f2', 'f3', 'f4']),
+                    [1.0, 2.0, 3.0, 4.0],
+                    index=audformat.filewise_index(["f1", "f2", "f3", "f4"]),
                 )
             ),
         ),
@@ -233,14 +232,14 @@ def test_access():
             [
                 create_table(
                     pd.Series(
-                        [1.],
-                        index=audformat.filewise_index('f1'),
+                        [1.0],
+                        index=audformat.filewise_index("f1"),
                     )
                 ),
                 create_table(
                     pd.Series(
-                        [-1.],
-                        index=audformat.filewise_index('f1'),
+                        [-1.0],
+                        index=audformat.filewise_index("f1"),
                     )
                 ),
             ],
@@ -252,26 +251,26 @@ def test_access():
             [
                 create_table(
                     pd.Series(
-                        [1., 2.],
-                        index=audformat.filewise_index(['f1', 'f2']),
-                        name='c1',
+                        [1.0, 2.0],
+                        index=audformat.filewise_index(["f1", "f2"]),
+                        name="c1",
                     )
                 ),
                 create_table(
                     pd.Series(
-                        [2., 3.],
-                        index=audformat.filewise_index(['f2', 'f3']),
-                        name='c2',
+                        [2.0, 3.0],
+                        index=audformat.filewise_index(["f2", "f3"]),
+                        name="c2",
                     )
                 ),
             ],
             create_table(
                 pd.DataFrame(
                     {
-                        'c1': [1., 2., np.nan],
-                        'c2': [np.nan, 2., 3.],
+                        "c1": [1.0, 2.0, np.nan],
+                        "c2": [np.nan, 2.0, 3.0],
                     },
-                    index=audformat.filewise_index(['f1', 'f2', 'f3']),
+                    index=audformat.filewise_index(["f1", "f2", "f3"]),
                 )
             ),
         ),
@@ -280,22 +279,22 @@ def test_access():
             [
                 create_table(
                     pd.Series(
-                        [1.],
-                        index=audformat.filewise_index('f1'),
+                        [1.0],
+                        index=audformat.filewise_index("f1"),
                     )
                 ),
                 create_table(
                     pd.Series(
-                        [1.],
-                        index=audformat.segmented_index('f1', 0, 1),
+                        [1.0],
+                        index=audformat.segmented_index("f1", 0, 1),
                     )
                 ),
             ],
             create_table(
                 pd.Series(
-                    [1., 1.],
+                    [1.0, 1.0],
                     index=audformat.segmented_index(
-                        ['f1', 'f1'],
+                        ["f1", "f1"],
                         [0, 0],
                         [None, 1],
                     ),
@@ -304,19 +303,19 @@ def test_access():
         ),
         (
             [
-                pytest.DB['files'],
-                pytest.DB['segments'],
+                pytest.DB["files"],
+                pytest.DB["segments"],
             ],
             create_table(
                 audformat.utils.concat(
                     [
-                        pytest.DB['files'].df,
-                        pytest.DB['segments'].df,
+                        pytest.DB["files"].df,
+                        pytest.DB["segments"].df,
                     ]
                 )
-            )
-        )
-    ]
+            ),
+        ),
+    ],
 )
 def test_add(tables, expected):
     table = tables[0]
@@ -331,69 +330,75 @@ def test_add(tables, expected):
 
 
 def test_add_2():
-
     db = audformat.testing.create_db(minimal=True)
-    db.media['media'] = audformat.Media()
-    db.splits['split'] = audformat.Split()
+    db.media["media"] = audformat.Media()
+    db.splits["split"] = audformat.Split()
 
     # empty tables
 
     audformat.testing.add_table(
-        db, 'table1', audformat.define.IndexType.FILEWISE,
-        p_none=0.25, num_files=5, media_id='media', split_id='split',
+        db,
+        "table1",
+        audformat.define.IndexType.FILEWISE,
+        p_none=0.25,
+        num_files=5,
+        media_id="media",
+        split_id="split",
     )
     audformat.testing.add_table(
-        db, 'table2', audformat.define.IndexType.FILEWISE,
-        p_none=0.25, num_files=[1, 6, 7, 8, 9], media_id='media',
+        db,
+        "table2",
+        audformat.define.IndexType.FILEWISE,
+        p_none=0.25,
+        num_files=[1, 6, 7, 8, 9],
+        media_id="media",
     )
-    db['table'] = db['table1'] + db['table2']
+    db["table"] = db["table1"] + db["table2"]
     pd.testing.assert_index_equal(
-        db['table'].files,
-        db['table1'].files.union(db['table2'].files)
+        db["table"].files, db["table1"].files.union(db["table2"].files)
     )
-    assert db['table'].media_id is None
-    assert db['table'].split_id is None
-    for column in db['table'].columns:
+    assert db["table"].media_id is None
+    assert db["table"].split_id is None
+    for column in db["table"].columns:
         assert column.scheme_id is None
         assert column.rater_id is None
 
     # add table to itself
 
     pd.testing.assert_frame_equal(
-        (db['table1'] + db['table1']).df,
-        db['table1'].df,
+        (db["table1"] + db["table1"]).df,
+        db["table1"].df,
     )
 
     # add two schemes
 
-    db.schemes['scheme1'] = audformat.Scheme()
-    db.schemes['scheme2'] = audformat.Scheme()
+    db.schemes["scheme1"] = audformat.Scheme()
+    db.schemes["scheme2"] = audformat.Scheme()
 
     # tables of same type without overlap
 
     for table_type in [
         audformat.define.IndexType.FILEWISE,
-        audformat.define.IndexType.SEGMENTED
+        audformat.define.IndexType.SEGMENTED,
     ]:
         db.drop_tables(list(db.tables))
         audformat.testing.add_table(
             db,
-            'table1',
+            "table1",
             table_type,
             num_files=5,
-            columns=['scheme1'],
+            columns=["scheme1"],
         )
         audformat.testing.add_table(
             db,
-            'table2',
+            "table2",
             table_type,
             num_files=(6, 7, 8, 9, 10),
-            columns='scheme1',
+            columns="scheme1",
         )
-        db['table'] = db['table1'] + db['table2']
+        db["table"] = db["table1"] + db["table2"]
         pd.testing.assert_frame_equal(
-            db['table'].get(),
-            pd.concat([db['table1'].get(), db['table2'].get()])
+            db["table"].get(), pd.concat([db["table1"].get(), db["table2"].get()])
         )
 
     # tables of same type with overlap
@@ -401,98 +406,101 @@ def test_add_2():
     db.drop_tables(list(db.tables))
     audformat.testing.add_table(
         db,
-        'table1',
+        "table1",
         audformat.define.IndexType.FILEWISE,
         num_files=(1, 2),
-        columns='scheme1',
+        columns="scheme1",
     )
     audformat.testing.add_table(
         db,
-        'table2',
+        "table2",
         audformat.define.IndexType.FILEWISE,
         num_files=(1,),
-        columns='scheme1',
+        columns="scheme1",
     )
-    db['table2'].df.iloc[0] = np.nan  # ok if other value is nan
-    db['table'] = db['table1'] + db['table2']
+    db["table2"].df.iloc[0] = np.nan  # ok if other value is nan
+    db["table"] = db["table1"] + db["table2"]
     pd.testing.assert_series_equal(
-        db['table']['scheme1'].get(),
-        db['table1']['scheme1'].get()
+        db["table"]["scheme1"].get(), db["table1"]["scheme1"].get()
     )
     with pytest.raises(ValueError):
-        db['table2'].df.iloc[0] = 'do not match'  # values do not match
-        db['table'] = db['table1'] + db['table2']
+        db["table2"].df.iloc[0] = "do not match"  # values do not match
+        db["table"] = db["table1"] + db["table2"]
 
     # filewise with segmented table
 
     for num_files_1, num_files_2 in (
-            (5, 5),
-            (5, 4),
-            (4, 5),
+        (5, 5),
+        (5, 4),
+        (4, 5),
     ):
         db.drop_tables(list(db.tables))
         audformat.testing.add_table(
             db,
-            'table1',
+            "table1",
             audformat.define.IndexType.FILEWISE,
-            columns='scheme1',
+            columns="scheme1",
             num_files=num_files_1,
         )
         audformat.testing.add_table(
             db,
-            'table2',
+            "table2",
             audformat.define.IndexType.SEGMENTED,
-            columns='scheme2',
+            columns="scheme2",
             num_files=num_files_2,
         )
-        db['table'] = db['table1'] + db['table2']
-        assert db['table'].type == audformat.define.IndexType.SEGMENTED
+        db["table"] = db["table1"] + db["table2"]
+        assert db["table"].type == audformat.define.IndexType.SEGMENTED
         np.testing.assert_equal(
-            db['table']['scheme1'].get().dropna().unique(),
-            db['table1']['scheme1'].get().values)
+            db["table"]["scheme1"].get().dropna().unique(),
+            db["table1"]["scheme1"].get().values,
+        )
         pd.testing.assert_series_equal(
-            db['table']['scheme2'].get().dropna(),
-            db['table2']['scheme2'].get().dropna())
+            db["table"]["scheme2"].get().dropna(),
+            db["table2"]["scheme2"].get().dropna(),
+        )
 
     # segmented with filewise table
 
     for num_files_1, num_files_2 in (
-            (5, 5),
-            (5, 4),
-            (4, 5),
+        (5, 5),
+        (5, 4),
+        (4, 5),
     ):
         db.drop_tables(list(db.tables))
         audformat.testing.add_table(
             db,
-            'table1',
+            "table1",
             audformat.define.IndexType.SEGMENTED,
-            columns='scheme1',
+            columns="scheme1",
             num_files=num_files_1,
         )
         audformat.testing.add_table(
             db,
-            'table2',
+            "table2",
             audformat.define.IndexType.FILEWISE,
-            columns='scheme2',
+            columns="scheme2",
             num_files=num_files_2,
         )
-        db['table'] = db['table1'] + db['table2']
-        assert db['table'].type == audformat.define.IndexType.SEGMENTED
+        db["table"] = db["table1"] + db["table2"]
+        assert db["table"].type == audformat.define.IndexType.SEGMENTED
         np.testing.assert_equal(
-            db['table']['scheme2'].get().dropna().unique(),
-            db['table2']['scheme2'].get().values)
+            db["table"]["scheme2"].get().dropna().unique(),
+            db["table2"]["scheme2"].get().values,
+        )
         pd.testing.assert_series_equal(
-            db['table']['scheme1'].get().dropna(),
-            db['table1']['scheme1'].get().dropna())
+            db["table"]["scheme1"].get().dropna(),
+            db["table1"]["scheme1"].get().dropna(),
+        )
 
 
 @pytest.mark.parametrize(
-    'table',
+    "table",
     [
         audformat.Table(),
-        pytest.DB['files'],
-        pytest.DB['segments'],
-    ]
+        pytest.DB["files"],
+        pytest.DB["segments"],
+    ],
 )
 def test_copy(table):
     table_copy = table.copy()
@@ -501,33 +509,30 @@ def test_copy(table):
 
 
 @pytest.mark.parametrize(
-    'inplace',
+    "inplace",
     [
         False,
         True,
-    ]
+    ],
 )
 def test_drop_and_pick_columns(inplace):
-
     db = audformat.testing.create_db()
 
-    assert 'float' in db['files'].columns
-    table = db['files'].drop_columns('float', inplace=inplace)
+    assert "float" in db["files"].columns
+    table = db["files"].drop_columns("float", inplace=inplace)
     if not inplace:
-        assert 'float' in db['files'].columns
-    assert 'float' not in table.columns
-    assert 'string' in table.columns
-    table = db['files'].pick_columns('time', inplace=inplace)
-    assert 'time' in table.columns
-    assert 'string' not in table.columns
+        assert "float" in db["files"].columns
+    assert "float" not in table.columns
+    assert "string" in table.columns
+    table = db["files"].pick_columns("time", inplace=inplace)
+    assert "time" in table.columns
+    assert "string" not in table.columns
     if not inplace:
-        assert 'string' in db['files'].columns
+        assert "string" in db["files"].columns
 
 
 def test_drop_and_pick_index():
-
-    for table in ['files', 'segments']:
-
+    for table in ["files", "segments"]:
         index = pytest.DB[table].index[:5]
         df_pick = pytest.DB[table].pick_index(index).get()
         index = pytest.DB[table].index[5:]
@@ -536,52 +541,42 @@ def test_drop_and_pick_index():
         assert len(df_pick) == len(df_drop) == 5
         pd.testing.assert_frame_equal(df_pick, df_drop)
 
-    index = pytest.DB['segments'].index[:5]
+    index = pytest.DB["segments"].index[:5]
+    with pytest.raises(ValueError, match="Cannot drop rows"):
+        pytest.DB["files"].drop_index(index).get()
     with pytest.raises(
         ValueError,
-        match='Cannot drop rows'
+        match="Cannot pick rows",
     ):
-        pytest.DB['files'].drop_index(index).get()
-    with pytest.raises(
-        ValueError,
-        match='Cannot pick rows',
-    ):
-        pytest.DB['files'].pick_index(index).get()
+        pytest.DB["files"].pick_index(index).get()
 
 
 def test_drop_extend_and_pick_index_order():
-
     # Ensure order of index is preserved.
-    index = audformat.filewise_index(['f4', 'f3', 'f2', 'f1'])
+    index = audformat.filewise_index(["f4", "f3", "f2", "f1"])
     table = audformat.Table(index)
     # pick
-    new_table = table.pick_index(
-        audformat.filewise_index(['f1', 'f2'])
-    )
+    new_table = table.pick_index(audformat.filewise_index(["f1", "f2"]))
     pd.testing.assert_index_equal(
         new_table.index,
-        audformat.filewise_index(['f2', 'f1']),
+        audformat.filewise_index(["f2", "f1"]),
     )
     # extend
-    new_table = table.extend_index(
-        audformat.filewise_index('f5')
-    )
+    new_table = table.extend_index(audformat.filewise_index("f5"))
     pd.testing.assert_index_equal(
         new_table.index,
-        audformat.filewise_index(['f4', 'f3', 'f2', 'f1', 'f5']),
+        audformat.filewise_index(["f4", "f3", "f2", "f1", "f5"]),
     )
     # drop
-    new_table = table.drop_index(
-        audformat.filewise_index(['f1', 'f2'])
-    )
+    new_table = table.drop_index(audformat.filewise_index(["f1", "f2"]))
     pd.testing.assert_index_equal(
         new_table.index,
-        audformat.filewise_index(['f4', 'f3']),
+        audformat.filewise_index(["f4", "f3"]),
     )
 
 
 @pytest.mark.parametrize(
-    'table, index, expected',
+    "table, index, expected",
     [
         # table and index empty
         (
@@ -597,13 +592,13 @@ def test_drop_extend_and_pick_index_order():
         # table empty
         (
             create_table(audformat.filewise_index()),
-            audformat.filewise_index(['f1', 'f2']),
+            audformat.filewise_index(["f1", "f2"]),
             audformat.filewise_index(),
         ),
         (
             create_table(audformat.segmented_index()),
             audformat.segmented_index(
-                ['f1', 'f1', 'f2'],
+                ["f1", "f1", "f2"],
                 [0, 1, 0],
                 [1, 2, 3],
             ),
@@ -611,41 +606,41 @@ def test_drop_extend_and_pick_index_order():
         ),
         # index empty
         (
-            create_table(audformat.filewise_index(['f1', 'f2'])),
+            create_table(audformat.filewise_index(["f1", "f2"])),
             audformat.filewise_index(),
-            audformat.filewise_index(['f1', 'f2']),
+            audformat.filewise_index(["f1", "f2"]),
         ),
         (
             create_table(
                 audformat.segmented_index(
-                    ['f1', 'f1', 'f2'],
+                    ["f1", "f1", "f2"],
                     [0, 1, 0],
                     [1, 2, 3],
                 ),
             ),
             audformat.segmented_index(),
             audformat.segmented_index(
-                ['f1', 'f1', 'f2'],
+                ["f1", "f1", "f2"],
                 [0, 1, 0],
                 [1, 2, 3],
             ),
         ),
         # index and table identical
         (
-            create_table(audformat.filewise_index(['f1', 'f2'])),
-            audformat.filewise_index(['f2', 'f1']),
+            create_table(audformat.filewise_index(["f1", "f2"])),
+            audformat.filewise_index(["f2", "f1"]),
             audformat.filewise_index(),
         ),
         (
             create_table(
                 audformat.segmented_index(
-                    ['f1', 'f1', 'f2'],
+                    ["f1", "f1", "f2"],
                     [0, 1, 0],
                     [1, 2, 3],
                 ),
             ),
             audformat.segmented_index(
-                ['f2', 'f1', 'f1'],
+                ["f2", "f1", "f1"],
                 [0, 1, 0],
                 [3, 2, 1],
             ),
@@ -653,35 +648,35 @@ def test_drop_extend_and_pick_index_order():
         ),
         # index within table
         (
-            create_table(audformat.filewise_index(['f1', 'f2'])),
-            audformat.filewise_index(['f2']),
-            audformat.filewise_index(['f1']),
+            create_table(audformat.filewise_index(["f1", "f2"])),
+            audformat.filewise_index(["f2"]),
+            audformat.filewise_index(["f1"]),
         ),
         (
             create_table(
                 audformat.segmented_index(
-                    ['f1', 'f1', 'f2'],
+                    ["f1", "f1", "f2"],
                     [0, 1, 0],
                     [1, 2, 3],
                 ),
             ),
-            audformat.segmented_index('f1', 1, 2),
+            audformat.segmented_index("f1", 1, 2),
             audformat.segmented_index(
-                ['f1', 'f2'],
+                ["f1", "f2"],
                 [0, 0],
                 [1, 3],
             ),
         ),
         # table within index
         (
-            create_table(audformat.filewise_index(['f2'])),
-            audformat.filewise_index(['f1', 'f2']),
+            create_table(audformat.filewise_index(["f2"])),
+            audformat.filewise_index(["f1", "f2"]),
             audformat.filewise_index(),
         ),
         (
-            create_table(audformat.segmented_index('f1', 1, 2)),
+            create_table(audformat.segmented_index("f1", 1, 2)),
             audformat.segmented_index(
-                ['f1', 'f1', 'f2'],
+                ["f1", "f1", "f2"],
                 [0, 1, 0],
                 [1, 2, 3],
             ),
@@ -689,40 +684,40 @@ def test_drop_extend_and_pick_index_order():
         ),
         # index and table overlap
         (
-            create_table(audformat.filewise_index(['f1', 'f2'])),
-            audformat.filewise_index(['f2', 'f3']),
-            audformat.filewise_index(['f1']),
+            create_table(audformat.filewise_index(["f1", "f2"])),
+            audformat.filewise_index(["f2", "f3"]),
+            audformat.filewise_index(["f1"]),
         ),
         (
             create_table(
                 audformat.segmented_index(
-                    ['f1', 'f1', 'f2'],
+                    ["f1", "f1", "f2"],
                     [0, 1, 0],
                     [1, 2, 3],
                 ),
             ),
             audformat.segmented_index(
-                ['f2', 'f1', 'f1'],
+                ["f2", "f1", "f1"],
                 [0, 1, 0],
                 [3, 2, 2],
             ),
-            audformat.segmented_index('f1', 0, 1),
+            audformat.segmented_index("f1", 0, 1),
         ),
         # dtype of file level is object
         (
-            create_table(audformat.filewise_index(['f1', 'f2'])),
-            pd.Index(['f2', 'f3'], dtype='object', name='file'),
-            audformat.filewise_index(['f1']),
+            create_table(audformat.filewise_index(["f1", "f2"])),
+            pd.Index(["f2", "f3"], dtype="object", name="file"),
+            audformat.filewise_index(["f1"]),
         ),
         (
-            create_table(pd.Index(['f1', 'f2'], dtype='object', name='file')),
-            audformat.filewise_index(['f2', 'f3']),
-            audformat.filewise_index(['f1']),
+            create_table(pd.Index(["f1", "f2"], dtype="object", name="file")),
+            audformat.filewise_index(["f2", "f3"]),
+            audformat.filewise_index(["f1"]),
         ),
         (
-            create_table(pd.Index(['f1', 'f2'], dtype='object', name='file')),
-            pd.Index(['f2', 'f3'], dtype='object', name='file'),
-            audformat.filewise_index(['f1']),
+            create_table(pd.Index(["f1", "f2"], dtype="object", name="file")),
+            pd.Index(["f2", "f3"], dtype="object", name="file"),
+            audformat.filewise_index(["f1"]),
         ),
         # different index type
         pytest.param(
@@ -737,7 +732,7 @@ def test_drop_extend_and_pick_index_order():
             None,
             marks=pytest.mark.xfail(raises=ValueError),
         ),
-    ]
+    ],
 )
 def test_drop_index(table, index, expected):
     index_org = table.index.copy()
@@ -749,23 +744,22 @@ def test_drop_index(table, index, expected):
 
 
 @pytest.mark.parametrize(
-    'files',
+    "files",
     [
         pytest.DB.files,
         pytest.DB.files[0],
-        [pytest.DB.files[0], 'does-not-exist.wav'],
-        lambda x: '1' in x,
-    ]
+        [pytest.DB.files[0], "does-not-exist.wav"],
+        lambda x: "1" in x,
+    ],
 )
 @pytest.mark.parametrize(
-    'table',
+    "table",
     [
-        pytest.DB['files'],
-        pytest.DB['segments'],
-    ]
+        pytest.DB["files"],
+        pytest.DB["segments"],
+    ],
 )
 def test_drop_files(files, table):
-
     table = table.drop_files(files, inplace=False)
     if callable(files):
         files = table.files.to_series().apply(files)
@@ -775,17 +769,16 @@ def test_drop_files(files, table):
 
 
 def test_empty():
-
     db = audformat.testing.create_db(minimal=True)
-    db['table'] = audformat.Table()
+    db["table"] = audformat.Table()
 
-    assert db['table'].type == audformat.define.IndexType.FILEWISE
-    assert len(db['table'].files) == 0
-    assert len(db['table']) == 0
+    assert db["table"].type == audformat.define.IndexType.FILEWISE
+    assert len(db["table"].files) == 0
+    assert len(db["table"]) == 0
 
-    db['table']['column'] = audformat.Column()
+    db["table"]["column"] = audformat.Column()
 
-    assert db['table']['column'].get().dtype == object
+    assert db["table"]["column"].get().dtype == object
 
 
 def test_exceptions():
@@ -794,216 +787,217 @@ def test_exceptions():
     # invalid segments
 
     with pytest.raises(ValueError):
-        db['table'] = audformat.Table(
-            audformat.segmented_index(
-                files=['f1', 'f2'],
-                starts=['0s'],
-                ends=['1s']
-            ),
+        db["table"] = audformat.Table(
+            audformat.segmented_index(files=["f1", "f2"], starts=["0s"], ends=["1s"]),
         )
     with pytest.raises(ValueError):
-        db['table'] = audformat.Table(
+        db["table"] = audformat.Table(
             audformat.segmented_index(
-                files=['f1', 'f2'],
-                starts=['0s', '1s'],
-                ends=['1s'],
+                files=["f1", "f2"],
+                starts=["0s", "1s"],
+                ends=["1s"],
             )
         )
     with pytest.raises(ValueError):
-        db['table'] = audformat.Table(
+        db["table"] = audformat.Table(
             audformat.segmented_index(
-                files=['f1', 'f2'],
-                starts=['0s'],
-                ends=['1s', '2s'],
+                files=["f1", "f2"],
+                starts=["0s"],
+                ends=["1s", "2s"],
             )
         )
 
     # bad scheme or rater
 
     with pytest.raises(audformat.errors.BadIdError):
-        db['table'] = audformat.Table(
-            audformat.filewise_index(['f1', 'f2']),
+        db["table"] = audformat.Table(
+            audformat.filewise_index(["f1", "f2"]),
         )
-        db['table']['column'] = audformat.Column(scheme_id='invalid')
+        db["table"]["column"] = audformat.Column(scheme_id="invalid")
     with pytest.raises(audformat.errors.BadIdError):
-        db['table'] = audformat.Table(
-            audformat.filewise_index(['f1', 'f2']),
+        db["table"] = audformat.Table(
+            audformat.filewise_index(["f1", "f2"]),
         )
-        db['table']['column'] = audformat.Column(rater_id='invalid')
+        db["table"]["column"] = audformat.Column(rater_id="invalid")
 
     # level and column names must be unique
 
-    with pytest.raises(ValueError, match='index level with same name'):
-        db['table'] = audformat.Table(
+    with pytest.raises(ValueError, match="index level with same name"):
+        db["table"] = audformat.Table(
             audformat.filewise_index(),
         )
-        db['table'][audformat.define.IndexField.FILE] = audformat.Column()
+        db["table"][audformat.define.IndexField.FILE] = audformat.Column()
 
-    with pytest.raises(ValueError, match='index level with same name'):
-        db['table'] = audformat.Table(
+    with pytest.raises(ValueError, match="index level with same name"):
+        db["table"] = audformat.Table(
             audformat.segmented_index(),
         )
-        db['table'][audformat.define.IndexField.FILE] = audformat.Column()
+        db["table"][audformat.define.IndexField.FILE] = audformat.Column()
 
-    with pytest.raises(ValueError, match='index level with same name'):
-        db['table'] = audformat.Table(
+    with pytest.raises(ValueError, match="index level with same name"):
+        db["table"] = audformat.Table(
             audformat.segmented_index(),
         )
-        db['table'][audformat.define.IndexField.START] = audformat.Column()
+        db["table"][audformat.define.IndexField.START] = audformat.Column()
 
-    with pytest.raises(ValueError, match='index level with same name'):
-        db['table'] = audformat.Table(
+    with pytest.raises(ValueError, match="index level with same name"):
+        db["table"] = audformat.Table(
             audformat.segmented_index(),
         )
-        db['table'][audformat.define.IndexField.END] = audformat.Column()
+        db["table"][audformat.define.IndexField.END] = audformat.Column()
 
 
 def test_extend_index():
-
     db = audformat.testing.create_db(minimal=True)
-    db.schemes['scheme'] = audformat.Scheme()
+    db.schemes["scheme"] = audformat.Scheme()
 
     # empty and invalid
 
-    db['table'] = audformat.Table()
-    db['table'].extend_index(audformat.filewise_index())
-    assert db['table'].get().empty
+    db["table"] = audformat.Table()
+    db["table"].extend_index(audformat.filewise_index())
+    assert db["table"].get().empty
     with pytest.raises(
         ValueError,
-        match='Cannot extend',
+        match="Cannot extend",
     ):
-        db['table'].extend_index(
+        db["table"].extend_index(
             audformat.segmented_index(
-                files=['1.wav', '2.wav'],
-                starts=['0s', '1s'],
-                ends=['1s', '2s'],
+                files=["1.wav", "2.wav"],
+                starts=["0s", "1s"],
+                ends=["1s", "2s"],
             ),
-            fill_values='a',
+            fill_values="a",
         )
 
-    db.drop_tables('table')
+    db.drop_tables("table")
 
     # filewise
 
-    db['table'] = audformat.Table()
-    db['table']['columns'] = audformat.Column(scheme_id='scheme')
-    db['table'].extend_index(
-        audformat.filewise_index(['1.wav', '2.wav']),
-        fill_values='a',
+    db["table"] = audformat.Table()
+    db["table"]["columns"] = audformat.Column(scheme_id="scheme")
+    db["table"].extend_index(
+        audformat.filewise_index(["1.wav", "2.wav"]),
+        fill_values="a",
         inplace=True,
     )
     np.testing.assert_equal(
-        db['table']['columns'].get().values,
-        np.array(['a', 'a']),
+        db["table"]["columns"].get().values,
+        np.array(["a", "a"]),
     )
-    index = audformat.filewise_index(['1.wav', '3.wav'])
-    db['table'].extend_index(
+    index = audformat.filewise_index(["1.wav", "3.wav"])
+    db["table"].extend_index(
         index,
-        fill_values='b',
+        fill_values="b",
         inplace=True,
     )
     np.testing.assert_equal(
-        db['table']['columns'].get().values,
-        np.array(['a', 'a', 'b']),
+        db["table"]["columns"].get().values,
+        np.array(["a", "a", "b"]),
     )
-    index = pd.Index(['4.wav'], dtype='object', name='file')
-    db['table'].extend_index(
+    index = pd.Index(["4.wav"], dtype="object", name="file")
+    db["table"].extend_index(
         index,
-        fill_values='c',
+        fill_values="c",
         inplace=True,
     )
     np.testing.assert_equal(
-        db['table']['columns'].get().values,
-        np.array(['a', 'a', 'b', 'c']),
+        db["table"]["columns"].get().values,
+        np.array(["a", "a", "b", "c"]),
     )
 
-    db.drop_tables('table')
+    db.drop_tables("table")
 
     # segmented
 
-    db['table'] = audformat.Table(
-        audformat.segmented_index()
-    )
-    db['table']['columns'] = audformat.Column(scheme_id='scheme')
-    db['table'].extend_index(
+    db["table"] = audformat.Table(audformat.segmented_index())
+    db["table"]["columns"] = audformat.Column(scheme_id="scheme")
+    db["table"].extend_index(
         audformat.segmented_index(
-            files=['1.wav', '2.wav'],
-            starts=['0s', '1s'],
-            ends=['1s', '2s'],
+            files=["1.wav", "2.wav"],
+            starts=["0s", "1s"],
+            ends=["1s", "2s"],
         ),
-        fill_values='a',
+        fill_values="a",
         inplace=True,
     )
     np.testing.assert_equal(
-        db['table']['columns'].get().values,
-        np.array(['a', 'a']),
+        db["table"]["columns"].get().values,
+        np.array(["a", "a"]),
     )
     index = audformat.segmented_index(
-        files=['1.wav', '3.wav'],
-        starts=['0s', '2s'],
-        ends=['1s', '3s'],
+        files=["1.wav", "3.wav"],
+        starts=["0s", "2s"],
+        ends=["1s", "3s"],
     )
-    db['table'].extend_index(
+    db["table"].extend_index(
         index,
-        fill_values={'columns': 'b'},
+        fill_values={"columns": "b"},
         inplace=True,
     )
     np.testing.assert_equal(
-        db['table']['columns'].get().values,
-        np.array(['a', 'a', 'b']),
+        db["table"]["columns"].get().values,
+        np.array(["a", "a", "b"]),
     )
     index = pd.MultiIndex.from_arrays(
         [
-            ['3.wav'],
+            ["3.wav"],
             [pd.Timedelta(0)],
-            [pd.Timedelta(4, unit='s')],
+            [pd.Timedelta(4, unit="s")],
         ],
-        names=['file', 'start', 'end'],
+        names=["file", "start", "end"],
     )
-    db['table'].extend_index(
+    db["table"].extend_index(
         index,
-        fill_values={'columns': 'c'},
+        fill_values={"columns": "c"},
         inplace=True,
     )
     np.testing.assert_equal(
-        db['table']['columns'].get().values,
-        np.array(['a', 'a', 'b', 'c']),
+        db["table"]["columns"].get().values,
+        np.array(["a", "a", "b", "c"]),
     )
 
-    db.drop_tables('table')
+    db.drop_tables("table")
 
 
-@pytest.mark.parametrize('num_files,values', [
-    (6, [0.0, 1.0, 2.0, 3.0, 4.0, 5.0]),
-    (6, np.array([0.0, 1.0, 2.0, 3.0, 4.0, 5.0])),
-    (6, pd.Series(range(6), dtype='float').values,),
-])
+@pytest.mark.parametrize(
+    "num_files,values",
+    [
+        (6, [0.0, 1.0, 2.0, 3.0, 4.0, 5.0]),
+        (6, np.array([0.0, 1.0, 2.0, 3.0, 4.0, 5.0])),
+        (
+            6,
+            pd.Series(range(6), dtype="float").values,
+        ),
+    ],
+)
 def test_filewise(num_files, values):
-
     db = audformat.testing.create_db(minimal=True)
     audformat.testing.add_table(
-        db, 'table', audformat.define.IndexType.FILEWISE, num_files=num_files,
+        db,
+        "table",
+        audformat.define.IndexType.FILEWISE,
+        num_files=num_files,
     )
-    db.schemes['scheme'] = audformat.Scheme(
+    db.schemes["scheme"] = audformat.Scheme(
         dtype=audformat.define.DataType.FLOAT,
     )
-    table = db['table']
+    table = db["table"]
 
     # empty table
     df = pd.DataFrame(index=audformat.filewise_index(table.files))
     pd.testing.assert_frame_equal(table.get(), df)
 
     # no values
-    df['column'] = np.nan
-    table['column'] = audformat.Column(scheme_id='scheme')
+    df["column"] = np.nan
+    table["column"] = audformat.Column(scheme_id="scheme")
     pd.testing.assert_frame_equal(table.get(), df)
 
     # single
-    df['column'] = np.nan
-    table.df['column'] = np.nan
+    df["column"] = np.nan
+    table.df["column"] = np.nan
     df.iloc[0] = values[0]
     index = audformat.filewise_index(table.files[0])
-    table.set({'column': values[0]}, index=index)
+    table.set({"column": values[0]}, index=index)
     pd.testing.assert_frame_equal(
         table.get(index),
         df.loc[[table.files[0]]],
@@ -1011,12 +1005,12 @@ def test_filewise(num_files, values):
     pd.testing.assert_frame_equal(table.get(), df)
 
     # slice
-    df['column'] = np.nan
-    table.df['column'] = np.nan
+    df["column"] = np.nan
+    table.df["column"] = np.nan
     rows = df.index[1:-1]
-    df.loc[rows, 'column'] = values[1:-1]
+    df.loc[rows, "column"] = values[1:-1]
     index = audformat.filewise_index(table.files[1:-1])
-    table.set({'column': values[1:-1]}, index=index)
+    table.set({"column": values[1:-1]}, index=index)
     pd.testing.assert_frame_equal(
         table.get(index),
         df.loc[table.files[1:-1]],
@@ -1024,12 +1018,12 @@ def test_filewise(num_files, values):
     pd.testing.assert_frame_equal(table.get(), df)
 
     # dtype of file level is object
-    df['column'] = np.nan
-    table.df['column'] = np.nan
+    df["column"] = np.nan
+    table.df["column"] = np.nan
     rows = df.index[1:-1]
-    df.loc[rows, 'column'] = values[1:-1]
-    index = pd.Index(table.files[1:-1], dtype='object', name='file')
-    table.set({'column': values[1:-1]}, index=index)
+    df.loc[rows, "column"] = values[1:-1]
+    index = pd.Index(table.files[1:-1], dtype="object", name="file")
+    table.set({"column": values[1:-1]}, index=index)
     pd.testing.assert_frame_equal(
         table.get(index),
         df.loc[table.files[1:-1]],
@@ -1037,58 +1031,53 @@ def test_filewise(num_files, values):
     pd.testing.assert_frame_equal(table.get(), df)
 
     # all
-    df['column'] = np.nan
-    table.df['column'] = np.nan
+    df["column"] = np.nan
+    table.df["column"] = np.nan
     df.iloc[:, 0] = values
-    table.set({'column': values})
+    table.set({"column": values})
     pd.testing.assert_frame_equal(table.get(), df)
 
     # scalar
-    df['column'] = np.nan
-    table.df['column'] = np.nan
+    df["column"] = np.nan
+    table.df["column"] = np.nan
     df.iloc[:, 0] = values[0]
-    table.set({'column': values[0]})
+    table.set({"column": values[0]})
     pd.testing.assert_frame_equal(table.get(), df)
 
     # data frame
-    df['column'] = np.nan
-    table.df['column'] = np.nan
+    df["column"] = np.nan
+    table.df["column"] = np.nan
     df.iloc[:, 0] = values
     table.set(df)
     pd.testing.assert_frame_equal(table.get(), df)
 
 
 def test_get_as_segmented():
-
     db = pytest.DB
 
-    df = db['files'].get()
+    df = db["files"].get()
     assert audformat.index_type(df) == audformat.define.IndexType.FILEWISE
     assert not db._files_duration
 
     # convert to segmented index
 
-    df = db['files'].get(
+    df = db["files"].get(
         as_segmented=True,
         allow_nat=True,
     )
     assert audformat.index_type(df) == audformat.define.IndexType.SEGMENTED
     assert not db._files_duration
-    assert df.index.get_level_values(
-        audformat.define.IndexField.END
-    ).isna().all()
+    assert df.index.get_level_values(audformat.define.IndexField.END).isna().all()
 
     # replace NaT with file duration
 
-    df = db['files'].get(
+    df = db["files"].get(
         as_segmented=True,
         allow_nat=False,
     )
     assert audformat.index_type(df) == audformat.define.IndexType.SEGMENTED
     assert db._files_duration
-    assert not df.index.get_level_values(
-        audformat.define.IndexField.END
-    ).isna().any()
+    assert not df.index.get_level_values(audformat.define.IndexField.END).isna().any()
 
     # reset db
 
@@ -1096,10 +1085,9 @@ def test_get_as_segmented():
 
 
 def test_get_preserves_dtypes():
-
     db = pytest.DB
 
-    for table in [db['files'], db['segments']]:
+    for table in [db["files"], db["segments"]]:
         df = table.get()
         pd.testing.assert_series_equal(df.dtypes, table.df.dtypes)
         for index in [table.files, db.segments]:
@@ -1108,25 +1096,24 @@ def test_get_preserves_dtypes():
 
 
 def test_load(tmpdir):
-
-    path_pkl = os.path.join(tmpdir, 'db.table.pkl')
-    path_no_ext = os.path.join(tmpdir, 'db.table')
+    path_pkl = os.path.join(tmpdir, "db.table.pkl")
+    path_no_ext = os.path.join(tmpdir, "db.table")
 
     # Test backward compatibility
     table = create_db_table(
         pd.Series(
-            [1., 2.],
-            index=audformat.filewise_index(['f1', 'f2']),
-            name='column',
+            [1.0, 2.0],
+            index=audformat.filewise_index(["f1", "f2"]),
+            name="column",
         )
     )
-    table.df.to_pickle(path_pkl, compression='xz')
+    table.df.to_pickle(path_pkl, compression="xz")
     table_loaded = audformat.Table()
     table_loaded.load(path_no_ext)
     pd.testing.assert_frame_equal(table.df, table_loaded.df)
 
     # corrupt pickle file
-    with open(path_pkl, 'wb'):
+    with open(path_pkl, "wb"):
         pass
     with pytest.raises(EOFError):
         table_loaded.load(path_no_ext)
@@ -1136,7 +1123,7 @@ def test_load(tmpdir):
         path_no_ext,
         storage_format=audformat.define.TableStorageFormat.CSV,
     )
-    with open(path_pkl, 'wb'):
+    with open(path_pkl, "wb"):
         pass
     table_loaded = audformat.Table()
     table_loaded.columns = table.columns
@@ -1154,46 +1141,48 @@ def test_load_old_pickle(tmpdir):
     # and have to fix this when loading old PKL files from cache.
 
     # Create PKL file containing strings as object
-    y = pd.Series(['c'], dtype='object', name='column')
-    index = pd.Index(['f1'], dtype='object', name='file')
+    y = pd.Series(["c"], dtype="object", name="column")
+    index = pd.Index(["f1"], dtype="object", name="file")
 
     db = audformat.testing.create_db(minimal=True)
-    db['table'] = audformat.Table(index)
-    db.schemes['column'] = audformat.Scheme(audformat.define.DataType.OBJECT)
-    db['table']['column'] = audformat.Column(scheme_id='column')
-    db['table']['column'].set(y.values)
-    db_root = tmpdir.join('db')
-    db.save(db_root, storage_format='pkl')
+    db["table"] = audformat.Table(index)
+    db.schemes["column"] = audformat.Scheme(audformat.define.DataType.OBJECT)
+    db["table"]["column"] = audformat.Column(scheme_id="column")
+    db["table"]["column"].set(y.values)
+    db_root = tmpdir.join("db")
+    db.save(db_root, storage_format="pkl")
 
     # Change scheme dtype to string and store header again
-    db.schemes['column'] = audformat.Scheme(audformat.define.DataType.STRING)
+    db.schemes["column"] = audformat.Scheme(audformat.define.DataType.STRING)
     db.save(db_root, header_only=True)
 
     # Load and check that dtype is string
     db_new = audformat.Database.load(db_root)
-    assert db_new.schemes['column'].dtype == audformat.define.DataType.STRING
-    assert db_new['table'].df['column'].dtype == 'string'
-    assert db_new['table'].index.dtype == 'string'
+    assert db_new.schemes["column"].dtype == audformat.define.DataType.STRING
+    assert db_new["table"].df["column"].dtype == "string"
+    assert db_new["table"].index.dtype == "string"
 
 
 @pytest.mark.parametrize(
-    'table, map',
+    "table, map",
     [
-        (pytest.DB['files'], {'label_map_int': 'int'}),
-        (pytest.DB['files'], {'label_map_int': 'label_map_int'}),
-        (pytest.DB['files'], {'label_map_str': 'prop1'}),
-        (pytest.DB['segments'], {'label_map_str': ['prop1', 'prop2']}),
-        (pytest.DB['segments'], {  # duplicates will be ignored
-            'label_map_str': ['prop1', 'prop2', 'prop1', 'prop2']
-        }),
-        (pytest.DB['segments'], {
-            'label_map_str': ['label_map_str', 'prop1', 'prop2']
-        }),
+        (pytest.DB["files"], {"label_map_int": "int"}),
+        (pytest.DB["files"], {"label_map_int": "label_map_int"}),
+        (pytest.DB["files"], {"label_map_str": "prop1"}),
+        (pytest.DB["segments"], {"label_map_str": ["prop1", "prop2"]}),
+        (
+            pytest.DB["segments"],
+            {  # duplicates will be ignored
+                "label_map_str": ["prop1", "prop2", "prop1", "prop2"]
+            },
+        ),
+        (pytest.DB["segments"], {"label_map_str": ["label_map_str", "prop1", "prop2"]}),
         pytest.param(  # no database
-            audformat.Table(), 'map',
+            audformat.Table(),
+            "map",
             marks=pytest.mark.xfail(raises=RuntimeError),
         ),
-    ]
+    ],
 )
 def test_map(table, map):
     result = table.get(map=map)
@@ -1216,23 +1205,22 @@ def test_map(table, map):
 
 
 @pytest.mark.parametrize(
-    'files',
+    "files",
     [
         pytest.DB.files,
         pytest.DB.files[0],
-        [pytest.DB.files[0], 'does-not-exist.wav'],
-        lambda x: '1' in x,
-    ]
+        [pytest.DB.files[0], "does-not-exist.wav"],
+        lambda x: "1" in x,
+    ],
 )
 @pytest.mark.parametrize(
-    'table',
+    "table",
     [
-        pytest.DB['files'],
-        pytest.DB['segments'],
-    ]
+        pytest.DB["files"],
+        pytest.DB["segments"],
+    ],
 )
 def test_pick_files(files, table):
-
     table = table.pick_files(files, inplace=False)
     if callable(files):
         files = table.files[table.files.to_series().apply(files)]
@@ -1248,7 +1236,7 @@ def test_pick_files(files, table):
 
 
 @pytest.mark.parametrize(
-    'table, index, expected',
+    "table, index, expected",
     [
         # table and index empty
         (
@@ -1264,13 +1252,13 @@ def test_pick_files(files, table):
         # table empty
         (
             create_table(audformat.filewise_index()),
-            audformat.filewise_index(['f1', 'f2']),
+            audformat.filewise_index(["f1", "f2"]),
             audformat.filewise_index(),
         ),
         (
             create_table(audformat.segmented_index()),
             audformat.segmented_index(
-                ['f1', 'f1', 'f2'],
+                ["f1", "f1", "f2"],
                 [0, 1, 0],
                 [1, 2, 3],
             ),
@@ -1278,14 +1266,14 @@ def test_pick_files(files, table):
         ),
         # index empty
         (
-            create_table(audformat.filewise_index(['f1', 'f2'])),
+            create_table(audformat.filewise_index(["f1", "f2"])),
             audformat.filewise_index(),
             audformat.filewise_index(),
         ),
         (
             create_table(
                 audformat.segmented_index(
-                    ['f1', 'f1', 'f2'],
+                    ["f1", "f1", "f2"],
                     [0, 1, 0],
                     [1, 2, 3],
                 ),
@@ -1295,101 +1283,101 @@ def test_pick_files(files, table):
         ),
         # index and table identical
         (
-            create_table(audformat.filewise_index(['f1', 'f2'])),
-            audformat.filewise_index(['f2', 'f1']),
-            audformat.filewise_index(['f1', 'f2']),
+            create_table(audformat.filewise_index(["f1", "f2"])),
+            audformat.filewise_index(["f2", "f1"]),
+            audformat.filewise_index(["f1", "f2"]),
         ),
         (
             create_table(
                 audformat.segmented_index(
-                    ['f1', 'f1', 'f2'],
+                    ["f1", "f1", "f2"],
                     [0, 1, 0],
                     [1, 2, 3],
                 ),
             ),
             audformat.segmented_index(
-                ['f2', 'f1', 'f1'],
+                ["f2", "f1", "f1"],
                 [0, 1, 0],
                 [3, 2, 1],
             ),
             audformat.segmented_index(
-                ['f1', 'f1', 'f2'],
+                ["f1", "f1", "f2"],
                 [0, 1, 0],
                 [1, 2, 3],
             ),
         ),
         # index within table
         (
-            create_table(audformat.filewise_index(['f1', 'f2'])),
-            audformat.filewise_index(['f2']),
-            audformat.filewise_index(['f2']),
+            create_table(audformat.filewise_index(["f1", "f2"])),
+            audformat.filewise_index(["f2"]),
+            audformat.filewise_index(["f2"]),
         ),
         (
             create_table(
                 audformat.segmented_index(
-                    ['f1', 'f1', 'f2'],
+                    ["f1", "f1", "f2"],
                     [0, 1, 0],
                     [1, 2, 3],
                 ),
             ),
-            audformat.segmented_index('f1', 1, 2),
-            audformat.segmented_index('f1', 1, 2),
+            audformat.segmented_index("f1", 1, 2),
+            audformat.segmented_index("f1", 1, 2),
         ),
         # table within index
         (
-            create_table(audformat.filewise_index(['f2'])),
-            audformat.filewise_index(['f1', 'f2']),
-            audformat.filewise_index(['f2']),
+            create_table(audformat.filewise_index(["f2"])),
+            audformat.filewise_index(["f1", "f2"]),
+            audformat.filewise_index(["f2"]),
         ),
         (
-            create_table(audformat.segmented_index('f1', 1, 2)),
+            create_table(audformat.segmented_index("f1", 1, 2)),
             audformat.segmented_index(
-                ['f1', 'f1', 'f2'],
+                ["f1", "f1", "f2"],
                 [0, 1, 0],
                 [1, 2, 3],
             ),
-            audformat.segmented_index('f1', 1, 2),
+            audformat.segmented_index("f1", 1, 2),
         ),
         # index and table overlap
         (
-            create_table(audformat.filewise_index(['f1', 'f2'])),
-            audformat.filewise_index(['f2', 'f3']),
-            audformat.filewise_index(['f2']),
+            create_table(audformat.filewise_index(["f1", "f2"])),
+            audformat.filewise_index(["f2", "f3"]),
+            audformat.filewise_index(["f2"]),
         ),
         (
             create_table(
                 audformat.segmented_index(
-                    ['f1', 'f1', 'f2'],
+                    ["f1", "f1", "f2"],
                     [0, 1, 0],
                     [1, 2, 3],
                 ),
             ),
             audformat.segmented_index(
-                ['f2', 'f1', 'f1'],
+                ["f2", "f1", "f1"],
                 [0, 1, 0],
                 [3, 2, 2],
             ),
             audformat.segmented_index(
-                ['f1', 'f2'],
+                ["f1", "f2"],
                 [1, 0],
                 [2, 3],
             ),
         ),
         # dtype of file level is object
         (
-            create_table(audformat.filewise_index(['f1', 'f2'])),
-            pd.Index(['f2'], dtype='object', name='file'),
-            audformat.filewise_index(['f2']),
+            create_table(audformat.filewise_index(["f1", "f2"])),
+            pd.Index(["f2"], dtype="object", name="file"),
+            audformat.filewise_index(["f2"]),
         ),
         (
-            create_table(pd.Index(['f1', 'f2'], dtype='object', name='file')),
-            audformat.filewise_index(['f2']),
-            audformat.filewise_index(['f2']),
+            create_table(pd.Index(["f1", "f2"], dtype="object", name="file")),
+            audformat.filewise_index(["f2"]),
+            audformat.filewise_index(["f2"]),
         ),
         (
-            create_table(pd.Index(['f1', 'f2'], dtype='object', name='file')),
-            pd.Index(['f2'], dtype='object', name='file'),
-            audformat.filewise_index(['f2']),
+            create_table(pd.Index(["f1", "f2"], dtype="object", name="file")),
+            pd.Index(["f2"], dtype="object", name="file"),
+            audformat.filewise_index(["f2"]),
         ),
         # different index type
         pytest.param(
@@ -1404,7 +1392,7 @@ def test_pick_files(files, table):
             None,
             marks=pytest.mark.xfail(raises=ValueError),
         ),
-    ]
+    ],
 )
 def test_pick_index(table, index, expected):
     index_org = table.index.copy()
@@ -1415,130 +1403,134 @@ def test_pick_index(table, index, expected):
     pd.testing.assert_index_equal(table.index, expected)
 
 
-@pytest.mark.parametrize('num_files,num_segments_per_file,values', [
-    (3, 2, [0.0, 1.0, 2.0, 3.0, 4.0, 5.0]),
-    (3, 2, np.array([0.0, 1.0, 2.0, 3.0, 4.0, 5.0])),
-    (3, 2, pd.Series(range(6), dtype='float').values),
-])
+@pytest.mark.parametrize(
+    "num_files,num_segments_per_file,values",
+    [
+        (3, 2, [0.0, 1.0, 2.0, 3.0, 4.0, 5.0]),
+        (3, 2, np.array([0.0, 1.0, 2.0, 3.0, 4.0, 5.0])),
+        (3, 2, pd.Series(range(6), dtype="float").values),
+    ],
+)
 def test_segmented(num_files, num_segments_per_file, values):
-
     db = audformat.testing.create_db(minimal=True)
     audformat.testing.add_table(
-        db, 'table', audformat.define.IndexType.SEGMENTED,
-        num_files=num_files, num_segments_per_file=num_segments_per_file,
+        db,
+        "table",
+        audformat.define.IndexType.SEGMENTED,
+        num_files=num_files,
+        num_segments_per_file=num_segments_per_file,
     )
-    db.schemes['scheme'] = audformat.Scheme(
+    db.schemes["scheme"] = audformat.Scheme(
         dtype=audformat.define.DataType.FLOAT,
     )
-    table = db['table']
+    table = db["table"]
 
     # empty table
     df = pd.DataFrame(index=table.index)
     pd.testing.assert_frame_equal(table.get(), df)
 
     # no values
-    df['column'] = np.nan
-    table['column'] = audformat.Column(scheme_id='scheme')
+    df["column"] = np.nan
+    table["column"] = audformat.Column(scheme_id="scheme")
     pd.testing.assert_frame_equal(table.get(), df)
 
     # single
-    df['column'] = np.nan
-    table.df['column'] = np.nan
+    df["column"] = np.nan
+    table.df["column"] = np.nan
     index = audformat.segmented_index(
         table.files[0],
         starts=table.starts[0],
         ends=table.ends[0],
     )
     df.loc[index] = values[0]
-    table.set({'column': values[0]}, index=index)
+    table.set({"column": values[0]}, index=index)
     pd.testing.assert_frame_equal(
         table.get(index),
         df.loc[index],
     )
 
     # slice
-    df['column'] = np.nan
-    table.df['column'] = np.nan
+    df["column"] = np.nan
+    table.df["column"] = np.nan
     index = audformat.segmented_index(
         table.files[1:-1],
         starts=table.starts[1:-1],
         ends=table.ends[1:-1],
     )
     df.loc[index, :] = values[1:-1]
-    table.set({'column': values[1:-1]}, index=index)
+    table.set({"column": values[1:-1]}, index=index)
     pd.testing.assert_frame_equal(
         table.get(index),
         df.loc[index],
     )
 
     # dtype of file level is object
-    df['column'] = np.nan
-    table.df['column'] = np.nan
+    df["column"] = np.nan
+    table.df["column"] = np.nan
     index = pd.MultiIndex.from_arrays(
         [
-            table.files[1:-1].astype('object'),
+            table.files[1:-1].astype("object"),
             table.starts[1:-1],
             table.ends[1:-1],
         ],
-        names=['file', 'start', 'end'],
+        names=["file", "start", "end"],
     )
     df.loc[index, :] = values[1:-1]
-    table.set({'column': values[1:-1]}, index=index)
+    table.set({"column": values[1:-1]}, index=index)
     pd.testing.assert_frame_equal(
         table.get(index),
         df.loc[index],
     )
 
     # all
-    df['column'] = np.nan
-    table.df['column'] = np.nan
+    df["column"] = np.nan
+    table.df["column"] = np.nan
     df.iloc[:, 0] = values
-    table.set({'column': values})
+    table.set({"column": values})
     pd.testing.assert_frame_equal(table.get(), df)
 
     # scalar
-    df['column'] = np.nan
-    table.df['column'] = np.nan
+    df["column"] = np.nan
+    table.df["column"] = np.nan
     df.iloc[:, 0] = values[0]
-    table.set({'column': values[0]})
+    table.set({"column": values[0]})
     pd.testing.assert_frame_equal(table.get(), df)
 
     # data frame
-    df['column'] = np.nan
-    table.df['column'] = np.nan
+    df["column"] = np.nan
+    table.df["column"] = np.nan
     table.set(df)
     pd.testing.assert_frame_equal(table.get(), df)
 
 
 def test_type():
-
     db = audformat.testing.create_db()
 
-    assert db['files'].is_filewise
-    assert db['segments'].is_segmented
+    assert db["files"].is_filewise
+    assert db["segments"].is_segmented
 
-    assert sorted(set(db['files'].index)) == sorted(db.files)
-    pd.testing.assert_index_equal(db.segments, db['segments'].index)
-    pd.testing.assert_index_equal(db.files, db['files'].files)
+    assert sorted(set(db["files"].index)) == sorted(db.files)
+    pd.testing.assert_index_equal(db.segments, db["segments"].index)
+    pd.testing.assert_index_equal(db.files, db["files"].files)
     pd.testing.assert_index_equal(
-        db['files'].starts.unique(),
+        db["files"].starts.unique(),
         pd.TimedeltaIndex(
             [0],
             name=audformat.define.IndexField.START,
-        )
+        ),
     )
     pd.testing.assert_index_equal(
-        db['files'].ends.unique(),
+        db["files"].ends.unique(),
         pd.TimedeltaIndex(
             [pd.NaT],
             name=audformat.define.IndexField.END,
-        )
+        ),
     )
-    pd.testing.assert_index_equal(db['files'].index, db['files'].index)
+    pd.testing.assert_index_equal(db["files"].index, db["files"].index)
 
 
 @pytest.mark.parametrize(
-    'table, overwrite, others',
+    "table, overwrite, others",
     [
         # empty
         (
@@ -1555,45 +1547,45 @@ def test_type():
         (
             create_db_table(
                 pd.Series(
-                    [1., 2.],
-                    index=audformat.filewise_index(['f1', 'f2']),
+                    [1.0, 2.0],
+                    index=audformat.filewise_index(["f1", "f2"]),
                 )
             ),
             False,
             create_db_table(
                 pd.Series(
-                    [2., 3.],  # ok, value do match
-                    index=audformat.filewise_index(['f2', 'f3']),
+                    [2.0, 3.0],  # ok, value do match
+                    index=audformat.filewise_index(["f2", "f3"]),
                 )
             ),
         ),
         (
             create_db_table(
                 pd.Series(
-                    [1., 2.],
-                    index=audformat.filewise_index(['f1', 'f2']),
+                    [1.0, 2.0],
+                    index=audformat.filewise_index(["f1", "f2"]),
                 )
             ),
             False,
             create_db_table(
                 pd.Series(
-                    [np.nan, 3.],  # ok, value is nan
-                    index=audformat.filewise_index(['f2', 'f3']),
+                    [np.nan, 3.0],  # ok, value is nan
+                    index=audformat.filewise_index(["f2", "f3"]),
                 )
             ),
         ),
         pytest.param(
             create_db_table(
                 pd.Series(
-                    [1., 2.],
-                    index=audformat.filewise_index(['f1', 'f2']),
+                    [1.0, 2.0],
+                    index=audformat.filewise_index(["f1", "f2"]),
                 )
             ),
             False,
             create_db_table(
                 pd.Series(
-                    [99., 3.],  # error, value do not match
-                    index=audformat.filewise_index(['f2', 'f3']),
+                    [99.0, 3.0],  # error, value do not match
+                    index=audformat.filewise_index(["f2", "f3"]),
                 )
             ),
             marks=pytest.mark.xfail(raises=ValueError),
@@ -1601,15 +1593,15 @@ def test_type():
         (
             create_db_table(
                 pd.Series(
-                    [1., 2.],
-                    index=audformat.filewise_index(['f1', 'f2']),
+                    [1.0, 2.0],
+                    index=audformat.filewise_index(["f1", "f2"]),
                 )
             ),
             True,
             create_db_table(
                 pd.Series(
-                    [99., 3.],  # ok, will be overwritten
-                    index=audformat.filewise_index(['f2', 'f3']),
+                    [99.0, 3.0],  # ok, will be overwritten
+                    index=audformat.filewise_index(["f2", "f3"]),
                 )
             ),
         ),
@@ -1617,25 +1609,25 @@ def test_type():
         (
             create_db_table(
                 pd.Series(
-                    [1., 2.],
-                    index=audformat.filewise_index(['f1', 'f2']),
-                    name='c1',
+                    [1.0, 2.0],
+                    index=audformat.filewise_index(["f1", "f2"]),
+                    name="c1",
                 )
             ),
             False,
             [
                 create_db_table(
                     pd.Series(
-                        ['a', 'b'],
-                        index=audformat.filewise_index(['f2', 'f3']),
-                        name='c2',
+                        ["a", "b"],
+                        index=audformat.filewise_index(["f2", "f3"]),
+                        name="c2",
                     )
                 ),
                 create_db_table(
                     pd.Series(
                         [1, 2],
-                        index=audformat.filewise_index(['f2', 'f3']),
-                        name='c3',
+                        index=audformat.filewise_index(["f2", "f3"]),
+                        name="c3",
                     )
                 ),
             ],
@@ -1644,15 +1636,15 @@ def test_type():
         pytest.param(
             create_db_table(
                 pd.Series(
-                    [1., 2.],
-                    index=audformat.filewise_index(['f1', 'f2']),
+                    [1.0, 2.0],
+                    index=audformat.filewise_index(["f1", "f2"]),
                 )
             ),
             False,
             create_db_table(  # same column, different scheme
                 pd.Series(
-                    ['a', 'b'],
-                    index=audformat.filewise_index(['f2', 'f3']),
+                    ["a", "b"],
+                    index=audformat.filewise_index(["f2", "f3"]),
                 )
             ),
             marks=pytest.mark.xfail(raises=ValueError),
@@ -1660,15 +1652,15 @@ def test_type():
         pytest.param(
             create_db_table(
                 pd.Series(
-                    [1., 2.],
-                    index=audformat.filewise_index(['f1', 'f2']),
+                    [1.0, 2.0],
+                    index=audformat.filewise_index(["f1", "f2"]),
                 )
             ),
             False,
             create_table(  # no scheme
                 pd.Series(
-                    [1., 2.],
-                    index=audformat.filewise_index(['f1', 'f2']),
+                    [1.0, 2.0],
+                    index=audformat.filewise_index(["f1", "f2"]),
                 )
             ),
             marks=pytest.mark.xfail(raises=ValueError),
@@ -1676,20 +1668,20 @@ def test_type():
         pytest.param(
             create_db_table(
                 pd.Series(
-                    [1., 2.],
-                    index=audformat.filewise_index(['f1', 'f2']),
-                    name='c1',
+                    [1.0, 2.0],
+                    index=audformat.filewise_index(["f1", "f2"]),
+                    name="c1",
                 ),
-                scheme_id='scheme',
+                scheme_id="scheme",
             ),
             False,
             create_db_table(
                 pd.Series(  # different scheme with same id
-                    ['a', 'b'],
-                    index=audformat.filewise_index(['f1', 'f2']),
-                    name='c2',
+                    ["a", "b"],
+                    index=audformat.filewise_index(["f1", "f2"]),
+                    name="c2",
                 ),
-                scheme_id='scheme',
+                scheme_id="scheme",
             ),
             marks=pytest.mark.xfail(raises=ValueError),
         ),
@@ -1699,7 +1691,7 @@ def test_type():
                 pd.Series(
                     index=audformat.filewise_index(),
                     dtype=float,
-                    name='c1',
+                    name="c1",
                 ),
             ),
             False,
@@ -1707,10 +1699,9 @@ def test_type():
                 pd.Series(
                     index=audformat.filewise_index(),
                     dtype=float,
-                    name='c2',
+                    name="c2",
                 ),
-                rater=audformat.Rater(
-                    audformat.define.RaterType.HUMAN),
+                rater=audformat.Rater(audformat.define.RaterType.HUMAN),
             ),
         ),
         # error: rater mismatch
@@ -1745,7 +1736,7 @@ def test_type():
                 pd.Series(
                     index=audformat.filewise_index(),
                     dtype=float,
-                    name='c1',
+                    name="c1",
                 ),
                 rater=audformat.Rater(audformat.define.RaterType.HUMAN),
             ),
@@ -1754,7 +1745,7 @@ def test_type():
                 pd.Series(
                     index=audformat.filewise_index(),
                     dtype=float,
-                    name='c2',
+                    name="c2",
                 ),
                 rater=audformat.Rater(audformat.define.RaterType.MACHINE),
             ),
@@ -1837,15 +1828,15 @@ def test_type():
         pytest.param(
             create_db_table(
                 pd.Series(
-                    [1., 2.],
-                    index=audformat.filewise_index(['f1', 'f2']),
+                    [1.0, 2.0],
+                    index=audformat.filewise_index(["f1", "f2"]),
                 )
             ),
             False,
             create_db_table(
                 pd.Series(
-                    [2., 3.],
-                    index=audformat.segmented_index(['f2', 'f3']),
+                    [2.0, 3.0],
+                    index=audformat.segmented_index(["f2", "f3"]),
                 )
             ),
             marks=pytest.mark.xfail(raises=ValueError),
@@ -1853,20 +1844,20 @@ def test_type():
         pytest.param(
             create_db_table(
                 pd.Series(
-                    [1., 2.],
-                    index=audformat.segmented_index(['f1', 'f2']),
+                    [1.0, 2.0],
+                    index=audformat.segmented_index(["f1", "f2"]),
                 )
             ),
             False,
             create_db_table(
                 pd.Series(
-                    [2., 3.],
-                    index=audformat.filewise_index(['f2', 'f3']),
+                    [2.0, 3.0],
+                    index=audformat.filewise_index(["f2", "f3"]),
                 )
             ),
             marks=pytest.mark.xfail(raises=ValueError),
         ),
-    ]
+    ],
 )
 def test_update(table, overwrite, others):
     df = table.get()
