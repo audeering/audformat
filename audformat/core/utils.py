@@ -1559,7 +1559,7 @@ def to_filewise_index(
     index = obj if isinstance(obj, pd.Index) else obj.index
     test_path = index.get_level_values(define.IndexField.FILE)[0]
     is_abs = os.path.isabs(test_path)
-    test_path = audeer.path(test_path)
+    test_path = audeer.path(test_path, follow_symlink=True)
 
     # keep ``output_folder`` relative if it's relative
     if test_path.startswith(audeer.path(output_folder)):

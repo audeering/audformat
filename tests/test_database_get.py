@@ -12,7 +12,7 @@ import audformat.testing
 def mono_db(tmpdir):
     r"""Database with ..."""
     name = "mono-db"
-    path = audeer.mkdir(audeer.path(tmpdir, name))
+    path = audeer.mkdir(tmpdir, name)
     db = audformat.Database(name)
 
     # --- Splits
@@ -153,7 +153,7 @@ def stereo_db(tmpdir):
 
     """
     name = "stereo-db"
-    path = audeer.mkdir(audeer.path(tmpdir, name))
+    path = audeer.mkdir(tmpdir, name)
     db = audformat.Database(name)
 
     # --- Schemes
@@ -206,7 +206,7 @@ def overlapping_data_db(tmpdir):
 
     """
     name = "overlapping_data_db"
-    path = audeer.mkdir(audeer.path(tmpdir, name))
+    path = audeer.mkdir(tmpdir, name)
     db = audformat.Database(name)
 
     # --- Schemes
@@ -234,7 +234,7 @@ def overlapping_data_db(tmpdir):
 def scheme_not_assigned_db(tmpdir):
     r"""Database with matching scheme that is not assigned."""
     name = "scheme_not_assigned_db"
-    path = audeer.mkdir(audeer.path(tmpdir, name))
+    path = audeer.mkdir(tmpdir, name)
     db = audformat.Database(name)
 
     # --- Schemes
@@ -262,7 +262,7 @@ def scheme_not_assigned_db(tmpdir):
 def wrong_scheme_labels_db(tmpdir):
     r"""Database with scheme labels that do not match."""
     name = "wrong_scheme_labels_db"
-    path = audeer.mkdir(audeer.path(tmpdir, name))
+    path = audeer.mkdir(tmpdir, name)
     db = audformat.Database(name)
 
     # --- Schemes

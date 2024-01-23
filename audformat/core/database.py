@@ -1010,7 +1010,7 @@ class Database(HeaderBase):
         if not header_only:
             # Store (misc) tables
             def job(obj_id, obj):
-                path = audeer.path(root, f"{name}.{obj_id}")
+                path = os.path.join(root, f"{name}.{obj_id}")
                 obj.save(
                     path,
                     storage_format=storage_format,
@@ -1411,7 +1411,7 @@ class Database(HeaderBase):
 
         """
         ext = ".yaml"
-        root = audeer.path(root)
+        root = audeer.path(root, follow_symlink=True)
         path = os.path.join(root, name + ext)
 
         if not os.path.exists(path):
@@ -1435,7 +1435,7 @@ class Database(HeaderBase):
             for table_id in table_ids:
                 table = db[table_id]
                 if load_data:
-                    table_path = audeer.path(root, name + "." + table_id)
+                    table_path = os.path.join(root, name + "." + table_id)
                     params.append(([table, table_path], {}))
                 else:
                     table._df = None
