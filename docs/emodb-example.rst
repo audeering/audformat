@@ -25,11 +25,11 @@ to the folder :file:`emodb-src`.
 
 
     # Get database source
-    source = 'http://emodb.bilderbar.info/download/download.zip'
-    src_dir = 'emodb-src'
+    source = "http://emodb.bilderbar.info/download/download.zip"
+    src_dir = "emodb-src"
     if not os.path.exists(src_dir):
-        urllib.request.urlretrieve(source, 'emodb.zip')
-        audeer.extract_archive('emodb.zip', src_dir)
+        urllib.request.urlretrieve(source, "emodb.zip")
+        audeer.extract_archive("emodb.zip", src_dir)
 
     os.listdir(src_dir)
 
@@ -46,7 +46,7 @@ First, have a look at the file names.
 
 .. jupyter-execute::
 
-    os.listdir(os.path.join(src_dir, 'wav'))[:3]
+    os.listdir(os.path.join(src_dir, "wav"))[:3]
 
 As described in the `emodb documentation`_
 the encoding is the following.
@@ -135,55 +135,55 @@ to the emotion table.
 
 
     description = (
-       'Berlin Database of Emotional Speech. '
-       'A German database of emotional utterances '
-       'spoken by actors '
-       'recorded as a part of the DFG funded research project '
-       'SE462/3-1 in 1997 and 1999. '
-       'Recordings took place in the anechoic chamber '
-       'of the Technical University Berlin, '
-       'department of Technical Acoustics. '
-       'It contains about 500 utterances '
-       'from ten different actors '
-       'expressing basic six emotions and neutral.'
+       "Berlin Database of Emotional Speech. "
+       "A German database of emotional utterances "
+       "spoken by actors "
+       "recorded as a part of the DFG funded research project "
+       "SE462/3-1 in 1997 and 1999. "
+       "Recordings took place in the anechoic chamber "
+       "of the Technical University Berlin, "
+       "department of Technical Acoustics. "
+       "It contains about 500 utterances "
+       "from ten different actors "
+       "expressing basic six emotions and neutral."
     )
 
     files = sorted(
-        [os.path.join('wav', f) for f in os.listdir(os.path.join(src_dir, 'wav'))]
+        [os.path.join("wav", f) for f in os.listdir(os.path.join(src_dir, "wav"))]
     )
     names = [audeer.basename_wo_ext(f) for f in files]
 
     emotion_mapping = {
-        'W': 'anger',
-        'L': 'boredom',
-        'E': 'disgust',
-        'A': 'fear',
-        'F': 'happiness',
-        'T': 'sadness',
-        'N': 'neutral',
+        "W": "anger",
+        "L": "boredom",
+        "E": "disgust",
+        "A": "fear",
+        "F": "happiness",
+        "T": "sadness",
+        "N": "neutral",
     }
     emotions = list(parse_names(names, from_i=5, to_i=6, mapping=emotion_mapping))
 
     y = pd.read_csv(
-        os.path.join(src_dir, 'erkennung.txt'),
-        usecols=['Satz', 'erkannt'],
-        index_col='Satz',
+        os.path.join(src_dir, "erkennung.txt"),
+        usecols=["Satz", "erkannt"],
+        index_col="Satz",
         delim_whitespace=True,
-        encoding='Latin-1',
-        decimal=',',
-        converters={'Satz': lambda x: os.path.join('wav', x)},
-    ).squeeze('columns')
+        encoding="Latin-1",
+        decimal=",",
+        converters={"Satz": lambda x: os.path.join("wav", x)},
+    ).squeeze("columns")
     y = y.loc[files]
-    y = y.replace(to_replace=u'\xa0', value='', regex=True)
-    y = y.replace(to_replace=',', value='.', regex=True)
-    confidences = y.astype('float').values
+    y = y.replace(to_replace=u"\xa0", value="", regex=True)
+    y = y.replace(to_replace=",", value=".", regex=True)
+    confidences = y.astype("float").values
 
     male = audformat.define.Gender.MALE
     female = audformat.define.Gender.FEMALE
-    de = audformat.utils.map_language('de')
+    de = audformat.utils.map_language("de")
     df_speaker = pd.DataFrame(
-        index=pd.Index([3, 8, 9, 10, 11, 12, 13, 14, 15, 16], name='speaker'),
-        columns=['age', 'gender', 'language'],
+        index=pd.Index([3, 8, 9, 10, 11, 12, 13, 14, 15, 16], name="speaker"),
+        columns=["age", "gender", "language"],
         data = [
             [31, male, de],
             [34, female, de],
@@ -200,21 +200,21 @@ to the emotion table.
     speakers = list(parse_names(names, from_i=0, to_i=2, is_number=True))
 
     transcription_mapping = {
-        'a01': 'Der Lappen liegt auf dem Eisschrank.',
-        'a02': 'Das will sie am Mittwoch abgeben.',
-        'a04': 'Heute abend könnte ich es ihm sagen.',
-        'a05': 'Das schwarze Stück Papier befindet sich da oben neben dem '
-               'Holzstück.',
-        'a07': 'In sieben Stunden wird es soweit sein.',
-        'b01': 'Was sind denn das für Tüten, die da unter dem Tisch '
-               'stehen.',
-        'b02': 'Sie haben es gerade hochgetragen und jetzt gehen sie '
-               'wieder runter.',
-        'b03': 'An den Wochenenden bin ich jetzt immer nach Hause '
-               'gefahren und habe Agnes besucht.',
-        'b09': 'Ich will das eben wegbringen und dann mit Karl was '
-               'trinken gehen.',
-        'b10': 'Die wird auf dem Platz sein, wo wir sie immer hinlegen.',
+        "a01": "Der Lappen liegt auf dem Eisschrank.",
+        "a02": "Das will sie am Mittwoch abgeben.",
+        "a04": "Heute abend könnte ich es ihm sagen.",
+        "a05": "Das schwarze Stück Papier befindet sich da oben neben dem "
+               "Holzstück.",
+        "a07": "In sieben Stunden wird es soweit sein.",
+        "b01": "Was sind denn das für Tüten, die da unter dem Tisch "
+               "stehen.",
+        "b02": "Sie haben es gerade hochgetragen und jetzt gehen sie "
+               "wieder runter.",
+        "b03": "An den Wochenenden bin ich jetzt immer nach Hause "
+               "gefahren und habe Agnes besucht.",
+        "b09": "Ich will das eben wegbringen und dann mit Karl was "
+               "trinken gehen.",
+        "b10": "Die wird auf dem Platz sein, wo wir sie immer hinlegen.",
     }
     transcriptions = list(parse_names(names, from_i=2, to_i=5))
 
@@ -228,98 +228,98 @@ and assign the information to it.
 .. jupyter-execute::
 
     db = audformat.Database(
-        name='emodb',
+        name="emodb",
         source=source,
         usage=audformat.define.Usage.UNRESTRICTED,
         languages=[de],
         description=description,
         meta={
-            'pdf': (
-                'http://citeseerx.ist.psu.edu/viewdoc/'
-                'download?doi=10.1.1.130.8506&rep=rep1&type=pdf'
+            "pdf": (
+                "http://citeseerx.ist.psu.edu/viewdoc/"
+                "download?doi=10.1.1.130.8506&rep=rep1&type=pdf"
             ),
         },
     )
 
     # Media
-    db.media['microphone'] = audformat.Media(
-        format='wav',
+    db.media["microphone"] = audformat.Media(
+        format="wav",
         sampling_rate=16000,
         channels=1,
     )
 
     # Raters
-    db.raters['gold'] = audformat.Rater()
+    db.raters["gold"] = audformat.Rater()
 
     # Schemes
-    db.schemes['emotion'] = audformat.Scheme(
+    db.schemes["emotion"] = audformat.Scheme(
         labels=[str(x) for x in emotion_mapping.values()],
-        description='Six basic emotions and neutral.',
+        description="Six basic emotions and neutral.",
     )
-    db.schemes['confidence'] = audformat.Scheme(
-        'float',
+    db.schemes["confidence"] = audformat.Scheme(
+        "float",
         minimum=0,
         maximum=1,
-        description='Confidence of emotion ratings.',
+        description="Confidence of emotion ratings.",
     )
-    db.schemes['age'] = audformat.Scheme(
-        'int',
+    db.schemes["age"] = audformat.Scheme(
+        "int",
         minimum=0,
-        description='Age of speaker',
+        description="Age of speaker",
     )
-    db.schemes['gender'] = audformat.Scheme(
-        labels=['female', 'male'],
-        description='Gender of speaker',
+    db.schemes["gender"] = audformat.Scheme(
+        labels=["female", "male"],
+        description="Gender of speaker",
     )
-    db.schemes['language'] = audformat.Scheme(
-        'str',
-        description='Language of speaker',
+    db.schemes["language"] = audformat.Scheme(
+        "str",
+        description="Language of speaker",
     )
-    db.schemes['transcription'] = audformat.Scheme(
+    db.schemes["transcription"] = audformat.Scheme(
         labels=transcription_mapping,
-        description='Sentence produced by actor.',
+        description="Sentence produced by actor.",
     )
 
     # MiscTable
-    db['speaker'] = audformat.MiscTable(df_speaker.index)
-    db['speaker']['age'] = audformat.Column(scheme_id='age')
-    db['speaker']['gender'] = audformat.Column(scheme_id='gender')
-    db['speaker']['language'] = audformat.Column(scheme_id='language')
-    db['speaker'].set(df_speaker.to_dict(orient='list'))
+    db["speaker"] = audformat.MiscTable(df_speaker.index)
+    db["speaker"]["age"] = audformat.Column(scheme_id="age")
+    db["speaker"]["gender"] = audformat.Column(scheme_id="gender")
+    db["speaker"]["language"] = audformat.Column(scheme_id="language")
+    db["speaker"].set(df_speaker.to_dict(orient="list"))
 
     # MiscTable as Scheme
-    db.schemes['speaker'] = audformat.Scheme(
-        labels='speaker',
-        dtype='int',
+    db.schemes["speaker"] = audformat.Scheme(
+        labels="speaker",
+        dtype="int",
         description=(
-            'The actors could produce each sentence as often as '
-            'they liked and were asked to remember a real '
-            'situation from their past when they had felt this '
-            'emotion.'
+            "The actors could produce each sentence as often as "
+            "they liked and were asked to remember a real "
+            "situation from their past when they had felt this "
+            "emotion."
         ),
     )
 
     # Tables
     index = audformat.filewise_index(files)
-    db['files'] = audformat.Table(index)
+    db["files"] = audformat.Table(index)
 
-    db['files']['speaker'] = audformat.Column(scheme_id='speaker')
-    db['files']['speaker'].set(speakers)
+    db["files"]["speaker"] = audformat.Column(scheme_id="speaker")
+    db["files"]["speaker"].set(speakers)
 
-    db['files']['transcription'] = audformat.Column(scheme_id='transcription')
-    db['files']['transcription'].set(transcriptions)
+    db["files"]["transcription"] = audformat.Column(scheme_id="transcription")
+    db["files"]["transcription"].set(transcriptions)
 
-    db['emotion'] = audformat.Table(index)
-    db['emotion']['emotion'] = audformat.Column(
-        scheme_id='emotion',
-        rater_id='gold',
+    db["emotion"] = audformat.Table(index)
+    db["emotion"]["emotion"] = audformat.Column(
+        scheme_id="emotion",
+        rater_id="gold",
     )
-    db['emotion']['emotion'].set(emotions)
-    db['emotion']['emotion.confidence'] = audformat.Column(
-        scheme_id='confidence',
-        rater_id='gold',
+    db["emotion"]["emotion"].set(emotions)
+    db["emotion"]["emotion.confidence"] = audformat.Column(
+        scheme_id="confidence",
+        rater_id="gold",
     )
-    db['emotion']['emotion.confidence'].set(confidences / 100.0)
+    db["emotion"]["emotion.confidence"].set(confidences / 100.0)
 
 
 Inspect database header
@@ -346,15 +346,15 @@ Then list the first 10 entries of every table.
 
 .. jupyter-execute::
 
-    db['files'].get()[:10]
+    db["files"].get()[:10]
 
 .. jupyter-execute::
 
-    db['emotion'].get()[:10]
+    db["emotion"].get()[:10]
 
 .. jupyter-execute::
 
-    db['speaker'].get()[:10]
+    db["speaker"].get()[:10]
 
 Columns might contain labels,
 that provide additional mappings.
@@ -365,7 +365,7 @@ for an extended documentation.
 
 .. jupyter-execute::
 
-    db['files'].get(map={'speaker': ['speaker', 'age', 'gender']})[:10]
+    db["files"].get(map={"speaker": ["speaker", "age", "gender"]})[:10]
 
 
 Store database to disk
@@ -380,10 +380,10 @@ that the media files are located at the correct position ourselves.
     import shutil
 
 
-    db_dir = audeer.mkdir('emodb')
+    db_dir = audeer.mkdir("emodb")
     shutil.copytree(
-        os.path.join(src_dir, 'wav'),
-        os.path.join(db_dir, 'wav'),
+        os.path.join(src_dir, "wav"),
+        os.path.join(db_dir, "wav"),
     )
     db.save(db_dir)
 

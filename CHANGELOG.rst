@@ -71,7 +71,7 @@ Version 1.0.0 (2023-04-27)
   ``audformat.utils.to_filewise_index()``
 * Changed: convert dates to UTC timezone
   in ``audformat.Column.set()``
-  when using a scheme of type ``'date'``
+  when using a scheme of type ``"date"``
 * Fixed: support ``pandas>=2.0.0``
 * Fixed: mention ``author``,
   ``license``,
@@ -111,7 +111,7 @@ Version 0.16.0 (2023-01-12)
 * Changed: require ``audeer>=1.19.0``
 * Changed: split API documentation into sub-pages
   for each function
-* Fixed: support ``'meta'`` as key in meta dictionaries
+* Fixed: support ``"meta"`` as key in meta dictionaries
   like the one passed as ``meta`` argument
   to ``audformat.Database``
 
@@ -223,11 +223,11 @@ Version 0.15.0 (2022-08-05)
   that are contained
   in a filewise index
 * Changed: require ``pandas>=1.4.1``
-* Changed: use ``pandas`` dtype ``'string'``
-  instead of ``'object'``
-  for storing ``audformat`` dtype ``'str'`` entries
+* Changed: use ``pandas`` dtype ``"string"``
+  instead of ``"object"``
+  for storing ``audformat`` dtype ``"str"`` entries
 * Changed: use a misc table
-  to store the ``'speaker'`` scheme labels
+  to store the ``"speaker"`` scheme labels
   in the emodb example
   in the documentation
 * Changed: ``audformat.utils.join_labels()``
@@ -498,7 +498,7 @@ Version 0.9.6 (2021-01-28)
 Version 0.9.5 (2021-01-14)
 --------------------------
 
-* Changed: use nullable Pandas' type ``'boolean'`` for ``bool`` schemes
+* Changed: use nullable Pandas' type ``"boolean"`` for ``bool`` schemes
 * Fixed: ``Scheme.draw()`` generates boolean values if scheme is ``bool``
 
 

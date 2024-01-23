@@ -29,12 +29,12 @@ for the emotion anger in the range 0 to 5.
 
     # Create dummy CSV data.
     # In a real example this would be a file on your disk
-    CSV = io.StringIO('''
+    CSV = io.StringIO("""
     file,R1,R2,R3
     audio/utt01.wav,1,0,1
     audio/utt02.wav,1,3,2
     audio/utt03.wav,,5,4
-    ''')
+    """)
 
 From the CSV file you create a :class:`audformat.Database`.
 The database will contain one :class:`audformat.Table`
@@ -56,35 +56,35 @@ for the defined scheme covering the emotion anger.
 
     # Create database
     db = audformat.Database(
-        name='foo',
-        source='https://github.com/audeering/audformat/',
+        name="foo",
+        source="https://github.com/audeering/audformat/",
         usage=audformat.define.Usage.UNRESTRICTED,
     )
 
     # Add media, split and scheme
-    db.media['microphone'] = audformat.Media(
+    db.media["microphone"] = audformat.Media(
         audformat.define.MediaType.AUDIO,
-        format='wav',
+        format="wav",
     )
-    db.splits['train'] = audformat.Split(
+    db.splits["train"] = audformat.Split(
         audformat.define.SplitType.TRAIN,
     )
-    db.schemes['anger'] = audformat.Scheme(
+    db.schemes["anger"] = audformat.Scheme(
         audformat.define.DataType.INTEGER,
         minimum=0,
         maximum=5,
     )
 
     # Create table and fill with data
-    db['anger'] = audformat.Table(
+    db["anger"] = audformat.Table(
         index=df.index,
-        media_id='microphone',
-        split_id='train',
+        media_id="microphone",
+        split_id="train",
     )
     for rater in df.columns:
         db.raters[rater] = audformat.Rater()
-        db['anger'][rater] = audformat.Column(scheme_id='anger', rater_id=rater)
-        db['anger'][rater].set(df[rater])
+        db["anger"][rater] = audformat.Column(scheme_id="anger", rater_id=rater)
+        db["anger"][rater].set(df[rater])
 
 
 The resulting :class:`audformat.Database` will then contain:

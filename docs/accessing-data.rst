@@ -25,9 +25,9 @@ by the :meth:`audformat.Table.get` method:
 
 
     db = audformat.testing.create_db()
-    table = db['files'].get()
+    table = db["files"].get()
     # Short for:
-    # table = db.tables['files'].get()
+    # table = db.tables["files"].get()
 
 Which returns the following :class:`pandas.DataFrame`:
 
@@ -39,9 +39,9 @@ Or you can directly access a column with :meth:`audformat.Column.get()`:
 
 .. jupyter-execute::
 
-    column = db['files']['string'].get()
+    column = db["files"]["string"].get()
     # Short for:
-    # column = db.tables['files'].columns['string'].get()
+    # column = db.tables["files"].columns["string"].get()
 
 Which results in the following :class:`pandas.Series`:
 

@@ -14,37 +14,37 @@ Filewise table as :class:`pd.DataFrame`:
 
 .. jupyter-execute::
 
-    db['files'].get()
+    db["files"].get()
 
 and as CSV:
 
 .. jupyter-execute::
     :hide-code:
 
-    print(db['files'].get().to_csv())
+    print(db["files"].get().to_csv())
 
 Segmented table as :class:`pd.DataFrame`:
 
 .. jupyter-execute::
 
-    db['segments'].get()
+    db["segments"].get()
 
 and as CSV:
 
 .. jupyter-execute::
     :hide-code:
 
-    print(db['segments'].get().to_csv())
+    print(db["segments"].get().to_csv())
 
 Misc table as :class:`pd.DataFrame`:
 
 .. jupyter-execute::
     
-    db['misc'].get()
+    db["misc"].get()
 
 and as CSV:
 
 .. jupyter-execute::
     :hide-code:
 
-    print(db['misc'].get().to_csv())
+    print(db["misc"].get().to_csv())
