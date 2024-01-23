@@ -1000,7 +1000,8 @@ class Database(HeaderBase):
             verbose: show progress bar
 
         """
-        root = audeer.mkdir(root)
+        root = audeer.path(root, follow_symlink=True)
+        audeer.mkdir(root)
 
         ext = ".yaml"
         header_path = os.path.join(root, name + ext)
