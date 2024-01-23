@@ -17,8 +17,8 @@ Map scheme labels
 The ``labels`` attribute of schemes can be used to
 encode additional information about the table data.
 In the following example we have a scheme
-``'transcription'`` that maps IDs to words.
-And a scheme ``'speaker'`` that holds gender and age
+``"transcription"`` that maps IDs to words.
+And a scheme ``"speaker"`` that holds gender and age
 information about the speakers in the database.
 
 .. jupyter-execute::
@@ -27,31 +27,31 @@ information about the speakers in the database.
     import audformat.testing
 
     db = audformat.testing.create_db(minimal=True)
-    db.schemes['transcription'] = audformat.Scheme(
+    db.schemes["transcription"] = audformat.Scheme(
         labels={
-            0: 'hello',
-            1: 'goodbye',
+            0: "hello",
+            1: "goodbye",
         }
     )
-    db.schemes['speaker'] = audformat.Scheme(
+    db.schemes["speaker"] = audformat.Scheme(
         labels={
-            'spk1': {
-                'gender': 'male',
-                'age': 33,
+            "spk1": {
+                "gender": "male",
+                "age": 33,
             },
-            'spk2': {
-                'gender': 'female',
-                'age': 30,
+            "spk2": {
+                "gender": "female",
+                "age": 30,
             },
-            'spk3': {
-                'gender': 'male',
-                'age': 37,
+            "spk3": {
+                "gender": "male",
+                "age": 37,
             },
         }
     )
     audformat.testing.add_table(
         db,
-        'files',
+        "files",
         audformat.define.IndexType.FILEWISE,
     )
 
@@ -60,14 +60,14 @@ we get a :class:`pandas.Series` with the word IDs:
 
 .. jupyter-execute::
 
-    db['files']['transcription'].get()
+    db["files"]["transcription"].get()
 
 But if we are interested in the actual transcribed words,
 we can use the ``map`` argument to request them.
 
 .. jupyter-execute::
 
-    db['files']['transcription'].get(map='transcription')
+    db["files"]["transcription"].get(map="transcription")
 
 Note that we can pass any string to ``map``.
 It will be used as the name of
@@ -75,20 +75,20 @@ the returned :class:`pandas.Series`.
 
 .. jupyter-execute::
 
-    db['files']['transcription'].get(map='word')
+    db["files"]["transcription"].get(map="word")
 
 Likewise, if we request the speaker column,
 a list of names is returned:
 
 .. jupyter-execute::
 
-    db['files']['speaker'].get()
+    db["files"]["speaker"].get()
 
-If we are interested in the the age of the speakers, we can do:
+If we are interested in the age of the speakers, we can do:
 
 .. jupyter-execute::
 
-    db['files']['speaker'].get(map='age')
+    db["files"]["speaker"].get(map="age")
 
 This also works for tables.
 Here we pass a dictionary with column names
@@ -97,9 +97,9 @@ as keys and scheme fields as values.
 .. jupyter-execute::
 
     map = {
-        'speaker': 'age',
+        "speaker": "age",
     }
-    db['files'].get(map=map)
+    db["files"].get(map=map)
 
 It is possible to map several columns at once
 and to map the same column to multiple fields.
@@ -107,10 +107,10 @@ and to map the same column to multiple fields.
 .. jupyter-execute::
 
     map = {
-        'transcription': 'words',
-        'speaker': ['age', 'gender'],
+        "transcription": "words",
+        "speaker": ["age", "gender"],
     }
-    db['files'].get(map=map)
+    db["files"].get(map=map)
 
 To keep the original columns values,
 we can include the column name in the list.
@@ -118,7 +118,7 @@ we can include the column name in the list.
 .. jupyter-execute::
 
     map = {
-        'transcription': ['transcription', 'words'],
-        'speaker': ['speaker', 'age', 'gender'],
+        "transcription": ["transcription", "words"],
+        "speaker": ["speaker", "age", "gender"],
     }
-    db['files'].get(map=map)
+    db["files"].get(map=map)

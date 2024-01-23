@@ -30,27 +30,28 @@ class Media(HeaderBase):
     Examples:
         >>> Media(
         ...     type=define.MediaType.AUDIO,
-        ...     format='wav',
+        ...     format="wav",
         ...     sampling_rate=16000,
         ...     channels=2,
         ... )
         {type: audio, format: wav, channels: 2, sampling_rate: 16000}
 
     """
+
     def __init__(
-            self,
-            type: str = define.MediaType.OTHER,
-            *,
-            format: str = None,
-            sampling_rate: int = None,
-            channels: int = None,
-            bit_depth: int = None,
-            video_fps: int = None,
-            video_resolution: typing.Sequence[int] = None,
-            video_channels: int = None,
-            video_depth: int = None,
-            description: str = None,
-            meta: dict = None,
+        self,
+        type: str = define.MediaType.OTHER,
+        *,
+        format: str = None,
+        sampling_rate: int = None,
+        channels: int = None,
+        bit_depth: int = None,
+        video_fps: int = None,
+        video_resolution: typing.Sequence[int] = None,
+        video_channels: int = None,
+        video_depth: int = None,
+        description: str = None,
+        meta: dict = None,
     ):
         super().__init__(description=description, meta=meta)
         define.MediaType._assert_has_attribute_value(type)
@@ -69,8 +70,9 @@ class Media(HeaderBase):
 
         self.video_fps = video_fps
         r"""Video frames per second"""
-        self.video_resolution = None if video_resolution is None \
-            else list(video_resolution)
+        self.video_resolution = (
+            None if video_resolution is None else list(video_resolution)
+        )
         r"""Video resolution"""
         self.video_channels = video_channels
         r"""Video channels per pixel"""

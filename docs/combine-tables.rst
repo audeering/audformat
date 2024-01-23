@@ -15,26 +15,26 @@ for age and likability:
 
 
     db = audformat.testing.create_db(minimal=True)
-    db.schemes['age'] = audformat.Scheme(
+    db.schemes["age"] = audformat.Scheme(
         audformat.define.DataType.INTEGER,
         minimum=20,
         maximum=50,
     )
-    db.schemes['likability'] = audformat.Scheme(
+    db.schemes["likability"] = audformat.Scheme(
         audformat.define.DataType.FLOAT,
     )
     audformat.testing.add_table(
         db,
-        table_id='age',
+        table_id="age",
         index_type=audformat.define.IndexType.FILEWISE,
-        columns='age',
+        columns="age",
         num_files=3,
     )
     audformat.testing.add_table(
         db,
-        table_id='likability',
+        table_id="likability",
         index_type=audformat.define.IndexType.SEGMENTED,
-        columns='likability',
+        columns="likability",
         num_files=4,
     )
 
@@ -43,15 +43,15 @@ Which results in the following two :class:`pandas.DataFrame`:
 .. jupyter-execute::
 
     display(
-        db['age'].get(),
-        db['likability'].get(),
+        db["age"].get(),
+        db["likability"].get(),
     )
 
 You can simply combine both tables with:
 
 .. jupyter-execute::
 
-    combined_table = db['likability'] + db['age']
+    combined_table = db["likability"] + db["age"]
 
 Which results in the following :class:`pandas.DataFrame`:
 
@@ -64,8 +64,8 @@ for which age information is available:
 
 .. jupyter-execute::
 
-    df_likability = db['likability'].get(
-        db['age'].files,
+    df_likability = db["likability"].get(
+        db["age"].files,
     )
 
 Which results in the following :class:`pandas.DataFrame`:
@@ -79,7 +79,7 @@ in the likeability table:
 
 .. jupyter-execute::
 
-    df_age = db['age'].get(df_likability.index)
+    df_age = db["age"].get(df_likability.index)
 
 Which results in the following :class:`pandas.DataFrame`:
 
@@ -102,8 +102,8 @@ and add a gender scheme:
 .. jupyter-execute::
 
     db2 = audformat.testing.create_db(minimal=True)
-    db2.schemes['gender'] = audformat.Scheme(
-        labels=['female', 'male'],
+    db2.schemes["gender"] = audformat.Scheme(
+        labels=["female", "male"],
     )
     db2.schemes
 
@@ -113,9 +113,9 @@ Next, we add a table and fill in some gender information:
 
     audformat.testing.add_table(
         db2,
-        table_id='gender_and_age',
+        table_id="gender_and_age",
         index_type=audformat.define.IndexType.FILEWISE,
-        columns='gender',
+        columns="gender",
         num_files=[2, 3, 4],
     ).get()
 
@@ -123,7 +123,7 @@ Now, we update the table with age values from the other database.
 
 .. jupyter-execute::
 
-    db2['gender_and_age'].update(db['age']).get()
+    db2["gender_and_age"].update(db["age"]).get()
 
 And also copies the according scheme to the database:
 

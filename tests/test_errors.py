@@ -6,80 +6,79 @@ from audformat import testing
 
 
 def test_errors():
-
     db = testing.create_db()
 
     with pytest.raises(audformat.errors.BadIdError):
-        db['table'] = audformat.Table(split_id='bad')
+        db["table"] = audformat.Table(split_id="bad")
 
     with pytest.raises(audformat.errors.BadIdError):
-        db['table'] = audformat.Table(media_id='bad')
+        db["table"] = audformat.Table(media_id="bad")
 
     with pytest.raises(audformat.errors.BadIdError):
-        db['files']['column'] = audformat.Column(scheme_id='bad')
+        db["files"]["column"] = audformat.Column(scheme_id="bad")
 
     with pytest.raises(audformat.errors.BadIdError):
-        db['files']['column'] = audformat.Column(rater_id='bad')
+        db["files"]["column"] = audformat.Column(rater_id="bad")
 
     with pytest.raises(FileNotFoundError):
-        audformat.Database.load('./bad/path')
+        audformat.Database.load("./bad/path")
 
     with pytest.raises(audformat.errors.BadTypeError):
-        db.media['media'] = audformat.Rater()
+        db.media["media"] = audformat.Rater()
 
     with pytest.raises(audformat.errors.BadTypeError):
-        db.splits['split'] = audformat.Media()
+        db.splits["split"] = audformat.Media()
 
     with pytest.raises(audformat.errors.BadTypeError):
-        db.schemes['table'] = audformat.Split()
+        db.schemes["table"] = audformat.Split()
 
     with pytest.raises(audformat.errors.BadTypeError):
-        db.schemes['scheme'] = audformat.Table()
+        db.schemes["scheme"] = audformat.Table()
 
     with pytest.raises(audformat.errors.BadTypeError):
-        db.raters['rater'] = audformat.Scheme()
+        db.raters["rater"] = audformat.Scheme()
 
     with pytest.raises(audformat.errors.BadValueError):
-        db.raters['rater'] = audformat.Rater('bad')
+        db.raters["rater"] = audformat.Rater("bad")
 
     with pytest.raises(audformat.errors.BadValueError):
-        db.splits['split'] = audformat.Split('bad')
+        db.splits["split"] = audformat.Split("bad")
 
     with pytest.raises(audformat.errors.BadValueError):
-        db.schemes['scheme'] = audformat.Scheme('bad')
+        db.schemes["scheme"] = audformat.Scheme("bad")
 
     with pytest.raises(audformat.errors.BadValueError):
-        audformat.Database('foo', 'internal', 'bad')
+        audformat.Database("foo", "internal", "bad")
 
     with pytest.raises(audformat.errors.BadKeyError):
-        db['bad']
+        db["bad"]
 
     with pytest.raises(audformat.errors.BadKeyError):
-        db.media['bad']
+        db.media["bad"]
 
     with pytest.raises(audformat.errors.BadKeyError):
-        db.misc_tables['bad']
+        db.misc_tables["bad"]
 
     with pytest.raises(audformat.errors.BadKeyError):
-        db.raters['bad']
+        db.raters["bad"]
 
     with pytest.raises(audformat.errors.BadKeyError):
-        db.schemes['bad']
+        db.schemes["bad"]
 
     with pytest.raises(audformat.errors.BadKeyError):
-        db.splits['bad']
+        db.splits["bad"]
 
     with pytest.raises(audformat.errors.BadKeyError):
-        db.tables['bad']
+        db.tables["bad"]
 
     with pytest.raises(audformat.errors.TableExistsError):
         # a miscellaneous table with same ID exists already
-        db['misc'] = audformat.Table()
+        db["misc"] = audformat.Table()
 
     with pytest.raises(audformat.errors.TableExistsError):
         # a filewise table with same ID exists already
-        db['files'] = audformat.MiscTable(pd.Index([], name='idx'))
+        db["files"] = audformat.MiscTable(pd.Index([], name="idx"))
 
     with pytest.raises(audformat.errors.TableExistsError):
         # a segmented table with same ID exists already
-        db['segments'] = audformat.MiscTable(pd.Index([], name='idx'))
+        db["segments"] = audformat.MiscTable(pd.Index([], name="idx"))

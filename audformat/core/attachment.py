@@ -33,16 +33,17 @@ class Attachment(HeaderBase):
             compared to the current attachment path
 
     Examples:
-        >>> Attachment('file.txt', description='Attached file')
+        >>> Attachment("file.txt", description="Attached file")
         {description: Attached file, path: file.txt}
 
     """
+
     def __init__(
-            self,
-            path: str,
-            *,
-            description: str = None,
-            meta: dict = None,
+        self,
+        path: str,
+        *,
+        description: str = None,
+        meta: dict = None,
     ):
         super().__init__(description=description, meta=meta)
 
@@ -60,7 +61,7 @@ class Attachment(HeaderBase):
 
     @property
     def files(
-            self,
+        self,
     ) -> typing.List[str]:
         r"""List all files that are part of the attachment.
 
@@ -83,13 +84,13 @@ class Attachment(HeaderBase):
         """
         if not self._db:
             raise RuntimeError(
-                'The attachment needs to be assigned to a database '
-                'before attached files can be listed.'
+                "The attachment needs to be assigned to a database "
+                "before attached files can be listed."
             )
         if not self._db.root:
             raise RuntimeError(
-                'The database needs to be saved to disk '
-                'before attachment files can be listed.'
+                "The database needs to be saved to disk "
+                "before attachment files can be listed."
             )
         self._check_path(self._db.root)
 
@@ -118,30 +119,29 @@ class Attachment(HeaderBase):
             files = [path]
 
         # Remove absolute path
-        files = [f.replace(f'{self._db.root}{os.path.sep}', '') for f in files]
+        files = [f.replace(f"{self._db.root}{os.path.sep}", "") for f in files]
         # Make sure we use `/` as sep
-        files = [f.replace(os.path.sep, '/') for f in files]
+        files = [f.replace(os.path.sep, "/") for f in files]
 
         return files
 
     def _check_overlap(
-            self,
-            other: str,
+        self,
+        other: str,
     ):
         r"""Check if two attachment paths are nested."""
         if (
-                self.path == other.path
-                or self.path.startswith(other.path)
-                or other.path.startswith(self.path)
+            self.path == other.path
+            or self.path.startswith(other.path)
+            or other.path.startswith(self.path)
         ):
             raise RuntimeError(
-                f"Attachments '{self.path}' and '{other.path}' "
-                "are nested."
+                f"Attachments '{self.path}' and '{other.path}' " "are nested."
             )
 
     def _check_path(
-            self,
-            root: str,
+        self,
+        root: str,
     ):
         r"""Check if path exists and is not a symlink."""
         if not os.path.exists(audeer.path(root, self.path)):

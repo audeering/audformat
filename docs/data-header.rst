@@ -30,8 +30,8 @@ name            yes        Database name
 source          yes        Original source,
                            e.g. link to webpage where files are hosted
 usage           yes        What the database can be used for,
-                           one of ``'commercial'``, ``'other'``,
-                           ``'research'``, ``'restricted'``, ``'unrestricted'``
+                           one of ``"commercial"``, ``"other"``,
+                           ``"research"``, ``"restricted"``, ``"unrestricted"``
 author                     Author(s) of the database
 description                Description of the database
 expires                    Until when we are allowed to use the data
@@ -69,9 +69,9 @@ audformat implementation
 
     # Create Database
     db = audformat.Database(
-        name='databasename',
-        source='https://gitlab.audeering.com/data/databasename',
-        usage='commercial',
+        name="databasename",
+        source="https://gitlab.audeering.com/data/databasename",
+        usage="commercial",
     )
     db
 
@@ -106,11 +106,11 @@ audformat implementation
 .. jupyter-execute::
 
     # Create minimal Attachment
-    attachment = audformat.Attachment('docs/setup.pdf')
+    attachment = audformat.Attachment("docs/setup.pdf")
     # Add Attachment to Database
-    db.attachments['attachmentid'] = attachment
+    db.attachments["attachmentid"] = attachment
     # Access path of Attachment
-    db.attachments['attachmentid'].path
+    db.attachments["attachmentid"].path
     # Access attachments
     db.attachments
 
@@ -124,8 +124,8 @@ This part of the header is represented by :class:`audformat.Rater`.
 Field           Mandatory  Description
 ==============  =========  ====================================================
 id              yes        Unique identifier of rater
-type            yes        Rater type, one of ``'human'``, ``'machine'``,
-                           ``'other'``, ``'ground truth'``, ``'vote'``
+type            yes        Rater type, one of ``"human"``, ``"machine"``,
+                           ``"other"``, ``"ground truth"``, ``"vote"``
 description                Description of rater
 *meta-key-1*               1st optional meta field
 ...                        ...
@@ -147,11 +147,11 @@ audformat implementation
 .. jupyter-execute::
 
     # Create minimal Rater
-    rater = audformat.Rater('human')
+    rater = audformat.Rater("human")
     # Add Rater to Database
-    db.raters['raterid'] = rater
+    db.raters["raterid"] = rater
     # Access type of Rater
-    db.raters['raterid'].type
+    db.raters["raterid"].type
     # Access raters
     db.raters
 
@@ -164,9 +164,9 @@ This part of the header is represented by :class:`audformat.Scheme`.
 ==============  =========  ====================================================
 Field           Mandatory  Description
 ==============  =========  ====================================================
-dtype           yes        Data type, one of ``'bool'``,
-                           ``'int'``, ``'float'``, ``'object'``,
-                           ``'str'``, ``'time'``, ``'date'``
+dtype           yes        Data type, one of ``"bool"``,
+                           ``"int"``, ``"float"``, ``"object"``,
+                           ``"str"``, ``"time"``, ``"date"``
 id              yes        Unique identifier of scheme
 description                Description of scheme
 labels                     Dictionary or list with labels
@@ -195,11 +195,11 @@ audformat implementation
 .. jupyter-execute::
 
     # Create minimal Scheme
-    scheme = audformat.Scheme('float')
+    scheme = audformat.Scheme("float")
     # Add Scheme to Database
-    db.schemes['schemeid'] = scheme
+    db.schemes["schemeid"] = scheme
     # Access dtype of Scheme
-    db.schemes['schemeid'].dtype
+    db.schemes["schemeid"].dtype
     # Access schemes
     db.schemes
 
@@ -213,8 +213,8 @@ This part of the header is represented by :class:`audformat.Split`.
 Field           Mandatory  Description
 ==============  =========  ====================================================
 id              yes        Unique identifier of split
-type            yes        Split type, one of ``'train'``, ``'dev'``,
-                           ``'other'``, ``'test'``
+type            yes        Split type, one of ``"train"``, ``"dev"``,
+                           ``"other"``, ``"test"``
 description                Description of split
 *meta-key-1*               1st optional meta field
 ...                        ...
@@ -236,11 +236,11 @@ audformat implementation
 .. jupyter-execute::
 
     # Create minimal Split
-    split = audformat.Split('test')
+    split = audformat.Split("test")
     # Add Split to Database
-    db.splits['splitid'] = split
+    db.splits["splitid"] = split
     # Access type of Split
-    db.splits['splitid'].type
+    db.splits["splitid"].type
     # Access splits
     db.splits
 
@@ -256,8 +256,8 @@ To store media information use:
 Field             Mandatory  Description
 ================  =========  ====================================================
 id                yes        Unique identifier of media type
-type                         Media type, one of ``'audio'``, ``'video'``,
-                             ``'other'``
+type                         Media type, one of ``"audio"``, ``"video"``,
+                             ``"other"``
 bit_depth                    Audio bit depth
 channels                     Number of audio channels
 description                  Description
@@ -287,11 +287,11 @@ audformat implementation
 .. jupyter-execute::
 
     # Create minimal media information
-    media = audformat.Media('audio')
+    media = audformat.Media("audio")
     # Add media to Database
-    db.media['mediaid'] = media
+    db.media["mediaid"] = media
     # Access type of Media
-    db.media['mediaid'].type
+    db.media["mediaid"].type
     # Access media
     db.media
 
@@ -305,7 +305,7 @@ This part of the header is represented by :class:`audformat.Table`
 Field           Mandatory  Description
 ==============  =========  ====================================================
 id              yes        Unique identifier of table
-type            yes        Table type, one of ``'filewise'``, ``'segmented'``
+type            yes        Table type, one of ``"filewise"``, ``"segmented"``
 columns                    Dictionary of columns (see below)
 description                Description of table
 media_id                   Files in this table are of this media type
@@ -332,13 +332,13 @@ audformat implementation
     # Create minimal Table
     table = audformat.Table(audformat.filewise_index())
     # Add Table to Database
-    db.tables['tableid'] = table
+    db.tables["tableid"] = table
     # Access type of Table
-    db.tables['tableid'].type
+    db.tables["tableid"].type
     # Add Table to Database (short notation)
-    db['tableid'] = table
+    db["tableid"] = table
     # Access type of Table (short notation)
-    db['tableid'].type
+    db["tableid"].type
     # Access tables
     db.tables
 
@@ -377,15 +377,15 @@ audformat implementation
 
     # Create minimal Misc Table
     import pandas as pd
-    misc_table = audformat.MiscTable(pd.Index([], name='idx'))
+    misc_table = audformat.MiscTable(pd.Index([], name="idx"))
     # Add Misc Table to Database
-    db.misc_tables['misctableid'] = misc_table
+    db.misc_tables["misctableid"] = misc_table
     # Access dataframe of Misc Table
-    db.misc_tables['misctableid'].df
+    db.misc_tables["misctableid"].df
     # Add Misc Table to Database (short notation)
-    db['misctableid'] = misc_table
+    db["misctableid"] = misc_table
     # Access dataframe of Misc Table (short notation)
-    db['misctableid'].df
+    db["misctableid"].df
     # Access misc tables
     db.misc_tables
 
@@ -426,8 +426,8 @@ audformat implementation
     # Create minimal Column
     column = audformat.Column()
     # Add Column to Table
-    db.tables['tableid'].columns['columnid'] = column
+    db.tables["tableid"].columns["columnid"] = column
     # Add Column to Table (short notation)
-    db['tableid']['columnid'] = column
+    db["tableid"]["columnid"] = column
     # Access columns
-    db['tableid'].columns
+    db["tableid"].columns

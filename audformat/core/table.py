@@ -28,14 +28,15 @@ from audformat.core.typing import Values
 
 class Base(HeaderBase):
     r"""Table base class."""
+
     def __init__(
-            self,
-            index: pd.Index = None,
-            *,
-            split_id: str = None,
-            media_id: str = None,
-            description: str = None,
-            meta: dict = None,
+        self,
+        index: pd.Index = None,
+        *,
+        split_id: str = None,
+        media_id: str = None,
+        description: str = None,
+        meta: dict = None,
     ):
         super().__init__(description=description, meta=meta)
 
@@ -108,8 +109,8 @@ class Base(HeaderBase):
         return self.columns[column_id]
 
     def __eq__(
-            self,
-            other: Base,
+        self,
+        other: Base,
     ) -> bool:
         r"""Compare if table equals other table."""
         if self.dump() != other.dump():
@@ -138,16 +139,14 @@ class Base(HeaderBase):
 
         """
         if (
-                column.scheme_id is not None
-                and self.db is not None
-                and column.scheme_id in self.db.schemes
+            column.scheme_id is not None
+            and self.db is not None
+            and column.scheme_id in self.db.schemes
         ):
-
             # check if scheme uses
             # labels from a table
             scheme = self.db.schemes[column.scheme_id]
             if scheme.uses_table:
-
                 # check if scheme uses
                 # labels from this table
                 if self._id == scheme.labels:
@@ -197,7 +196,7 @@ class Base(HeaderBase):
         if self._df is None:
             # if database was loaded with 'load_data=False'
             # we have to load the table data now
-            path = os.path.join(self.db.root, f'{self.db._name}.{self._id}')
+            path = os.path.join(self.db.root, f"{self.db._name}.{self._id}")
             self.load(path)
         return self._df
 
@@ -251,16 +250,16 @@ class Base(HeaderBase):
                 scheme_id=column.scheme_id,
                 rater_id=column.rater_id,
                 description=column.description,
-                meta=column.meta.copy()
+                meta=column.meta.copy(),
             )
         table._df = self.df.copy()
         return table
 
     def drop_columns(
-            self,
-            column_ids: typing.Union[str, typing.Sequence[str]],
-            *,
-            inplace: bool = False,
+        self,
+        column_ids: typing.Union[str, typing.Sequence[str]],
+        *,
+        inplace: bool = False,
     ) -> typing.Self:
         r"""Drop columns by ID.
 
@@ -280,17 +279,17 @@ class Base(HeaderBase):
         column_ids_ = set()
         for column_id in column_ids:
             column_ids_.add(column_id)
-        self.df.drop(column_ids_, inplace=True, axis='columns')
+        self.df.drop(column_ids_, inplace=True, axis="columns")
         for column_id in column_ids_:
             self.columns.pop(column_id)
 
         return self
 
     def drop_index(
-            self,
-            index: pd.Index,
-            *,
-            inplace: bool = False,
+        self,
+        index: pd.Index,
+        *,
+        inplace: bool = False,
     ) -> typing.Self:
         r"""Drop rows from index.
 
@@ -308,7 +307,7 @@ class Base(HeaderBase):
         table = self if inplace else self.copy()
 
         index = _maybe_convert_dtype_to_string(index)
-        _assert_table_index(table, index, 'drop rows from')
+        _assert_table_index(table, index, "drop rows from")
 
         index = utils.intersect([table.index, index])
         new_index = utils.difference([table.index, index])
@@ -320,14 +319,11 @@ class Base(HeaderBase):
         return table
 
     def extend_index(
-            self,
-            index: pd.Index,
-            *,
-            fill_values: typing.Union[
-                typing.Any,
-                typing.Dict[str, typing.Any]
-            ] = None,
-            inplace: bool = False,
+        self,
+        index: pd.Index,
+        *,
+        fill_values: typing.Union[typing.Any, typing.Dict[str, typing.Any]] = None,
+        inplace: bool = False,
     ) -> typing.Self:
         r"""Extend table with new rows.
 
@@ -348,7 +344,7 @@ class Base(HeaderBase):
         table = self if inplace else self.copy()
 
         index = _maybe_convert_dtype_to_string(index)
-        _assert_table_index(table, index, 'extend')
+        _assert_table_index(table, index, "extend")
 
         new_index = utils.union([table.index, index])
         table._df = table.df.reindex(new_index)
@@ -365,13 +361,11 @@ class Base(HeaderBase):
         return table
 
     def get(
-            self,
-            index: pd.Index = None,
-            *,
-            map: typing.Dict[
-                str, typing.Union[str, typing.Sequence[str]]
-            ] = None,
-            copy: bool = True,
+        self,
+        index: pd.Index = None,
+        *,
+        map: typing.Dict[str, typing.Union[str, typing.Sequence[str]]] = None,
+        copy: bool = True,
     ) -> pd.DataFrame:
         r"""Get labels.
 
@@ -414,11 +408,9 @@ class Base(HeaderBase):
             result = self._get_by_index(index)
 
         if map is not None:
-
             if self.db is None:
                 raise RuntimeError(
-                    'Cannot map schemes, '
-                    'table is not assigned to a database.'
+                    "Cannot map schemes, " "table is not assigned to a database."
                 )
 
             if not result_is_copy:
@@ -429,13 +421,15 @@ class Base(HeaderBase):
                 mapped_columns = audeer.to_list(mapped_columns)
                 if len(mapped_columns) == 1:
                     result[mapped_columns[0]] = self.columns[column].get(
-                        index, map=mapped_columns[0],
+                        index,
+                        map=mapped_columns[0],
                     )
                 else:
                     for mapped_column in mapped_columns:
                         if mapped_column != column:
                             result[mapped_column] = self.columns[column].get(
-                                index, map=mapped_column,
+                                index,
+                                map=mapped_column,
                             )
                 if column not in mapped_columns:
                     result.drop(columns=column, inplace=True)
@@ -443,8 +437,8 @@ class Base(HeaderBase):
         return result.copy() if (copy and not result_is_copy) else result
 
     def load(
-            self,
-            path: str,
+        self,
+        path: str,
     ):
         r"""Load table data from disk.
 
@@ -464,8 +458,8 @@ class Base(HeaderBase):
 
         """
         path = audeer.path(path)
-        pkl_file = f'{path}.{define.TableStorageFormat.PICKLE}'
-        csv_file = f'{path}.{define.TableStorageFormat.CSV}'
+        pkl_file = f"{path}.{define.TableStorageFormat.PICKLE}"
+        csv_file = f"{path}.{define.TableStorageFormat.CSV}"
 
         if not os.path.exists(pkl_file) and not os.path.exists(csv_file):
             raise RuntimeError(
@@ -477,10 +471,9 @@ class Base(HeaderBase):
         # as it stores first the PKL file
         pickled = False
         if os.path.exists(pkl_file):
-            if (
-                    os.path.exists(csv_file)
-                    and os.path.getmtime(csv_file) > os.path.getmtime(pkl_file)
-            ):
+            if os.path.exists(csv_file) and os.path.getmtime(
+                csv_file
+            ) > os.path.getmtime(pkl_file):
                 raise RuntimeError(
                     f"The table CSV file '{csv_file}' is newer "
                     f"than the table PKL file '{pkl_file}'. "
@@ -507,10 +500,10 @@ class Base(HeaderBase):
             self._load_csv(csv_file)
 
     def pick_columns(
-            self,
-            column_ids: typing.Union[str, typing.Sequence[str]],
-            *,
-            inplace: bool = False,
+        self,
+        column_ids: typing.Union[str, typing.Sequence[str]],
+        *,
+        inplace: bool = False,
     ) -> typing.Self:
         r"""Pick columns by ID.
 
@@ -533,10 +526,10 @@ class Base(HeaderBase):
         return self.drop_columns(list(drop_ids), inplace=inplace)
 
     def pick_index(
-            self,
-            index: pd.Index,
-            *,
-            inplace: bool = False,
+        self,
+        index: pd.Index,
+        *,
+        inplace: bool = False,
     ) -> typing.Self:
         r"""Pick rows from index.
 
@@ -554,7 +547,7 @@ class Base(HeaderBase):
         table = self if inplace else self.copy()
 
         index = _maybe_convert_dtype_to_string(index)
-        _assert_table_index(table, index, 'pick rows from')
+        _assert_table_index(table, index, "pick rows from")
 
         new_index = utils.intersect([table.index, index])
         table._df = table.df.reindex(new_index)
@@ -565,11 +558,11 @@ class Base(HeaderBase):
         return table
 
     def save(
-            self,
-            path: str,
-            *,
-            storage_format: str = define.TableStorageFormat.CSV,
-            update_other_formats: bool = True,
+        self,
+        path: str,
+        *,
+        storage_format: str = define.TableStorageFormat.CSV,
+        update_other_formats: bool = True,
     ):
         r"""Save table data to disk.
 
@@ -588,8 +581,8 @@ class Base(HeaderBase):
         path = audeer.path(path)
         define.TableStorageFormat._assert_has_attribute_value(storage_format)
 
-        pickle_file = path + f'.{define.TableStorageFormat.PICKLE}'
-        csv_file = path + f'.{define.TableStorageFormat.CSV}'
+        pickle_file = path + f".{define.TableStorageFormat.PICKLE}"
+        csv_file = path + f".{define.TableStorageFormat.CSV}"
 
         # Make sure the CSV file is always written first
         # as it is expected to be older by load()
@@ -604,13 +597,13 @@ class Base(HeaderBase):
                 self._save_pickled(pickle_file)
 
     def set(
-            self,
-            values: typing.Union[
-                typing.Dict[str, Values],
-                pd.DataFrame,
-            ],
-            *,
-            index: pd.Index = None,
+        self,
+        values: typing.Union[
+            typing.Dict[str, Values],
+            pd.DataFrame,
+        ],
+        *,
+        index: pd.Index = None,
     ):
         r"""Set labels.
 
@@ -636,10 +629,10 @@ class Base(HeaderBase):
             self.columns[idx].set(data, index=index)
 
     def update(
-            self,
-            others: typing.Union[typing.Self, typing.Sequence[typing.Self]],
-            *,
-            overwrite: bool = False,
+        self,
+        others: typing.Union[typing.Self, typing.Sequence[typing.Self]],
+        *,
+        overwrite: bool = False,
     ) -> typing.Self:
         r"""Update table with other table(s).
 
@@ -681,31 +674,24 @@ class Base(HeaderBase):
 
         """
         if self.db is None:
-            raise RuntimeError(
-                'Table is not assigned to a database.'
-            )
+            raise RuntimeError("Table is not assigned to a database.")
 
         others = audeer.to_list(others)
 
         for other in others:
-            _assert_table_index(self, other.index, 'update')
+            _assert_table_index(self, other.index, "update")
 
         def raise_error(
-                msg,
-                left: typing.Optional[HeaderDict],
-                right: typing.Optional[HeaderDict],
+            msg,
+            left: typing.Optional[HeaderDict],
+            right: typing.Optional[HeaderDict],
         ):
-            raise ValueError(
-                f"{msg}:\n"
-                f"{left}\n"
-                "!=\n"
-                f"{right}"
-            )
+            raise ValueError(f"{msg}:\n" f"{left}\n" "!=\n" f"{right}")
 
         def assert_equal(
-                msg: str,
-                left: typing.Optional[HeaderDict],
-                right: typing.Optional[HeaderDict],
+            msg: str,
+            left: typing.Optional[HeaderDict],
+            right: typing.Optional[HeaderDict],
         ):
             equal = True
             if left and right:
@@ -719,19 +705,14 @@ class Base(HeaderBase):
         missing_raters = {}
 
         for other in others:
-
             assert_equal(
-                "Media of table "
-                f"'{other._id}' "
-                "does not match",
+                "Media of table " f"'{other._id}' " "does not match",
                 self.media,
                 other.media,
             )
 
             assert_equal(
-                "Split of table "
-                f"'{other._id}' "
-                "does not match",
+                "Split of table " f"'{other._id}' " "does not match",
                 self.split,
                 other.split,
             )
@@ -812,20 +793,19 @@ class Base(HeaderBase):
         return self
 
     def _get_by_index(
-            self,
-            index: pd.Index,
+        self,
+        index: pd.Index,
     ) -> (pd.DataFrame, bool):  # pragma: no cover
         # Executed when calling `self.get(index=index)`.
         # Returns `df, df_is_copy`
         raise NotImplementedError()
 
     def _load_csv(self, path: str):
-
         schemes = self.db.schemes
         converters = {}
         dtypes = {}
 
-        if hasattr(self, 'type'):
+        if hasattr(self, "type"):
             # filewise or segmented table
             dtypes[define.IndexField.FILE] = define.DataType.STRING
             if self.type == define.IndexType.SEGMENTED:
@@ -837,10 +817,7 @@ class Base(HeaderBase):
 
         # index columns
         levels = list(dtypes)
-        dtypes = {
-            level: to_pandas_dtype(dtype)
-            for level, dtype in dtypes.items()
-        }
+        dtypes = {level: to_pandas_dtype(dtype) for level, dtype in dtypes.items()}
 
         # other columns
         columns = list(self.columns)
@@ -848,14 +825,14 @@ class Base(HeaderBase):
             if column.scheme_id is not None:
                 dtypes[column_id] = schemes[column.scheme_id].to_pandas_dtype()
             else:
-                dtypes[column_id] = 'object'
+                dtypes[column_id] = "object"
 
         # replace dtype with converter for dates or timestamps
         dtypes_wo_converters = {}
         for column_id, dtype in dtypes.items():
-            if dtype == 'datetime64[ns]':
+            if dtype == "datetime64[ns]":
                 converters[column_id] = lambda x: pd.to_datetime(x)
-            elif dtype == 'timedelta64[ns]':
+            elif dtype == "timedelta64[ns]":
                 converters[column_id] = lambda x: pd.to_timedelta(x)
             else:
                 dtypes_wo_converters[column_id] = dtype
@@ -867,7 +844,7 @@ class Base(HeaderBase):
             dtype=dtypes_wo_converters,
             index_col=levels,
             converters=converters,
-            float_precision='round_trip',
+            float_precision="round_trip",
         )
 
         # For an empty CSV file
@@ -876,7 +853,8 @@ class Base(HeaderBase):
         if len(df) == 0:
             # fix index
             converter_dtypes = {
-                level: dtype for level, dtype in dtypes.items()
+                level: dtype
+                for level, dtype in dtypes.items()
                 if level in converters and level in levels
             }
             df.index = utils.set_index_dtypes(df.index, converter_dtypes)
@@ -889,7 +867,6 @@ class Base(HeaderBase):
         self._df = df
 
     def _load_pickled(self, path: str):
-
         # Older versions of audformat used xz compression
         # which produced smaller files,
         # but was slower.
@@ -897,7 +874,7 @@ class Base(HeaderBase):
         try:
             df = pd.read_pickle(path)
         except pickle.UnpicklingError:
-            df = pd.read_pickle(path, compression='xz')
+            df = pd.read_pickle(path, compression="xz")
 
         # Older versions of audformat stored columns
         # assigned to a string scheme as 'object',
@@ -905,13 +882,10 @@ class Base(HeaderBase):
         for column_id, column in self.columns.items():
             if (
                 column.scheme_id is not None
-                and (
-                    self.db.schemes[column.scheme_id].dtype
-                    == define.DataType.STRING
-                )
-                and df[column_id].dtype == 'object'
+                and (self.db.schemes[column.scheme_id].dtype == define.DataType.STRING)
+                and df[column_id].dtype == "object"
             ):
-                df[column_id] = df[column_id].astype('string', copy=False)
+                df[column_id] = df[column_id].astype("string", copy=False)
         # Fix index entries as well
         df.index = _maybe_convert_dtype_to_string(df.index)
 
@@ -922,8 +896,8 @@ class Base(HeaderBase):
         # to avoid creating a CSV file
         # that is newer than the PKL file
         df = self.df
-        with open(path, 'w') as fp:
-            df.to_csv(fp, encoding='utf-8')
+        with open(path, "w") as fp:
+            df.to_csv(fp, encoding="utf-8")
 
     def _save_pickled(self, path: str):
         self.df.to_pickle(
@@ -932,7 +906,6 @@ class Base(HeaderBase):
         )
 
     def _set_column(self, column_id: str, column: Column) -> Column:
-
         levels = (
             self.index.names
             if isinstance(self.index, pd.MultiIndex)
@@ -948,13 +921,11 @@ class Base(HeaderBase):
                 f"{levels}."
             )
 
-        if column.scheme_id is not None and \
-                column.scheme_id not in self.db.schemes:
-            raise BadIdError('column', column.scheme_id, self.db.schemes)
+        if column.scheme_id is not None and column.scheme_id not in self.db.schemes:
+            raise BadIdError("column", column.scheme_id, self.db.schemes)
 
-        if column.rater_id is not None and \
-                column.rater_id not in self.db.raters:
-            raise BadIdError('rater', column.rater_id, self.db.raters)
+        if column.rater_id is not None and column.rater_id not in self.db.raters:
+            raise BadIdError("rater", column.rater_id, self.db.raters)
 
         if column.scheme_id is not None:
             dtype = self.db.schemes[column.scheme_id].to_pandas_dtype()
@@ -1000,19 +971,19 @@ class MiscTable(Base):
 
     Examples:
         >>> index = pd.MultiIndex.from_tuples(
-        ...   [
-        ...     ('f1', 'f2'),
-        ...     ('f1', 'f3'),
-        ...     ('f2', 'f3'),
-        ...   ],
-        ...   names=['file', 'other'],
+        ...     [
+        ...         ("f1", "f2"),
+        ...         ("f1", "f3"),
+        ...         ("f2", "f3"),
+        ...     ],
+        ...     names=["file", "other"],
         ... )
-        >>> index = utils.set_index_dtypes(index, 'string')
+        >>> index = utils.set_index_dtypes(index, "string")
         >>> table = MiscTable(
         ...     index,
         ...     split_id=define.SplitType.TEST,
         ... )
-        >>> table['match'] = Column()
+        >>> table["match"] = Column()
         >>> table
         levels: {file: str, other: str}
         split_id: test
@@ -1024,7 +995,7 @@ class MiscTable(Base):
         f1   f2      NaN
              f3      NaN
         f2   f3      NaN
-        >>> table.set({'match': [True, False, True]})
+        >>> table.set({"match": [True, False, True]})
         >>> table.get()
                    match
         file other
@@ -1037,12 +1008,12 @@ class MiscTable(Base):
         f1   f2     True
              f3    False
         >>> index_new = pd.MultiIndex.from_tuples(
-        ...   [
-        ...     ('f4', 'f1'),
-        ...   ],
-        ...   names=['file', 'other'],
+        ...     [
+        ...         ("f4", "f1"),
+        ...     ],
+        ...     names=["file", "other"],
         ... )
-        >>> index_new = utils.set_index_dtypes(index_new, 'string')
+        >>> index_new = utils.set_index_dtypes(index_new, "string")
         >>> table_ex = table.extend_index(
         ...     index_new,
         ...     inplace=False,
@@ -1055,7 +1026,7 @@ class MiscTable(Base):
         f2   f3      True
         f4   f1       NaN
         >>> table_ex.set(
-        ...     {'match': True},
+        ...     {"match": True},
         ...     index=index_new,
         ... )
         >>> table_ex.get()
@@ -1066,8 +1037,8 @@ class MiscTable(Base):
         f2   f3      True
         f4   f1      True
         >>> table_str = MiscTable(index)
-        >>> table_str['strings'] = Column()
-        >>> table_str.set({'strings': ['a', 'b', 'c']})
+        >>> table_str["strings"] = Column()
+        >>> table_str.set({"strings": ["a", "b", "c"]})
         >>> (table + table_str).get()
                     match strings
         file other
@@ -1083,21 +1054,20 @@ class MiscTable(Base):
         f4   f1      True     NaN
 
     """
-    def __init__(
-            self,
-            index: pd.Index,
-            *,
-            split_id: str = None,
-            media_id: str = None,
-            description: str = None,
-            meta: dict = None,
-    ):
 
+    def __init__(
+        self,
+        index: pd.Index,
+        *,
+        split_id: str = None,
+        media_id: str = None,
+        description: str = None,
+        meta: dict = None,
+    ):
         self.levels = None
         r"""Index levels."""
 
         if index is not None:
-
             # convert single-level pd.MultiIndex to pd.Index
             if isinstance(index, pd.MultiIndex) and index.nlevels == 1:
                 index = index.get_level_values(0)
@@ -1108,18 +1078,13 @@ class MiscTable(Base):
             levels = utils._levels(index)
             if not all(levels) or len(levels) > len(set(levels)):
                 raise ValueError(
-                    f'Got index with levels '
-                    f'{levels}, '
-                    f'but names must be non-empty and unique.'
+                    f"Got index with levels "
+                    f"{levels}, "
+                    f"but names must be non-empty and unique."
                 )
 
-            dtypes = [
-                to_audformat_dtype(dtype)
-                for dtype in utils._dtypes(index)
-            ]
-            self.levels = {
-                level: dtype for level, dtype in zip(levels, dtypes)
-            }
+            dtypes = [to_audformat_dtype(dtype) for dtype in utils._dtypes(index)]
+            self.levels = {level: dtype for level, dtype in zip(levels, dtypes)}
 
         super().__init__(
             index,
@@ -1163,12 +1128,12 @@ class Table(Base):
             :ref:`table specifications <data-tables:Tables>`
 
     Examples:
-        >>> index = filewise_index(['f1', 'f2', 'f3'])
+        >>> index = filewise_index(["f1", "f2", "f3"])
         >>> table = Table(
         ...     index,
         ...     split_id=define.SplitType.TEST,
         ... )
-        >>> table['values'] = Column()
+        >>> table["values"] = Column()
         >>> table
         type: filewise
         split_id: test
@@ -1180,7 +1145,7 @@ class Table(Base):
         f1      NaN
         f2      NaN
         f3      NaN
-        >>> table.set({'values': [0, 1, 2]})
+        >>> table.set({"values": [0, 1, 2]})
         >>> table.get()
              values
         file
@@ -1198,7 +1163,7 @@ class Table(Base):
         f1   0 days NaT      0
         f2   0 days NaT      1
         f3   0 days NaT      2
-        >>> index_new = filewise_index('f4')
+        >>> index_new = filewise_index("f4")
         >>> table_ex = table.extend_index(
         ...     index_new,
         ...     inplace=False,
@@ -1211,7 +1176,7 @@ class Table(Base):
         f3        2
         f4      NaN
         >>> table_ex.set(
-        ...     {'values': 3},
+        ...     {"values": 3},
         ...     index=index_new,
         ... )
         >>> table_ex.get()
@@ -1222,8 +1187,8 @@ class Table(Base):
         f3        2
         f4        3
         >>> table_str = Table(index)
-        >>> table_str['strings'] = Column()
-        >>> table_str.set({'strings': ['a', 'b', 'c']})
+        >>> table_str["strings"] = Column()
+        >>> table_str.set({"strings": ["a", "b", "c"]})
         >>> (table + table_str).get()
              values strings
         file
@@ -1239,14 +1204,15 @@ class Table(Base):
         f4        3     NaN
 
     """
+
     def __init__(
-            self,
-            index: pd.Index = None,
-            *,
-            split_id: str = None,
-            media_id: str = None,
-            description: str = None,
-            meta: dict = None,
+        self,
+        index: pd.Index = None,
+        *,
+        split_id: str = None,
+        media_id: str = None,
+        description: str = None,
+        meta: dict = None,
     ):
         if index is None:
             index = filewise_index()
@@ -1278,9 +1244,7 @@ class Table(Base):
 
         """
         if self.is_segmented:
-            return self.df.index.get_level_values(
-                define.IndexField.END
-            )
+            return self.df.index.get_level_values(define.IndexField.END)
         else:
             return utils.to_segmented_index(self.df.index).get_level_values(
                 define.IndexField.END
@@ -1331,23 +1295,21 @@ class Table(Base):
 
         """
         if self.is_segmented:
-            return self.df.index.get_level_values(
-                define.IndexField.START
-            )
+            return self.df.index.get_level_values(define.IndexField.START)
         else:
             return utils.to_segmented_index(self.df.index).get_level_values(
                 define.IndexField.START
             )
 
     def drop_files(
-            self,
-            files: typing.Union[
-                str,
-                typing.Sequence[str],
-                typing.Callable[[str], bool],
-            ],
-            *,
-            inplace: bool = False,
+        self,
+        files: typing.Union[
+            str,
+            typing.Sequence[str],
+            typing.Callable[[str], bool],
+        ],
+        *,
+        inplace: bool = False,
     ) -> Table:
         r"""Drop files.
 
@@ -1373,7 +1335,7 @@ class Table(Base):
             index = self.files.intersection(files)
             index.name = define.IndexField.FILE
             if self.is_segmented:
-                level = 'file'
+                level = "file"
             else:
                 level = None
             self.df.drop(index, inplace=True, level=level)
@@ -1381,18 +1343,16 @@ class Table(Base):
         return self
 
     def get(
-            self,
-            index: pd.Index = None,
-            *,
-            map: typing.Dict[
-                str, typing.Union[str, typing.Sequence[str]]
-            ] = None,
-            copy: bool = True,
-            as_segmented: bool = False,
-            allow_nat: bool = True,
-            root: str = None,
-            num_workers: typing.Optional[int] = 1,
-            verbose: bool = False,
+        self,
+        index: pd.Index = None,
+        *,
+        map: typing.Dict[str, typing.Union[str, typing.Sequence[str]]] = None,
+        copy: bool = True,
+        as_segmented: bool = False,
+        allow_nat: bool = True,
+        root: str = None,
+        num_workers: typing.Optional[int] = 1,
+        verbose: bool = False,
     ) -> pd.DataFrame:
         r"""Get labels.
 
@@ -1450,10 +1410,7 @@ class Table(Base):
 
         # if necessary, convert to segmented index and replace NaT
         is_segmented = is_segmented_index(result.index)
-        if (
-                (not is_segmented and as_segmented)
-                or (is_segmented and not allow_nat)
-        ):
+        if (not is_segmented and as_segmented) or (is_segmented and not allow_nat):
             files_duration = None
             if self.db is not None:
                 files_duration = self.db._files_duration
@@ -1471,8 +1428,8 @@ class Table(Base):
         return result
 
     def map_files(
-            self,
-            func: typing.Callable[[str], str],
+        self,
+        func: typing.Callable[[str], str],
     ):
         r"""Apply function to file names in table.
 
@@ -1487,14 +1444,14 @@ class Table(Base):
         self.df.index = utils.map_file_path(self.df.index, func)
 
     def pick_files(
-            self,
-            files: typing.Union[
-                str,
-                typing.Sequence[str],
-                typing.Callable[[str], bool],
-            ],
-            *,
-            inplace: bool = False,
+        self,
+        files: typing.Union[
+            str,
+            typing.Sequence[str],
+            typing.Callable[[str], bool],
+        ],
+        *,
+        inplace: bool = False,
     ) -> Table:
         r"""Pick files.
 
@@ -1524,10 +1481,9 @@ class Table(Base):
         return self
 
     def _get_by_index(
-            self,
-            index: pd.Index,
+        self,
+        index: pd.Index,
     ) -> pd.DataFrame:
-
         if index_type(self.index) == index_type(index):
             result = self.df.loc[index]
         else:
@@ -1543,66 +1499,65 @@ class Table(Base):
 
 
 def _assert_table_index(
-        table: Base,
-        index: pd.Index,
-        operation: str,
+    table: Base,
+    index: pd.Index,
+    operation: str,
 ):
     r"""Raise error if index does not match table."""
     if isinstance(table, Table):
         input_type = index_type(index)
         if table.type != input_type:
             raise ValueError(
-                f'Cannot '
-                f'{operation} '
-                f'a '
-                f'{table.type} '
-                f'table with a '
-                f'{input_type} '
-                f'index.'
+                f"Cannot "
+                f"{operation} "
+                f"a "
+                f"{table.type} "
+                f"table with a "
+                f"{input_type} "
+                f"index."
             )
     elif not utils.is_index_alike([table.index, index]):
-
-        want = index.dtypes if isinstance(index, pd.MultiIndex)\
+        want = (
+            index.dtypes
+            if isinstance(index, pd.MultiIndex)
             else pd.Series(index.dtype, pd.Index([index.name]))
-        want = '\n\t'.join(want.to_string().split('\n'))
+        )
+        want = "\n\t".join(want.to_string().split("\n"))
 
-        got = table.index.dtypes if isinstance(table.index, pd.MultiIndex)\
+        got = (
+            table.index.dtypes
+            if isinstance(table.index, pd.MultiIndex)
             else pd.Series(table.index.dtype, pd.Index([table.index.name]))
-        got = '\n\t'.join(got.to_string().split('\n'))
+        )
+        got = "\n\t".join(got.to_string().split("\n"))
 
         raise ValueError(
-            f'Cannot '
-            f'{operation} '
-            f'table if input index and table index are not alike.\n'
-            f'Expected index:\n'
-            f'\t{want}'
-            f'\nbut yours is:\n'
-            f'\t{got}'
+            f"Cannot "
+            f"{operation} "
+            f"table if input index and table index are not alike.\n"
+            f"Expected index:\n"
+            f"\t{want}"
+            f"\nbut yours is:\n"
+            f"\t{got}"
         )
 
 
 def _maybe_convert_dtype_to_string(
-        index: pd.Index,
+    index: pd.Index,
 ) -> pd.Index:
     r"""Possibly set dtype of file level to 'string'."""
-    if (
-            (
-                is_filewise_index(index)
-                and index.dtype == 'object'
-            ) or (
-                is_segmented_index(index)
-                and index.dtypes[define.IndexField.FILE] == 'object'
-            )
+    if (is_filewise_index(index) and index.dtype == "object") or (
+        is_segmented_index(index) and index.dtypes[define.IndexField.FILE] == "object"
     ):
         index = utils.set_index_dtypes(
             index,
-            {define.IndexField.FILE: 'string'},
+            {define.IndexField.FILE: "string"},
         )
     return index
 
 
 def _maybe_update_scheme(
-        table: Base,
+    table: Base,
 ):
     r"""Replace labels if table is used in a scheme."""
     if table.db is not None and isinstance(table, MiscTable):

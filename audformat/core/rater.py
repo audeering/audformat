@@ -21,12 +21,13 @@ class Rater(HeaderBase):
         {type: human}
 
     """
+
     def __init__(
-            self,
-            type: str = define.RaterType.HUMAN,
-            *,
-            description: str = None,
-            meta: dict = None,
+        self,
+        type: str = define.RaterType.HUMAN,
+        *,
+        description: str = None,
+        meta: dict = None,
     ):
         super().__init__(description=description, meta=meta)
         define.RaterType._assert_has_attribute_value(type)

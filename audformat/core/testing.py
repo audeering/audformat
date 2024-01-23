@@ -30,20 +30,18 @@ from audformat.core.table import Table
 
 
 def add_misc_table(
-        db: Database,
-        table_id: str,
-        index: pd.Index,
-        *,
-        columns: Union[
-            str,
-            Sequence[str],
-            Dict[str, Union[
-                str, Tuple[Optional[str], Optional[str]]
-            ]],
-        ] = None,
-        p_none: float = None,
-        split_id: str = None,
-        media_id: str = None,
+    db: Database,
+    table_id: str,
+    index: pd.Index,
+    *,
+    columns: Union[
+        str,
+        Sequence[str],
+        Dict[str, Union[str, Tuple[Optional[str], Optional[str]]]],
+    ] = None,
+    p_none: float = None,
+    split_id: str = None,
+    media_id: str = None,
 ) -> MiscTable:
     r"""Add a miscellaneous table with random values.
 
@@ -76,24 +74,22 @@ def add_misc_table(
 
 
 def add_table(
-        db: Database,
-        table_id: str,
-        index_type: str,
-        *,
-        columns: Union[
-            str,
-            Sequence[str],
-            Dict[str, Union[
-                str, Tuple[Optional[str], Optional[str]]
-            ]],
-        ] = None,
-        num_files: Union[int, Sequence[int]] = 5,
-        num_segments_per_file: int = 5,
-        file_duration: Union[str, pd.Timedelta] = '5s',
-        file_root: str = 'audio',
-        p_none: float = None,
-        split_id: str = None,
-        media_id: str = None,
+    db: Database,
+    table_id: str,
+    index_type: str,
+    *,
+    columns: Union[
+        str,
+        Sequence[str],
+        Dict[str, Union[str, Tuple[Optional[str], Optional[str]]]],
+    ] = None,
+    num_files: Union[int, Sequence[int]] = 5,
+    num_segments_per_file: int = 5,
+    file_duration: Union[str, pd.Timedelta] = "5s",
+    file_root: str = "audio",
+    p_none: float = None,
+    split_id: str = None,
+    media_id: str = None,
 ) -> Table:
     r"""Add a table with random values.
 
@@ -129,24 +125,17 @@ def add_table(
     if isinstance(file_duration, str):
         file_duration = pd.Timedelta(file_duration)
 
-    audio_format = 'wav'
+    audio_format = "wav"
     if media_id and db.media[media_id].format:
         audio_format = db.media[media_id].format
 
     if isinstance(num_files, int):
-        files = [
-            f'{file_root}/{idx + 1:03}.{audio_format}'
-            for idx in range(num_files)
-        ]
+        files = [f"{file_root}/{idx + 1:03}.{audio_format}" for idx in range(num_files)]
     else:
-        files = [
-            f'{file_root}/{idx:03}.{audio_format}'
-            for idx in num_files
-        ]
+        files = [f"{file_root}/{idx:03}.{audio_format}" for idx in num_files]
         num_files = len(num_files)
 
     if index_type == define.IndexType.FILEWISE:
-
         n_items = num_files
         db[table_id] = Table(
             filewise_index(files),
@@ -155,16 +144,16 @@ def add_table(
         )
 
     elif index_type == define.IndexType.SEGMENTED:
-
         n_items = num_files * num_segments_per_file
         starts = []
         ends = []
         new_files = []
 
         for file in files:
-
-            times = [pd.to_timedelta(random.random() * file_duration, unit='s')
-                     for _ in range(num_segments_per_file * 2)]
+            times = [
+                pd.to_timedelta(random.random() * file_duration, unit="s")
+                for _ in range(num_segments_per_file * 2)
+            ]
             times.sort()
             starts.extend(times[::2])
             ends.extend(times[1::2])
@@ -182,8 +171,8 @@ def add_table(
 
 
 def create_attachment_files(
-        db: Database,
-        root: str,
+    db: Database,
+    root: str,
 ):
     r"""Create attachment folders and files of a database.
 
@@ -199,7 +188,7 @@ def create_attachment_files(
     for attachment_id in list(db.attachments):
         path = audeer.path(root, db.attachments[attachment_id].path)
         if not os.path.exists(path):
-            if '.' in os.path.basename(path):
+            if "." in os.path.basename(path):
                 audeer.mkdir(os.path.dirname(path))
                 audeer.touch(path)
             else:
@@ -207,12 +196,12 @@ def create_attachment_files(
 
 
 def create_audio_files(
-        db: Database,
-        *,
-        sample_generator: Callable[[float], float] = None,
-        sampling_rate: int = 16000,
-        channels: int = 1,
-        file_duration: Union[str, pd.Timedelta] = '60s',
+    db: Database,
+    *,
+    sample_generator: Callable[[float], float] = None,
+    sampling_rate: int = 16000,
+    channels: int = 1,
+    file_duration: Union[str, pd.Timedelta] = "60s",
 ):
     r"""Create audio files for a database.
 
@@ -233,14 +222,10 @@ def create_audio_files(
 
     """
     if db.root is None:  # pragma: no cover
-        raise RuntimeError(
-            "Cannot create files if databases was not saved."
-        )
+        raise RuntimeError("Cannot create files if databases was not saved.")
 
     if not db.is_portable:  # pragma: no cover
-        raise RuntimeError(
-            "Cannot create files if databases is not portable."
-        )
+        raise RuntimeError("Cannot create files if databases is not portable.")
 
     file_duration = pd.to_timedelta(file_duration)
 
@@ -259,8 +244,8 @@ def create_audio_files(
 
 
 def create_db(
-        minimal: bool = False,
-        data: Dict[str, Union[pd.Series, pd.DataFrame]] = None,
+    minimal: bool = False,
+    data: Dict[str, Union[pd.Series, pd.DataFrame]] = None,
 ) -> Database:
     r"""Create test database.
 
@@ -282,27 +267,27 @@ def create_db(
     ########
 
     db = Database(
-        name='unittest',
-        source='internal',
+        name="unittest",
+        source="internal",
         usage=define.Usage.UNRESTRICTED,
-        languages=['de', 'English'],
+        languages=["de", "English"],
     )
 
     if minimal:
         return db
 
-    db.description = 'A database for unit testing.'
-    db.author = 'J. Wagner, H. Wierstorf'
-    db.organization = 'audEERING GmbH'
+    db.description = "A database for unit testing."
+    db.author = "J. Wagner, H. Wierstorf"
+    db.organization = "audEERING GmbH"
     db.license = define.License.CC0_1_0
-    db.meta['audformat'] = 'https://github.com/audeering/audformat'
+    db.meta["audformat"] = "https://github.com/audeering/audformat"
 
     if data is not None:
 
         def to_scheme_type(series: pd.Series) -> str:
-            if series.dtype.name.startswith('int'):
+            if series.dtype.name.startswith("int"):
                 return define.DataType.INTEGER
-            if series.dtype.name.startswith('float'):
+            if series.dtype.name.startswith("float"):
                 return define.DataType.FLOAT
             return define.DataType.STRING
 
@@ -325,86 +310,96 @@ def create_db(
     # Attachments #
     ###############
 
-    db.attachments['file'] = Attachment('extra/file.txt')
-    db.attachments['folder'] = Attachment('extra/folder')
+    db.attachments["file"] = Attachment("extra/file.txt")
+    db.attachments["folder"] = Attachment("extra/folder")
 
     #########
     # Media #
     #########
 
-    db.media['microphone'] = Media(
-        format='wav', sampling_rate=16000, channels=1, bit_depth=16,
+    db.media["microphone"] = Media(
+        format="wav",
+        sampling_rate=16000,
+        channels=1,
+        bit_depth=16,
     )
-    db.media['webcam'] = Media(
-        format='avi', video_fps=25, video_resolution=[800, 600],
-        video_depth=8, video_channels=3,
+    db.media["webcam"] = Media(
+        format="avi",
+        video_fps=25,
+        video_resolution=[800, 600],
+        video_depth=8,
+        video_channels=3,
     )
 
     ##########
     # Raters #
     ##########
 
-    db.raters['gold'] = Rater(
-        description='Gold standard by taking the average ratings.')
-    db.raters['machine'] = Rater(
+    db.raters["gold"] = Rater(
+        description="Gold standard by taking the average ratings."
+    )
+    db.raters["machine"] = Rater(
         type=define.RaterType.MACHINE,
-        description='Predictions made by the machine.',
-        meta={'features': 'ComParE_2016', 'classifier': 'LibSVM'})
+        description="Predictions made by the machine.",
+        meta={"features": "ComParE_2016", "classifier": "LibSVM"},
+    )
 
     ###########
     # Schemes #
     ###########
 
-    db.schemes['bool'] = Scheme(dtype=define.DataType.BOOL)
-    db.schemes['date'] = Scheme(dtype=define.DataType.DATE)
-    db.schemes['float'] = Scheme(
-        dtype=define.DataType.FLOAT, minimum=-1.0, maximum=1.0,
+    db.schemes["bool"] = Scheme(dtype=define.DataType.BOOL)
+    db.schemes["date"] = Scheme(dtype=define.DataType.DATE)
+    db.schemes["float"] = Scheme(
+        dtype=define.DataType.FLOAT,
+        minimum=-1.0,
+        maximum=1.0,
     )
-    db.schemes['int'] = Scheme(
-        dtype=define.DataType.INTEGER, minimum=0, maximum=100,
+    db.schemes["int"] = Scheme(
+        dtype=define.DataType.INTEGER,
+        minimum=0,
+        maximum=100,
     )
-    db.schemes['label'] = Scheme(labels=['label1', 'label2', 'label3'])
-    db.schemes['label_map_int'] = Scheme(
-        labels={1: 'a', 2: 'b', 3: 'c'}
-    )
-    db.schemes['label_map_str'] = Scheme(
+    db.schemes["label"] = Scheme(labels=["label1", "label2", "label3"])
+    db.schemes["label_map_int"] = Scheme(labels={1: "a", 2: "b", 3: "c"})
+    db.schemes["label_map_str"] = Scheme(
         labels={
-            'label1': {'prop1': 1, 'prop2': 'a'},
-            'label2': {'prop1': 2, 'prop2': 'b'},
-            'label3': {'prop1': 3, 'prop2': 'c'},
+            "label1": {"prop1": 1, "prop2": "a"},
+            "label2": {"prop1": 2, "prop2": "b"},
+            "label3": {"prop1": 3, "prop2": "c"},
         }
     )
-    db.schemes['string'] = Scheme()
-    db.schemes['time'] = Scheme(dtype=define.DataType.TIME)
+    db.schemes["string"] = Scheme()
+    db.schemes["time"] = Scheme(dtype=define.DataType.TIME)
 
     ##############
     # Misc Table #
     ##############
 
     index = pd.Index(
-        ['label1', 'label2', 'label3'],
-        name='labels',
-        dtype='string',
+        ["label1", "label2", "label3"],
+        name="labels",
+        dtype="string",
     )
-    db['misc'] = MiscTable(index)
-    db['misc']['int'] = Column(scheme_id='int')
-    db['misc']['int'].set(db.schemes['int'].draw(len(index)))
-    db['misc']['label'] = Column(scheme_id='label')
-    db['misc']['label'].set(db.schemes['label'].draw(len(index)))
+    db["misc"] = MiscTable(index)
+    db["misc"]["int"] = Column(scheme_id="int")
+    db["misc"]["int"].set(db.schemes["int"].draw(len(index)))
+    db["misc"]["label"] = Column(scheme_id="label")
+    db["misc"]["label"].set(db.schemes["label"].draw(len(index)))
 
     ############################
     # Schemes from Misc Tables #
     ############################
 
-    db.schemes['label_map_misc'] = Scheme(labels='misc', dtype='str')
+    db.schemes["label_map_misc"] = Scheme(labels="misc", dtype="str")
 
     ##########
     # Splits #
     ##########
 
-    db.splits['dev'] = Split(type=define.SplitType.DEVELOP)
-    db.splits['test'] = Split(type=define.SplitType.TEST)
-    db.splits['train'] = Split(type=define.SplitType.TRAIN)
+    db.splits["dev"] = Split(type=define.SplitType.DEVELOP)
+    db.splits["test"] = Split(type=define.SplitType.TEST)
+    db.splits["train"] = Split(type=define.SplitType.TRAIN)
 
     ##########
     # Tables #
@@ -412,52 +407,47 @@ def create_db(
 
     add_table(
         db,
-        'files',
+        "files",
         define.IndexType.FILEWISE,
-        columns={
-            scheme: (scheme, 'gold') for scheme in db.schemes
-        },
-        num_files=100, p_none=0.25, split_id='train',
-        media_id='microphone'
+        columns={scheme: (scheme, "gold") for scheme in db.schemes},
+        num_files=100,
+        p_none=0.25,
+        split_id="train",
+        media_id="microphone",
     )
-    db['files']['no_scheme'] = Column()
-    db['files']['no_scheme'].set(
-        db.schemes['string'].draw(100, p_none=0.25)
-    )
+    db["files"]["no_scheme"] = Column()
+    db["files"]["no_scheme"].set(db.schemes["string"].draw(100, p_none=0.25))
 
     add_table(
         db,
-        'segments',
+        "segments",
         define.IndexType.SEGMENTED,
-        columns={
-            scheme: (scheme, 'gold') for scheme in db.schemes
-        },
-        num_files=10, num_segments_per_file=10,
-        file_duration='60s', p_none=0.25, split_id='dev',
-        media_id='microphone',
+        columns={scheme: (scheme, "gold") for scheme in db.schemes},
+        num_files=10,
+        num_segments_per_file=10,
+        file_duration="60s",
+        p_none=0.25,
+        split_id="dev",
+        media_id="microphone",
     )
-    db['segments']['no_scheme'] = Column()
-    db['segments']['no_scheme'].set(
-        db.schemes['string'].draw(100, p_none=0.25)
-    )
+    db["segments"]["no_scheme"] = Column()
+    db["segments"]["no_scheme"].set(db.schemes["string"].draw(100, p_none=0.25))
 
     return db
 
 
 def _add_columns(
-        db: Database,
-        table: Table,
-        columns: Optional[
-            Union[
-                str,
-                Sequence[str],
-                Dict[str, Union[
-                    str, Tuple[Optional[str], Optional[str]]
-                ]],
-            ]
-        ],
-        n_items: int,
-        p_none: float,
+    db: Database,
+    table: Table,
+    columns: Optional[
+        Union[
+            str,
+            Sequence[str],
+            Dict[str, Union[str, Tuple[Optional[str], Optional[str]]]],
+        ]
+    ],
+    n_items: int,
+    p_none: float,
 ):
     r"""Convert 'columns' argument of add_[misc_]table() to dict."""
     if columns is None:
@@ -473,6 +463,4 @@ def _add_columns(
             rater_id=rater_id,
         )
         if scheme_id is not None:
-            table[column_id].set(
-                db.schemes[scheme_id].draw(n_items, p_none=p_none)
-            )
+            table[column_id].set(db.schemes[scheme_id].draw(n_items, p_none=p_none))
