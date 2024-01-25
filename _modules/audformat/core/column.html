@@ -70,7 +70,7 @@
             
             
               <div class="version">
-                v1.1.0
+                v1.1.1
               </div>
             
           
@@ -191,18 +191,17 @@
 
 
 <span class="k">def</span> <span class="nf">assert_values</span><span class="p">(</span>
-        <span class="n">values</span><span class="p">:</span> <span class="n">Values</span><span class="p">,</span>
-        <span class="n">scheme</span><span class="p">:</span> <span class="n">Scheme</span><span class="p">,</span>
+    <span class="n">values</span><span class="p">:</span> <span class="n">Values</span><span class="p">,</span>
+    <span class="n">scheme</span><span class="p">:</span> <span class="n">Scheme</span><span class="p">,</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Raise error if values do not match scheme.&quot;&quot;&quot;</span>
     <span class="n">bad_values</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="k">if</span> <span class="p">(</span>
-            <span class="n">scheme</span><span class="o">.</span><span class="n">labels</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-            <span class="ow">or</span> <span class="n">scheme</span><span class="o">.</span><span class="n">minimum</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-            <span class="ow">or</span> <span class="n">scheme</span><span class="o">.</span><span class="n">maximum</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+        <span class="n">scheme</span><span class="o">.</span><span class="n">labels</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+        <span class="ow">or</span> <span class="n">scheme</span><span class="o">.</span><span class="n">minimum</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+        <span class="ow">or</span> <span class="n">scheme</span><span class="o">.</span><span class="n">maximum</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
     <span class="p">):</span>
-
         <span class="k">if</span> <span class="n">is_scalar</span><span class="p">(</span><span class="n">values</span><span class="p">):</span>
             <span class="n">values</span> <span class="o">=</span> <span class="p">[</span><span class="n">values</span><span class="p">]</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">):</span>
@@ -225,11 +224,11 @@
         <span class="n">max_display</span> <span class="o">=</span> <span class="mi">10</span>
         <span class="n">values</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">bad_values</span><span class="p">[:</span><span class="n">max_display</span><span class="p">])[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">bad_values</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">max_display</span><span class="p">:</span>
-            <span class="n">values</span> <span class="o">+=</span> <span class="s1">&#39;, ...&#39;</span>
+            <span class="n">values</span> <span class="o">+=</span> <span class="s2">&quot;, ...&quot;</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
             <span class="sa">f</span><span class="s2">&quot;Some value(s) do not match scheme</span><span class="se">\n</span><span class="si">{</span><span class="n">scheme</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="sa">f</span><span class="s2">&quot;with scheme ID &#39;</span><span class="si">{</span><span class="n">scheme</span><span class="o">.</span><span class="n">_id</span><span class="si">}</span><span class="s2">&#39;:</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">values</span><span class="si">}</span><span class="s1">&#39;</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">values</span><span class="si">}</span><span class="s2">&quot;</span>
         <span class="p">)</span>
 
 
@@ -247,17 +246,18 @@
 <span class="sd">        meta: additional meta fields</span>
 
 <span class="sd">    Examples:</span>
-<span class="sd">        &gt;&gt;&gt; Column(scheme_id=&#39;emotion&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; Column(scheme_id=&quot;emotion&quot;)</span>
 <span class="sd">        {scheme_id: emotion}</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span>
-            <span class="o">*</span><span class="p">,</span>
-            <span class="n">scheme_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="n">rater_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="n">meta</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">scheme_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">rater_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">meta</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="n">description</span><span class="p">,</span> <span class="n">meta</span><span class="o">=</span><span class="n">meta</span><span class="p">)</span>
 
@@ -277,11 +277,9 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">rater_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-        <span class="p">)</span> <span class="ow">and</span> <span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">table</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-        <span class="p">)</span> <span class="ow">and</span> <span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">table</span><span class="o">.</span><span class="n">db</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+            <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rater_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">table</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">table</span><span class="o">.</span><span class="n">db</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
         <span class="p">):</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">table</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">raters</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">rater_id</span><span class="p">]</span>
 
@@ -294,11 +292,9 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">scheme_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-        <span class="p">)</span> <span class="ow">and</span> <span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">table</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-        <span class="p">)</span> <span class="ow">and</span> <span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">table</span><span class="o">.</span><span class="n">db</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+            <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scheme_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">table</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">table</span><span class="o">.</span><span class="n">db</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
         <span class="p">):</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">table</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">scheme_id</span><span class="p">]</span>
 
@@ -313,16 +309,16 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_table</span>
 
 <div class="viewcode-block" id="Column.get"><a class="viewcode-back" href="../../../api/audformat.Column.html#audformat.Column.get">[docs]</a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span>
-            <span class="n">index</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="o">*</span><span class="p">,</span>
-            <span class="nb">map</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="n">copy</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-            <span class="n">as_segmented</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-            <span class="n">allow_nat</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-            <span class="n">root</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="n">num_workers</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
-            <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">index</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="nb">map</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">copy</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">as_segmented</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">allow_nat</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">root</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">num_workers</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Get labels.</span>
 
@@ -376,11 +372,9 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_table</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-                <span class="s1">&#39;Column is not assigned to a table.&#39;</span>
-            <span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Column is not assigned to a table.&quot;</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_table</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_table</span><span class="p">,</span> <span class="s2">&quot;type&quot;</span><span class="p">):</span>
             <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_table</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
                 <span class="n">index</span><span class="p">,</span>
                 <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
@@ -398,26 +392,20 @@
         <span class="n">result</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_id</span><span class="p">]</span>
 
         <span class="k">if</span> <span class="nb">map</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-
             <span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span>  <span class="c1"># to avoid another copy</span>
 
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">scheme_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;Column &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_id</span><span class="si">}</span><span class="s2">&#39; is not assigned to a scheme.&quot;</span>
-                <span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Column &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_id</span><span class="si">}</span><span class="s2">&#39; is not assigned to a scheme.&quot;</span><span class="p">)</span>
 
             <span class="n">scheme</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_table</span><span class="o">.</span><span class="n">_db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">scheme_id</span><span class="p">]</span>
             <span class="n">labels</span> <span class="o">=</span> <span class="n">scheme</span><span class="o">.</span><span class="n">_labels_to_dict</span><span class="p">()</span>
 
             <span class="k">if</span> <span class="n">labels</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;Scheme &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">scheme_id</span><span class="si">}</span><span class="s2">&#39; has no labels.&quot;</span>
-                <span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Scheme &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">scheme_id</span><span class="si">}</span><span class="s2">&#39; has no labels.&quot;</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="n">labels</span><span class="o">.</span><span class="n">values</span><span class="p">()):</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;Scheme &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">scheme_id</span><span class="si">}</span><span class="s2">&#39; provides no mapping &quot;</span>
-                    <span class="s2">&quot;for its labels.&quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;Scheme &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">scheme_id</span><span class="si">}</span><span class="s2">&#39; provides no mapping &quot;</span> <span class="s2">&quot;for its labels.&quot;</span>
                 <span class="p">)</span>
 
             <span class="c1"># Check that at least one key is available for map</span>
@@ -450,10 +438,10 @@
             <span class="n">result</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="nb">map</span>
 
             <span class="k">if</span> <span class="p">(</span>
-                    <span class="n">scheme</span><span class="o">.</span><span class="n">uses_table</span>
-                    <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_table</span><span class="o">.</span><span class="n">_db</span><span class="p">[</span><span class="n">scheme</span><span class="o">.</span><span class="n">labels</span><span class="p">][</span><span class="nb">map</span><span class="p">]</span><span class="o">.</span><span class="n">scheme</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-                    <span class="c1">#                       ^           ^</span>
-                    <span class="c1">#                   misc table   column</span>
+                <span class="n">scheme</span><span class="o">.</span><span class="n">uses_table</span>
+                <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_table</span><span class="o">.</span><span class="n">_db</span><span class="p">[</span><span class="n">scheme</span><span class="o">.</span><span class="n">labels</span><span class="p">][</span><span class="nb">map</span><span class="p">]</span><span class="o">.</span><span class="n">scheme</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+                <span class="c1">#                       ^           ^</span>
+                <span class="c1">#                   misc table   column</span>
             <span class="p">):</span>
                 <span class="c1"># Infer dtype from misc table</span>
                 <span class="n">misc_table_id</span> <span class="o">=</span> <span class="n">scheme</span><span class="o">.</span><span class="n">labels</span>
@@ -469,10 +457,10 @@
         <span class="k">return</span> <span class="n">result</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span> <span class="k">if</span> <span class="n">copy</span> <span class="k">else</span> <span class="n">result</span></div>
 
 <div class="viewcode-block" id="Column.set"><a class="viewcode-back" href="../../../api/audformat.Column.html#audformat.Column.set">[docs]</a>    <span class="k">def</span> <span class="nf">set</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span>
-            <span class="n">values</span><span class="p">:</span> <span class="n">Values</span><span class="p">,</span>
-            <span class="o">*</span><span class="p">,</span>
-            <span class="n">index</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">values</span><span class="p">:</span> <span class="n">Values</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">index</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Set labels.</span>
 
@@ -499,9 +487,7 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_table</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-                <span class="s1">&#39;Column is not assigned to a table.&#39;</span>
-            <span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Column is not assigned to a table.&quot;</span><span class="p">)</span>
 
         <span class="n">column_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_id</span>
         <span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_table</span><span class="o">.</span><span class="n">df</span>
@@ -516,8 +502,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">dtype</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">column_id</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span>
 
-        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_table</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">)</span> <span class="ow">and</span> \
-                <span class="bp">self</span><span class="o">.</span><span class="n">_table</span><span class="o">.</span><span class="n">type</span> <span class="o">!=</span> <span class="n">index_type</span><span class="p">(</span><span class="n">index</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_table</span><span class="p">,</span> <span class="s2">&quot;type&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_table</span><span class="o">.</span><span class="n">type</span> <span class="o">!=</span> <span class="n">index_type</span><span class="p">(</span><span class="n">index</span><span class="p">):</span>
             <span class="c1"># special case where a filewise / segmented table</span>
             <span class="c1"># is requested with an index of the other type</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_table</span><span class="o">.</span><span class="n">is_filewise</span><span class="p">:</span>
@@ -526,19 +511,19 @@
                 <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                    <span class="s1">&#39;Cannot set values of a filewise column &#39;</span>
-                    <span class="s1">&#39;using a segmented index.&#39;</span>
+                    <span class="s2">&quot;Cannot set values of a filewise column &quot;</span> <span class="s2">&quot;using a segmented index.&quot;</span>
                 <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">is_scalar</span><span class="p">(</span><span class="n">values</span><span class="p">):</span>
                 <span class="n">values</span> <span class="o">=</span> <span class="p">[</span><span class="n">values</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
             <span class="n">values</span> <span class="o">=</span> <span class="n">to_array</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">dtype</span> <span class="o">==</span> <span class="s1">&#39;datetime64[ns]&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">dtype</span> <span class="o">==</span> <span class="s2">&quot;datetime64[ns]&quot;</span><span class="p">:</span>
                 <span class="c1"># Ensure all date values are timezone unaware,</span>
                 <span class="c1"># see https://github.com/audeering/audformat/issues/364</span>
                 <span class="n">values</span> <span class="o">=</span> <span class="p">[</span>
                     <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">tz_localize</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
-                    <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">value</span>
+                    <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+                    <span class="k">else</span> <span class="n">value</span>
                     <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">values</span>
                 <span class="p">]</span>
             <span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">():</span>
@@ -549,7 +534,7 @@
                 <span class="c1"># https://pandas.pydata.org/docs/dev/whatsnew/v1.5.0.html#inplace-operation-when-setting-values-with-loc-and-iloc</span>
                 <span class="c1"># For pandas &gt;=2.0.0 values are always set in place</span>
                 <span class="k">for</span> <span class="n">warning</span> <span class="ow">in</span> <span class="p">[</span><span class="ne">FutureWarning</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">]:</span>
-                    <span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="n">action</span><span class="o">=</span><span class="s1">&#39;ignore&#39;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="n">warning</span><span class="p">)</span>
+                    <span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="n">action</span><span class="o">=</span><span class="s2">&quot;ignore&quot;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="n">warning</span><span class="p">)</span>
                 <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">index</span><span class="p">,</span> <span class="n">column_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span>
                     <span class="n">values</span><span class="p">,</span>
                     <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">,</span>
@@ -557,8 +542,8 @@
                 <span class="p">)</span></div>
 
 <div class="viewcode-block" id="Column.__eq__"><a class="viewcode-back" href="../../../api/audformat.Column.html#audformat.Column.__eq__">[docs]</a>    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span>
-            <span class="n">other</span><span class="p">:</span> <span class="s1">&#39;Column&#39;</span><span class="p">,</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">other</span><span class="p">:</span> <span class="s2">&quot;Column&quot;</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Compare if column equals another column.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dump</span><span class="p">()</span> <span class="o">!=</span> <span class="n">other</span><span class="o">.</span><span class="n">dump</span><span class="p">():</span>
@@ -581,7 +566,7 @@
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2023/11/30 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2024/01/25 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
@@ -589,7 +574,7 @@
   <div role="contentinfo">
     <p>
         
-      &copy; 2019-2023 audEERING GmbH
+      &copy; 2019-2024 audEERING GmbH
     </p>
   </div> 
 

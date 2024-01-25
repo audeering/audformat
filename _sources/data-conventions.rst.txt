@@ -20,7 +20,7 @@ to increase readability.
 
 .. jupyter-execute::
 
-    audformat.Database(name='librispeech-mfa-cseg-pho')
+    audformat.Database(name="librispeech-mfa-cseg-pho")
 
 
 Table and scheme names
@@ -62,13 +62,13 @@ name each column after the name of the rater.
 
 .. jupyter-execute::
 
-    db = audformat.Database('mydata')
+    db = audformat.Database("mydata")
 
-    db.schemes['arousal'] = audformat.Scheme(audformat.define.DataType.FLOAT)
-    db.schemes['valence'] = audformat.Scheme(audformat.define.DataType.FLOAT)
+    db.schemes["arousal"] = audformat.Scheme(audformat.define.DataType.FLOAT)
+    db.schemes["valence"] = audformat.Scheme(audformat.define.DataType.FLOAT)
 
-    db.raters['rater1'] = audformat.Rater()
-    db.raters['rater2'] = audformat.Rater()
+    db.raters["rater1"] = audformat.Rater()
+    db.raters["rater2"] = audformat.Rater()
 
     for scheme_id in db.schemes:
         db[scheme_id] = audformat.Table(audformat.filewise_index())
@@ -93,17 +93,17 @@ named ``scheme_id.split``.
 
 .. jupyter-execute::
 
-    db = audformat.Database('mydata')
+    db = audformat.Database("mydata")
 
-    db.schemes['arousal'] = audformat.Scheme(audformat.define.DataType.FLOAT)
+    db.schemes["arousal"] = audformat.Scheme(audformat.define.DataType.FLOAT)
 
-    db.splits['train'] = audformat.Split(audformat.define.SplitType.TRAIN)
-    db.splits['dev'] = audformat.Split(audformat.define.SplitType.DEVELOP)
-    db.splits['test'] = audformat.Split(audformat.define.SplitType.TEST)
+    db.splits["train"] = audformat.Split(audformat.define.SplitType.TRAIN)
+    db.splits["dev"] = audformat.Split(audformat.define.SplitType.DEVELOP)
+    db.splits["test"] = audformat.Split(audformat.define.SplitType.TEST)
 
     for scheme_id in db.schemes:
         for split_id in db.splits:
-            table_id = f'{scheme_id}.{split_id}'
+            table_id = f"{scheme_id}.{split_id}"
             db[table_id] = audformat.Table(
                 index=audformat.filewise_index(),
                 split_id=split_id,
@@ -124,7 +124,7 @@ Instead a new table with the postfix ``.gold_standard``
 should be created
 to store the average of all rater.
 In addition,
-a rater with the id ``'gold_standard'``
+a rater with the id ``"gold_standard"``
 and the type ``audformat.define.RaterType.VOTE``
 should be created
 and associated with the column
@@ -132,26 +132,26 @@ holding the gold standard values.
 
 .. jupyter-execute::
 
-    db = audformat.Database('mydata')
+    db = audformat.Database("mydata")
 
-    db.schemes['arousal'] = audformat.Scheme(audformat.define.DataType.FLOAT)
+    db.schemes["arousal"] = audformat.Scheme(audformat.define.DataType.FLOAT)
 
-    db.raters['rater1'] = audformat.Rater()
-    db.raters['rater2'] = audformat.Rater()
-    db.raters['gold_standard'] = audformat.Rater(audformat.define.RaterType.VOTE)
+    db.raters["rater1"] = audformat.Rater()
+    db.raters["rater2"] = audformat.Rater()
+    db.raters["gold_standard"] = audformat.Rater(audformat.define.RaterType.VOTE)
 
     for scheme_id in db.schemes:
         db[scheme_id] = audformat.Table(audformat.filewise_index())
-        for rater_id in ['rater1', 'rater2']:
+        for rater_id in ["rater1", "rater2"]:
             db[scheme_id][rater_id] = audformat.Column(
                 scheme_id=scheme_id,
                 rater_id=rater_id,
             )
-        gold_id = f'{scheme_id}.gold_standard'
+        gold_id = f"{scheme_id}.gold_standard"
         db[gold_id] = audformat.Table(audformat.filewise_index())
         db[gold_id][scheme_id] = audformat.Column(
             scheme_id=scheme_id,
-            rater_id='gold_standard',
+            rater_id="gold_standard",
         )
 
     db
@@ -176,22 +176,22 @@ which might be worth considering when storing the gold standard.
 
 .. jupyter-execute::
 
-    db = audformat.Database('mydata')
+    db = audformat.Database("mydata")
 
-    db.schemes['arousal'] = audformat.Scheme(audformat.define.DataType.FLOAT)
-    db.schemes['arousal.confidence'] = audformat.Scheme(
+    db.schemes["arousal"] = audformat.Scheme(audformat.define.DataType.FLOAT)
+    db.schemes["arousal.confidence"] = audformat.Scheme(
         audformat.define.DataType.FLOAT,
         minimum=0,
         maximum=1,
     )
 
-    db.raters['gold_standard'] = audformat.Rater(audformat.define.RaterType.VOTE)
+    db.raters["gold_standard"] = audformat.Rater(audformat.define.RaterType.VOTE)
 
-    db['arousal'] = audformat.Table(audformat.filewise_index())
+    db["arousal"] = audformat.Table(audformat.filewise_index())
     for scheme_id in db.schemes:
-        db['arousal'][scheme_id] = audformat.Column(
+        db["arousal"][scheme_id] = audformat.Column(
             scheme_id=scheme_id,
-            rater_id='gold_standard',
+            rater_id="gold_standard",
         )
 
     db
@@ -215,28 +215,28 @@ as it can be later automatically mapped.
 
 .. jupyter-execute::
 
-    db = audformat.Database('mydata')
+    db = audformat.Database("mydata")
 
     M = audformat.define.Gender.MALE
     F = audformat.define.Gender.FEMALE
     speaker = {
-        'speaker1': {'gender': F, 'age': 31},
-        'speaker2': {'gender': M, 'age': 85},
+        "speaker1": {"gender": F, "age": 31},
+        "speaker2": {"gender": M, "age": 85},
     }
 
-    db.schemes['speaker'] = audformat.Scheme(labels=speaker)
-    db['files'] = audformat.Table(
-        index=audformat.filewise_index(['a.wav', 'b.wav'])
+    db.schemes["speaker"] = audformat.Scheme(labels=speaker)
+    db["files"] = audformat.Table(
+        index=audformat.filewise_index(["a.wav", "b.wav"])
     )
-    db['files']['speaker'] = audformat.Column(scheme_id='speaker')
-    db['files']['speaker'].set(['speaker1', 'speaker2'])
+    db["files"]["speaker"] = audformat.Column(scheme_id="speaker")
+    db["files"]["speaker"].set(["speaker1", "speaker2"])
 
     db
 
 
 .. jupyter-execute::
 
-    db['files'].get()
+    db["files"].get()
 
 You can access the additional information with the ``map`` argument
 of :meth:`audformat.Table.get`,
@@ -245,7 +245,7 @@ for an extended documentation.
 
 .. jupyter-execute::
 
-    db['files'].get(map={'speaker': 'gender'})
+    db["files"].get(map={"speaker": "gender"})
 
 
 Temporal data
@@ -265,18 +265,18 @@ should be stored as :class:`datetime.datetime`.
 
     times = [2.1, 0.1]  # in seconds
 
-    db = audformat.Database('mydata')
+    db = audformat.Database("mydata")
 
-    db.schemes['time'] = audformat.Scheme(audformat.define.DataType.TIME)
-    db.raters['rater'] = audformat.Rater()
+    db.schemes["time"] = audformat.Scheme(audformat.define.DataType.TIME)
+    db.raters["rater"] = audformat.Rater()
 
-    db['files'] = audformat.Table(
-        index=audformat.filewise_index(['a.wav', 'b.wav'])
+    db["files"] = audformat.Table(
+        index=audformat.filewise_index(["a.wav", "b.wav"])
     )
-    db['files']['time'] = audformat.Column(
-        scheme_id='time',
-        rater_id='rater',
+    db["files"]["time"] = audformat.Column(
+        scheme_id="time",
+        rater_id="rater",
     )
-    db['files']['time'].set(pd.to_timedelta(times, unit='s'))
+    db["files"]["time"].set(pd.to_timedelta(times, unit="s"))
 
-    db['files'].get()
+    db["files"].get()

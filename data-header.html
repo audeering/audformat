@@ -72,7 +72,7 @@
             
             
               <div class="version">
-                v1.1.0
+                v1.1.1
               </div>
             
           
@@ -257,8 +257,8 @@ e.g. link to webpage where files are hosted</p></td>
 <tr class="row-even"><td><p>usage</p></td>
 <td><p>yes</p></td>
 <td><p>What the database can be used for,
-one of <code class="docutils literal notranslate"><span class="pre">'commercial'</span></code>, <code class="docutils literal notranslate"><span class="pre">'other'</span></code>,
-<code class="docutils literal notranslate"><span class="pre">'research'</span></code>, <code class="docutils literal notranslate"><span class="pre">'restricted'</span></code>, <code class="docutils literal notranslate"><span class="pre">'unrestricted'</span></code></p></td>
+one of <code class="docutils literal notranslate"><span class="pre">&quot;commercial&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;other&quot;</span></code>,
+<code class="docutils literal notranslate"><span class="pre">&quot;research&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;restricted&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;unrestricted&quot;</span></code></p></td>
 </tr>
 <tr class="row-odd"><td><p>author</p></td>
 <td></td>
@@ -343,9 +343,9 @@ one of <code class="docutils literal notranslate"><span class="pre">'commercial'
 
 <span class="c1"># Create Database</span>
 <span class="n">db</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Database</span><span class="p">(</span>
-    <span class="n">name</span><span class="o">=</span><span class="s1">&#39;databasename&#39;</span><span class="p">,</span>
-    <span class="n">source</span><span class="o">=</span><span class="s1">&#39;https://gitlab.audeering.com/data/databasename&#39;</span><span class="p">,</span>
-    <span class="n">usage</span><span class="o">=</span><span class="s1">&#39;commercial&#39;</span><span class="p">,</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;databasename&quot;</span><span class="p">,</span>
+    <span class="n">source</span><span class="o">=</span><span class="s2">&quot;https://gitlab.audeering.com/data/databasename&quot;</span><span class="p">,</span>
+    <span class="n">usage</span><span class="o">=</span><span class="s2">&quot;commercial&quot;</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="n">db</span>
 </pre></div>
@@ -413,11 +413,11 @@ languages: []
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create minimal Attachment</span>
-<span class="n">attachment</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Attachment</span><span class="p">(</span><span class="s1">&#39;docs/setup.pdf&#39;</span><span class="p">)</span>
+<span class="n">attachment</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Attachment</span><span class="p">(</span><span class="s2">&quot;docs/setup.pdf&quot;</span><span class="p">)</span>
 <span class="c1"># Add Attachment to Database</span>
-<span class="n">db</span><span class="o">.</span><span class="n">attachments</span><span class="p">[</span><span class="s1">&#39;attachmentid&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">attachment</span>
+<span class="n">db</span><span class="o">.</span><span class="n">attachments</span><span class="p">[</span><span class="s2">&quot;attachmentid&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">attachment</span>
 <span class="c1"># Access path of Attachment</span>
-<span class="n">db</span><span class="o">.</span><span class="n">attachments</span><span class="p">[</span><span class="s1">&#39;attachmentid&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">path</span>
+<span class="n">db</span><span class="o">.</span><span class="n">attachments</span><span class="p">[</span><span class="s2">&quot;attachmentid&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">path</span>
 <span class="c1"># Access attachments</span>
 <span class="n">db</span><span class="o">.</span><span class="n">attachments</span>
 </pre></div>
@@ -454,8 +454,8 @@ languages: []
 </tr>
 <tr class="row-odd"><td><p>type</p></td>
 <td><p>yes</p></td>
-<td><p>Rater type, one of <code class="docutils literal notranslate"><span class="pre">'human'</span></code>, <code class="docutils literal notranslate"><span class="pre">'machine'</span></code>,
-<code class="docutils literal notranslate"><span class="pre">'other'</span></code>, <code class="docutils literal notranslate"><span class="pre">'ground</span> <span class="pre">truth'</span></code>, <code class="docutils literal notranslate"><span class="pre">'vote'</span></code></p></td>
+<td><p>Rater type, one of <code class="docutils literal notranslate"><span class="pre">&quot;human&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;machine&quot;</span></code>,
+<code class="docutils literal notranslate"><span class="pre">&quot;other&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;ground</span> <span class="pre">truth&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;vote&quot;</span></code></p></td>
 </tr>
 <tr class="row-even"><td><p>description</p></td>
 <td></td>
@@ -488,11 +488,11 @@ languages: []
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create minimal Rater</span>
-<span class="n">rater</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Rater</span><span class="p">(</span><span class="s1">&#39;human&#39;</span><span class="p">)</span>
+<span class="n">rater</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Rater</span><span class="p">(</span><span class="s2">&quot;human&quot;</span><span class="p">)</span>
 <span class="c1"># Add Rater to Database</span>
-<span class="n">db</span><span class="o">.</span><span class="n">raters</span><span class="p">[</span><span class="s1">&#39;raterid&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rater</span>
+<span class="n">db</span><span class="o">.</span><span class="n">raters</span><span class="p">[</span><span class="s2">&quot;raterid&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rater</span>
 <span class="c1"># Access type of Rater</span>
-<span class="n">db</span><span class="o">.</span><span class="n">raters</span><span class="p">[</span><span class="s1">&#39;raterid&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">type</span>
+<span class="n">db</span><span class="o">.</span><span class="n">raters</span><span class="p">[</span><span class="s2">&quot;raterid&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">type</span>
 <span class="c1"># Access raters</span>
 <span class="n">db</span><span class="o">.</span><span class="n">raters</span>
 </pre></div>
@@ -525,9 +525,9 @@ languages: []
 <tbody>
 <tr class="row-even"><td><p>dtype</p></td>
 <td><p>yes</p></td>
-<td><p>Data type, one of <code class="docutils literal notranslate"><span class="pre">'bool'</span></code>,
-<code class="docutils literal notranslate"><span class="pre">'int'</span></code>, <code class="docutils literal notranslate"><span class="pre">'float'</span></code>, <code class="docutils literal notranslate"><span class="pre">'object'</span></code>,
-<code class="docutils literal notranslate"><span class="pre">'str'</span></code>, <code class="docutils literal notranslate"><span class="pre">'time'</span></code>, <code class="docutils literal notranslate"><span class="pre">'date'</span></code></p></td>
+<td><p>Data type, one of <code class="docutils literal notranslate"><span class="pre">&quot;bool&quot;</span></code>,
+<code class="docutils literal notranslate"><span class="pre">&quot;int&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;float&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;object&quot;</span></code>,
+<code class="docutils literal notranslate"><span class="pre">&quot;str&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;time&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;date&quot;</span></code></p></td>
 </tr>
 <tr class="row-odd"><td><p>id</p></td>
 <td><p>yes</p></td>
@@ -579,11 +579,11 @@ numeric)</p></td>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create minimal Scheme</span>
-<span class="n">scheme</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Scheme</span><span class="p">(</span><span class="s1">&#39;float&#39;</span><span class="p">)</span>
+<span class="n">scheme</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Scheme</span><span class="p">(</span><span class="s2">&quot;float&quot;</span><span class="p">)</span>
 <span class="c1"># Add Scheme to Database</span>
-<span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s1">&#39;schemeid&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">scheme</span>
+<span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s2">&quot;schemeid&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">scheme</span>
 <span class="c1"># Access dtype of Scheme</span>
-<span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s1">&#39;schemeid&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span>
+<span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s2">&quot;schemeid&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span>
 <span class="c1"># Access schemes</span>
 <span class="n">db</span><span class="o">.</span><span class="n">schemes</span>
 </pre></div>
@@ -620,8 +620,8 @@ numeric)</p></td>
 </tr>
 <tr class="row-odd"><td><p>type</p></td>
 <td><p>yes</p></td>
-<td><p>Split type, one of <code class="docutils literal notranslate"><span class="pre">'train'</span></code>, <code class="docutils literal notranslate"><span class="pre">'dev'</span></code>,
-<code class="docutils literal notranslate"><span class="pre">'other'</span></code>, <code class="docutils literal notranslate"><span class="pre">'test'</span></code></p></td>
+<td><p>Split type, one of <code class="docutils literal notranslate"><span class="pre">&quot;train&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;dev&quot;</span></code>,
+<code class="docutils literal notranslate"><span class="pre">&quot;other&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;test&quot;</span></code></p></td>
 </tr>
 <tr class="row-even"><td><p>description</p></td>
 <td></td>
@@ -654,11 +654,11 @@ numeric)</p></td>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create minimal Split</span>
-<span class="n">split</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Split</span><span class="p">(</span><span class="s1">&#39;test&#39;</span><span class="p">)</span>
+<span class="n">split</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Split</span><span class="p">(</span><span class="s2">&quot;test&quot;</span><span class="p">)</span>
 <span class="c1"># Add Split to Database</span>
-<span class="n">db</span><span class="o">.</span><span class="n">splits</span><span class="p">[</span><span class="s1">&#39;splitid&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">split</span>
+<span class="n">db</span><span class="o">.</span><span class="n">splits</span><span class="p">[</span><span class="s2">&quot;splitid&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">split</span>
 <span class="c1"># Access type of Split</span>
-<span class="n">db</span><span class="o">.</span><span class="n">splits</span><span class="p">[</span><span class="s1">&#39;splitid&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">type</span>
+<span class="n">db</span><span class="o">.</span><span class="n">splits</span><span class="p">[</span><span class="s2">&quot;splitid&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">type</span>
 <span class="c1"># Access splits</span>
 <span class="n">db</span><span class="o">.</span><span class="n">splits</span>
 </pre></div>
@@ -696,8 +696,8 @@ numeric)</p></td>
 </tr>
 <tr class="row-odd"><td><p>type</p></td>
 <td></td>
-<td><p>Media type, one of <code class="docutils literal notranslate"><span class="pre">'audio'</span></code>, <code class="docutils literal notranslate"><span class="pre">'video'</span></code>,
-<code class="docutils literal notranslate"><span class="pre">'other'</span></code></p></td>
+<td><p>Media type, one of <code class="docutils literal notranslate"><span class="pre">&quot;audio&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;video&quot;</span></code>,
+<code class="docutils literal notranslate"><span class="pre">&quot;other&quot;</span></code></p></td>
 </tr>
 <tr class="row-even"><td><p>bit_depth</p></td>
 <td></td>
@@ -762,11 +762,11 @@ numeric)</p></td>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create minimal media information</span>
-<span class="n">media</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Media</span><span class="p">(</span><span class="s1">&#39;audio&#39;</span><span class="p">)</span>
+<span class="n">media</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Media</span><span class="p">(</span><span class="s2">&quot;audio&quot;</span><span class="p">)</span>
 <span class="c1"># Add media to Database</span>
-<span class="n">db</span><span class="o">.</span><span class="n">media</span><span class="p">[</span><span class="s1">&#39;mediaid&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">media</span>
+<span class="n">db</span><span class="o">.</span><span class="n">media</span><span class="p">[</span><span class="s2">&quot;mediaid&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">media</span>
 <span class="c1"># Access type of Media</span>
-<span class="n">db</span><span class="o">.</span><span class="n">media</span><span class="p">[</span><span class="s1">&#39;mediaid&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">type</span>
+<span class="n">db</span><span class="o">.</span><span class="n">media</span><span class="p">[</span><span class="s2">&quot;mediaid&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">type</span>
 <span class="c1"># Access media</span>
 <span class="n">db</span><span class="o">.</span><span class="n">media</span>
 </pre></div>
@@ -803,7 +803,7 @@ numeric)</p></td>
 </tr>
 <tr class="row-odd"><td><p>type</p></td>
 <td><p>yes</p></td>
-<td><p>Table type, one of <code class="docutils literal notranslate"><span class="pre">'filewise'</span></code>, <code class="docutils literal notranslate"><span class="pre">'segmented'</span></code></p></td>
+<td><p>Table type, one of <code class="docutils literal notranslate"><span class="pre">&quot;filewise&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;segmented&quot;</span></code></p></td>
 </tr>
 <tr class="row-even"><td><p>columns</p></td>
 <td></td>
@@ -850,13 +850,13 @@ numeric)</p></td>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create minimal Table</span>
 <span class="n">table</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Table</span><span class="p">(</span><span class="n">audformat</span><span class="o">.</span><span class="n">filewise_index</span><span class="p">())</span>
 <span class="c1"># Add Table to Database</span>
-<span class="n">db</span><span class="o">.</span><span class="n">tables</span><span class="p">[</span><span class="s1">&#39;tableid&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">table</span>
+<span class="n">db</span><span class="o">.</span><span class="n">tables</span><span class="p">[</span><span class="s2">&quot;tableid&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">table</span>
 <span class="c1"># Access type of Table</span>
-<span class="n">db</span><span class="o">.</span><span class="n">tables</span><span class="p">[</span><span class="s1">&#39;tableid&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">type</span>
+<span class="n">db</span><span class="o">.</span><span class="n">tables</span><span class="p">[</span><span class="s2">&quot;tableid&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">type</span>
 <span class="c1"># Add Table to Database (short notation)</span>
-<span class="n">db</span><span class="p">[</span><span class="s1">&#39;tableid&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">table</span>
+<span class="n">db</span><span class="p">[</span><span class="s2">&quot;tableid&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">table</span>
 <span class="c1"># Access type of Table (short notation)</span>
-<span class="n">db</span><span class="p">[</span><span class="s1">&#39;tableid&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">type</span>
+<span class="n">db</span><span class="p">[</span><span class="s2">&quot;tableid&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">type</span>
 <span class="c1"># Access tables</span>
 <span class="n">db</span><span class="o">.</span><span class="n">tables</span>
 </pre></div>
@@ -935,15 +935,15 @@ numeric)</p></td>
 <div class="cell_input code_cell docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create minimal Misc Table</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="n">misc_table</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">MiscTable</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">([],</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;idx&#39;</span><span class="p">))</span>
+<span class="n">misc_table</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">MiscTable</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">([],</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;idx&quot;</span><span class="p">))</span>
 <span class="c1"># Add Misc Table to Database</span>
-<span class="n">db</span><span class="o">.</span><span class="n">misc_tables</span><span class="p">[</span><span class="s1">&#39;misctableid&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">misc_table</span>
+<span class="n">db</span><span class="o">.</span><span class="n">misc_tables</span><span class="p">[</span><span class="s2">&quot;misctableid&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">misc_table</span>
 <span class="c1"># Access dataframe of Misc Table</span>
-<span class="n">db</span><span class="o">.</span><span class="n">misc_tables</span><span class="p">[</span><span class="s1">&#39;misctableid&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">df</span>
+<span class="n">db</span><span class="o">.</span><span class="n">misc_tables</span><span class="p">[</span><span class="s2">&quot;misctableid&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">df</span>
 <span class="c1"># Add Misc Table to Database (short notation)</span>
-<span class="n">db</span><span class="p">[</span><span class="s1">&#39;misctableid&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">misc_table</span>
+<span class="n">db</span><span class="p">[</span><span class="s2">&quot;misctableid&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">misc_table</span>
 <span class="c1"># Access dataframe of Misc Table (short notation)</span>
-<span class="n">db</span><span class="p">[</span><span class="s1">&#39;misctableid&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">df</span>
+<span class="n">db</span><span class="p">[</span><span class="s2">&quot;misctableid&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">df</span>
 <span class="c1"># Access misc tables</span>
 <span class="n">db</span><span class="o">.</span><span class="n">misc_tables</span>
 </pre></div>
@@ -1021,11 +1021,11 @@ numeric)</p></td>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create minimal Column</span>
 <span class="n">column</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Column</span><span class="p">()</span>
 <span class="c1"># Add Column to Table</span>
-<span class="n">db</span><span class="o">.</span><span class="n">tables</span><span class="p">[</span><span class="s1">&#39;tableid&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="s1">&#39;columnid&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">column</span>
+<span class="n">db</span><span class="o">.</span><span class="n">tables</span><span class="p">[</span><span class="s2">&quot;tableid&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="s2">&quot;columnid&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">column</span>
 <span class="c1"># Add Column to Table (short notation)</span>
-<span class="n">db</span><span class="p">[</span><span class="s1">&#39;tableid&#39;</span><span class="p">][</span><span class="s1">&#39;columnid&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">column</span>
+<span class="n">db</span><span class="p">[</span><span class="s2">&quot;tableid&quot;</span><span class="p">][</span><span class="s2">&quot;columnid&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">column</span>
 <span class="c1"># Access columns</span>
-<span class="n">db</span><span class="p">[</span><span class="s1">&#39;tableid&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">columns</span>
+<span class="n">db</span><span class="p">[</span><span class="s2">&quot;tableid&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">columns</span>
 </pre></div>
 </div>
 </div>
@@ -1063,7 +1063,7 @@ numeric)</p></td>
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2023/11/30 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2024/01/25 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
@@ -1071,7 +1071,7 @@ numeric)</p></td>
   <div role="contentinfo">
     <p>
         
-      &copy; 2019-2023 audEERING GmbH
+      &copy; 2019-2024 audEERING GmbH
     </p>
   </div> 
 

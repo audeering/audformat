@@ -72,7 +72,7 @@
             
             
               <div class="version">
-                v1.1.0
+                v1.1.1
               </div>
             
           
@@ -178,16 +178,16 @@ age labels for a hundred files.</p>
 
 
 <span class="n">db</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">create_db</span><span class="p">(</span><span class="n">minimal</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s1">&#39;age&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Scheme</span><span class="p">(</span>
+<span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s2">&quot;age&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Scheme</span><span class="p">(</span>
     <span class="n">audformat</span><span class="o">.</span><span class="n">define</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">INTEGER</span><span class="p">,</span>
     <span class="n">minimum</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
     <span class="n">maximum</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="n">audformat</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">add_table</span><span class="p">(</span>
     <span class="n">db</span><span class="p">,</span>
-    <span class="n">table_id</span><span class="o">=</span><span class="s1">&#39;table&#39;</span><span class="p">,</span>
+    <span class="n">table_id</span><span class="o">=</span><span class="s2">&quot;table&quot;</span><span class="p">,</span>
     <span class="n">index_type</span><span class="o">=</span><span class="n">audformat</span><span class="o">.</span><span class="n">define</span><span class="o">.</span><span class="n">IndexType</span><span class="o">.</span><span class="n">FILEWISE</span><span class="p">,</span>
-    <span class="n">columns</span><span class="o">=</span><span class="s1">&#39;age&#39;</span><span class="p">,</span>
+    <span class="n">columns</span><span class="o">=</span><span class="s2">&quot;age&quot;</span><span class="p">,</span>
     <span class="n">num_files</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="n">db</span>
@@ -212,7 +212,7 @@ tables:
 </div>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="p">[</span><span class="s1">&#39;table&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">df</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="p">[</span><span class="s2">&quot;table&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">df</span>
 </pre></div>
 </div>
 </div>
@@ -245,23 +245,23 @@ tables:
   <tbody>
     <tr>
       <th>audio/001.wav</th>
-      <td>48</td>
+      <td>28</td>
     </tr>
     <tr>
       <th>audio/002.wav</th>
-      <td>33</td>
+      <td>26</td>
     </tr>
     <tr>
       <th>audio/003.wav</th>
-      <td>23</td>
+      <td>46</td>
     </tr>
     <tr>
       <th>audio/004.wav</th>
-      <td>31</td>
+      <td>29</td>
     </tr>
     <tr>
       <th>audio/005.wav</th>
-      <td>38</td>
+      <td>47</td>
     </tr>
     <tr>
       <th>...</th>
@@ -269,23 +269,23 @@ tables:
     </tr>
     <tr>
       <th>audio/096.wav</th>
-      <td>23</td>
+      <td>30</td>
     </tr>
     <tr>
       <th>audio/097.wav</th>
-      <td>37</td>
+      <td>31</td>
     </tr>
     <tr>
       <th>audio/098.wav</th>
-      <td>33</td>
+      <td>30</td>
     </tr>
     <tr>
       <th>audio/099.wav</th>
-      <td>41</td>
+      <td>37</td>
     </tr>
     <tr>
       <th>audio/100.wav</th>
-      <td>21</td>
+      <td>34</td>
     </tr>
   </tbody>
 </table>
@@ -298,16 +298,16 @@ that is then added to the original database.</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">db_update</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">create_db</span><span class="p">(</span><span class="n">minimal</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">db_update</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s1">&#39;age&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s1">&#39;age&#39;</span><span class="p">]</span>
+<span class="n">db_update</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s2">&quot;age&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s2">&quot;age&quot;</span><span class="p">]</span>
 <span class="n">audformat</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">add_table</span><span class="p">(</span>
     <span class="n">db_update</span><span class="p">,</span>
-    <span class="n">table_id</span><span class="o">=</span><span class="s1">&#39;table&#39;</span><span class="p">,</span>
+    <span class="n">table_id</span><span class="o">=</span><span class="s2">&quot;table&quot;</span><span class="p">,</span>
     <span class="n">index_type</span><span class="o">=</span><span class="n">audformat</span><span class="o">.</span><span class="n">define</span><span class="o">.</span><span class="n">IndexType</span><span class="o">.</span><span class="n">FILEWISE</span><span class="p">,</span>
-    <span class="n">columns</span><span class="o">=</span><span class="s1">&#39;age&#39;</span><span class="p">,</span>
+    <span class="n">columns</span><span class="o">=</span><span class="s2">&quot;age&quot;</span><span class="p">,</span>
     <span class="n">num_files</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="mi">101</span><span class="p">,</span> <span class="mi">105</span><span class="p">),</span>
 <span class="p">)</span>
 <span class="n">db</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">db_update</span><span class="p">)</span>  <span class="c1"># update original database with new data</span>
-<span class="n">db</span><span class="p">[</span><span class="s1">&#39;table&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">df</span>
+<span class="n">db</span><span class="p">[</span><span class="s2">&quot;table&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">df</span>
 </pre></div>
 </div>
 </div>
@@ -340,23 +340,23 @@ that is then added to the original database.</p>
   <tbody>
     <tr>
       <th>audio/001.wav</th>
-      <td>48</td>
+      <td>28</td>
     </tr>
     <tr>
       <th>audio/002.wav</th>
-      <td>33</td>
+      <td>26</td>
     </tr>
     <tr>
       <th>audio/003.wav</th>
-      <td>23</td>
+      <td>46</td>
     </tr>
     <tr>
       <th>audio/004.wav</th>
-      <td>31</td>
+      <td>29</td>
     </tr>
     <tr>
       <th>audio/005.wav</th>
-      <td>38</td>
+      <td>47</td>
     </tr>
     <tr>
       <th>...</th>
@@ -364,11 +364,11 @@ that is then added to the original database.</p>
     </tr>
     <tr>
       <th>audio/100.wav</th>
-      <td>21</td>
+      <td>34</td>
     </tr>
     <tr>
       <th>audio/101.wav</th>
-      <td>47</td>
+      <td>33</td>
     </tr>
     <tr>
       <th>audio/102.wav</th>
@@ -376,11 +376,11 @@ that is then added to the original database.</p>
     </tr>
     <tr>
       <th>audio/103.wav</th>
-      <td>26</td>
+      <td>24</td>
     </tr>
     <tr>
       <th>audio/104.wav</th>
-      <td>46</td>
+      <td>44</td>
     </tr>
   </tbody>
 </table>
@@ -393,16 +393,16 @@ the critical files, relabel them and then update the original database.</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">db_update</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">create_db</span><span class="p">(</span><span class="n">minimal</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">db_update</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s1">&#39;age&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s1">&#39;age&#39;</span><span class="p">]</span>
+<span class="n">db_update</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s2">&quot;age&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s2">&quot;age&quot;</span><span class="p">]</span>
 <span class="n">audformat</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">add_table</span><span class="p">(</span>
     <span class="n">db_update</span><span class="p">,</span>
-    <span class="n">table_id</span><span class="o">=</span><span class="s1">&#39;table&#39;</span><span class="p">,</span>
+    <span class="n">table_id</span><span class="o">=</span><span class="s2">&quot;table&quot;</span><span class="p">,</span>
     <span class="n">index_type</span><span class="o">=</span><span class="n">audformat</span><span class="o">.</span><span class="n">define</span><span class="o">.</span><span class="n">IndexType</span><span class="o">.</span><span class="n">FILEWISE</span><span class="p">,</span>
-    <span class="n">columns</span><span class="o">=</span><span class="s1">&#39;age&#39;</span><span class="p">,</span>
+    <span class="n">columns</span><span class="o">=</span><span class="s2">&quot;age&quot;</span><span class="p">,</span>
     <span class="n">num_files</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="n">db</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">db_update</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># overwrite existing labels</span>
-<span class="n">db</span><span class="p">[</span><span class="s1">&#39;table&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">df</span>
+<span class="n">db</span><span class="p">[</span><span class="s2">&quot;table&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">df</span>
 </pre></div>
 </div>
 </div>
@@ -435,23 +435,23 @@ the critical files, relabel them and then update the original database.</p>
   <tbody>
     <tr>
       <th>audio/001.wav</th>
-      <td>28</td>
+      <td>38</td>
     </tr>
     <tr>
       <th>audio/002.wav</th>
-      <td>24</td>
+      <td>29</td>
     </tr>
     <tr>
       <th>audio/003.wav</th>
-      <td>28</td>
+      <td>42</td>
     </tr>
     <tr>
       <th>audio/004.wav</th>
-      <td>35</td>
+      <td>27</td>
     </tr>
     <tr>
       <th>audio/005.wav</th>
-      <td>31</td>
+      <td>46</td>
     </tr>
     <tr>
       <th>...</th>
@@ -459,11 +459,11 @@ the critical files, relabel them and then update the original database.</p>
     </tr>
     <tr>
       <th>audio/100.wav</th>
-      <td>21</td>
+      <td>34</td>
     </tr>
     <tr>
       <th>audio/101.wav</th>
-      <td>47</td>
+      <td>33</td>
     </tr>
     <tr>
       <th>audio/102.wav</th>
@@ -471,11 +471,11 @@ the critical files, relabel them and then update the original database.</p>
     </tr>
     <tr>
       <th>audio/103.wav</th>
-      <td>26</td>
+      <td>24</td>
     </tr>
     <tr>
       <th>audio/104.wav</th>
-      <td>46</td>
+      <td>44</td>
     </tr>
   </tbody>
 </table>
@@ -488,21 +488,21 @@ collect the new labels and only later merge it into our original database.</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">db_update</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Database</span><span class="p">(</span>
-    <span class="n">name</span><span class="o">=</span><span class="s1">&#39;update&#39;</span><span class="p">,</span>
-    <span class="n">languages</span><span class="o">=</span><span class="n">audformat</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">map_language</span><span class="p">(</span><span class="s1">&#39;french&#39;</span><span class="p">),</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;update&quot;</span><span class="p">,</span>
+    <span class="n">languages</span><span class="o">=</span><span class="n">audformat</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">map_language</span><span class="p">(</span><span class="s2">&quot;french&quot;</span><span class="p">),</span>
 <span class="p">)</span>
-<span class="n">db_update</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s1">&#39;gender&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Scheme</span><span class="p">(</span>
-        <span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;female&#39;</span><span class="p">,</span> <span class="s1">&#39;male&#39;</span><span class="p">],</span>
+<span class="n">db_update</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s2">&quot;gender&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Scheme</span><span class="p">(</span>
+        <span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;female&quot;</span><span class="p">,</span> <span class="s2">&quot;male&quot;</span><span class="p">],</span>
     <span class="p">)</span>
 <span class="n">audformat</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">add_table</span><span class="p">(</span>
     <span class="n">db_update</span><span class="p">,</span>
-    <span class="n">table_id</span><span class="o">=</span><span class="s1">&#39;table&#39;</span><span class="p">,</span>
+    <span class="n">table_id</span><span class="o">=</span><span class="s2">&quot;table&quot;</span><span class="p">,</span>
     <span class="n">index_type</span><span class="o">=</span><span class="n">audformat</span><span class="o">.</span><span class="n">define</span><span class="o">.</span><span class="n">IndexType</span><span class="o">.</span><span class="n">FILEWISE</span><span class="p">,</span>
-    <span class="n">columns</span><span class="o">=</span><span class="s1">&#39;gender&#39;</span><span class="p">,</span>
+    <span class="n">columns</span><span class="o">=</span><span class="s2">&quot;gender&quot;</span><span class="p">,</span>
     <span class="n">num_files</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">files</span><span class="p">),</span>
 <span class="p">)</span>
 <span class="n">db</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">db_update</span><span class="p">)</span>
-<span class="n">db</span><span class="p">[</span><span class="s1">&#39;table&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">df</span>
+<span class="n">db</span><span class="p">[</span><span class="s2">&quot;table&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">df</span>
 </pre></div>
 </div>
 </div>
@@ -537,27 +537,27 @@ collect the new labels and only later merge it into our original database.</p>
   <tbody>
     <tr>
       <th>audio/001.wav</th>
-      <td>28</td>
-      <td>male</td>
-    </tr>
-    <tr>
-      <th>audio/002.wav</th>
-      <td>24</td>
+      <td>38</td>
       <td>female</td>
     </tr>
     <tr>
-      <th>audio/003.wav</th>
-      <td>28</td>
+      <th>audio/002.wav</th>
+      <td>29</td>
       <td>male</td>
     </tr>
     <tr>
+      <th>audio/003.wav</th>
+      <td>42</td>
+      <td>female</td>
+    </tr>
+    <tr>
       <th>audio/004.wav</th>
-      <td>35</td>
+      <td>27</td>
       <td>male</td>
     </tr>
     <tr>
       <th>audio/005.wav</th>
-      <td>31</td>
+      <td>46</td>
       <td>female</td>
     </tr>
     <tr>
@@ -567,12 +567,12 @@ collect the new labels and only later merge it into our original database.</p>
     </tr>
     <tr>
       <th>audio/100.wav</th>
-      <td>21</td>
+      <td>34</td>
       <td>male</td>
     </tr>
     <tr>
       <th>audio/101.wav</th>
-      <td>47</td>
+      <td>33</td>
       <td>female</td>
     </tr>
     <tr>
@@ -582,13 +582,13 @@ collect the new labels and only later merge it into our original database.</p>
     </tr>
     <tr>
       <th>audio/103.wav</th>
-      <td>26</td>
+      <td>24</td>
       <td>male</td>
     </tr>
     <tr>
       <th>audio/104.wav</th>
-      <td>46</td>
-      <td>male</td>
+      <td>44</td>
+      <td>female</td>
     </tr>
   </tbody>
 </table>
@@ -638,7 +638,7 @@ gender:
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2023/11/30 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2024/01/25 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
@@ -646,7 +646,7 @@ gender:
   <div role="contentinfo">
     <p>
         
-      &copy; 2019-2023 audEERING GmbH
+      &copy; 2019-2024 audEERING GmbH
     </p>
   </div> 
 

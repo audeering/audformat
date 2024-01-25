@@ -72,7 +72,7 @@
             
             
               <div class="version">
-                v1.1.0
+                v1.1.1
               </div>
             
           
@@ -220,7 +220,7 @@ An empty label means that no label has been assigned (yet).</p>
 
 
 <span class="n">filewise_index</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">filewise_index</span><span class="p">(</span>
-    <span class="p">[</span><span class="s1">&#39;f1&#39;</span><span class="p">,</span> <span class="s1">&#39;f2&#39;</span><span class="p">,</span> <span class="s1">&#39;f3&#39;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;f1&quot;</span><span class="p">,</span> <span class="s2">&quot;f2&quot;</span><span class="p">,</span> <span class="s2">&quot;f3&quot;</span><span class="p">],</span>
 <span class="p">)</span>
 <span class="n">filewise_index</span>
 </pre></div>
@@ -253,9 +253,9 @@ An empty label means that no label has been assigned (yet).</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">db</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">create_db</span><span class="p">(</span><span class="n">minimal</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">db</span><span class="p">[</span><span class="s1">&#39;filewise&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Table</span><span class="p">(</span><span class="n">filewise_index</span><span class="p">)</span>
-<span class="n">db</span><span class="p">[</span><span class="s1">&#39;filewise&#39;</span><span class="p">][</span><span class="s1">&#39;values&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Column</span><span class="p">()</span>
-<span class="n">db</span><span class="o">.</span><span class="n">tables</span><span class="p">[</span><span class="s1">&#39;filewise&#39;</span><span class="p">]</span>
+<span class="n">db</span><span class="p">[</span><span class="s2">&quot;filewise&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Table</span><span class="p">(</span><span class="n">filewise_index</span><span class="p">)</span>
+<span class="n">db</span><span class="p">[</span><span class="s2">&quot;filewise&quot;</span><span class="p">][</span><span class="s2">&quot;values&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Column</span><span class="p">()</span>
+<span class="n">db</span><span class="o">.</span><span class="n">tables</span><span class="p">[</span><span class="s2">&quot;filewise&quot;</span><span class="p">]</span>
 </pre></div>
 </div>
 </div>
@@ -271,18 +271,18 @@ columns:
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">values_list</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
-<span class="n">values_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;values&#39;</span><span class="p">:</span> <span class="n">values_list</span><span class="p">}</span>
-<span class="n">db</span><span class="p">[</span><span class="s1">&#39;filewise&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">values_dict</span><span class="p">)</span>
+<span class="n">values_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;values&quot;</span><span class="p">:</span> <span class="n">values_list</span><span class="p">}</span>
+<span class="n">db</span><span class="p">[</span><span class="s2">&quot;filewise&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">values_dict</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
 </div>
 </div>
-<p>Access labels as <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a>:</p>
+<p>Access labels as <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a>:</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="p">[</span><span class="s1">&#39;filewise&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="p">[</span><span class="s2">&quot;filewise&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -332,17 +332,17 @@ columns:
 <p>Assign labels to a column:</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="p">[</span><span class="s1">&#39;filewise&#39;</span><span class="p">][</span><span class="s1">&#39;values&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">values_list</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="p">[</span><span class="s2">&quot;filewise&quot;</span><span class="p">][</span><span class="s2">&quot;values&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">values_list</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
 </div>
 </div>
-<p>Access labels as <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Series.html#pandas.Series" title="(in pandas v2.1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.Series</span></code></a></p>
+<p>Access labels as <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Series.html#pandas.Series" title="(in pandas v2.2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.Series</span></code></a></p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="p">[</span><span class="s1">&#39;filewise&#39;</span><span class="p">][</span><span class="s1">&#39;values&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="p">[</span><span class="s2">&quot;filewise&quot;</span><span class="p">][</span><span class="s2">&quot;values&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -377,7 +377,7 @@ columns:
 <p>Access labels and convert index to a segmented index:</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="p">[</span><span class="s1">&#39;filewise&#39;</span><span class="p">][</span><span class="s1">&#39;values&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">as_segmented</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="p">[</span><span class="s2">&quot;filewise&quot;</span><span class="p">][</span><span class="s2">&quot;values&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">as_segmented</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -423,11 +423,11 @@ columns:
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">segmented_index</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">segmented_index</span><span class="p">(</span>
-    <span class="n">files</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;f1&#39;</span><span class="p">,</span> <span class="s1">&#39;f1&#39;</span><span class="p">,</span> <span class="s1">&#39;f1&#39;</span><span class="p">,</span> <span class="s1">&#39;f2&#39;</span><span class="p">],</span>
-    <span class="n">starts</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;0s&#39;</span><span class="p">,</span> <span class="s1">&#39;1s&#39;</span><span class="p">,</span> <span class="s1">&#39;2s&#39;</span><span class="p">,</span> <span class="s1">&#39;0s&#39;</span><span class="p">],</span>
-    <span class="n">ends</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;1s&#39;</span><span class="p">,</span> <span class="s1">&#39;2s&#39;</span><span class="p">,</span> <span class="s1">&#39;3s&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span>
+    <span class="n">files</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;f1&quot;</span><span class="p">,</span> <span class="s2">&quot;f1&quot;</span><span class="p">,</span> <span class="s2">&quot;f1&quot;</span><span class="p">,</span> <span class="s2">&quot;f2&quot;</span><span class="p">],</span>
+    <span class="n">starts</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;0s&quot;</span><span class="p">,</span> <span class="s2">&quot;1s&quot;</span><span class="p">,</span> <span class="s2">&quot;2s&quot;</span><span class="p">,</span> <span class="s2">&quot;0s&quot;</span><span class="p">],</span>
+    <span class="n">ends</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;1s&quot;</span><span class="p">,</span> <span class="s2">&quot;2s&quot;</span><span class="p">,</span> <span class="s2">&quot;3s&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span>
 <span class="p">)</span>
-<span class="n">db</span><span class="p">[</span><span class="s1">&#39;filewise&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">segmented_index</span><span class="p">)</span>
+<span class="n">db</span><span class="p">[</span><span class="s2">&quot;filewise&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">segmented_index</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -491,7 +491,7 @@ columns:
 <p>Access labels from a filewise column with a segmented index:</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="p">[</span><span class="s1">&#39;filewise&#39;</span><span class="p">][</span><span class="s1">&#39;values&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">segmented_index</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="p">[</span><span class="s2">&quot;filewise&quot;</span><span class="p">][</span><span class="s2">&quot;values&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">segmented_index</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -571,9 +571,9 @@ columns:
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">segmented_index</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">segmented_index</span><span class="p">(</span>
-    <span class="n">files</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;f1&#39;</span><span class="p">,</span> <span class="s1">&#39;f1&#39;</span><span class="p">,</span> <span class="s1">&#39;f1&#39;</span><span class="p">,</span> <span class="s1">&#39;f2&#39;</span><span class="p">,</span> <span class="s1">&#39;f3&#39;</span><span class="p">],</span>
-    <span class="n">starts</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;0s&#39;</span><span class="p">,</span> <span class="s1">&#39;1s&#39;</span><span class="p">,</span> <span class="s1">&#39;2s&#39;</span><span class="p">,</span> <span class="s1">&#39;0s&#39;</span><span class="p">,</span> <span class="s1">&#39;1m&#39;</span><span class="p">],</span>
-    <span class="n">ends</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;1s&#39;</span><span class="p">,</span> <span class="s1">&#39;2s&#39;</span><span class="p">,</span> <span class="s1">&#39;3s&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;1h&#39;</span><span class="p">],</span>
+    <span class="n">files</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;f1&quot;</span><span class="p">,</span> <span class="s2">&quot;f1&quot;</span><span class="p">,</span> <span class="s2">&quot;f1&quot;</span><span class="p">,</span> <span class="s2">&quot;f2&quot;</span><span class="p">,</span> <span class="s2">&quot;f3&quot;</span><span class="p">],</span>
+    <span class="n">starts</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;0s&quot;</span><span class="p">,</span> <span class="s2">&quot;1s&quot;</span><span class="p">,</span> <span class="s2">&quot;2s&quot;</span><span class="p">,</span> <span class="s2">&quot;0s&quot;</span><span class="p">,</span> <span class="s2">&quot;1m&quot;</span><span class="p">],</span>
+    <span class="n">ends</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;1s&quot;</span><span class="p">,</span> <span class="s2">&quot;2s&quot;</span><span class="p">,</span> <span class="s2">&quot;3s&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;1h&quot;</span><span class="p">],</span>
 <span class="p">)</span>
 <span class="n">segmented_index</span>
 </pre></div>
@@ -623,9 +623,9 @@ columns:
 <p>Add table with a segmented index:</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="p">[</span><span class="s1">&#39;segmented&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Table</span><span class="p">(</span><span class="n">segmented_index</span><span class="p">)</span>
-<span class="n">db</span><span class="p">[</span><span class="s1">&#39;segmented&#39;</span><span class="p">][</span><span class="s1">&#39;values&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Column</span><span class="p">()</span>
-<span class="n">db</span><span class="o">.</span><span class="n">tables</span><span class="p">[</span><span class="s1">&#39;segmented&#39;</span><span class="p">]</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="p">[</span><span class="s2">&quot;segmented&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Table</span><span class="p">(</span><span class="n">segmented_index</span><span class="p">)</span>
+<span class="n">db</span><span class="p">[</span><span class="s2">&quot;segmented&quot;</span><span class="p">][</span><span class="s2">&quot;values&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Column</span><span class="p">()</span>
+<span class="n">db</span><span class="o">.</span><span class="n">tables</span><span class="p">[</span><span class="s2">&quot;segmented&quot;</span><span class="p">]</span>
 </pre></div>
 </div>
 </div>
@@ -641,18 +641,18 @@ columns:
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">values_list</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span>
-<span class="n">values_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;values&#39;</span><span class="p">:</span> <span class="n">values_list</span><span class="p">}</span>
-<span class="n">db</span><span class="p">[</span><span class="s1">&#39;segmented&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">values_dict</span><span class="p">)</span>
+<span class="n">values_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;values&quot;</span><span class="p">:</span> <span class="n">values_list</span><span class="p">}</span>
+<span class="n">db</span><span class="p">[</span><span class="s2">&quot;segmented&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">values_dict</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
 </div>
 </div>
-<p>Access all labels as <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a>:</p>
+<p>Access all labels as <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a>:</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="p">[</span><span class="s1">&#39;segmented&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="p">[</span><span class="s2">&quot;segmented&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -722,17 +722,17 @@ columns:
 <p>Assign labels to a column:</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="p">[</span><span class="s1">&#39;segmented&#39;</span><span class="p">][</span><span class="s1">&#39;values&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">values_list</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="p">[</span><span class="s2">&quot;segmented&quot;</span><span class="p">][</span><span class="s2">&quot;values&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">values_list</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
 </div>
 </div>
-<p>Access labels from a column as <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Series.html#pandas.Series" title="(in pandas v2.1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.Series</span></code></a>:</p>
+<p>Access labels from a column as <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Series.html#pandas.Series" title="(in pandas v2.2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.Series</span></code></a>:</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="p">[</span><span class="s1">&#39;segmented&#39;</span><span class="p">][</span><span class="s1">&#39;values&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="p">[</span><span class="s2">&quot;segmented&quot;</span><span class="p">][</span><span class="s2">&quot;values&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -788,9 +788,9 @@ columns:
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">filewise_index</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">filewise_index</span><span class="p">(</span>
-    <span class="p">[</span><span class="s1">&#39;f1&#39;</span><span class="p">,</span> <span class="s1">&#39;f2&#39;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;f1&quot;</span><span class="p">,</span> <span class="s2">&quot;f2&quot;</span><span class="p">],</span>
 <span class="p">)</span>
-<span class="n">db</span><span class="p">[</span><span class="s1">&#39;segmented&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">filewise_index</span><span class="p">)</span>
+<span class="n">db</span><span class="p">[</span><span class="s2">&quot;segmented&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">filewise_index</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -854,7 +854,7 @@ columns:
 <p>Access labels from a segmented column with a filewise index:</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="p">[</span><span class="s1">&#39;segmented&#39;</span><span class="p">][</span><span class="s1">&#39;values&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">filewise_index</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="p">[</span><span class="s2">&quot;segmented&quot;</span><span class="p">][</span><span class="s2">&quot;values&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">filewise_index</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -927,7 +927,7 @@ columns:
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2023/11/30 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2024/01/25 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
@@ -935,7 +935,7 @@ columns:
   <div role="contentinfo">
     <p>
         
-      &copy; 2019-2023 audEERING GmbH
+      &copy; 2019-2024 audEERING GmbH
     </p>
   </div> 
 

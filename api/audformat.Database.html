@@ -72,7 +72,7 @@
             
             
               <div class="version">
-                v1.1.0
+                v1.1.1
               </div>
             
           
@@ -274,35 +274,35 @@ if it is not given</p></li>
 </dl>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">db</span> <span class="o">=</span> <span class="n">Database</span><span class="p">(</span>
-<span class="gp">... </span>    <span class="s1">&#39;mydb&#39;</span><span class="p">,</span>
-<span class="gp">... </span>    <span class="s1">&#39;https://www.audeering.com/&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="s2">&quot;mydb&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="s2">&quot;https://www.audeering.com/&quot;</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="n">define</span><span class="o">.</span><span class="n">Usage</span><span class="o">.</span><span class="n">COMMERCIAL</span><span class="p">,</span>
-<span class="gp">... </span>    <span class="n">languages</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;English&#39;</span><span class="p">,</span> <span class="s1">&#39;de&#39;</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="n">languages</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;English&quot;</span><span class="p">,</span> <span class="s2">&quot;de&quot;</span><span class="p">],</span>
 <span class="gp">... </span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">db</span>
 <span class="go">name: mydb</span>
 <span class="go">source: https://www.audeering.com/</span>
 <span class="go">usage: commercial</span>
 <span class="go">languages: [eng, deu]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;positive&#39;</span><span class="p">,</span> <span class="s1">&#39;neutral&#39;</span><span class="p">,</span> <span class="s1">&#39;negative&#39;</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s1">&#39;emotion&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Scheme</span><span class="p">(</span><span class="n">labels</span><span class="o">=</span><span class="n">labels</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s1">&#39;match&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Scheme</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;bool&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">raters</span><span class="p">[</span><span class="s1">&#39;rater&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Rater</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">media</span><span class="p">[</span><span class="s1">&#39;audio&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Media</span><span class="p">(</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;positive&quot;</span><span class="p">,</span> <span class="s2">&quot;neutral&quot;</span><span class="p">,</span> <span class="s2">&quot;negative&quot;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s2">&quot;emotion&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Scheme</span><span class="p">(</span><span class="n">labels</span><span class="o">=</span><span class="n">labels</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s2">&quot;match&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Scheme</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;bool&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">raters</span><span class="p">[</span><span class="s2">&quot;rater&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Rater</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">media</span><span class="p">[</span><span class="s2">&quot;audio&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Media</span><span class="p">(</span>
 <span class="gp">... </span>    <span class="n">define</span><span class="o">.</span><span class="n">MediaType</span><span class="o">.</span><span class="n">AUDIO</span><span class="p">,</span>
-<span class="gp">... </span>    <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;wav&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;wav&quot;</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="n">sampling_rate</span><span class="o">=</span><span class="mi">16000</span><span class="p">,</span>
 <span class="gp">... </span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">index</span> <span class="o">=</span> <span class="n">filewise_index</span><span class="p">([</span><span class="s1">&#39;f1.wav&#39;</span><span class="p">,</span> <span class="s1">&#39;f2.wav&#39;</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="p">[</span><span class="s1">&#39;table&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Table</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">media_id</span><span class="o">=</span><span class="s1">&#39;audio&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="p">[</span><span class="s1">&#39;table&#39;</span><span class="p">][</span><span class="s1">&#39;column&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span>
-<span class="gp">... </span>    <span class="n">scheme_id</span><span class="o">=</span><span class="s1">&#39;emotion&#39;</span><span class="p">,</span>
-<span class="gp">... </span>    <span class="n">rater_id</span><span class="o">=</span><span class="s1">&#39;rater&#39;</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">index</span> <span class="o">=</span> <span class="n">filewise_index</span><span class="p">([</span><span class="s2">&quot;f1.wav&quot;</span><span class="p">,</span> <span class="s2">&quot;f2.wav&quot;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="p">[</span><span class="s2">&quot;table&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Table</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">media_id</span><span class="o">=</span><span class="s2">&quot;audio&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="p">[</span><span class="s2">&quot;table&quot;</span><span class="p">][</span><span class="s2">&quot;column&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">scheme_id</span><span class="o">=</span><span class="s2">&quot;emotion&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">rater_id</span><span class="o">=</span><span class="s2">&quot;rater&quot;</span><span class="p">,</span>
 <span class="gp">... </span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="p">[</span><span class="s1">&#39;table&#39;</span><span class="p">][</span><span class="s1">&#39;column&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">([</span><span class="s1">&#39;neutral&#39;</span><span class="p">,</span> <span class="s1">&#39;positive&#39;</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">index</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">([],</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;string&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;idx&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="p">[</span><span class="s1">&#39;misc-table&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">MiscTable</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="p">[</span><span class="s1">&#39;misc-table&#39;</span><span class="p">][</span><span class="s1">&#39;column&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">scheme_id</span><span class="o">=</span><span class="s1">&#39;match&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="p">[</span><span class="s2">&quot;table&quot;</span><span class="p">][</span><span class="s2">&quot;column&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">([</span><span class="s2">&quot;neutral&quot;</span><span class="p">,</span> <span class="s2">&quot;positive&quot;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">index</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">([],</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;string&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;idx&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="p">[</span><span class="s2">&quot;misc-table&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">MiscTable</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="p">[</span><span class="s2">&quot;misc-table&quot;</span><span class="p">][</span><span class="s2">&quot;column&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">scheme_id</span><span class="o">=</span><span class="s2">&quot;match&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">db</span>
 <span class="go">name: mydb</span>
 <span class="go">source: https://www.audeering.com/</span>
@@ -330,7 +330,7 @@ if it is not given</p></li>
 <span class="go">      column: {scheme_id: match}</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">db</span><span class="p">)</span>
 <span class="go">[&#39;misc-table&#39;, &#39;table&#39;]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;emotion&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;emotion&quot;</span><span class="p">)</span>
 <span class="go">         emotion</span>
 <span class="go">file</span>
 <span class="go">f1.wav   neutral</span>
@@ -587,7 +587,7 @@ If <code class="docutils literal notranslate"><span class="pre">None</span></cod
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Series.html#pandas.Series" title="(in pandas v2.1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Series</span></code></a></p>
+<dd class="field-even"><p><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Series.html#pandas.Series" title="(in pandas v2.2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Series</span></code></a></p>
 </dd>
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>mapping from file to duration</p>
@@ -678,8 +678,8 @@ For mapped schemes,
 the column name before mapping is returned,
 e.g. when requesting <code class="docutils literal notranslate"><span class="pre">'gender'</span></code>
 it might return a column named <code class="docutils literal notranslate"><span class="pre">'speaker'</span></code></p></li>
-<li><p><strong>aggregate_function</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.12)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.12)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code></a>[[<a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Series.html#pandas.Series" title="(in pandas v2.1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Series</span></code></a>], <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a>]]) – callable to aggregate overlapping values.
-The function gets a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Series.html#pandas.Series" title="(in pandas v2.1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.Series</span></code></a>
+<li><p><strong>aggregate_function</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.12)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.12)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code></a>[[<a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Series.html#pandas.Series" title="(in pandas v2.2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Series</span></code></a>], <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a>]]) – callable to aggregate overlapping values.
+The function gets a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Series.html#pandas.Series" title="(in pandas v2.2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.Series</span></code></a>
 with overlapping values
 as input.
 E.g. set to
@@ -699,7 +699,7 @@ and a different value</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a></p>
+<dd class="field-even"><p><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a></p>
 </dd>
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>data frame with values</p>
@@ -723,13 +723,9 @@ and a different value</p></li>
 <p>Return all labels that match a requested scheme.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">audb</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">db</span> <span class="o">=</span> <span class="n">audb</span><span class="o">.</span><span class="n">load</span><span class="p">(</span>
-<span class="gp">... </span>    <span class="s1">&#39;emodb&#39;</span><span class="p">,</span>
-<span class="gp">... </span>    <span class="n">version</span><span class="o">=</span><span class="s1">&#39;1.4.1&#39;</span><span class="p">,</span>
-<span class="gp">... </span>    <span class="n">only_metadata</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-<span class="gp">... </span>    <span class="n">full_path</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-<span class="gp">... </span>    <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span>
+<span class="gp">... </span>    <span class="s2">&quot;emodb&quot;</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="s2">&quot;1.4.1&quot;</span><span class="p">,</span> <span class="n">only_metadata</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">full_path</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span>
 <span class="gp">... </span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;emotion&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;emotion&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 <span class="go">                   emotion</span>
 <span class="go">file</span>
 <span class="go">wav/03a01Fa.wav  happiness</span>
@@ -737,7 +733,7 @@ and a different value</p></li>
 <span class="go">wav/03a01Wa.wav      anger</span>
 <span class="go">wav/03a02Fc.wav  happiness</span>
 <span class="go">wav/03a02Nc.wav    neutral</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;transcription&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;transcription&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 <span class="go">                                        transcription</span>
 <span class="go">file</span>
 <span class="go">wav/03a01Fa.wav  Der Lappen liegt auf dem Eisschrank.</span>
@@ -745,7 +741,7 @@ and a different value</p></li>
 <span class="go">wav/03a01Wa.wav  Der Lappen liegt auf dem Eisschrank.</span>
 <span class="go">wav/03a02Fc.wav     Das will sie am Mittwoch abgeben.</span>
 <span class="go">wav/03a02Nc.wav     Das will sie am Mittwoch abgeben.</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;emotion&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;transcription&#39;</span><span class="p">],</span> <span class="nb">map</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;emotion&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;transcription&quot;</span><span class="p">],</span> <span class="nb">map</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 <span class="go">                   emotion transcription</span>
 <span class="go">file</span>
 <span class="go">wav/03a01Fa.wav  happiness           a01</span>
@@ -756,7 +752,7 @@ and a different value</p></li>
 </pre></div>
 </div>
 <p>Non-existent schemes are ignored.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;emotion&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;non-existing&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;emotion&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;non-existing&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 <span class="go">       emotion non-existing</span>
 <span class="go">file</span>
 <span class="go">wav/03a01Fa.wav  happiness          NaN</span>
@@ -767,7 +763,7 @@ and a different value</p></li>
 </pre></div>
 </div>
 <p>Limit to a particular table or split.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;emotion&#39;</span><span class="p">,</span> <span class="n">tables</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;emotion.categories.train.gold_standard&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;emotion&quot;</span><span class="p">,</span> <span class="n">tables</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;emotion.categories.train.gold_standard&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 <span class="go">                   emotion</span>
 <span class="go">file</span>
 <span class="go">wav/03a01Fa.wav  happiness</span>
@@ -775,7 +771,7 @@ and a different value</p></li>
 <span class="go">wav/03a01Wa.wav      anger</span>
 <span class="go">wav/03a02Fc.wav  happiness</span>
 <span class="go">wav/03a02Nc.wav    neutral</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;emotion&#39;</span><span class="p">,</span> <span class="n">splits</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;test&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;emotion&quot;</span><span class="p">,</span> <span class="n">splits</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;test&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 <span class="go">                   emotion</span>
 <span class="go">file</span>
 <span class="go">wav/12a01Fb.wav  happiness</span>
@@ -786,12 +782,12 @@ and a different value</p></li>
 </pre></div>
 </div>
 <p>Return requested scheme name independent of column ID.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="p">[</span><span class="s1">&#39;emotion&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">columns</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="p">[</span><span class="s2">&quot;emotion&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">columns</span>
 <span class="go">emotion:</span>
 <span class="go">  {scheme_id: emotion, rater_id: gold}</span>
 <span class="go">emotion.confidence:</span>
 <span class="go">  {scheme_id: confidence, rater_id: gold}</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;confidence&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;confidence&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 <span class="go">                 confidence</span>
 <span class="go">file</span>
 <span class="go">wav/03a01Fa.wav        0.90</span>
@@ -803,7 +799,7 @@ and a different value</p></li>
 </div>
 <p>If <code class="docutils literal notranslate"><span class="pre">strict</span></code> is <code class="docutils literal notranslate"><span class="pre">True</span></code>
 only values that have an attached scheme are returned.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;emotion.confidence&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;emotion.confidence&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 <span class="go">                 emotion.confidence</span>
 <span class="go">file</span>
 <span class="go">wav/03a01Fa.wav                0.90</span>
@@ -811,7 +807,7 @@ only values that have an attached scheme are returned.</p>
 <span class="go">wav/03a01Wa.wav                0.95</span>
 <span class="go">wav/03a02Fc.wav                0.85</span>
 <span class="go">wav/03a02Nc.wav                1.00</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;emotion.confidence&#39;</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;emotion.confidence&quot;</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 <span class="go">Empty DataFrame</span>
 <span class="go">Columns: [emotion.confidence]</span>
 <span class="go">Index: []</span>
@@ -824,11 +820,11 @@ an error is raised
 and <code class="docutils literal notranslate"><span class="pre">aggregate_function</span></code> can be used
 to combine the values.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Add a shuffled version of emotion ratings as `random` column</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="p">[</span><span class="s1">&#39;emotion&#39;</span><span class="p">][</span><span class="s1">&#39;random&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">scheme_id</span><span class="o">=</span><span class="s1">&#39;emotion&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="p">[</span><span class="s1">&#39;emotion&#39;</span><span class="p">][</span><span class="s1">&#39;random&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span>
-<span class="gp">... </span>    <span class="n">db</span><span class="p">[</span><span class="s1">&#39;emotion&#39;</span><span class="p">][</span><span class="s1">&#39;emotion&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">frac</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="p">[</span><span class="s2">&quot;emotion&quot;</span><span class="p">][</span><span class="s2">&quot;random&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">scheme_id</span><span class="o">=</span><span class="s2">&quot;emotion&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="p">[</span><span class="s2">&quot;emotion&quot;</span><span class="p">][</span><span class="s2">&quot;random&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">db</span><span class="p">[</span><span class="s2">&quot;emotion&quot;</span><span class="p">][</span><span class="s2">&quot;emotion&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">frac</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 <span class="gp">... </span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;emotion&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;emotion&quot;</span><span class="p">)</span>
 <span class="gt">Traceback (most recent call last):</span>
 <span class="w">    </span><span class="o">...</span>
 <span class="gr">ValueError</span>: <span class="n">Found overlapping data in column &#39;emotion&#39;:</span>
@@ -845,7 +841,7 @@ to combine the values.</p>
 <span class="x">wav/03a04Wc.wav      anger  boredom</span>
 <span class="x">wav/03a05Aa.wav       fear  sadness</span>
 <span class="x">...</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;emotion&#39;</span><span class="p">,</span> <span class="n">aggregate_function</span><span class="o">=</span><span class="k">lambda</span> <span class="n">y</span><span class="p">:</span> <span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;emotion&quot;</span><span class="p">,</span> <span class="n">aggregate_function</span><span class="o">=</span><span class="k">lambda</span> <span class="n">y</span><span class="p">:</span> <span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 <span class="go">                   emotion</span>
 <span class="go">file</span>
 <span class="go">wav/03a01Fa.wav  happiness</span>
@@ -857,7 +853,7 @@ to combine the values.</p>
 </div>
 <p>Alternatively,
 use <code class="docutils literal notranslate"><span class="pre">original_column_names</span></code> to return column IDs.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;emotion&#39;</span><span class="p">,</span> <span class="n">original_column_names</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;emotion&quot;</span><span class="p">,</span> <span class="n">original_column_names</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 <span class="go">                   emotion     random</span>
 <span class="go">file</span>
 <span class="go">wav/03a01Fa.wav  happiness  happiness</span>
@@ -1353,7 +1349,7 @@ associated with <code class="docutils literal notranslate"><span class="pre">oth
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2023/11/30 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2024/01/25 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
@@ -1361,7 +1357,7 @@ associated with <code class="docutils literal notranslate"><span class="pre">oth
   <div role="contentinfo">
     <p>
         
-      &copy; 2019-2023 audEERING GmbH
+      &copy; 2019-2024 audEERING GmbH
     </p>
   </div> 
 

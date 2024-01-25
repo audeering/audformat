@@ -72,7 +72,7 @@
             
             
               <div class="version">
-                v1.1.0
+                v1.1.1
               </div>
             
           
@@ -193,18 +193,18 @@ to the folder <code class="file docutils literal notranslate"><span class="pre">
 
 
 <span class="c1"># Get database source</span>
-<span class="n">source</span> <span class="o">=</span> <span class="s1">&#39;http://emodb.bilderbar.info/download/download.zip&#39;</span>
-<span class="n">src_dir</span> <span class="o">=</span> <span class="s1">&#39;emodb-src&#39;</span>
+<span class="n">source</span> <span class="o">=</span> <span class="s2">&quot;http://emodb.bilderbar.info/download/download.zip&quot;</span>
+<span class="n">src_dir</span> <span class="o">=</span> <span class="s2">&quot;emodb-src&quot;</span>
 <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">src_dir</span><span class="p">):</span>
-    <span class="n">urllib</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">urlretrieve</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="s1">&#39;emodb.zip&#39;</span><span class="p">)</span>
-    <span class="n">audeer</span><span class="o">.</span><span class="n">extract_archive</span><span class="p">(</span><span class="s1">&#39;emodb.zip&#39;</span><span class="p">,</span> <span class="n">src_dir</span><span class="p">)</span>
+    <span class="n">urllib</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">urlretrieve</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="s2">&quot;emodb.zip&quot;</span><span class="p">)</span>
+    <span class="n">audeer</span><span class="o">.</span><span class="n">extract_archive</span><span class="p">(</span><span class="s2">&quot;emodb.zip&quot;</span><span class="p">,</span> <span class="n">src_dir</span><span class="p">)</span>
 
 <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">src_dir</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>[&#39;lablaut&#39;, &#39;labsilb&#39;, &#39;wav&#39;, &#39;silb&#39;, &#39;erklaerung.txt&#39;, &#39;erkennung.txt&#39;]
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>[&#39;erkennung.txt&#39;, &#39;silb&#39;, &#39;labsilb&#39;, &#39;erklaerung.txt&#39;, &#39;wav&#39;, &#39;lablaut&#39;]
 </pre></div>
 </div>
 </div>
@@ -219,12 +219,12 @@ of the database.</p>
 <p>First, have a look at the file names.</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">src_dir</span><span class="p">,</span> <span class="s1">&#39;wav&#39;</span><span class="p">))[:</span><span class="mi">3</span><span class="p">]</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">src_dir</span><span class="p">,</span> <span class="s2">&quot;wav&quot;</span><span class="p">))[:</span><span class="mi">3</span><span class="p">]</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>[&#39;08a07Tb.wav&#39;, &#39;15a05Eb.wav&#39;, &#39;16a02Wb.wav&#39;]
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>[&#39;08b02La.wav&#39;, &#39;15a01Wa.wav&#39;, &#39;16b03La.wav&#39;]
 </pre></div>
 </div>
 </div>
@@ -417,55 +417,55 @@ to the emotion table.</p>
 
 
 <span class="n">description</span> <span class="o">=</span> <span class="p">(</span>
-   <span class="s1">&#39;Berlin Database of Emotional Speech. &#39;</span>
-   <span class="s1">&#39;A German database of emotional utterances &#39;</span>
-   <span class="s1">&#39;spoken by actors &#39;</span>
-   <span class="s1">&#39;recorded as a part of the DFG funded research project &#39;</span>
-   <span class="s1">&#39;SE462/3-1 in 1997 and 1999. &#39;</span>
-   <span class="s1">&#39;Recordings took place in the anechoic chamber &#39;</span>
-   <span class="s1">&#39;of the Technical University Berlin, &#39;</span>
-   <span class="s1">&#39;department of Technical Acoustics. &#39;</span>
-   <span class="s1">&#39;It contains about 500 utterances &#39;</span>
-   <span class="s1">&#39;from ten different actors &#39;</span>
-   <span class="s1">&#39;expressing basic six emotions and neutral.&#39;</span>
+   <span class="s2">&quot;Berlin Database of Emotional Speech. &quot;</span>
+   <span class="s2">&quot;A German database of emotional utterances &quot;</span>
+   <span class="s2">&quot;spoken by actors &quot;</span>
+   <span class="s2">&quot;recorded as a part of the DFG funded research project &quot;</span>
+   <span class="s2">&quot;SE462/3-1 in 1997 and 1999. &quot;</span>
+   <span class="s2">&quot;Recordings took place in the anechoic chamber &quot;</span>
+   <span class="s2">&quot;of the Technical University Berlin, &quot;</span>
+   <span class="s2">&quot;department of Technical Acoustics. &quot;</span>
+   <span class="s2">&quot;It contains about 500 utterances &quot;</span>
+   <span class="s2">&quot;from ten different actors &quot;</span>
+   <span class="s2">&quot;expressing basic six emotions and neutral.&quot;</span>
 <span class="p">)</span>
 
 <span class="n">files</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span>
-    <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;wav&#39;</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">src_dir</span><span class="p">,</span> <span class="s1">&#39;wav&#39;</span><span class="p">))]</span>
+    <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;wav&quot;</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">src_dir</span><span class="p">,</span> <span class="s2">&quot;wav&quot;</span><span class="p">))]</span>
 <span class="p">)</span>
 <span class="n">names</span> <span class="o">=</span> <span class="p">[</span><span class="n">audeer</span><span class="o">.</span><span class="n">basename_wo_ext</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">files</span><span class="p">]</span>
 
 <span class="n">emotion_mapping</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">&#39;W&#39;</span><span class="p">:</span> <span class="s1">&#39;anger&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;L&#39;</span><span class="p">:</span> <span class="s1">&#39;boredom&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;E&#39;</span><span class="p">:</span> <span class="s1">&#39;disgust&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;A&#39;</span><span class="p">:</span> <span class="s1">&#39;fear&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;F&#39;</span><span class="p">:</span> <span class="s1">&#39;happiness&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;T&#39;</span><span class="p">:</span> <span class="s1">&#39;sadness&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;N&#39;</span><span class="p">:</span> <span class="s1">&#39;neutral&#39;</span><span class="p">,</span>
+    <span class="s2">&quot;W&quot;</span><span class="p">:</span> <span class="s2">&quot;anger&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;L&quot;</span><span class="p">:</span> <span class="s2">&quot;boredom&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;E&quot;</span><span class="p">:</span> <span class="s2">&quot;disgust&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;A&quot;</span><span class="p">:</span> <span class="s2">&quot;fear&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;F&quot;</span><span class="p">:</span> <span class="s2">&quot;happiness&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;T&quot;</span><span class="p">:</span> <span class="s2">&quot;sadness&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N&quot;</span><span class="p">:</span> <span class="s2">&quot;neutral&quot;</span><span class="p">,</span>
 <span class="p">}</span>
 <span class="n">emotions</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">parse_names</span><span class="p">(</span><span class="n">names</span><span class="p">,</span> <span class="n">from_i</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">to_i</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">mapping</span><span class="o">=</span><span class="n">emotion_mapping</span><span class="p">))</span>
 
 <span class="n">y</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span>
-    <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">src_dir</span><span class="p">,</span> <span class="s1">&#39;erkennung.txt&#39;</span><span class="p">),</span>
-    <span class="n">usecols</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Satz&#39;</span><span class="p">,</span> <span class="s1">&#39;erkannt&#39;</span><span class="p">],</span>
-    <span class="n">index_col</span><span class="o">=</span><span class="s1">&#39;Satz&#39;</span><span class="p">,</span>
-    <span class="n">delim_whitespace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-    <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;Latin-1&#39;</span><span class="p">,</span>
-    <span class="n">decimal</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="p">,</span>
-    <span class="n">converters</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;Satz&#39;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;wav&#39;</span><span class="p">,</span> <span class="n">x</span><span class="p">)},</span>
-<span class="p">)</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="s1">&#39;columns&#39;</span><span class="p">)</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">src_dir</span><span class="p">,</span> <span class="s2">&quot;erkennung.txt&quot;</span><span class="p">),</span>
+    <span class="n">usecols</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Satz&quot;</span><span class="p">,</span> <span class="s2">&quot;erkannt&quot;</span><span class="p">],</span>
+    <span class="n">index_col</span><span class="o">=</span><span class="s2">&quot;Satz&quot;</span><span class="p">,</span>
+    <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;\s+&quot;</span><span class="p">,</span>
+    <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;Latin-1&quot;</span><span class="p">,</span>
+    <span class="n">decimal</span><span class="o">=</span><span class="s2">&quot;,&quot;</span><span class="p">,</span>
+    <span class="n">converters</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;Satz&quot;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;wav&quot;</span><span class="p">,</span> <span class="n">x</span><span class="p">)},</span>
+<span class="p">)</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="s2">&quot;columns&quot;</span><span class="p">)</span>
 <span class="n">y</span> <span class="o">=</span> <span class="n">y</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">files</span><span class="p">]</span>
-<span class="n">y</span> <span class="o">=</span> <span class="n">y</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">to_replace</span><span class="o">=</span><span class="sa">u</span><span class="s1">&#39;</span><span class="se">\xa0</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">regex</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">y</span> <span class="o">=</span> <span class="n">y</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">to_replace</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="n">regex</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">confidences</span> <span class="o">=</span> <span class="n">y</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;float&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">values</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">y</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">to_replace</span><span class="o">=</span><span class="sa">u</span><span class="s2">&quot;</span><span class="se">\xa0</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">regex</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">y</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">to_replace</span><span class="o">=</span><span class="s2">&quot;,&quot;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="s2">&quot;.&quot;</span><span class="p">,</span> <span class="n">regex</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">confidences</span> <span class="o">=</span> <span class="n">y</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;float&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">values</span>
 
 <span class="n">male</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">define</span><span class="o">.</span><span class="n">Gender</span><span class="o">.</span><span class="n">MALE</span>
 <span class="n">female</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">define</span><span class="o">.</span><span class="n">Gender</span><span class="o">.</span><span class="n">FEMALE</span>
-<span class="n">de</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">map_language</span><span class="p">(</span><span class="s1">&#39;de&#39;</span><span class="p">)</span>
+<span class="n">de</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">map_language</span><span class="p">(</span><span class="s2">&quot;de&quot;</span><span class="p">)</span>
 <span class="n">df_speaker</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
-    <span class="n">index</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">16</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;speaker&#39;</span><span class="p">),</span>
-    <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;age&#39;</span><span class="p">,</span> <span class="s1">&#39;gender&#39;</span><span class="p">,</span> <span class="s1">&#39;language&#39;</span><span class="p">],</span>
+    <span class="n">index</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">16</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;speaker&quot;</span><span class="p">),</span>
+    <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;age&quot;</span><span class="p">,</span> <span class="s2">&quot;gender&quot;</span><span class="p">,</span> <span class="s2">&quot;language&quot;</span><span class="p">],</span>
     <span class="n">data</span> <span class="o">=</span> <span class="p">[</span>
         <span class="p">[</span><span class="mi">31</span><span class="p">,</span> <span class="n">male</span><span class="p">,</span> <span class="n">de</span><span class="p">],</span>
         <span class="p">[</span><span class="mi">34</span><span class="p">,</span> <span class="n">female</span><span class="p">,</span> <span class="n">de</span><span class="p">],</span>
@@ -482,21 +482,21 @@ to the emotion table.</p>
 <span class="n">speakers</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">parse_names</span><span class="p">(</span><span class="n">names</span><span class="p">,</span> <span class="n">from_i</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">to_i</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">is_number</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
 
 <span class="n">transcription_mapping</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">&#39;a01&#39;</span><span class="p">:</span> <span class="s1">&#39;Der Lappen liegt auf dem Eisschrank.&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;a02&#39;</span><span class="p">:</span> <span class="s1">&#39;Das will sie am Mittwoch abgeben.&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;a04&#39;</span><span class="p">:</span> <span class="s1">&#39;Heute abend könnte ich es ihm sagen.&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;a05&#39;</span><span class="p">:</span> <span class="s1">&#39;Das schwarze Stück Papier befindet sich da oben neben dem &#39;</span>
-           <span class="s1">&#39;Holzstück.&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;a07&#39;</span><span class="p">:</span> <span class="s1">&#39;In sieben Stunden wird es soweit sein.&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;b01&#39;</span><span class="p">:</span> <span class="s1">&#39;Was sind denn das für Tüten, die da unter dem Tisch &#39;</span>
-           <span class="s1">&#39;stehen.&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;b02&#39;</span><span class="p">:</span> <span class="s1">&#39;Sie haben es gerade hochgetragen und jetzt gehen sie &#39;</span>
-           <span class="s1">&#39;wieder runter.&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;b03&#39;</span><span class="p">:</span> <span class="s1">&#39;An den Wochenenden bin ich jetzt immer nach Hause &#39;</span>
-           <span class="s1">&#39;gefahren und habe Agnes besucht.&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;b09&#39;</span><span class="p">:</span> <span class="s1">&#39;Ich will das eben wegbringen und dann mit Karl was &#39;</span>
-           <span class="s1">&#39;trinken gehen.&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;b10&#39;</span><span class="p">:</span> <span class="s1">&#39;Die wird auf dem Platz sein, wo wir sie immer hinlegen.&#39;</span><span class="p">,</span>
+    <span class="s2">&quot;a01&quot;</span><span class="p">:</span> <span class="s2">&quot;Der Lappen liegt auf dem Eisschrank.&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;a02&quot;</span><span class="p">:</span> <span class="s2">&quot;Das will sie am Mittwoch abgeben.&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;a04&quot;</span><span class="p">:</span> <span class="s2">&quot;Heute abend könnte ich es ihm sagen.&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;a05&quot;</span><span class="p">:</span> <span class="s2">&quot;Das schwarze Stück Papier befindet sich da oben neben dem &quot;</span>
+           <span class="s2">&quot;Holzstück.&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;a07&quot;</span><span class="p">:</span> <span class="s2">&quot;In sieben Stunden wird es soweit sein.&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;b01&quot;</span><span class="p">:</span> <span class="s2">&quot;Was sind denn das für Tüten, die da unter dem Tisch &quot;</span>
+           <span class="s2">&quot;stehen.&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;b02&quot;</span><span class="p">:</span> <span class="s2">&quot;Sie haben es gerade hochgetragen und jetzt gehen sie &quot;</span>
+           <span class="s2">&quot;wieder runter.&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;b03&quot;</span><span class="p">:</span> <span class="s2">&quot;An den Wochenenden bin ich jetzt immer nach Hause &quot;</span>
+           <span class="s2">&quot;gefahren und habe Agnes besucht.&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;b09&quot;</span><span class="p">:</span> <span class="s2">&quot;Ich will das eben wegbringen und dann mit Karl was &quot;</span>
+           <span class="s2">&quot;trinken gehen.&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;b10&quot;</span><span class="p">:</span> <span class="s2">&quot;Die wird auf dem Platz sein, wo wir sie immer hinlegen.&quot;</span><span class="p">,</span>
 <span class="p">}</span>
 <span class="n">transcriptions</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">parse_names</span><span class="p">(</span><span class="n">names</span><span class="p">,</span> <span class="n">from_i</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">to_i</span><span class="o">=</span><span class="mi">5</span><span class="p">))</span>
 </pre></div>
@@ -513,98 +513,98 @@ and assign the information to it.</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">db</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Database</span><span class="p">(</span>
-    <span class="n">name</span><span class="o">=</span><span class="s1">&#39;emodb&#39;</span><span class="p">,</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;emodb&quot;</span><span class="p">,</span>
     <span class="n">source</span><span class="o">=</span><span class="n">source</span><span class="p">,</span>
     <span class="n">usage</span><span class="o">=</span><span class="n">audformat</span><span class="o">.</span><span class="n">define</span><span class="o">.</span><span class="n">Usage</span><span class="o">.</span><span class="n">UNRESTRICTED</span><span class="p">,</span>
     <span class="n">languages</span><span class="o">=</span><span class="p">[</span><span class="n">de</span><span class="p">],</span>
     <span class="n">description</span><span class="o">=</span><span class="n">description</span><span class="p">,</span>
     <span class="n">meta</span><span class="o">=</span><span class="p">{</span>
-        <span class="s1">&#39;pdf&#39;</span><span class="p">:</span> <span class="p">(</span>
-            <span class="s1">&#39;http://citeseerx.ist.psu.edu/viewdoc/&#39;</span>
-            <span class="s1">&#39;download?doi=10.1.1.130.8506&amp;rep=rep1&amp;type=pdf&#39;</span>
+        <span class="s2">&quot;pdf&quot;</span><span class="p">:</span> <span class="p">(</span>
+            <span class="s2">&quot;http://citeseerx.ist.psu.edu/viewdoc/&quot;</span>
+            <span class="s2">&quot;download?doi=10.1.1.130.8506&amp;rep=rep1&amp;type=pdf&quot;</span>
         <span class="p">),</span>
     <span class="p">},</span>
 <span class="p">)</span>
 
 <span class="c1"># Media</span>
-<span class="n">db</span><span class="o">.</span><span class="n">media</span><span class="p">[</span><span class="s1">&#39;microphone&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Media</span><span class="p">(</span>
-    <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;wav&#39;</span><span class="p">,</span>
+<span class="n">db</span><span class="o">.</span><span class="n">media</span><span class="p">[</span><span class="s2">&quot;microphone&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Media</span><span class="p">(</span>
+    <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;wav&quot;</span><span class="p">,</span>
     <span class="n">sampling_rate</span><span class="o">=</span><span class="mi">16000</span><span class="p">,</span>
     <span class="n">channels</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
 <span class="p">)</span>
 
 <span class="c1"># Raters</span>
-<span class="n">db</span><span class="o">.</span><span class="n">raters</span><span class="p">[</span><span class="s1">&#39;gold&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Rater</span><span class="p">()</span>
+<span class="n">db</span><span class="o">.</span><span class="n">raters</span><span class="p">[</span><span class="s2">&quot;gold&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Rater</span><span class="p">()</span>
 
 <span class="c1"># Schemes</span>
-<span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s1">&#39;emotion&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Scheme</span><span class="p">(</span>
+<span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s2">&quot;emotion&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Scheme</span><span class="p">(</span>
     <span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">emotion_mapping</span><span class="o">.</span><span class="n">values</span><span class="p">()],</span>
-    <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Six basic emotions and neutral.&#39;</span><span class="p">,</span>
+    <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Six basic emotions and neutral.&quot;</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s1">&#39;confidence&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Scheme</span><span class="p">(</span>
-    <span class="s1">&#39;float&#39;</span><span class="p">,</span>
+<span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s2">&quot;confidence&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Scheme</span><span class="p">(</span>
+    <span class="s2">&quot;float&quot;</span><span class="p">,</span>
     <span class="n">minimum</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
     <span class="n">maximum</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-    <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Confidence of emotion ratings.&#39;</span><span class="p">,</span>
+    <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Confidence of emotion ratings.&quot;</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s1">&#39;age&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Scheme</span><span class="p">(</span>
-    <span class="s1">&#39;int&#39;</span><span class="p">,</span>
+<span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s2">&quot;age&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Scheme</span><span class="p">(</span>
+    <span class="s2">&quot;int&quot;</span><span class="p">,</span>
     <span class="n">minimum</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-    <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Age of speaker&#39;</span><span class="p">,</span>
+    <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Age of speaker&quot;</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s1">&#39;gender&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Scheme</span><span class="p">(</span>
-    <span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;female&#39;</span><span class="p">,</span> <span class="s1">&#39;male&#39;</span><span class="p">],</span>
-    <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Gender of speaker&#39;</span><span class="p">,</span>
+<span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s2">&quot;gender&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Scheme</span><span class="p">(</span>
+    <span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;female&quot;</span><span class="p">,</span> <span class="s2">&quot;male&quot;</span><span class="p">],</span>
+    <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Gender of speaker&quot;</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s1">&#39;language&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Scheme</span><span class="p">(</span>
-    <span class="s1">&#39;str&#39;</span><span class="p">,</span>
-    <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Language of speaker&#39;</span><span class="p">,</span>
+<span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s2">&quot;language&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Scheme</span><span class="p">(</span>
+    <span class="s2">&quot;str&quot;</span><span class="p">,</span>
+    <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Language of speaker&quot;</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s1">&#39;transcription&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Scheme</span><span class="p">(</span>
+<span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s2">&quot;transcription&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Scheme</span><span class="p">(</span>
     <span class="n">labels</span><span class="o">=</span><span class="n">transcription_mapping</span><span class="p">,</span>
-    <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Sentence produced by actor.&#39;</span><span class="p">,</span>
+    <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Sentence produced by actor.&quot;</span><span class="p">,</span>
 <span class="p">)</span>
 
 <span class="c1"># MiscTable</span>
-<span class="n">db</span><span class="p">[</span><span class="s1">&#39;speaker&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">MiscTable</span><span class="p">(</span><span class="n">df_speaker</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
-<span class="n">db</span><span class="p">[</span><span class="s1">&#39;speaker&#39;</span><span class="p">][</span><span class="s1">&#39;age&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">scheme_id</span><span class="o">=</span><span class="s1">&#39;age&#39;</span><span class="p">)</span>
-<span class="n">db</span><span class="p">[</span><span class="s1">&#39;speaker&#39;</span><span class="p">][</span><span class="s1">&#39;gender&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">scheme_id</span><span class="o">=</span><span class="s1">&#39;gender&#39;</span><span class="p">)</span>
-<span class="n">db</span><span class="p">[</span><span class="s1">&#39;speaker&#39;</span><span class="p">][</span><span class="s1">&#39;language&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">scheme_id</span><span class="o">=</span><span class="s1">&#39;language&#39;</span><span class="p">)</span>
-<span class="n">db</span><span class="p">[</span><span class="s1">&#39;speaker&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">df_speaker</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(</span><span class="n">orient</span><span class="o">=</span><span class="s1">&#39;list&#39;</span><span class="p">))</span>
+<span class="n">db</span><span class="p">[</span><span class="s2">&quot;speaker&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">MiscTable</span><span class="p">(</span><span class="n">df_speaker</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+<span class="n">db</span><span class="p">[</span><span class="s2">&quot;speaker&quot;</span><span class="p">][</span><span class="s2">&quot;age&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">scheme_id</span><span class="o">=</span><span class="s2">&quot;age&quot;</span><span class="p">)</span>
+<span class="n">db</span><span class="p">[</span><span class="s2">&quot;speaker&quot;</span><span class="p">][</span><span class="s2">&quot;gender&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">scheme_id</span><span class="o">=</span><span class="s2">&quot;gender&quot;</span><span class="p">)</span>
+<span class="n">db</span><span class="p">[</span><span class="s2">&quot;speaker&quot;</span><span class="p">][</span><span class="s2">&quot;language&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">scheme_id</span><span class="o">=</span><span class="s2">&quot;language&quot;</span><span class="p">)</span>
+<span class="n">db</span><span class="p">[</span><span class="s2">&quot;speaker&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">df_speaker</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(</span><span class="n">orient</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">))</span>
 
 <span class="c1"># MiscTable as Scheme</span>
-<span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s1">&#39;speaker&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Scheme</span><span class="p">(</span>
-    <span class="n">labels</span><span class="o">=</span><span class="s1">&#39;speaker&#39;</span><span class="p">,</span>
-    <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;int&#39;</span><span class="p">,</span>
+<span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s2">&quot;speaker&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Scheme</span><span class="p">(</span>
+    <span class="n">labels</span><span class="o">=</span><span class="s2">&quot;speaker&quot;</span><span class="p">,</span>
+    <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;int&quot;</span><span class="p">,</span>
     <span class="n">description</span><span class="o">=</span><span class="p">(</span>
-        <span class="s1">&#39;The actors could produce each sentence as often as &#39;</span>
-        <span class="s1">&#39;they liked and were asked to remember a real &#39;</span>
-        <span class="s1">&#39;situation from their past when they had felt this &#39;</span>
-        <span class="s1">&#39;emotion.&#39;</span>
+        <span class="s2">&quot;The actors could produce each sentence as often as &quot;</span>
+        <span class="s2">&quot;they liked and were asked to remember a real &quot;</span>
+        <span class="s2">&quot;situation from their past when they had felt this &quot;</span>
+        <span class="s2">&quot;emotion.&quot;</span>
     <span class="p">),</span>
 <span class="p">)</span>
 
 <span class="c1"># Tables</span>
 <span class="n">index</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">filewise_index</span><span class="p">(</span><span class="n">files</span><span class="p">)</span>
-<span class="n">db</span><span class="p">[</span><span class="s1">&#39;files&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Table</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+<span class="n">db</span><span class="p">[</span><span class="s2">&quot;files&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Table</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
 
-<span class="n">db</span><span class="p">[</span><span class="s1">&#39;files&#39;</span><span class="p">][</span><span class="s1">&#39;speaker&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">scheme_id</span><span class="o">=</span><span class="s1">&#39;speaker&#39;</span><span class="p">)</span>
-<span class="n">db</span><span class="p">[</span><span class="s1">&#39;files&#39;</span><span class="p">][</span><span class="s1">&#39;speaker&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">speakers</span><span class="p">)</span>
+<span class="n">db</span><span class="p">[</span><span class="s2">&quot;files&quot;</span><span class="p">][</span><span class="s2">&quot;speaker&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">scheme_id</span><span class="o">=</span><span class="s2">&quot;speaker&quot;</span><span class="p">)</span>
+<span class="n">db</span><span class="p">[</span><span class="s2">&quot;files&quot;</span><span class="p">][</span><span class="s2">&quot;speaker&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">speakers</span><span class="p">)</span>
 
-<span class="n">db</span><span class="p">[</span><span class="s1">&#39;files&#39;</span><span class="p">][</span><span class="s1">&#39;transcription&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">scheme_id</span><span class="o">=</span><span class="s1">&#39;transcription&#39;</span><span class="p">)</span>
-<span class="n">db</span><span class="p">[</span><span class="s1">&#39;files&#39;</span><span class="p">][</span><span class="s1">&#39;transcription&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">transcriptions</span><span class="p">)</span>
+<span class="n">db</span><span class="p">[</span><span class="s2">&quot;files&quot;</span><span class="p">][</span><span class="s2">&quot;transcription&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">scheme_id</span><span class="o">=</span><span class="s2">&quot;transcription&quot;</span><span class="p">)</span>
+<span class="n">db</span><span class="p">[</span><span class="s2">&quot;files&quot;</span><span class="p">][</span><span class="s2">&quot;transcription&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">transcriptions</span><span class="p">)</span>
 
-<span class="n">db</span><span class="p">[</span><span class="s1">&#39;emotion&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Table</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
-<span class="n">db</span><span class="p">[</span><span class="s1">&#39;emotion&#39;</span><span class="p">][</span><span class="s1">&#39;emotion&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
-    <span class="n">scheme_id</span><span class="o">=</span><span class="s1">&#39;emotion&#39;</span><span class="p">,</span>
-    <span class="n">rater_id</span><span class="o">=</span><span class="s1">&#39;gold&#39;</span><span class="p">,</span>
+<span class="n">db</span><span class="p">[</span><span class="s2">&quot;emotion&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Table</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+<span class="n">db</span><span class="p">[</span><span class="s2">&quot;emotion&quot;</span><span class="p">][</span><span class="s2">&quot;emotion&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+    <span class="n">scheme_id</span><span class="o">=</span><span class="s2">&quot;emotion&quot;</span><span class="p">,</span>
+    <span class="n">rater_id</span><span class="o">=</span><span class="s2">&quot;gold&quot;</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="n">db</span><span class="p">[</span><span class="s1">&#39;emotion&#39;</span><span class="p">][</span><span class="s1">&#39;emotion&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">emotions</span><span class="p">)</span>
-<span class="n">db</span><span class="p">[</span><span class="s1">&#39;emotion&#39;</span><span class="p">][</span><span class="s1">&#39;emotion.confidence&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
-    <span class="n">scheme_id</span><span class="o">=</span><span class="s1">&#39;confidence&#39;</span><span class="p">,</span>
-    <span class="n">rater_id</span><span class="o">=</span><span class="s1">&#39;gold&#39;</span><span class="p">,</span>
+<span class="n">db</span><span class="p">[</span><span class="s2">&quot;emotion&quot;</span><span class="p">][</span><span class="s2">&quot;emotion&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">emotions</span><span class="p">)</span>
+<span class="n">db</span><span class="p">[</span><span class="s2">&quot;emotion&quot;</span><span class="p">][</span><span class="s2">&quot;emotion.confidence&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+    <span class="n">scheme_id</span><span class="o">=</span><span class="s2">&quot;confidence&quot;</span><span class="p">,</span>
+    <span class="n">rater_id</span><span class="o">=</span><span class="s2">&quot;gold&quot;</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="n">db</span><span class="p">[</span><span class="s1">&#39;emotion&#39;</span><span class="p">][</span><span class="s1">&#39;emotion.confidence&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">confidences</span> <span class="o">/</span> <span class="mf">100.0</span><span class="p">)</span>
+<span class="n">db</span><span class="p">[</span><span class="s2">&quot;emotion&quot;</span><span class="p">][</span><span class="s2">&quot;emotion.confidence&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">confidences</span> <span class="o">/</span> <span class="mf">100.0</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -705,7 +705,7 @@ pdf: http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.130.8506&amp;rep=r
 <p>Then list the first 10 entries of every table.</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="p">[</span><span class="s1">&#39;files&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()[:</span><span class="mi">10</span><span class="p">]</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="p">[</span><span class="s2">&quot;files&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()[:</span><span class="mi">10</span><span class="p">]</span>
 </pre></div>
 </div>
 </div>
@@ -794,7 +794,7 @@ pdf: http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.130.8506&amp;rep=r
 </div>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="p">[</span><span class="s1">&#39;emotion&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()[:</span><span class="mi">10</span><span class="p">]</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="p">[</span><span class="s2">&quot;emotion&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()[:</span><span class="mi">10</span><span class="p">]</span>
 </pre></div>
 </div>
 </div>
@@ -883,7 +883,7 @@ pdf: http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.130.8506&amp;rep=r
 </div>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="p">[</span><span class="s1">&#39;speaker&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()[:</span><span class="mi">10</span><span class="p">]</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="p">[</span><span class="s2">&quot;speaker&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()[:</span><span class="mi">10</span><span class="p">]</span>
 </pre></div>
 </div>
 </div>
@@ -990,7 +990,7 @@ see <a class="reference internal" href="map-scheme.html#map-scheme-labels"><span
 for an extended documentation.</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="p">[</span><span class="s1">&#39;files&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">map</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;speaker&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;speaker&#39;</span><span class="p">,</span> <span class="s1">&#39;age&#39;</span><span class="p">,</span> <span class="s1">&#39;gender&#39;</span><span class="p">]})[:</span><span class="mi">10</span><span class="p">]</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="p">[</span><span class="s2">&quot;files&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">map</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;speaker&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;speaker&quot;</span><span class="p">,</span> <span class="s2">&quot;age&quot;</span><span class="p">,</span> <span class="s2">&quot;gender&quot;</span><span class="p">]})[:</span><span class="mi">10</span><span class="p">]</span>
 </pre></div>
 </div>
 </div>
@@ -1112,10 +1112,10 @@ that the media files are located at the correct position ourselves.</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">shutil</span>
 
 
-<span class="n">db_dir</span> <span class="o">=</span> <span class="n">audeer</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="s1">&#39;emodb&#39;</span><span class="p">)</span>
+<span class="n">db_dir</span> <span class="o">=</span> <span class="n">audeer</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="s2">&quot;emodb&quot;</span><span class="p">)</span>
 <span class="n">shutil</span><span class="o">.</span><span class="n">copytree</span><span class="p">(</span>
-    <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">src_dir</span><span class="p">,</span> <span class="s1">&#39;wav&#39;</span><span class="p">),</span>
-    <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">db_dir</span><span class="p">,</span> <span class="s1">&#39;wav&#39;</span><span class="p">),</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">src_dir</span><span class="p">,</span> <span class="s2">&quot;wav&quot;</span><span class="p">),</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">db_dir</span><span class="p">,</span> <span class="s2">&quot;wav&quot;</span><span class="p">),</span>
 <span class="p">)</span>
 <span class="n">db</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">db_dir</span><span class="p">)</span>
 
@@ -1124,7 +1124,7 @@ that the media files are located at the correct position ourselves.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>[&#39;wav&#39;, &#39;db.speaker.csv&#39;, &#39;db.files.csv&#39;, &#39;db.emotion.csv&#39;, &#39;db.yaml&#39;]
+<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>[&#39;db.yaml&#39;, &#39;db.files.csv&#39;, &#39;db.emotion.csv&#39;, &#39;wav&#39;, &#39;db.speaker.csv&#39;]
 </pre></div>
 </div>
 </div>
@@ -1173,7 +1173,7 @@ that the media files are located at the correct position ourselves.</p>
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2023/11/30 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2024/01/25 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
@@ -1181,7 +1181,7 @@ that the media files are located at the correct position ourselves.</p>
   <div role="contentinfo">
     <p>
         
-      &copy; 2019-2023 audEERING GmbH
+      &copy; 2019-2024 audEERING GmbH
     </p>
   </div> 
 

@@ -72,7 +72,7 @@
             
             
               <div class="version">
-                v1.1.0
+                v1.1.1
               </div>
             
           
@@ -185,16 +185,16 @@ by the <a class="reference internal" href="api/audformat.Table.html#audformat.Ta
 
 
 <span class="n">db</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">create_db</span><span class="p">()</span>
-<span class="n">table</span> <span class="o">=</span> <span class="n">db</span><span class="p">[</span><span class="s1">&#39;files&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+<span class="n">table</span> <span class="o">=</span> <span class="n">db</span><span class="p">[</span><span class="s2">&quot;files&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
 <span class="c1"># Short for:</span>
-<span class="c1"># table = db.tables[&#39;files&#39;].get()</span>
+<span class="c1"># table = db.tables[&quot;files&quot;].get()</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
 </div>
 </div>
-<p>Which returns the following <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a>:</p>
+<p>Which returns the following <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a>:</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">table</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span>
@@ -232,13 +232,13 @@ by the <a class="reference internal" href="api/audformat.Table.html#audformat.Ta
   <tbody>
     <tr>
       <th>audio/001.wav</th>
-      <td>&lt;NA&gt;</td>
-      <td>1970-01-01 00:00:00.910</td>
+      <td>False</td>
+      <td>NaT</td>
     </tr>
     <tr>
       <th>audio/002.wav</th>
-      <td>True</td>
-      <td>NaT</td>
+      <td>False</td>
+      <td>1970-01-01 00:00:00.310</td>
     </tr>
   </tbody>
 </table>
@@ -247,16 +247,16 @@ by the <a class="reference internal" href="api/audformat.Table.html#audformat.Ta
 <p>Or you can directly access a column with <a class="reference internal" href="api/audformat.Column.html#audformat.Column.get" title="audformat.Column.get"><code class="xref py py-meth docutils literal notranslate"><span class="pre">audformat.Column.get()</span></code></a>:</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">column</span> <span class="o">=</span> <span class="n">db</span><span class="p">[</span><span class="s1">&#39;files&#39;</span><span class="p">][</span><span class="s1">&#39;string&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">column</span> <span class="o">=</span> <span class="n">db</span><span class="p">[</span><span class="s2">&quot;files&quot;</span><span class="p">][</span><span class="s2">&quot;string&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
 <span class="c1"># Short for:</span>
-<span class="c1"># column = db.tables[&#39;files&#39;].columns[&#39;string&#39;].get()</span>
+<span class="c1"># column = db.tables[&quot;files&quot;].columns[&quot;string&quot;].get()</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
 </div>
 </div>
-<p>Which results in the following <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Series.html#pandas.Series" title="(in pandas v2.1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.Series</span></code></a>:</p>
+<p>Which results in the following <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Series.html#pandas.Series" title="(in pandas v2.2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.Series</span></code></a>:</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">column</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span>
@@ -278,11 +278,11 @@ by the <a class="reference internal" href="api/audformat.Table.html#audformat.Ta
   <tbody>
     <tr>
       <th>audio/001.wav</th>
-      <td>gfk1sovvzi</td>
+      <td>Vk3CoQWSly</td>
     </tr>
     <tr>
       <th>audio/002.wav</th>
-      <td>CElfJwfwEA</td>
+      <td>ZqMofbYWhN</td>
     </tr>
   </tbody>
 </table></div></div>
@@ -332,7 +332,7 @@ have a look at the code examples in the
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2023/11/30 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2024/01/25 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
@@ -340,7 +340,7 @@ have a look at the code examples in the
   <div role="contentinfo">
     <p>
         
-      &copy; 2019-2023 audEERING GmbH
+      &copy; 2019-2024 audEERING GmbH
     </p>
   </div> 
 

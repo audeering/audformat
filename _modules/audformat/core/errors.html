@@ -70,7 +70,7 @@
             
             
               <div class="version">
-                v1.1.0
+                v1.1.1
               </div>
             
           
@@ -176,16 +176,13 @@
 <span class="sd">        dictionary: dictionary with valid identifiers</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">invalid_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">dictionary</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">dictionary</span><span class="p">:</span>
-            <span class="n">message</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;Bad </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> ID &#39;</span><span class="si">{</span><span class="n">invalid_id</span><span class="si">}</span><span class="s2">&#39;, &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;no </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> objects defined yet&quot;</span>
-            <span class="p">)</span>
+            <span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Bad </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> ID &#39;</span><span class="si">{</span><span class="n">invalid_id</span><span class="si">}</span><span class="s2">&#39;, &quot;</span> <span class="sa">f</span><span class="s2">&quot;no </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> objects defined yet&quot;</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">message</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;Bad </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> ID &#39;</span><span class="si">{</span><span class="n">invalid_id</span><span class="si">}</span><span class="s2">&#39;, &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;expected one of </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">dictionary</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;Bad </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> ID &#39;</span><span class="si">{</span><span class="n">invalid_id</span><span class="si">}</span><span class="s2">&#39;, &quot;</span> <span class="sa">f</span><span class="s2">&quot;expected one of </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">dictionary</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
             <span class="p">)</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">message</span><span class="p">)</span></div>
 
@@ -198,11 +195,9 @@
 <span class="sd">        valid_keys: list of valid strings</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">invalid_key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">valid_keys</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
-        <span class="n">message</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;Bad key &#39;</span><span class="si">{</span><span class="n">invalid_key</span><span class="si">}</span><span class="s2">&#39;, &quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;expected one of </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">valid_keys</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
-        <span class="p">)</span>
+        <span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Bad key &#39;</span><span class="si">{</span><span class="n">invalid_key</span><span class="si">}</span><span class="s2">&#39;, &quot;</span> <span class="sa">f</span><span class="s2">&quot;expected one of </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">valid_keys</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">message</span><span class="p">)</span></div>
 
 
@@ -214,11 +209,9 @@
 <span class="sd">        expected_type: expected value type</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">invalid_value</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="n">expected_type</span><span class="p">:</span> <span class="nb">type</span><span class="p">):</span>
-        <span class="n">message</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;Bad type &#39;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">invalid_value</span><span class="p">)</span><span class="si">}</span><span class="s2">&#39;, &quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;expected &#39;</span><span class="si">{</span><span class="n">expected_type</span><span class="si">}</span><span class="s2">&#39;&quot;</span>
-        <span class="p">)</span>
+        <span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Bad type &#39;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">invalid_value</span><span class="p">)</span><span class="si">}</span><span class="s2">&#39;, &quot;</span> <span class="sa">f</span><span class="s2">&quot;expected &#39;</span><span class="si">{</span><span class="n">expected_type</span><span class="si">}</span><span class="s2">&#39;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">message</span><span class="p">)</span></div>
 
 
@@ -230,10 +223,10 @@
 <span class="sd">        valid_values: list of valid strings</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">invalid_value</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">valid_values</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
         <span class="n">message</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;Bad value &#39;</span><span class="si">{</span><span class="n">invalid_value</span><span class="si">}</span><span class="s2">&#39;, &quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;expected one of </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">valid_values</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;Bad value &#39;</span><span class="si">{</span><span class="n">invalid_value</span><span class="si">}</span><span class="s2">&#39;, &quot;</span> <span class="sa">f</span><span class="s2">&quot;expected one of </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">valid_values</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
         <span class="p">)</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">message</span><span class="p">)</span></div>
 
@@ -246,12 +239,10 @@
 <span class="sd">        table_id: table identifier</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">table_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
         <span class="ne">KeyError</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;There is already a &quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">table_type</span><span class="si">}</span><span class="s2"> &quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;table with ID &quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">table_id</span><span class="si">}</span><span class="s2">&#39;.&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;There is already a &quot;</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">table_type</span><span class="si">}</span><span class="s2"> &quot;</span> <span class="sa">f</span><span class="s2">&quot;table with ID &quot;</span> <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">table_id</span><span class="si">}</span><span class="s2">&#39;.&quot;</span>
         <span class="p">)</span></div>
 </pre></div>
 
@@ -268,7 +259,7 @@
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2023/11/30 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2024/01/25 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
@@ -276,7 +267,7 @@
   <div role="contentinfo">
     <p>
         
-      &copy; 2019-2023 audEERING GmbH
+      &copy; 2019-2024 audEERING GmbH
     </p>
   </div> 
 

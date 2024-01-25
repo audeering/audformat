@@ -72,7 +72,7 @@
             
             
               <div class="version">
-                v1.1.0
+                v1.1.1
               </div>
             
           
@@ -191,7 +191,7 @@ or very long names you can use <code class="docutils literal notranslate"><span 
 to increase readability.</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">audformat</span><span class="o">.</span><span class="n">Database</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;librispeech-mfa-cseg-pho&#39;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">audformat</span><span class="o">.</span><span class="n">Database</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;librispeech-mfa-cseg-pho&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -258,13 +258,13 @@ If you have multiple raters,
 name each column after the name of the rater.</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">db</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Database</span><span class="p">(</span><span class="s1">&#39;mydata&#39;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">db</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Database</span><span class="p">(</span><span class="s2">&quot;mydata&quot;</span><span class="p">)</span>
 
-<span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s1">&#39;arousal&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Scheme</span><span class="p">(</span><span class="n">audformat</span><span class="o">.</span><span class="n">define</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">FLOAT</span><span class="p">)</span>
-<span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s1">&#39;valence&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Scheme</span><span class="p">(</span><span class="n">audformat</span><span class="o">.</span><span class="n">define</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">FLOAT</span><span class="p">)</span>
+<span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s2">&quot;arousal&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Scheme</span><span class="p">(</span><span class="n">audformat</span><span class="o">.</span><span class="n">define</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">FLOAT</span><span class="p">)</span>
+<span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s2">&quot;valence&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Scheme</span><span class="p">(</span><span class="n">audformat</span><span class="o">.</span><span class="n">define</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">FLOAT</span><span class="p">)</span>
 
-<span class="n">db</span><span class="o">.</span><span class="n">raters</span><span class="p">[</span><span class="s1">&#39;rater1&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Rater</span><span class="p">()</span>
-<span class="n">db</span><span class="o">.</span><span class="n">raters</span><span class="p">[</span><span class="s1">&#39;rater2&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Rater</span><span class="p">()</span>
+<span class="n">db</span><span class="o">.</span><span class="n">raters</span><span class="p">[</span><span class="s2">&quot;rater1&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Rater</span><span class="p">()</span>
+<span class="n">db</span><span class="o">.</span><span class="n">raters</span><span class="p">[</span><span class="s2">&quot;rater2&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Rater</span><span class="p">()</span>
 
 <span class="k">for</span> <span class="n">scheme_id</span> <span class="ow">in</span> <span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">:</span>
     <span class="n">db</span><span class="p">[</span><span class="n">scheme_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Table</span><span class="p">(</span><span class="n">audformat</span><span class="o">.</span><span class="n">filewise_index</span><span class="p">())</span>
@@ -315,17 +315,17 @@ consider one table per split,
 named <code class="docutils literal notranslate"><span class="pre">scheme_id.split</span></code>.</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">db</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Database</span><span class="p">(</span><span class="s1">&#39;mydata&#39;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">db</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Database</span><span class="p">(</span><span class="s2">&quot;mydata&quot;</span><span class="p">)</span>
 
-<span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s1">&#39;arousal&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Scheme</span><span class="p">(</span><span class="n">audformat</span><span class="o">.</span><span class="n">define</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">FLOAT</span><span class="p">)</span>
+<span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s2">&quot;arousal&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Scheme</span><span class="p">(</span><span class="n">audformat</span><span class="o">.</span><span class="n">define</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">FLOAT</span><span class="p">)</span>
 
-<span class="n">db</span><span class="o">.</span><span class="n">splits</span><span class="p">[</span><span class="s1">&#39;train&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Split</span><span class="p">(</span><span class="n">audformat</span><span class="o">.</span><span class="n">define</span><span class="o">.</span><span class="n">SplitType</span><span class="o">.</span><span class="n">TRAIN</span><span class="p">)</span>
-<span class="n">db</span><span class="o">.</span><span class="n">splits</span><span class="p">[</span><span class="s1">&#39;dev&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Split</span><span class="p">(</span><span class="n">audformat</span><span class="o">.</span><span class="n">define</span><span class="o">.</span><span class="n">SplitType</span><span class="o">.</span><span class="n">DEVELOP</span><span class="p">)</span>
-<span class="n">db</span><span class="o">.</span><span class="n">splits</span><span class="p">[</span><span class="s1">&#39;test&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Split</span><span class="p">(</span><span class="n">audformat</span><span class="o">.</span><span class="n">define</span><span class="o">.</span><span class="n">SplitType</span><span class="o">.</span><span class="n">TEST</span><span class="p">)</span>
+<span class="n">db</span><span class="o">.</span><span class="n">splits</span><span class="p">[</span><span class="s2">&quot;train&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Split</span><span class="p">(</span><span class="n">audformat</span><span class="o">.</span><span class="n">define</span><span class="o">.</span><span class="n">SplitType</span><span class="o">.</span><span class="n">TRAIN</span><span class="p">)</span>
+<span class="n">db</span><span class="o">.</span><span class="n">splits</span><span class="p">[</span><span class="s2">&quot;dev&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Split</span><span class="p">(</span><span class="n">audformat</span><span class="o">.</span><span class="n">define</span><span class="o">.</span><span class="n">SplitType</span><span class="o">.</span><span class="n">DEVELOP</span><span class="p">)</span>
+<span class="n">db</span><span class="o">.</span><span class="n">splits</span><span class="p">[</span><span class="s2">&quot;test&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Split</span><span class="p">(</span><span class="n">audformat</span><span class="o">.</span><span class="n">define</span><span class="o">.</span><span class="n">SplitType</span><span class="o">.</span><span class="n">TEST</span><span class="p">)</span>
 
 <span class="k">for</span> <span class="n">scheme_id</span> <span class="ow">in</span> <span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">:</span>
     <span class="k">for</span> <span class="n">split_id</span> <span class="ow">in</span> <span class="n">db</span><span class="o">.</span><span class="n">splits</span><span class="p">:</span>
-        <span class="n">table_id</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">scheme_id</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="n">split_id</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="n">table_id</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">scheme_id</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">split_id</span><span class="si">}</span><span class="s2">&quot;</span>
         <span class="n">db</span><span class="p">[</span><span class="n">table_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Table</span><span class="p">(</span>
             <span class="n">index</span><span class="o">=</span><span class="n">audformat</span><span class="o">.</span><span class="n">filewise_index</span><span class="p">(),</span>
             <span class="n">split_id</span><span class="o">=</span><span class="n">split_id</span><span class="p">,</span>
@@ -366,33 +366,33 @@ Instead a new table with the postfix <code class="docutils literal notranslate">
 should be created
 to store the average of all rater.
 In addition,
-a rater with the id <code class="docutils literal notranslate"><span class="pre">'gold_standard'</span></code>
+a rater with the id <code class="docutils literal notranslate"><span class="pre">&quot;gold_standard&quot;</span></code>
 and the type <code class="docutils literal notranslate"><span class="pre">audformat.define.RaterType.VOTE</span></code>
 should be created
 and associated with the column
 holding the gold standard values.</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">db</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Database</span><span class="p">(</span><span class="s1">&#39;mydata&#39;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">db</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Database</span><span class="p">(</span><span class="s2">&quot;mydata&quot;</span><span class="p">)</span>
 
-<span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s1">&#39;arousal&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Scheme</span><span class="p">(</span><span class="n">audformat</span><span class="o">.</span><span class="n">define</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">FLOAT</span><span class="p">)</span>
+<span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s2">&quot;arousal&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Scheme</span><span class="p">(</span><span class="n">audformat</span><span class="o">.</span><span class="n">define</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">FLOAT</span><span class="p">)</span>
 
-<span class="n">db</span><span class="o">.</span><span class="n">raters</span><span class="p">[</span><span class="s1">&#39;rater1&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Rater</span><span class="p">()</span>
-<span class="n">db</span><span class="o">.</span><span class="n">raters</span><span class="p">[</span><span class="s1">&#39;rater2&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Rater</span><span class="p">()</span>
-<span class="n">db</span><span class="o">.</span><span class="n">raters</span><span class="p">[</span><span class="s1">&#39;gold_standard&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Rater</span><span class="p">(</span><span class="n">audformat</span><span class="o">.</span><span class="n">define</span><span class="o">.</span><span class="n">RaterType</span><span class="o">.</span><span class="n">VOTE</span><span class="p">)</span>
+<span class="n">db</span><span class="o">.</span><span class="n">raters</span><span class="p">[</span><span class="s2">&quot;rater1&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Rater</span><span class="p">()</span>
+<span class="n">db</span><span class="o">.</span><span class="n">raters</span><span class="p">[</span><span class="s2">&quot;rater2&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Rater</span><span class="p">()</span>
+<span class="n">db</span><span class="o">.</span><span class="n">raters</span><span class="p">[</span><span class="s2">&quot;gold_standard&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Rater</span><span class="p">(</span><span class="n">audformat</span><span class="o">.</span><span class="n">define</span><span class="o">.</span><span class="n">RaterType</span><span class="o">.</span><span class="n">VOTE</span><span class="p">)</span>
 
 <span class="k">for</span> <span class="n">scheme_id</span> <span class="ow">in</span> <span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">:</span>
     <span class="n">db</span><span class="p">[</span><span class="n">scheme_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Table</span><span class="p">(</span><span class="n">audformat</span><span class="o">.</span><span class="n">filewise_index</span><span class="p">())</span>
-    <span class="k">for</span> <span class="n">rater_id</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;rater1&#39;</span><span class="p">,</span> <span class="s1">&#39;rater2&#39;</span><span class="p">]:</span>
+    <span class="k">for</span> <span class="n">rater_id</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;rater1&quot;</span><span class="p">,</span> <span class="s2">&quot;rater2&quot;</span><span class="p">]:</span>
         <span class="n">db</span><span class="p">[</span><span class="n">scheme_id</span><span class="p">][</span><span class="n">rater_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
             <span class="n">scheme_id</span><span class="o">=</span><span class="n">scheme_id</span><span class="p">,</span>
             <span class="n">rater_id</span><span class="o">=</span><span class="n">rater_id</span><span class="p">,</span>
         <span class="p">)</span>
-    <span class="n">gold_id</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">scheme_id</span><span class="si">}</span><span class="s1">.gold_standard&#39;</span>
+    <span class="n">gold_id</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">scheme_id</span><span class="si">}</span><span class="s2">.gold_standard&quot;</span>
     <span class="n">db</span><span class="p">[</span><span class="n">gold_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Table</span><span class="p">(</span><span class="n">audformat</span><span class="o">.</span><span class="n">filewise_index</span><span class="p">())</span>
     <span class="n">db</span><span class="p">[</span><span class="n">gold_id</span><span class="p">][</span><span class="n">scheme_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
         <span class="n">scheme_id</span><span class="o">=</span><span class="n">scheme_id</span><span class="p">,</span>
-        <span class="n">rater_id</span><span class="o">=</span><span class="s1">&#39;gold_standard&#39;</span><span class="p">,</span>
+        <span class="n">rater_id</span><span class="o">=</span><span class="s2">&quot;gold_standard&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 
 <span class="n">db</span>
@@ -441,22 +441,22 @@ Or it can be stored within the same table as a different column,
 which might be worth considering when storing the gold standard.</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">db</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Database</span><span class="p">(</span><span class="s1">&#39;mydata&#39;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">db</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Database</span><span class="p">(</span><span class="s2">&quot;mydata&quot;</span><span class="p">)</span>
 
-<span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s1">&#39;arousal&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Scheme</span><span class="p">(</span><span class="n">audformat</span><span class="o">.</span><span class="n">define</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">FLOAT</span><span class="p">)</span>
-<span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s1">&#39;arousal.confidence&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Scheme</span><span class="p">(</span>
+<span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s2">&quot;arousal&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Scheme</span><span class="p">(</span><span class="n">audformat</span><span class="o">.</span><span class="n">define</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">FLOAT</span><span class="p">)</span>
+<span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s2">&quot;arousal.confidence&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Scheme</span><span class="p">(</span>
     <span class="n">audformat</span><span class="o">.</span><span class="n">define</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">FLOAT</span><span class="p">,</span>
     <span class="n">minimum</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
     <span class="n">maximum</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
 <span class="p">)</span>
 
-<span class="n">db</span><span class="o">.</span><span class="n">raters</span><span class="p">[</span><span class="s1">&#39;gold_standard&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Rater</span><span class="p">(</span><span class="n">audformat</span><span class="o">.</span><span class="n">define</span><span class="o">.</span><span class="n">RaterType</span><span class="o">.</span><span class="n">VOTE</span><span class="p">)</span>
+<span class="n">db</span><span class="o">.</span><span class="n">raters</span><span class="p">[</span><span class="s2">&quot;gold_standard&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Rater</span><span class="p">(</span><span class="n">audformat</span><span class="o">.</span><span class="n">define</span><span class="o">.</span><span class="n">RaterType</span><span class="o">.</span><span class="n">VOTE</span><span class="p">)</span>
 
-<span class="n">db</span><span class="p">[</span><span class="s1">&#39;arousal&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Table</span><span class="p">(</span><span class="n">audformat</span><span class="o">.</span><span class="n">filewise_index</span><span class="p">())</span>
+<span class="n">db</span><span class="p">[</span><span class="s2">&quot;arousal&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Table</span><span class="p">(</span><span class="n">audformat</span><span class="o">.</span><span class="n">filewise_index</span><span class="p">())</span>
 <span class="k">for</span> <span class="n">scheme_id</span> <span class="ow">in</span> <span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">:</span>
-    <span class="n">db</span><span class="p">[</span><span class="s1">&#39;arousal&#39;</span><span class="p">][</span><span class="n">scheme_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+    <span class="n">db</span><span class="p">[</span><span class="s2">&quot;arousal&quot;</span><span class="p">][</span><span class="n">scheme_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
         <span class="n">scheme_id</span><span class="o">=</span><span class="n">scheme_id</span><span class="p">,</span>
-        <span class="n">rater_id</span><span class="o">=</span><span class="s1">&#39;gold_standard&#39;</span><span class="p">,</span>
+        <span class="n">rater_id</span><span class="o">=</span><span class="s2">&quot;gold_standard&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 
 <span class="n">db</span>
@@ -499,21 +499,21 @@ should be collected in the header
 as it can be later automatically mapped.</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">db</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Database</span><span class="p">(</span><span class="s1">&#39;mydata&#39;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">db</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Database</span><span class="p">(</span><span class="s2">&quot;mydata&quot;</span><span class="p">)</span>
 
 <span class="n">M</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">define</span><span class="o">.</span><span class="n">Gender</span><span class="o">.</span><span class="n">MALE</span>
 <span class="n">F</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">define</span><span class="o">.</span><span class="n">Gender</span><span class="o">.</span><span class="n">FEMALE</span>
 <span class="n">speaker</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">&#39;speaker1&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;gender&#39;</span><span class="p">:</span> <span class="n">F</span><span class="p">,</span> <span class="s1">&#39;age&#39;</span><span class="p">:</span> <span class="mi">31</span><span class="p">},</span>
-    <span class="s1">&#39;speaker2&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;gender&#39;</span><span class="p">:</span> <span class="n">M</span><span class="p">,</span> <span class="s1">&#39;age&#39;</span><span class="p">:</span> <span class="mi">85</span><span class="p">},</span>
+    <span class="s2">&quot;speaker1&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;gender&quot;</span><span class="p">:</span> <span class="n">F</span><span class="p">,</span> <span class="s2">&quot;age&quot;</span><span class="p">:</span> <span class="mi">31</span><span class="p">},</span>
+    <span class="s2">&quot;speaker2&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;gender&quot;</span><span class="p">:</span> <span class="n">M</span><span class="p">,</span> <span class="s2">&quot;age&quot;</span><span class="p">:</span> <span class="mi">85</span><span class="p">},</span>
 <span class="p">}</span>
 
-<span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s1">&#39;speaker&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Scheme</span><span class="p">(</span><span class="n">labels</span><span class="o">=</span><span class="n">speaker</span><span class="p">)</span>
-<span class="n">db</span><span class="p">[</span><span class="s1">&#39;files&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Table</span><span class="p">(</span>
-    <span class="n">index</span><span class="o">=</span><span class="n">audformat</span><span class="o">.</span><span class="n">filewise_index</span><span class="p">([</span><span class="s1">&#39;a.wav&#39;</span><span class="p">,</span> <span class="s1">&#39;b.wav&#39;</span><span class="p">])</span>
+<span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s2">&quot;speaker&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Scheme</span><span class="p">(</span><span class="n">labels</span><span class="o">=</span><span class="n">speaker</span><span class="p">)</span>
+<span class="n">db</span><span class="p">[</span><span class="s2">&quot;files&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Table</span><span class="p">(</span>
+    <span class="n">index</span><span class="o">=</span><span class="n">audformat</span><span class="o">.</span><span class="n">filewise_index</span><span class="p">([</span><span class="s2">&quot;a.wav&quot;</span><span class="p">,</span> <span class="s2">&quot;b.wav&quot;</span><span class="p">])</span>
 <span class="p">)</span>
-<span class="n">db</span><span class="p">[</span><span class="s1">&#39;files&#39;</span><span class="p">][</span><span class="s1">&#39;speaker&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">scheme_id</span><span class="o">=</span><span class="s1">&#39;speaker&#39;</span><span class="p">)</span>
-<span class="n">db</span><span class="p">[</span><span class="s1">&#39;files&#39;</span><span class="p">][</span><span class="s1">&#39;speaker&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">([</span><span class="s1">&#39;speaker1&#39;</span><span class="p">,</span> <span class="s1">&#39;speaker2&#39;</span><span class="p">])</span>
+<span class="n">db</span><span class="p">[</span><span class="s2">&quot;files&quot;</span><span class="p">][</span><span class="s2">&quot;speaker&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">scheme_id</span><span class="o">=</span><span class="s2">&quot;speaker&quot;</span><span class="p">)</span>
+<span class="n">db</span><span class="p">[</span><span class="s2">&quot;files&quot;</span><span class="p">][</span><span class="s2">&quot;speaker&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">([</span><span class="s2">&quot;speaker1&quot;</span><span class="p">,</span> <span class="s2">&quot;speaker2&quot;</span><span class="p">])</span>
 
 <span class="n">db</span>
 </pre></div>
@@ -541,7 +541,7 @@ tables:
 </div>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="p">[</span><span class="s1">&#39;files&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="p">[</span><span class="s2">&quot;files&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -590,7 +590,7 @@ see <a class="reference internal" href="map-scheme.html#map-scheme-labels"><span
 for an extended documentation.</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="p">[</span><span class="s1">&#39;files&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">map</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;speaker&#39;</span><span class="p">:</span> <span class="s1">&#39;gender&#39;</span><span class="p">})</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="p">[</span><span class="s2">&quot;files&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">map</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;speaker&quot;</span><span class="p">:</span> <span class="s2">&quot;gender&quot;</span><span class="p">})</span>
 </pre></div>
 </div>
 </div>
@@ -649,21 +649,21 @@ should be stored as <a class="reference external" href="https://docs.python.org/
 
 <span class="n">times</span> <span class="o">=</span> <span class="p">[</span><span class="mf">2.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">]</span>  <span class="c1"># in seconds</span>
 
-<span class="n">db</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Database</span><span class="p">(</span><span class="s1">&#39;mydata&#39;</span><span class="p">)</span>
+<span class="n">db</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Database</span><span class="p">(</span><span class="s2">&quot;mydata&quot;</span><span class="p">)</span>
 
-<span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Scheme</span><span class="p">(</span><span class="n">audformat</span><span class="o">.</span><span class="n">define</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">TIME</span><span class="p">)</span>
-<span class="n">db</span><span class="o">.</span><span class="n">raters</span><span class="p">[</span><span class="s1">&#39;rater&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Rater</span><span class="p">()</span>
+<span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Scheme</span><span class="p">(</span><span class="n">audformat</span><span class="o">.</span><span class="n">define</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">TIME</span><span class="p">)</span>
+<span class="n">db</span><span class="o">.</span><span class="n">raters</span><span class="p">[</span><span class="s2">&quot;rater&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Rater</span><span class="p">()</span>
 
-<span class="n">db</span><span class="p">[</span><span class="s1">&#39;files&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Table</span><span class="p">(</span>
-    <span class="n">index</span><span class="o">=</span><span class="n">audformat</span><span class="o">.</span><span class="n">filewise_index</span><span class="p">([</span><span class="s1">&#39;a.wav&#39;</span><span class="p">,</span> <span class="s1">&#39;b.wav&#39;</span><span class="p">])</span>
+<span class="n">db</span><span class="p">[</span><span class="s2">&quot;files&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Table</span><span class="p">(</span>
+    <span class="n">index</span><span class="o">=</span><span class="n">audformat</span><span class="o">.</span><span class="n">filewise_index</span><span class="p">([</span><span class="s2">&quot;a.wav&quot;</span><span class="p">,</span> <span class="s2">&quot;b.wav&quot;</span><span class="p">])</span>
 <span class="p">)</span>
-<span class="n">db</span><span class="p">[</span><span class="s1">&#39;files&#39;</span><span class="p">][</span><span class="s1">&#39;time&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
-    <span class="n">scheme_id</span><span class="o">=</span><span class="s1">&#39;time&#39;</span><span class="p">,</span>
-    <span class="n">rater_id</span><span class="o">=</span><span class="s1">&#39;rater&#39;</span><span class="p">,</span>
+<span class="n">db</span><span class="p">[</span><span class="s2">&quot;files&quot;</span><span class="p">][</span><span class="s2">&quot;time&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+    <span class="n">scheme_id</span><span class="o">=</span><span class="s2">&quot;time&quot;</span><span class="p">,</span>
+    <span class="n">rater_id</span><span class="o">=</span><span class="s2">&quot;rater&quot;</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="n">db</span><span class="p">[</span><span class="s1">&#39;files&#39;</span><span class="p">][</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">to_timedelta</span><span class="p">(</span><span class="n">times</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;s&#39;</span><span class="p">))</span>
+<span class="n">db</span><span class="p">[</span><span class="s2">&quot;files&quot;</span><span class="p">][</span><span class="s2">&quot;time&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">to_timedelta</span><span class="p">(</span><span class="n">times</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;s&quot;</span><span class="p">))</span>
 
-<span class="n">db</span><span class="p">[</span><span class="s1">&#39;files&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+<span class="n">db</span><span class="p">[</span><span class="s2">&quot;files&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -732,7 +732,7 @@ should be stored as <a class="reference external" href="https://docs.python.org/
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2023/11/30 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2024/01/25 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
@@ -740,7 +740,7 @@ should be stored as <a class="reference external" href="https://docs.python.org/
   <div role="contentinfo">
     <p>
         
-      &copy; 2019-2023 audEERING GmbH
+      &copy; 2019-2024 audEERING GmbH
     </p>
   </div> 
 

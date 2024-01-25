@@ -47,7 +47,7 @@ Create a filewise index:
 
 
     filewise_index = audformat.filewise_index(
-        ['f1', 'f2', 'f3'],
+        ["f1", "f2", "f3"],
     )
     filewise_index
 
@@ -56,58 +56,58 @@ Create database and add table with a filewise index:
 .. jupyter-execute::
 
     db = audformat.testing.create_db(minimal=True)
-    db['filewise'] = audformat.Table(filewise_index)
-    db['filewise']['values'] = audformat.Column()
-    db.tables['filewise']
+    db["filewise"] = audformat.Table(filewise_index)
+    db["filewise"]["values"] = audformat.Column()
+    db.tables["filewise"]
 
 Assign labels to a table:
 
 .. jupyter-execute::
 
     values_list = [1, 2, 3]
-    values_dict = {'values': values_list}
-    db['filewise'].set(values_dict)
+    values_dict = {"values": values_list}
+    db["filewise"].set(values_dict)
 
 Access labels as :class:`pandas.DataFrame`:
 
 .. jupyter-execute::
 
-    db['filewise'].get()
+    db["filewise"].get()
 
 Assign labels to a column:
 
 .. jupyter-execute::
 
-    db['filewise']['values'].set(values_list)
+    db["filewise"]["values"].set(values_list)
 
 Access labels as :class:`pandas.Series`
 
 .. jupyter-execute::
 
-    db['filewise']['values'].get()
+    db["filewise"]["values"].get()
 
 Access labels and convert index to a segmented index:
 
 .. jupyter-execute::
 
-    db['filewise']['values'].get(as_segmented=True)
+    db["filewise"]["values"].get(as_segmented=True)
 
 Access labels from a filewise table with a segmented index:
 
 .. jupyter-execute::
 
     segmented_index = audformat.segmented_index(
-        files=['f1', 'f1', 'f1', 'f2'],
-        starts=['0s', '1s', '2s', '0s'],
-        ends=['1s', '2s', '3s', None],
+        files=["f1", "f1", "f1", "f2"],
+        starts=["0s", "1s", "2s", "0s"],
+        ends=["1s", "2s", "3s", None],
     )
-    db['filewise'].get(segmented_index)
+    db["filewise"].get(segmented_index)
 
 Access labels from a filewise column with a segmented index:
 
 .. jupyter-execute::
 
-    db['filewise']['values'].get(segmented_index)
+    db["filewise"]["values"].get(segmented_index)
     
 
 Segmented
@@ -131,9 +131,9 @@ Create a segmented index:
 .. jupyter-execute::
 
     segmented_index = audformat.segmented_index(
-        files=['f1', 'f1', 'f1', 'f2', 'f3'],
-        starts=['0s', '1s', '2s', '0s', '1m'],
-        ends=['1s', '2s', '3s', None, '1h'],
+        files=["f1", "f1", "f1", "f2", "f3"],
+        starts=["0s", "1s", "2s", "0s", "1m"],
+        ends=["1s", "2s", "3s", None, "1h"],
     )
     segmented_index
 
@@ -141,47 +141,47 @@ Add table with a segmented index:
 
 .. jupyter-execute::
 
-    db['segmented'] = audformat.Table(segmented_index)
-    db['segmented']['values'] = audformat.Column()
-    db.tables['segmented']
+    db["segmented"] = audformat.Table(segmented_index)
+    db["segmented"]["values"] = audformat.Column()
+    db.tables["segmented"]
 
 Assign labels to the whole table:
 
 .. jupyter-execute::
 
     values_list = [1, 2, 3, 4, 5]
-    values_dict = {'values': values_list}
-    db['segmented'].set(values_dict)
+    values_dict = {"values": values_list}
+    db["segmented"].set(values_dict)
 
 Access all labels as :class:`pandas.DataFrame`:
 
 .. jupyter-execute::
 
-    db['segmented'].get()
+    db["segmented"].get()
 
 Assign labels to a column:
 
 .. jupyter-execute::
 
-    db['segmented']['values'].set(values_list)
+    db["segmented"]["values"].set(values_list)
 
 Access labels from a column as :class:`pandas.Series`:
 
 .. jupyter-execute::
 
-    db['segmented']['values'].get()
+    db["segmented"]["values"].get()
 
 Access labels from a segmented table with a filewise index:
 
 .. jupyter-execute::
 
     filewise_index = audformat.filewise_index(
-        ['f1', 'f2'],
+        ["f1", "f2"],
     )
-    db['segmented'].get(filewise_index)
+    db["segmented"].get(filewise_index)
 
 Access labels from a segmented column with a filewise index:
 
 .. jupyter-execute::
 
-    db['segmented']['values'].get(filewise_index)
+    db["segmented"]["values"].get(filewise_index)

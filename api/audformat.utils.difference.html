@@ -72,7 +72,7 @@
             
             
               <div class="version">
-                v1.1.0
+                v1.1.1
               </div>
             
           
@@ -209,12 +209,12 @@ see <a class="reference internal" href="audformat.utils.is_index_alike.html#audf
 Integer dtypes don’t have to match,
 but the result will always be of dtype <code class="docutils literal notranslate"><span class="pre">Int64</span></code>.
 When the symmetric difference of a
-<a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Index.html#pandas.Index" title="(in pandas v2.1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.Index</span></code></a>
+<a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Index.html#pandas.Index" title="(in pandas v2.2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.Index</span></code></a>
 with a single-level
-<a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.MultiIndex.html#pandas.MultiIndex" title="(in pandas v2.1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.MultiIndex</span></code></a>,
+<a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.MultiIndex.html#pandas.MultiIndex" title="(in pandas v2.2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.MultiIndex</span></code></a>,
 is calculated,
 the result is a
-<a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Index.html#pandas.Index" title="(in pandas v2.1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.Index</span></code></a>.</p>
+<a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Index.html#pandas.Index" title="(in pandas v2.2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.Index</span></code></a>.</p>
 <p>The order of the resulting index
 depends on the order of <code class="docutils literal notranslate"><span class="pre">objs</span></code>.
 If you require <a class="reference internal" href="#audformat.utils.difference" title="audformat.utils.difference"><code class="xref py py-func docutils literal notranslate"><span class="pre">audformat.utils.difference()</span></code></a>
@@ -222,10 +222,10 @@ to be <a class="reference external" href="https://en.wikipedia.org/wiki/Commutat
 you have to sort its output.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>objs</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a>[<a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Index.html#pandas.Index" title="(in pandas v2.1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Index</span></code></a>]) – index objects</p>
+<dd class="field-odd"><p><strong>objs</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a>[<a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Index.html#pandas.Index" title="(in pandas v2.2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Index</span></code></a>]) – index objects</p>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Index.html#pandas.Index" title="(in pandas v2.1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Index</span></code></a></p>
+<dd class="field-even"><p><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Index.html#pandas.Index" title="(in pandas v2.2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Index</span></code></a></p>
 </dd>
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>difference of index objects</p>
@@ -237,33 +237,33 @@ you have to sort its output.</p>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">difference</span><span class="p">(</span>
 <span class="gp">... </span>    <span class="p">[</span>
-<span class="gp">... </span>        <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;idx&#39;</span><span class="p">),</span>
+<span class="gp">... </span>        <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;idx&quot;</span><span class="p">),</span>
 <span class="gp">... </span>    <span class="p">]</span>
 <span class="gp">... </span><span class="p">)</span>
 <span class="go">Index([1, 2, 3], dtype=&#39;Int64&#39;, name=&#39;idx&#39;)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">difference</span><span class="p">(</span>
 <span class="gp">... </span>    <span class="p">[</span>
-<span class="gp">... </span>        <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;idx&#39;</span><span class="p">),</span>
-<span class="gp">... </span>        <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">NaN</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;Int64&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;idx&#39;</span><span class="p">),</span>
+<span class="gp">... </span>        <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;idx&quot;</span><span class="p">),</span>
+<span class="gp">... </span>        <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">NaN</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;Int64&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;idx&quot;</span><span class="p">),</span>
 <span class="gp">... </span>    <span class="p">]</span>
 <span class="gp">... </span><span class="p">)</span>
 <span class="go">Index([0, &lt;NA&gt;], dtype=&#39;Int64&#39;, name=&#39;idx&#39;)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">difference</span><span class="p">(</span>
 <span class="gp">... </span>    <span class="p">[</span>
-<span class="gp">... </span>        <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;idx&#39;</span><span class="p">),</span>
-<span class="gp">... </span>        <span class="n">pd</span><span class="o">.</span><span class="n">MultiIndex</span><span class="o">.</span><span class="n">from_arrays</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]],</span> <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;idx&#39;</span><span class="p">]),</span>
+<span class="gp">... </span>        <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;idx&quot;</span><span class="p">),</span>
+<span class="gp">... </span>        <span class="n">pd</span><span class="o">.</span><span class="n">MultiIndex</span><span class="o">.</span><span class="n">from_arrays</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]],</span> <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;idx&quot;</span><span class="p">]),</span>
 <span class="gp">... </span>    <span class="p">]</span>
 <span class="gp">... </span><span class="p">)</span>
 <span class="go">Index([0, 2], dtype=&#39;Int64&#39;, name=&#39;idx&#39;)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">difference</span><span class="p">(</span>
 <span class="gp">... </span>    <span class="p">[</span>
 <span class="gp">... </span>        <span class="n">pd</span><span class="o">.</span><span class="n">MultiIndex</span><span class="o">.</span><span class="n">from_arrays</span><span class="p">(</span>
-<span class="gp">... </span>            <span class="p">[[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]],</span>
-<span class="gp">... </span>            <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;idx1&#39;</span><span class="p">,</span> <span class="s1">&#39;idx2&#39;</span><span class="p">],</span>
+<span class="gp">... </span>            <span class="p">[[</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="s2">&quot;c&quot;</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]],</span>
+<span class="gp">... </span>            <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;idx1&quot;</span><span class="p">,</span> <span class="s2">&quot;idx2&quot;</span><span class="p">],</span>
 <span class="gp">... </span>        <span class="p">),</span>
 <span class="gp">... </span>        <span class="n">pd</span><span class="o">.</span><span class="n">MultiIndex</span><span class="o">.</span><span class="n">from_arrays</span><span class="p">(</span>
-<span class="gp">... </span>            <span class="p">[[</span><span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">]],</span>
-<span class="gp">... </span>            <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;idx1&#39;</span><span class="p">,</span> <span class="s1">&#39;idx2&#39;</span><span class="p">],</span>
+<span class="gp">... </span>            <span class="p">[[</span><span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="s2">&quot;c&quot;</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">]],</span>
+<span class="gp">... </span>            <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;idx1&quot;</span><span class="p">,</span> <span class="s2">&quot;idx2&quot;</span><span class="p">],</span>
 <span class="gp">... </span>        <span class="p">),</span>
 <span class="gp">... </span>    <span class="p">]</span>
 <span class="gp">... </span><span class="p">)</span>
@@ -273,23 +273,23 @@ you have to sort its output.</p>
 <span class="go">           names=[&#39;idx1&#39;, &#39;idx2&#39;])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">difference</span><span class="p">(</span>
 <span class="gp">... </span>    <span class="p">[</span>
-<span class="gp">... </span>        <span class="n">filewise_index</span><span class="p">([</span><span class="s1">&#39;f1&#39;</span><span class="p">,</span> <span class="s1">&#39;f2&#39;</span><span class="p">,</span> <span class="s1">&#39;f3&#39;</span><span class="p">]),</span>
-<span class="gp">... </span>        <span class="n">filewise_index</span><span class="p">([</span><span class="s1">&#39;f2&#39;</span><span class="p">,</span> <span class="s1">&#39;f3&#39;</span><span class="p">,</span> <span class="s1">&#39;f4&#39;</span><span class="p">]),</span>
+<span class="gp">... </span>        <span class="n">filewise_index</span><span class="p">([</span><span class="s2">&quot;f1&quot;</span><span class="p">,</span> <span class="s2">&quot;f2&quot;</span><span class="p">,</span> <span class="s2">&quot;f3&quot;</span><span class="p">]),</span>
+<span class="gp">... </span>        <span class="n">filewise_index</span><span class="p">([</span><span class="s2">&quot;f2&quot;</span><span class="p">,</span> <span class="s2">&quot;f3&quot;</span><span class="p">,</span> <span class="s2">&quot;f4&quot;</span><span class="p">]),</span>
 <span class="gp">... </span>    <span class="p">]</span>
 <span class="gp">... </span><span class="p">)</span>
 <span class="go">Index([&#39;f1&#39;, &#39;f4&#39;], dtype=&#39;string&#39;, name=&#39;file&#39;)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">difference</span><span class="p">(</span>
 <span class="gp">... </span>    <span class="p">[</span>
-<span class="gp">... </span>        <span class="n">segmented_index</span><span class="p">([</span><span class="s1">&#39;f1&#39;</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">]),</span>
-<span class="gp">... </span>        <span class="n">segmented_index</span><span class="p">([</span><span class="s1">&#39;f1&#39;</span><span class="p">,</span> <span class="s1">&#39;f2&#39;</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]),</span>
+<span class="gp">... </span>        <span class="n">segmented_index</span><span class="p">([</span><span class="s2">&quot;f1&quot;</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">]),</span>
+<span class="gp">... </span>        <span class="n">segmented_index</span><span class="p">([</span><span class="s2">&quot;f1&quot;</span><span class="p">,</span> <span class="s2">&quot;f2&quot;</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]),</span>
 <span class="gp">... </span>    <span class="p">]</span>
 <span class="gp">... </span><span class="p">)</span>
 <span class="go">MultiIndex([(&#39;f2&#39;, &#39;0 days 00:00:01&#39;, &#39;0 days 00:00:02&#39;)],</span>
 <span class="go">           names=[&#39;file&#39;, &#39;start&#39;, &#39;end&#39;])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">difference</span><span class="p">(</span>
 <span class="gp">... </span>    <span class="p">[</span>
-<span class="gp">... </span>        <span class="n">filewise_index</span><span class="p">([</span><span class="s1">&#39;f1&#39;</span><span class="p">,</span> <span class="s1">&#39;f2&#39;</span><span class="p">]),</span>
-<span class="gp">... </span>        <span class="n">segmented_index</span><span class="p">([</span><span class="s1">&#39;f1&#39;</span><span class="p">,</span> <span class="s1">&#39;f2&#39;</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">NaT</span><span class="p">,</span> <span class="mi">1</span><span class="p">]),</span>
+<span class="gp">... </span>        <span class="n">filewise_index</span><span class="p">([</span><span class="s2">&quot;f1&quot;</span><span class="p">,</span> <span class="s2">&quot;f2&quot;</span><span class="p">]),</span>
+<span class="gp">... </span>        <span class="n">segmented_index</span><span class="p">([</span><span class="s2">&quot;f1&quot;</span><span class="p">,</span> <span class="s2">&quot;f2&quot;</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">NaT</span><span class="p">,</span> <span class="mi">1</span><span class="p">]),</span>
 <span class="gp">... </span>    <span class="p">]</span>
 <span class="gp">... </span><span class="p">)</span>
 <span class="go">MultiIndex([(&#39;f2&#39;, &#39;0 days&#39;,               NaT),</span>
@@ -324,7 +324,7 @@ you have to sort its output.</p>
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2023/11/30 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2024/01/25 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
@@ -332,7 +332,7 @@ you have to sort its output.</p>
   <div role="contentinfo">
     <p>
         
-      &copy; 2019-2023 audEERING GmbH
+      &copy; 2019-2024 audEERING GmbH
     </p>
   </div> 
 

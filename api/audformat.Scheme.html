@@ -72,7 +72,7 @@
             
             
               <div class="version">
-                v1.1.0
+                v1.1.1
               </div>
             
           
@@ -269,20 +269,18 @@ If a table ID is provided,
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Scheme</span><span class="p">()</span>
 <span class="go">{dtype: str}</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">Scheme</span><span class="p">(</span><span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Scheme</span><span class="p">(</span><span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="s2">&quot;c&quot;</span><span class="p">])</span>
 <span class="go">dtype: str</span>
 <span class="go">labels: [a, b, c]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">Scheme</span><span class="p">(</span><span class="n">define</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">INTEGER</span><span class="p">)</span>
 <span class="go">{dtype: int}</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">Scheme</span><span class="p">(</span><span class="s1">&#39;float&#39;</span><span class="p">,</span> <span class="n">minimum</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">maximum</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Scheme</span><span class="p">(</span><span class="s2">&quot;float&quot;</span><span class="p">,</span> <span class="n">minimum</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">maximum</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 <span class="go">{dtype: float, minimum: 0, maximum: 1}</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># Use index of misc table as labels</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">audformat</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Database</span><span class="p">(</span><span class="s1">&#39;mydb&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="p">[</span><span class="s1">&#39;speaker&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">MiscTable</span><span class="p">(</span>
-<span class="gp">... </span>    <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">([</span><span class="s1">&#39;spk1&#39;</span><span class="p">,</span> <span class="s1">&#39;spk2&#39;</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;speaker&#39;</span><span class="p">)</span>
-<span class="gp">... </span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">Scheme</span><span class="p">(</span><span class="s1">&#39;str&#39;</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="s1">&#39;speaker&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Database</span><span class="p">(</span><span class="s2">&quot;mydb&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="p">[</span><span class="s2">&quot;speaker&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">MiscTable</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">([</span><span class="s2">&quot;spk1&quot;</span><span class="p">,</span> <span class="s2">&quot;spk2&quot;</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;speaker&quot;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Scheme</span><span class="p">(</span><span class="s2">&quot;str&quot;</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="s2">&quot;speaker&quot;</span><span class="p">)</span>
 <span class="go">{dtype: str, labels: speaker}</span>
 </pre></div>
 </div>
@@ -505,8 +503,8 @@ Removed labels are set to <code class="docutils literal notranslate"><span class
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">speaker</span> <span class="o">=</span> <span class="n">Scheme</span><span class="p">(</span>
 <span class="gp">... </span>    <span class="n">labels</span><span class="o">=</span><span class="p">{</span>
-<span class="gp">... </span>        <span class="mi">0</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;gender&#39;</span><span class="p">:</span> <span class="s1">&#39;female&#39;</span><span class="p">},</span>
-<span class="gp">... </span>        <span class="mi">1</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;gender&#39;</span><span class="p">:</span> <span class="s1">&#39;male&#39;</span><span class="p">},</span>
+<span class="gp">... </span>        <span class="mi">0</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;gender&quot;</span><span class="p">:</span> <span class="s2">&quot;female&quot;</span><span class="p">},</span>
+<span class="gp">... </span>        <span class="mi">1</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;gender&quot;</span><span class="p">:</span> <span class="s2">&quot;male&quot;</span><span class="p">},</span>
 <span class="gp">... </span>    <span class="p">}</span>
 <span class="gp">... </span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">speaker</span>
@@ -516,8 +514,8 @@ Removed labels are set to <code class="docutils literal notranslate"><span class
 <span class="go">  1: {gender: male}</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">speaker</span><span class="o">.</span><span class="n">replace_labels</span><span class="p">(</span>
 <span class="gp">... </span>    <span class="p">{</span>
-<span class="gp">... </span>        <span class="mi">1</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;gender&#39;</span><span class="p">:</span> <span class="s1">&#39;male&#39;</span><span class="p">,</span> <span class="s1">&#39;age&#39;</span><span class="p">:</span> <span class="mi">33</span><span class="p">},</span>
-<span class="gp">... </span>        <span class="mi">2</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;gender&#39;</span><span class="p">:</span> <span class="s1">&#39;female&#39;</span><span class="p">,</span> <span class="s1">&#39;age&#39;</span><span class="p">:</span> <span class="mi">44</span><span class="p">},</span>
+<span class="gp">... </span>        <span class="mi">1</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;gender&quot;</span><span class="p">:</span> <span class="s2">&quot;male&quot;</span><span class="p">,</span> <span class="s2">&quot;age&quot;</span><span class="p">:</span> <span class="mi">33</span><span class="p">},</span>
+<span class="gp">... </span>        <span class="mi">2</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;gender&quot;</span><span class="p">:</span> <span class="s2">&quot;female&quot;</span><span class="p">,</span> <span class="s2">&quot;age&quot;</span><span class="p">:</span> <span class="mi">44</span><span class="p">},</span>
 <span class="gp">... </span>    <span class="p">}</span>
 <span class="gp">... </span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">speaker</span>
@@ -552,8 +550,8 @@ Removed labels are set to <code class="docutils literal notranslate"><span class
 <dl class="py method">
 <dt class="sig sig-object py" id="audformat.Scheme.to_pandas_dtype">
 <span class="sig-prename descclassname"><span class="pre">Scheme.</span></span><span class="sig-name descname"><span class="pre">to_pandas_dtype</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/audformat/core/scheme.html#Scheme.to_pandas_dtype"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.Scheme.to_pandas_dtype" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convert data type to <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/index.html#module-pandas" title="(in pandas v2.1.3)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pandas</span></code></a> data type.</p>
-<p>If <code class="docutils literal notranslate"><span class="pre">labels</span></code> is not <code class="docutils literal notranslate"><span class="pre">None</span></code>, <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.CategoricalDtype.html#pandas.CategoricalDtype" title="(in pandas v2.1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.CategoricalDtype</span></code></a> is
+<dd><p>Convert data type to <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/index.html#module-pandas" title="(in pandas v2.2.0)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pandas</span></code></a> data type.</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">labels</span></code> is not <code class="docutils literal notranslate"><span class="pre">None</span></code>, <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.CategoricalDtype.html#pandas.CategoricalDtype" title="(in pandas v2.2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.CategoricalDtype</span></code></a> is
 returned. Otherwise the following rules are applied:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">str</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">str</span></code></p></li>
@@ -564,10 +562,10 @@ returned. Otherwise the following rules are applied:</p>
 </ul>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.12)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.CategoricalDtype.html#pandas.CategoricalDtype" title="(in pandas v2.1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CategoricalDtype</span></code></a>]</p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.12)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.CategoricalDtype.html#pandas.CategoricalDtype" title="(in pandas v2.2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CategoricalDtype</span></code></a>]</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/index.html#module-pandas" title="(in pandas v2.1.3)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pandas</span></code></a> data type</p>
+<dd class="field-even"><p><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/index.html#module-pandas" title="(in pandas v2.2.0)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pandas</span></code></a> data type</p>
 </dd>
 </dl>
 </dd></dl>
@@ -618,7 +616,7 @@ values are stored.</p>
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2023/11/30 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2024/01/25 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
@@ -626,7 +624,7 @@ values are stored.</p>
   <div role="contentinfo">
     <p>
         
-      &copy; 2019-2023 audEERING GmbH
+      &copy; 2019-2024 audEERING GmbH
     </p>
   </div> 
 

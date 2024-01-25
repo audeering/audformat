@@ -70,7 +70,7 @@
             
             
               <div class="version">
-                v1.1.0
+                v1.1.1
               </div>
             
           
@@ -196,27 +196,28 @@
 <span class="sd">    Examples:</span>
 <span class="sd">        &gt;&gt;&gt; Media(</span>
 <span class="sd">        ...     type=define.MediaType.AUDIO,</span>
-<span class="sd">        ...     format=&#39;wav&#39;,</span>
+<span class="sd">        ...     format=&quot;wav&quot;,</span>
 <span class="sd">        ...     sampling_rate=16000,</span>
 <span class="sd">        ...     channels=2,</span>
 <span class="sd">        ... )</span>
 <span class="sd">        {type: audio, format: wav, channels: 2, sampling_rate: 16000}</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span>
-            <span class="nb">type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">define</span><span class="o">.</span><span class="n">MediaType</span><span class="o">.</span><span class="n">OTHER</span><span class="p">,</span>
-            <span class="o">*</span><span class="p">,</span>
-            <span class="nb">format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="n">sampling_rate</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="n">channels</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="n">bit_depth</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="n">video_fps</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="n">video_resolution</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="n">video_channels</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="n">video_depth</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="n">meta</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="nb">type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">define</span><span class="o">.</span><span class="n">MediaType</span><span class="o">.</span><span class="n">OTHER</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="nb">format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">sampling_rate</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">channels</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">bit_depth</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">video_fps</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">video_resolution</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">video_channels</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">video_depth</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">meta</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="n">description</span><span class="p">,</span> <span class="n">meta</span><span class="o">=</span><span class="n">meta</span><span class="p">)</span>
         <span class="n">define</span><span class="o">.</span><span class="n">MediaType</span><span class="o">.</span><span class="n">_assert_has_attribute_value</span><span class="p">(</span><span class="nb">type</span><span class="p">)</span>
@@ -235,8 +236,9 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">video_fps</span> <span class="o">=</span> <span class="n">video_fps</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Video frames per second&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">video_resolution</span> <span class="o">=</span> <span class="kc">None</span> <span class="k">if</span> <span class="n">video_resolution</span> <span class="ow">is</span> <span class="kc">None</span> \
-            <span class="k">else</span> <span class="nb">list</span><span class="p">(</span><span class="n">video_resolution</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">video_resolution</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="kc">None</span> <span class="k">if</span> <span class="n">video_resolution</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="nb">list</span><span class="p">(</span><span class="n">video_resolution</span><span class="p">)</span>
+        <span class="p">)</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Video resolution&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">video_channels</span> <span class="o">=</span> <span class="n">video_channels</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Video channels per pixel&quot;&quot;&quot;</span>
@@ -257,7 +259,7 @@
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2023/11/30 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2024/01/25 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
@@ -265,7 +267,7 @@
   <div role="contentinfo">
     <p>
         
-      &copy; 2019-2023 audEERING GmbH
+      &copy; 2019-2024 audEERING GmbH
     </p>
   </div> 
 
