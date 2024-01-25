@@ -49,11 +49,6 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
         pip install -r tests/requirements.txt
-        # Force audeer 2.0.0
-        # until we have a new audformat version released,
-        # that does not have "audeer <2.0.0"
-        # in its dependencies
-        pip install --upgrade audeer
 
     - name: Test with pytest
       run: |
