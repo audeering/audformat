@@ -58,7 +58,7 @@ def test_attachment(tmpdir):
 
     # Save database, path is allowed to be a symlink
     audeer.rmdir(db_path)
-    audeer.mkdir(audeer.path(db_path, folder_path))
+    audeer.mkdir(db_path, folder_path)
     os.symlink(
         audeer.path(db_path, folder_path),
         audeer.path(db_path, file_path),
@@ -67,7 +67,7 @@ def test_attachment(tmpdir):
 
     # Replace symlink by file
     os.remove(os.path.join(db_path, file_path))
-    audeer.touch(audeer.path(db_path, file_path))
+    audeer.touch(db_path, file_path)
     db.save(db_path)
 
     # File exist now, folder is empty
@@ -89,7 +89,7 @@ def test_attachment(tmpdir):
     # Load database
     #
     # path must not exist when loading the database
-    audeer.rmdir(audeer.path(db_path, os.path.dirname(file_path)))
+    audeer.rmdir(db_path, os.path.dirname(file_path))
     assert not os.path.exists(audeer.path(db_path, file_path))
     audformat.Database.load(db_path, load_data=True)
     audformat.Database.load(db_path, load_data=False)
@@ -172,9 +172,9 @@ def test_attachment_files_errors(tmpdir):
         attachment.files
 
     # Attached path does not exists
-    audeer.mkdir(audeer.path(db_path, attachment_path))
+    audeer.mkdir(db_path, attachment_path)
     db.save(db_path)
-    audeer.rmdir(audeer.path(db_path, attachment_path))
+    audeer.rmdir(db_path, attachment_path)
     error_msg = (
         f"The provided path '{attachment_path}' "
         "of attachment 'attachment' "
@@ -185,7 +185,7 @@ def test_attachment_files_errors(tmpdir):
 
     # Attached path is a symlink
     folder_link = "extra-link"
-    audeer.mkdir(audeer.path(db_path, folder_link))
+    audeer.mkdir(db_path, folder_link)
     os.symlink(
         audeer.path(db_path, folder_link),
         audeer.path(db_path, attachment_path),
@@ -200,9 +200,9 @@ def test_attachment_files_errors(tmpdir):
 
     # Some files are inside a symlink folder
     os.remove(os.path.join(db_path, attachment_path))
-    audeer.mkdir(audeer.path(db_path, attachment_path))
-    audeer.touch(audeer.path(db_path, attachment_path, "file1.txt"))
-    audeer.touch(audeer.path(db_path, folder_link, "file2.txt"))
+    audeer.mkdir(db_path, attachment_path)
+    audeer.touch(db_path, attachment_path, "file1.txt")
+    audeer.touch(db_path, folder_link, "file2.txt")
     os.symlink(
         audeer.path(db_path, folder_link),
         audeer.path(db_path, attachment_path, "link"),
@@ -217,8 +217,8 @@ def test_attachment_files_errors(tmpdir):
 
     # Some files of the attachments are symlinks
     os.remove(os.path.join(db_path, attachment_path, "link"))
-    audeer.touch(audeer.path(db_path, attachment_path, "file1.txt"))
-    audeer.touch(audeer.path(db_path, folder_link, "file2.txt"))
+    audeer.touch(db_path, attachment_path, "file1.txt")
+    audeer.touch(db_path, folder_link, "file2.txt")
     os.symlink(
         audeer.path(db_path, folder_link, "file2.txt"),
         audeer.path(db_path, attachment_path, "file2.txt"),

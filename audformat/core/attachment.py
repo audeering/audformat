@@ -144,7 +144,7 @@ class Attachment(HeaderBase):
         root: str,
     ):
         r"""Check if path exists and is not a symlink."""
-        if not os.path.exists(audeer.path(root, self.path)):
+        if not os.path.exists(audeer.path(root, self.path, follow_symlink=True)):
             raise FileNotFoundError(
                 f"The provided path '{self.path}' "
                 f"of attachment '{self._id}' "

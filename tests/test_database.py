@@ -637,6 +637,15 @@ def test_save_and_load(tmpdir, db, storage_format, load_data, num_workers):
             db[table_id].get()
 
 
+def test_save_symlink(tmpdir):
+    folder = audeer.mkdir(tmpdir, "folder")
+    link = audeer.path(tmpdir, "link")
+    os.symlink(folder, link)
+    db = audformat.testing.create_db()
+    db.save(link)
+    assert db.root == folder
+
+
 def test_segments():
     db = audformat.testing.create_db()
     df = pytest.DB["segments"].get()
@@ -659,7 +668,7 @@ def test_string():
 def test_update(tmpdir):
     # original database
 
-    db_root = audeer.mkdir(audeer.path(tmpdir, "db"))
+    db_root = audeer.mkdir(tmpdir, "db")
     db = audformat.testing.create_db(minimal=True)
     db.author = "author"
     db.organization = "organization"
@@ -731,7 +740,7 @@ def test_update(tmpdir):
 
     # database with same table, but extra column
 
-    other1_root = audeer.mkdir(audeer.path(tmpdir, "other1"))
+    other1_root = audeer.mkdir(tmpdir, "other1")
     other1 = audformat.testing.create_db(minimal=True)
     other1.raters["rater"] = audformat.Rater()
     other1.raters["rater2"] = audformat.Rater()
@@ -768,7 +777,7 @@ def test_update(tmpdir):
 
     # database with new table
 
-    other2_root = audeer.mkdir(audeer.path(tmpdir, "other2"))
+    other2_root = audeer.mkdir(tmpdir, "other2")
     other2 = audformat.testing.create_db(minimal=True)
     other2.raters["rater2"] = audformat.Rater()
     other2.attachments["attachment2"] = audformat.Attachment("file2.txt")
