@@ -1,5 +1,6 @@
 audb
 audeer >=2.0.0
+audformat >1.1.0  # to solve conflict with audeer
 audiofile >=1.1.0
 pandas >=2.0.0
 pytest
