@@ -70,7 +70,7 @@
             
             
               <div class="version">
-                v1.1.1
+                v1.1.2
               </div>
             
           
@@ -1671,6 +1671,12 @@
                 <span class="n">media</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">media_d</span><span class="p">)</span>
                 <span class="n">db</span><span class="o">.</span><span class="n">media</span><span class="p">[</span><span class="n">media_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">media</span>
 
+        <span class="k">if</span> <span class="s2">&quot;splits&quot;</span> <span class="ow">in</span> <span class="n">header</span> <span class="ow">and</span> <span class="n">header</span><span class="p">[</span><span class="s2">&quot;splits&quot;</span><span class="p">]:</span>
+            <span class="k">for</span> <span class="n">split_id</span><span class="p">,</span> <span class="n">split_d</span> <span class="ow">in</span> <span class="n">header</span><span class="p">[</span><span class="s2">&quot;splits&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">split</span> <span class="o">=</span> <span class="n">Split</span><span class="p">()</span>
+                <span class="n">split</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">split_d</span><span class="p">)</span>
+                <span class="n">db</span><span class="o">.</span><span class="n">splits</span><span class="p">[</span><span class="n">split_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">split</span>
+
         <span class="k">if</span> <span class="s2">&quot;misc_tables&quot;</span> <span class="ow">in</span> <span class="n">header</span> <span class="ow">and</span> <span class="n">header</span><span class="p">[</span><span class="s2">&quot;misc_tables&quot;</span><span class="p">]:</span>
             <span class="k">for</span> <span class="n">table_id</span><span class="p">,</span> <span class="n">table_d</span> <span class="ow">in</span> <span class="n">header</span><span class="p">[</span><span class="s2">&quot;misc_tables&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                 <span class="n">table</span> <span class="o">=</span> <span class="n">MiscTable</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
@@ -1720,12 +1726,6 @@
                 <span class="n">value_type</span><span class="o">=</span><span class="n">Scheme</span><span class="p">,</span>
                 <span class="n">set_callback</span><span class="o">=</span><span class="n">db</span><span class="o">.</span><span class="n">_set_scheme</span><span class="p">,</span>
             <span class="p">)</span>
-
-        <span class="k">if</span> <span class="s2">&quot;splits&quot;</span> <span class="ow">in</span> <span class="n">header</span> <span class="ow">and</span> <span class="n">header</span><span class="p">[</span><span class="s2">&quot;splits&quot;</span><span class="p">]:</span>
-            <span class="k">for</span> <span class="n">split_id</span><span class="p">,</span> <span class="n">split_d</span> <span class="ow">in</span> <span class="n">header</span><span class="p">[</span><span class="s2">&quot;splits&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                <span class="n">split</span> <span class="o">=</span> <span class="n">Split</span><span class="p">()</span>
-                <span class="n">split</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">split_d</span><span class="p">)</span>
-                <span class="n">db</span><span class="o">.</span><span class="n">splits</span><span class="p">[</span><span class="n">split_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">split</span>
 
         <span class="k">if</span> <span class="s2">&quot;tables&quot;</span> <span class="ow">in</span> <span class="n">header</span> <span class="ow">and</span> <span class="n">header</span><span class="p">[</span><span class="s2">&quot;tables&quot;</span><span class="p">]:</span>
             <span class="k">for</span> <span class="n">table_id</span><span class="p">,</span> <span class="n">table_d</span> <span class="ow">in</span> <span class="n">header</span><span class="p">[</span><span class="s2">&quot;tables&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
@@ -1807,7 +1807,7 @@
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2024/01/25 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2024/02/02 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
