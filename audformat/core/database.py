@@ -1505,6 +1505,12 @@ class Database(HeaderBase):
                 media.from_dict(media_d)
                 db.media[media_id] = media
 
+        if "splits" in header and header["splits"]:
+            for split_id, split_d in header["splits"].items():
+                split = Split()
+                split.from_dict(split_d)
+                db.splits[split_id] = split
+
         if "misc_tables" in header and header["misc_tables"]:
             for table_id, table_d in header["misc_tables"].items():
                 table = MiscTable(None)
@@ -1554,12 +1560,6 @@ class Database(HeaderBase):
                 value_type=Scheme,
                 set_callback=db._set_scheme,
             )
-
-        if "splits" in header and header["splits"]:
-            for split_id, split_d in header["splits"].items():
-                split = Split()
-                split.from_dict(split_d)
-                db.splits[split_id] = split
 
         if "tables" in header and header["tables"]:
             for table_id, table_d in header["tables"].items():

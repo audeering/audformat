@@ -1260,6 +1260,29 @@ def test_pick_index(table, index, expected):
     pd.testing.assert_index_equal(table.index, expected)
 
 
+def test_split(tmpdir):
+    """Misc table with assigned split.
+
+    This tests saving and loading a database
+    with a misc table
+    that has a split assigned.
+
+    """
+    path = audeer.mkdir(tmpdir, "db")
+    # Save database
+    db = audformat.Database("db")
+    db.schemes["text"] = audformat.Scheme("str")
+    db.splits["test"] = audformat.Split("test")
+    index = pd.Index([0, 1, 2], name="index")
+    db["misc"] = audformat.MiscTable(index, split_id="test")
+    db["misc"]["text"] = audformat.Column(scheme_id="text")
+    db["misc"]["text"].set(["abc", "def", "ghi"])
+    db.save(path)
+    # Load database
+    db2 = audformat.Database.load(path)
+    assert db == db2
+
+
 @pytest.mark.parametrize(
     "table, overwrite, others",
     [
