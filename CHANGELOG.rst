@@ -7,6 +7,15 @@ The format is based on `Keep a Changelog`_,
 and this project adheres to `Semantic Versioning`_.
 
 
+Version 1.1.2 (2024-02-02)
+--------------------------
+
+* Fixed: ``audformat.Database.load()``
+  when loading databases
+  with a misc table
+  that has an assigned split
+
+
 Version 1.1.1 (2024-01-25)
 --------------------------
 
