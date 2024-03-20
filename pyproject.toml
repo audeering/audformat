@@ -36,6 +36,7 @@ dependencies = [
     'iso-639',
     'iso3166',
     'oyaml',
+    'pyarrow',
     'pyyaml >=5.4.1',
     'pandas >=1.4.1',
 ]
