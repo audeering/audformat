@@ -6,6 +6,7 @@ import typing
 
 import oyaml as yaml
 import pandas as pd
+import pyarrow as pa
 
 from audformat import define
 from audformat.core.errors import BadKeyError
@@ -375,3 +376,22 @@ def to_pandas_dtype(dtype: str) -> str:
         return "string"
     elif dtype == define.DataType.TIME:
         return "timedelta64[ns]"
+
+
+def to_pyarrow_dtype(dtype: str) -> typing.Optional[str]:
+    r"""Convert audformat to pyarrow dtype."""
+    if dtype == define.DataType.BOOL:
+        return pa.bool_()
+    elif dtype == define.DataType.DATE:
+        return pa.timestamp("ns")
+    elif dtype == define.DataType.FLOAT:
+        return pa.float64()
+    elif dtype == define.DataType.INTEGER:
+        return pa.int64()
+    elif dtype == define.DataType.OBJECT:
+        # TODO: check how it works with e.g. numpy arrays as objects
+        return None
+    elif dtype == define.DataType.STRING:
+        return pa.string()
+    elif dtype == define.DataType.TIME:
+        return pa.string()
