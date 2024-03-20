@@ -804,7 +804,6 @@ class Base(HeaderBase):
 
     def _load_csv(self, path: str):
         schemes = self.db.schemes
-        print(f"{schemes=}")
         timedelta_columns = []
         boolean_columns = []
         object_columns = []
@@ -834,8 +833,6 @@ class Base(HeaderBase):
                     dtypes.append((name, _dtype))
                     if dtype == define.DataType.TIME:
                         timedelta_columns.append(name)
-                    elif dtype == define.DataType.BOOL:
-                        boolean_columns.append(name)
                     elif dtype == define.DataType.OBJECT:
                         object_columns.append(name)
                     elif dtype == define.DataType.INTEGER:
@@ -862,8 +859,6 @@ class Base(HeaderBase):
                         timedelta_columns.append(column_id)
                     elif scheme.dtype == define.DataType.BOOL:
                         boolean_columns.append(column_id)
-                    elif scheme.dtype == define.DataType.OBJECT:
-                        object_columns.append(column_id)
                     elif scheme.dtype == define.DataType.INTEGER:
                         integer_columns.append(column_id)
                 else:
@@ -912,12 +907,13 @@ class Base(HeaderBase):
         # Adjust dtypes, that cannot be handled by pyarrow
         for column in timedelta_columns:
             if len(df) == 0:
+                # For an empty dataframe, map() will not set the correct dtype
                 df[column] = df[column].astype("timedelta64[ns]")
             else:
                 df[column] = df[column].map(pd.to_timedelta)
         for column in boolean_columns:
             df[column] = df[column].map(lambda x: pd.NA if x is None else x)
-            df[column] = df[column].astype("boolean")
+            df[column] = df[column].astype(pd.BooleanDtype())
         for column in object_columns:
             df[column] = df[column].astype("object")
             df[column] = df[column].replace(pd.NA, None)
@@ -934,24 +930,22 @@ class Base(HeaderBase):
             df[column] = df[column].astype(dtype)
 
         # Set index
+        #
+        # When assigning more than one column,
+        # a MultiIndex is assigned.
+        # As the MultiIndex does not preserve dtypes,
+        # we need to set them manually.
+        #
+        if len(index_columns) > 0:
+            index_dtypes = {column: df[column].dtype for column in index_columns}
         df.set_index(index_columns, inplace=True)
-
-        # # For an empty CSV file
-        # # converters will not set the correct dtype
-        # # and we need to correct it manually
-        # if len(df) == 0:
-        #     # fix index
-        #     converter_dtypes = {
-        #         level: dtype
-        #         for level, dtype in dtypes.items()
-        #         if level in converters and level in levels
-        #     }
-        #     df.index = utils.set_index_dtypes(df.index, converter_dtypes)
-        #     # fix columns
-        #     for column_id in columns:
-        #         if column_id in converters:
-        #             dtype = dtypes[column_id]
-        #             df[column_id] = df[column_id].astype(dtype)
+        if len(index_columns) > 1:
+            df.index = utils.set_index_dtypes(df.index, index_dtypes)
+        elif len(index_columns) > 0:
+            # Ensure pd.BooleanDtype is used for pd.Index
+            print(f"{index_dtypes[index_columns[0]]=}")
+            if index_dtypes[index_columns[0]] == bool:
+                df.index = df.index.astype(pd.BooleanDtype())
 
         self._df = df
 

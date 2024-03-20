@@ -30,9 +30,6 @@ def test_with_data(tmpdir):
     db.save(tmpdir)
     db3 = audformat.Database.load(tmpdir)
 
-    print(f'{db["files"].df["label"]=}')
-    print(f'{db3["files"].df["label"]=}')
-    print(f'{db3["files"].df.columns=}')
     assert db == db3
     assert db["files"] == db3["files"]
     assert db["files"]["string"] == db3["files"]["string"]

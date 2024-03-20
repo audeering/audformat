@@ -332,6 +332,12 @@ def test_copy(table):
         ),
         (
             [],
+            "bool",
+            "boolean",
+            audformat.define.DataType.BOOL,
+        ),
+        (
+            [],
             "datetime64[ns]",
             "datetime64[ns]",
             audformat.define.DataType.DATE,
@@ -426,6 +432,18 @@ def test_copy(table):
             "timedelta64[ns]",
             audformat.define.DataType.TIME,
         ),
+        (
+            [True],
+            None,
+            "boolean",
+            audformat.define.DataType.BOOL,
+        ),
+        (
+            [True, False, pd.NA],
+            "boolean",
+            "boolean",
+            audformat.define.DataType.BOOL,
+        ),
     ],
 )
 def test_dtype_column(
@@ -470,6 +488,13 @@ def test_dtype_column(
             None,
             "object",
             audformat.define.DataType.OBJECT,
+        ),
+        (
+            pd.Index,
+            [],
+            "boolean",
+            pd.BooleanDtype(),
+            audformat.define.DataType.BOOL,
         ),
         (
             pd.DatetimeIndex,
@@ -590,6 +615,21 @@ def test_dtype_column(
             "object",
             audformat.define.DataType.OBJECT,
         ),
+        # The following should be a bug in the current main
+        # (
+        #     pd.Index,
+        #     [True],
+        #     None,
+        #     "bool",
+        #     audformat.define.DataType.BOOL,
+        # ),
+        (
+            pd.Index,
+            [True, False, pd.NA],
+            pd.BooleanDtype(),
+            pd.BooleanDtype(),
+            audformat.define.DataType.BOOL,
+        ),
     ],
 )
 def test_dtype_index(
@@ -602,6 +642,7 @@ def test_dtype_index(
 ):
     name = "idx"
     index = index_object(index_values, dtype=index_dtype, name=name)
+    print(f"{index.dtype=}")
     table = audformat.MiscTable(index)
 
     assert table.levels[name] == expected_audformat_dtype
@@ -628,6 +669,12 @@ def test_dtype_index(
             "datetime64[ns]",
             "datetime64[ns]",
             audformat.define.DataType.DATE,
+        ),
+        (
+            [],
+            "boolean",
+            pd.BooleanDtype(),
+            audformat.define.DataType.BOOL,
         ),
         (
             [],
@@ -718,6 +765,12 @@ def test_dtype_index(
             "timedelta64[ns]",
             "timedelta64[ns]",
             audformat.define.DataType.TIME,
+        ),
+        (
+            [True, False, pd.NA],
+            "boolean",
+            pd.BooleanDtype(),
+            audformat.define.DataType.BOOL,
         ),
     ],
 )
@@ -765,6 +818,12 @@ def test_dtype_multiindex(
         ),
         (
             [],
+            "boolean",
+            pd.BooleanDtype(),
+            audformat.define.DataType.BOOL,
+        ),
+        (
+            [],
             float,
             "float64",
             audformat.define.DataType.FLOAT,
@@ -852,6 +911,12 @@ def test_dtype_multiindex(
             "timedelta64[ns]",
             "timedelta64[ns]",
             audformat.define.DataType.TIME,
+        ),
+        (
+            [True, False, pd.NA],
+            "boolean",
+            pd.BooleanDtype(),
+            audformat.define.DataType.BOOL,
         ),
     ],
 )
