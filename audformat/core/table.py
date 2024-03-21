@@ -833,16 +833,10 @@ class Base(HeaderBase):
                     dtypes.append((name, _dtype))
                     if dtype == define.DataType.TIME:
                         timedelta_columns.append(name)
-                    elif dtype == define.DataType.OBJECT:
-                        object_columns.append(name)
                     elif dtype == define.DataType.INTEGER:
                         integer_columns.append(name)
                 else:
                     object_columns.append(name)
-
-        # index columns
-        # levels = list(dtypes)
-        # dtypes = {level: to_pandas_dtype(dtype) for level, dtype in dtypes.items()}
 
         # other columns
         categories = {}
@@ -866,25 +860,6 @@ class Base(HeaderBase):
             else:
                 object_columns.append(column_id)
 
-        # # replace dtype with converter for dates or timestamps
-        # dtypes_wo_converters = {}
-        # for column_id, dtype in dtypes.items():
-        #     if dtype == "datetime64[ns]":
-        #         converters[column_id] = lambda x: pd.to_datetime(x)
-        #     elif dtype == "timedelta64[ns]":
-        #         converters[column_id] = lambda x: pd.to_timedelta(x)
-        #     else:
-        #         dtypes_wo_converters[column_id] = dtype
-
-        # # read csv
-        # df = pd.read_csv(
-        #     path,
-        #     usecols=levels + columns,
-        #     dtype=dtypes_wo_converters,
-        #     index_col=levels,
-        #     converters=converters,
-        #     float_precision="round_trip",
-        # )
         schema = pa.schema(dtypes)
         table = csv.read_csv(
             path,
@@ -894,7 +869,6 @@ class Base(HeaderBase):
             ),
             convert_options=csv.ConvertOptions(
                 column_types=schema,
-                # null_values=["", "<NA>", "None"],
                 strings_can_be_null=True,
             ),
         )

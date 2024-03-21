@@ -360,8 +360,16 @@ def to_audformat_dtype(dtype: typing.Union[str, typing.Type]) -> str:
         return define.DataType.OBJECT
 
 
-def to_pandas_dtype(dtype: str) -> str:
-    r"""Convert audformat to pandas dtype."""
+def to_pandas_dtype(dtype: str) -> typing.Optional[str]:
+    r"""Convert audformat to pandas dtype.
+
+    Args:
+        dtype: audformat dtype
+
+    Returns:
+        pandas dtype
+
+    """
     if dtype == define.DataType.BOOL:
         return "boolean"
     elif dtype == define.DataType.DATE:
@@ -379,7 +387,21 @@ def to_pandas_dtype(dtype: str) -> str:
 
 
 def to_pyarrow_dtype(dtype: str) -> typing.Optional[str]:
-    r"""Convert audformat to pyarrow dtype."""
+    r"""Convert audformat to pyarrow dtype.
+
+    For ``"object"`` as ``dtype``
+    there is no equivalent,
+    and we don't return a value here.
+    We let ``pyarrow`` decide,
+    which dtype fits best in that case.
+
+    Args:
+        dtype: audformat dtype
+
+    Returns:
+        pyarrow dtype
+
+    """
     if dtype == define.DataType.BOOL:
         return pa.bool_()
     elif dtype == define.DataType.DATE:
@@ -388,9 +410,6 @@ def to_pyarrow_dtype(dtype: str) -> typing.Optional[str]:
         return pa.float64()
     elif dtype == define.DataType.INTEGER:
         return pa.int64()
-    elif dtype == define.DataType.OBJECT:
-        # TODO: check how it works with e.g. numpy arrays as objects
-        return None
     elif dtype == define.DataType.STRING:
         return pa.string()
     elif dtype == define.DataType.TIME:
