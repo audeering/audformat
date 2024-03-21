@@ -917,7 +917,6 @@ class Base(HeaderBase):
             df.index = utils.set_index_dtypes(df.index, index_dtypes)
         elif len(index_columns) > 0:
             # Ensure pd.BooleanDtype is used for pd.Index
-            print(f"{index_dtypes[index_columns[0]]=}")
             if index_dtypes[index_columns[0]] == bool:
                 df.index = df.index.astype(pd.BooleanDtype())
 
