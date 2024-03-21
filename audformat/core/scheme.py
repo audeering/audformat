@@ -301,6 +301,32 @@ class Scheme(common.HeaderBase):
             dtype = common.to_pandas_dtype(self.dtype)
         return dtype
 
+    # def to_pyarrow_dtype(
+    #     self,
+    # ) -> pyarrow.DataType:
+    #     r"""Convert data type to :mod:`pyarrow` data type.
+
+    #     If ``labels`` is not ``None``,
+    #     the dtype is based on the first label.
+
+    #     * ``str`` -> ``pa.string()``
+    #     * ``int`` -> ``pa.int64()``
+    #     * ``float`` -> ``pa.float64()``
+    #     * ``time`` -> ``pa.time64("ns")``
+    #     * ``date`` -> ``pa.date64("ns")``
+
+    #     Returns:
+    #         :mod:`pyarrow` data type
+
+    #     """
+    #     if self.labels is not None:
+    #         labels = self._labels_to_list()
+    #         # TODO: this might be risky as we might have a mixture of dtypes?
+    #         dtype = common.to_pyarrow_dtype(labels[0])
+    #     else:
+    #         dtype = common.to_pyarrow_dtype(self.dtype)
+    #     return dtype
+
     def replace_labels(
         self,
         labels: typing.Union[dict, list, str],
