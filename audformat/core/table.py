@@ -884,7 +884,11 @@ class Base(HeaderBase):
                 # For an empty dataframe, map() will not set the correct dtype
                 df[column] = df[column].astype("timedelta64[ns]")
             else:
-                df[column] = df[column].map(pd.to_timedelta)
+                df[column] = df[column].map(
+                    # "coerce" will set errors to NaT,
+                    # and catches the case where the input is already <NA>
+                    lambda x: pd.to_timedelta(x, errors="coerce")
+                )
         for column in boolean_columns:
             df[column] = df[column].map(lambda x: pd.NA if x is None else x)
             df[column] = df[column].astype(pd.BooleanDtype())
