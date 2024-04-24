@@ -1261,6 +1261,7 @@ def map_language(language: str) -> str:
 
 def read_csv(
     *args,
+    always_return_dataframe: bool = False,
     **kwargs,
 ) -> typing.Union[pd.Index, pd.Series, pd.DataFrame]:
     r"""Read object from CSV file.
@@ -1273,6 +1274,9 @@ def read_csv(
 
     Args:
         *args: arguments
+        always_return_dataframe: if ``False``,
+            a series is returned for data with one column,
+            and an index for data with zero columns
         **kwargs: keyword arguments
 
     Returns:
@@ -1283,19 +1287,24 @@ def read_csv(
             :ref:`table specifications <data-tables:Tables>`
 
     Examples:
-        >>> from io import StringIO
-        >>> string = StringIO(
-        ...     '''file,start,end,value
+        >>> string = '''file,start,end,value
         ... f1,00:00:00,00:00:01,0.0
         ... f1,00:00:01,00:00:02,1.0
         ... f2,00:00:02,00:00:03,2.0'''
-        ... )
-        >>> read_csv(string)
+        >>> with open("file.csv", "w") as file:
+        ...     _ = file.write(string)
+        >>> read_csv("file.csv")
         file  start            end
         f1    0 days 00:00:00  0 days 00:00:01    0.0
               0 days 00:00:01  0 days 00:00:02    1.0
         f2    0 days 00:00:02  0 days 00:00:03    2.0
         Name: value, dtype: float64
+        >>> read_csv("file.csv", always_return_dataframe=True)
+                                              value
+        file start           end
+        f1   0 days 00:00:00 0 days 00:00:01    0.0
+             0 days 00:00:01 0 days 00:00:02    1.0
+        f2   0 days 00:00:02 0 days 00:00:03    2.0
 
     """
     frame = pd.read_csv(*args, **kwargs)
@@ -1322,11 +1331,11 @@ def read_csv(
         index = segmented_index(files, starts=starts, ends=ends)
     frame.drop(drop, axis="columns", inplace=True)
 
-    if len(frame.columns) == 0:
+    if len(frame.columns) == 0 and not always_return_dataframe:
         return index
 
     frame = frame.set_index(index)
-    if len(frame.columns) == 1:
+    if len(frame.columns) == 1 and not always_return_dataframe:
         return frame[frame.columns[0]]
     else:
         return frame
