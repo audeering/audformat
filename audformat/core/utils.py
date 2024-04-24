@@ -1270,14 +1270,12 @@ def read_csv(
     conform to :ref:`table specifications <data-tables:Tables>`.
     If conversion is not possible, an error is raised.
 
-    See :meth:`pandas.read_csv` for supported arguments.
-
     Args:
-        *args: arguments
+        *args: arguments passed on to :func:`pandas.read_csv`
         always_return_dataframe: if ``False``,
             a series is returned for data with one column,
             and an index for data with zero columns
-        **kwargs: keyword arguments
+        **kwargs: keyword arguments passed on to :func:`pandas.read_csv`
 
     Returns:
         object conform to :ref:`table specifications <data-tables:Tables>`
