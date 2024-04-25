@@ -1261,7 +1261,7 @@ def map_language(language: str) -> str:
 
 def read_csv(
     *args,
-    always_return_dataframe: bool = False,
+    as_dataframe: bool = False,
     **kwargs,
 ) -> typing.Union[pd.Index, pd.Series, pd.DataFrame]:
     r"""Read object from CSV file.
@@ -1272,9 +1272,10 @@ def read_csv(
 
     Args:
         *args: arguments passed on to :func:`pandas.read_csv`
-        always_return_dataframe: if ``False``,
-            a series is returned for data with one column,
-            and an index for data with zero columns
+        as_dataframe: if ``False``,
+            a dataframe is only returned for data with two or more columns,
+            a series for data with one column,
+            an index for data with zero columns
         **kwargs: keyword arguments passed on to :func:`pandas.read_csv`
 
     Returns:
@@ -1297,7 +1298,7 @@ def read_csv(
               0 days 00:00:01  0 days 00:00:02    1.0
         f2    0 days 00:00:02  0 days 00:00:03    2.0
         Name: value, dtype: float64
-        >>> read_csv("file.csv", always_return_dataframe=True)
+        >>> read_csv("file.csv", as_dataframe=True)
                                               value
         file start           end
         f1   0 days 00:00:00 0 days 00:00:01    0.0
@@ -1329,11 +1330,11 @@ def read_csv(
         index = segmented_index(files, starts=starts, ends=ends)
     frame.drop(drop, axis="columns", inplace=True)
 
-    if len(frame.columns) == 0 and not always_return_dataframe:
+    if len(frame.columns) == 0 and not as_dataframe:
         return index
 
     frame = frame.set_index(index)
-    if len(frame.columns) == 1 and not always_return_dataframe:
+    if len(frame.columns) == 1 and not as_dataframe:
         return frame[frame.columns[0]]
     else:
         return frame

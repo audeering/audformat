@@ -1550,7 +1550,7 @@ def test_read_csv(csv, result):
         pd.testing.assert_frame_equal(obj, result)
     # Request dataframe as return type
     csv.seek(0)  # rewind string file object
-    obj = audformat.utils.read_csv(csv, always_return_dataframe=True)
+    obj = audformat.utils.read_csv(csv, as_dataframe=True)
     if isinstance(result, pd.Index):
         result = pd.DataFrame([], columns=[], index=result)
     elif isinstance(result, pd.Series):
