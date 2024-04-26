@@ -1463,6 +1463,23 @@ f2,00:00:02,2.0"""
         ),
         (
             StringIO(
+                """file,start,value
+f1,0,0.0
+f1,1,1.0
+f2,2,2.0"""
+            ),
+            pd.Series(
+                [0.0, 1.0, 2.0],
+                index=audformat.segmented_index(
+                    ["f1", "f1", "f2"],
+                    starts=["0s", "1s", "2s"],
+                    ends=pd.to_timedelta([pd.NaT, pd.NaT, pd.NaT]),
+                ),
+                name="value",
+            ),
+        ),
+        (
+            StringIO(
                 """file,end,value
 f1,00:00:01,0.0
 f1,00:00:02,1.0
@@ -1493,10 +1510,57 @@ f2,00:00:02,00:00:03"""
         ),
         (
             StringIO(
+                """file,start,end
+f1,0,1
+f1,1,2
+f2,2,3"""
+            ),
+            audformat.segmented_index(
+                ["f1", "f1", "f2"],
+                ["0s", "1s", "2s"],
+                ["1s", "2s", "3s"],
+            ),
+        ),
+        (
+            StringIO(
                 """file,start,end,value
 f1,00:00:00,00:00:01,0.0
 f1,00:00:01,00:00:02,1.0
 f2,00:00:02,00:00:03,2.0"""
+            ),
+            pd.Series(
+                [0.0, 1.0, 2.0],
+                index=audformat.segmented_index(
+                    ["f1", "f1", "f2"],
+                    starts=["0s", "1s", "2s"],
+                    ends=["1s", "2s", "3s"],
+                ),
+                name="value",
+            ),
+        ),
+        (
+            StringIO(
+                """file,start,end,value
+f1,0,1,0.0
+f1,1,2,1.0
+f2,2,3,2.0"""
+            ),
+            pd.Series(
+                [0.0, 1.0, 2.0],
+                index=audformat.segmented_index(
+                    ["f1", "f1", "f2"],
+                    starts=["0s", "1s", "2s"],
+                    ends=["1s", "2s", "3s"],
+                ),
+                name="value",
+            ),
+        ),
+        (
+            StringIO(
+                """file,start,end,value
+f1,0.0,1.0,0.0
+f1,1.0,2.0,1.0
+f2,2.0,3.0,2.0"""
             ),
             pd.Series(
                 [0.0, 1.0, 2.0],
