@@ -21,7 +21,6 @@ from audformat.core.index import filewise_index
 from audformat.core.index import is_filewise_index
 from audformat.core.index import is_segmented_index
 from audformat.core.index import segmented_index
-from audformat.core.index import to_timedelta
 from audformat.core.scheme import Scheme
 
 
@@ -1334,12 +1333,12 @@ def read_csv(
 
     starts = None
     if define.IndexField.START in frame.columns:
-        starts = to_timedelta(frame[define.IndexField.START])
+        starts = frame[define.IndexField.START]
         drop.append(define.IndexField.START)
 
     ends = None
     if define.IndexField.END in frame.columns:
-        ends = to_timedelta(frame[define.IndexField.END])
+        ends = frame[define.IndexField.END]
         drop.append(define.IndexField.END)
 
     if starts is None and ends is None:
