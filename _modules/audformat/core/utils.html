@@ -70,7 +70,7 @@
             
             
               <div class="version">
-                v1.1.2
+                v1.1.3
               </div>
             
           
@@ -1427,6 +1427,7 @@
 
 <div class="viewcode-block" id="read_csv"><a class="viewcode-back" href="../../../api/audformat.utils.read_csv.html#audformat.utils.read_csv">[docs]</a><span class="k">def</span> <span class="nf">read_csv</span><span class="p">(</span>
     <span class="o">*</span><span class="n">args</span><span class="p">,</span>
+    <span class="n">as_dataframe</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">]:</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Read object from CSV file.</span>
@@ -1435,11 +1436,18 @@
 <span class="sd">    conform to :ref:`table specifications &lt;data-tables:Tables&gt;`.</span>
 <span class="sd">    If conversion is not possible, an error is raised.</span>
 
-<span class="sd">    See :meth:`pandas.read_csv` for supported arguments.</span>
+<span class="sd">    Time values for the ``start`` and ``end`` column</span>
+<span class="sd">    are converted using :func:`pandas.to_timedelta`,</span>
+<span class="sd">    whereby float and integers are treated as seconds.</span>
+
 
 <span class="sd">    Args:</span>
-<span class="sd">        *args: arguments</span>
-<span class="sd">        **kwargs: keyword arguments</span>
+<span class="sd">        *args: arguments passed on to :func:`pandas.read_csv`</span>
+<span class="sd">        as_dataframe: if ``False``,</span>
+<span class="sd">            a dataframe is only returned for data with two or more columns,</span>
+<span class="sd">            a series for data with one column,</span>
+<span class="sd">            an index for data with zero columns</span>
+<span class="sd">        **kwargs: keyword arguments passed on to :func:`pandas.read_csv`</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        object conform to :ref:`table specifications &lt;data-tables:Tables&gt;`</span>
@@ -1449,19 +1457,36 @@
 <span class="sd">            :ref:`table specifications &lt;data-tables:Tables&gt;`</span>
 
 <span class="sd">    Examples:</span>
-<span class="sd">        &gt;&gt;&gt; from io import StringIO</span>
-<span class="sd">        &gt;&gt;&gt; string = StringIO(</span>
-<span class="sd">        ...     &#39;&#39;&#39;file,start,end,value</span>
+<span class="sd">        &gt;&gt;&gt; string = &#39;&#39;&#39;file,start,end,value</span>
 <span class="sd">        ... f1,00:00:00,00:00:01,0.0</span>
 <span class="sd">        ... f1,00:00:01,00:00:02,1.0</span>
 <span class="sd">        ... f2,00:00:02,00:00:03,2.0&#39;&#39;&#39;</span>
-<span class="sd">        ... )</span>
-<span class="sd">        &gt;&gt;&gt; read_csv(string)</span>
+<span class="sd">        &gt;&gt;&gt; with open(&quot;file.csv&quot;, &quot;w&quot;) as file:</span>
+<span class="sd">        ...     _ = file.write(string)</span>
+<span class="sd">        &gt;&gt;&gt; read_csv(&quot;file.csv&quot;)</span>
 <span class="sd">        file  start            end</span>
 <span class="sd">        f1    0 days 00:00:00  0 days 00:00:01    0.0</span>
 <span class="sd">              0 days 00:00:01  0 days 00:00:02    1.0</span>
 <span class="sd">        f2    0 days 00:00:02  0 days 00:00:03    2.0</span>
 <span class="sd">        Name: value, dtype: float64</span>
+<span class="sd">        &gt;&gt;&gt; string = &#39;&#39;&#39;file,start,end,value</span>
+<span class="sd">        ... f1,0,1,0.0</span>
+<span class="sd">        ... f1,1,2,1.0</span>
+<span class="sd">        ... f2,2,3,2.0&#39;&#39;&#39;</span>
+<span class="sd">        &gt;&gt;&gt; with open(&quot;file.csv&quot;, &quot;w&quot;) as file:</span>
+<span class="sd">        ...     _ = file.write(string)</span>
+<span class="sd">        &gt;&gt;&gt; read_csv(&quot;file.csv&quot;)</span>
+<span class="sd">        file  start            end</span>
+<span class="sd">        f1    0 days 00:00:00  0 days 00:00:01    0.0</span>
+<span class="sd">              0 days 00:00:01  0 days 00:00:02    1.0</span>
+<span class="sd">        f2    0 days 00:00:02  0 days 00:00:03    2.0</span>
+<span class="sd">        Name: value, dtype: float64</span>
+<span class="sd">        &gt;&gt;&gt; read_csv(&quot;file.csv&quot;, as_dataframe=True)</span>
+<span class="sd">                                              value</span>
+<span class="sd">        file start           end</span>
+<span class="sd">        f1   0 days 00:00:00 0 days 00:00:01    0.0</span>
+<span class="sd">             0 days 00:00:01 0 days 00:00:02    1.0</span>
+<span class="sd">        f2   0 days 00:00:02 0 days 00:00:03    2.0</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">frame</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -1474,12 +1499,12 @@
 
     <span class="n">starts</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="k">if</span> <span class="n">define</span><span class="o">.</span><span class="n">IndexField</span><span class="o">.</span><span class="n">START</span> <span class="ow">in</span> <span class="n">frame</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
-        <span class="n">starts</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_timedelta</span><span class="p">(</span><span class="n">frame</span><span class="p">[</span><span class="n">define</span><span class="o">.</span><span class="n">IndexField</span><span class="o">.</span><span class="n">START</span><span class="p">])</span>
+        <span class="n">starts</span> <span class="o">=</span> <span class="n">frame</span><span class="p">[</span><span class="n">define</span><span class="o">.</span><span class="n">IndexField</span><span class="o">.</span><span class="n">START</span><span class="p">]</span>
         <span class="n">drop</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">define</span><span class="o">.</span><span class="n">IndexField</span><span class="o">.</span><span class="n">START</span><span class="p">)</span>
 
     <span class="n">ends</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="k">if</span> <span class="n">define</span><span class="o">.</span><span class="n">IndexField</span><span class="o">.</span><span class="n">END</span> <span class="ow">in</span> <span class="n">frame</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
-        <span class="n">ends</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_timedelta</span><span class="p">(</span><span class="n">frame</span><span class="p">[</span><span class="n">define</span><span class="o">.</span><span class="n">IndexField</span><span class="o">.</span><span class="n">END</span><span class="p">])</span>
+        <span class="n">ends</span> <span class="o">=</span> <span class="n">frame</span><span class="p">[</span><span class="n">define</span><span class="o">.</span><span class="n">IndexField</span><span class="o">.</span><span class="n">END</span><span class="p">]</span>
         <span class="n">drop</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">define</span><span class="o">.</span><span class="n">IndexField</span><span class="o">.</span><span class="n">END</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">starts</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">ends</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -1488,11 +1513,11 @@
         <span class="n">index</span> <span class="o">=</span> <span class="n">segmented_index</span><span class="p">(</span><span class="n">files</span><span class="p">,</span> <span class="n">starts</span><span class="o">=</span><span class="n">starts</span><span class="p">,</span> <span class="n">ends</span><span class="o">=</span><span class="n">ends</span><span class="p">)</span>
     <span class="n">frame</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">drop</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="s2">&quot;columns&quot;</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">frame</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">frame</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">as_dataframe</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">index</span>
 
     <span class="n">frame</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">frame</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">frame</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">as_dataframe</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">frame</span><span class="p">[</span><span class="n">frame</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">frame</span></div>
@@ -2284,7 +2309,7 @@
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2024/02/02 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2024/04/26 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
