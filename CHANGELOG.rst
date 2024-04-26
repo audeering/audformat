@@ -7,6 +7,17 @@ The format is based on `Keep a Changelog`_,
 and this project adheres to `Semantic Versioning`_.
 
 
+Version 1.1.3 (2024-04-26)
+--------------------------
+
+* Added: ``as_dataframe`` argument
+  to ``audformat.utils.read_csv()``
+* Fixed: ``audformat.utils.read_csv()``
+  now treats float/integer values
+  in ``start``, ``end`` columns
+  as seconds
+
+
 Version 1.1.2 (2024-02-02)
 --------------------------
 
