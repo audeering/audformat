@@ -1510,6 +1510,40 @@ f2,00:00:02,00:00:03,2.0"""
         ),
         (
             StringIO(
+                """file,start,end,value
+f1,0,1,0.0
+f1,1,2,1.0
+f2,2,3,2.0"""
+            ),
+            pd.Series(
+                [0.0, 1.0, 2.0],
+                index=audformat.segmented_index(
+                    ["f1", "f1", "f2"],
+                    starts=["0s", "1s", "2s"],
+                    ends=["1s", "2s", "3s"],
+                ),
+                name="value",
+            ),
+        ),
+        (
+            StringIO(
+                """file,start,end,value
+f1,0.,1.,0.0
+f1,1.,2.,1.0
+f2,2.,3.,2.0"""
+            ),
+            pd.Series(
+                [0.0, 1.0, 2.0],
+                index=audformat.segmented_index(
+                    ["f1", "f1", "f2"],
+                    starts=["0s", "1s", "2s"],
+                    ends=["1s", "2s", "3s"],
+                ),
+                name="value",
+            ),
+        ),
+        (
+            StringIO(
                 """file,start,end,value1,value2
 f1,00:00:00,00:00:01,0.0,a
 f1,00:00:01,00:00:02,1.0,b

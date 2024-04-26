@@ -21,6 +21,7 @@ from audformat.core.index import filewise_index
 from audformat.core.index import is_filewise_index
 from audformat.core.index import is_segmented_index
 from audformat.core.index import segmented_index
+from audformat.core.index import to_timedelta
 from audformat.core.scheme import Scheme
 
 
@@ -1270,6 +1271,11 @@ def read_csv(
     conform to :ref:`table specifications <data-tables:Tables>`.
     If conversion is not possible, an error is raised.
 
+    Time values for the ``start`` and ``end`` column
+    are converted using :func:`pandas.to_timedelta`,
+    whereby float and integers are treated as seconds.
+
+
     Args:
         *args: arguments passed on to :func:`pandas.read_csv`
         as_dataframe: if ``False``,
@@ -1298,6 +1304,18 @@ def read_csv(
               0 days 00:00:01  0 days 00:00:02    1.0
         f2    0 days 00:00:02  0 days 00:00:03    2.0
         Name: value, dtype: float64
+        >>> string = '''file,start,end,value
+        ... f1,0,1,0.0
+        ... f1,1,2,1.0
+        ... f2,2,3,2.0'''
+        >>> with open("file.csv", "w") as file:
+        ...     _ = file.write(string)
+        >>> read_csv("file.csv")
+        file  start            end
+        f1    0 days 00:00:00  0 days 00:00:01    0.0
+              0 days 00:00:01  0 days 00:00:02    1.0
+        f2    0 days 00:00:02  0 days 00:00:03    2.0
+        Name: value, dtype: float64
         >>> read_csv("file.csv", as_dataframe=True)
                                               value
         file start           end
@@ -1316,12 +1334,12 @@ def read_csv(
 
     starts = None
     if define.IndexField.START in frame.columns:
-        starts = pd.to_timedelta(frame[define.IndexField.START])
+        starts = to_timedelta(frame[define.IndexField.START])
         drop.append(define.IndexField.START)
 
     ends = None
     if define.IndexField.END in frame.columns:
-        ends = pd.to_timedelta(frame[define.IndexField.END])
+        ends = to_timedelta(frame[define.IndexField.END])
         drop.append(define.IndexField.END)
 
     if starts is None and ends is None:
