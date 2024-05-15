@@ -421,6 +421,40 @@ def wrong_scheme_labels_db(tmpdir):
         ),
         (
             "mono_db",
+            "gender",
+            ["numbers", "non-existing", "sex"],
+            pd.concat(
+                [
+                    pd.Series(
+                        ["female", "", "male"],
+                        index=audformat.filewise_index(["f1.wav", "f2.wav", "f3.wav"]),
+                        dtype="string",
+                        name="gender",
+                    ),
+                    pd.Series(
+                        [0, 1, 2],
+                        index=audformat.filewise_index(["f1.wav", "f2.wav", "f3.wav"]),
+                        dtype="Int64",
+                        name="numbers",
+                    ),
+                    pd.Series(
+                        [],
+                        index=audformat.filewise_index(),
+                        dtype="object",
+                        name="non-existing",
+                    ),
+                    pd.Series(
+                        ["female", np.NaN, "male"],
+                        index=audformat.filewise_index(["f1.wav", "f2.wav", "f3.wav"]),
+                        dtype="object",
+                        name="sex",
+                    ),
+                ],
+                axis=1,
+            ),
+        ),
+        (
+            "mono_db",
             "winner",
             [],
             pd.DataFrame(
