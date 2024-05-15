@@ -856,16 +856,18 @@ class Database(HeaderBase):
         objs = [obj]
         for scheme in additional_schemes:
             if len(obj) == 0:
-                obj = empty_frame(scheme)
+                # Skip searching for additional schemes,
+                # if main scheme does return empty frame
+                additional_obj = empty_frame(scheme)
             else:
-                obj = self.get(
+                additional_obj = self.get(
                     scheme,
                     strict=strict,
                     map=map,
                     original_column_names=original_column_names,
                     aggregate_function=aggregate_function,
                 )
-            objs.append(obj)
+            objs.append(additional_obj)
         if len(objs) > 1:
             obj = utils.concat(objs)
             obj = obj.loc[index]
