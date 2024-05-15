@@ -419,6 +419,10 @@ def wrong_scheme_labels_db(tmpdir):
                 axis=1,
             ),
         ),
+        # Ensure that requesting a non-existing scheme
+        # before an existing scheme
+        # does return values for existing schemes.
+        # https://github.com/audeering/audformat/issues/426
         (
             "mono_db",
             "gender",
