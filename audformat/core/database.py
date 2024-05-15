@@ -855,14 +855,19 @@ class Database(HeaderBase):
         # --- Append additional schemes
         objs = [obj]
         for scheme in additional_schemes:
-            obj = self.get(
-                scheme,
-                strict=strict,
-                map=map,
-                original_column_names=original_column_names,
-                aggregate_function=aggregate_function,
-            )
-            objs.append(obj)
+            if len(obj) == 0:
+                # Skip searching for additional schemes,
+                # if main scheme does return empty frame
+                additional_obj = empty_frame(scheme)
+            else:
+                additional_obj = self.get(
+                    scheme,
+                    strict=strict,
+                    map=map,
+                    original_column_names=original_column_names,
+                    aggregate_function=aggregate_function,
+                )
+            objs.append(additional_obj)
         if len(objs) > 1:
             obj = utils.concat(objs)
             obj = obj.loc[index]
