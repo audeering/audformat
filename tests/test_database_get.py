@@ -387,6 +387,38 @@ def wrong_scheme_labels_db(tmpdir):
                 axis=1,
             ),
         ),
+        # Ensure that requesting a non-existing scheme
+        # before an existing scheme
+        # does return values for existing schemes.
+        # https://github.com/audeering/audformat/issues/426
+        (
+            "mono_db",
+            "gender",
+            ["non-existing", "sex"],
+            pd.concat(
+                [
+                    pd.Series(
+                        ["female", "", "male"],
+                        index=audformat.filewise_index(["f1.wav", "f2.wav", "f3.wav"]),
+                        dtype="string",
+                        name="gender",
+                    ),
+                    pd.Series(
+                        [],
+                        index=audformat.filewise_index(),
+                        dtype="object",
+                        name="non-existing",
+                    ),
+                    pd.Series(
+                        ["female", np.NaN, "male"],
+                        index=audformat.filewise_index(["f1.wav", "f2.wav", "f3.wav"]),
+                        dtype="object",
+                        name="sex",
+                    ),
+                ],
+                axis=1,
+            ),
+        ),
         (
             "mono_db",
             "winner",
