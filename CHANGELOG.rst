@@ -10,7 +10,7 @@ and this project adheres to `Semantic Versioning`_.
 Version 1.1.4 (2024-05-15)
 --------------------------
 
-* Fixed: ``audformat.Database.get()``
+* Fixed: ``audformat.Database.get()``,
   if its argument ``additional_schemes``
   contains a non-existent scheme
 
