@@ -847,6 +847,11 @@ class Base(HeaderBase):
             float_precision="round_trip",
         )
 
+        # Ensure bool values are stored as boolean,
+        # as pandas.read_csv()
+        # does not set this correctly
+        df.index = utils._maybe_convert_pandas_dtype(df.index)
+
         # For an empty CSV file
         # converters will not set the correct dtype
         # and we need to correct it manually
@@ -1072,8 +1077,10 @@ class MiscTable(Base):
             if isinstance(index, pd.MultiIndex) and index.nlevels == 1:
                 index = index.get_level_values(0)
 
-            # Ensure integers are always stored as Int64
-            index = utils._maybe_convert_int_dtype(index)
+            # Ensure integers are always stored as Int64,
+            # and bool as boolean,
+            # compare audformat.core.common.to_pandas_dtype()
+            index = utils._maybe_convert_pandas_dtype(index)
 
             levels = utils._levels(index)
             if not all(levels) or len(levels) > len(set(levels)):

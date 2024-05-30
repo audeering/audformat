@@ -531,7 +531,7 @@ def difference(
     if not objs:
         return pd.Index([])
 
-    objs = [_maybe_convert_int_dtype(obj) for obj in objs]
+    objs = [_maybe_convert_pandas_dtype(obj) for obj in objs]
 
     if len(objs) == 1:
         return objs[0]
@@ -846,7 +846,7 @@ def intersect(
     if not objs:
         return pd.Index([])
 
-    objs = [_maybe_convert_int_dtype(obj) for obj in objs]
+    objs = [_maybe_convert_pandas_dtype(obj) for obj in objs]
 
     if len(objs) == 1:
         return _alike_index(objs[0])
@@ -1910,7 +1910,7 @@ def union(
     if not objs:
         return pd.Index([])
 
-    objs = [_maybe_convert_int_dtype(obj) for obj in objs]
+    objs = [_maybe_convert_pandas_dtype(obj) for obj in objs]
 
     if len(objs) == 1:
         return objs[0]
@@ -2083,19 +2083,43 @@ def _maybe_convert_filewise_index(
     return objs
 
 
-def _maybe_convert_int_dtype(
+def _maybe_convert_pandas_dtype(
     index: pd.Index,
 ) -> pd.Index:
-    r"""Convert integer dtypes to Int64."""
-    # Ensure integers are always stored as Int64
+    r"""Ensure desired pandas dtypes.
+
+    Applies the following conversions:
+
+    * integer -> Int64
+    * bool -> boolean
+
+    Args:
+        index: index object
+
+    Returns:
+        index object
+
+    """
     levels = _levels(index)
     dtypes = _dtypes(index)
+
+    # Ensure integers are stored as Int64
     int_dtypes = {
         level: "Int64"
         for level, dtype in zip(levels, dtypes)
         if pd.api.types.is_integer_dtype(dtype)
     }
-    return set_index_dtypes(index, int_dtypes)
+    # Ensure bool values are stored as boolean
+    bool_dtypes = {
+        level: "boolean"
+        for level, dtype in zip(levels, dtypes)
+        if pd.api.types.is_bool_dtype(dtype)
+    }
+    # Merge dictionaries
+    dtypes = {**int_dtypes, **bool_dtypes}
+
+    index = set_index_dtypes(index, dtypes)
+    return index
 
 
 def _maybe_convert_single_level_multi_index(

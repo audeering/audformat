@@ -360,7 +360,14 @@ def to_audformat_dtype(dtype: typing.Union[str, typing.Type]) -> str:
 
 
 def to_pandas_dtype(dtype: str) -> str:
-    r"""Convert audformat to pandas dtype."""
+    r"""Convert audformat to pandas dtype.
+
+    We use ``"Int64"`` instead of ``"int64"``,
+    and ``"boolean"`` instead of ``"bool"``
+    to allow for nullable entries,
+    e.g. ``[0, 2, <NA>]``.
+
+    """
     if dtype == define.DataType.BOOL:
         return "boolean"
     elif dtype == define.DataType.DATE:
