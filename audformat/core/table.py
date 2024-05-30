@@ -915,7 +915,7 @@ class Base(HeaderBase):
                 )
         for column in boolean_columns:
             df[column] = df[column].map(lambda x: pd.NA if x is None else x)
-            df[column] = df[column].astype(pd.BooleanDtype())
+            df[column] = df[column].astype("boolean")
         for column in object_columns:
             df[column] = df[column].astype("object")
             df[column] = df[column].replace(pd.NA, None)
@@ -940,13 +940,11 @@ class Base(HeaderBase):
         #
         if len(index_columns) > 0:
             index_dtypes = {column: df[column].dtype for column in index_columns}
+            print(f"{self.levels=}")
+            print(f"{index_dtypes=}")
         df.set_index(index_columns, inplace=True)
-        if len(index_columns) > 1:
+        if len(index_columns) > 0:
             df.index = utils.set_index_dtypes(df.index, index_dtypes)
-        elif len(index_columns) > 0:
-            # Ensure pd.BooleanDtype is used for pd.Index
-            if index_dtypes[index_columns[0]] == bool:
-                df.index = df.index.astype(pd.BooleanDtype())
 
         self._df = df
 
