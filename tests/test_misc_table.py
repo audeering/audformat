@@ -467,8 +467,8 @@ def test_dtype_column(
 ):
     r"""Test misc table columns have correct dtype.
 
-    Ensures that the dataframe,
-    associated with the misc table,
+    Ensures that a dataframe column,
+    associated with a misc table,
     has the dtype,
     which corresponds to the scheme of the column.
 

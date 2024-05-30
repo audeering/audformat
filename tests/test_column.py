@@ -168,10 +168,10 @@ def test_dtype(
     expected_pandas_dtype,
     expected_audformat_dtype,
 ):
-    r"""Test misc table columns have correct dtype.
+    r"""Test table columns have correct dtype.
 
-    Ensures that the dataframe,
-    associated with the misc table,
+    Ensures that a dataframe column,
+    associated with a table,
     has the dtype,
     which corresponds to the scheme of the column.
 
