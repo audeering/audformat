@@ -907,6 +907,7 @@ def test_dtype_multiindex(
     assert list(db["misc"].levels.values()) == expected_audformat_dtypes
     assert list(db["misc"].index.dtypes) == expected_pandas_dtypes
 
+    print(f"{db['misc'].index=}")
     db_root = tmpdir.join("db")
     db.save(db_root, storage_format="csv")
     db_new = audformat.Database.load(db_root)

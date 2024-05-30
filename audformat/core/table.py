@@ -857,9 +857,12 @@ class Base(HeaderBase):
                         timedelta_columns.append(name)
                     elif dtype == define.DataType.INTEGER:
                         integer_columns.append(name)
+                    elif dtype == define.DataType.BOOL:
+                        boolean_columns.append(name)
                 else:
                     object_columns.append(name)
 
+        print(f"{dtypes=}")
         # --- Columns ---
         categories = {}
         columns = list(self.columns)
@@ -894,12 +897,14 @@ class Base(HeaderBase):
                 strings_can_be_null=True,
             ),
         )
+        print(f"{table=}")
         df = table.to_pandas(
             deduplicate_objects=False,
             types_mapper={
                 pa.string(): pd.StringDtype(),
             }.get,  # we have to provide a callable, not a dict
         )
+        print(f"{df=}")
         # Free no longer needed memory
         del table
         # Adjust dtypes, that cannot be handled by pyarrow
@@ -938,13 +943,17 @@ class Base(HeaderBase):
         # As the MultiIndex does not preserve dtypes,
         # we need to set them manually.
         #
-        if len(index_columns) > 0:
-            index_dtypes = {column: df[column].dtype for column in index_columns}
-            print(f"{self.levels=}")
-            print(f"{index_dtypes=}")
+        # if len(index_columns) > 0:
+        #     index_dtypes = {column: df[column].dtype for column in index_columns}
+        #     dtypes = {
+        #         level: to_pandas_dtype(dtype)
+        #         for level, dtype in self.levels.items()
+        #     }
+        #     print(f"{self.levels=}")
+        #     print(f"{index_dtypes=}")
         df.set_index(index_columns, inplace=True)
-        if len(index_columns) > 0:
-            df.index = utils.set_index_dtypes(df.index, index_dtypes)
+        # if len(index_columns) > 0:
+        #    df.index = utils.set_index_dtypes(df.index, index_dtypes)
 
         self._df = df
 
