@@ -367,6 +367,12 @@ def to_pandas_dtype(dtype: str) -> str:
     to allow for nullable entries,
     e.g. ``[0, 2, <NA>]``.
 
+    Args:
+        dtype: audformat dtype
+
+    Returns:
+        pandas dtype
+
     """
     if dtype == define.DataType.BOOL:
         return "boolean"
