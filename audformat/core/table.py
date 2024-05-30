@@ -847,6 +847,11 @@ class Base(HeaderBase):
             float_precision="round_trip",
         )
 
+        # Ensure bool values are stored as boolean,
+        # as pandas.read_csv()
+        # does not set this correctly
+        df.index = utils._maybe_convert_pandas_dtype(df.index)
+
         # For an empty CSV file
         # converters will not set the correct dtype
         # and we need to correct it manually
