@@ -925,8 +925,14 @@ def test_dtype_multiindex(
         ),
         (
             [],
+            bool,
             "boolean",
-            pd.BooleanDtype(),
+            audformat.define.DataType.BOOL,
+        ),
+        (
+            [],
+            "boolean",
+            "boolean",
             audformat.define.DataType.BOOL,
         ),
         (
@@ -1021,8 +1027,14 @@ def test_dtype_multiindex(
         ),
         (
             [True, False],
+            bool,
             "boolean",
-            pd.BooleanDtype(),
+            audformat.define.DataType.BOOL,
+        ),
+        (
+            [True, False],
+            "boolean",
+            "boolean",
             audformat.define.DataType.BOOL,
         ),
     ],
