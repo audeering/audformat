@@ -359,7 +359,7 @@ def to_audformat_dtype(dtype: typing.Union[str, typing.Type]) -> str:
         return define.DataType.OBJECT
 
 
-def to_pandas_dtype(dtype: str) -> str:
+def to_pandas_dtype(dtype: str) -> typing.Optional[str]:
     r"""Convert audformat to pandas dtype.
 
     We use ``"Int64"`` instead of ``"int64"``,
