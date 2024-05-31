@@ -914,9 +914,6 @@ class Base(HeaderBase):
 
         # Adjust dtypes, that cannot be handled by pyarrow
         for column in timedelta_columns:
-            # Older versions of pandas cannot convert None to timedelta
-            df[column] = df[column].map(lambda x: pd.NA if x is None else x)
-            # df[column] = df[column].fillna(pd.NA)
             df[column] = df[column].astype("timedelta64[ns]")
         for column in boolean_columns:
             df[column] = df[column].astype("boolean")
