@@ -818,7 +818,7 @@ class Base(HeaderBase):
         """
         schemes = self.db.schemes
 
-        # === DTYPES ===
+        # === Infer dtypes ===
 
         # Collect pyarrow dtypes
         # of the CSV file,
@@ -890,6 +890,7 @@ class Base(HeaderBase):
             else:
                 object_columns.append(column_id)
 
+        # === Read CSV ===
         schema = pa.schema(pyarrow_dtypes)
         table = csv.read_csv(
             path,
@@ -908,8 +909,14 @@ class Base(HeaderBase):
                 pa.string(): pd.StringDtype(),
             }.get,  # we have to provide a callable, not a dict
         )
+
+        # === Adjust dtypes ===
+
         # Adjust dtypes, that cannot be handled by pyarrow
         for column in timedelta_columns:
+            # Older versions of pandas cannot convert None to timedelta
+            # df[column] = df[column].map(lambda x: pd.NA if x is None else x)
+            df[column] = df[column].fillna(pd.NA)
             df[column] = df[column].astype("timedelta64[ns]")
         for column in boolean_columns:
             df[column] = df[column].astype("boolean")
@@ -928,8 +935,8 @@ class Base(HeaderBase):
             )
             df[column] = df[column].astype(dtype)
 
-        # Set index
-        #
+        # === Set index ===
+
         # When assigning more than one column,
         # a MultiIndex is assigned.
         # Setting a MultiIndex does not always preserve pandas dtypes,
