@@ -418,4 +418,7 @@ def to_pyarrow_dtype(dtype: str) -> typing.Optional[str]:
     elif dtype == define.DataType.STRING:
         return pa.string()
     elif dtype == define.DataType.TIME:
+        # A better fitting type would be `pa.duration("ns")`,
+        # but this is not yet supported
+        # when reading CSV files
         return pa.string()

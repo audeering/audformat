@@ -807,9 +807,9 @@ class Base(HeaderBase):
 
         The loaded table is stored under ``self._df``.
 
-        Loading a CSV file with :func:`pd.read_csv()` is slower
+        Loading a CSV file with :func:`pandas.read_csv()` is slower
         than the method applied here.
-        We first load the CSV file as a :class:`pa.Table`
+        We first load the CSV file as a :class:`pyarrow.Table`
         and convert it to a dataframe afterwards.
 
         Args:
@@ -820,47 +820,53 @@ class Base(HeaderBase):
 
         # === DTYPES ===
 
-        # Collect dtypes
+        # Collect pyarrow dtypes
         # of the CSV file,
         # by inspecting the audformat schemes,
         # and the index
         # associated with the table.
-        dtypes = []
+        # The dtypes are used to create
+        # the pyarrow.Schema
+        # used when reading the CSV file
+        pyarrow_dtypes = []
 
         # Collect columns,
-        # that cannot directly be converted to pyarrow
+        # that cannot directly be converted
+        # from pyarrow to pandas
         timedelta_columns = []
         boolean_columns = []
         object_columns = []
         integer_columns = []
 
+        # Collect columns,
+        # belonging to the index
+        index_columns = []
+
         # --- Index ---
         if hasattr(self, "type"):
+            levels = {}
             # filewise or segmented table
-            index_columns = []
-            name = define.IndexField.FILE
-            dtypes.append((name, to_pyarrow_dtype(define.DataType.STRING)))
-            index_columns.append(name)
+            levels[define.IndexField.FILE] = define.DataType.STRING
             if self.type == define.IndexType.SEGMENTED:
-                for name in [define.IndexField.START, define.IndexField.END]:
-                    dtypes.append((name, to_pyarrow_dtype(define.DataType.TIME)))
-                    index_columns.append(name)
-                    timedelta_columns.append(name)
+                # segmented table
+                for level in [define.IndexField.START, define.IndexField.END]:
+                    levels[level] = define.DataType.TIME
         else:
             # misc table
-            index_columns = list(self.levels.keys())
-            for name, dtype in self.levels.items():
-                _dtype = to_pyarrow_dtype(dtype)
-                if _dtype is not None:
-                    dtypes.append((name, _dtype))
-                    if dtype == define.DataType.TIME:
-                        timedelta_columns.append(name)
-                    elif dtype == define.DataType.INTEGER:
-                        integer_columns.append(name)
-                    elif dtype == define.DataType.BOOL:
-                        boolean_columns.append(name)
-                else:
-                    object_columns.append(name)
+            levels = self.levels
+        index_columns += list(levels.keys())
+        for name, dtype in levels.items():
+            pyarrow_dtype = to_pyarrow_dtype(dtype)
+            if pyarrow_dtype is not None:
+                pyarrow_dtypes.append((name, pyarrow_dtype))
+                if dtype == define.DataType.TIME:
+                    timedelta_columns.append(name)
+                elif dtype == define.DataType.INTEGER:
+                    integer_columns.append(name)
+                elif dtype == define.DataType.BOOL:
+                    boolean_columns.append(name)
+            else:
+                object_columns.append(name)
 
         # --- Columns ---
         categories = {}
@@ -870,9 +876,9 @@ class Base(HeaderBase):
                 scheme = schemes[column.scheme_id]
                 if scheme.labels is not None:
                     categories[column_id] = scheme._labels_to_list()
-                dtype = to_pyarrow_dtype(scheme.dtype)
-                if dtype is not None:
-                    dtypes.append((column_id, dtype))
+                pyarrow_dtype = to_pyarrow_dtype(scheme.dtype)
+                if pyarrow_dtype is not None:
+                    pyarrow_dtypes.append((column_id, pyarrow_dtype))
                     if scheme.dtype == define.DataType.TIME:
                         timedelta_columns.append(column_id)
                     elif scheme.dtype == define.DataType.BOOL:
@@ -884,7 +890,7 @@ class Base(HeaderBase):
             else:
                 object_columns.append(column_id)
 
-        schema = pa.schema(dtypes)
+        schema = pa.schema(pyarrow_dtypes)
         table = csv.read_csv(
             path,
             read_options=csv.ReadOptions(
@@ -904,17 +910,8 @@ class Base(HeaderBase):
         )
         # Adjust dtypes, that cannot be handled by pyarrow
         for column in timedelta_columns:
-            if len(df) == 0:
-                # For an empty dataframe, map() will not set the correct dtype
-                df[column] = df[column].astype("timedelta64[ns]")
-            else:
-                df[column] = df[column].map(
-                    # "coerce" will set errors to NaT,
-                    # and catches the case where the input is already <NA>
-                    lambda x: pd.to_timedelta(x, errors="coerce")
-                )
+            df[column] = df[column].astype("timedelta64[ns]")
         for column in boolean_columns:
-            df[column] = df[column].map(lambda x: pd.NA if x is None else x)
             df[column] = df[column].astype("boolean")
         for column in object_columns:
             df[column] = df[column].astype("object")
@@ -935,8 +932,8 @@ class Base(HeaderBase):
         #
         # When assigning more than one column,
         # a MultiIndex is assigned.
-        # As the MultiIndex does not preserve pandas dtypes,
-        # we need to restore them manually.
+        # Setting a MultiIndex does not always preserve pandas dtypes,
+        # so we need to set them manually.
         #
         if len(index_columns) > 1:
             index_dtypes = {column: df[column].dtype for column in index_columns}
