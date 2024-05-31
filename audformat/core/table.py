@@ -902,8 +902,6 @@ class Base(HeaderBase):
                 pa.string(): pd.StringDtype(),
             }.get,  # we have to provide a callable, not a dict
         )
-        # Free no longer needed memory
-        del table
         # Adjust dtypes, that cannot be handled by pyarrow
         for column in timedelta_columns:
             if len(df) == 0:
