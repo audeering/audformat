@@ -18,7 +18,6 @@ from audformat.core.column import Column
 from audformat.core.common import HeaderBase
 from audformat.core.common import HeaderDict
 from audformat.core.common import to_audformat_dtype
-from audformat.core.common import to_pyarrow_dtype
 from audformat.core.errors import BadIdError
 from audformat.core.index import filewise_index
 from audformat.core.index import index_type
@@ -946,16 +945,28 @@ class Base(HeaderBase):
         # the pyarrow.Schema
         # used when reading the CSV file
         pyarrow_dtypes = []
+        # Mapping from audformat to pyarrow dtypes
+        to_pyarrow_dtype = {
+            define.DataType.BOOL: pa.bool_(),
+            define.DataType.DATE: pa.timestamp("ns"),
+            define.DataType.FLOAT: pa.float64(),
+            define.DataType.INTEGER: pa.int64(),
+            define.DataType.STRING: pa.string(),
+            # A better fitting type would be `pa.duration("ns")`,
+            # but this is not yet supported
+            # when reading CSV files
+            define.DataType.TIME: pa.string(),
+        }
         # Index
         for level, dtype in self.levels.items():
-            if dtype != define.DataType.OBJECT:
-                pyarrow_dtypes.append((level, to_pyarrow_dtype(dtype)))
+            if dtype in to_pyarrow_dtype:
+                pyarrow_dtypes.append((level, to_pyarrow_dtype[dtype]))
         # Columns
         for column_id, column in self.columns.items():
             if column.scheme_id is not None:
                 dtype = self.db.schemes[column.scheme_id].dtype
-                if dtype != define.DataType.OBJECT:
-                    pyarrow_dtypes.append((column_id, to_pyarrow_dtype(dtype)))
+                if dtype in to_pyarrow_dtype:
+                    pyarrow_dtypes.append((column_id, to_pyarrow_dtype[dtype]))
 
         # Read CSV file
         table = csv.read_csv(
