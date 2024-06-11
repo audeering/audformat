@@ -884,11 +884,7 @@ class Base(HeaderBase):
                 strings_can_be_null=True,
             ),
         )
-        df = self._pyarrow_table_to_dataframe(table)
-
-        # Adjust dtypes and set index
-        df = self._pyarrow_convert_dtypes(df, convert_all=True)
-        df = self._set_index(df, list(self.levels.keys()))
+        df = self._pyarrow_table_to_dataframe(table, from_csv=True)
 
         self._df = df
 
@@ -904,10 +900,6 @@ class Base(HeaderBase):
         # Read PARQUET file
         table = parquet.read_table(path)
         df = self._pyarrow_table_to_dataframe(table)
-
-        # Adjust dtypes and set index
-        df = self._pyarrow_convert_dtypes(df)
-        df = self._set_index(df, list(self.levels.keys()))
 
         self._df = df
 
@@ -1032,22 +1024,34 @@ class Base(HeaderBase):
             df[column] = df[column].astype(dtype)
         return df
 
-    def _pyarrow_table_to_dataframe(self, table: pa.Table) -> pd.DataFrame:
+    def _pyarrow_table_to_dataframe(
+        self,
+        table: pa.Table,
+        *,
+        from_csv: bool = False,
+    ) -> pd.DataFrame:
         r"""Convert pyarrow table to pandas dataframe.
 
         Args:
             table: pyarrow table
+            from_csv: if ``True`` it assumes,
+                that ``table`` was created by reading a CSV file,
+                and it will convert all needed dtypes
 
         Returns:
             dataframe
 
         """
-        return table.to_pandas(
+        df = table.to_pandas(
             deduplicate_objects=False,
             types_mapper={
                 pa.string(): pd.StringDtype(),
             }.get,  # we have to provide a callable, not a dict
         )
+        # Adjust dtypes and set index
+        df = self._pyarrow_convert_dtypes(df, convert_all=from_csv)
+        df = self._set_index(df, list(self.levels.keys()))
+        return df
 
     def _save_csv(self, path: str):
         # Load table before opening CSV file
