@@ -8,6 +8,7 @@ import typing
 import pandas as pd
 import pyarrow as pa
 import pyarrow.csv as csv
+import pyarrow.parquet as parquet
 
 import audeer
 
@@ -460,44 +461,60 @@ class Base(HeaderBase):
 
         """
         path = audeer.path(path)
-        pkl_file = f"{path}.{define.TableStorageFormat.PICKLE}"
         csv_file = f"{path}.{define.TableStorageFormat.CSV}"
+        parquet_file = f"{path}.{define.TableStorageFormat.PARQUET}"
+        pkl_file = f"{path}.{define.TableStorageFormat.PICKLE}"
 
-        if not os.path.exists(pkl_file) and not os.path.exists(csv_file):
+        if (
+            not os.path.exists(pkl_file)
+            and not os.path.exists(csv_file)
+            and not os.path.exists(parquet_file)
+        ):
             raise RuntimeError(
-                f"No file found for table with path '{path}.{{pkl|csv}}'"
+                f"No file found for table with path '{path}.{{csv|parquet|pkl}}'"
             )
 
-        # Load from PKL if file exists and is newer then CSV file.
-        # If both are written by Database.save() this is the case
+        # Load from PKL if file exists
+        # and is newer than CSV or PARQUET file.
+        # If files are written by Database.save()
+        # this is always the case
         # as it stores first the PKL file
         pickled = False
         if os.path.exists(pkl_file):
-            if os.path.exists(csv_file) and os.path.getmtime(
-                csv_file
-            ) > os.path.getmtime(pkl_file):
-                raise RuntimeError(
-                    f"The table CSV file '{csv_file}' is newer "
-                    f"than the table PKL file '{pkl_file}'. "
-                    "If you want to load from the CSV file, "
-                    "please delete the PKL file. "
-                    "If you want to load from the PKL file, "
-                    "please delete the CSV file."
-                )
+            for file in [parquet_file, csv_file]:
+                if os.path.exists(file) and os.path.getmtime(file) > os.path.getmtime(
+                    pkl_file
+                ):
+                    ext = audeer.file_extension(file).upper()
+                    raise RuntimeError(
+                        f"The table {ext} file '{file}' is newer "
+                        f"than the table PKL file '{pkl_file}'. "
+                        f"If you want to load from the {ext} file, "
+                        "please delete the PKL file. "
+                        "If you want to load from the PKL file, "
+                        f"please delete the {ext} file."
+                    )
             pickled = True
 
         if pickled:
             try:
                 self._load_pickled(pkl_file)
             except (AttributeError, ValueError, EOFError) as ex:
-                # if exception is raised (e.g. unsupported pickle protocol)
-                # try to load from CSV and save it again
+                # If exception is raised
+                # (e.g. unsupported pickle protocol)
+                # try to load from PARQUET or CSV
+                # and save it again
                 # otherwise raise error
-                if os.path.exists(csv_file):
+                if os.path.exists(parquet_file):
+                    self._load_parquet(parquet_file)
+                    self._save_pickled(pkl_file)
+                elif os.path.exists(csv_file):
                     self._load_csv(csv_file)
                     self._save_pickled(pkl_file)
                 else:
                     raise ex
+        elif os.path.exists(parquet_file):
+            self._load_parquet(parquet_file)
         else:
             self._load_csv(csv_file)
 
@@ -563,7 +580,7 @@ class Base(HeaderBase):
         self,
         path: str,
         *,
-        storage_format: str = define.TableStorageFormat.CSV,
+        storage_format: str = define.TableStorageFormat.PARQUET,
         update_other_formats: bool = True,
     ):
         r"""Save table data to disk.
@@ -583,15 +600,23 @@ class Base(HeaderBase):
         path = audeer.path(path)
         define.TableStorageFormat._assert_has_attribute_value(storage_format)
 
-        pickle_file = path + f".{define.TableStorageFormat.PICKLE}"
-        csv_file = path + f".{define.TableStorageFormat.CSV}"
+        parquet_file = f"{path}.{define.TableStorageFormat.PARQUET}"
+        pickle_file = f"{path}.{define.TableStorageFormat.PICKLE}"
+        csv_file = f"{path}.{define.TableStorageFormat.CSV}"
 
-        # Make sure the CSV file is always written first
+        # Make sure the CSV|PARQUET file is always written first
         # as it is expected to be older by load()
         if storage_format == define.TableStorageFormat.PICKLE:
-            if update_other_formats and os.path.exists(csv_file):
+            if update_other_formats and os.path.exists(parquet_file):
+                self._save_parquet(parquet_file)
+            elif update_other_formats and os.path.exists(csv_file):
                 self._save_csv(csv_file)
             self._save_pickled(pickle_file)
+
+        if storage_format == define.TableStorageFormat.PARQUET:
+            self._save_parquet(parquet_file)
+            if update_other_formats and os.path.exists(pickle_file):
+                self._save_pickled(pickle_file)
 
         if storage_format == define.TableStorageFormat.CSV:
             self._save_csv(csv_file)
@@ -947,6 +972,97 @@ class Base(HeaderBase):
 
         self._df = df
 
+    def _load_parquet(self, path: str):
+        r"""Load table from PARQUET file.
+
+        The loaded table is stored under ``self._df``.
+
+        Args:
+            path: path to table, including file extension
+
+        """
+        schemes = self.db.schemes
+
+        # === Infer dtypes ===
+
+        # Collect columns,
+        # that cannot directly be converted
+        # from pyarrow to pandas
+        object_columns = []
+
+        # Collect columns,
+        # belonging to the index
+        index_columns = []
+
+        # --- Index ---
+        if hasattr(self, "type"):
+            levels = {}
+            # filewise or segmented table
+            levels[define.IndexField.FILE] = define.DataType.STRING
+            if self.type == define.IndexType.SEGMENTED:
+                # segmented table
+                for level in [define.IndexField.START, define.IndexField.END]:
+                    levels[level] = define.DataType.TIME
+        else:
+            # misc table
+            levels = self.levels
+        index_columns += list(levels.keys())
+        for name, dtype in levels.items():
+            if dtype == define.DataType.OBJECT:
+                object_columns.append(name)
+
+        # --- Columns ---
+        categories = {}
+        for column_id, column in self.columns.items():
+            if column.scheme_id is not None:
+                scheme = schemes[column.scheme_id]
+                if scheme.labels is not None:
+                    categories[column_id] = scheme._labels_to_list()
+                if scheme.dtype == define.DataType.OBJECT:
+                    object_columns.append(column_id)
+            else:
+                object_columns.append(column_id)
+
+        # === Read CSV ===
+        table = parquet.read_table(path)
+        df = table.to_pandas(
+            deduplicate_objects=False,
+            types_mapper={
+                pa.string(): pd.StringDtype(),
+            }.get,  # we have to provide a callable, not a dict
+        )
+
+        # === Adjust dtypes ===
+
+        # Adjust dtypes, that cannot be handled by pyarrow
+        for column in object_columns:
+            df[column] = df[column].astype("object")
+            df[column] = df[column].replace(pd.NA, None)
+        for column, labels in categories.items():
+            if len(labels) > 0 and isinstance(labels[0], int):
+                # allow nullable
+                labels = pd.array(labels, dtype="int64")
+            dtype = pd.api.types.CategoricalDtype(
+                categories=labels,
+                ordered=False,
+            )
+            df[column] = df[column].astype(dtype)
+
+        # === Set index ===
+
+        # When assigning more than one column,
+        # a MultiIndex is assigned.
+        # Setting a MultiIndex does not always preserve pandas dtypes,
+        # so we need to set them manually.
+        #
+        if len(index_columns) > 1:
+            index_dtypes = {column: df[column].dtype for column in index_columns}
+        df.set_index(index_columns, inplace=True)
+        if len(index_columns) > 1:
+            df.index = utils.set_index_dtypes(df.index, index_dtypes)
+
+        self._df = df
+
     def _load_pickled(self, path: str):
         # Older versions of audformat used xz compression
         # which produced smaller files,
@@ -976,9 +1092,22 @@ class Base(HeaderBase):
         # Load table before opening CSV file
         # to avoid creating a CSV file
         # that is newer than the PKL file
-        df = self.df
+        df = self.df  # loads table
         with open(path, "w") as fp:
             df.to_csv(fp, encoding="utf-8")
+
+    def _save_parquet(self, path: str):
+        # Load table before opening PARQUET file
+        # to avoid creating a PARQUET file
+        # that is newer than the PKL file
+        df = self.df  # loads table
+        table = pa.Table.from_pandas(
+            df.reset_index(),
+            preserve_index=False,
+            # TODO: check if faster when providing schema?
+            # schema=self._schema,
+        )
+        parquet.write_table(table, path)
 
     def _save_pickled(self, path: str):
         self.df.to_pickle(

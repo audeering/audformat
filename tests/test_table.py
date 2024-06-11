@@ -1,4 +1,5 @@
 import os
+import re
 import typing
 
 import numpy as np
@@ -1118,22 +1119,25 @@ def test_load(tmpdir):
     with pytest.raises(EOFError):
         table_loaded.load(path_no_ext)
 
-    # repeat with CSV file as fall back
-    table.save(
-        path_no_ext,
-        storage_format=audformat.define.TableStorageFormat.CSV,
-    )
-    with open(path_pkl, "wb"):
-        pass
-    table_loaded = audformat.Table()
-    table_loaded.columns = table.columns
-    table_loaded._db = table._db
-    table_loaded.load(path_no_ext)
-    pd.testing.assert_frame_equal(table.df, table_loaded.df)
+    # repeat with CSV|PARQUET file as fall back
+    for ext in [
+        audformat.define.TableStorageFormat.CSV,
+        audformat.define.TableStorageFormat.PARQUET,
+    ]:
+        table.save(path_no_ext, storage_format=ext)
+        with open(path_pkl, "wb"):
+            pass
+        table_loaded = audformat.Table()
+        table_loaded.columns = table.columns
+        table_loaded._db = table._db
+        table_loaded.load(path_no_ext)
+        pd.testing.assert_frame_equal(table.df, table_loaded.df)
 
-    # check if pickle file was recovered from CSV
-    df = pd.read_pickle(path_pkl)
-    pd.testing.assert_frame_equal(table.df, df)
+        # check if pickle file was recovered
+        df = pd.read_pickle(path_pkl)
+        pd.testing.assert_frame_equal(table.df, df)
+
+        os.remove(f"{path_no_ext}.{ext}")
 
 
 def test_load_old_pickle(tmpdir):
@@ -1401,6 +1405,98 @@ def test_pick_index(table, index, expected):
     pd.testing.assert_index_equal(table.index, index_org)
     table.pick_index(index, inplace=True)
     pd.testing.assert_index_equal(table.index, expected)
+
+
+@pytest.mark.parametrize(
+    "storage_format",
+    [
+        pytest.param(
+            "csv",
+            marks=pytest.mark.skip(reason="CSV does not support numpy arrays"),
+        ),
+        "parquet",
+        "pkl",
+    ],
+)
+def test_save_and_load(tmpdir, storage_format):
+    r"""Test saving and loading of a table.
+
+    Ensures the table dataframe representation
+    is identical after saving and loading a table.
+
+    Args:
+        tmpdir: tmpdir fixture
+        storage_format: storage format
+            the table should be written to disk.
+            This will also be used as file extension
+
+    """
+    db = audformat.testing.create_db()
+
+    # Extend database with more table/scheme combinations
+    db.schemes["int-labels"] = audformat.Scheme(
+        dtype=audformat.define.DataType.INTEGER,
+        labels=[0, 1],
+    )
+    db.schemes["object"] = audformat.Scheme(audformat.define.DataType.OBJECT)
+    index = pd.MultiIndex.from_arrays(
+        [[0, 1], ["a", "b"]],
+        names=["idx1", "idx2"],
+    )
+    index = audformat.utils.set_index_dtypes(
+        index,
+        {
+            "idx1": audformat.define.DataType.INTEGER,
+            "idx2": audformat.define.DataType.OBJECT,
+        },
+    )
+    db["multi-misc"] = audformat.MiscTable(index)
+    db["multi-misc"]["int"] = audformat.Column(scheme_id="int-labels")
+    db["multi-misc"]["int"].set([0, pd.NA])
+    db["multi-misc"]["bool"] = audformat.Column(scheme_id="bool")
+    db["multi-misc"]["bool"].set([True, pd.NA])
+    db["multi-misc"]["arrays"] = audformat.Column(scheme_id="object")
+    db["multi-misc"]["arrays"].set([np.array([0, 1]), np.array([2, 3])])
+    db["multi-misc"]["lists"] = audformat.Column(scheme_id="object")
+    db["multi-misc"]["lists"].set([[0, 1], [2, 3]])
+
+    for table_id in list(db):
+        expected_df = db[table_id].get()
+        path_wo_ext = audeer.path(tmpdir, table_id)
+        path = f"{path_wo_ext}.{storage_format}"
+        db[table_id].save(path_wo_ext, storage_format=storage_format)
+        assert os.path.exists(path)
+        db[table_id].load(path_wo_ext)
+        pd.testing.assert_frame_equal(db[table_id].df, expected_df)
+
+
+@pytest.mark.parametrize(
+    "storage_format, expected_error, expected_error_msg",
+    [
+        (
+            "non-existing",
+            audformat.errors.BadValueError,
+            re.escape(
+                "Bad value 'non-existing', expected one of ['csv', 'parquet', 'pkl']"
+            ),
+        ),
+    ],
+)
+def test_save_errors(tmpdir, storage_format, expected_error, expected_error_msg):
+    r"""Test errors when saving a table.
+
+    Args:
+        tmpdir: tmpdir fixture
+        storage_format: storage format of table
+        expected_error: expected error, e.g. ``ValueError``
+        expected_error_msg: expected test of error message
+
+    """
+    db = audformat.testing.create_db()
+    table_id = list(db)[0]
+    path_wo_ext = audeer.path(tmpdir, table_id)
+    with pytest.raises(expected_error, match=expected_error_msg):
+        db[table_id].save(path_wo_ext, storage_format=storage_format)
 
 
 @pytest.mark.parametrize(

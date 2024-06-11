@@ -337,6 +337,9 @@ class TableStorageFormat(DefineBase):
     CSV = "csv"
     """File extension for tables stored in CSV format."""
 
+    PARQUET = "parquet"
+    """File extension for tables stored in PARQUET format."""
+
     PICKLE = "pkl"
     """File extension for tables stored in PKL format."""
 

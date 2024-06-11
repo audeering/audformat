@@ -448,6 +448,12 @@ def test_map_files(num_workers):
     [
         (
             audformat.testing.create_db(minimal=True),
+            audformat.define.TableStorageFormat.PARQUET,
+            False,
+            1,
+        ),
+        (
+            audformat.testing.create_db(minimal=True),
             audformat.define.TableStorageFormat.CSV,
             False,
             1,
@@ -457,6 +463,12 @@ def test_map_files(num_workers):
             audformat.define.TableStorageFormat.PICKLE,
             False,
             1,
+        ),
+        (
+            audformat.testing.create_db(),
+            audformat.define.TableStorageFormat.PARQUET,
+            False,
+            4,
         ),
         (
             audformat.testing.create_db(),
@@ -479,6 +491,11 @@ def test_map_files(num_workers):
     ],
 )
 def test_save_and_load(tmpdir, db, storage_format, load_data, num_workers):
+    all_formats = audformat.define.TableStorageFormat._attribute_values()
+    non_cache_formats = [
+        ext for ext in all_formats if ext != audformat.define.TableStorageFormat.PICKLE
+    ]
+
     assert db.root is None
     audformat.testing.create_attachment_files(db, tmpdir)
     db.save(
@@ -490,7 +507,7 @@ def test_save_and_load(tmpdir, db, storage_format, load_data, num_workers):
 
     expected_formats = [storage_format]
     for table_id in db.tables:
-        for ext in audformat.define.TableStorageFormat._attribute_values():
+        for ext in all_formats:
             table_file = os.path.join(tmpdir, f"db.{table_id}.{ext}")
             if ext in expected_formats:
                 assert os.path.exists(table_file)
@@ -498,7 +515,7 @@ def test_save_and_load(tmpdir, db, storage_format, load_data, num_workers):
                 assert not os.path.exists(table_file)
 
     # Test update other formats
-    if storage_format == audformat.define.TableStorageFormat.CSV and db.tables:
+    if storage_format in non_cache_formats and db.tables:
         db2 = audformat.testing.create_db()
         assert db2.root is None
         db2.save(
@@ -508,7 +525,7 @@ def test_save_and_load(tmpdir, db, storage_format, load_data, num_workers):
         )
         assert db.root == tmpdir
 
-        # Load prefers PKL files over CSV files,
+        # Load prefers PKL files,
         # which means we are loading the second database here
         db_load = audformat.Database.load(
             tmpdir,
@@ -621,14 +638,16 @@ def test_save_and_load(tmpdir, db, storage_format, load_data, num_workers):
     # Test missing table
     if db.tables:
         table_id = list(db.tables)[0]
-        for ext in audformat.define.TableStorageFormat._attribute_values():
+        for ext in all_formats:
             table_file = os.path.join(tmpdir, f"db.{table_id}.{ext}")
             if os.path.exists(table_file):
                 os.remove(table_file)
 
         # The replace part handles Windows paths
         table_path = table_file[:-4].replace("\\", "\\\\")
-        error_msg = r"No file found for table with path " rf"'{table_path}.{{pkl|csv}}'"
+        error_msg = (
+            r"No file found for table with path " rf"'{table_path}.{{csv|parquet|pkl}}'"
+        )
         with pytest.raises(RuntimeError, match=error_msg):
             db = audformat.Database.load(
                 tmpdir,
