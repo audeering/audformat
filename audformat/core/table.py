@@ -818,7 +818,125 @@ class Base(HeaderBase):
 
         return self
 
-    def _convert_pyarrow_dtypes(
+    def _get_by_index(
+        self,
+        index: pd.Index,
+    ) -> (pd.DataFrame, bool):  # pragma: no cover
+        # Executed when calling `self.get(index=index)`.
+        # Returns `df, df_is_copy`
+        raise NotImplementedError()
+
+    def _load_csv(self, path: str):
+        r"""Load table from CSV file.
+
+        The loaded table is stored under ``self._df``.
+
+        Loading a CSV file with :func:`pandas.read_csv()` is slower
+        than the method applied here.
+        We first load the CSV file as a :class:`pyarrow.Table`
+        and convert it to a dataframe afterwards.
+
+        Args:
+            path: path to table, including file extension
+
+        """
+        # Collect pyarrow dtypes
+        # of all columns,
+        # including index columns.
+        # The dtypes are stored as a tuple
+        # ``(column, dtype)``,
+        # and are used to create
+        # the pyarrow.Schema
+        # used when reading the CSV file
+        pyarrow_dtypes = []
+        # Mapping from audformat to pyarrow dtypes
+        to_pyarrow_dtype = {
+            define.DataType.BOOL: pa.bool_(),
+            define.DataType.DATE: pa.timestamp("ns"),
+            define.DataType.FLOAT: pa.float64(),
+            define.DataType.INTEGER: pa.int64(),
+            define.DataType.STRING: pa.string(),
+            # A better fitting type would be `pa.duration("ns")`,
+            # but this is not yet supported
+            # when reading CSV files
+            define.DataType.TIME: pa.string(),
+        }
+        # Index
+        for level, dtype in self.levels.items():
+            if dtype in to_pyarrow_dtype:
+                pyarrow_dtypes.append((level, to_pyarrow_dtype[dtype]))
+        # Columns
+        for column_id, column in self.columns.items():
+            if column.scheme_id is not None:
+                dtype = self.db.schemes[column.scheme_id].dtype
+                if dtype in to_pyarrow_dtype:
+                    pyarrow_dtypes.append((column_id, to_pyarrow_dtype[dtype]))
+
+        # Read CSV file
+        table = csv.read_csv(
+            path,
+            read_options=csv.ReadOptions(
+                column_names=list(self.levels.keys()) + list(self.columns.keys()),
+                skip_rows=1,
+            ),
+            convert_options=csv.ConvertOptions(
+                column_types=pa.schema(pyarrow_dtypes),
+                strings_can_be_null=True,
+            ),
+        )
+        df = self._pyarrow_table_to_dataframe(table)
+
+        # Adjust dtypes and set index
+        df = self._pyarrow_convert_dtypes(df, convert_all=True)
+        df = self._set_index(df, list(self.levels.keys()))
+
+        self._df = df
+
+    def _load_parquet(self, path: str):
+        r"""Load table from PARQUET file.
+
+        The loaded table is stored under ``self._df``.
+
+        Args:
+            path: path to table, including file extension
+
+        """
+        # Read PARQUET file
+        table = parquet.read_table(path)
+        df = self._pyarrow_table_to_dataframe(table)
+
+        # Adjust dtypes and set index
+        df = self._pyarrow_convert_dtypes(df)
+        df = self._set_index(df, list(self.levels.keys()))
+
+        self._df = df
+
+    def _load_pickled(self, path: str):
+        # Older versions of audformat used xz compression
+        # which produced smaller files,
+        # but was slower.
+        # The try-except statement allows backward compatibility
+        try:
+            df = pd.read_pickle(path)
+        except pickle.UnpicklingError:
+            df = pd.read_pickle(path, compression="xz")
+
+        # Older versions of audformat stored columns
+        # assigned to a string scheme as 'object',
+        # so we need to convert those to 'string'
+        for column_id, column in self.columns.items():
+            if (
+                column.scheme_id is not None
+                and (self.db.schemes[column.scheme_id].dtype == define.DataType.STRING)
+                and df[column_id].dtype == "object"
+            ):
+                df[column_id] = df[column_id].astype("string", copy=False)
+        # Fix index entries as well
+        df.index = _maybe_convert_dtype_to_string(df.index)
+
+        self._df = df
+
+    def _pyarrow_convert_dtypes(
         self,
         df: pd.DataFrame,
         *,
@@ -913,124 +1031,6 @@ class Base(HeaderBase):
             )
             df[column] = df[column].astype(dtype)
         return df
-
-    def _get_by_index(
-        self,
-        index: pd.Index,
-    ) -> (pd.DataFrame, bool):  # pragma: no cover
-        # Executed when calling `self.get(index=index)`.
-        # Returns `df, df_is_copy`
-        raise NotImplementedError()
-
-    def _load_csv(self, path: str):
-        r"""Load table from CSV file.
-
-        The loaded table is stored under ``self._df``.
-
-        Loading a CSV file with :func:`pandas.read_csv()` is slower
-        than the method applied here.
-        We first load the CSV file as a :class:`pyarrow.Table`
-        and convert it to a dataframe afterwards.
-
-        Args:
-            path: path to table, including file extension
-
-        """
-        # Collect pyarrow dtypes
-        # of all columns,
-        # including index columns.
-        # The dtypes are stored as a tuple
-        # ``(column, dtype)``,
-        # and are used to create
-        # the pyarrow.Schema
-        # used when reading the CSV file
-        pyarrow_dtypes = []
-        # Mapping from audformat to pyarrow dtypes
-        to_pyarrow_dtype = {
-            define.DataType.BOOL: pa.bool_(),
-            define.DataType.DATE: pa.timestamp("ns"),
-            define.DataType.FLOAT: pa.float64(),
-            define.DataType.INTEGER: pa.int64(),
-            define.DataType.STRING: pa.string(),
-            # A better fitting type would be `pa.duration("ns")`,
-            # but this is not yet supported
-            # when reading CSV files
-            define.DataType.TIME: pa.string(),
-        }
-        # Index
-        for level, dtype in self.levels.items():
-            if dtype in to_pyarrow_dtype:
-                pyarrow_dtypes.append((level, to_pyarrow_dtype[dtype]))
-        # Columns
-        for column_id, column in self.columns.items():
-            if column.scheme_id is not None:
-                dtype = self.db.schemes[column.scheme_id].dtype
-                if dtype in to_pyarrow_dtype:
-                    pyarrow_dtypes.append((column_id, to_pyarrow_dtype[dtype]))
-
-        # Read CSV file
-        table = csv.read_csv(
-            path,
-            read_options=csv.ReadOptions(
-                column_names=list(self.levels.keys()) + list(self.columns.keys()),
-                skip_rows=1,
-            ),
-            convert_options=csv.ConvertOptions(
-                column_types=pa.schema(pyarrow_dtypes),
-                strings_can_be_null=True,
-            ),
-        )
-        df = self._pyarrow_table_to_dataframe(table)
-
-        # Adjust dtypes and set index
-        df = self._convert_pyarrow_dtypes(df, convert_all=True)
-        df = self._set_index(df, list(self.levels.keys()))
-
-        self._df = df
-
-    def _load_parquet(self, path: str):
-        r"""Load table from PARQUET file.
-
-        The loaded table is stored under ``self._df``.
-
-        Args:
-            path: path to table, including file extension
-
-        """
-        # Read PARQUET file
-        table = parquet.read_table(path)
-        df = self._pyarrow_table_to_dataframe(table)
-
-        # Adjust dtypes and set index
-        df = self._convert_pyarrow_dtypes(df)
-        df = self._set_index(df, list(self.levels.keys()))
-
-        self._df = df
-
-    def _load_pickled(self, path: str):
-        # Older versions of audformat used xz compression
-        # which produced smaller files,
-        # but was slower.
-        # The try-except statement allows backward compatibility
-        try:
-            df = pd.read_pickle(path)
-        except pickle.UnpicklingError:
-            df = pd.read_pickle(path, compression="xz")
-
-        # Older versions of audformat stored columns
-        # assigned to a string scheme as 'object',
-        # so we need to convert those to 'string'
-        for column_id, column in self.columns.items():
-            if (
-                column.scheme_id is not None
-                and (self.db.schemes[column.scheme_id].dtype == define.DataType.STRING)
-                and df[column_id].dtype == "object"
-            ):
-                df[column_id] = df[column_id].astype("string", copy=False)
-        # Fix index entries as well
-        df.index = _maybe_convert_dtype_to_string(df.index)
-
-        self._df = df
 
     def _pyarrow_table_to_dataframe(self, table: pa.Table) -> pd.DataFrame:
         r"""Convert pyarrow table to pandas dataframe.
