@@ -819,6 +819,102 @@ class Base(HeaderBase):
 
         return self
 
+    def _convert_pyarrow_dtypes(
+        self,
+        df: pd.DataFrame,
+        *,
+        convert_all: bool = False,
+    ) -> pd.DataFrame:
+        r"""Convert dtypes that are not handled by pyarrow.
+
+        This adjusts dtypes in a dataframe,
+        that could not be set correctly
+        when converting to the dataframe
+        from pyarrow.
+
+        Args:
+            df: dataframe,
+            convert_all: if ``False``,
+                converts all columns with
+                ``"object"`` audformat dtype,
+                and all columns with a scheme with labels.
+                If ``"True"``,
+                it converts additionally all columns with
+                ``"bool"``, ``"int"``, and ``"time"`` audformat dtypes
+
+        Returns:
+            dataframe with converted dtypes
+
+        """
+        # Collect columns with dtypes,
+        # that cannot directly be converted
+        # from pyarrow to pandas
+        bool_columns = []
+        int_columns = []
+        time_columns = []
+        object_columns = []
+
+        # Collect columns
+        # with scheme labels
+        labeled_columns = []
+
+        # Collect columns,
+        # belonging to the index
+        index_columns = []
+
+        # --- Index ---
+        index_columns += list(self.levels.keys())
+        for level, dtype in self.levels.items():
+            if dtype == define.DataType.BOOL:
+                bool_columns.append(level)
+            elif dtype == define.DataType.INTEGER:
+                int_columns.append(level)
+            elif dtype == define.DataType.TIME:
+                time_columns.append(level)
+            elif dtype == define.DataType.OBJECT:
+                object_columns.append(level)
+
+        # --- Columns ---
+        for column_id, column in self.columns.items():
+            if column.scheme_id is not None:
+                scheme = self.db.schemes[column.scheme_id]
+                if scheme.labels is not None:
+                    labeled_columns.append(column_id)
+                elif scheme.dtype == define.DataType.BOOL:
+                    bool_columns.append(column_id)
+                elif scheme.dtype == define.DataType.INTEGER:
+                    int_columns.append(column_id)
+                elif scheme.dtype == define.DataType.TIME:
+                    time_columns.append(column_id)
+                elif scheme.dtype == define.DataType.OBJECT:
+                    object_columns.append(column_id)
+            else:
+                # No scheme defaults to `object` dtype
+                object_columns.append(column_id)
+
+        if convert_all:
+            for column in bool_columns:
+                df[column] = df[column].astype("boolean")
+            for column in int_columns:
+                df[column] = df[column].astype("Int64")
+            for column in time_columns:
+                df[column] = df[column].astype("timedelta64[ns]")
+        for column in object_columns:
+            df[column] = df[column].astype("object")
+            df[column] = df[column].replace(pd.NA, None)
+        for column in labeled_columns:
+            scheme = self.db.schemes[self.columns[column].scheme_id]
+            labels = scheme._labels_to_list()
+            if len(labels) > 0 and isinstance(labels[0], int):
+                # allow nullable
+                labels = pd.array(labels, dtype="int64")
+            dtype = pd.api.types.CategoricalDtype(
+                categories=labels,
+                ordered=False,
+            )
+            df[column] = df[column].astype(dtype)
+        return df
+
     def _get_by_index(
         self,
         index: pd.Index,
@@ -841,134 +937,43 @@ class Base(HeaderBase):
             path: path to table, including file extension
 
         """
-        schemes = self.db.schemes
-
-        # === Infer dtypes ===
-
         # Collect pyarrow dtypes
-        # of the CSV file,
-        # by inspecting the audformat schemes,
-        # and the index
-        # associated with the table.
-        # The dtypes are used to create
+        # of all columns,
+        # including index columns.
+        # The dtypes are stored as a tuple
+        # ``(column, dtype)``,
+        # and are used to create
         # the pyarrow.Schema
         # used when reading the CSV file
         pyarrow_dtypes = []
-
-        # Collect columns,
-        # that cannot directly be converted
-        # from pyarrow to pandas
-        timedelta_columns = []
-        boolean_columns = []
-        object_columns = []
-        integer_columns = []
-
-        # Collect columns,
-        # belonging to the index
-        index_columns = []
-
-        # --- Index ---
-        if hasattr(self, "type"):
-            levels = {}
-            # filewise or segmented table
-            levels[define.IndexField.FILE] = define.DataType.STRING
-            if self.type == define.IndexType.SEGMENTED:
-                # segmented table
-                for level in [define.IndexField.START, define.IndexField.END]:
-                    levels[level] = define.DataType.TIME
-        else:
-            # misc table
-            levels = self.levels
-        index_columns += list(levels.keys())
-        for name, dtype in levels.items():
-            pyarrow_dtype = to_pyarrow_dtype(dtype)
-            if pyarrow_dtype is not None:
-                pyarrow_dtypes.append((name, pyarrow_dtype))
-                if dtype == define.DataType.TIME:
-                    timedelta_columns.append(name)
-                elif dtype == define.DataType.INTEGER:
-                    integer_columns.append(name)
-                elif dtype == define.DataType.BOOL:
-                    boolean_columns.append(name)
-            else:
-                object_columns.append(name)
-
-        # --- Columns ---
-        categories = {}
-        columns = list(self.columns)
+        # Index
+        for level, dtype in self.levels.items():
+            if dtype != define.DataType.OBJECT:
+                pyarrow_dtypes.append((level, to_pyarrow_dtype(dtype)))
+        # Columns
         for column_id, column in self.columns.items():
             if column.scheme_id is not None:
-                scheme = schemes[column.scheme_id]
-                if scheme.labels is not None:
-                    categories[column_id] = scheme._labels_to_list()
-                pyarrow_dtype = to_pyarrow_dtype(scheme.dtype)
-                if pyarrow_dtype is not None:
-                    pyarrow_dtypes.append((column_id, pyarrow_dtype))
-                    if scheme.dtype == define.DataType.TIME:
-                        timedelta_columns.append(column_id)
-                    elif scheme.dtype == define.DataType.BOOL:
-                        boolean_columns.append(column_id)
-                    elif scheme.dtype == define.DataType.INTEGER:
-                        integer_columns.append(column_id)
-                else:
-                    object_columns.append(column_id)
-            else:
-                object_columns.append(column_id)
+                dtype = self.db.schemes[column.scheme_id].dtype
+                if dtype != define.DataType.OBJECT:
+                    pyarrow_dtypes.append((column_id, to_pyarrow_dtype(dtype)))
 
-        # === Read CSV ===
-        schema = pa.schema(pyarrow_dtypes)
+        # Read CSV file
         table = csv.read_csv(
             path,
             read_options=csv.ReadOptions(
-                column_names=index_columns + columns,
+                column_names=list(self.levels.keys()) + list(self.columns.keys()),
                 skip_rows=1,
             ),
             convert_options=csv.ConvertOptions(
-                column_types=schema,
+                column_types=pa.schema(pyarrow_dtypes),
                 strings_can_be_null=True,
             ),
         )
-        df = table.to_pandas(
-            deduplicate_objects=False,
-            types_mapper={
-                pa.string(): pd.StringDtype(),
-            }.get,  # we have to provide a callable, not a dict
-        )
+        df = self._pyarrow_table_to_dataframe(table)
 
-        # === Adjust dtypes ===
-
-        # Adjust dtypes, that cannot be handled by pyarrow
-        for column in timedelta_columns:
-            df[column] = df[column].astype("timedelta64[ns]")
-        for column in boolean_columns:
-            df[column] = df[column].astype("boolean")
-        for column in object_columns:
-            df[column] = df[column].astype("object")
-            df[column] = df[column].replace(pd.NA, None)
-        for column in integer_columns:
-            df[column] = df[column].astype("Int64")
-        for column, labels in categories.items():
-            if len(labels) > 0 and isinstance(labels[0], int):
-                # allow nullable
-                labels = pd.array(labels, dtype="int64")
-            dtype = pd.api.types.CategoricalDtype(
-                categories=labels,
-                ordered=False,
-            )
-            df[column] = df[column].astype(dtype)
-
-        # === Set index ===
-
-        # When assigning more than one column,
-        # a MultiIndex is assigned.
-        # Setting a MultiIndex does not always preserve pandas dtypes,
-        # so we need to set them manually.
-        #
-        if len(index_columns) > 1:
-            index_dtypes = {column: df[column].dtype for column in index_columns}
-        df.set_index(index_columns, inplace=True)
-        if len(index_columns) > 1:
-            df.index = utils.set_index_dtypes(df.index, index_dtypes)
+        # Adjust dtypes and set index
+        df = self._convert_pyarrow_dtypes(df, convert_all=True)
+        df = self._set_index(df, list(self.levels.keys()))
 
         self._df = df
 
@@ -981,85 +986,13 @@ class Base(HeaderBase):
             path: path to table, including file extension
 
         """
-        schemes = self.db.schemes
-
-        # === Infer dtypes ===
-
-        # Collect columns,
-        # that cannot directly be converted
-        # from pyarrow to pandas
-        object_columns = []
-
-        # Collect columns,
-        # belonging to the index
-        index_columns = []
-
-        # --- Index ---
-        if hasattr(self, "type"):
-            levels = {}
-            # filewise or segmented table
-            levels[define.IndexField.FILE] = define.DataType.STRING
-            if self.type == define.IndexType.SEGMENTED:
-                # segmented table
-                for level in [define.IndexField.START, define.IndexField.END]:
-                    levels[level] = define.DataType.TIME
-        else:
-            # misc table
-            levels = self.levels
-        index_columns += list(levels.keys())
-        for name, dtype in levels.items():
-            if dtype == define.DataType.OBJECT:
-                object_columns.append(name)
-
-        # --- Columns ---
-        categories = {}
-        for column_id, column in self.columns.items():
-            if column.scheme_id is not None:
-                scheme = schemes[column.scheme_id]
-                if scheme.labels is not None:
-                    categories[column_id] = scheme._labels_to_list()
-                if scheme.dtype == define.DataType.OBJECT:
-                    object_columns.append(column_id)
-            else:
-                object_columns.append(column_id)
-
-        # === Read CSV ===
+        # Read PARQUET file
         table = parquet.read_table(path)
-        df = table.to_pandas(
-            deduplicate_objects=False,
-            types_mapper={
-                pa.string(): pd.StringDtype(),
-            }.get,  # we have to provide a callable, not a dict
-        )
+        df = self._pyarrow_table_to_dataframe(table)
 
-        # === Adjust dtypes ===
-
-        # Adjust dtypes, that cannot be handled by pyarrow
-        for column in object_columns:
-            df[column] = df[column].astype("object")
-            df[column] = df[column].replace(pd.NA, None)
-        for column, labels in categories.items():
-            if len(labels) > 0 and isinstance(labels[0], int):
-                # allow nullable
-                labels = pd.array(labels, dtype="int64")
-            dtype = pd.api.types.CategoricalDtype(
-                categories=labels,
-                ordered=False,
-            )
-            df[column] = df[column].astype(dtype)
-
-        # === Set index ===
-
-        # When assigning more than one column,
-        # a MultiIndex is assigned.
-        # Setting a MultiIndex does not always preserve pandas dtypes,
-        # so we need to set them manually.
-        #
-        if len(index_columns) > 1:
-            index_dtypes = {column: df[column].dtype for column in index_columns}
-        df.set_index(index_columns, inplace=True)
-        if len(index_columns) > 1:
-            df.index = utils.set_index_dtypes(df.index, index_dtypes)
+        # Adjust dtypes and set index
+        df = self._convert_pyarrow_dtypes(df)
+        df = self._set_index(df, list(self.levels.keys()))
 
         self._df = df
 
@@ -1087,6 +1020,23 @@ class Base(HeaderBase):
         df.index = _maybe_convert_dtype_to_string(df.index)
 
         self._df = df
+
+    def _pyarrow_table_to_dataframe(self, table: pa.Table) -> pd.DataFrame:
+        r"""Convert pyarrow table to pandas dataframe.
+
+        Args:
+            table: pyarrow table
+
+        Returns:
+            dataframe
+
+        """
+        return table.to_pandas(
+            deduplicate_objects=False,
+            types_mapper={
+                pa.string(): pd.StringDtype(),
+            }.get,  # we have to provide a callable, not a dict
+        )
 
     def _save_csv(self, path: str):
         # Load table before opening CSV file
@@ -1148,6 +1098,31 @@ class Base(HeaderBase):
         column._table = self
 
         return column
+
+    def _set_index(self, df: pd.DataFrame, columns: typing.Sequence) -> pd.DataFrame:
+        r"""Set columns as index.
+
+        Setting of index columns is performed inplace!
+
+        Args:
+            df: dataframe
+            columns: columns to be set as index of dataframe
+
+        Returns:
+            updated dataframe
+
+        """
+        # When assigning more than one column,
+        # a MultiIndex is assigned.
+        # Setting a MultiIndex does not always preserve pandas dtypes,
+        # so we need to set them manually.
+        #
+        if len(columns) > 1:
+            dtypes = {column: df[column].dtype for column in columns}
+        df.set_index(columns, inplace=True)
+        if len(columns) > 1:
+            df.index = utils.set_index_dtypes(df.index, dtypes)
+        return df
 
 
 class MiscTable(Base):
@@ -1348,6 +1323,7 @@ class Table(Base):
         >>> table["values"] = Column()
         >>> table
         type: filewise
+        levels: {file: str}
         split_id: test
         columns:
           values: {}
@@ -1438,6 +1414,15 @@ class Table(Base):
         for possible values.
 
         """
+
+        levels = {}
+        levels[define.IndexField.FILE] = define.DataType.STRING
+        if self.type == define.IndexType.SEGMENTED:
+            levels[define.IndexField.START] = define.DataType.TIME
+            levels[define.IndexField.END] = define.DataType.TIME
+
+        self.levels = levels
+        r"""Index levels."""
 
         super().__init__(
             index,
