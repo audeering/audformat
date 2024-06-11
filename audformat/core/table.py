@@ -1099,12 +1099,7 @@ class Base(HeaderBase):
             df.to_csv(fp, encoding="utf-8")
 
     def _save_parquet(self, path: str):
-        table = pa.Table.from_pandas(
-            self.df.reset_index(),
-            preserve_index=False,
-            # TODO: check if faster when providing schema?
-            # schema=self._schema,
-        )
+        table = pa.Table.from_pandas(self.df.reset_index(), preserve_index=False)
         parquet.write_table(table, path)
 
     def _save_pickled(self, path: str):
