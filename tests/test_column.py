@@ -24,6 +24,190 @@ def test_access():
                 assert column.rater is None
 
 
+@pytest.mark.parametrize(
+    "column_values, column_dtype, expected_pandas_dtype, expected_audformat_dtype",
+    [
+        (
+            [],
+            None,
+            "object",
+            audformat.define.DataType.OBJECT,
+        ),
+        (
+            [],
+            bool,
+            "boolean",
+            audformat.define.DataType.BOOL,
+        ),
+        (
+            [],
+            "boolean",
+            "boolean",
+            audformat.define.DataType.BOOL,
+        ),
+        (
+            [],
+            "datetime64[ns]",
+            "datetime64[ns]",
+            audformat.define.DataType.DATE,
+        ),
+        (
+            [],
+            float,
+            "float64",
+            audformat.define.DataType.FLOAT,
+        ),
+        (
+            [],
+            int,
+            "Int64",
+            audformat.define.DataType.INTEGER,
+        ),
+        (
+            [],
+            "int64",
+            "Int64",
+            audformat.define.DataType.INTEGER,
+        ),
+        (
+            [],
+            "Int64",
+            "Int64",
+            audformat.define.DataType.INTEGER,
+        ),
+        (
+            [],
+            str,
+            "object",
+            audformat.define.DataType.OBJECT,
+        ),
+        (
+            [],
+            "string",
+            "string",
+            audformat.define.DataType.STRING,
+        ),
+        (
+            [],
+            "timedelta64[ns]",
+            "timedelta64[ns]",
+            audformat.define.DataType.TIME,
+        ),
+        (
+            [0],
+            "datetime64[ns]",
+            "datetime64[ns]",
+            audformat.define.DataType.DATE,
+        ),
+        (
+            [0.0],
+            None,
+            "float64",
+            audformat.define.DataType.FLOAT,
+        ),
+        (
+            [0],
+            None,
+            "Int64",
+            audformat.define.DataType.INTEGER,
+        ),
+        (
+            [np.NaN],
+            "Int64",
+            "Int64",
+            audformat.define.DataType.INTEGER,
+        ),
+        (
+            [0, np.NaN],
+            "Int64",
+            "Int64",
+            audformat.define.DataType.INTEGER,
+        ),
+        (
+            [np.NaN],
+            "Int64",
+            "Int64",
+            audformat.define.DataType.INTEGER,
+        ),
+        (
+            ["0"],
+            None,
+            "object",
+            audformat.define.DataType.OBJECT,
+        ),
+        (
+            [0],
+            "timedelta64[ns]",
+            "timedelta64[ns]",
+            audformat.define.DataType.TIME,
+        ),
+        (
+            [True],
+            None,
+            "boolean",
+            audformat.define.DataType.BOOL,
+        ),
+        (
+            [True, False],
+            bool,
+            "boolean",
+            audformat.define.DataType.BOOL,
+        ),
+        (
+            [True, False],
+            "boolean",
+            "boolean",
+            audformat.define.DataType.BOOL,
+        ),
+    ],
+)
+def test_dtype(
+    tmpdir,
+    column_values,
+    column_dtype,
+    expected_pandas_dtype,
+    expected_audformat_dtype,
+):
+    r"""Test table columns have correct dtype.
+
+    Ensures that a dataframe column,
+    associated with a table,
+    has the dtype,
+    which corresponds to the scheme of the column.
+
+    Args:
+        tmpdir: pytest tmpdir fixture
+        column_values: values assigned to the column
+        column_dtype: pandas dtype of values assigned to column
+        expected_pandas_dtype: pandas dtype of column after assignment
+        expected_audformat_dtype: audformat dtype corresponding
+            to the expected pandas dtype.
+            This is assigned to the scheme of the column
+
+    """
+    y = pd.Series(column_values, dtype=column_dtype or "object")
+
+    index_values = [f"f{n}" for n in range(len(column_values))]
+    index = audformat.filewise_index(index_values)
+
+    db = audformat.testing.create_db(minimal=True)
+    db["table"] = audformat.Table(index)
+    db.schemes["column"] = audformat.Scheme(expected_audformat_dtype)
+    db["table"]["column"] = audformat.Column(scheme_id="column")
+    db["table"]["column"].set(y.values)
+
+    assert db["table"]["column"].scheme.dtype == expected_audformat_dtype
+    assert db["table"].df["column"].dtype == expected_pandas_dtype
+
+    # Store and load table
+    db_root = tmpdir.join("db")
+    db.save(db_root, storage_format="csv")
+    db_new = audformat.Database.load(db_root)
+
+    assert db_new["table"]["column"].scheme.dtype == expected_audformat_dtype
+    assert db_new["table"].df["column"].dtype == expected_pandas_dtype
+
+
 def test_exceptions():
     column = audformat.Column()
     with pytest.raises(RuntimeError):

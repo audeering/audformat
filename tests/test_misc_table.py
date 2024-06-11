@@ -322,13 +322,25 @@ def test_copy(table):
 
 
 @pytest.mark.parametrize(
-    "column_values, column_dtype, " "expected_pandas_dtype, expected_audformat_dtype",
+    "column_values, column_dtype, expected_pandas_dtype, expected_audformat_dtype",
     [
         (
             [],
             None,
             "object",
             audformat.define.DataType.OBJECT,
+        ),
+        (
+            [],
+            bool,
+            "boolean",
+            audformat.define.DataType.BOOL,
+        ),
+        (
+            [],
+            "boolean",
+            "boolean",
+            audformat.define.DataType.BOOL,
         ),
         (
             [],
@@ -426,6 +438,24 @@ def test_copy(table):
             "timedelta64[ns]",
             audformat.define.DataType.TIME,
         ),
+        (
+            [True],
+            None,
+            "boolean",
+            audformat.define.DataType.BOOL,
+        ),
+        (
+            [True, False],
+            bool,
+            "boolean",
+            audformat.define.DataType.BOOL,
+        ),
+        (
+            [True, False],
+            "boolean",
+            "boolean",
+            audformat.define.DataType.BOOL,
+        ),
     ],
 )
 def test_dtype_column(
@@ -435,6 +465,23 @@ def test_dtype_column(
     expected_pandas_dtype,
     expected_audformat_dtype,
 ):
+    r"""Test misc table columns have correct dtype.
+
+    Ensures that a dataframe column,
+    associated with a misc table,
+    has the dtype,
+    which corresponds to the scheme of the column.
+
+    Args:
+        tmpdir: pytest tmpdir fixture
+        column_values: values assigned to the column
+        column_dtype: pandas dtype of values assigned to column
+        expected_pandas_dtype: pandas dtype of column after assignment
+        expected_audformat_dtype: audformat dtype corresponding
+            to the expected pandas dtype.
+            This is assigned to the scheme of the column
+
+    """
     name = "column"
     y = pd.Series(column_values, dtype=column_dtype or "object", name=name)
 
@@ -470,6 +517,20 @@ def test_dtype_column(
             None,
             "object",
             audformat.define.DataType.OBJECT,
+        ),
+        (
+            pd.Index,
+            [],
+            bool,
+            "boolean",
+            audformat.define.DataType.BOOL,
+        ),
+        (
+            pd.Index,
+            [],
+            "boolean",
+            "boolean",
+            audformat.define.DataType.BOOL,
         ),
         (
             pd.DatetimeIndex,
@@ -590,6 +651,28 @@ def test_dtype_column(
             "object",
             audformat.define.DataType.OBJECT,
         ),
+        # The following should be a bug in the current main
+        (
+            pd.Index,
+            [True],
+            None,
+            "boolean",
+            audformat.define.DataType.BOOL,
+        ),
+        (
+            pd.Index,
+            [True],
+            bool,
+            "boolean",
+            audformat.define.DataType.BOOL,
+        ),
+        (
+            pd.Index,
+            [True, False],
+            "boolean",
+            "boolean",
+            audformat.define.DataType.BOOL,
+        ),
     ],
 )
 def test_dtype_index(
@@ -600,6 +683,33 @@ def test_dtype_index(
     expected_pandas_dtype,
     expected_audformat_dtype,
 ):
+    r"""Test misc table index has correct dtype.
+
+    Ensures that a single level index,
+    associated with a misc table,
+    has the expected dtype.
+
+    audformat doesn't associate schemes with an index,
+    but infers the matching audformat dtype
+    from the original dtype of the index,
+    or values of the index
+    when reading from a file.
+    The pandas dtype of the index
+    is then also updated,
+    if necessary.
+
+    Args:
+        tmpdir: pytest tmpdir fixture
+        index_object: index class, e.g. ``pd.Index``
+        index_values: values to be assigned to the index
+        index_dtype: dtype of the index,
+            before assignment to misc table
+        expected_pandas_dtype: pandas dtype of the index
+            after assignment to misc table
+        expected_audformat_dtype: audformat dtype corresponding
+            to the expected pandas dtype
+
+    """
     name = "idx"
     index = index_object(index_values, dtype=index_dtype, name=name)
     table = audformat.MiscTable(index)
@@ -628,6 +738,18 @@ def test_dtype_index(
             "datetime64[ns]",
             "datetime64[ns]",
             audformat.define.DataType.DATE,
+        ),
+        (
+            [],
+            bool,
+            "boolean",
+            audformat.define.DataType.BOOL,
+        ),
+        (
+            [],
+            "boolean",
+            "boolean",
+            audformat.define.DataType.BOOL,
         ),
         (
             [],
@@ -719,6 +841,18 @@ def test_dtype_index(
             "timedelta64[ns]",
             audformat.define.DataType.TIME,
         ),
+        (
+            [True, False],
+            bool,
+            "boolean",
+            audformat.define.DataType.BOOL,
+        ),
+        (
+            [True, False],
+            "boolean",
+            "boolean",
+            audformat.define.DataType.BOOL,
+        ),
     ],
 )
 def test_dtype_multiindex(
@@ -728,6 +862,32 @@ def test_dtype_multiindex(
     expected_pandas_dtype,
     expected_audformat_dtype,
 ):
+    r"""Test misc table multi-index has correct dtypes.
+
+    Ensures that the levels of a multi-index,
+    associated with a misc table,
+    have the expected dtypes.
+
+    audformat doesn't associate schemes with an index,
+    but infers the matching audformat dtype
+    from the original dtype of the index,
+    or values of the index
+    when reading from a file.
+    The pandas dtype of the index
+    is then also updated,
+    if necessary.
+
+    Args:
+        tmpdir: pytest tmpdir fixture
+        index_values: values to be assigned to the index
+        index_dtype: dtype of the index,
+            before assignment to misc table
+        expected_pandas_dtype: pandas dtype of the index
+            after assignment to misc table
+        expected_audformat_dtype: audformat dtype corresponding
+            to the expected pandas dtype
+
+    """
     expected_audformat_dtypes = [expected_audformat_dtype] * 2
     expected_pandas_dtypes = [expected_pandas_dtype] * 2
     index = pd.MultiIndex.from_arrays(
@@ -765,6 +925,18 @@ def test_dtype_multiindex(
         ),
         (
             [],
+            bool,
+            "boolean",
+            audformat.define.DataType.BOOL,
+        ),
+        (
+            [],
+            "boolean",
+            "boolean",
+            audformat.define.DataType.BOOL,
+        ),
+        (
+            [],
             float,
             "float64",
             audformat.define.DataType.FLOAT,
@@ -852,6 +1024,18 @@ def test_dtype_multiindex(
             "timedelta64[ns]",
             "timedelta64[ns]",
             audformat.define.DataType.TIME,
+        ),
+        (
+            [True, False],
+            bool,
+            "boolean",
+            audformat.define.DataType.BOOL,
+        ),
+        (
+            [True, False],
+            "boolean",
+            "boolean",
+            audformat.define.DataType.BOOL,
         ),
     ],
 )
