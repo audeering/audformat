@@ -840,39 +840,6 @@ class Base(HeaderBase):
             path: path to table, including file extension
 
         """
-        # Collect pyarrow dtypes
-        # of all columns,
-        # including index columns.
-        # The dtypes are stored as a tuple
-        # ``(column, dtype)``,
-        # and are used to create
-        # the pyarrow.Schema
-        # used when reading the CSV file
-        pyarrow_dtypes = []
-        # Mapping from audformat to pyarrow dtypes
-        to_pyarrow_dtype = {
-            define.DataType.BOOL: pa.bool_(),
-            define.DataType.DATE: pa.timestamp("ns"),
-            define.DataType.FLOAT: pa.float64(),
-            define.DataType.INTEGER: pa.int64(),
-            define.DataType.STRING: pa.string(),
-            # A better fitting type would be `pa.duration("ns")`,
-            # but this is not yet supported
-            # when reading CSV files
-            define.DataType.TIME: pa.string(),
-        }
-        # Index
-        for level, dtype in self.levels.items():
-            if dtype in to_pyarrow_dtype:
-                pyarrow_dtypes.append((level, to_pyarrow_dtype[dtype]))
-        # Columns
-        for column_id, column in self.columns.items():
-            if column.scheme_id is not None:
-                dtype = self.db.schemes[column.scheme_id].dtype
-                if dtype in to_pyarrow_dtype:
-                    pyarrow_dtypes.append((column_id, to_pyarrow_dtype[dtype]))
-
-        # Read CSV file
         table = csv.read_csv(
             path,
             read_options=csv.ReadOptions(
@@ -880,7 +847,7 @@ class Base(HeaderBase):
                 skip_rows=1,
             ),
             convert_options=csv.ConvertOptions(
-                column_types=pa.schema(pyarrow_dtypes),
+                column_types=self._pyarrow_csv_schema(),
                 strings_can_be_null=True,
             ),
         )
@@ -1023,6 +990,55 @@ class Base(HeaderBase):
             )
             df[column] = df[column].astype(dtype)
         return df
+
+    def _pyarrow_csv_schema(self) -> pa.Schema:
+        r"""Data type mapping for reading CSV file with pyarrow.
+
+        This provides a schema,
+        defining pyarrow dtypes
+        for the columns of a CSV file.
+
+        The dtypes are extracted from the audformat schemes,
+        and converted to the pyarrow dtypes.
+
+        Returns:
+            pyarrow schema for reading a CSV file
+
+        """
+        # Mapping from audformat to pyarrow dtypes
+        to_pyarrow_dtype = {
+            define.DataType.BOOL: pa.bool_(),
+            define.DataType.DATE: pa.timestamp("ns"),
+            define.DataType.FLOAT: pa.float64(),
+            define.DataType.INTEGER: pa.int64(),
+            define.DataType.STRING: pa.string(),
+            # A better fitting type would be `pa.duration("ns")`,
+            # but this is not yet supported
+            # when reading CSV files
+            define.DataType.TIME: pa.string(),
+        }
+
+        # Collect pyarrow dtypes
+        # of all columns,
+        # including index columns.
+        # The dtypes are stored as a tuple
+        # ``(column, dtype)``,
+        # and are used to create
+        # the pyarrow.Schema
+        # used when reading the CSV file
+        pyarrow_dtypes = []
+        # Index
+        for level, dtype in self.levels.items():
+            if dtype in to_pyarrow_dtype:
+                pyarrow_dtypes.append((level, to_pyarrow_dtype[dtype]))
+        # Columns
+        for column_id, column in self.columns.items():
+            if column.scheme_id is not None:
+                dtype = self.db.schemes[column.scheme_id].dtype
+                if dtype in to_pyarrow_dtype:
+                    pyarrow_dtypes.append((column_id, to_pyarrow_dtype[dtype]))
+
+        return pa.schema(pyarrow_dtypes)
 
     def _pyarrow_table_to_dataframe(
         self,
