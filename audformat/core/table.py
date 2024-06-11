@@ -1099,12 +1099,8 @@ class Base(HeaderBase):
             df.to_csv(fp, encoding="utf-8")
 
     def _save_parquet(self, path: str):
-        # Load table before opening PARQUET file
-        # to avoid creating a PARQUET file
-        # that is newer than the PKL file
-        df = self.df  # loads table
         table = pa.Table.from_pandas(
-            df.reset_index(),
+            self.df.reset_index(),
             preserve_index=False,
             # TODO: check if faster when providing schema?
             # schema=self._schema,
