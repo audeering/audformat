@@ -826,6 +826,19 @@ class Base(HeaderBase):
         # Returns `df, df_is_copy`
         raise NotImplementedError()
 
+    def _levels_and_dtypes(self) -> typing.Dict[str, str]:
+        r"""Levels and dtypes of index columns.
+
+        Returns:
+            dictionary with index levels (column names)
+            and associated audformat data type
+
+        """
+        # The returned dictionary is used
+        # to infer index column names and dtypes
+        # when reading CSV files.
+        raise NotImplementedError()  # pragma: no cover
+
     def _load_csv(self, path: str):
         r"""Load table from CSV file.
 
@@ -840,10 +853,12 @@ class Base(HeaderBase):
             path: path to table, including file extension
 
         """
+        levels = list(self._levels_and_dtypes().keys())
+        columns = list(self.columns.keys())
         table = csv.read_csv(
             path,
             read_options=csv.ReadOptions(
-                column_names=list(self.levels.keys()) + list(self.columns.keys()),
+                column_names=levels + columns,
                 skip_rows=1,
             ),
             convert_options=csv.ConvertOptions(
@@ -939,8 +954,8 @@ class Base(HeaderBase):
         index_columns = []
 
         # --- Index ---
-        index_columns += list(self.levels.keys())
-        for level, dtype in self.levels.items():
+        index_columns += list(self._levels_and_dtypes.keys())
+        for level, dtype in self._levels_and_dtypes.items():
             if dtype == define.DataType.BOOL:
                 bool_columns.append(level)
             elif dtype == define.DataType.INTEGER:
@@ -1028,7 +1043,7 @@ class Base(HeaderBase):
         # used when reading the CSV file
         pyarrow_dtypes = []
         # Index
-        for level, dtype in self.levels.items():
+        for level, dtype in self._levels_and_dtypes.items():
             if dtype in to_pyarrow_dtype:
                 pyarrow_dtypes.append((level, to_pyarrow_dtype[dtype]))
         # Columns
@@ -1066,7 +1081,8 @@ class Base(HeaderBase):
         )
         # Adjust dtypes and set index
         df = self._pyarrow_convert_dtypes(df, convert_all=from_csv)
-        df = self._set_index(df, list(self.levels.keys()))
+        index_columns = list(self._levels_and_dtypes.keys())
+        df = self._set_index(df, index_columns)
         return df
 
     def _save_csv(self, path: str):
@@ -1315,6 +1331,16 @@ class MiscTable(Base):
     def _get_by_index(self, index: pd.Index) -> pd.DataFrame:
         return self.df.loc[index]
 
+    def _levels_and_dtypes(self) -> typing.Dict[str, str]:
+        r"""Levels and dtypes of index columns.
+
+        Returns:
+            dictionary with index levels (column names)
+            and associated audformat data type
+
+        """
+        return self.levels
+
 
 class Table(Base):
     r"""Table conform to :ref:`table specifications <data-tables:Tables>`.
@@ -1445,15 +1471,6 @@ class Table(Base):
         for possible values.
 
         """
-
-        levels = {}
-        levels[define.IndexField.FILE] = define.DataType.STRING
-        if self.type == define.IndexType.SEGMENTED:
-            levels[define.IndexField.START] = define.DataType.TIME
-            levels[define.IndexField.END] = define.DataType.TIME
-
-        self.levels = levels
-        r"""Index levels."""
 
         super().__init__(
             index,
@@ -1724,6 +1741,21 @@ class Table(Base):
                 result = self.df.loc[files]
 
         return result
+
+    def _levels_and_dtypes(self) -> typing.Dict[str, str]:
+        r"""Levels and dtypes of index columns.
+
+        Returns:
+            dictionary with index levels (column names)
+            and associated audformat data type
+
+        """
+        levels_and_dtypes = {}
+        levels_and_dtypes[define.IndexField.FILE] = define.DataType.STRING
+        if self.type == define.IndexType.SEGMENTED:
+            levels_and_dtypes[define.IndexField.START] = define.DataType.TIME
+            levels_and_dtypes[define.IndexField.END] = define.DataType.TIME
+        return levels_and_dtypes
 
 
 def _assert_table_index(
