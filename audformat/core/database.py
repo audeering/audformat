@@ -121,7 +121,6 @@ class Database(HeaderBase):
         tables:
           table:
             type: filewise
-            levels: {file: str}
             media_id: audio
             columns:
               column: {scheme_id: emotion, rater_id: rater}

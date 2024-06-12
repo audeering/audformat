@@ -1379,7 +1379,6 @@ class Table(Base):
         >>> table["values"] = Column()
         >>> table
         type: filewise
-        levels: {file: str}
         split_id: test
         columns:
           values: {}
