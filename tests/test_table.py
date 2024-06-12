@@ -1209,6 +1209,35 @@ def test_map(table, map):
 
 
 @pytest.mark.parametrize(
+    "table_id, expected_md5sum",
+    [
+        ("files", "a856aef8ec9d5e4b1752a13ad68cc0c2"),
+    ],
+)
+def test_parquet_reproducibility(tmpdir, table_id, expected_md5sum):
+    r"""Test reproducibility of binary PARQUET files.
+
+    When storing the same dataframe
+    to different PARQUET files,
+    those files should have an identical
+    MD5sum,
+    which should also be reproducible
+    across different pandas and pyarrow versions.
+
+    """
+    db = audformat.testing.create_db()
+    path_wo_ext = audeer.path(tmpdir, table_id)
+    path = f"{path_wo_ext}.parquet"
+    db[table_id].save(path_wo_ext, storage_format="parquet")
+    assert audeer.md5(path) == expected_md5sum
+    # Repeat writing after loading table
+    db[table_id].load(path_wo_ext)
+    os.remove(path)
+    db[table_id].save(path_wo_ext, storage_format="parquet")
+    assert audeer.md5(path) == expected_md5sum
+
+
+@pytest.mark.parametrize(
     "files",
     [
         pytest.DB.files,
