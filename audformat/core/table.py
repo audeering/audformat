@@ -17,7 +17,6 @@ from audformat.core import utils
 from audformat.core.column import Column
 from audformat.core.common import HeaderBase
 from audformat.core.common import HeaderDict
-from audformat.core.common import to_audformat_dtype
 from audformat.core.errors import BadIdError
 from audformat.core.index import filewise_index
 from audformat.core.index import index_type
