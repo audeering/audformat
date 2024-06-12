@@ -1100,7 +1100,7 @@ class Base(HeaderBase):
 
     def _save_parquet(self, path: str):
         table = pa.Table.from_pandas(self.df.reset_index(), preserve_index=False)
-        parquet.write_table(table, path)
+        parquet.write_table(table, path, compression="snappy")
 
     def _save_pickled(self, path: str):
         self.df.to_pickle(
