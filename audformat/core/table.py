@@ -1099,6 +1099,38 @@ class Base(HeaderBase):
 
     def _save_parquet(self, path: str):
         table = pa.Table.from_pandas(self.df.reset_index(), preserve_index=False)
+
+        # Add hash of dataframe
+        # to the metadata,
+        # which pyarrow stores inside the schema.
+        # See https://stackoverflow.com/a/58978449
+        try:
+            metadata = {"hash": utils.hash(self.df)}
+        except TypeError:
+            # Levels/columns with dtype "object" might not be hashable,
+            # e.g. when storing numpy arrays.
+            # We convert them to strings in this case.
+            #
+            # Index
+            df = self.df.copy()
+            update_index_dtypes = {
+                level: "string"
+                for level, dtype in self._levels_and_dtypes.items()
+                if dtype == define.DataType.OBJECT
+            }
+            df.index = utils.set_index_dtypes(df.index, update_index_dtypes)
+            # Columns
+            for column_id, column in self.columns.items():
+                if column.scheme_id is not None:
+                    scheme = self.db.schemes[column.scheme_id]
+                    if scheme.dtype == define.DataType.OBJECT:
+                        df[column_id] = df[column_id].astype("string")
+                else:
+                    # No scheme defaults to `object` dtype
+                    df[column_id] = df[column_id].astype("string")
+            metadata = {"hash": utils.hash(df)}
+
+        table = table.replace_schema_metadata({**metadata, **table.schema.metadata})
         parquet.write_table(table, path, compression="snappy")
 
     def _save_pickled(self, path: str):

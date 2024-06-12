@@ -1,9 +1,11 @@
 import os
+import random
 import re
 import typing
 
 import numpy as np
 import pandas as pd
+import pyarrow.parquet as parquet
 import pytest
 
 import audeer
@@ -1209,32 +1211,48 @@ def test_map(table, map):
 
 
 @pytest.mark.parametrize(
-    "table_id, expected_md5sum",
+    "table_id, expected_hash",
     [
-        ("files", "a856aef8ec9d5e4b1752a13ad68cc0c2"),
+        ("files", "-4778271914368537359"),
+        ("segments", "6154135801036965154"),
+        ("misc", "8941499293930597709"),
     ],
 )
-def test_parquet_reproducibility(tmpdir, table_id, expected_md5sum):
+def test_parquet_reproducibility(tmpdir, table_id, expected_hash):
     r"""Test reproducibility of binary PARQUET files.
 
     When storing the same dataframe
     to different PARQUET files,
-    those files should have an identical
-    MD5sum,
-    which should also be reproducible
-    across different pandas and pyarrow versions.
+    the files will slightly vary
+    and have different MD5 sums.
+
+    To provide a reproducible hash,
+    in order to judge if a table has changed,
+    we calculate the hash of the table
+    and store it in the metadata
+    of the schema
+    of a the table.
 
     """
+    random.seed(1)  # ensure the same random table values are created
     db = audformat.testing.create_db()
+
+    # Check that the output of audfromat.utils.hash() does not change
+    assert audformat.utils.hash(db[table_id].df) == expected_hash
+
+    # Write to PARQUET file and check if correct hash is stored
     path_wo_ext = audeer.path(tmpdir, table_id)
     path = f"{path_wo_ext}.parquet"
     db[table_id].save(path_wo_ext, storage_format="parquet")
-    assert audeer.md5(path) == expected_md5sum
-    # Repeat writing after loading table
+    metadata = parquet.read_schema(path).metadata
+    assert metadata[b"hash"].decode() == expected_hash
+
+    # Load table from PARQUET file, and overwrite it
     db[table_id].load(path_wo_ext)
     os.remove(path)
     db[table_id].save(path_wo_ext, storage_format="parquet")
-    assert audeer.md5(path) == expected_md5sum
+    metadata = parquet.read_schema(path).metadata
+    assert metadata[b"hash"].decode() == expected_hash
 
 
 @pytest.mark.parametrize(
