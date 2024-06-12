@@ -1316,8 +1316,7 @@ class MiscTable(Base):
                     f"{levels}, "
                     f"but names must be non-empty and unique."
                 )
-
-            dtypes = [to_audformat_dtype(dtype) for dtype in utils._dtypes(index)]
+            dtypes = utils._audformat_dtypes(index)
             self.levels = {level: dtype for level, dtype in zip(levels, dtypes)}
 
         super().__init__(

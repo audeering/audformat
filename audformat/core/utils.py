@@ -929,8 +929,7 @@ def is_index_alike(
     # check dtypes
     dtypes = set()
     for obj in objs:
-        ds = [to_audformat_dtype(dtype) for dtype in _dtypes(obj)]
-        dtypes.add(tuple(ds))
+        dtypes.add(tuple(_audformat_dtypes(obj)))
     if len(dtypes) > 1:
         return False
 
@@ -2017,7 +2016,7 @@ def _assert_index_alike(
 
     dtypes = []
     for obj in objs:
-        ds = [to_audformat_dtype(dtype) for dtype in _dtypes(obj)]
+        ds = _audformat_dtypes(obj)
         dtypes.append(tuple(ds) if len(ds) > 1 else ds[0])
     dtypes = list(dict.fromkeys(dtypes))
     if len(dtypes) > 1:
@@ -2026,12 +2025,18 @@ def _assert_index_alike(
     raise ValueError(msg)
 
 
-def _dtypes(obj):
-    r"""List of dtypes of object."""
-    if isinstance(obj, pd.MultiIndex):
-        return list(obj.dtypes)
-    else:
-        return [obj.dtype]
+def _audformat_dtypes(index) -> typing.List[str]:
+    r"""List of audformat data types of index.
+
+    Args:
+        index: index
+
+    Returns:
+        audformat data types of index
+
+    """
+    dtypes = _pandas_dtypes(index)
+    return [to_audformat_dtype(dtype) for dtype in dtypes]
 
 
 def _is_same_dtype(d1, d2) -> bool:
@@ -2051,12 +2056,20 @@ def _is_same_dtype(d1, d2) -> bool:
     return d1.name == d2.name
 
 
-def _levels(obj):
-    r"""List of levels of object."""
-    if isinstance(obj, pd.MultiIndex):
-        return list(obj.names)
+def _levels(index) -> typing.List[str]:
+    r"""List of levels of index.
+
+    Args:
+        index: index
+
+    Returns:
+        index levels
+
+    """
+    if isinstance(index, pd.MultiIndex):
+        return list(index.names)
     else:
-        return [obj.name]
+        return [index.name]
 
 
 def _maybe_convert_filewise_index(
@@ -2101,7 +2114,7 @@ def _maybe_convert_pandas_dtype(
 
     """
     levels = _levels(index)
-    dtypes = _dtypes(index)
+    dtypes = _pandas_dtypes(index)
 
     # Ensure integers are stored as Int64
     int_dtypes = {
@@ -2152,3 +2165,19 @@ def _maybe_convert_single_level_multi_index(
                 objs[idx].index = obj.index.get_level_values(0)
 
     return objs
+
+
+def _pandas_dtypes(index) -> typing.List[typing.Any]:
+    r"""List of pandas dtypes of index.
+
+    Args:
+        index: index
+
+    Returns:
+        pandas data types of index
+
+    """
+    if isinstance(index, pd.MultiIndex):
+        return list(index.dtypes)
+    else:
+        return [index.dtype]
