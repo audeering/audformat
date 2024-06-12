@@ -2052,7 +2052,7 @@ def _is_same_dtype(d1, d2) -> bool:
 
 
 def _levels(obj):
-    r"""List of dtypes of object."""
+    r"""List of levels of object."""
     if isinstance(obj, pd.MultiIndex):
         return list(obj.names)
     else:
