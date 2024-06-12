@@ -954,7 +954,8 @@ class Base(HeaderBase):
         labeled_columns = []
 
         # Collect columns,
-        # belonging to the index
+        # belonging to the table index
+        # (not the index of the provided dataframe)
         index_columns = []
 
         # --- Index ---
