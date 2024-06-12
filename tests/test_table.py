@@ -1506,6 +1506,8 @@ def test_save_and_load(tmpdir, storage_format):
     db["multi-misc"]["arrays"].set([np.array([0, 1]), np.array([2, 3])])
     db["multi-misc"]["lists"] = audformat.Column(scheme_id="object")
     db["multi-misc"]["lists"].set([[0, 1], [2, 3]])
+    db["multi-misc"]["no-scheme"] = audformat.Column()
+    db["multi-misc"]["no-scheme"].set([0, 1])
 
     for table_id in list(db):
         expected_df = db[table_id].get()
