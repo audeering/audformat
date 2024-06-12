@@ -826,6 +826,7 @@ class Base(HeaderBase):
         # Returns `df, df_is_copy`
         raise NotImplementedError()
 
+    @property
     def _levels_and_dtypes(self) -> typing.Dict[str, str]:
         r"""Levels and dtypes of index columns.
 
@@ -837,6 +838,9 @@ class Base(HeaderBase):
         # The returned dictionary is used
         # to infer index column names and dtypes
         # when reading CSV files.
+        # This means the names and dtypes cannot be inferred
+        # from the index itself,
+        # but need to be known before.
         raise NotImplementedError()  # pragma: no cover
 
     def _load_csv(self, path: str):
@@ -853,7 +857,7 @@ class Base(HeaderBase):
             path: path to table, including file extension
 
         """
-        levels = list(self._levels_and_dtypes().keys())
+        levels = list(self._levels_and_dtypes.keys())
         columns = list(self.columns.keys())
         table = csv.read_csv(
             path,
@@ -1330,6 +1334,7 @@ class MiscTable(Base):
     def _get_by_index(self, index: pd.Index) -> pd.DataFrame:
         return self.df.loc[index]
 
+    @property
     def _levels_and_dtypes(self) -> typing.Dict[str, str]:
         r"""Levels and dtypes of index columns.
 
@@ -1740,6 +1745,7 @@ class Table(Base):
 
         return result
 
+    @property
     def _levels_and_dtypes(self) -> typing.Dict[str, str]:
         r"""Levels and dtypes of index columns.
 
