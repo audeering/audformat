@@ -35,7 +35,7 @@ dependencies = [
     'iso-639',
     'iso3166',
     'oyaml',
-    'pyarrow',
+    'pyarrow >=10.0.1',  # for pyarrow strings in pandas
     'pyyaml >=5.4.1',
     'pandas >=2.1.0',
 ]
