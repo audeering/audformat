@@ -2,7 +2,6 @@ from __future__ import annotations  # allow typing without string
 
 import copy
 import hashlib
-import io
 import os
 import pickle
 import typing
@@ -1100,7 +1099,9 @@ class Base(HeaderBase):
             df.to_csv(fp, encoding="utf-8")
 
     def _save_parquet(self, path: str):
-        table = pa.Table.from_pandas(self.df.reset_index(), preserve_index=False)
+        df = self.df.reset_index()
+
+        table = pa.Table.from_pandas(df, preserve_index=False)
 
         # audformat.utils.hash() cannot be used due to:
         # * https://github.com/audeering/audformat/issues/434
@@ -1138,11 +1139,44 @@ class Base(HeaderBase):
         # Add hash of dataframe
         # to the metadata,
         # which pyarrow stores inside the schema.
-        # See https://stackoverflow.com/a/58978449
-        buffer = io.BytesIO()
-        self.df.to_parquet(buffer)
-        hash_df = hashlib.sha256(buffer.getbuffer()).hexdigest()
-        metadata = {"hash": hash_df}
+        # See https://stackoverflow.com/a/58978449.
+        #
+        # The hashing method was suggested at
+        # https://github.com/pandas-dev/pandas/issues/46705#issuecomment-1094123442
+        # as pandas.util.hash_pandas_object()
+        # ignores column and index names
+        # buffer = io.BytesIO()
+        # self.df.to_parquet(buffer)
+        # hash_df = hashlib.sha256(buffer.getbuffer()).hexdigest()
+        # metadata = {"hash": hash_df}
+        schema_str = table.schema.to_string(
+            show_field_metadata=False,
+            show_schema_metadata=False,
+        )
+        try:
+            hash_data = utils.hash(df)
+        except TypeError:
+            # Levels/columns with dtype "object" might not be hashable,
+            # e.g. when storing numpy arrays.
+            # We convert them to strings in this case.
+            #
+            # Index
+            for level, dtype in self._levels_and_dtypes.items():
+                if dtype == define.DataType.OBJECT:
+                    df[level] = df[level].astype("string")
+            # Columns
+            for column_id, column in self.columns.items():
+                if column.scheme_id is not None:
+                    scheme = self.db.schemes[column.scheme_id]
+                    if scheme.dtype == define.DataType.OBJECT:
+                        df[column_id] = df[column_id].astype("string")
+                else:
+                    # No scheme defaults to `object` dtype
+                    df[column_id] = df[column_id].astype("string")
+            hash_data = utils.hash(df)
+
+        hash_table = hashlib.sha256((hash_data + schema_str).encode()).hexdigest()
+        metadata = {"hash": hash_table}
 
         table = table.replace_schema_metadata({**metadata, **table.schema.metadata})
         parquet.write_table(table, path, compression="snappy")
