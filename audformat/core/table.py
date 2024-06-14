@@ -1099,61 +1099,36 @@ class Base(HeaderBase):
             df.to_csv(fp, encoding="utf-8")
 
     def _save_parquet(self, path: str):
-        df = self.df.reset_index()
+        r"""Save table as PARQUET file.
 
-        table = pa.Table.from_pandas(df, preserve_index=False)
+        A PARQUET file is written in a non-deterministic way,
+        and we cannot track changes by its MD5 sum.
+        To make changes trackable,
+        we store a hash in its metadata.
 
-        # Add hash of dataframe
-        # to the metadata,
-        # which pyarrow stores inside the schema.
-        # See https://stackoverflow.com/a/58978449.
-        #
-        # This allows us to track if a PARQUET file changes over time.
-        # We cannot rely on md5 sums of the file,
-        # as the file is written in a non-deterministic way.
+        The hash is calculated from the pyarrow schema
+        (to track column names and data types)
+        and the pandas dataframes
+        (to track values and order or rows),
+        from which the PARQUET file is generated.
+
+        The hash of the PARQUET can then be read by::
+
+            pyarrow.parquet.read_schema(path).metadata[b"hash"].decode()
+
+        Args:
+            path: path, including file extension
+
+        """
+        table = pa.Table.from_pandas(self.df.reset_index(), preserve_index=False)
+
+        # Create hash of table
         table_hash = hashlib.md5()
+        table_hash.update(_schema_hash(table))
+        table_hash.update(_dataframe_hash(self.df))
 
-        # Hash of schema (columns + dtypes)
-        schema_str = table.schema.to_string(
-            # schema.metadata contains pandas related information,
-            # and the used pyarrow and pandas version,
-            # and needs to be excluded
-            show_field_metadata=False,
-            show_schema_metadata=False,
-        )
-        schema_hash = hashlib.md5(schema_str.encode())
-        table_hash.update(schema_hash.digest())
-
-        # Hash data
-        try:
-            data_hash = utils.hash(self.df)
-        except TypeError:
-            # Levels/columns with dtype "object" might not be hashable,
-            # e.g. when storing numpy arrays.
-            # We convert them to strings in this case.
-
-            # Index
-            df = self.df.copy()
-            update_index_dtypes = {
-                level: "string"
-                for level, dtype in self._levels_and_dtypes.items()
-                if dtype == define.DataType.OBJECT
-            }
-            df.index = utils.set_index_dtypes(df.index, update_index_dtypes)
-
-            # Columns
-            for column_id, column in self.columns.items():
-                if column.scheme_id is not None:
-                    scheme = self.db.schemes[column.scheme_id]
-                    if scheme.dtype == define.DataType.OBJECT:
-                        df[column_id] = df[column_id].astype("string")
-                else:
-                    # No scheme defaults to `object` dtype
-                    df[column_id] = df[column_id].astype("string")
-            data_hash = utils.hash(df)
-
-        table_hash.update(data_hash.encode())
-
+        # Store in metadata of file,
+        # see https://stackoverflow.com/a/58978449
         metadata = {"hash": table_hash.hexdigest()}
         table = table.replace_schema_metadata({**metadata, **table.schema.metadata})
 
@@ -1855,6 +1830,46 @@ def _assert_table_index(
         )
 
 
+def _dataframe_hash(df: pd.DataFrame, max_rows: int = None) -> bytes:
+    """Hash a dataframe.
+
+    The hash value takes into account:
+
+    * index of dataframe
+    * values of the dataframe
+    * order of dataframe rows
+
+    It does not consider:
+
+    * column names of dataframe
+    * dtypes of dataframe
+
+    Args:
+        df: dataframe
+        max_rows: if not ``None``,
+            the maximum number of rows,
+            taken into account for hashing
+
+    Returns:
+        MD5 hash in bytes
+
+    """
+    # Idea for implementation from
+    # https://github.com/streamlit/streamlit/issues/7086#issuecomment-1654504410
+    md5 = hashlib.md5()
+    if max_rows is not None and len(df) > max_rows:  # pragma: nocover (not yet used)
+        df = df.sample(n=max_rows, random_state=0)
+        # Hash length, as we have to track if this changes
+        md5.update(str(len(df)).encode("utf-8"))
+    try:
+        md5.update(bytes(str(pd.util.hash_pandas_object(df)), "utf-8"))
+    except TypeError:
+        # Use pickle if pandas cannot hash the object,
+        # e.g. if it contains numpy.arrays.
+        md5.update(f"{pickle.dumps(df, pickle.HIGHEST_PROTOCOL)}".encode("utf-8"))
+    return md5.digest()
+
+
 def _maybe_convert_dtype_to_string(
     index: pd.Index,
 ) -> pd.Index:
@@ -1877,3 +1892,23 @@ def _maybe_update_scheme(
         for scheme in table.db.schemes.values():
             if table._id == scheme.labels:
                 scheme.replace_labels(table._id)
+
+
+def _schema_hash(table: pa.Table) -> bytes:
+    r"""Hash pyarrow table schema.
+
+    Args:
+        table: pyarrow table
+
+    Returns:
+        MD5 hash in bytes
+
+    """
+    schema_str = table.schema.to_string(
+        # schema.metadata contains pandas related information,
+        # and the used pyarrow and pandas version,
+        # and needs to be excluded
+        show_field_metadata=False,
+        show_schema_metadata=False,
+    )
+    return hashlib.md5(schema_str.encode()).digest()

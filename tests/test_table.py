@@ -1210,24 +1210,120 @@ def test_map(table, map):
     pd.testing.assert_frame_equal(result, expected)
 
 
+@pytest.mark.parametrize("storage_format", ["csv", "parquet"])
+def test_hash(tmpdir, storage_format):
+    r"""Test if PARQUET file hash changes with table.
+
+    We store a MD5 sum associated with the dataframe,
+    that was used to create the file,
+    in the metadata of the PARQUET file.
+    Those MD5 sum is supposed to change,
+    if any of the table rows, (index) columns changes,
+    the data type of the entries changes,
+    or the name of a column changes.
+
+    Args:
+        tmpdir: tmpdir fixture
+        storage_format: storage format of table file
+
+    """
+
+    def get_md5(path: str) -> str:
+        r"""Get MD5 sum for table file."""
+        ext = audeer.file_extension(path)
+        if ext == "csv":
+            md5 = audeer.md5(path)
+        elif ext == "parquet":
+            md5 = parquet.read_schema(path).metadata[b"hash"].decode()
+        return md5
+
+    db_root = audeer.path(tmpdir, "db")
+    db = audformat.Database("mydb")
+    db.schemes["int"] = audformat.Scheme("int")
+    index = audformat.segmented_index(["f1", "f2"], [0, 1], [1, 2])
+    db["table"] = audformat.Table(index)
+    db["table"]["column"] = audformat.Column(scheme_id="int")
+    db["table"]["column"].set([0, 1])
+    db.save(db_root, storage_format=storage_format)
+
+    table_file = audeer.path(db_root, f"db.table.{storage_format}")
+    assert os.path.exists(table_file)
+    md5 = get_md5(table_file)
+
+    # Replace table with identical copy
+    table = db["table"].copy()
+    db["table"] = table
+    db.save(db_root, storage_format=storage_format)
+    assert get_md5(table_file) == md5
+
+    # Change order of rows
+    index = audformat.segmented_index(["f2", "f1"], [1, 0], [2, 1])
+    db["table"] = audformat.Table(index)
+    db["table"]["column"] = audformat.Column(scheme_id="int")
+    db["table"]["column"].set([1, 0])
+    db.save(db_root, storage_format=storage_format)
+    assert get_md5(table_file) != md5
+
+    # Change index entry
+    index = audformat.segmented_index(["f1", "f1"], [0, 1], [1, 2])
+    db["table"] = audformat.Table(index)
+    db["table"]["column"] = audformat.Column(scheme_id="int")
+    db["table"]["column"].set([0, 1])
+    db.save(db_root, storage_format=storage_format)
+    assert get_md5(table_file) != md5
+
+    # Change data entry
+    index = audformat.segmented_index(["f1", "f2"], [0, 1], [1, 2])
+    db["table"] = audformat.Table(index)
+    db["table"]["column"] = audformat.Column(scheme_id="int")
+    db["table"]["column"].set([1, 0])
+    db.save(db_root, storage_format=storage_format)
+    assert get_md5(table_file) != md5
+
+    # Change column name
+    index = audformat.segmented_index(["f1", "f2"], [0, 1], [1, 2])
+    db["table"] = audformat.Table(index)
+    db["table"]["col"] = audformat.Column(scheme_id="int")
+    db["table"]["col"].set([0, 1])
+    db.save(db_root, storage_format=storage_format)
+    assert get_md5(table_file) != md5
+
+    # Change order of columns
+    index = audformat.segmented_index(["f1", "f2"], [0, 1], [1, 2])
+    db["table"] = audformat.Table(index)
+    db["table"]["col1"] = audformat.Column(scheme_id="int")
+    db["table"]["col1"].set([0, 1])
+    db["table"]["col2"] = audformat.Column(scheme_id="int")
+    db["table"]["col2"].set([0, 1])
+    db.save(db_root, storage_format=storage_format)
+    md5 = get_md5(table_file)
+    db["table"] = audformat.Table(index)
+    db["table"]["col2"] = audformat.Column(scheme_id="int")
+    db["table"]["col2"].set([0, 1])
+    db["table"]["col1"] = audformat.Column(scheme_id="int")
+    db["table"]["col1"].set([0, 1])
+    db.save(db_root, storage_format=storage_format)
+    assert get_md5(table_file) != md5
+
+
 @pytest.mark.parametrize(
     "table_id, expected_hash",
     [
         (
             "files",
-            "4d0295654694751bdcd12be86b89b73e",
+            "9caa6722e65a04ddbce1cda2238c9126",
         ),
         (
             "segments",
-            "d2a9b84d03abde24ae84cf647a019b71",
+            "37c9d9dc4f937a6e97ec72a080055e49",
         ),
         (
             "misc",
-            "6b6faecc836354bd89472095c1fa746a",
+            "3488c007d45b19e04e8fdbf000f0f04d",
         ),
     ],
 )
-def test_parquet_reproducibility(tmpdir, table_id, expected_hash):
+def test_parquet_hash_reproducibility(tmpdir, table_id, expected_hash):
     r"""Test reproducibility of binary PARQUET files.
 
     When storing the same dataframe
