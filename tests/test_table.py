@@ -1215,15 +1215,15 @@ def test_map(table, map):
     [
         (
             "files",
-            "a6031ff402141834ec9ca3886e8672261a2671b534aaae798cf5918f12b9db14",
+            "4d0295654694751bdcd12be86b89b73e",
         ),
         (
             "segments",
-            "8bb0c5da4aaf1c4b145361a1542ebd2f3857fabc6fdc3cf80deba1307109f5dc",
+            "d2a9b84d03abde24ae84cf647a019b71",
         ),
         (
             "misc",
-            "ecc24f9ab8c25995017396f363987990d7421507532ee78da57cab0ca2e4b680",
+            "6b6faecc836354bd89472095c1fa746a",
         ),
     ],
 )
