@@ -1342,9 +1342,6 @@ def test_parquet_hash_reproducibility(tmpdir, table_id, expected_hash):
     random.seed(1)  # ensure the same random table values are created
     db = audformat.testing.create_db()
 
-    # Check that the output of audfromat.utils.hash() does not change
-    # assert audformat.utils.hash(db[table_id].df) == expected_hash
-
     # Write to PARQUET file and check if correct hash is stored
     path_wo_ext = audeer.path(tmpdir, table_id)
     path = f"{path_wo_ext}.parquet"
