@@ -265,7 +265,7 @@ class Column(HeaderBase):
                     if map in value:
                         value = value[map]
                     else:
-                        value = np.NaN
+                        value = np.nan
                 mapping[key] = value
 
             result = result.map(mapping)

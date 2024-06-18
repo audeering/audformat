@@ -223,9 +223,9 @@ from audformat import utils
         (
             [
                 pd.Index([0, 1], dtype="int64", name="idx"),
-                pd.Index([0, 1, np.NaN], dtype="Int64", name="idx"),
+                pd.Index([0, 1, np.nan], dtype="Int64", name="idx"),
             ],
-            pd.Index([np.NaN], dtype="Int64", name="idx"),
+            pd.Index([np.nan], dtype="Int64", name="idx"),
         ),
         (
             [

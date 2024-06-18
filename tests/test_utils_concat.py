@@ -1026,7 +1026,7 @@ def test_concat(objs, overwrite, expected):
                 {
                     "A": [4, 3, 3, 5],
                     "B": [4, 3, 3, 5],
-                    "C": [1, 1, 1, np.NaN],
+                    "C": [1, 1, 1, np.nan],
                 },
                 index=pd.Index(["a", "b", "c", "d"]),
                 dtype="Int64",
@@ -1054,7 +1054,7 @@ def test_concat(objs, overwrite, expected):
                 pd.DataFrame(
                     {
                         "A": [3, 3, 4],
-                        "B": [3, 3, np.NaN],
+                        "B": [3, 3, np.nan],
                     },
                     index=pd.Index(["a", "d", "e"]),
                     dtype="Int64",
@@ -1064,8 +1064,8 @@ def test_concat(objs, overwrite, expected):
             pd.DataFrame(
                 {
                     "A": [1, 1, 1, 2, 4],
-                    "B": [1, 1, 1, 2, np.NaN],
-                    "C": [1, 1, 1, np.NaN, np.NaN],
+                    "B": [1, 1, 1, 2, np.nan],
+                    "C": [1, 1, 1, np.nan, np.nan],
                 },
                 index=pd.Index(["a", "b", "c", "d", "e"]),
                 dtype="Int64",
@@ -1101,7 +1101,7 @@ def test_concat(objs, overwrite, expected):
                 {
                     "A": [4, 3, 1, 5],
                     "B": [4, 3, 1, 5],
-                    "C": [np.NaN, 2, 1, 2],
+                    "C": [np.nan, 2, 1, 2],
                 },
                 index=pd.Index(["a", "b", "c", "d"]),
                 dtype="Int64",

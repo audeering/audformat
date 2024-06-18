@@ -99,7 +99,7 @@ def test_scheme_assign_values():
                 minimum=1.0,
                 maximum=2.0,
             ),
-            np.array([0.0, np.NaN, 2.0]),
+            np.array([0.0, np.nan, 2.0]),
             marks=pytest.mark.xfail(raises=ValueError),
         ),
         pytest.param(  # maximum too high
@@ -108,7 +108,7 @@ def test_scheme_assign_values():
                 minimum=1.0,
                 maximum=2.0,
             ),
-            np.array([1.0, np.NaN, 3.0]),
+            np.array([1.0, np.nan, 3.0]),
             marks=pytest.mark.xfail(raises=ValueError),
         ),
         # Make sure we convert None to float
@@ -611,7 +611,7 @@ def test_replace_labels_misc_table():
     scheme.replace_labels("labels-new")
     assert scheme.labels == "labels-new"
     assert scheme._labels_to_dict() == {"b": {}, "c": {}, "d": {}, "e": {}}
-    expected = [np.NaN, "b", "c", "d"]
+    expected = [np.nan, "b", "c", "d"]
     assert list(db["table"]["column"].get().values) == expected
     assert list(db["misc"]["column"].get().values) == expected
 
@@ -639,7 +639,7 @@ def test_replace_labels_misc_table():
         inplace=True,
     )
     assert scheme._labels_to_dict() == {"c": {}, "d": {}, "e": {}}
-    expected = [np.NaN, np.NaN, "c", "d"]
+    expected = [np.nan, np.nan, "c", "d"]
     assert list(db["table"]["column"].get().values) == expected
     assert list(db["misc"]["column"].get().values) == expected
 
@@ -653,7 +653,7 @@ def test_replace_labels_misc_table():
         inplace=True,
     )
     assert scheme._labels_to_dict() == {"d": {}, "e": {}}
-    expected = [np.NaN, np.NaN, np.NaN, "d"]
+    expected = [np.nan, np.nan, np.nan, "d"]
     assert list(db["table"]["column"].get().values) == expected
     assert list(db["misc"]["column"].get().values) == expected
 
@@ -661,7 +661,7 @@ def test_replace_labels_misc_table():
     scheme.replace_labels({"e": {}})
     assert scheme.labels == {"e": {}}
     assert scheme._labels_to_dict() == {"e": {}}
-    expected = [np.NaN, np.NaN, np.NaN, np.NaN]
+    expected = [np.nan, np.nan, np.nan, np.nan]
     assert list(db["table"]["column"].get().values) == expected
     assert list(db["misc"]["column"].get().values) == expected
 

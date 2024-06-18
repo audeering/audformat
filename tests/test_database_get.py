@@ -59,7 +59,7 @@ def mono_db(tmpdir):
     index = pd.Index(["s1", "s2", "s3"], name="speaker", dtype="string")
     db["speaker"] = audformat.MiscTable(index)
     db["speaker"]["age"] = audformat.Column(scheme_id="age")
-    db["speaker"]["age"].set([23, np.NaN, 59])
+    db["speaker"]["age"].set([23, np.nan, 59])
     db["speaker"]["gender"] = audformat.Column()
     db["speaker"]["gender"].set(["female", "", "male"])
     db["speaker"]["height-with-10y"] = audformat.Column(scheme_id="height")
@@ -163,7 +163,7 @@ def stereo_db(tmpdir):
     index = pd.Index(["s1", "s2", "s3"], name="speaker", dtype="string")
     db["speaker"] = audformat.MiscTable(index)
     db["speaker"]["age"] = audformat.Column(scheme_id="age")
-    db["speaker"]["age"].set([23, np.NaN, 59])
+    db["speaker"]["age"].set([23, np.nan, 59])
     db["speaker"]["gender"] = audformat.Column()
     db["speaker"]["gender"].set(["female", "", "male"])
 
@@ -220,9 +220,9 @@ def overlapping_data_db(tmpdir):
     index = audformat.filewise_index(["f1.wav", "f2.wav"])
     db["files"] = audformat.Table(index)
     db["files"]["speaker"] = audformat.Column(scheme_id="speaker")
-    db["files"]["speaker"].set([0, np.NaN])
+    db["files"]["speaker"].set([0, np.nan])
     db["files"]["gender"] = audformat.Column(scheme_id="gender")
-    db["files"]["gender"].set(["female", np.NaN])
+    db["files"]["gender"].set(["female", np.nan])
 
     db.save(path)
     audformat.testing.create_audio_files(db, channels=1, file_duration="1s")
@@ -372,7 +372,7 @@ def wrong_scheme_labels_db(tmpdir):
                         name="gender",
                     ),
                     pd.Series(
-                        ["female", np.NaN, "male"],
+                        ["female", np.nan, "male"],
                         index=audformat.filewise_index(["f1.wav", "f2.wav", "f3.wav"]),
                         dtype="object",
                         name="sex",
@@ -410,7 +410,7 @@ def wrong_scheme_labels_db(tmpdir):
                         name="non-existing",
                     ),
                     pd.Series(
-                        ["female", np.NaN, "male"],
+                        ["female", np.nan, "male"],
                         index=audformat.filewise_index(["f1.wav", "f2.wav", "f3.wav"]),
                         dtype="object",
                         name="sex",
@@ -448,7 +448,7 @@ def wrong_scheme_labels_db(tmpdir):
                         name="non-existing",
                     ),
                     pd.Series(
-                        ["female", np.NaN, "male"],
+                        ["female", np.nan, "male"],
                         index=audformat.filewise_index(["f1.wav", "f2.wav", "f3.wav"]),
                         dtype="object",
                         name="sex",
@@ -575,7 +575,7 @@ def wrong_scheme_labels_db(tmpdir):
             [],
             pd.DataFrame(
                 {
-                    "gender": ["female", np.NaN],
+                    "gender": ["female", np.nan],
                 },
                 index=audformat.filewise_index(["f1.wav", "f2.wav"]),
                 dtype=pd.CategoricalDtype(
@@ -626,7 +626,7 @@ def wrong_scheme_labels_db(tmpdir):
             [],
             pd.DataFrame(
                 {
-                    "gender": ["female", np.NaN],
+                    "gender": ["female", np.nan],
                 },
                 index=audformat.filewise_index(["f1.wav", "f2.wav"]),
                 dtype="string",
@@ -710,9 +710,9 @@ def test_database_get(request, db, scheme, additional_schemes, expected):
             "mismatch",
             pd.DataFrame(
                 {
-                    "channel0": [23, np.NaN, 59],
+                    "channel0": [23, np.nan, 59],
                     "perceived-age": [25, 34, 45],
-                    "speaker": [23, np.NaN, np.NaN],
+                    "speaker": [23, np.nan, np.nan],
                 },
                 index=audformat.filewise_index(["f1.wav", "f2.wav", "f3.wav"]),
                 dtype="Int64",
@@ -775,7 +775,7 @@ def test_database_get(request, db, scheme, additional_schemes, expected):
                         name="perceived-age",
                     ),
                     pd.Series(
-                        [23, np.NaN],
+                        [23, np.nan],
                         index=audformat.filewise_index(["f1.wav", "f3.wav"]),
                         dtype="Int64",
                         name="speaker",
