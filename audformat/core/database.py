@@ -1383,7 +1383,7 @@ class Database(HeaderBase):
         r"""Load database from disk.
 
         Expects a header ``<root>/<name>.yaml``
-        and for every table a file ``<root>/<name>.<table-id>.[csv|pkl]``
+        and for every table a file ``<root>/<name>.<table-id>.[csv|parquet|pkl]``
         Media files should be located under ``root``.
 
         Args:
@@ -1409,7 +1409,7 @@ class Database(HeaderBase):
         Raises:
             FileNotFoundError: if the database header file cannot be found
                 under ``root``
-            RuntimeError: if a CSV table file is newer
+            RuntimeError: if a CSV or PARQUET table file is newer
                 than the corresponding PKL file
 
         """
