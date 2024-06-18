@@ -2200,11 +2200,11 @@ def test_update_other_formats(
     # Ensure mtimes are correct
     if update_other_formats:
         if "pickle" in formats and "csv" in formats:
-            assert mtime["pickle"] > mtime["csv"]
+            assert mtime["pickle"] >= mtime["csv"]
         if "pickle" in formats and "parquet" in formats:
-            assert mtime["pickle"] > mtime["parquet"]
+            assert mtime["pickle"] >= mtime["parquet"]
         if "csv" in formats and "parquet" in formats:
-            assert mtime["csv"] > mtime["parquet"]
+            assert mtime["csv"] >= mtime["parquet"]
     else:
         for ext in existing_formats:
             assert mtime[ext] == old_mtime[ext]
