@@ -1122,11 +1122,11 @@ class Base(HeaderBase):
 
         The hash is calculated from the pyarrow schema
         (to track column names and data types)
-        and the pandas dataframes
+        and the pandas dataframe
         (to track values and order or rows),
         from which the PARQUET file is generated.
 
-        The hash of the PARQUET can then be read by::
+        The hash of the PARQUET file can then be read by::
 
             pyarrow.parquet.read_schema(path).metadata[b"hash"].decode()
 
