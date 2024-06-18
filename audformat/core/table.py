@@ -1873,7 +1873,7 @@ def _dataframe_hash(df: pd.DataFrame, max_rows: int = None) -> bytes:
     md5 = hashlib.md5()
     if max_rows is not None and len(df) > max_rows:  # pragma: nocover (not yet used)
         df = df.sample(n=max_rows, random_state=0)
-        # Hash length, as we have to track if this changes
+        # Hash length of dataframe, as we have to track if this changes
         md5.update(str(len(df)).encode("utf-8"))
     try:
         md5.update(bytes(str(pd.util.hash_pandas_object(df)), "utf-8"))
