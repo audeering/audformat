@@ -847,9 +847,6 @@ class Base(HeaderBase):
         # The returned dictionary is used
         # to infer index column names and dtypes
         # when reading CSV files.
-        # This means the names and dtypes cannot be inferred
-        # from the index itself,
-        # but need to be known before.
         raise NotImplementedError()  # pragma: no cover
 
     def _load_csv(self, path: str):
