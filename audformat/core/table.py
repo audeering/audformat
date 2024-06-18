@@ -444,10 +444,10 @@ class Base(HeaderBase):
     ):
         r"""Load table data from disk.
 
-        Tables can be stored as PKL and/or CSV files to disk.
-        If both files are present
+        Tables are stored as CSV, PARQUET and/or PKL files to disk.
+        If the PKL file exists,
         it will load the PKL file
-        as long as its modification date is newer,
+        as long as its modification date is the newest,
         otherwise it will raise an error
         and ask to delete one of the files.
 
@@ -456,7 +456,7 @@ class Base(HeaderBase):
 
         Raises:
             RuntimeError: if table file(s) are missing
-            RuntimeError: if CSV file is newer than PKL file
+            RuntimeError: if CSV or PARQUET file is newer than PKL file
 
         """
         path = audeer.path(path)
