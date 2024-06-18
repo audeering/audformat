@@ -475,7 +475,7 @@ def difference(
         >>> difference(
         ...     [
         ...         pd.Index([0, 1], name="idx"),
-        ...         pd.Index([1, np.NaN], dtype="Int64", name="idx"),
+        ...         pd.Index([1, np.nan], dtype="Int64", name="idx"),
         ...     ]
         ... )
         Index([0, <NA>], dtype='Int64', name='idx')
