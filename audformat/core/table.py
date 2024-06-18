@@ -896,6 +896,14 @@ class Base(HeaderBase):
         self._df = df
 
     def _load_pickled(self, path: str):
+        r"""Load table from PKL file.
+
+        The loaded table is stored under ``self._df``.
+
+        Args:
+            path: path to table, including file extension
+
+        """
         # Older versions of audformat used xz compression
         # which produced smaller files,
         # but was slower.
