@@ -112,19 +112,19 @@ def test_access():
             audformat.define.DataType.INTEGER,
         ),
         (
-            [np.NaN],
+            [np.nan],
             "Int64",
             "Int64",
             audformat.define.DataType.INTEGER,
         ),
         (
-            [0, np.NaN],
+            [0, np.nan],
             "Int64",
             "Int64",
             audformat.define.DataType.INTEGER,
         ),
         (
-            [np.NaN],
+            [np.nan],
             "Int64",
             "Int64",
             audformat.define.DataType.INTEGER,
@@ -384,7 +384,7 @@ def test_map(column, map, expected_dtype):
             if map in value:
                 value = value[map]
             else:
-                value = np.NaN
+                value = np.nan
         mapping[key] = value
     expected = expected.map(mapping).astype(expected_dtype)
     expected.name = map
@@ -876,7 +876,7 @@ def test_set_labels():
     )
     db[scheme_id] = audformat.Table(audformat.filewise_index(["a", "b", "c", "d", "e"]))
     db[scheme_id][scheme_id] = audformat.Column(scheme_id=scheme_id)
-    y = pd.Series([np.NaN, "b", "h", "a", "n"])
+    y = pd.Series([np.nan, "b", "h", "a", "n"])
     db[scheme_id][scheme_id].set(y)  # Series
     db[scheme_id][scheme_id].set(y.values)  # ndarray
     # Clean up database
