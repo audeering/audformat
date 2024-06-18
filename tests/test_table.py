@@ -2159,6 +2159,14 @@ def test_update_other_formats(
     with the argument `update_other_formats=True`,
     it should write the table to the CSV and PKL file.
 
+    Args:
+        tmpdir: tmpdir fixture
+        storage_format: storage format of table
+        existing_formats: formats the table should be stored in
+            before saving to ``storage_format``
+        update_other_formats: if tables specified in ``existing_formats``
+            should be updated when saving ``storage_format``
+
     """
     db = audformat.testing.create_db()
 
