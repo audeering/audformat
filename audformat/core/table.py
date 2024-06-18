@@ -599,25 +599,34 @@ class Base(HeaderBase):
         path = audeer.path(path)
         define.TableStorageFormat._assert_has_attribute_value(storage_format)
 
+        csv_file = f"{path}.{define.TableStorageFormat.CSV}"
         parquet_file = f"{path}.{define.TableStorageFormat.PARQUET}"
         pickle_file = f"{path}.{define.TableStorageFormat.PICKLE}"
-        csv_file = f"{path}.{define.TableStorageFormat.CSV}"
 
-        # Make sure the CSV|PARQUET file is always written first
-        # as it is expected to be older by load()
+        # Ensure the following storage order:
+        # 1. PARQUET file
+        # 2. CSV file
+        # 3. PKL file
+        # The PKl is expected to be the oldest by load(),
+        # the order of PARQUET and CSV file
+        # is only a convention for now.
         if storage_format == define.TableStorageFormat.PICKLE:
             if update_other_formats and os.path.exists(parquet_file):
                 self._save_parquet(parquet_file)
-            elif update_other_formats and os.path.exists(csv_file):
+            if update_other_formats and os.path.exists(csv_file):
                 self._save_csv(csv_file)
             self._save_pickled(pickle_file)
 
         if storage_format == define.TableStorageFormat.PARQUET:
             self._save_parquet(parquet_file)
+            if update_other_formats and os.path.exists(csv_file):
+                self._save_csv(csv_file)
             if update_other_formats and os.path.exists(pickle_file):
                 self._save_pickled(pickle_file)
 
         if storage_format == define.TableStorageFormat.CSV:
+            if update_other_formats and os.path.exists(parquet_file):
+                self._save_parquet(parquet_file)
             self._save_csv(csv_file)
             if update_other_formats and os.path.exists(pickle_file):
                 self._save_pickled(pickle_file)

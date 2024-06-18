@@ -1,6 +1,7 @@
 import os
 import random
 import re
+import time
 import typing
 
 import numpy as np
@@ -2122,3 +2123,81 @@ def test_update(table, overwrite, others):
         for column_id, column in other.columns.items():
             assert column.scheme == table[column_id].scheme
             assert column.rater == table[column_id].rater
+
+
+@pytest.mark.parametrize("update_other_formats", [True, False])
+@pytest.mark.parametrize(
+    "storage_format, existing_formats",
+    [
+        ("csv", []),
+        ("csv", []),
+        ("csv", ["pkl"]),
+        ("csv", ["parquet", "pkl"]),
+        ("pkl", ["parquet"]),
+        ("pkl", ["csv"]),
+        ("pkl", ["parquet", "csv"]),
+        ("parquet", ["pkl"]),
+        ("parquet", ["csv"]),
+        ("parquet", ["pkl", "csv"]),
+    ],
+)
+def test_update_other_formats(
+    tmpdir,
+    storage_format,
+    existing_formats,
+    update_other_formats,
+):
+    r"""Tests updating of other table formats.
+
+    When a table is stored with `audformat.Table.save()`
+    as CSV, PARQUET, or PKL file,
+    a user might select
+    that all other existing file representations of the table
+    are updated as well.
+    E.g. if a PKL file of the same table exists,
+    and a user saves to a CSV file
+    with the argument `update_other_formats=True`,
+    it should write the table to the CSV and PKL file.
+
+    """
+    db = audformat.testing.create_db()
+
+    table_id = "files"
+    table_file = audeer.path(tmpdir, "table")
+
+    # Create existing table files and pause for a short time
+    old_mtime = {}
+    for ext in existing_formats:
+        db[table_id].save(
+            table_file,
+            storage_format=ext,
+            update_other_formats=False,
+        )
+        old_mtime[ext] = os.path.getmtime(f"{table_file}.{ext}")
+    time.sleep(0.05)
+
+    # Store table to requested format
+    db[table_id].save(
+        table_file,
+        storage_format=storage_format,
+        update_other_formats=update_other_formats,
+    )
+
+    # Collect mtimes of existing table files
+    mtime = {}
+    formats = existing_formats + [storage_format]
+    for ext in formats:
+        mtime[ext] = os.path.getmtime(f"{table_file}.{ext}")
+
+    # Ensure mtimes are correct
+    if update_other_formats:
+        if "pickle" in formats and "csv" in formats:
+            assert mtime["pickle"] > mtime["csv"]
+        if "pickle" in formats and "parquet" in formats:
+            assert mtime["pickle"] > mtime["parquet"]
+        if "csv" in formats and "parquet" in formats:
+            assert mtime["csv"] > mtime["parquet"]
+    else:
+        for ext in existing_formats:
+            assert mtime[ext] == old_mtime[ext]
+            assert mtime[storage_format] > old_mtime[ext]
