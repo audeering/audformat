@@ -1312,15 +1312,15 @@ def test_hash(tmpdir, storage_format):
     [
         (
             "files",
-            "9caa6722e65a04ddbce1cda2238c9126",
+            "a66a22ee4158e0e5100f1d797155ad81",
         ),
         (
             "segments",
-            "37c9d9dc4f937a6e97ec72a080055e49",
+            "f69eb4a5d19da71e5da00a9b13beb3db",
         ),
         (
             "misc",
-            "3488c007d45b19e04e8fdbf000f0f04d",
+            "331f79758b195cb9b7d0e8889e830eb2",
         ),
     ],
 )

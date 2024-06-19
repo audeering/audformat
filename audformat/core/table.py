@@ -1844,7 +1844,7 @@ def _assert_table_index(
         )
 
 
-def _dataframe_hash(df: pd.DataFrame, max_rows: int = None) -> bytes:
+def _dataframe_hash(df: pd.DataFrame) -> bytes:
     """Hash a dataframe.
 
     The hash value takes into account:
@@ -1860,27 +1860,21 @@ def _dataframe_hash(df: pd.DataFrame, max_rows: int = None) -> bytes:
 
     Args:
         df: dataframe
-        max_rows: if not ``None``,
-            the maximum number of rows,
-            taken into account for hashing
 
     Returns:
         MD5 hash in bytes
 
     """
-    # Idea for implementation from
-    # https://github.com/streamlit/streamlit/issues/7086#issuecomment-1654504410
     md5 = hashlib.md5()
-    if max_rows is not None and len(df) > max_rows:  # pragma: nocover (not yet used)
-        df = df.sample(n=max_rows, random_state=0)
-        # Hash length of dataframe, as we have to track if this changes
-        md5.update(str(len(df)).encode("utf-8"))
-    try:
-        md5.update(bytes(str(pd.util.hash_pandas_object(df)), "utf-8"))
-    except TypeError:
-        # Use pickle if pandas cannot hash the object,
-        # e.g. if it contains numpy.arrays.
-        md5.update(f"{pickle.dumps(df, pickle.HIGHEST_PROTOCOL)}".encode("utf-8"))
+    for _, y in df.reset_index().items():
+        # Convert every column to a numpy array,
+        # and hash its string representation
+        if y.dtype == "Int64":
+            # Enforce consistent conversion to numpy.array
+            # for integers across different pandas versions
+            # (since pandas 2.2.x, Int64 is converted to float if it contains <NA>)
+            y = y.astype("float")
+        md5.update(bytes(str(y.to_numpy()), "utf-8"))
     return md5.digest()
 
 
