@@ -55,8 +55,7 @@ jobs:
       run: |
         pip install "audeer==2.0.0"
         pip install "audiofile==0.4.0"
-        pip install "numpy<2.0"
-        pip install "pandas==1.4.1"
+        pip install "pandas==2.1.0"
         pip install "pyarrow==10.0.1"
         pip install "pyyaml==5.4.1"
       if: matrix.requirements == 'minimum'
@@ -64,12 +63,6 @@ jobs:
     - name: Test with pytest
       run: |
         python -m pytest
-      if: matrix.requirements != 'minimum'
-
-    - name: Test with pytest (skip doctests)
-      run: |
-        python -m pytest --ignore=audformat --cov-fail-under=99
-      if: matrix.requirements == 'minimum'
 
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v4

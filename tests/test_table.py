@@ -1320,7 +1320,7 @@ def test_hash(tmpdir, storage_format):
         ),
         (
             "misc",
-            "d3bfb0271878be96c42d523ee4c491da",
+            "331f79758b195cb9b7d0e8889e830eb2",
         ),
     ],
 )
