@@ -1212,7 +1212,7 @@ def test_map(table, map):
 
 
 @pytest.mark.parametrize("storage_format", ["csv", "parquet"])
-def test_hash(tmpdir, storage_format):
+class TestHash:
     r"""Test if PARQUET file hash changes with table.
 
     We store a MD5 sum associated with the dataframe,
@@ -1229,82 +1229,98 @@ def test_hash(tmpdir, storage_format):
 
     """
 
-    def get_md5(path: str) -> str:
+    def db(self, tmpdir, storage_format):
+        r"""Create minimal database with scheme and table."""
+        self.db_root = audeer.path(tmpdir, "db")
+        self.storage_format = storage_format
+        self.table_file = audeer.path(self.db_root, f"db.table.{storage_format}")
+        db = audformat.Database("mydb")
+        db.schemes["int"] = audformat.Scheme("int")
+        index = audformat.segmented_index(["f1", "f2"], [0, 1], [1, 2])
+        db["table"] = audformat.Table(index)
+        db["table"]["column"] = audformat.Column(scheme_id="int")
+        db["table"]["column"].set([0, 1])
+        db.save(self.db_root, storage_format=self.storage_format)
+        return db
+
+    def md5(self) -> str:
         r"""Get MD5 sum for table file."""
-        ext = audeer.file_extension(path)
-        if ext == "csv":
-            md5 = audeer.md5(path)
-        elif ext == "parquet":
-            md5 = parquet.read_schema(path).metadata[b"hash"].decode()
-        return md5
+        if self.storage_format == "csv":
+            return audeer.md5(self.table_file)
+        elif self.storage_format == "parquet":
+            return parquet.read_schema(self.table_file).metadata[b"hash"].decode()
 
-    db_root = audeer.path(tmpdir, "db")
-    db = audformat.Database("mydb")
-    db.schemes["int"] = audformat.Scheme("int")
-    index = audformat.segmented_index(["f1", "f2"], [0, 1], [1, 2])
-    db["table"] = audformat.Table(index)
-    db["table"]["column"] = audformat.Column(scheme_id="int")
-    db["table"]["column"].set([0, 1])
-    db.save(db_root, storage_format=storage_format)
+    def test_change_index(self, tmpdir, storage_format):
+        r"""Change table index."""
+        db = self.db(tmpdir, storage_format)
+        md5 = self.md5()
+        index = audformat.segmented_index(["f1", "f1"], [0, 1], [1, 2])
+        db["table"] = audformat.Table(index)
+        db["table"]["column"] = audformat.Column(scheme_id="int")
+        db["table"]["column"].set([0, 1])
+        db.save(self.db_root, storage_format=self.storage_format)
+        assert self.md5() != md5
 
-    table_file = audeer.path(db_root, f"db.table.{storage_format}")
-    assert os.path.exists(table_file)
-    md5 = get_md5(table_file)
+    def test_change_column_name(self, tmpdir, storage_format):
+        r"""Change table column name."""
+        db = self.db(tmpdir, storage_format)
+        md5 = self.md5()
+        index = audformat.segmented_index(["f1", "f2"], [0, 1], [1, 2])
+        db["table"] = audformat.Table(index)
+        db["table"]["col"] = audformat.Column(scheme_id="int")
+        db["table"]["col"].set([0, 1])
+        db.save(self.db_root, storage_format=self.storage_format)
+        assert self.md5() != md5
 
-    # Replace table with identical copy
-    table = db["table"].copy()
-    db["table"] = table
-    db.save(db_root, storage_format=storage_format)
-    assert get_md5(table_file) == md5
+    def test_change_column_order(self, tmpdir, storage_format):
+        r"""Change order of table columns."""
+        db = self.db(tmpdir, storage_format)
+        index = audformat.segmented_index(["f1", "f2"], [0, 1], [1, 2])
+        db["table"] = audformat.Table(index)
+        db["table"]["col1"] = audformat.Column(scheme_id="int")
+        db["table"]["col1"].set([0, 1])
+        db["table"]["col2"] = audformat.Column(scheme_id="int")
+        db["table"]["col2"].set([0, 1])
+        db.save(self.db_root, storage_format=self.storage_format)
+        md5 = self.md5()
+        db["table"] = audformat.Table(index)
+        db["table"]["col2"] = audformat.Column(scheme_id="int")
+        db["table"]["col2"].set([0, 1])
+        db["table"]["col1"] = audformat.Column(scheme_id="int")
+        db["table"]["col1"].set([0, 1])
+        db.save(self.db_root, storage_format=self.storage_format)
+        assert self.md5() != md5
 
-    # Change order of rows
-    index = audformat.segmented_index(["f2", "f1"], [1, 0], [2, 1])
-    db["table"] = audformat.Table(index)
-    db["table"]["column"] = audformat.Column(scheme_id="int")
-    db["table"]["column"].set([1, 0])
-    db.save(db_root, storage_format=storage_format)
-    assert get_md5(table_file) != md5
+    def test_change_row_order(self, tmpdir, storage_format):
+        r"""Change order of table rows."""
+        db = self.db(tmpdir, storage_format)
+        md5 = self.md5()
+        index = audformat.segmented_index(["f2", "f1"], [1, 0], [2, 1])
+        db["table"] = audformat.Table(index)
+        db["table"]["column"] = audformat.Column(scheme_id="int")
+        db["table"]["column"].set([1, 0])
+        db.save(self.db_root, storage_format=storage_format)
+        assert self.md5() != md5
 
-    # Change index entry
-    index = audformat.segmented_index(["f1", "f1"], [0, 1], [1, 2])
-    db["table"] = audformat.Table(index)
-    db["table"]["column"] = audformat.Column(scheme_id="int")
-    db["table"]["column"].set([0, 1])
-    db.save(db_root, storage_format=storage_format)
-    assert get_md5(table_file) != md5
+    def test_change_values(self, tmpdir, storage_format):
+        r"""Change table values."""
+        db = self.db(tmpdir, storage_format)
+        md5 = self.md5()
+        index = audformat.segmented_index(["f1", "f2"], [0, 1], [1, 2])
+        db["table"] = audformat.Table(index)
+        db["table"]["column"] = audformat.Column(scheme_id="int")
+        db["table"]["column"].set([1, 0])
+        db.save(self.db_root, storage_format=self.storage_format)
+        assert self.md5() != md5
 
-    # Change data entry
-    index = audformat.segmented_index(["f1", "f2"], [0, 1], [1, 2])
-    db["table"] = audformat.Table(index)
-    db["table"]["column"] = audformat.Column(scheme_id="int")
-    db["table"]["column"].set([1, 0])
-    db.save(db_root, storage_format=storage_format)
-    assert get_md5(table_file) != md5
-
-    # Change column name
-    index = audformat.segmented_index(["f1", "f2"], [0, 1], [1, 2])
-    db["table"] = audformat.Table(index)
-    db["table"]["col"] = audformat.Column(scheme_id="int")
-    db["table"]["col"].set([0, 1])
-    db.save(db_root, storage_format=storage_format)
-    assert get_md5(table_file) != md5
-
-    # Change order of columns
-    index = audformat.segmented_index(["f1", "f2"], [0, 1], [1, 2])
-    db["table"] = audformat.Table(index)
-    db["table"]["col1"] = audformat.Column(scheme_id="int")
-    db["table"]["col1"].set([0, 1])
-    db["table"]["col2"] = audformat.Column(scheme_id="int")
-    db["table"]["col2"].set([0, 1])
-    db.save(db_root, storage_format=storage_format)
-    md5 = get_md5(table_file)
-    db["table"] = audformat.Table(index)
-    db["table"]["col2"] = audformat.Column(scheme_id="int")
-    db["table"]["col2"].set([0, 1])
-    db["table"]["col1"] = audformat.Column(scheme_id="int")
-    db["table"]["col1"].set([0, 1])
-    db.save(db_root, storage_format=storage_format)
-    assert get_md5(table_file) != md5
+    def test_copy_table(self, tmpdir, storage_format):
+        r"""Replace table with identical copy."""
+        db = self.db(tmpdir, storage_format)
+        md5 = self.md5()
+        table = db["table"].copy()
+        db["table"] = table
+        db.save(self.db_root, storage_format=self.storage_format)
+        assert self.md5() == md5
 
 
 @pytest.mark.parametrize(
