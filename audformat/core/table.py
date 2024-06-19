@@ -1875,9 +1875,6 @@ def _dataframe_hash(df: pd.DataFrame, max_rows: int = None) -> bytes:
     for column in df.columns:
         # Convert every column to a numpy array,
         # and hash its string representation
-        print(df[column].to_numpy())
-        print(df[column].dtype)
-        print(hashlib.md5(bytes(str(df[column].to_numpy()), "utf-8")).hexdigest())
         if df[column].dtype == "Int64":
             # Enforce consistent conversion to numpy.array
             # for integers across different pandas versions
