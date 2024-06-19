@@ -1844,7 +1844,7 @@ def _assert_table_index(
         )
 
 
-def _dataframe_hash(df: pd.DataFrame, max_rows: int = None) -> bytes:
+def _dataframe_hash(df: pd.DataFrame) -> bytes:
     """Hash a dataframe.
 
     The hash value takes into account:
@@ -1860,16 +1860,11 @@ def _dataframe_hash(df: pd.DataFrame, max_rows: int = None) -> bytes:
 
     Args:
         df: dataframe
-        max_rows: if not ``None``,
-            the maximum number of rows,
-            taken into account for hashing
 
     Returns:
         MD5 hash in bytes
 
     """
-    # Idea for implementation from
-    # https://github.com/streamlit/streamlit/issues/7086#issuecomment-1654504410
     md5 = hashlib.md5()
     df = df.copy().reset_index()
     for column in df.columns:
@@ -1878,9 +1873,7 @@ def _dataframe_hash(df: pd.DataFrame, max_rows: int = None) -> bytes:
         if df[column].dtype == "Int64":
             # Enforce consistent conversion to numpy.array
             # for integers across different pandas versions
-            # (since pandas 2.2.x,
-            # Int64 is converted to float,
-            # if contains <NA>)
+            # (since pandas 2.2.x, Int64 is converted to float if it contains <NA>)
             y = df[column].astype("float")
         else:
             y = df[column]
