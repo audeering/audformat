@@ -64,6 +64,12 @@ jobs:
     - name: Test with pytest
       run: |
         python -m pytest
+      if: matrix.requirements != 'minimum'
+
+    - name: Test with pytest (skip doctests)
+      run: |
+        python -m pytest --ignore=audformat --cov-fail-under=99
+      if: matrix.requirements == 'minimum'
 
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v4
