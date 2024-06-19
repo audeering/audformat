@@ -1871,16 +1871,11 @@ def _dataframe_hash(df: pd.DataFrame, max_rows: int = None) -> bytes:
     # Idea for implementation from
     # https://github.com/streamlit/streamlit/issues/7086#issuecomment-1654504410
     md5 = hashlib.md5()
-    if max_rows is not None and len(df) > max_rows:  # pragma: nocover (not yet used)
-        df = df.sample(n=max_rows, random_state=0)
-        # Hash length of dataframe, as we have to track if this changes
-        md5.update(str(len(df)).encode("utf-8"))
-    try:
-        md5.update(bytes(str(pd.util.hash_pandas_object(df)), "utf-8"))
-    except TypeError:
-        # Use pickle if pandas cannot hash the object,
-        # e.g. if it contains numpy.arrays.
-        md5.update(f"{pickle.dumps(df, pickle.HIGHEST_PROTOCOL)}".encode("utf-8"))
+    df = df.copy().reset_index()
+    for column in df.columns:
+        # Convert every column to a numpy array,
+        # and hash its string representation
+        md5.update(bytes(str(df[column].to_numpy()), "utf-8"))
     return md5.digest()
 
 
