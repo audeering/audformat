@@ -16,11 +16,12 @@ jobs:
         python-version: [ '3.10' ]
         include:
           - os: ubuntu-latest
-            python-version: '3.8'
-          - os: ubuntu-latest
             python-version: '3.9'
           - os: ubuntu-latest
             python-version: '3.11'
+          - os: ubuntu-latest
+            python-version: '3.9'
+            requirements: 'minimum'
 
     steps:
     - uses: actions/checkout@v4
@@ -49,6 +50,16 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
         pip install -r tests/requirements.txt
+
+    - name: Downgrade to minimum dependencies
+      run: |
+        pip install "audeer==2.0.0"
+        pip install "audiofile==0.4.0"
+        pip install "numpy<2.0.0"
+        pip install "pandas==2.1.0"
+        pip install "pyarrow==10.0.1"
+        pip install "pyyaml==5.4.1"
+      if: matrix.requirements == 'minimum'
 
     - name: Test with pytest
       run: |

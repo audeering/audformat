@@ -1,8 +1,12 @@
 import os
+import random
+import re
+import time
 import typing
 
 import numpy as np
 import pandas as pd
+import pyarrow.parquet as parquet
 import pytest
 
 import audeer
@@ -1118,22 +1122,25 @@ def test_load(tmpdir):
     with pytest.raises(EOFError):
         table_loaded.load(path_no_ext)
 
-    # repeat with CSV file as fall back
-    table.save(
-        path_no_ext,
-        storage_format=audformat.define.TableStorageFormat.CSV,
-    )
-    with open(path_pkl, "wb"):
-        pass
-    table_loaded = audformat.Table()
-    table_loaded.columns = table.columns
-    table_loaded._db = table._db
-    table_loaded.load(path_no_ext)
-    pd.testing.assert_frame_equal(table.df, table_loaded.df)
+    # repeat with CSV|PARQUET file as fall back
+    for ext in [
+        audformat.define.TableStorageFormat.CSV,
+        audformat.define.TableStorageFormat.PARQUET,
+    ]:
+        table.save(path_no_ext, storage_format=ext)
+        with open(path_pkl, "wb"):
+            pass
+        table_loaded = audformat.Table()
+        table_loaded.columns = table.columns
+        table_loaded._db = table._db
+        table_loaded.load(path_no_ext)
+        pd.testing.assert_frame_equal(table.df, table_loaded.df)
 
-    # check if pickle file was recovered from CSV
-    df = pd.read_pickle(path_pkl)
-    pd.testing.assert_frame_equal(table.df, df)
+        # check if pickle file was recovered
+        df = pd.read_pickle(path_pkl)
+        pd.testing.assert_frame_equal(table.df, df)
+
+        os.remove(f"{path_no_ext}.{ext}")
 
 
 def test_load_old_pickle(tmpdir):
@@ -1202,6 +1209,169 @@ def test_map(table, map):
         if column not in mapped_columns:
             expected.drop(columns=column, inplace=True)
     pd.testing.assert_frame_equal(result, expected)
+
+
+@pytest.mark.parametrize("storage_format", ["csv", "parquet"])
+class TestHash:
+    r"""Test if PARQUET file hash changes with table.
+
+    We store a MD5 sum associated with the dataframe,
+    that was used to create the file,
+    in the metadata of the PARQUET file.
+    Those MD5 sum is supposed to change,
+    if any of the table rows, (index) columns changes,
+    the data type of the entries changes,
+    or the name of a column changes.
+
+    Args:
+        tmpdir: tmpdir fixture
+        storage_format: storage format of table file
+
+    """
+
+    def db(self, tmpdir, storage_format):
+        r"""Create minimal database with scheme and table."""
+        self.db_root = audeer.path(tmpdir, "db")
+        self.storage_format = storage_format
+        self.table_file = audeer.path(self.db_root, f"db.table.{storage_format}")
+        db = audformat.Database("mydb")
+        db.schemes["int"] = audformat.Scheme("int")
+        index = audformat.segmented_index(["f1", "f2"], [0, 1], [1, 2])
+        db["table"] = audformat.Table(index)
+        db["table"]["column"] = audformat.Column(scheme_id="int")
+        db["table"]["column"].set([0, 1])
+        db.save(self.db_root, storage_format=self.storage_format)
+        return db
+
+    def md5(self) -> str:
+        r"""Get MD5 sum for table file."""
+        if self.storage_format == "csv":
+            return audeer.md5(self.table_file)
+        elif self.storage_format == "parquet":
+            return parquet.read_schema(self.table_file).metadata[b"hash"].decode()
+
+    def test_change_index(self, tmpdir, storage_format):
+        r"""Change table index."""
+        db = self.db(tmpdir, storage_format)
+        md5 = self.md5()
+        index = audformat.segmented_index(["f1", "f1"], [0, 1], [1, 2])
+        db["table"] = audformat.Table(index)
+        db["table"]["column"] = audformat.Column(scheme_id="int")
+        db["table"]["column"].set([0, 1])
+        db.save(self.db_root, storage_format=self.storage_format)
+        assert self.md5() != md5
+
+    def test_change_column_name(self, tmpdir, storage_format):
+        r"""Change table column name."""
+        db = self.db(tmpdir, storage_format)
+        md5 = self.md5()
+        index = audformat.segmented_index(["f1", "f2"], [0, 1], [1, 2])
+        db["table"] = audformat.Table(index)
+        db["table"]["col"] = audformat.Column(scheme_id="int")
+        db["table"]["col"].set([0, 1])
+        db.save(self.db_root, storage_format=self.storage_format)
+        assert self.md5() != md5
+
+    def test_change_column_order(self, tmpdir, storage_format):
+        r"""Change order of table columns."""
+        db = self.db(tmpdir, storage_format)
+        index = audformat.segmented_index(["f1", "f2"], [0, 1], [1, 2])
+        db["table"] = audformat.Table(index)
+        db["table"]["col1"] = audformat.Column(scheme_id="int")
+        db["table"]["col1"].set([0, 1])
+        db["table"]["col2"] = audformat.Column(scheme_id="int")
+        db["table"]["col2"].set([0, 1])
+        db.save(self.db_root, storage_format=self.storage_format)
+        md5 = self.md5()
+        db["table"] = audformat.Table(index)
+        db["table"]["col2"] = audformat.Column(scheme_id="int")
+        db["table"]["col2"].set([0, 1])
+        db["table"]["col1"] = audformat.Column(scheme_id="int")
+        db["table"]["col1"].set([0, 1])
+        db.save(self.db_root, storage_format=self.storage_format)
+        assert self.md5() != md5
+
+    def test_change_row_order(self, tmpdir, storage_format):
+        r"""Change order of table rows."""
+        db = self.db(tmpdir, storage_format)
+        md5 = self.md5()
+        index = audformat.segmented_index(["f2", "f1"], [1, 0], [2, 1])
+        db["table"] = audformat.Table(index)
+        db["table"]["column"] = audformat.Column(scheme_id="int")
+        db["table"]["column"].set([1, 0])
+        db.save(self.db_root, storage_format=storage_format)
+        assert self.md5() != md5
+
+    def test_change_values(self, tmpdir, storage_format):
+        r"""Change table values."""
+        db = self.db(tmpdir, storage_format)
+        md5 = self.md5()
+        index = audformat.segmented_index(["f1", "f2"], [0, 1], [1, 2])
+        db["table"] = audformat.Table(index)
+        db["table"]["column"] = audformat.Column(scheme_id="int")
+        db["table"]["column"].set([1, 0])
+        db.save(self.db_root, storage_format=self.storage_format)
+        assert self.md5() != md5
+
+    def test_copy_table(self, tmpdir, storage_format):
+        r"""Replace table with identical copy."""
+        db = self.db(tmpdir, storage_format)
+        md5 = self.md5()
+        table = db["table"].copy()
+        db["table"] = table
+        db.save(self.db_root, storage_format=self.storage_format)
+        assert self.md5() == md5
+
+
+@pytest.mark.parametrize(
+    "table_id, expected_hash",
+    [
+        (
+            "files",
+            "a66a22ee4158e0e5100f1d797155ad81",
+        ),
+        (
+            "segments",
+            "f69eb4a5d19da71e5da00a9b13beb3db",
+        ),
+        (
+            "misc",
+            "331f79758b195cb9b7d0e8889e830eb2",
+        ),
+    ],
+)
+def test_parquet_hash_reproducibility(tmpdir, table_id, expected_hash):
+    r"""Test reproducibility of binary PARQUET files.
+
+    When storing the same dataframe
+    to different PARQUET files,
+    the files will slightly vary
+    and have different MD5 sums.
+
+    To provide a reproducible hash,
+    in order to judge if a table has changed,
+    we calculate the hash of the table
+    and store it in the metadata
+    of the schema
+    of a the table.
+
+    """
+    random.seed(1)  # ensure the same random table values are created
+    db = audformat.testing.create_db()
+
+    # Write to PARQUET file and check if correct hash is stored
+    path_wo_ext = audeer.path(tmpdir, table_id)
+    path = f"{path_wo_ext}.parquet"
+    db[table_id].save(path_wo_ext, storage_format="parquet")
+    metadata = parquet.read_schema(path).metadata
+    assert metadata[b"hash"].decode() == expected_hash
+
+    # Load table from PARQUET file, and overwrite it
+    db[table_id].load(path_wo_ext)
+    os.remove(path)
+    db[table_id].save(path_wo_ext, storage_format="parquet")
+    metadata = parquet.read_schema(path).metadata
+    assert metadata[b"hash"].decode() == expected_hash
 
 
 @pytest.mark.parametrize(
@@ -1401,6 +1571,100 @@ def test_pick_index(table, index, expected):
     pd.testing.assert_index_equal(table.index, index_org)
     table.pick_index(index, inplace=True)
     pd.testing.assert_index_equal(table.index, expected)
+
+
+@pytest.mark.parametrize(
+    "storage_format",
+    [
+        pytest.param(
+            "csv",
+            marks=pytest.mark.skip(reason="CSV does not support numpy arrays"),
+        ),
+        "parquet",
+        "pkl",
+    ],
+)
+def test_save_and_load(tmpdir, storage_format):
+    r"""Test saving and loading of a table.
+
+    Ensures the table dataframe representation
+    is identical after saving and loading a table.
+
+    Args:
+        tmpdir: tmpdir fixture
+        storage_format: storage format
+            the table should be written to disk.
+            This will also be used as file extension
+
+    """
+    db = audformat.testing.create_db()
+
+    # Extend database with more table/scheme combinations
+    db.schemes["int-labels"] = audformat.Scheme(
+        dtype=audformat.define.DataType.INTEGER,
+        labels=[0, 1],
+    )
+    db.schemes["object"] = audformat.Scheme(audformat.define.DataType.OBJECT)
+    index = pd.MultiIndex.from_arrays(
+        [[0, 1], ["a", "b"]],
+        names=["idx1", "idx2"],
+    )
+    index = audformat.utils.set_index_dtypes(
+        index,
+        {
+            "idx1": audformat.define.DataType.INTEGER,
+            "idx2": audformat.define.DataType.OBJECT,
+        },
+    )
+    db["multi-misc"] = audformat.MiscTable(index)
+    db["multi-misc"]["int"] = audformat.Column(scheme_id="int-labels")
+    db["multi-misc"]["int"].set([0, pd.NA])
+    db["multi-misc"]["bool"] = audformat.Column(scheme_id="bool")
+    db["multi-misc"]["bool"].set([True, pd.NA])
+    db["multi-misc"]["arrays"] = audformat.Column(scheme_id="object")
+    db["multi-misc"]["arrays"].set([np.array([0, 1]), np.array([2, 3])])
+    db["multi-misc"]["lists"] = audformat.Column(scheme_id="object")
+    db["multi-misc"]["lists"].set([[0, 1], [2, 3]])
+    db["multi-misc"]["no-scheme"] = audformat.Column()
+    db["multi-misc"]["no-scheme"].set([0, 1])
+
+    for table_id in list(db):
+        expected_df = db[table_id].get()
+        path_wo_ext = audeer.path(tmpdir, table_id)
+        path = f"{path_wo_ext}.{storage_format}"
+        db[table_id].save(path_wo_ext, storage_format=storage_format)
+        assert os.path.exists(path)
+        db[table_id].load(path_wo_ext)
+        pd.testing.assert_frame_equal(db[table_id].df, expected_df)
+
+
+@pytest.mark.parametrize(
+    "storage_format, expected_error, expected_error_msg",
+    [
+        (
+            "non-existing",
+            audformat.errors.BadValueError,
+            re.escape(
+                "Bad value 'non-existing', expected one of ['csv', 'parquet', 'pkl']"
+            ),
+        ),
+    ],
+)
+def test_save_errors(tmpdir, storage_format, expected_error, expected_error_msg):
+    r"""Test errors when saving a table.
+
+    Args:
+        tmpdir: tmpdir fixture
+        storage_format: storage format of table
+        expected_error: expected error, e.g. ``ValueError``
+        expected_error_msg: expected test of error message
+
+    """
+    db = audformat.testing.create_db()
+    table_id = list(db)[0]
+    path_wo_ext = audeer.path(tmpdir, table_id)
+    with pytest.raises(expected_error, match=expected_error_msg):
+        db[table_id].save(path_wo_ext, storage_format=storage_format)
 
 
 @pytest.mark.parametrize(
@@ -1875,3 +2139,89 @@ def test_update(table, overwrite, others):
         for column_id, column in other.columns.items():
             assert column.scheme == table[column_id].scheme
             assert column.rater == table[column_id].rater
+
+
+@pytest.mark.parametrize("update_other_formats", [True, False])
+@pytest.mark.parametrize(
+    "storage_format, existing_formats",
+    [
+        ("csv", []),
+        ("csv", []),
+        ("csv", ["pkl"]),
+        ("csv", ["parquet", "pkl"]),
+        ("pkl", ["parquet"]),
+        ("pkl", ["csv"]),
+        ("pkl", ["parquet", "csv"]),
+        ("parquet", ["pkl"]),
+        ("parquet", ["csv"]),
+        ("parquet", ["pkl", "csv"]),
+    ],
+)
+def test_update_other_formats(
+    tmpdir,
+    storage_format,
+    existing_formats,
+    update_other_formats,
+):
+    r"""Tests updating of other table formats.
+
+    When a table is stored with `audformat.Table.save()`
+    as CSV, PARQUET, or PKL file,
+    a user might select
+    that all other existing file representations of the table
+    are updated as well.
+    E.g. if a PKL file of the same table exists,
+    and a user saves to a CSV file
+    with the argument `update_other_formats=True`,
+    it should write the table to the CSV and PKL file.
+
+    Args:
+        tmpdir: tmpdir fixture
+        storage_format: storage format of table
+        existing_formats: formats the table should be stored in
+            before saving to ``storage_format``
+        update_other_formats: if tables specified in ``existing_formats``
+            should be updated when saving ``storage_format``
+
+    """
+    db = audformat.testing.create_db()
+
+    table_id = "files"
+    table_file = audeer.path(tmpdir, "table")
+
+    # Create existing table files and pause for a short time
+    old_mtime = {}
+    for ext in existing_formats:
+        db[table_id].save(
+            table_file,
+            storage_format=ext,
+            update_other_formats=False,
+        )
+        old_mtime[ext] = os.path.getmtime(f"{table_file}.{ext}")
+    time.sleep(0.05)
+
+    # Store table to requested format
+    db[table_id].save(
+        table_file,
+        storage_format=storage_format,
+        update_other_formats=update_other_formats,
+    )
+
+    # Collect mtimes of existing table files
+    mtime = {}
+    formats = existing_formats + [storage_format]
+    for ext in formats:
+        mtime[ext] = os.path.getmtime(f"{table_file}.{ext}")
+
+    # Ensure mtimes are correct
+    if update_other_formats:
+        if "pickle" in formats and "csv" in formats:
+            assert mtime["pickle"] >= mtime["csv"]
+        if "pickle" in formats and "parquet" in formats:
+            assert mtime["pickle"] >= mtime["parquet"]
+        if "csv" in formats and "parquet" in formats:
+            assert mtime["csv"] >= mtime["parquet"]
+    else:
+        for ext in existing_formats:
+            assert mtime[ext] == old_mtime[ext]
+            assert mtime[storage_format] > old_mtime[ext]

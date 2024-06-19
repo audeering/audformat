@@ -1,11 +1,15 @@
 from __future__ import annotations  # allow typing without string
 
 import copy
+import hashlib
 import os
 import pickle
 import typing
 
 import pandas as pd
+import pyarrow as pa
+import pyarrow.csv as csv
+import pyarrow.parquet as parquet
 
 import audeer
 
@@ -14,8 +18,6 @@ from audformat.core import utils
 from audformat.core.column import Column
 from audformat.core.common import HeaderBase
 from audformat.core.common import HeaderDict
-from audformat.core.common import to_audformat_dtype
-from audformat.core.common import to_pandas_dtype
 from audformat.core.errors import BadIdError
 from audformat.core.index import filewise_index
 from audformat.core.index import index_type
@@ -442,10 +444,10 @@ class Base(HeaderBase):
     ):
         r"""Load table data from disk.
 
-        Tables can be stored as PKL and/or CSV files to disk.
-        If both files are present
+        Tables are stored as CSV, PARQUET and/or PKL files to disk.
+        If the PKL file exists,
         it will load the PKL file
-        as long as its modification date is newer,
+        as long as its modification date is the newest,
         otherwise it will raise an error
         and ask to delete one of the files.
 
@@ -454,48 +456,64 @@ class Base(HeaderBase):
 
         Raises:
             RuntimeError: if table file(s) are missing
-            RuntimeError: if CSV file is newer than PKL file
+            RuntimeError: if CSV or PARQUET file is newer than PKL file
 
         """
         path = audeer.path(path)
-        pkl_file = f"{path}.{define.TableStorageFormat.PICKLE}"
         csv_file = f"{path}.{define.TableStorageFormat.CSV}"
+        parquet_file = f"{path}.{define.TableStorageFormat.PARQUET}"
+        pkl_file = f"{path}.{define.TableStorageFormat.PICKLE}"
 
-        if not os.path.exists(pkl_file) and not os.path.exists(csv_file):
+        if (
+            not os.path.exists(pkl_file)
+            and not os.path.exists(csv_file)
+            and not os.path.exists(parquet_file)
+        ):
             raise RuntimeError(
-                f"No file found for table with path '{path}.{{pkl|csv}}'"
+                f"No file found for table with path '{path}.{{csv|parquet|pkl}}'"
             )
 
-        # Load from PKL if file exists and is newer then CSV file.
-        # If both are written by Database.save() this is the case
+        # Load from PKL if file exists
+        # and is newer than CSV or PARQUET file.
+        # If files are written by Database.save()
+        # this is always the case
         # as it stores first the PKL file
         pickled = False
         if os.path.exists(pkl_file):
-            if os.path.exists(csv_file) and os.path.getmtime(
-                csv_file
-            ) > os.path.getmtime(pkl_file):
-                raise RuntimeError(
-                    f"The table CSV file '{csv_file}' is newer "
-                    f"than the table PKL file '{pkl_file}'. "
-                    "If you want to load from the CSV file, "
-                    "please delete the PKL file. "
-                    "If you want to load from the PKL file, "
-                    "please delete the CSV file."
-                )
+            for file in [parquet_file, csv_file]:
+                if os.path.exists(file) and os.path.getmtime(file) > os.path.getmtime(
+                    pkl_file
+                ):
+                    ext = audeer.file_extension(file).upper()
+                    raise RuntimeError(
+                        f"The table {ext} file '{file}' is newer "
+                        f"than the table PKL file '{pkl_file}'. "
+                        f"If you want to load from the {ext} file, "
+                        "please delete the PKL file. "
+                        "If you want to load from the PKL file, "
+                        f"please delete the {ext} file."
+                    )
             pickled = True
 
         if pickled:
             try:
                 self._load_pickled(pkl_file)
             except (AttributeError, ValueError, EOFError) as ex:
-                # if exception is raised (e.g. unsupported pickle protocol)
-                # try to load from CSV and save it again
+                # If exception is raised
+                # (e.g. unsupported pickle protocol)
+                # try to load from PARQUET or CSV
+                # and save it again
                 # otherwise raise error
-                if os.path.exists(csv_file):
+                if os.path.exists(parquet_file):
+                    self._load_parquet(parquet_file)
+                    self._save_pickled(pkl_file)
+                elif os.path.exists(csv_file):
                     self._load_csv(csv_file)
                     self._save_pickled(pkl_file)
                 else:
                     raise ex
+        elif os.path.exists(parquet_file):
+            self._load_parquet(parquet_file)
         else:
             self._load_csv(csv_file)
 
@@ -581,17 +599,34 @@ class Base(HeaderBase):
         path = audeer.path(path)
         define.TableStorageFormat._assert_has_attribute_value(storage_format)
 
-        pickle_file = path + f".{define.TableStorageFormat.PICKLE}"
-        csv_file = path + f".{define.TableStorageFormat.CSV}"
+        csv_file = f"{path}.{define.TableStorageFormat.CSV}"
+        parquet_file = f"{path}.{define.TableStorageFormat.PARQUET}"
+        pickle_file = f"{path}.{define.TableStorageFormat.PICKLE}"
 
-        # Make sure the CSV file is always written first
-        # as it is expected to be older by load()
+        # Ensure the following storage order:
+        # 1. PARQUET file
+        # 2. CSV file
+        # 3. PKL file
+        # The PKl is expected to be the oldest by load(),
+        # the order of PARQUET and CSV file
+        # is only a convention for now.
         if storage_format == define.TableStorageFormat.PICKLE:
+            if update_other_formats and os.path.exists(parquet_file):
+                self._save_parquet(parquet_file)
             if update_other_formats and os.path.exists(csv_file):
                 self._save_csv(csv_file)
             self._save_pickled(pickle_file)
 
+        if storage_format == define.TableStorageFormat.PARQUET:
+            self._save_parquet(parquet_file)
+            if update_other_formats and os.path.exists(csv_file):
+                self._save_csv(csv_file)
+            if update_other_formats and os.path.exists(pickle_file):
+                self._save_pickled(pickle_file)
+
         if storage_format == define.TableStorageFormat.CSV:
+            if update_other_formats and os.path.exists(parquet_file):
+                self._save_parquet(parquet_file)
             self._save_csv(csv_file)
             if update_other_formats and os.path.exists(pickle_file):
                 self._save_pickled(pickle_file)
@@ -800,73 +835,75 @@ class Base(HeaderBase):
         # Returns `df, df_is_copy`
         raise NotImplementedError()
 
+    @property
+    def _levels_and_dtypes(self) -> typing.Dict[str, str]:
+        r"""Levels and dtypes of index columns.
+
+        Returns:
+            dictionary with index levels (column names)
+            and associated audformat data type
+
+        """
+        # The returned dictionary is used
+        # to infer index column names and dtypes
+        # when reading CSV files.
+        raise NotImplementedError()  # pragma: no cover
+
     def _load_csv(self, path: str):
-        schemes = self.db.schemes
-        converters = {}
-        dtypes = {}
+        r"""Load table from CSV file.
 
-        if hasattr(self, "type"):
-            # filewise or segmented table
-            dtypes[define.IndexField.FILE] = define.DataType.STRING
-            if self.type == define.IndexType.SEGMENTED:
-                dtypes[define.IndexField.START] = define.DataType.TIME
-                dtypes[define.IndexField.END] = define.DataType.TIME
-        else:
-            # misc table
-            dtypes = self.levels
+        The loaded table is stored under ``self._df``.
 
-        # index columns
-        levels = list(dtypes)
-        dtypes = {level: to_pandas_dtype(dtype) for level, dtype in dtypes.items()}
+        Loading a CSV file with :func:`pandas.read_csv()` is slower
+        than the method applied here.
+        We first load the CSV file as a :class:`pyarrow.Table`
+        and convert it to a dataframe afterwards.
 
-        # other columns
-        columns = list(self.columns)
-        for column_id, column in self.columns.items():
-            if column.scheme_id is not None:
-                dtypes[column_id] = schemes[column.scheme_id].to_pandas_dtype()
-            else:
-                dtypes[column_id] = "object"
+        Args:
+            path: path to table, including file extension
 
-        # replace dtype with converter for dates or timestamps
-        dtypes_wo_converters = {}
-        for column_id, dtype in dtypes.items():
-            if dtype == "datetime64[ns]":
-                converters[column_id] = lambda x: pd.to_datetime(x)
-            elif dtype == "timedelta64[ns]":
-                converters[column_id] = lambda x: pd.to_timedelta(x)
-            else:
-                dtypes_wo_converters[column_id] = dtype
-
-        # read csv
-        df = pd.read_csv(
+        """
+        levels = list(self._levels_and_dtypes.keys())
+        columns = list(self.columns.keys())
+        table = csv.read_csv(
             path,
-            usecols=levels + columns,
-            dtype=dtypes_wo_converters,
-            index_col=levels,
-            converters=converters,
-            float_precision="round_trip",
+            read_options=csv.ReadOptions(
+                column_names=levels + columns,
+                skip_rows=1,
+            ),
+            convert_options=csv.ConvertOptions(
+                column_types=self._pyarrow_csv_schema(),
+                strings_can_be_null=True,
+            ),
         )
+        df = self._pyarrow_table_to_dataframe(table, from_csv=True)
 
-        # For an empty CSV file
-        # converters will not set the correct dtype
-        # and we need to correct it manually
-        if len(df) == 0:
-            # fix index
-            converter_dtypes = {
-                level: dtype
-                for level, dtype in dtypes.items()
-                if level in converters and level in levels
-            }
-            df.index = utils.set_index_dtypes(df.index, converter_dtypes)
-            # fix columns
-            for column_id in columns:
-                if column_id in converters:
-                    dtype = dtypes[column_id]
-                    df[column_id] = df[column_id].astype(dtype)
+        self._df = df
+
+    def _load_parquet(self, path: str):
+        r"""Load table from PARQUET file.
+
+        The loaded table is stored under ``self._df``.
+
+        Args:
+            path: path to table, including file extension
+
+        """
+        # Read PARQUET file
+        table = parquet.read_table(path)
+        df = self._pyarrow_table_to_dataframe(table)
 
         self._df = df
 
     def _load_pickled(self, path: str):
+        r"""Load table from PKL file.
+
+        The loaded table is stored under ``self._df``.
+
+        Args:
+            path: path to table, including file extension
+
+        """
         # Older versions of audformat used xz compression
         # which produced smaller files,
         # but was slower.
@@ -891,13 +928,225 @@ class Base(HeaderBase):
 
         self._df = df
 
+    def _pyarrow_convert_dtypes(
+        self,
+        df: pd.DataFrame,
+        *,
+        convert_all: bool = False,
+    ) -> pd.DataFrame:
+        r"""Convert dtypes that are not handled by pyarrow.
+
+        This adjusts dtypes in a dataframe,
+        that could not be set correctly
+        when converting to the dataframe
+        from pyarrow.
+
+        Args:
+            df: dataframe,
+            convert_all: if ``False``,
+                converts all columns with
+                ``"object"`` audformat dtype,
+                and all columns with a scheme with labels.
+                If ``"True"``,
+                it converts additionally all columns with
+                ``"bool"``, ``"int"``, and ``"time"`` audformat dtypes
+
+        Returns:
+            dataframe with converted dtypes
+
+        """
+        # Collect columns with dtypes,
+        # that cannot directly be converted
+        # from pyarrow to pandas
+        bool_columns = []
+        int_columns = []
+        time_columns = []
+        object_columns = []
+
+        # Collect columns
+        # with scheme labels
+        labeled_columns = []
+
+        # Collect columns,
+        # belonging to the table index
+        # (not the index of the provided dataframe)
+        index_columns = []
+
+        # --- Index ---
+        index_columns += list(self._levels_and_dtypes.keys())
+        for level, dtype in self._levels_and_dtypes.items():
+            if dtype == define.DataType.BOOL:
+                bool_columns.append(level)
+            elif dtype == define.DataType.INTEGER:
+                int_columns.append(level)
+            elif dtype == define.DataType.TIME:
+                time_columns.append(level)
+            elif dtype == define.DataType.OBJECT:
+                object_columns.append(level)
+
+        # --- Columns ---
+        for column_id, column in self.columns.items():
+            if column.scheme_id is not None:
+                scheme = self.db.schemes[column.scheme_id]
+                if scheme.labels is not None:
+                    labeled_columns.append(column_id)
+                elif scheme.dtype == define.DataType.BOOL:
+                    bool_columns.append(column_id)
+                elif scheme.dtype == define.DataType.INTEGER:
+                    int_columns.append(column_id)
+                elif scheme.dtype == define.DataType.TIME:
+                    time_columns.append(column_id)
+                elif scheme.dtype == define.DataType.OBJECT:
+                    object_columns.append(column_id)
+            else:
+                # No scheme defaults to `object` dtype
+                object_columns.append(column_id)
+
+        if convert_all:
+            for column in bool_columns:
+                df[column] = df[column].astype("boolean")
+            for column in int_columns:
+                df[column] = df[column].astype("Int64")
+            for column in time_columns:
+                df[column] = df[column].astype("timedelta64[ns]")
+        for column in object_columns:
+            df[column] = df[column].astype("object")
+            df[column] = df[column].replace(pd.NA, None)
+        for column in labeled_columns:
+            scheme = self.db.schemes[self.columns[column].scheme_id]
+            labels = scheme._labels_to_list()
+            if len(labels) > 0 and isinstance(labels[0], int):
+                # allow nullable
+                labels = pd.array(labels, dtype="int64")
+            dtype = pd.api.types.CategoricalDtype(
+                categories=labels,
+                ordered=False,
+            )
+            df[column] = df[column].astype(dtype)
+        return df
+
+    def _pyarrow_csv_schema(self) -> pa.Schema:
+        r"""Data type mapping for reading CSV file with pyarrow.
+
+        This provides a schema,
+        defining pyarrow dtypes
+        for the columns of a CSV file.
+
+        The dtypes are extracted from the audformat schemes,
+        and converted to the pyarrow dtypes.
+
+        Returns:
+            pyarrow schema for reading a CSV file
+
+        """
+        # Mapping from audformat to pyarrow dtypes
+        to_pyarrow_dtype = {
+            define.DataType.BOOL: pa.bool_(),
+            define.DataType.DATE: pa.timestamp("ns"),
+            define.DataType.FLOAT: pa.float64(),
+            define.DataType.INTEGER: pa.int64(),
+            define.DataType.STRING: pa.string(),
+            # A better fitting type would be `pa.duration("ns")`,
+            # but this is not yet supported
+            # when reading CSV files
+            define.DataType.TIME: pa.string(),
+        }
+
+        # Collect pyarrow dtypes
+        # of all columns,
+        # including index columns.
+        # The dtypes are stored as a tuple
+        # ``(column, dtype)``,
+        # and are used to create
+        # the pyarrow.Schema
+        # used when reading the CSV file
+        pyarrow_dtypes = []
+        # Index
+        for level, dtype in self._levels_and_dtypes.items():
+            if dtype in to_pyarrow_dtype:
+                pyarrow_dtypes.append((level, to_pyarrow_dtype[dtype]))
+        # Columns
+        for column_id, column in self.columns.items():
+            if column.scheme_id is not None:
+                dtype = self.db.schemes[column.scheme_id].dtype
+                if dtype in to_pyarrow_dtype:
+                    pyarrow_dtypes.append((column_id, to_pyarrow_dtype[dtype]))
+
+        return pa.schema(pyarrow_dtypes)
+
+    def _pyarrow_table_to_dataframe(
+        self,
+        table: pa.Table,
+        *,
+        from_csv: bool = False,
+    ) -> pd.DataFrame:
+        r"""Convert pyarrow table to pandas dataframe.
+
+        Args:
+            table: pyarrow table
+            from_csv: if ``True`` it assumes,
+                that ``table`` was created by reading a CSV file,
+                and it will convert all needed dtypes
+
+        Returns:
+            dataframe
+
+        """
+        df = table.to_pandas(
+            deduplicate_objects=False,
+            types_mapper={
+                pa.string(): pd.StringDtype(),
+            }.get,  # we have to provide a callable, not a dict
+        )
+        # Adjust dtypes and set index
+        df = self._pyarrow_convert_dtypes(df, convert_all=from_csv)
+        index_columns = list(self._levels_and_dtypes.keys())
+        df = self._set_index(df, index_columns)
+        return df
+
     def _save_csv(self, path: str):
         # Load table before opening CSV file
         # to avoid creating a CSV file
         # that is newer than the PKL file
-        df = self.df
+        df = self.df  # loads table
         with open(path, "w") as fp:
             df.to_csv(fp, encoding="utf-8")
+
+    def _save_parquet(self, path: str):
+        r"""Save table as PARQUET file.
+
+        A PARQUET file is written in a non-deterministic way,
+        and we cannot track changes by its MD5 sum.
+        To make changes trackable,
+        we store a hash in its metadata.
+
+        The hash is calculated from the pyarrow schema
+        (to track column names and data types)
+        and the pandas dataframe
+        (to track values and order or rows),
+        from which the PARQUET file is generated.
+
+        The hash of the PARQUET file can then be read by::
+
+            pyarrow.parquet.read_schema(path).metadata[b"hash"].decode()
+
+        Args:
+            path: path, including file extension
+
+        """
+        table = pa.Table.from_pandas(self.df.reset_index(), preserve_index=False)
+
+        # Create hash of table
+        table_hash = hashlib.md5()
+        table_hash.update(_schema_hash(table))
+        table_hash.update(_dataframe_hash(self.df))
+
+        # Store in metadata of file,
+        # see https://stackoverflow.com/a/58978449
+        metadata = {"hash": table_hash.hexdigest()}
+        table = table.replace_schema_metadata({**metadata, **table.schema.metadata})
+
+        parquet.write_table(table, path, compression="snappy")
 
     def _save_pickled(self, path: str):
         self.df.to_pickle(
@@ -938,6 +1187,31 @@ class Base(HeaderBase):
         column._table = self
 
         return column
+
+    def _set_index(self, df: pd.DataFrame, columns: typing.Sequence) -> pd.DataFrame:
+        r"""Set columns as index.
+
+        Setting of index columns is performed inplace!
+
+        Args:
+            df: dataframe
+            columns: columns to be set as index of dataframe
+
+        Returns:
+            updated dataframe
+
+        """
+        # When assigning more than one column,
+        # a MultiIndex is assigned.
+        # Setting a MultiIndex does not always preserve pandas dtypes,
+        # so we need to set them manually.
+        #
+        if len(columns) > 1:
+            dtypes = {column: df[column].dtype for column in columns}
+        df.set_index(columns, inplace=True)
+        if len(columns) > 1:
+            df.index = utils.set_index_dtypes(df.index, dtypes)
+        return df
 
 
 class MiscTable(Base):
@@ -1084,8 +1358,7 @@ class MiscTable(Base):
                     f"{levels}, "
                     f"but names must be non-empty and unique."
                 )
-
-            dtypes = [to_audformat_dtype(dtype) for dtype in utils._dtypes(index)]
+            dtypes = utils._audformat_dtypes(index)
             self.levels = {level: dtype for level, dtype in zip(levels, dtypes)}
 
         super().__init__(
@@ -1098,6 +1371,17 @@ class MiscTable(Base):
 
     def _get_by_index(self, index: pd.Index) -> pd.DataFrame:
         return self.df.loc[index]
+
+    @property
+    def _levels_and_dtypes(self) -> typing.Dict[str, str]:
+        r"""Levels and dtypes of index columns.
+
+        Returns:
+            dictionary with index levels (column names)
+            and associated audformat data type
+
+        """
+        return self.levels
 
 
 class Table(Base):
@@ -1499,6 +1783,22 @@ class Table(Base):
 
         return result
 
+    @property
+    def _levels_and_dtypes(self) -> typing.Dict[str, str]:
+        r"""Levels and dtypes of index columns.
+
+        Returns:
+            dictionary with index levels (column names)
+            and associated audformat data type
+
+        """
+        levels_and_dtypes = {}
+        levels_and_dtypes[define.IndexField.FILE] = define.DataType.STRING
+        if self.type == define.IndexType.SEGMENTED:
+            levels_and_dtypes[define.IndexField.START] = define.DataType.TIME
+            levels_and_dtypes[define.IndexField.END] = define.DataType.TIME
+        return levels_and_dtypes
+
 
 def _assert_table_index(
     table: Base,
@@ -1544,6 +1844,40 @@ def _assert_table_index(
         )
 
 
+def _dataframe_hash(df: pd.DataFrame) -> bytes:
+    """Hash a dataframe.
+
+    The hash value takes into account:
+
+    * index of dataframe
+    * values of the dataframe
+    * order of dataframe rows
+
+    It does not consider:
+
+    * column names of dataframe
+    * dtypes of dataframe
+
+    Args:
+        df: dataframe
+
+    Returns:
+        MD5 hash in bytes
+
+    """
+    md5 = hashlib.md5()
+    for _, y in df.reset_index().items():
+        # Convert every column to a numpy array,
+        # and hash its string representation
+        if y.dtype == "Int64":
+            # Enforce consistent conversion to numpy.array
+            # for integers across different pandas versions
+            # (since pandas 2.2.x, Int64 is converted to float if it contains <NA>)
+            y = y.astype("float")
+        md5.update(bytes(str(y.to_numpy()), "utf-8"))
+    return md5.digest()
+
+
 def _maybe_convert_dtype_to_string(
     index: pd.Index,
 ) -> pd.Index:
@@ -1566,3 +1900,23 @@ def _maybe_update_scheme(
         for scheme in table.db.schemes.values():
             if table._id == scheme.labels:
                 scheme.replace_labels(table._id)
+
+
+def _schema_hash(table: pa.Table) -> bytes:
+    r"""Hash pyarrow table schema.
+
+    Args:
+        table: pyarrow table
+
+    Returns:
+        MD5 hash in bytes
+
+    """
+    schema_str = table.schema.to_string(
+        # schema.metadata contains pandas related information,
+        # and the used pyarrow and pandas version,
+        # and needs to be excluded
+        show_field_metadata=False,
+        show_schema_metadata=False,
+    )
+    return hashlib.md5(schema_str.encode()).digest()

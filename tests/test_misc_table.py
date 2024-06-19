@@ -513,6 +513,13 @@ def test_dtype_column(
     [
         (
             pd.Index,
+            ["0"],
+            None,
+            "object",
+            audformat.define.DataType.OBJECT,
+        ),
+        (
+            pd.Index,
             [],
             None,
             "object",
