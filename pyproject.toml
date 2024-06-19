@@ -35,7 +35,7 @@ dependencies = [
     'iso-639',
     'iso3166',
     'oyaml',
-    'pandas >=2.2.0',  # hash values, see https://github.com/pandas-dev/pandas/issues/58999
+    'pandas >=1.4.1',
     'pyarrow >=10.0.1',  # for pyarrow strings in pandas
     'pyyaml >=5.4.1',
 ]

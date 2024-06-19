@@ -4,7 +4,7 @@ on:
   push:
     branches: [ main ]
   pull_request:
-    branches: [ main ]
+    branches: [ main, pyarrow ]
 
 jobs:
   build:
@@ -55,7 +55,7 @@ jobs:
       run: |
         pip install "audeer==2.0.0"
         pip install "audiofile==0.4.0"
-        pip install "pandas==2.2.0"
+        pip install "pandas==1.4.1"
         pip install "pyarrow==10.0.1"
         pip install "pyyaml==5.4.1"
       if: matrix.requirements == 'minimum'
