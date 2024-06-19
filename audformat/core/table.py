@@ -935,7 +935,6 @@ class Base(HeaderBase):
         convert_all: bool = False,
     ) -> pd.DataFrame:
         r"""Convert dtypes that are not handled by pyarrow.
-
         This adjusts dtypes in a dataframe,
         that could not be set correctly
         when converting to the dataframe
