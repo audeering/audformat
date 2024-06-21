@@ -6,7 +6,7 @@ several **tables**,
 and **media** files.
 On hard disk all of them are stored inside a single folder.
 The header is stored as a YAML file,
-the tables contain labels stored in (possibly) multiple CSV files,
+the tables contain labels stored in (possibly) multiple CSV or PARQUET files,
 and the media files are usually stored in sub-folders.
 Each table column is linked to a scheme and/or to a rater.
 Each table row is linked to a media file,
@@ -18,16 +18,16 @@ The database is implemented as :class:`audformat.Database`.
 
 .. table:: Parts of a database stored in audformat on the hard disk.
 
-    ==========================  ==========================================
-    File                        Content
-    ==========================  ==========================================
-    ``db.yaml``                 Meta information, schemes, list of raters
-    ``db.<table_id>.csv``       Table with files or file segments as index
-                                and columns holding annotations
-    ``db.<misc_table_id>.csv``  Misc table with unspecified index
-                                and columns holding annotations
-    ``<folder(s)/file(s)>``     Audio/Video files referenced in the tables
-    ==========================  ==========================================
+    ====================================  ==========================================
+    File                                  Content
+    ====================================  ==========================================
+    ``db.yaml``                           Meta information, schemes, list of raters
+    ``db.<table_id>.[csv|parquet]``       Table with files or file segments as index
+                                          and columns holding annotations
+    ``db.<misc_table_id>.[csv|parquet]``  Misc table with unspecified index
+                                          and columns holding annotations
+    ``<folder(s)/file(s)>``               Audio/Video files referenced in the tables
+    ====================================  ==========================================
 
 The connection between the header, media files and a table
 is highlighted in the following sketch:
