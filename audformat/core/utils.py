@@ -670,7 +670,7 @@ def hash(
     Objects with the same elements
     produce the same hash string
     independent of the ordering of the elements,
-    and potential level or column names.
+    and level or column names.
 
     Args:
         obj: object
