@@ -7,7 +7,7 @@ audformat
 Specification and reference implementation of **audformat**.
 
 audformat stores media data,
-such as audio or video,
+such as audio, video, or text
 together with corresponding annotations
 in a pre-defined way.
 This makes it easy to combine or replace databases

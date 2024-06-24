@@ -20,7 +20,7 @@ but simple enough to be understood and parsed easily**.
 
 The format further allows to
 
-* link audio files to meta data and annotations
+* link media files to meta data and annotations
 * use generic tools to access the data,
   create statistics,
   merge annotations
