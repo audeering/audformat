@@ -8,8 +8,8 @@ On hard disk all of them are stored inside a single folder.
 The header is stored as a YAML file,
 the tables contain labels stored in (possibly) multiple CSV or PARQUET files,
 and the media files are usually stored in sub-folders.
-Media files are not restricted to a particular file type,
-but consist usually of audio, video, or text files.
+Media files are not restricted to a particular file type.
+Usually, they consist of audio, video, or text files.
 Each table column is linked to a scheme and/or to a rater.
 Each table row is linked to a media file,
 or,
