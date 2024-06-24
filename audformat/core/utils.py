@@ -672,6 +672,12 @@ def hash(
     independent of the ordering of the elements,
     and level or column names.
 
+    .. warning::
+
+        If ``obj`` is a dataframe or series
+        with data type ``"Int64"``,
+        the returned hash value changes with ``pandas>=2.2.0``.
+
     Args:
         obj: object
 
