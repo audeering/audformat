@@ -552,6 +552,7 @@ def test_expand_file_path(tmpdir, index, root, expected):
                 pd.__version__ < "2.2.0",
                 reason="Changed in pandas 2.2.0",
             ),
+        ),
     ],
 )
 def test_hash(obj, expected):
