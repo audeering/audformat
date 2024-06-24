@@ -477,6 +477,38 @@ def test_expand_file_path(tmpdir, index, root, expected):
             ),
             "-103439349488189352",
         ),
+        (pd.Index([0, 1], name="idx"), "6238072747940578789"),
+        (pd.Index([0, 1], name="name"), "6238072747940578789"),
+        (
+            pd.MultiIndex.from_arrays(
+                [[0, 1], ["a", "b"]],
+                names=["idx1", "idx2"],
+            ),
+            "8378370490910668918",
+        ),
+        (
+            pd.MultiIndex.from_arrays(
+                [[0, 1], ["a", "b"]],
+                names=["name1", "name2"],
+            ),
+            "8378370490910668918",
+        ),
+        (
+            pd.Series([0, 1], name="series"),
+            "-7179254265801896228",
+        ),
+        (
+            pd.Series([0, 1], name="name"),
+            "-7179254265801896228",
+        ),
+        (
+            pd.DataFrame([0, 1], columns=["frame"]),
+            "-7179254265801896228",
+        ),
+        (
+            pd.DataFrame([0, 1], columns=["name"]),
+            "-7179254265801896228",
+        ),
     ],
 )
 def test_hash(obj, expected):
