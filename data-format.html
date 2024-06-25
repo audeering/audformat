@@ -32,7 +32,7 @@
   <link rel="stylesheet" href="_static/copybutton.css" type="text/css" />
   <link rel="stylesheet" href="_static/jupyter-sphinx.css" type="text/css" />
   <link rel="stylesheet" href="_static/thebelab.css" type="text/css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" type="text/css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css" type="text/css" />
   <link rel="stylesheet" href="_static/katex-math.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -72,7 +72,7 @@
             
             
               <div class="version">
-                v1.1.4
+                v1.2.0
               </div>
             
           
@@ -172,11 +172,15 @@ several <strong>tables</strong>,
 and <strong>media</strong> files.
 On hard disk all of them are stored inside a single folder.
 The header is stored as a YAML file,
-the tables contain labels stored in (possibly) multiple CSV files,
+the tables contain labels stored in (possibly) multiple CSV or PARQUET files,
 and the media files are usually stored in sub-folders.
+Media files are not restricted to a particular file type.
+Usually, they consist of audio, video, or text files.
 Each table column is linked to a scheme and/or to a rater.
 Each table row is linked to a media file,
-or a specific segment in a media file.
+or,
+if applicable,
+a specific segment in a media file.
 If no links to media files are given,
 the table is called miscellaneous table,
 or short <strong>misc table</strong>.
@@ -184,8 +188,8 @@ The database is implemented as <a class="reference internal" href="api/audformat
 <table class="docutils align-default" id="id1">
 <caption><span class="caption-text">Parts of a database stored in audformat on the hard disk.</span><a class="headerlink" href="#id1" title="Permalink to this table">¶</a></caption>
 <colgroup>
-<col style="width: 38%" />
-<col style="width: 62%" />
+<col style="width: 46%" />
+<col style="width: 54%" />
 </colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>File</p></th>
@@ -196,16 +200,16 @@ The database is implemented as <a class="reference internal" href="api/audformat
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">db.yaml</span></code></p></td>
 <td><p>Meta information, schemes, list of raters</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">db.&lt;table_id&gt;.csv</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">db.&lt;table_id&gt;.[csv|parquet]</span></code></p></td>
 <td><p>Table with files or file segments as index
 and columns holding annotations</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">db.&lt;misc_table_id&gt;.csv</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">db.&lt;misc_table_id&gt;.[csv|parquet]</span></code></p></td>
 <td><p>Misc table with unspecified index
 and columns holding annotations</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">&lt;folder(s)/file(s)&gt;</span></code></p></td>
-<td><p>Audio/Video files referenced in the tables</p></td>
+<td><p>Media files referenced in the tables</p></td>
 </tr>
 </tbody>
 </table>
@@ -256,7 +260,7 @@ The following sketch shows an example instance of a database:</p>
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2024/05/15 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2024/06/25 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>

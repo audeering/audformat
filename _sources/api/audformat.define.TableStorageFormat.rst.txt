@@ -14,6 +14,10 @@ CSV
 ---
 .. autoattribute:: TableStorageFormat.CSV
     
+PARQUET
+-------
+.. autoattribute:: TableStorageFormat.PARQUET
+    
 PICKLE
 ------
 .. autoattribute:: TableStorageFormat.PICKLE

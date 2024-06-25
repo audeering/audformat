@@ -32,7 +32,7 @@
   <link rel="stylesheet" href="_static/copybutton.css" type="text/css" />
   <link rel="stylesheet" href="_static/jupyter-sphinx.css" type="text/css" />
   <link rel="stylesheet" href="_static/thebelab.css" type="text/css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" type="text/css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css" type="text/css" />
   <link rel="stylesheet" href="_static/katex-math.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -71,7 +71,7 @@
             
             
               <div class="version">
-                v1.1.4
+                v1.2.0
               </div>
             
           
@@ -128,6 +128,7 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Changelog</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#version-1-2-0-2024-06-25">Version 1.2.0 (2024-06-25)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#version-1-1-4-2024-05-15">Version 1.1.4 (2024-05-15)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#version-1-1-3-2024-04-26">Version 1.1.3 (2024-04-26)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#version-1-1-2-2024-02-02">Version 1.1.2 (2024-02-02)</a></li>
@@ -219,6 +220,35 @@
 <p>All notable changes to this project will be documented in this file.</p>
 <p>The format is based on <a class="reference external" href="https://keepachangelog.com/en/1.0.0/">Keep a Changelog</a>,
 and this project adheres to <a class="reference external" href="https://semver.org/spec/v2.0.0.html">Semantic Versioning</a>.</p>
+<div class="section" id="version-1-2-0-2024-06-25">
+<h2>Version 1.2.0 (2024-06-25)<a class="headerlink" href="#version-1-2-0-2024-06-25" title="Permalink to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Added: expand format specifications
+to allow parquet files
+as table files</p></li>
+<li><p>Added: support for storing tables as parquet files
+by adding <code class="docutils literal notranslate"><span class="pre">&quot;parquet&quot;</span></code>
+(<code class="docutils literal notranslate"><span class="pre">audformat.define.TableStorageFormat.PARQUET</span></code>)
+as an option
+for the <code class="docutils literal notranslate"><span class="pre">storage_format</span></code> argument
+of <code class="docutils literal notranslate"><span class="pre">audformat.Table.save()</span></code>
+and <code class="docutils literal notranslate"><span class="pre">audformat.Database.save()</span></code></p></li>
+<li><p>Added: support for <code class="docutils literal notranslate"><span class="pre">numpy&gt;=2.0</span></code></p></li>
+<li><p>Added: mention text files
+as potential media files
+in the documentation</p></li>
+<li><p>Added: mention in the documentation of <code class="docutils literal notranslate"><span class="pre">audformat.utils.hash()</span></code>
+that column/level names do not influence its hash value</p></li>
+<li><p>Added: warn in the documentation of <code class="docutils literal notranslate"><span class="pre">audformat.utils.hash()</span></code>
+that the hash of a dataframe or series,
+containing <code class="docutils literal notranslate"><span class="pre">&quot;Int64&quot;</span></code> as data type,
+changes with <code class="docutils literal notranslate"><span class="pre">pandas&gt;=2.2.0</span></code></p></li>
+<li><p>Fixed: ensure <code class="docutils literal notranslate"><span class="pre">&quot;boolean&quot;</span></code> data type
+is always used
+in indices of misc tables
+that store boolean values</p></li>
+</ul>
+</div>
 <div class="section" id="version-1-1-4-2024-05-15">
 <h2>Version 1.1.4 (2024-05-15)<a class="headerlink" href="#version-1-1-4-2024-05-15" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
@@ -816,7 +846,7 @@ and <code class="docutils literal notranslate"><span class="pre">audformat.Colum
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2024/05/15 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2024/06/25 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>

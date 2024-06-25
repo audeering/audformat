@@ -32,7 +32,7 @@
   <link rel="stylesheet" href="../../../_static/copybutton.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/jupyter-sphinx.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/thebelab.css" type="text/css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" type="text/css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/katex-math.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
@@ -70,7 +70,7 @@
             
             
               <div class="version">
-                v1.1.4
+                v1.2.0
               </div>
             
           
@@ -167,11 +167,15 @@
 <span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>  <span class="c1"># allow typing without string</span>
 
 <span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">import</span> <span class="nn">hashlib</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">pickle</span>
 <span class="kn">import</span> <span class="nn">typing</span>
 
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">pyarrow</span> <span class="k">as</span> <span class="nn">pa</span>
+<span class="kn">import</span> <span class="nn">pyarrow.csv</span> <span class="k">as</span> <span class="nn">csv</span>
+<span class="kn">import</span> <span class="nn">pyarrow.parquet</span> <span class="k">as</span> <span class="nn">parquet</span>
 
 <span class="kn">import</span> <span class="nn">audeer</span>
 
@@ -180,8 +184,6 @@
 <span class="kn">from</span> <span class="nn">audformat.core.column</span> <span class="kn">import</span> <span class="n">Column</span>
 <span class="kn">from</span> <span class="nn">audformat.core.common</span> <span class="kn">import</span> <span class="n">HeaderBase</span>
 <span class="kn">from</span> <span class="nn">audformat.core.common</span> <span class="kn">import</span> <span class="n">HeaderDict</span>
-<span class="kn">from</span> <span class="nn">audformat.core.common</span> <span class="kn">import</span> <span class="n">to_audformat_dtype</span>
-<span class="kn">from</span> <span class="nn">audformat.core.common</span> <span class="kn">import</span> <span class="n">to_pandas_dtype</span>
 <span class="kn">from</span> <span class="nn">audformat.core.errors</span> <span class="kn">import</span> <span class="n">BadIdError</span>
 <span class="kn">from</span> <span class="nn">audformat.core.index</span> <span class="kn">import</span> <span class="n">filewise_index</span>
 <span class="kn">from</span> <span class="nn">audformat.core.index</span> <span class="kn">import</span> <span class="n">index_type</span>
@@ -608,10 +610,10 @@
     <span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Load table data from disk.</span>
 
-<span class="sd">        Tables can be stored as PKL and/or CSV files to disk.</span>
-<span class="sd">        If both files are present</span>
+<span class="sd">        Tables are stored as CSV, PARQUET and/or PKL files to disk.</span>
+<span class="sd">        If the PKL file exists,</span>
 <span class="sd">        it will load the PKL file</span>
-<span class="sd">        as long as its modification date is newer,</span>
+<span class="sd">        as long as its modification date is the newest,</span>
 <span class="sd">        otherwise it will raise an error</span>
 <span class="sd">        and ask to delete one of the files.</span>
 
@@ -620,48 +622,64 @@
 
 <span class="sd">        Raises:</span>
 <span class="sd">            RuntimeError: if table file(s) are missing</span>
-<span class="sd">            RuntimeError: if CSV file is newer than PKL file</span>
+<span class="sd">            RuntimeError: if CSV or PARQUET file is newer than PKL file</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">path</span> <span class="o">=</span> <span class="n">audeer</span><span class="o">.</span><span class="n">path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
-        <span class="n">pkl_file</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">define</span><span class="o">.</span><span class="n">TableStorageFormat</span><span class="o">.</span><span class="n">PICKLE</span><span class="si">}</span><span class="s2">&quot;</span>
         <span class="n">csv_file</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">define</span><span class="o">.</span><span class="n">TableStorageFormat</span><span class="o">.</span><span class="n">CSV</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">parquet_file</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">define</span><span class="o">.</span><span class="n">TableStorageFormat</span><span class="o">.</span><span class="n">PARQUET</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">pkl_file</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">define</span><span class="o">.</span><span class="n">TableStorageFormat</span><span class="o">.</span><span class="n">PICKLE</span><span class="si">}</span><span class="s2">&quot;</span>
 
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">pkl_file</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">csv_file</span><span class="p">):</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">pkl_file</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">csv_file</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">parquet_file</span><span class="p">)</span>
+        <span class="p">):</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;No file found for table with path &#39;</span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">.</span><span class="se">{{</span><span class="s2">pkl|csv</span><span class="se">}}</span><span class="s2">&#39;&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;No file found for table with path &#39;</span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">.</span><span class="se">{{</span><span class="s2">csv|parquet|pkl</span><span class="se">}}</span><span class="s2">&#39;&quot;</span>
             <span class="p">)</span>
 
-        <span class="c1"># Load from PKL if file exists and is newer then CSV file.</span>
-        <span class="c1"># If both are written by Database.save() this is the case</span>
+        <span class="c1"># Load from PKL if file exists</span>
+        <span class="c1"># and is newer than CSV or PARQUET file.</span>
+        <span class="c1"># If files are written by Database.save()</span>
+        <span class="c1"># this is always the case</span>
         <span class="c1"># as it stores first the PKL file</span>
         <span class="n">pickled</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">pkl_file</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">csv_file</span><span class="p">)</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getmtime</span><span class="p">(</span>
-                <span class="n">csv_file</span>
-            <span class="p">)</span> <span class="o">&gt;</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getmtime</span><span class="p">(</span><span class="n">pkl_file</span><span class="p">):</span>
-                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;The table CSV file &#39;</span><span class="si">{</span><span class="n">csv_file</span><span class="si">}</span><span class="s2">&#39; is newer &quot;</span>
-                    <span class="sa">f</span><span class="s2">&quot;than the table PKL file &#39;</span><span class="si">{</span><span class="n">pkl_file</span><span class="si">}</span><span class="s2">&#39;. &quot;</span>
-                    <span class="s2">&quot;If you want to load from the CSV file, &quot;</span>
-                    <span class="s2">&quot;please delete the PKL file. &quot;</span>
-                    <span class="s2">&quot;If you want to load from the PKL file, &quot;</span>
-                    <span class="s2">&quot;please delete the CSV file.&quot;</span>
-                <span class="p">)</span>
+            <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="p">[</span><span class="n">parquet_file</span><span class="p">,</span> <span class="n">csv_file</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">file</span><span class="p">)</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getmtime</span><span class="p">(</span><span class="n">file</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getmtime</span><span class="p">(</span>
+                    <span class="n">pkl_file</span>
+                <span class="p">):</span>
+                    <span class="n">ext</span> <span class="o">=</span> <span class="n">audeer</span><span class="o">.</span><span class="n">file_extension</span><span class="p">(</span><span class="n">file</span><span class="p">)</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+                    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;The table </span><span class="si">{</span><span class="n">ext</span><span class="si">}</span><span class="s2"> file &#39;</span><span class="si">{</span><span class="n">file</span><span class="si">}</span><span class="s2">&#39; is newer &quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot;than the table PKL file &#39;</span><span class="si">{</span><span class="n">pkl_file</span><span class="si">}</span><span class="s2">&#39;. &quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot;If you want to load from the </span><span class="si">{</span><span class="n">ext</span><span class="si">}</span><span class="s2"> file, &quot;</span>
+                        <span class="s2">&quot;please delete the PKL file. &quot;</span>
+                        <span class="s2">&quot;If you want to load from the PKL file, &quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot;please delete the </span><span class="si">{</span><span class="n">ext</span><span class="si">}</span><span class="s2"> file.&quot;</span>
+                    <span class="p">)</span>
             <span class="n">pickled</span> <span class="o">=</span> <span class="kc">True</span>
 
         <span class="k">if</span> <span class="n">pickled</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_load_pickled</span><span class="p">(</span><span class="n">pkl_file</span><span class="p">)</span>
             <span class="k">except</span> <span class="p">(</span><span class="ne">AttributeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">,</span> <span class="ne">EOFError</span><span class="p">)</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
-                <span class="c1"># if exception is raised (e.g. unsupported pickle protocol)</span>
-                <span class="c1"># try to load from CSV and save it again</span>
+                <span class="c1"># If exception is raised</span>
+                <span class="c1"># (e.g. unsupported pickle protocol)</span>
+                <span class="c1"># try to load from PARQUET or CSV</span>
+                <span class="c1"># and save it again</span>
                 <span class="c1"># otherwise raise error</span>
-                <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">csv_file</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">parquet_file</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_load_parquet</span><span class="p">(</span><span class="n">parquet_file</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_save_pickled</span><span class="p">(</span><span class="n">pkl_file</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">csv_file</span><span class="p">):</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_load_csv</span><span class="p">(</span><span class="n">csv_file</span><span class="p">)</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_save_pickled</span><span class="p">(</span><span class="n">pkl_file</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="n">ex</span>
+        <span class="k">elif</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">parquet_file</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_load_parquet</span><span class="p">(</span><span class="n">parquet_file</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_load_csv</span><span class="p">(</span><span class="n">csv_file</span><span class="p">)</span>
 
@@ -747,17 +765,34 @@
         <span class="n">path</span> <span class="o">=</span> <span class="n">audeer</span><span class="o">.</span><span class="n">path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
         <span class="n">define</span><span class="o">.</span><span class="n">TableStorageFormat</span><span class="o">.</span><span class="n">_assert_has_attribute_value</span><span class="p">(</span><span class="n">storage_format</span><span class="p">)</span>
 
-        <span class="n">pickle_file</span> <span class="o">=</span> <span class="n">path</span> <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;.</span><span class="si">{</span><span class="n">define</span><span class="o">.</span><span class="n">TableStorageFormat</span><span class="o">.</span><span class="n">PICKLE</span><span class="si">}</span><span class="s2">&quot;</span>
-        <span class="n">csv_file</span> <span class="o">=</span> <span class="n">path</span> <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;.</span><span class="si">{</span><span class="n">define</span><span class="o">.</span><span class="n">TableStorageFormat</span><span class="o">.</span><span class="n">CSV</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">csv_file</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">define</span><span class="o">.</span><span class="n">TableStorageFormat</span><span class="o">.</span><span class="n">CSV</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">parquet_file</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">define</span><span class="o">.</span><span class="n">TableStorageFormat</span><span class="o">.</span><span class="n">PARQUET</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">pickle_file</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">define</span><span class="o">.</span><span class="n">TableStorageFormat</span><span class="o">.</span><span class="n">PICKLE</span><span class="si">}</span><span class="s2">&quot;</span>
 
-        <span class="c1"># Make sure the CSV file is always written first</span>
-        <span class="c1"># as it is expected to be older by load()</span>
+        <span class="c1"># Ensure the following storage order:</span>
+        <span class="c1"># 1. PARQUET file</span>
+        <span class="c1"># 2. CSV file</span>
+        <span class="c1"># 3. PKL file</span>
+        <span class="c1"># The PKl is expected to be the oldest by load(),</span>
+        <span class="c1"># the order of PARQUET and CSV file</span>
+        <span class="c1"># is only a convention for now.</span>
         <span class="k">if</span> <span class="n">storage_format</span> <span class="o">==</span> <span class="n">define</span><span class="o">.</span><span class="n">TableStorageFormat</span><span class="o">.</span><span class="n">PICKLE</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">update_other_formats</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">parquet_file</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_save_parquet</span><span class="p">(</span><span class="n">parquet_file</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">update_other_formats</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">csv_file</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_save_csv</span><span class="p">(</span><span class="n">csv_file</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_save_pickled</span><span class="p">(</span><span class="n">pickle_file</span><span class="p">)</span>
 
+        <span class="k">if</span> <span class="n">storage_format</span> <span class="o">==</span> <span class="n">define</span><span class="o">.</span><span class="n">TableStorageFormat</span><span class="o">.</span><span class="n">PARQUET</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_save_parquet</span><span class="p">(</span><span class="n">parquet_file</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">update_other_formats</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">csv_file</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_save_csv</span><span class="p">(</span><span class="n">csv_file</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">update_other_formats</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">pickle_file</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_save_pickled</span><span class="p">(</span><span class="n">pickle_file</span><span class="p">)</span>
+
         <span class="k">if</span> <span class="n">storage_format</span> <span class="o">==</span> <span class="n">define</span><span class="o">.</span><span class="n">TableStorageFormat</span><span class="o">.</span><span class="n">CSV</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">update_other_formats</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">parquet_file</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_save_parquet</span><span class="p">(</span><span class="n">parquet_file</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_save_csv</span><span class="p">(</span><span class="n">csv_file</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">update_other_formats</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">pickle_file</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_save_pickled</span><span class="p">(</span><span class="n">pickle_file</span><span class="p">)</span>
@@ -966,73 +1001,75 @@
         <span class="c1"># Returns `df, df_is_copy`</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
 
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">_levels_and_dtypes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Levels and dtypes of index columns.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dictionary with index levels (column names)</span>
+<span class="sd">            and associated audformat data type</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># The returned dictionary is used</span>
+        <span class="c1"># to infer index column names and dtypes</span>
+        <span class="c1"># when reading CSV files.</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>  <span class="c1"># pragma: no cover</span>
+
     <span class="k">def</span> <span class="nf">_load_csv</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-        <span class="n">schemes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">schemes</span>
-        <span class="n">converters</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="n">dtypes</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Load table from CSV file.</span>
 
-        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;type&quot;</span><span class="p">):</span>
-            <span class="c1"># filewise or segmented table</span>
-            <span class="n">dtypes</span><span class="p">[</span><span class="n">define</span><span class="o">.</span><span class="n">IndexField</span><span class="o">.</span><span class="n">FILE</span><span class="p">]</span> <span class="o">=</span> <span class="n">define</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">STRING</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">define</span><span class="o">.</span><span class="n">IndexType</span><span class="o">.</span><span class="n">SEGMENTED</span><span class="p">:</span>
-                <span class="n">dtypes</span><span class="p">[</span><span class="n">define</span><span class="o">.</span><span class="n">IndexField</span><span class="o">.</span><span class="n">START</span><span class="p">]</span> <span class="o">=</span> <span class="n">define</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">TIME</span>
-                <span class="n">dtypes</span><span class="p">[</span><span class="n">define</span><span class="o">.</span><span class="n">IndexField</span><span class="o">.</span><span class="n">END</span><span class="p">]</span> <span class="o">=</span> <span class="n">define</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">TIME</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="c1"># misc table</span>
-            <span class="n">dtypes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">levels</span>
+<span class="sd">        The loaded table is stored under ``self._df``.</span>
 
-        <span class="c1"># index columns</span>
-        <span class="n">levels</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">dtypes</span><span class="p">)</span>
-        <span class="n">dtypes</span> <span class="o">=</span> <span class="p">{</span><span class="n">level</span><span class="p">:</span> <span class="n">to_pandas_dtype</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span> <span class="k">for</span> <span class="n">level</span><span class="p">,</span> <span class="n">dtype</span> <span class="ow">in</span> <span class="n">dtypes</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+<span class="sd">        Loading a CSV file with :func:`pandas.read_csv()` is slower</span>
+<span class="sd">        than the method applied here.</span>
+<span class="sd">        We first load the CSV file as a :class:`pyarrow.Table`</span>
+<span class="sd">        and convert it to a dataframe afterwards.</span>
 
-        <span class="c1"># other columns</span>
-        <span class="n">columns</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">column_id</span><span class="p">,</span> <span class="n">column</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="k">if</span> <span class="n">column</span><span class="o">.</span><span class="n">scheme_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">dtypes</span><span class="p">[</span><span class="n">column_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">schemes</span><span class="p">[</span><span class="n">column</span><span class="o">.</span><span class="n">scheme_id</span><span class="p">]</span><span class="o">.</span><span class="n">to_pandas_dtype</span><span class="p">()</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">dtypes</span><span class="p">[</span><span class="n">column_id</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;object&quot;</span>
+<span class="sd">        Args:</span>
+<span class="sd">            path: path to table, including file extension</span>
 
-        <span class="c1"># replace dtype with converter for dates or timestamps</span>
-        <span class="n">dtypes_wo_converters</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">for</span> <span class="n">column_id</span><span class="p">,</span> <span class="n">dtype</span> <span class="ow">in</span> <span class="n">dtypes</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="k">if</span> <span class="n">dtype</span> <span class="o">==</span> <span class="s2">&quot;datetime64[ns]&quot;</span><span class="p">:</span>
-                <span class="n">converters</span><span class="p">[</span><span class="n">column_id</span><span class="p">]</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="n">dtype</span> <span class="o">==</span> <span class="s2">&quot;timedelta64[ns]&quot;</span><span class="p">:</span>
-                <span class="n">converters</span><span class="p">[</span><span class="n">column_id</span><span class="p">]</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_timedelta</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">dtypes_wo_converters</span><span class="p">[</span><span class="n">column_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">dtype</span>
-
-        <span class="c1"># read csv</span>
-        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">levels</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_levels_and_dtypes</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="n">columns</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="n">table</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span>
             <span class="n">path</span><span class="p">,</span>
-            <span class="n">usecols</span><span class="o">=</span><span class="n">levels</span> <span class="o">+</span> <span class="n">columns</span><span class="p">,</span>
-            <span class="n">dtype</span><span class="o">=</span><span class="n">dtypes_wo_converters</span><span class="p">,</span>
-            <span class="n">index_col</span><span class="o">=</span><span class="n">levels</span><span class="p">,</span>
-            <span class="n">converters</span><span class="o">=</span><span class="n">converters</span><span class="p">,</span>
-            <span class="n">float_precision</span><span class="o">=</span><span class="s2">&quot;round_trip&quot;</span><span class="p">,</span>
+            <span class="n">read_options</span><span class="o">=</span><span class="n">csv</span><span class="o">.</span><span class="n">ReadOptions</span><span class="p">(</span>
+                <span class="n">column_names</span><span class="o">=</span><span class="n">levels</span> <span class="o">+</span> <span class="n">columns</span><span class="p">,</span>
+                <span class="n">skip_rows</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+            <span class="p">),</span>
+            <span class="n">convert_options</span><span class="o">=</span><span class="n">csv</span><span class="o">.</span><span class="n">ConvertOptions</span><span class="p">(</span>
+                <span class="n">column_types</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_pyarrow_csv_schema</span><span class="p">(),</span>
+                <span class="n">strings_can_be_null</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="p">),</span>
         <span class="p">)</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pyarrow_table_to_dataframe</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">from_csv</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-        <span class="c1"># For an empty CSV file</span>
-        <span class="c1"># converters will not set the correct dtype</span>
-        <span class="c1"># and we need to correct it manually</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="c1"># fix index</span>
-            <span class="n">converter_dtypes</span> <span class="o">=</span> <span class="p">{</span>
-                <span class="n">level</span><span class="p">:</span> <span class="n">dtype</span>
-                <span class="k">for</span> <span class="n">level</span><span class="p">,</span> <span class="n">dtype</span> <span class="ow">in</span> <span class="n">dtypes</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
-                <span class="k">if</span> <span class="n">level</span> <span class="ow">in</span> <span class="n">converters</span> <span class="ow">and</span> <span class="n">level</span> <span class="ow">in</span> <span class="n">levels</span>
-            <span class="p">}</span>
-            <span class="n">df</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">set_index_dtypes</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">converter_dtypes</span><span class="p">)</span>
-            <span class="c1"># fix columns</span>
-            <span class="k">for</span> <span class="n">column_id</span> <span class="ow">in</span> <span class="n">columns</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">column_id</span> <span class="ow">in</span> <span class="n">converters</span><span class="p">:</span>
-                    <span class="n">dtype</span> <span class="o">=</span> <span class="n">dtypes</span><span class="p">[</span><span class="n">column_id</span><span class="p">]</span>
-                    <span class="n">df</span><span class="p">[</span><span class="n">column_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">column_id</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_df</span> <span class="o">=</span> <span class="n">df</span>
+
+    <span class="k">def</span> <span class="nf">_load_parquet</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Load table from PARQUET file.</span>
+
+<span class="sd">        The loaded table is stored under ``self._df``.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            path: path to table, including file extension</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Read PARQUET file</span>
+        <span class="n">table</span> <span class="o">=</span> <span class="n">parquet</span><span class="o">.</span><span class="n">read_table</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pyarrow_table_to_dataframe</span><span class="p">(</span><span class="n">table</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_df</span> <span class="o">=</span> <span class="n">df</span>
 
     <span class="k">def</span> <span class="nf">_load_pickled</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Load table from PKL file.</span>
+
+<span class="sd">        The loaded table is stored under ``self._df``.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            path: path to table, including file extension</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Older versions of audformat used xz compression</span>
         <span class="c1"># which produced smaller files,</span>
         <span class="c1"># but was slower.</span>
@@ -1057,13 +1094,225 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_df</span> <span class="o">=</span> <span class="n">df</span>
 
+    <span class="k">def</span> <span class="nf">_pyarrow_convert_dtypes</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">convert_all</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Convert dtypes that are not handled by pyarrow.</span>
+
+<span class="sd">        This adjusts dtypes in a dataframe,</span>
+<span class="sd">        that could not be set correctly</span>
+<span class="sd">        when converting to the dataframe</span>
+<span class="sd">        from pyarrow.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            df: dataframe,</span>
+<span class="sd">            convert_all: if ``False``,</span>
+<span class="sd">                converts all columns with</span>
+<span class="sd">                ``&quot;object&quot;`` audformat dtype,</span>
+<span class="sd">                and all columns with a scheme with labels.</span>
+<span class="sd">                If ``&quot;True&quot;``,</span>
+<span class="sd">                it converts additionally all columns with</span>
+<span class="sd">                ``&quot;bool&quot;``, ``&quot;int&quot;``, and ``&quot;time&quot;`` audformat dtypes</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dataframe with converted dtypes</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Collect columns with dtypes,</span>
+        <span class="c1"># that cannot directly be converted</span>
+        <span class="c1"># from pyarrow to pandas</span>
+        <span class="n">bool_columns</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">int_columns</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">time_columns</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">object_columns</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># Collect columns</span>
+        <span class="c1"># with scheme labels</span>
+        <span class="n">labeled_columns</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># Collect columns,</span>
+        <span class="c1"># belonging to the table index</span>
+        <span class="c1"># (not the index of the provided dataframe)</span>
+        <span class="n">index_columns</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># --- Index ---</span>
+        <span class="n">index_columns</span> <span class="o">+=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_levels_and_dtypes</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="k">for</span> <span class="n">level</span><span class="p">,</span> <span class="n">dtype</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_levels_and_dtypes</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">dtype</span> <span class="o">==</span> <span class="n">define</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">BOOL</span><span class="p">:</span>
+                <span class="n">bool_columns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">level</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">dtype</span> <span class="o">==</span> <span class="n">define</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">INTEGER</span><span class="p">:</span>
+                <span class="n">int_columns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">level</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">dtype</span> <span class="o">==</span> <span class="n">define</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">TIME</span><span class="p">:</span>
+                <span class="n">time_columns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">level</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">dtype</span> <span class="o">==</span> <span class="n">define</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">OBJECT</span><span class="p">:</span>
+                <span class="n">object_columns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">level</span><span class="p">)</span>
+
+        <span class="c1"># --- Columns ---</span>
+        <span class="k">for</span> <span class="n">column_id</span><span class="p">,</span> <span class="n">column</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">column</span><span class="o">.</span><span class="n">scheme_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">scheme</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="n">column</span><span class="o">.</span><span class="n">scheme_id</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">scheme</span><span class="o">.</span><span class="n">labels</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">labeled_columns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">column_id</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">scheme</span><span class="o">.</span><span class="n">dtype</span> <span class="o">==</span> <span class="n">define</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">BOOL</span><span class="p">:</span>
+                    <span class="n">bool_columns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">column_id</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">scheme</span><span class="o">.</span><span class="n">dtype</span> <span class="o">==</span> <span class="n">define</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">INTEGER</span><span class="p">:</span>
+                    <span class="n">int_columns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">column_id</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">scheme</span><span class="o">.</span><span class="n">dtype</span> <span class="o">==</span> <span class="n">define</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">TIME</span><span class="p">:</span>
+                    <span class="n">time_columns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">column_id</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">scheme</span><span class="o">.</span><span class="n">dtype</span> <span class="o">==</span> <span class="n">define</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">OBJECT</span><span class="p">:</span>
+                    <span class="n">object_columns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">column_id</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># No scheme defaults to `object` dtype</span>
+                <span class="n">object_columns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">column_id</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">convert_all</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="n">bool_columns</span><span class="p">:</span>
+                <span class="n">df</span><span class="p">[</span><span class="n">column</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">column</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;boolean&quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="n">int_columns</span><span class="p">:</span>
+                <span class="n">df</span><span class="p">[</span><span class="n">column</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">column</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;Int64&quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="n">time_columns</span><span class="p">:</span>
+                <span class="n">df</span><span class="p">[</span><span class="n">column</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">column</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;timedelta64[ns]&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="n">object_columns</span><span class="p">:</span>
+            <span class="n">df</span><span class="p">[</span><span class="n">column</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">column</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;object&quot;</span><span class="p">)</span>
+            <span class="n">df</span><span class="p">[</span><span class="n">column</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">column</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">NA</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="n">labeled_columns</span><span class="p">:</span>
+            <span class="n">scheme</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="n">column</span><span class="p">]</span><span class="o">.</span><span class="n">scheme_id</span><span class="p">]</span>
+            <span class="n">labels</span> <span class="o">=</span> <span class="n">scheme</span><span class="o">.</span><span class="n">_labels_to_list</span><span class="p">()</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">labels</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">int</span><span class="p">):</span>
+                <span class="c1"># allow nullable</span>
+                <span class="n">labels</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;int64&quot;</span><span class="p">)</span>
+            <span class="n">dtype</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">CategoricalDtype</span><span class="p">(</span>
+                <span class="n">categories</span><span class="o">=</span><span class="n">labels</span><span class="p">,</span>
+                <span class="n">ordered</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">df</span><span class="p">[</span><span class="n">column</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">column</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">df</span>
+
+    <span class="k">def</span> <span class="nf">_pyarrow_csv_schema</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pa</span><span class="o">.</span><span class="n">Schema</span><span class="p">:</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Data type mapping for reading CSV file with pyarrow.</span>
+
+<span class="sd">        This provides a schema,</span>
+<span class="sd">        defining pyarrow dtypes</span>
+<span class="sd">        for the columns of a CSV file.</span>
+
+<span class="sd">        The dtypes are extracted from the audformat schemes,</span>
+<span class="sd">        and converted to the pyarrow dtypes.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            pyarrow schema for reading a CSV file</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Mapping from audformat to pyarrow dtypes</span>
+        <span class="n">to_pyarrow_dtype</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">define</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">BOOL</span><span class="p">:</span> <span class="n">pa</span><span class="o">.</span><span class="n">bool_</span><span class="p">(),</span>
+            <span class="n">define</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">DATE</span><span class="p">:</span> <span class="n">pa</span><span class="o">.</span><span class="n">timestamp</span><span class="p">(</span><span class="s2">&quot;ns&quot;</span><span class="p">),</span>
+            <span class="n">define</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">FLOAT</span><span class="p">:</span> <span class="n">pa</span><span class="o">.</span><span class="n">float64</span><span class="p">(),</span>
+            <span class="n">define</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">INTEGER</span><span class="p">:</span> <span class="n">pa</span><span class="o">.</span><span class="n">int64</span><span class="p">(),</span>
+            <span class="n">define</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">STRING</span><span class="p">:</span> <span class="n">pa</span><span class="o">.</span><span class="n">string</span><span class="p">(),</span>
+            <span class="c1"># A better fitting type would be `pa.duration(&quot;ns&quot;)`,</span>
+            <span class="c1"># but this is not yet supported</span>
+            <span class="c1"># when reading CSV files</span>
+            <span class="n">define</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">TIME</span><span class="p">:</span> <span class="n">pa</span><span class="o">.</span><span class="n">string</span><span class="p">(),</span>
+        <span class="p">}</span>
+
+        <span class="c1"># Collect pyarrow dtypes</span>
+        <span class="c1"># of all columns,</span>
+        <span class="c1"># including index columns.</span>
+        <span class="c1"># The dtypes are stored as a tuple</span>
+        <span class="c1"># ``(column, dtype)``,</span>
+        <span class="c1"># and are used to create</span>
+        <span class="c1"># the pyarrow.Schema</span>
+        <span class="c1"># used when reading the CSV file</span>
+        <span class="n">pyarrow_dtypes</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="c1"># Index</span>
+        <span class="k">for</span> <span class="n">level</span><span class="p">,</span> <span class="n">dtype</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_levels_and_dtypes</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">dtype</span> <span class="ow">in</span> <span class="n">to_pyarrow_dtype</span><span class="p">:</span>
+                <span class="n">pyarrow_dtypes</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">level</span><span class="p">,</span> <span class="n">to_pyarrow_dtype</span><span class="p">[</span><span class="n">dtype</span><span class="p">]))</span>
+        <span class="c1"># Columns</span>
+        <span class="k">for</span> <span class="n">column_id</span><span class="p">,</span> <span class="n">column</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">column</span><span class="o">.</span><span class="n">scheme_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">dtype</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="n">column</span><span class="o">.</span><span class="n">scheme_id</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span>
+                <span class="k">if</span> <span class="n">dtype</span> <span class="ow">in</span> <span class="n">to_pyarrow_dtype</span><span class="p">:</span>
+                    <span class="n">pyarrow_dtypes</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">column_id</span><span class="p">,</span> <span class="n">to_pyarrow_dtype</span><span class="p">[</span><span class="n">dtype</span><span class="p">]))</span>
+
+        <span class="k">return</span> <span class="n">pa</span><span class="o">.</span><span class="n">schema</span><span class="p">(</span><span class="n">pyarrow_dtypes</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_pyarrow_table_to_dataframe</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">table</span><span class="p">:</span> <span class="n">pa</span><span class="o">.</span><span class="n">Table</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">from_csv</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Convert pyarrow table to pandas dataframe.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            table: pyarrow table</span>
+<span class="sd">            from_csv: if ``True`` it assumes,</span>
+<span class="sd">                that ``table`` was created by reading a CSV file,</span>
+<span class="sd">                and it will convert all needed dtypes</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dataframe</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">(</span>
+            <span class="n">deduplicate_objects</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">types_mapper</span><span class="o">=</span><span class="p">{</span>
+                <span class="n">pa</span><span class="o">.</span><span class="n">string</span><span class="p">():</span> <span class="n">pd</span><span class="o">.</span><span class="n">StringDtype</span><span class="p">(),</span>
+            <span class="p">}</span><span class="o">.</span><span class="n">get</span><span class="p">,</span>  <span class="c1"># we have to provide a callable, not a dict</span>
+        <span class="p">)</span>
+        <span class="c1"># Adjust dtypes and set index</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pyarrow_convert_dtypes</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">convert_all</span><span class="o">=</span><span class="n">from_csv</span><span class="p">)</span>
+        <span class="n">index_columns</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_levels_and_dtypes</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_set_index</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">index_columns</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">df</span>
+
     <span class="k">def</span> <span class="nf">_save_csv</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
         <span class="c1"># Load table before opening CSV file</span>
         <span class="c1"># to avoid creating a CSV file</span>
         <span class="c1"># that is newer than the PKL file</span>
-        <span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span>  <span class="c1"># loads table</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
             <span class="n">df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_save_parquet</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Save table as PARQUET file.</span>
+
+<span class="sd">        A PARQUET file is written in a non-deterministic way,</span>
+<span class="sd">        and we cannot track changes by its MD5 sum.</span>
+<span class="sd">        To make changes trackable,</span>
+<span class="sd">        we store a hash in its metadata.</span>
+
+<span class="sd">        The hash is calculated from the pyarrow schema</span>
+<span class="sd">        (to track column names and data types)</span>
+<span class="sd">        and the pandas dataframe</span>
+<span class="sd">        (to track values and order or rows),</span>
+<span class="sd">        from which the PARQUET file is generated.</span>
+
+<span class="sd">        The hash of the PARQUET file can then be read by::</span>
+
+<span class="sd">            pyarrow.parquet.read_schema(path).metadata[b&quot;hash&quot;].decode()</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            path: path, including file extension</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">table</span> <span class="o">=</span> <span class="n">pa</span><span class="o">.</span><span class="n">Table</span><span class="o">.</span><span class="n">from_pandas</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(),</span> <span class="n">preserve_index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="c1"># Create hash of table</span>
+        <span class="n">table_hash</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">md5</span><span class="p">()</span>
+        <span class="n">table_hash</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">_schema_hash</span><span class="p">(</span><span class="n">table</span><span class="p">))</span>
+        <span class="n">table_hash</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">_dataframe_hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">))</span>
+
+        <span class="c1"># Store in metadata of file,</span>
+        <span class="c1"># see https://stackoverflow.com/a/58978449</span>
+        <span class="n">metadata</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;hash&quot;</span><span class="p">:</span> <span class="n">table_hash</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()}</span>
+        <span class="n">table</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">replace_schema_metadata</span><span class="p">({</span><span class="o">**</span><span class="n">metadata</span><span class="p">,</span> <span class="o">**</span><span class="n">table</span><span class="o">.</span><span class="n">schema</span><span class="o">.</span><span class="n">metadata</span><span class="p">})</span>
+
+        <span class="n">parquet</span><span class="o">.</span><span class="n">write_table</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">compression</span><span class="o">=</span><span class="s2">&quot;snappy&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_save_pickled</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">to_pickle</span><span class="p">(</span>
@@ -1104,6 +1353,31 @@
         <span class="n">column</span><span class="o">.</span><span class="n">_table</span> <span class="o">=</span> <span class="bp">self</span>
 
         <span class="k">return</span> <span class="n">column</span>
+
+    <span class="k">def</span> <span class="nf">_set_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">columns</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Set columns as index.</span>
+
+<span class="sd">        Setting of index columns is performed inplace!</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            df: dataframe</span>
+<span class="sd">            columns: columns to be set as index of dataframe</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            updated dataframe</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># When assigning more than one column,</span>
+        <span class="c1"># a MultiIndex is assigned.</span>
+        <span class="c1"># Setting a MultiIndex does not always preserve pandas dtypes,</span>
+        <span class="c1"># so we need to set them manually.</span>
+        <span class="c1">#</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">columns</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">dtypes</span> <span class="o">=</span> <span class="p">{</span><span class="n">column</span><span class="p">:</span> <span class="n">df</span><span class="p">[</span><span class="n">column</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span> <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="n">columns</span><span class="p">}</span>
+        <span class="n">df</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="n">columns</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">columns</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">df</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">set_index_dtypes</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">dtypes</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">df</span>
 
 
 <div class="viewcode-block" id="MiscTable"><a class="viewcode-back" href="../../../api/audformat.MiscTable.html#audformat.MiscTable">[docs]</a><span class="k">class</span> <span class="nc">MiscTable</span><span class="p">(</span><span class="n">Base</span><span class="p">):</span>
@@ -1238,8 +1512,10 @@
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">MultiIndex</span><span class="p">)</span> <span class="ow">and</span> <span class="n">index</span><span class="o">.</span><span class="n">nlevels</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
                 <span class="n">index</span> <span class="o">=</span> <span class="n">index</span><span class="o">.</span><span class="n">get_level_values</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 
-            <span class="c1"># Ensure integers are always stored as Int64</span>
-            <span class="n">index</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">_maybe_convert_int_dtype</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+            <span class="c1"># Ensure integers are stored as Int64,</span>
+            <span class="c1"># and bool values as boolean,</span>
+            <span class="c1"># compare audformat.core.common.to_pandas_dtype()</span>
+            <span class="n">index</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">_maybe_convert_pandas_dtype</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
 
             <span class="n">levels</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">_levels</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="n">levels</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">levels</span><span class="p">)</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">levels</span><span class="p">)):</span>
@@ -1248,8 +1524,7 @@
                     <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">levels</span><span class="si">}</span><span class="s2">, &quot;</span>
                     <span class="sa">f</span><span class="s2">&quot;but names must be non-empty and unique.&quot;</span>
                 <span class="p">)</span>
-
-            <span class="n">dtypes</span> <span class="o">=</span> <span class="p">[</span><span class="n">to_audformat_dtype</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span> <span class="k">for</span> <span class="n">dtype</span> <span class="ow">in</span> <span class="n">utils</span><span class="o">.</span><span class="n">_dtypes</span><span class="p">(</span><span class="n">index</span><span class="p">)]</span>
+            <span class="n">dtypes</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">_audformat_dtypes</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">levels</span> <span class="o">=</span> <span class="p">{</span><span class="n">level</span><span class="p">:</span> <span class="n">dtype</span> <span class="k">for</span> <span class="n">level</span><span class="p">,</span> <span class="n">dtype</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">levels</span><span class="p">,</span> <span class="n">dtypes</span><span class="p">)}</span>
 
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
@@ -1261,7 +1536,18 @@
         <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_get_by_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">index</span><span class="p">]</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">_levels_and_dtypes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Levels and dtypes of index columns.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dictionary with index levels (column names)</span>
+<span class="sd">            and associated audformat data type</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">levels</span></div>
 
 
 <div class="viewcode-block" id="Table"><a class="viewcode-back" href="../../../api/audformat.Table.html#audformat.Table">[docs]</a><span class="k">class</span> <span class="nc">Table</span><span class="p">(</span><span class="n">Base</span><span class="p">):</span>
@@ -1661,7 +1947,23 @@
                 <span class="n">files</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">dict</span><span class="o">.</span><span class="n">fromkeys</span><span class="p">(</span><span class="n">files</span><span class="p">))</span>  <span class="c1"># remove duplicates</span>
                 <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">files</span><span class="p">]</span>
 
-        <span class="k">return</span> <span class="n">result</span></div>
+        <span class="k">return</span> <span class="n">result</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">_levels_and_dtypes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Levels and dtypes of index columns.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dictionary with index levels (column names)</span>
+<span class="sd">            and associated audformat data type</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">levels_and_dtypes</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">levels_and_dtypes</span><span class="p">[</span><span class="n">define</span><span class="o">.</span><span class="n">IndexField</span><span class="o">.</span><span class="n">FILE</span><span class="p">]</span> <span class="o">=</span> <span class="n">define</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">STRING</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">define</span><span class="o">.</span><span class="n">IndexType</span><span class="o">.</span><span class="n">SEGMENTED</span><span class="p">:</span>
+            <span class="n">levels_and_dtypes</span><span class="p">[</span><span class="n">define</span><span class="o">.</span><span class="n">IndexField</span><span class="o">.</span><span class="n">START</span><span class="p">]</span> <span class="o">=</span> <span class="n">define</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">TIME</span>
+            <span class="n">levels_and_dtypes</span><span class="p">[</span><span class="n">define</span><span class="o">.</span><span class="n">IndexField</span><span class="o">.</span><span class="n">END</span><span class="p">]</span> <span class="o">=</span> <span class="n">define</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">TIME</span>
+        <span class="k">return</span> <span class="n">levels_and_dtypes</span></div>
 
 
 <span class="k">def</span> <span class="nf">_assert_table_index</span><span class="p">(</span>
@@ -1708,6 +2010,40 @@
         <span class="p">)</span>
 
 
+<span class="k">def</span> <span class="nf">_dataframe_hash</span><span class="p">(</span><span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Hash a dataframe.</span>
+
+<span class="sd">    The hash value takes into account:</span>
+
+<span class="sd">    * index of dataframe</span>
+<span class="sd">    * values of the dataframe</span>
+<span class="sd">    * order of dataframe rows</span>
+
+<span class="sd">    It does not consider:</span>
+
+<span class="sd">    * column names of dataframe</span>
+<span class="sd">    * dtypes of dataframe</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        df: dataframe</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        MD5 hash in bytes</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">md5</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">md5</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="c1"># Convert every column to a numpy array,</span>
+        <span class="c1"># and hash its string representation</span>
+        <span class="k">if</span> <span class="n">y</span><span class="o">.</span><span class="n">dtype</span> <span class="o">==</span> <span class="s2">&quot;Int64&quot;</span><span class="p">:</span>
+            <span class="c1"># Enforce consistent conversion to numpy.array</span>
+            <span class="c1"># for integers across different pandas versions</span>
+            <span class="c1"># (since pandas 2.2.x, Int64 is converted to float if it contains &lt;NA&gt;)</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="n">y</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;float&quot;</span><span class="p">)</span>
+        <span class="n">md5</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="nb">bytes</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()),</span> <span class="s2">&quot;utf-8&quot;</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">md5</span><span class="o">.</span><span class="n">digest</span><span class="p">()</span>
+
+
 <span class="k">def</span> <span class="nf">_maybe_convert_dtype_to_string</span><span class="p">(</span>
     <span class="n">index</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">:</span>
@@ -1730,6 +2066,26 @@
         <span class="k">for</span> <span class="n">scheme</span> <span class="ow">in</span> <span class="n">table</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
             <span class="k">if</span> <span class="n">table</span><span class="o">.</span><span class="n">_id</span> <span class="o">==</span> <span class="n">scheme</span><span class="o">.</span><span class="n">labels</span><span class="p">:</span>
                 <span class="n">scheme</span><span class="o">.</span><span class="n">replace_labels</span><span class="p">(</span><span class="n">table</span><span class="o">.</span><span class="n">_id</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_schema_hash</span><span class="p">(</span><span class="n">table</span><span class="p">:</span> <span class="n">pa</span><span class="o">.</span><span class="n">Table</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Hash pyarrow table schema.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        table: pyarrow table</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        MD5 hash in bytes</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">schema_str</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">schema</span><span class="o">.</span><span class="n">to_string</span><span class="p">(</span>
+        <span class="c1"># schema.metadata contains pandas related information,</span>
+        <span class="c1"># and the used pyarrow and pandas version,</span>
+        <span class="c1"># and needs to be excluded</span>
+        <span class="n">show_field_metadata</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">show_schema_metadata</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">md5</span><span class="p">(</span><span class="n">schema_str</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span><span class="o">.</span><span class="n">digest</span><span class="p">()</span>
 </pre></div>
 
            </div>
@@ -1745,7 +2101,7 @@
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2024/05/15 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2024/06/25 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
