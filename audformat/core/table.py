@@ -597,7 +597,7 @@ class Base(HeaderBase):
         for the same content.
         The hash can be accessed with ``pyarrow`` by::
 
-            pyarrow.parquet.read_schema(file).metadata[b"hash"].decode()
+            pyarrow.parquet.read_schema(f"{path}.parquet").metadata[b"hash"].decode()
 
         Args:
             path: file path without extension
