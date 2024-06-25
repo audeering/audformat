@@ -11,9 +11,9 @@ Version 1.2.0 (2024-06-25)
 --------------------------
 
 * Added: expand format specifications
-  to allow PARQUET files
+  to allow parquet files
   as table files
-* Added: support for storing tables as PARQUET files
+* Added: support for storing tables as parquet files
   by adding ``"parquet"``
   (``audformat.define.TableStorageFormat.PARQUET``)
   as an option
@@ -24,11 +24,10 @@ Version 1.2.0 (2024-06-25)
 * Added: mention text files
   as potential media files
   in the documentation
-* Changed: expand documentation of ``audformat.utils.hash()``
-  by mentioning
-  that its hash value
-  is not influenced by column/level names,
-  and that the hash of a dataframe or series,
+* Added: mention in the documentation of ``audformat.utils.hash()``
+  that column/level names do not influence its hash value
+* Added: warn in the documentation of ``audformat.utils.hash()``
+  that the hash of a dataframe or series,
   containing ``"Int64"`` as data type,
   changes with ``pandas>=2.2.0``
 * Fixed: ensure ``"boolean"`` data type
