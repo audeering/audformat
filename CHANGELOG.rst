@@ -7,6 +7,35 @@ The format is based on `Keep a Changelog`_,
 and this project adheres to `Semantic Versioning`_.
 
 
+Version 1.2.0 (2024-06-25)
+--------------------------
+
+* Added: expand format specifications
+  to allow parquet files
+  as table files
+* Added: support for storing tables as parquet files
+  by adding ``"parquet"``
+  (``audformat.define.TableStorageFormat.PARQUET``)
+  as an option
+  for the ``storage_format`` argument
+  of ``audformat.Table.save()``
+  and ``audformat.Database.save()``
+* Added: support for ``numpy>=2.0``
+* Added: mention text files
+  as potential media files
+  in the documentation
+* Added: mention in the documentation of ``audformat.utils.hash()``
+  that column/level names do not influence its hash value
+* Added: warn in the documentation of ``audformat.utils.hash()``
+  that the hash of a dataframe or series,
+  containing ``"Int64"`` as data type,
+  changes with ``pandas>=2.2.0``
+* Fixed: ensure ``"boolean"`` data type
+  is always used
+  in indices of misc tables
+  that store boolean values
+
+
 Version 1.1.4 (2024-05-15)
 --------------------------
 
