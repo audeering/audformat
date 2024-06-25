@@ -586,6 +586,16 @@ class Base(HeaderBase):
 
         Existing files will be overwritten.
 
+        When using ``"parquet"`` as ``storage_format``
+        a hash,
+        based on the content of the table,
+        is stored under the key ``b"hash"``
+        in the metadata of the schema of the parquet file.
+        This provides a deterministic hash,
+        as md5 sums of parquet files
+        can be different
+        for the same content.
+
         Args:
             path: file path without extension
             storage_format: storage format of table.
