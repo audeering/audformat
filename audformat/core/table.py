@@ -599,6 +599,10 @@ class Base(HeaderBase):
 
             pyarrow.parquet.read_schema(f"{path}.parquet").metadata[b"hash"].decode()
 
+        The hash is used by :mod:`audb`
+        when publishing a database
+        to track changes of database files.
+
         Args:
             path: file path without extension
             storage_format: storage format of table.
