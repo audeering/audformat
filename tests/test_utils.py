@@ -509,6 +509,50 @@ def test_expand_file_path(tmpdir, index, root, expected):
             pd.DataFrame([0, 1], columns=["name"]),
             "-7179254265801896228",
         ),
+        pytest.param(
+            pd.DataFrame(
+                [0, 1, 2],
+                pd.Index([0, 1, 2], dtype="Int64"),
+            ),
+            "5440931770055407318",
+            marks=pytest.mark.skipif(
+                pd.__version__ >= "2.2.0",
+                reason="Changed in pandas 2.2.0",
+            ),
+        ),
+        pytest.param(
+            pd.DataFrame(
+                [0, 1, 2],
+                pd.Index([0, 1, 2], dtype="Int64"),
+            ),
+            "-5491649331962632325",
+            marks=pytest.mark.skipif(
+                pd.__version__ < "2.2.0",
+                reason="Changed in pandas 2.2.0",
+            ),
+        ),
+        pytest.param(
+            pd.Series(
+                [0, 1, 2],
+                pd.Index([0, 1, 2], dtype="Int64"),
+            ),
+            "5440931770055407318",
+            marks=pytest.mark.skipif(
+                pd.__version__ >= "2.2.0",
+                reason="Changed in pandas 2.2.0",
+            ),
+        ),
+        pytest.param(
+            pd.Series(
+                [0, 1, 2],
+                pd.Index([0, 1, 2], dtype="Int64"),
+            ),
+            "-5491649331962632325",
+            marks=pytest.mark.skipif(
+                pd.__version__ < "2.2.0",
+                reason="Changed in pandas 2.2.0",
+            ),
+        ),
     ],
 )
 def test_hash(obj, expected):
