@@ -592,9 +592,14 @@ class Base(HeaderBase):
         is stored under the key ``b"hash"``
         in the metadata of the schema of the parquet file.
         This provides a deterministic hash for the file,
-        as md5 sums of parquet files
-        can be different
-        for the same content.
+        as md5 sums of parquet files,
+        containing identical information,
+        often differ.
+        Reasons include factors like the library
+        that wrote the parquet file,
+        the chosen compression codec
+        and metadata written by the library.
+
         The hash can be accessed with ``pyarrow`` by::
 
             pyarrow.parquet.read_schema(f"{path}.parquet").metadata[b"hash"].decode()
