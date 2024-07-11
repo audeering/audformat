@@ -1144,9 +1144,9 @@ def test_load(tmpdir):
 
 
 def test_load_broken_csv(tmpdir):
-    r"""Test loading of malformed CSV files.
+    r"""Test loading of malformed csv files.
 
-    If csv files contain a lot of special character,
+    If csv files contain a lot of special characters,
     or a different number of columns,
     than specified in the database header,
     loading of them should not fail.
@@ -1160,18 +1160,39 @@ def test_load_broken_csv(tmpdir):
     build_dir = audeer.mkdir(tmpdir, "build")
 
     # Create database with single table and column
+    #
+    # Ensure:
+    #
+    # * it contains an empty table
+    # * the columns use schemes with time and date data types
+    # * at least one column has no scheme
+    #
+    # as those cases needed special care with csv files
+    #
     db = audformat.Database("mydb")
+    db.schemes["date"] = audformat.Scheme("date")
+    db.schemes["time"] = audformat.Scheme("time")
     db["table"] = audformat.Table(audformat.filewise_index("file.wav"))
-    db["table"]["column"] = audformat.Column()
-    db["table"]["column"].set(["label"])
+    db["table"]["date"] = audformat.Column(scheme_id="date")
+    db["table"]["date"].set([pd.to_datetime("2018-10-26")])
+    db["table"]["time"] = audformat.Column(scheme_id="time")
+    db["table"]["time"].set([pd.Timedelta(1)])
+    db["table"]["no-scheme"] = audformat.Column()
+    db["table"]["no-scheme"].set(["label"])
+    db["empty-table"] = audformat.Table(audformat.filewise_index())
+    db["empty-table"]["column"] = audformat.Column()
 
-    # Add another column to dataframe,
-    # without adding a column to the header
-    db["table"].df["hidden-column"] = ["hidden-label"]
+    # Add a hidden column to the table dataframes,
+    # without adding it to the table header
+    db["table"].df["hidden"] = ["hidden"]
+    db["empty-table"].df["hidden"] = []
 
     db.save(build_dir, storage_format="csv")
     db_loaded = audformat.Database.load(build_dir, load_data=True)
-    assert "hidden-column" not in db_loaded["table"].df
+    assert "table" in db_loaded
+    assert "empty-table" in db_loaded
+    assert "hidden" not in db_loaded["table"].df
+    assert "hidden-column" not in db_loaded["empty-table"].df
 
 
 def test_load_old_pickle(tmpdir):
