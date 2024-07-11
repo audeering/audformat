@@ -1143,6 +1143,37 @@ def test_load(tmpdir):
         os.remove(f"{path_no_ext}.{ext}")
 
 
+def test_load_broken_csv(tmpdir):
+    r"""Test loading of malformed CSV files.
+
+    If csv files contain a lot of special character,
+    or a different number of columns,
+    than specified in the database header,
+    loading of them should not fail.
+
+    See https://github.com/audeering/audformat/issues/449
+
+    Args:
+        tmpdir: tmpdir ficture
+
+    """
+    build_dir = audeer.mkdir(tmpdir, "build")
+
+    # Create database with single table and column
+    db = audformat.Database("mydb")
+    db["table"] = audformat.Table(audformat.filewise_index("file.wav"))
+    db["table"]["column"] = audformat.Column()
+    db["table"]["column"].set(["label"])
+
+    # Add another column to dataframe,
+    # without adding a column to the header
+    db["table"].df["hidden-column"] = ["hidden-label"]
+
+    db.save(build_dir, storage_format="csv")
+    db_loaded = audformat.Database.load(build_dir, load_data=True)
+    assert "hidden-column" not in db_loaded["table"].df
+
+
 def test_load_old_pickle(tmpdir):
     # We have stored string dtype as object dtype before
     # and have to fix this when loading old PKL files from cache.
