@@ -59,6 +59,9 @@ jobs:
         pip install "pandas==2.1.0"
         pip install "pyarrow==10.0.1"
         pip install "pyyaml==5.4.1"
+        # need to use an audb version in the test,
+        # that supports audeer==2.0.0
+        pip install "audb==1.7.4"
       if: matrix.requirements == 'minimum'
 
     - name: Test with pytest
