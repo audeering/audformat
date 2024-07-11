@@ -18,6 +18,7 @@ from audformat.core import utils
 from audformat.core.column import Column
 from audformat.core.common import HeaderBase
 from audformat.core.common import HeaderDict
+from audformat.core.common import to_pandas_dtype
 from audformat.core.errors import BadIdError
 from audformat.core.index import filewise_index
 from audformat.core.index import index_type
@@ -887,18 +888,42 @@ class Base(HeaderBase):
         """
         levels = list(self._levels_and_dtypes.keys())
         columns = list(self.columns.keys())
-        table = csv.read_csv(
-            path,
-            read_options=csv.ReadOptions(
-                column_names=levels + columns,
-                skip_rows=1,
-            ),
-            convert_options=csv.ConvertOptions(
-                column_types=self._pyarrow_csv_schema(),
-                strings_can_be_null=True,
-            ),
-        )
-        df = self._pyarrow_table_to_dataframe(table, from_csv=True)
+        try:
+            table = csv.read_csv(
+                path,
+                read_options=csv.ReadOptions(
+                    column_names=levels + columns,
+                    skip_rows=1,
+                ),
+                convert_options=csv.ConvertOptions(
+                    column_types=self._pyarrow_csv_schema(),
+                    strings_can_be_null=True,
+                ),
+            )
+            df = self._pyarrow_table_to_dataframe(table, from_csv=True)
+        except pa.lib.ArrowInvalid:
+            # If pyarrow fails to parse the CSV file
+            # https://github.com/audeering/audformat/issues/449
+
+            # Replace dtype with converter for dates or timestamps
+            converters = {}
+            dtypes_wo_converters = {}
+            for level, dtype in self._levels_and_dtypes.items():
+                if dtype == "date":
+                    converters[level] = lambda x: pd.to_datetime(x)
+                elif dtype == "time":
+                    converters[level] = lambda x: pd.to_timedelta(x)
+                else:
+                    dtypes_wo_converters[level] = to_pandas_dtype(dtype)
+
+            df = pd.read_csv(
+                path,
+                usecols=levels + columns,
+                dtype=dtypes_wo_converters,
+                index_col=levels,
+                converters=converters,
+                float_precision="round_trip",
+            )
 
         self._df = df
 
