@@ -1143,6 +1143,79 @@ def test_load(tmpdir):
         os.remove(f"{path_no_ext}.{ext}")
 
 
+class TestLoadBrokenCsv:
+    r"""Test loading of malformed csv files.
+
+    If csv files contain a lot of special characters,
+    or a different number of columns,
+    than specified in the database header,
+    loading of them should not fail.
+
+    See https://github.com/audeering/audformat/issues/449
+
+    """
+
+    def database_with_hidden_columns(self) -> audformat.Database:
+        r"""Database with hidden columns.
+
+        Create database with hidden columns
+        that are stored in csv,
+        but not in the header of the table.
+
+        Ensure:
+
+        * it contains an empty table
+        * the columns use schemes with time and date data types
+        * at least one column has no scheme
+
+        as those cases needed special care with csv files,
+        before switching to use pyarrow.csv.read_csv()
+        in https://github.com/audeering/audformat/pull/419.
+
+        Returns:
+            database
+
+        """
+        db = audformat.Database("mydb")
+        db.schemes["date"] = audformat.Scheme("date")
+        db.schemes["time"] = audformat.Scheme("time")
+        db["table"] = audformat.Table(audformat.filewise_index("file.wav"))
+        db["table"]["date"] = audformat.Column(scheme_id="date")
+        db["table"]["date"].set([pd.to_datetime("2018-10-26")])
+        db["table"]["time"] = audformat.Column(scheme_id="time")
+        db["table"]["time"].set([pd.Timedelta(1)])
+        db["table"]["no-scheme"] = audformat.Column()
+        db["table"]["no-scheme"].set(["label"])
+        db["empty-table"] = audformat.Table(audformat.filewise_index())
+        db["empty-table"]["column"] = audformat.Column()
+        # Add a hidden column to the table dataframes,
+        # without adding it to the table header
+        db["table"].df["hidden"] = ["hidden"]
+        db["empty-table"].df["hidden"] = []
+        return db
+
+    def test_load_broken_csv(self, tmpdir):
+        r"""Test loading a database table from broken csv files.
+
+        Broken csv files
+        refer to csv tables,
+        that raise an error
+        when loading with ``pyarrow.csv.read_csv()``.
+
+        Args:
+            tmpdir: tmpdir fixture
+
+        """
+        db = self.database_with_hidden_columns()
+        build_dir = audeer.mkdir(tmpdir, "build")
+        db.save(build_dir, storage_format="csv")
+        db_loaded = audformat.Database.load(build_dir, load_data=True)
+        assert "table" in db_loaded
+        assert "empty-table" in db_loaded
+        assert "hidden" not in db_loaded["table"].df
+        assert "hidden-column" not in db_loaded["empty-table"].df
+
+
 def test_load_old_pickle(tmpdir):
     # We have stored string dtype as object dtype before
     # and have to fix this when loading old PKL files from cache.
