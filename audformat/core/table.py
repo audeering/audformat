@@ -579,7 +579,7 @@ class Base(HeaderBase):
         self,
         path: str,
         *,
-        storage_format: str = define.TableStorageFormat.CSV,
+        storage_format: str = define.TableStorageFormat.PARQUET,
         update_other_formats: bool = True,
     ):
         r"""Save table data to disk.
