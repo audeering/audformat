@@ -970,7 +970,7 @@ class Database(HeaderBase):
         *,
         name: str = "db",
         indent: int = 2,
-        storage_format: str = define.TableStorageFormat.CSV,
+        storage_format: str = define.TableStorageFormat.PARQUET,
         update_other_formats: bool = True,
         header_only: bool = False,
         num_workers: typing.Optional[int] = 1,
