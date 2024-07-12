@@ -1159,7 +1159,9 @@ def test_load_broken_csv(tmpdir):
     """
     build_dir = audeer.mkdir(tmpdir, "build")
 
-    # Create database with single table and column
+    # Create database with hidden columns
+    # that are stored in csv,
+    # but not in the header of the table.
     #
     # Ensure:
     #
@@ -1167,7 +1169,9 @@ def test_load_broken_csv(tmpdir):
     # * the columns use schemes with time and date data types
     # * at least one column has no scheme
     #
-    # as those cases needed special care with csv files
+    # as those cases needed special care with csv files,
+    # before switching to use pyarrow.csv.read_csv()
+    # in https://github.com/audeering/audformat/pull/419
     #
     db = audformat.Database("mydb")
     db.schemes["date"] = audformat.Scheme("date")
@@ -1181,7 +1185,6 @@ def test_load_broken_csv(tmpdir):
     db["table"]["no-scheme"].set(["label"])
     db["empty-table"] = audformat.Table(audformat.filewise_index())
     db["empty-table"]["column"] = audformat.Column()
-
     # Add a hidden column to the table dataframes,
     # without adding it to the table header
     db["table"].df["hidden"] = ["hidden"]
