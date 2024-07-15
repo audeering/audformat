@@ -4,7 +4,8 @@
 name = 'audformat'
 authors = [
     {name = 'Hagen Wierstorf', email = 'hwierstorf@audeering.com'},
-    {name = 'Johannes Wagner', email = 'jwagner@audeering.com'},
+    {name = 'Johannes Wagner'},
+    {name = 'Christian Geng', email = 'cgeng@audeering.com'},
     {name = 'BahaEddine Abrougui'},
 ]
 description = 'Python implementation of audformat'
