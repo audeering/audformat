@@ -705,7 +705,7 @@ def hash(
         '5251663970176285425'
         >>> hash(index, include_order_and_names=True)
         '0741235e2250e0fcd9ab7b64972f5047'
-        >>> hash(index[::-1], include_order_and_names=True)
+        >>> hash(index[::-1], include_order_and_names=True)  # reversed index
         'c6639d377897dd9353dc3e8b2968170d'
 
     """
