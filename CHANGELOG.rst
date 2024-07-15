@@ -7,6 +7,24 @@ The format is based on `Keep a Changelog`_,
 and this project adheres to `Semantic Versioning`_.
 
 
+Version 1.3.0 (2024-07-15)
+--------------------------
+
+* Added: ``include_order_and_names`` argument
+  to ``audformat.utils.hash()``.
+  If set to ``True``,
+  the order of the data,
+  it's data type,
+  and its level/column names
+  are taken into account
+  when calculating the hash
+* Changed: store tables per default as parquet files,
+  by changing the default value of ``storage_format``
+  to ``"parquet"``
+  in ``audformat.Table.save()``
+  and ``audformat.Database.save()``
+
+
 Version 1.2.0 (2024-06-25)
 --------------------------
 
