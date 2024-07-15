@@ -1,7 +1,6 @@
 from __future__ import annotations  # allow typing without string
 
 import copy
-import hashlib
 import os
 import pickle
 import typing
@@ -1198,13 +1197,11 @@ class Base(HeaderBase):
         table = pa.Table.from_pandas(self.df.reset_index(), preserve_index=False)
 
         # Create hash of table
-        table_hash = hashlib.md5()
-        table_hash.update(_schema_hash(table))
-        table_hash.update(_dataframe_hash(self.df))
+        table_hash = utils.hash(self.df, include_order_and_names=True)
 
         # Store in metadata of file,
         # see https://stackoverflow.com/a/58978449
-        metadata = {"hash": table_hash.hexdigest()}
+        metadata = {"hash": table_hash}
         table = table.replace_schema_metadata({**metadata, **table.schema.metadata})
 
         parquet.write_table(table, path, compression="snappy")
@@ -1905,40 +1902,6 @@ def _assert_table_index(
         )
 
 
-def _dataframe_hash(df: pd.DataFrame) -> bytes:
-    """Hash a dataframe.
-
-    The hash value takes into account:
-
-    * index of dataframe
-    * values of the dataframe
-    * order of dataframe rows
-
-    It does not consider:
-
-    * column names of dataframe
-    * dtypes of dataframe
-
-    Args:
-        df: dataframe
-
-    Returns:
-        MD5 hash in bytes
-
-    """
-    md5 = hashlib.md5()
-    for _, y in df.reset_index().items():
-        # Convert every column to a numpy array,
-        # and hash its string representation
-        if y.dtype == "Int64":
-            # Enforce consistent conversion to numpy.array
-            # for integers across different pandas versions
-            # (since pandas 2.2.x, Int64 is converted to float if it contains <NA>)
-            y = y.astype("float")
-        md5.update(bytes(str(y.to_numpy()), "utf-8"))
-    return md5.digest()
-
-
 def _maybe_convert_dtype_to_string(
     index: pd.Index,
 ) -> pd.Index:
@@ -1961,23 +1924,3 @@ def _maybe_update_scheme(
         for scheme in table.db.schemes.values():
             if table._id == scheme.labels:
                 scheme.replace_labels(table._id)
-
-
-def _schema_hash(table: pa.Table) -> bytes:
-    r"""Hash pyarrow table schema.
-
-    Args:
-        table: pyarrow table
-
-    Returns:
-        MD5 hash in bytes
-
-    """
-    schema_str = table.schema.to_string(
-        # schema.metadata contains pandas related information,
-        # and the used pyarrow and pandas version,
-        # and needs to be excluded
-        show_field_metadata=False,
-        show_schema_metadata=False,
-    )
-    return hashlib.md5(schema_str.encode()).digest()
