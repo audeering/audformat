@@ -14,7 +14,6 @@ Version 1.3.0 (2024-07-15)
   to ``audformat.utils.hash()``.
   If set to ``True``,
   the order of the data,
-  it's data type,
   and its level/column names
   are taken into account
   when calculating the hash
