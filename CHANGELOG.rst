@@ -22,6 +22,8 @@ Version 1.3.0 (2024-07-15)
   to ``"parquet"``
   in ``audformat.Table.save()``
   and ``audformat.Database.save()``
+* Fixed: load csv tables with ``pandas.read_csv()``,
+  if ``pyarrow.csv.read_csv()`` fails
 
 
 Version 1.2.0 (2024-06-25)
