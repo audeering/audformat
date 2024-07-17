@@ -440,7 +440,7 @@ def test_expand_file_path(tmpdir, index, root, expected):
 
 
 @pytest.mark.parametrize(
-    "obj, include_order_and_names, mutable, expected",
+    "obj, strict, mutable, expected",
     [
         (
             audformat.filewise_index(),
@@ -700,9 +700,9 @@ def test_expand_file_path(tmpdir, index, root, expected):
         ),
     ],
 )
-def test_hash(obj, include_order_and_names, mutable, expected):
-    md5 = utils.hash(obj, include_order_and_names=include_order_and_names)
-    reverse_md5 = utils.hash(obj[::-1], include_order_and_names=include_order_and_names)
+def test_hash(obj, strict, mutable, expected):
+    md5 = utils.hash(obj, strict=strict)
+    reverse_md5 = utils.hash(obj[::-1], strict=strict)
     assert md5 == expected
     if mutable:
         assert reverse_md5 == md5

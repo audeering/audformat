@@ -1197,7 +1197,7 @@ class Base(HeaderBase):
         table = pa.Table.from_pandas(self.df.reset_index(), preserve_index=False)
 
         # Create hash of table
-        table_hash = utils.hash(self.df, include_order_and_names=True)
+        table_hash = utils.hash(self.df, strict=True)
 
         # Store in metadata of file,
         # see https://stackoverflow.com/a/58978449

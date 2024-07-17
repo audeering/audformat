@@ -666,11 +666,11 @@ def expand_file_path(
 
 def hash(
     obj: typing.Union[pd.Index, pd.Series, pd.DataFrame],
-    include_order_and_names: bool = False,
+    strict: bool = False,
 ) -> str:
     r"""Create hash from object.
 
-    If ``include_order_and_names`` is ``False``,
+    If ``strict`` is ``False``,
     objects with the same elements
     produce the same hash string
     independent of the ordering of the elements,
@@ -680,19 +680,19 @@ def hash(
 
         If ``obj`` is a dataframe or series
         with data type ``"Int64"``,
-        and ``include_order_and_names`` is ``False``,
+        and ``strict`` is ``False``,
         the returned hash value changes with ``pandas>=2.2.0``.
 
     Args:
         obj: object
-        include_order_and_names: if ``True``,
+        strict: if ``True``,
             the hash takes into account
             the order of rows
             and column/level names
 
     Returns:
         hash string with 19 characters,
-        or 32 characters if ``include_order_and_names`` is ``True``
+        or 32 characters if ``strict`` is ``True``
 
     Examples:
         >>> index = filewise_index(["f1", "f2"])
@@ -703,13 +703,13 @@ def hash(
         >>> y = pd.Series(0, index)
         >>> hash(y)
         '5251663970176285425'
-        >>> hash(index, include_order_and_names=True)
+        >>> hash(index, strict=True)
         '0741235e2250e0fcd9ab7b64972f5047'
-        >>> hash(index[::-1], include_order_and_names=True)  # reversed index
+        >>> hash(index[::-1], strict=True)  # reversed index
         'c6639d377897dd9353dc3e8b2968170d'
 
     """
-    if include_order_and_names:
+    if strict:
         if isinstance(obj, pd.Index):
             df = obj.to_frame()
         elif isinstance(obj, pd.Series):
