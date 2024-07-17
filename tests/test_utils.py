@@ -440,50 +440,153 @@ def test_expand_file_path(tmpdir, index, root, expected):
 
 
 @pytest.mark.parametrize(
-    "obj, expected",
+    "obj, strict, mutable, expected",
     [
         (
             audformat.filewise_index(),
+            False,
+            True,
+            "0",
+        ),
+        (
+            audformat.filewise_index(),
+            True,
+            True,
+            "890fa7e5864779b7c3bd85c9ede31657",
+        ),
+        (
+            audformat.segmented_index(),
+            False,
+            True,
             "0",
         ),
         (
             audformat.segmented_index(),
-            "0",
+            True,
+            True,
+            "10d5e40fca4e40c6c70ff64495916059",
         ),
         (
             audformat.filewise_index(["f1", "f2"]),
+            False,
+            True,
             "-4231615416436839963",
         ),
         (
+            audformat.filewise_index(["f1", "f2"]),
+            True,
+            False,
+            "0741235e2250e0fcd9ab7b64972f5047",
+        ),
+        (
             audformat.segmented_index(["f1", "f2"]),
+            False,
+            True,
             "-2363261461673824215",
         ),
         (
             audformat.segmented_index(["f1", "f2"]),
+            True,
+            False,
+            "0e99d54165e6cc2dad2737982853f8c7",
+        ),
+        (
+            audformat.segmented_index(["f1", "f2"]),
+            False,
+            True,
             "-2363261461673824215",
         ),
         (
             audformat.segmented_index(["f1", "f2"], [0, 0], [1, 1]),
+            False,
+            True,
             "-3831446135233514455",
         ),
         (
+            audformat.segmented_index(["f1", "f2"], [0, 0], [1, 1]),
+            True,
+            False,
+            "396fda484a46686b2b5c41b0ae9c94bd",
+        ),
+        (
             pd.Series([0, 1], audformat.filewise_index(["f1", "f2"])),
+            False,
+            True,
             "-8245754232361677810",
+        ),
+        (
+            pd.Series([0, 1], audformat.filewise_index(["f1", "f2"])),
+            True,
+            False,
+            "28c5f6feb0682079b127d8ce8debebe9",
         ),
         (
             pd.DataFrame(
                 {"a": [0, 1], "b": [2, 3]},
                 audformat.segmented_index(["f1", "f2"], [0, 0], [1, 1]),
             ),
+            False,
+            True,
             "-103439349488189352",
         ),
-        (pd.Index([0, 1], name="idx"), "6238072747940578789"),
-        (pd.Index([0, 1], name="name"), "6238072747940578789"),
+        (
+            pd.DataFrame(
+                {"a": [0, 1], "b": [2, 3]},
+                audformat.segmented_index(["f1", "f2"], [0, 0], [1, 1]),
+            ),
+            True,
+            False,
+            "69785e94447fab79f2b65b1dcb4a2122",
+        ),
+        (
+            pd.Index([0, 1], name="idx"),
+            False,
+            True,
+            "6238072747940578789",
+        ),
+        (
+            pd.Index([0, 1], name="idx"),
+            True,
+            False,
+            "a02406270880cde74e66c07278b765a0",
+        ),
+        (
+            pd.Index([0, 1], name="name"),
+            False,
+            True,
+            "6238072747940578789",
+        ),
+        (
+            pd.Index([0, 1], name="name"),
+            True,
+            False,
+            "7a8303866a35ececb4ae76a4aa050209",
+        ),
         (
             pd.MultiIndex.from_arrays(
                 [[0, 1], ["a", "b"]],
                 names=["idx1", "idx2"],
             ),
+            False,
+            True,
+            "8378370490910668918",
+        ),
+        (
+            pd.MultiIndex.from_arrays(
+                [[0, 1], ["a", "b"]],
+                names=["idx1", "idx2"],
+            ),
+            True,
+            False,
+            "be5373f6d8f801b902d8cf0e2f2a1914",
+        ),
+        (
+            pd.MultiIndex.from_arrays(
+                [[0, 1], ["a", "b"]],
+                names=["name1", "name2"],
+            ),
+            False,
+            True,
             "8378370490910668918",
         ),
         (
@@ -491,29 +594,65 @@ def test_expand_file_path(tmpdir, index, root, expected):
                 [[0, 1], ["a", "b"]],
                 names=["name1", "name2"],
             ),
-            "8378370490910668918",
+            True,
+            False,
+            "3726b3c39fc2c1453bb45a0460630ff7",
         ),
         (
             pd.Series([0, 1], name="series"),
+            False,
+            True,
+            "-7179254265801896228",
+        ),
+        (
+            pd.Series([0, 1], name="series"),
+            True,
+            False,
+            "ad0f9900c0e2f3954bde3abb6f4a9b61",
+        ),
+        (
+            pd.Series([0, 1], name="name"),
+            False,
+            True,
             "-7179254265801896228",
         ),
         (
             pd.Series([0, 1], name="name"),
+            True,
+            False,
+            "648314808f0b27e5c04479ba8509fc25",
+        ),
+        (
+            pd.DataFrame([0, 1], columns=["frame"]),
+            False,
+            True,
             "-7179254265801896228",
         ),
         (
             pd.DataFrame([0, 1], columns=["frame"]),
+            True,
+            False,
+            "36d9779e257319ff69515af6b4ade8ad",
+        ),
+        (
+            pd.DataFrame([0, 1], columns=["name"]),
+            False,
+            True,
             "-7179254265801896228",
         ),
         (
             pd.DataFrame([0, 1], columns=["name"]),
-            "-7179254265801896228",
+            True,
+            False,
+            "648314808f0b27e5c04479ba8509fc25",
         ),
         pytest.param(
             pd.DataFrame(
                 [0, 1, 2],
                 pd.Index([0, 1, 2], dtype="Int64"),
             ),
+            False,
+            True,
             "5440931770055407318",
             marks=pytest.mark.skipif(
                 pd.__version__ >= "2.2.0",
@@ -525,6 +664,8 @@ def test_expand_file_path(tmpdir, index, root, expected):
                 [0, 1, 2],
                 pd.Index([0, 1, 2], dtype="Int64"),
             ),
+            False,
+            True,
             "-5491649331962632325",
             marks=pytest.mark.skipif(
                 pd.__version__ < "2.2.0",
@@ -536,6 +677,8 @@ def test_expand_file_path(tmpdir, index, root, expected):
                 [0, 1, 2],
                 pd.Index([0, 1, 2], dtype="Int64"),
             ),
+            False,
+            True,
             "5440931770055407318",
             marks=pytest.mark.skipif(
                 pd.__version__ >= "2.2.0",
@@ -547,6 +690,8 @@ def test_expand_file_path(tmpdir, index, root, expected):
                 [0, 1, 2],
                 pd.Index([0, 1, 2], dtype="Int64"),
             ),
+            False,
+            True,
             "-5491649331962632325",
             marks=pytest.mark.skipif(
                 pd.__version__ < "2.2.0",
@@ -555,9 +700,14 @@ def test_expand_file_path(tmpdir, index, root, expected):
         ),
     ],
 )
-def test_hash(obj, expected):
-    assert utils.hash(obj) == expected
-    assert utils.hash(obj[::-1]) == expected
+def test_hash(obj, strict, mutable, expected):
+    md5 = utils.hash(obj, strict=strict)
+    reverse_md5 = utils.hash(obj[::-1], strict=strict)
+    assert md5 == expected
+    if mutable:
+        assert reverse_md5 == md5
+    else:
+        assert reverse_md5 != md5
 
 
 @pytest.mark.parametrize(

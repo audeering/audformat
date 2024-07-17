@@ -1,5 +1,6 @@
 import collections
 import errno
+import hashlib
 import os
 import platform
 import re
@@ -10,6 +11,7 @@ import iso639
 import iso3166
 import numpy as np
 import pandas as pd
+import pyarrow as pa
 
 import audeer
 import audiofile
@@ -664,10 +666,12 @@ def expand_file_path(
 
 def hash(
     obj: typing.Union[pd.Index, pd.Series, pd.DataFrame],
+    strict: bool = False,
 ) -> str:
     r"""Create hash from object.
 
-    Objects with the same elements
+    If ``strict`` is ``False``,
+    objects with the same elements
     produce the same hash string
     independent of the ordering of the elements,
     and level or column names.
@@ -676,29 +680,75 @@ def hash(
 
         If ``obj`` is a dataframe or series
         with data type ``"Int64"``,
+        and ``strict`` is ``False``,
         the returned hash value changes with ``pandas>=2.2.0``.
 
     Args:
         obj: object
+        strict: if ``True``,
+            the hash takes into account
+            the order of rows
+            and column/level names
 
     Returns:
-        hash string
+        hash string with 19 characters,
+        or 32 characters if ``strict`` is ``True``
 
     Examples:
         >>> index = filewise_index(["f1", "f2"])
         >>> hash(index)
         '-4231615416436839963'
+        >>> hash(index[::-1])  # reversed index
+        '-4231615416436839963'
         >>> y = pd.Series(0, index)
         >>> hash(y)
         '5251663970176285425'
+        >>> hash(index, strict=True)
+        '0741235e2250e0fcd9ab7b64972f5047'
+        >>> hash(index[::-1], strict=True)  # reversed index
+        'c6639d377897dd9353dc3e8b2968170d'
 
     """
-    # Convert to int64
-    # to enforce same behavior
-    # across different pandas versions,
-    # see
-    # https://github.com/pandas-dev/pandas/issues/55452
-    return str(pd.util.hash_pandas_object(obj).astype("int64").sum())
+    if strict:
+        if isinstance(obj, pd.Index):
+            df = obj.to_frame()
+        elif isinstance(obj, pd.Series):
+            df = obj.to_frame().reset_index()
+        else:
+            df = obj.reset_index()
+        # Handle column names and dtypes
+        table = pa.Table.from_pandas(df, preserve_index=False)
+        schema_str = table.schema.to_string(
+            # schema.metadata contains pandas related information,
+            # and the used pyarrow and pandas version,
+            # and needs to be excluded
+            show_field_metadata=False,
+            show_schema_metadata=False,
+        )
+        schema_md5 = hashlib.md5(schema_str.encode())
+        # Handle index, values, and row order
+        data_md5 = hashlib.md5()
+        for _, y in df.items():
+            # Convert every column to a numpy array,
+            # and hash its string representation
+            if y.dtype == "Int64":
+                # Enforce consistent conversion to numpy.array
+                # for integers across different pandas versions
+                # (since pandas 2.2.x, Int64 is converted to float if it contains <NA>)
+                y = y.astype("float")
+            data_md5.update(bytes(str(y.to_numpy()), "utf-8"))
+        md5 = hashlib.md5()
+        md5.update(schema_md5.digest())
+        md5.update(data_md5.digest())
+        md5 = md5.hexdigest()
+    else:
+        # Convert to int64
+        # to enforce same behavior
+        # across different pandas versions,
+        # see
+        # https://github.com/pandas-dev/pandas/issues/55452
+        md5 = str(pd.util.hash_pandas_object(obj).astype("int64").sum())
+    return md5
 
 
 def index_has_overlap(
