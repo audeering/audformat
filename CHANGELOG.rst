@@ -10,7 +10,7 @@ and this project adheres to `Semantic Versioning`_.
 Version 1.3.0 (2024-07-15)
 --------------------------
 
-* Added: ``include_order_and_names`` argument
+* Added: ``strict`` argument
   to ``audformat.utils.hash()``.
   If set to ``True``,
   the order of the data,
