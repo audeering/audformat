@@ -70,7 +70,7 @@
             
             
               <div class="version">
-                v1.2.0
+                v1.3.0
               </div>
             
           
@@ -167,7 +167,6 @@
 <span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>  <span class="c1"># allow typing without string</span>
 
 <span class="kn">import</span> <span class="nn">copy</span>
-<span class="kn">import</span> <span class="nn">hashlib</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">pickle</span>
 <span class="kn">import</span> <span class="nn">typing</span>
@@ -184,6 +183,7 @@
 <span class="kn">from</span> <span class="nn">audformat.core.column</span> <span class="kn">import</span> <span class="n">Column</span>
 <span class="kn">from</span> <span class="nn">audformat.core.common</span> <span class="kn">import</span> <span class="n">HeaderBase</span>
 <span class="kn">from</span> <span class="nn">audformat.core.common</span> <span class="kn">import</span> <span class="n">HeaderDict</span>
+<span class="kn">from</span> <span class="nn">audformat.core.common</span> <span class="kn">import</span> <span class="n">to_pandas_dtype</span>
 <span class="kn">from</span> <span class="nn">audformat.core.errors</span> <span class="kn">import</span> <span class="n">BadIdError</span>
 <span class="kn">from</span> <span class="nn">audformat.core.index</span> <span class="kn">import</span> <span class="n">filewise_index</span>
 <span class="kn">from</span> <span class="nn">audformat.core.index</span> <span class="kn">import</span> <span class="n">index_type</span>
@@ -745,12 +745,34 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
-        <span class="n">storage_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">define</span><span class="o">.</span><span class="n">TableStorageFormat</span><span class="o">.</span><span class="n">CSV</span><span class="p">,</span>
+        <span class="n">storage_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">define</span><span class="o">.</span><span class="n">TableStorageFormat</span><span class="o">.</span><span class="n">PARQUET</span><span class="p">,</span>
         <span class="n">update_other_formats</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Save table data to disk.</span>
 
 <span class="sd">        Existing files will be overwritten.</span>
+
+<span class="sd">        When using ``&quot;parquet&quot;`` as ``storage_format``</span>
+<span class="sd">        a hash,</span>
+<span class="sd">        based on the content of the table,</span>
+<span class="sd">        is stored under the key ``b&quot;hash&quot;``</span>
+<span class="sd">        in the metadata of the schema of the parquet file.</span>
+<span class="sd">        This provides a deterministic hash for the file,</span>
+<span class="sd">        as md5 sums of parquet files,</span>
+<span class="sd">        containing identical information,</span>
+<span class="sd">        often differ.</span>
+<span class="sd">        Reasons include factors like the library</span>
+<span class="sd">        that wrote the parquet file,</span>
+<span class="sd">        the chosen compression codec</span>
+<span class="sd">        and metadata written by the library.</span>
+
+<span class="sd">        The hash can be accessed with ``pyarrow`` by::</span>
+
+<span class="sd">            pyarrow.parquet.read_schema(f&quot;{path}.parquet&quot;).metadata[b&quot;hash&quot;].decode()</span>
+
+<span class="sd">        The hash is used by :mod:`audb`</span>
+<span class="sd">        when publishing a database</span>
+<span class="sd">        to track changes of database files.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            path: file path without extension</span>
@@ -1024,6 +1046,8 @@
 <span class="sd">        than the method applied here.</span>
 <span class="sd">        We first load the CSV file as a :class:`pyarrow.Table`</span>
 <span class="sd">        and convert it to a dataframe afterwards.</span>
+<span class="sd">        If this fails,</span>
+<span class="sd">        we fall back to :func:`pandas.read_csv()`.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            path: path to table, including file extension</span>
@@ -1031,18 +1055,54 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">levels</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_levels_and_dtypes</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
         <span class="n">columns</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
-        <span class="n">table</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span>
-            <span class="n">path</span><span class="p">,</span>
-            <span class="n">read_options</span><span class="o">=</span><span class="n">csv</span><span class="o">.</span><span class="n">ReadOptions</span><span class="p">(</span>
-                <span class="n">column_names</span><span class="o">=</span><span class="n">levels</span> <span class="o">+</span> <span class="n">columns</span><span class="p">,</span>
-                <span class="n">skip_rows</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-            <span class="p">),</span>
-            <span class="n">convert_options</span><span class="o">=</span><span class="n">csv</span><span class="o">.</span><span class="n">ConvertOptions</span><span class="p">(</span>
-                <span class="n">column_types</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_pyarrow_csv_schema</span><span class="p">(),</span>
-                <span class="n">strings_can_be_null</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-            <span class="p">),</span>
-        <span class="p">)</span>
-        <span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pyarrow_table_to_dataframe</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">from_csv</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">table</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span>
+                <span class="n">path</span><span class="p">,</span>
+                <span class="n">read_options</span><span class="o">=</span><span class="n">csv</span><span class="o">.</span><span class="n">ReadOptions</span><span class="p">(</span>
+                    <span class="n">column_names</span><span class="o">=</span><span class="n">levels</span> <span class="o">+</span> <span class="n">columns</span><span class="p">,</span>
+                    <span class="n">skip_rows</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                <span class="p">),</span>
+                <span class="n">convert_options</span><span class="o">=</span><span class="n">csv</span><span class="o">.</span><span class="n">ConvertOptions</span><span class="p">(</span>
+                    <span class="n">column_types</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_pyarrow_csv_schema</span><span class="p">(),</span>
+                    <span class="n">strings_can_be_null</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="p">),</span>
+            <span class="p">)</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pyarrow_table_to_dataframe</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">from_csv</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">pa</span><span class="o">.</span><span class="n">lib</span><span class="o">.</span><span class="n">ArrowInvalid</span><span class="p">:</span>
+            <span class="c1"># If pyarrow fails to parse the CSV file</span>
+            <span class="c1"># https://github.com/audeering/audformat/issues/449</span>
+
+            <span class="c1"># Collect csv file columns and data types.</span>
+            <span class="c1"># index</span>
+            <span class="n">columns_and_dtypes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_levels_and_dtypes</span>
+            <span class="c1"># columns</span>
+            <span class="k">for</span> <span class="n">column_id</span><span class="p">,</span> <span class="n">column</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">column</span><span class="o">.</span><span class="n">scheme_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">columns_and_dtypes</span><span class="p">[</span><span class="n">column_id</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span>
+                        <span class="n">column</span><span class="o">.</span><span class="n">scheme_id</span>
+                    <span class="p">]</span><span class="o">.</span><span class="n">dtype</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">columns_and_dtypes</span><span class="p">[</span><span class="n">column_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">define</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">OBJECT</span>
+
+            <span class="c1"># Replace data type with converter for dates or timestamps</span>
+            <span class="n">converters</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">dtypes_wo_converters</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">column</span><span class="p">,</span> <span class="n">dtype</span> <span class="ow">in</span> <span class="n">columns_and_dtypes</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">dtype</span> <span class="o">==</span> <span class="n">define</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">DATE</span><span class="p">:</span>
+                    <span class="n">converters</span><span class="p">[</span><span class="n">column</span><span class="p">]</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">dtype</span> <span class="o">==</span> <span class="n">define</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">TIME</span><span class="p">:</span>
+                    <span class="n">converters</span><span class="p">[</span><span class="n">column</span><span class="p">]</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_timedelta</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">dtypes_wo_converters</span><span class="p">[</span><span class="n">column</span><span class="p">]</span> <span class="o">=</span> <span class="n">to_pandas_dtype</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span>
+
+            <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span>
+                <span class="n">path</span><span class="p">,</span>
+                <span class="n">usecols</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">columns_and_dtypes</span><span class="o">.</span><span class="n">keys</span><span class="p">()),</span>
+                <span class="n">dtype</span><span class="o">=</span><span class="n">dtypes_wo_converters</span><span class="p">,</span>
+                <span class="n">index_col</span><span class="o">=</span><span class="n">levels</span><span class="p">,</span>
+                <span class="n">converters</span><span class="o">=</span><span class="n">converters</span><span class="p">,</span>
+                <span class="n">float_precision</span><span class="o">=</span><span class="s2">&quot;round_trip&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_df</span> <span class="o">=</span> <span class="n">df</span>
 
@@ -1303,13 +1363,11 @@
         <span class="n">table</span> <span class="o">=</span> <span class="n">pa</span><span class="o">.</span><span class="n">Table</span><span class="o">.</span><span class="n">from_pandas</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(),</span> <span class="n">preserve_index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
         <span class="c1"># Create hash of table</span>
-        <span class="n">table_hash</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">md5</span><span class="p">()</span>
-        <span class="n">table_hash</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">_schema_hash</span><span class="p">(</span><span class="n">table</span><span class="p">))</span>
-        <span class="n">table_hash</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">_dataframe_hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">))</span>
+        <span class="n">table_hash</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="c1"># Store in metadata of file,</span>
         <span class="c1"># see https://stackoverflow.com/a/58978449</span>
-        <span class="n">metadata</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;hash&quot;</span><span class="p">:</span> <span class="n">table_hash</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()}</span>
+        <span class="n">metadata</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;hash&quot;</span><span class="p">:</span> <span class="n">table_hash</span><span class="p">}</span>
         <span class="n">table</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">replace_schema_metadata</span><span class="p">({</span><span class="o">**</span><span class="n">metadata</span><span class="p">,</span> <span class="o">**</span><span class="n">table</span><span class="o">.</span><span class="n">schema</span><span class="o">.</span><span class="n">metadata</span><span class="p">})</span>
 
         <span class="n">parquet</span><span class="o">.</span><span class="n">write_table</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">compression</span><span class="o">=</span><span class="s2">&quot;snappy&quot;</span><span class="p">)</span>
@@ -2010,40 +2068,6 @@
         <span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">_dataframe_hash</span><span class="p">(</span><span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Hash a dataframe.</span>
-
-<span class="sd">    The hash value takes into account:</span>
-
-<span class="sd">    * index of dataframe</span>
-<span class="sd">    * values of the dataframe</span>
-<span class="sd">    * order of dataframe rows</span>
-
-<span class="sd">    It does not consider:</span>
-
-<span class="sd">    * column names of dataframe</span>
-<span class="sd">    * dtypes of dataframe</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        df: dataframe</span>
-
-<span class="sd">    Returns:</span>
-<span class="sd">        MD5 hash in bytes</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">md5</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">md5</span><span class="p">()</span>
-    <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-        <span class="c1"># Convert every column to a numpy array,</span>
-        <span class="c1"># and hash its string representation</span>
-        <span class="k">if</span> <span class="n">y</span><span class="o">.</span><span class="n">dtype</span> <span class="o">==</span> <span class="s2">&quot;Int64&quot;</span><span class="p">:</span>
-            <span class="c1"># Enforce consistent conversion to numpy.array</span>
-            <span class="c1"># for integers across different pandas versions</span>
-            <span class="c1"># (since pandas 2.2.x, Int64 is converted to float if it contains &lt;NA&gt;)</span>
-            <span class="n">y</span> <span class="o">=</span> <span class="n">y</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;float&quot;</span><span class="p">)</span>
-        <span class="n">md5</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="nb">bytes</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()),</span> <span class="s2">&quot;utf-8&quot;</span><span class="p">))</span>
-    <span class="k">return</span> <span class="n">md5</span><span class="o">.</span><span class="n">digest</span><span class="p">()</span>
-
-
 <span class="k">def</span> <span class="nf">_maybe_convert_dtype_to_string</span><span class="p">(</span>
     <span class="n">index</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">:</span>
@@ -2066,26 +2090,6 @@
         <span class="k">for</span> <span class="n">scheme</span> <span class="ow">in</span> <span class="n">table</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
             <span class="k">if</span> <span class="n">table</span><span class="o">.</span><span class="n">_id</span> <span class="o">==</span> <span class="n">scheme</span><span class="o">.</span><span class="n">labels</span><span class="p">:</span>
                 <span class="n">scheme</span><span class="o">.</span><span class="n">replace_labels</span><span class="p">(</span><span class="n">table</span><span class="o">.</span><span class="n">_id</span><span class="p">)</span>
-
-
-<span class="k">def</span> <span class="nf">_schema_hash</span><span class="p">(</span><span class="n">table</span><span class="p">:</span> <span class="n">pa</span><span class="o">.</span><span class="n">Table</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Hash pyarrow table schema.</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        table: pyarrow table</span>
-
-<span class="sd">    Returns:</span>
-<span class="sd">        MD5 hash in bytes</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">schema_str</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">schema</span><span class="o">.</span><span class="n">to_string</span><span class="p">(</span>
-        <span class="c1"># schema.metadata contains pandas related information,</span>
-        <span class="c1"># and the used pyarrow and pandas version,</span>
-        <span class="c1"># and needs to be excluded</span>
-        <span class="n">show_field_metadata</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">show_schema_metadata</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-    <span class="p">)</span>
-    <span class="k">return</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">md5</span><span class="p">(</span><span class="n">schema_str</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span><span class="o">.</span><span class="n">digest</span><span class="p">()</span>
 </pre></div>
 
            </div>
@@ -2101,7 +2105,7 @@
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2024/06/25 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2024/07/18 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>

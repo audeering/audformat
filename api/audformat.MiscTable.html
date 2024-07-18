@@ -72,7 +72,7 @@
             
             
               <div class="version">
-                v1.2.0
+                v1.3.0
               </div>
             
           
@@ -800,9 +800,29 @@ and ask to delete one of the files.</p>
 <h2>save()<a class="headerlink" href="#save" title="Permalink to this heading">¶</a></h2>
 <dl class="py method">
 <dt class="sig sig-object py" id="audformat.MiscTable.save">
-<span class="sig-prename descclassname"><span class="pre">MiscTable.</span></span><span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">storage_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'csv'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">update_other_formats</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#audformat.MiscTable.save" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">MiscTable.</span></span><span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">storage_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'parquet'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">update_other_formats</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#audformat.MiscTable.save" title="Permalink to this definition">¶</a></dt>
 <dd><p>Save table data to disk.</p>
 <p>Existing files will be overwritten.</p>
+<p>When using <code class="docutils literal notranslate"><span class="pre">&quot;parquet&quot;</span></code> as <code class="docutils literal notranslate"><span class="pre">storage_format</span></code>
+a hash,
+based on the content of the table,
+is stored under the key <code class="docutils literal notranslate"><span class="pre">b&quot;hash&quot;</span></code>
+in the metadata of the schema of the parquet file.
+This provides a deterministic hash for the file,
+as md5 sums of parquet files,
+containing identical information,
+often differ.
+Reasons include factors like the library
+that wrote the parquet file,
+the chosen compression codec
+and metadata written by the library.</p>
+<p>The hash can be accessed with <code class="docutils literal notranslate"><span class="pre">pyarrow</span></code> by:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pyarrow</span><span class="o">.</span><span class="n">parquet</span><span class="o">.</span><span class="n">read_schema</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">.parquet&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="sa">b</span><span class="s2">&quot;hash&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>The hash is used by <code class="xref py py-mod docutils literal notranslate"><span class="pre">audb</span></code>
+when publishing a database
+to track changes of database files.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -959,7 +979,7 @@ the value of the last table in the list is kept.</p>
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2024/06/25 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2024/07/18 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>

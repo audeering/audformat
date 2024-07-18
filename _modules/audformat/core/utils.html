@@ -70,7 +70,7 @@
             
             
               <div class="version">
-                v1.2.0
+                v1.3.0
               </div>
             
           
@@ -166,6 +166,7 @@
   <h1>Source code for audformat.core.utils</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">collections</span>
 <span class="kn">import</span> <span class="nn">errno</span>
+<span class="kn">import</span> <span class="nn">hashlib</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">platform</span>
 <span class="kn">import</span> <span class="nn">re</span>
@@ -176,6 +177,7 @@
 <span class="kn">import</span> <span class="nn">iso3166</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">pyarrow</span> <span class="k">as</span> <span class="nn">pa</span>
 
 <span class="kn">import</span> <span class="nn">audeer</span>
 <span class="kn">import</span> <span class="nn">audiofile</span>
@@ -830,10 +832,12 @@
 
 <div class="viewcode-block" id="hash"><a class="viewcode-back" href="../../../api/audformat.utils.hash.html#audformat.utils.hash">[docs]</a><span class="k">def</span> <span class="nf">hash</span><span class="p">(</span>
     <span class="n">obj</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">],</span>
+    <span class="n">strict</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Create hash from object.</span>
 
-<span class="sd">    Objects with the same elements</span>
+<span class="sd">    If ``strict`` is ``False``,</span>
+<span class="sd">    objects with the same elements</span>
 <span class="sd">    produce the same hash string</span>
 <span class="sd">    independent of the ordering of the elements,</span>
 <span class="sd">    and level or column names.</span>
@@ -842,29 +846,75 @@
 
 <span class="sd">        If ``obj`` is a dataframe or series</span>
 <span class="sd">        with data type ``&quot;Int64&quot;``,</span>
+<span class="sd">        and ``strict`` is ``False``,</span>
 <span class="sd">        the returned hash value changes with ``pandas&gt;=2.2.0``.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        obj: object</span>
+<span class="sd">        strict: if ``True``,</span>
+<span class="sd">            the hash takes into account</span>
+<span class="sd">            the order of rows</span>
+<span class="sd">            and column/level names</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        hash string</span>
+<span class="sd">        hash string with 19 characters,</span>
+<span class="sd">        or 32 characters if ``strict`` is ``True``</span>
 
 <span class="sd">    Examples:</span>
 <span class="sd">        &gt;&gt;&gt; index = filewise_index([&quot;f1&quot;, &quot;f2&quot;])</span>
 <span class="sd">        &gt;&gt;&gt; hash(index)</span>
 <span class="sd">        &#39;-4231615416436839963&#39;</span>
+<span class="sd">        &gt;&gt;&gt; hash(index[::-1])  # reversed index</span>
+<span class="sd">        &#39;-4231615416436839963&#39;</span>
 <span class="sd">        &gt;&gt;&gt; y = pd.Series(0, index)</span>
 <span class="sd">        &gt;&gt;&gt; hash(y)</span>
 <span class="sd">        &#39;5251663970176285425&#39;</span>
+<span class="sd">        &gt;&gt;&gt; hash(index, strict=True)</span>
+<span class="sd">        &#39;0741235e2250e0fcd9ab7b64972f5047&#39;</span>
+<span class="sd">        &gt;&gt;&gt; hash(index[::-1], strict=True)  # reversed index</span>
+<span class="sd">        &#39;c6639d377897dd9353dc3e8b2968170d&#39;</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># Convert to int64</span>
-    <span class="c1"># to enforce same behavior</span>
-    <span class="c1"># across different pandas versions,</span>
-    <span class="c1"># see</span>
-    <span class="c1"># https://github.com/pandas-dev/pandas/issues/55452</span>
-    <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">hash_pandas_object</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;int64&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span></div>
+    <span class="k">if</span> <span class="n">strict</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">):</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">to_frame</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">):</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">to_frame</span><span class="p">()</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+        <span class="c1"># Handle column names and dtypes</span>
+        <span class="n">table</span> <span class="o">=</span> <span class="n">pa</span><span class="o">.</span><span class="n">Table</span><span class="o">.</span><span class="n">from_pandas</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">preserve_index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">schema_str</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">schema</span><span class="o">.</span><span class="n">to_string</span><span class="p">(</span>
+            <span class="c1"># schema.metadata contains pandas related information,</span>
+            <span class="c1"># and the used pyarrow and pandas version,</span>
+            <span class="c1"># and needs to be excluded</span>
+            <span class="n">show_field_metadata</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">show_schema_metadata</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">schema_md5</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">md5</span><span class="p">(</span><span class="n">schema_str</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
+        <span class="c1"># Handle index, values, and row order</span>
+        <span class="n">data_md5</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">md5</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="c1"># Convert every column to a numpy array,</span>
+            <span class="c1"># and hash its string representation</span>
+            <span class="k">if</span> <span class="n">y</span><span class="o">.</span><span class="n">dtype</span> <span class="o">==</span> <span class="s2">&quot;Int64&quot;</span><span class="p">:</span>
+                <span class="c1"># Enforce consistent conversion to numpy.array</span>
+                <span class="c1"># for integers across different pandas versions</span>
+                <span class="c1"># (since pandas 2.2.x, Int64 is converted to float if it contains &lt;NA&gt;)</span>
+                <span class="n">y</span> <span class="o">=</span> <span class="n">y</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;float&quot;</span><span class="p">)</span>
+            <span class="n">data_md5</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="nb">bytes</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()),</span> <span class="s2">&quot;utf-8&quot;</span><span class="p">))</span>
+        <span class="n">md5</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">md5</span><span class="p">()</span>
+        <span class="n">md5</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">schema_md5</span><span class="o">.</span><span class="n">digest</span><span class="p">())</span>
+        <span class="n">md5</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">data_md5</span><span class="o">.</span><span class="n">digest</span><span class="p">())</span>
+        <span class="n">md5</span> <span class="o">=</span> <span class="n">md5</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># Convert to int64</span>
+        <span class="c1"># to enforce same behavior</span>
+        <span class="c1"># across different pandas versions,</span>
+        <span class="c1"># see</span>
+        <span class="c1"># https://github.com/pandas-dev/pandas/issues/55452</span>
+        <span class="n">md5</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">hash_pandas_object</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;int64&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
+    <span class="k">return</span> <span class="n">md5</span></div>
 
 
 <div class="viewcode-block" id="index_has_overlap"><a class="viewcode-back" href="../../../api/audformat.utils.index_has_overlap.html#audformat.utils.index_has_overlap">[docs]</a><span class="k">def</span> <span class="nf">index_has_overlap</span><span class="p">(</span>
@@ -2369,7 +2419,7 @@
         
         
         
-          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2024/06/25 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org/en/master/">Sphinx</a> on 2024/07/18 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
