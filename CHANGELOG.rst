@@ -7,7 +7,7 @@ The format is based on `Keep a Changelog`_,
 and this project adheres to `Semantic Versioning`_.
 
 
-Version 1.3.0 (2024-07-17)
+Version 1.3.0 (2024-07-18)
 --------------------------
 
 * Added: ``strict`` argument
