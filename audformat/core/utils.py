@@ -8,6 +8,7 @@ import sys
 import typing as typing
 
 import iso639
+from iso639.exceptions import InvalidLanguageValue
 import iso3166
 import numpy as np
 import pandas as pd
@@ -1288,31 +1289,12 @@ def map_language(language: str) -> str:
         'eng'
 
     """
-    result = None
-
-    if len(language) == 2:
-        try:
-            result = iso639.languages.get(alpha2=language.lower())
-        except KeyError:
-            pass
-    elif len(language) == 3:
-        try:
-            result = iso639.languages.get(part3=language.lower())
-        except KeyError:
-            pass
-    else:
-        try:
-            result = iso639.languages.get(name=language.title())
-        except KeyError:
-            pass
-
-    if result is not None:
-        result = result.part3
-
-    if not result:
+    try:
+        return iso639.Lang(
+            language.title() if len(language) > 3 else language.lower()
+        ).pt3
+    except InvalidLanguageValue:
         raise ValueError(f"'{language}' is not supported by ISO 639-3.")
-
-    return result
 
 
 def read_csv(
