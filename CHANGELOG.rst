@@ -7,6 +7,14 @@ The format is based on `Keep a Changelog`_,
 and this project adheres to `Semantic Versioning`_.
 
 
+Version 1.3.1 (2024-09-16)
+--------------------------
+
+* Changed: replace not maintained ``iso-639`` dependency
+  with ``iso639-lang``
+* Fixed: ensure ``poetry`` can manage ``audformat``
+
+
 Version 1.3.0 (2024-07-18)
 --------------------------
 
