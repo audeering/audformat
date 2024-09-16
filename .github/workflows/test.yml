@@ -25,6 +25,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+      with:
+        fetch-tags: true
 
     - name: Cache emodb
       uses: actions/cache@v4
