@@ -1273,7 +1273,7 @@ def map_language(language: str) -> str:
 
     `ISO 639-3`_ is an international standard for language codes.
     It defines three-letter codes for identifying languages,
-    with an aim to cover all known natural languages.
+    with the aim to cover all known languages.
 
     .. _ISO 639-3: https://iso639-3.sil.org/code_tables/639/data/
 
