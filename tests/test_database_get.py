@@ -23,6 +23,7 @@ def mono_db(tmpdir):
     db.schemes["age"] = audformat.Scheme("int", minimum=0)
     db.schemes["height"] = audformat.Scheme("float")
     db.schemes["int"] = audformat.Scheme("int")
+    db.schemes["partial"] = audformat.Scheme("str")
     db.schemes["rating"] = audformat.Scheme("int", labels=[0, 1, 2])
     db.schemes["regression"] = audformat.Scheme("float")
     db.schemes["selection"] = audformat.Scheme("int", labels=[0, 1])
@@ -103,6 +104,8 @@ def mono_db(tmpdir):
     db["files.sub"]["text"].set("a")
     db["files.sub"]["numbers"] = audformat.Column(scheme_id="int")
     db["files.sub"]["numbers"].set(0)
+    db["files.sub"]["partial"] = audformat.Column(scheme_id="partial")
+    db["files.sub"]["partial"].set("a")
 
     index = audformat.filewise_index(["f1.wav", "f3.wav"])
     db["other"] = audformat.Table(index)
@@ -559,7 +562,7 @@ def wrong_scheme_labels_db(tmpdir):
                         name="regression",
                     ),
                     pd.Series(
-                        ["s1", "s1", "s1", None],
+                        ["s1", "s1", "s1", "s2"],
                         index=audformat.segmented_index(
                             ["f1.wav", "f1.wav", "f1.wav", "f2.wav"],
                             [0, 0.1, 0.3, 0],
@@ -570,6 +573,36 @@ def wrong_scheme_labels_db(tmpdir):
                             ordered=False,
                         ),
                         name="speaker",
+                    ),
+                ],
+                axis=1,
+            ),
+        ),
+        (
+            "mono_db",
+            "regression",
+            ["partial"],
+            pd.concat(
+                [
+                    pd.Series(
+                        [0.3, 0.2, 0.6, 0.4],
+                        index=audformat.segmented_index(
+                            ["f1.wav", "f1.wav", "f1.wav", "f2.wav"],
+                            [0, 0.1, 0.3, 0],
+                            [0.2, 0.2, 0.5, 0.7],
+                        ),
+                        dtype="float",
+                        name="regression",
+                    ),
+                    pd.Series(
+                        ["a", "a", "a", None],
+                        index=audformat.segmented_index(
+                            ["f1.wav", "f1.wav", "f1.wav", "f2.wav"],
+                            [0, 0.1, 0.3, 0],
+                            [0.2, 0.2, 0.5, 0.7],
+                        ),
+                        dtype="string",
+                        name="partial",
                     ),
                 ],
                 axis=1,
