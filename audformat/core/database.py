@@ -877,6 +877,9 @@ class Database(HeaderBase):
                 print(f"{obj=}")
                 print(f"{obj.index.get_level_values(define.IndexField.FILE)=}")
                 common_files = obj.index.get_level_values(define.IndexField.FILE)
+                # Problem of next line:
+                # squeezes [f1, f1, f2] to [f1, f2]
+                # so we need to separate intersection from listing files
                 # common_files = utils.intersect([additional_obj.index, files])
                 print(f"{files=}")
                 additional_obj = additional_obj.loc[files]
