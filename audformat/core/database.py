@@ -30,6 +30,8 @@ from audformat.core.errors import BadIdError
 from audformat.core.errors import BadKeyError
 from audformat.core.errors import TableExistsError
 from audformat.core.index import filewise_index
+from audformat.core.index import is_filewise_index
+from audformat.core.index import is_segmented_index
 from audformat.core.media import Media
 from audformat.core.rater import Rater
 from audformat.core.scheme import Scheme
@@ -870,6 +872,18 @@ class Database(HeaderBase):
                     original_column_names=original_column_names,
                     aggregate_function=aggregate_function,
                 )
+            # Expand filewise labels to segments
+            if is_segmented_index(obj) and is_filewise_index(additional_obj):
+                print(f"{obj=}")
+                print(f"{obj.index.get_level_values(define.IndexField.FILE)=}")
+                common_files = obj.index.get_level_values(define.IndexField.FILE)
+                # common_files = utils.intersect([additional_obj.index, files])
+                print(f"{files=}")
+                additional_obj = additional_obj.loc[files]
+                print(f"{additional_obj=}")
+                print(f"{obj.loc[files]=}")
+                print(f"{obj.loc[files].index=}")
+                additional_obj.index = obj.loc[files].index
             objs.append(additional_obj)
         if len(objs) > 1:
             obj = utils.concat(objs)
