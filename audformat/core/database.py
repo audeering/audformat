@@ -541,7 +541,11 @@ class Database(HeaderBase):
 
             >>> import audb
             >>> db = audb.load(
-            ...     "emodb", version="1.4.1", only_metadata=True, full_path=False, verbose=False
+            ...     "emodb",
+            ...     version="1.4.1",
+            ...     only_metadata=True,
+            ...     full_path=False,
+            ...     verbose=False,
             ... )
             >>> db.get("emotion").head()
                                emotion
