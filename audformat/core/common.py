@@ -1,10 +1,11 @@
 from __future__ import annotations
 
 from collections import OrderedDict
+from collections.abc import Callable
+from collections.abc import Sequence
 import inspect
 import os
 import textwrap
-import typing
 
 import oyaml as yaml
 import pandas as pd
@@ -74,8 +75,8 @@ class HeaderDict(OrderedDict):
         *args,
         sort_by_key: bool = True,
         value_type: type = None,
-        get_callback: typing.Callable = None,
-        set_callback: typing.Callable = None,
+        get_callback: Callable = None,
+        set_callback: Callable = None,
         **kwargs,
     ):
         self.sort_by_key = sort_by_key
@@ -225,7 +226,7 @@ class HeaderBase:
     def from_dict(
         self,
         d: dict,
-        ignore_keys: typing.Sequence[str] = None,
+        ignore_keys: Sequence[str] = None,
     ):
         r"""Deserialize object from dictionary.
 

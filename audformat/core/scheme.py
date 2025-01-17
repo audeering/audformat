@@ -1,7 +1,8 @@
+from __future__ import annotations
+
 import datetime
 import random
 import string
-import typing
 
 import pandas as pd
 
@@ -107,9 +108,9 @@ class Scheme(common.HeaderBase):
         self,
         dtype: str = None,
         *,
-        labels: typing.Union[dict, list, str] = None,
-        minimum: typing.Union[int, float] = None,
-        maximum: typing.Union[int, float] = None,
+        labels: dict | list | str = None,
+        minimum: int | float = None,
+        maximum: int | float = None,
         description: str = None,
         meta: dict = None,
     ):
@@ -269,10 +270,7 @@ class Scheme(common.HeaderBase):
 
     def to_pandas_dtype(
         self,
-    ) -> typing.Union[
-        str,
-        pd.api.types.CategoricalDtype,
-    ]:
+    ) -> str | pd.api.types.CategoricalDtype:
         r"""Convert data type to :mod:`pandas` data type.
 
         If ``labels`` is not ``None``, :class:`pandas.CategoricalDtype` is
@@ -303,7 +301,7 @@ class Scheme(common.HeaderBase):
 
     def replace_labels(
         self,
-        labels: typing.Union[dict, list, str],
+        labels: dict | list | str,
     ):
         r"""Replace labels.
 
@@ -390,7 +388,7 @@ class Scheme(common.HeaderBase):
 
     def _check_labels(
         self,
-        labels: typing.Union[dict, list, str],
+        labels: dict | list | str,
     ):
         r"""Raise label related errors."""
         if not isinstance(labels, (dict, list, str)):
@@ -443,7 +441,7 @@ class Scheme(common.HeaderBase):
 
     def _dtype_from_labels(
         self,
-        labels: typing.Union[dict, list, str],
+        labels: dict | list | str,
     ) -> str:
         r"""Derive audformat dtype from labels."""
         if isinstance(labels, str):
@@ -471,7 +469,7 @@ class Scheme(common.HeaderBase):
 
     def _labels_to_dict(
         self,
-        labels: typing.Union[dict, list, str] = None,
+        labels: dict | list | str = None,
     ) -> dict:
         r"""Return actual labels as dict."""
         if labels is None:
@@ -487,12 +485,12 @@ class Scheme(common.HeaderBase):
 
     def _labels_to_list(
         self,
-        labels: typing.Union[dict, list, str] = None,
+        labels: dict | list | str = None,
     ) -> list:
         r"""Convert labels to actual labels as list."""
         return list(self._labels_to_dict(labels))
 
-    def __contains__(self, item: typing.Any) -> bool:
+    def __contains__(self, item: object) -> bool:
         r"""Check if scheme contains data type of item.
 
         ``None``, ``NaT`` and ``NaN`` always match

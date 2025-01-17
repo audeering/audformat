@@ -1,13 +1,16 @@
 from __future__ import annotations
 
 import collections
+from collections.abc import Callable
+from collections.abc import Iterator
+from collections.abc import MutableMapping
+from collections.abc import Sequence
 import errno
 import hashlib
 import os
 import platform
 import re
 import sys
-import typing as typing
 
 import iso639
 from iso639.exceptions import InvalidLanguageValue
@@ -39,10 +42,10 @@ if platform.system() in ["Windows"]:  # pragma: no cover
 
 
 def concat(
-    objs: typing.Sequence[pd.Series | pd.DataFrame],
+    objs: Sequence[pd.Series | pd.DataFrame],
     *,
     overwrite: bool = False,
-    aggregate_function: typing.Callable[[pd.Series], typing.Any] = None,
+    aggregate_function: Callable[[pd.Series], object] = None,
     aggregate_strategy: str = "mismatch",
 ) -> pd.Series | pd.DataFrame:
     r"""Concatenate objects.
@@ -425,7 +428,7 @@ def concat(
 
 
 def difference(
-    objs: typing.Sequence[pd.Index],
+    objs: Sequence[pd.Index],
 ) -> pd.Index:
     r"""Difference of index objects.
 
@@ -805,7 +808,7 @@ def index_has_overlap(
 
 
 def intersect(
-    objs: typing.Sequence[pd.Index],
+    objs: Sequence[pd.Index],
 ) -> pd.Index:
     r"""Intersect index objects.
 
@@ -941,7 +944,7 @@ def intersect(
 
 
 def is_index_alike(
-    objs: typing.Sequence[pd.Index | pd.Series | pd.DataFrame],
+    objs: Sequence[pd.Index | pd.Series | pd.DataFrame],
 ) -> bool:
     r"""Check if index objects are alike.
 
@@ -998,7 +1001,7 @@ def is_index_alike(
 
 def iter_by_file(
     obj: (pd.Index | pd.Series | pd.DataFrame),
-) -> typing.Iterator[
+) -> Iterator[
     tuple[
         str,
         pd.Index | pd.Series | pd.DataFrame,
@@ -1051,7 +1054,7 @@ def iter_by_file(
 
 
 def join_labels(
-    labels: typing.Sequence[list | dict],
+    labels: Sequence[list | dict],
 ) -> list | dict:
     r"""Combine scheme labels.
 
@@ -1124,7 +1127,7 @@ def join_labels(
 
 
 def join_schemes(
-    dbs: typing.Sequence[Database],
+    dbs: Sequence[Database],
     scheme_id: str,
 ):
     r"""Join and update scheme of databases.
@@ -1205,7 +1208,7 @@ def map_country(country: str) -> str:
 
 def map_file_path(
     index: pd.Index,
-    func: typing.Callable[[str], str],
+    func: Callable[[str], str],
 ) -> pd.Index:
     r"""Apply callable to file path in index.
 
@@ -1697,7 +1700,7 @@ def to_segmented_index(
     obj: pd.Index | pd.Series | pd.DataFrame,
     *,
     allow_nat: bool = True,
-    files_duration: typing.MutableMapping[str, pd.Timedelta] = None,
+    files_duration: MutableMapping[str, pd.Timedelta] = None,
     root: str = None,
     num_workers: int | None = 1,
     verbose: bool = False,
@@ -1846,7 +1849,7 @@ UNION_MAX_INDEX_LEN_THRES = 500
 
 
 def union(
-    objs: typing.Sequence[pd.Index],
+    objs: Sequence[pd.Index],
 ) -> pd.Index:
     r"""Create union of index objects.
 
@@ -2004,7 +2007,7 @@ def union(
 
 def _alike_index(
     index: pd.Index,
-    data: typing.Sequence = [],
+    data: Sequence = [],
 ) -> pd.Index:
     if isinstance(index, pd.MultiIndex):
         return set_index_dtypes(
@@ -2020,7 +2023,7 @@ def _alike_index(
 
 
 def _assert_index_alike(
-    objs: typing.Sequence[pd.Index | pd.Series | pd.DataFrame],
+    objs: Sequence[pd.Index | pd.Series | pd.DataFrame],
 ):
     r"""Raise if index objects are not alike.
 
@@ -2112,8 +2115,8 @@ def _levels(index) -> list[str]:
 
 
 def _maybe_convert_filewise_index(
-    objs: typing.Sequence[pd.Index | pd.Series | pd.DataFrame],
-) -> typing.Sequence[pd.Index | pd.Series | pd.DataFrame]:
+    objs: Sequence[pd.Index | pd.Series | pd.DataFrame],
+) -> Sequence[pd.Index | pd.Series | pd.DataFrame]:
     r"""Convert filewise to segmented index.
 
     Checks if all index objects are either filewise or segmented,
@@ -2175,8 +2178,8 @@ def _maybe_convert_pandas_dtype(
 
 
 def _maybe_convert_single_level_multi_index(
-    objs: typing.Sequence[pd.Index | pd.Series | pd.DataFrame],
-) -> typing.Sequence[pd.Index | pd.Series | pd.DataFrame]:
+    objs: Sequence[pd.Index | pd.Series | pd.DataFrame],
+) -> Sequence[pd.Index | pd.Series | pd.DataFrame]:
     r"""Convert single-level pd.MultiIndex to pd.Index.
 
     If input is a mixture of single-level
@@ -2206,7 +2209,7 @@ def _maybe_convert_single_level_multi_index(
     return objs
 
 
-def _pandas_dtypes(index) -> list[typing.Any]:
+def _pandas_dtypes(index) -> list[object]:
     r"""List of pandas dtypes of index.
 
     Args:

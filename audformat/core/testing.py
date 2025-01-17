@@ -1,9 +1,9 @@
 from __future__ import annotations
 
+from collections.abc import Callable
 from collections.abc import Sequence
 import os
 import random
-from typing import Callable
 
 import numpy as np
 import pandas as pd
