@@ -1,4 +1,4 @@
-import typing
+from __future__ import annotations
 
 import numpy as np
 import pandas as pd
@@ -10,7 +10,7 @@ import audformat.testing
 
 
 def create_db_misc_table(
-    obj: typing.Union[pd.Series, pd.DataFrame] = None,
+    obj: pd.Series | pd.DataFrame = None,
     *,
     rater: audformat.Rater = None,
     media: audformat.Media = None,
@@ -44,7 +44,7 @@ def create_db_misc_table(
 
 
 def create_misc_table(
-    obj: typing.Union[pd.Index, pd.Series, pd.DataFrame],
+    obj: pd.Index | pd.Series | pd.DataFrame,
 ) -> audformat.MiscTable:
     r"""Helper function to create Table."""
     index = obj if isinstance(obj, pd.Index) else obj.index
