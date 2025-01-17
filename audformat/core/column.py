@@ -103,7 +103,7 @@ class Column(HeaderBase):
         self._id = None
 
     @property
-    def rater(self) -> typing.Optional[Rater]:
+    def rater(self) -> Rater | None:
         r"""Rater object.
 
         Returns:
@@ -118,7 +118,7 @@ class Column(HeaderBase):
             return self.table.db.raters[self.rater_id]
 
     @property
-    def scheme(self) -> typing.Optional[Scheme]:
+    def scheme(self) -> Scheme | None:
         r"""Scheme object.
 
         Returns:
@@ -151,7 +151,7 @@ class Column(HeaderBase):
         as_segmented: bool = False,
         allow_nat: bool = True,
         root: str = None,
-        num_workers: typing.Optional[int] = 1,
+        num_workers: int | None = 1,
         verbose: bool = False,
     ) -> pd.Series:
         r"""Get labels.
@@ -377,7 +377,7 @@ class Column(HeaderBase):
 
     def __eq__(
         self,
-        other: "Column",
+        other: Column,
     ) -> bool:
         r"""Compare if column equals another column."""
         if self.dump() != other.dump():

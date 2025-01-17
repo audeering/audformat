@@ -1,11 +1,9 @@
+from __future__ import annotations
+
+from collections.abc import Sequence
 import os
 import random
 from typing import Callable
-from typing import Dict
-from typing import Optional
-from typing import Sequence
-from typing import Tuple
-from typing import Union
 
 import numpy as np
 import pandas as pd
@@ -34,11 +32,9 @@ def add_misc_table(
     table_id: str,
     index: pd.Index,
     *,
-    columns: Union[
-        str,
-        Sequence[str],
-        Dict[str, Union[str, Tuple[Optional[str], Optional[str]]]],
-    ] = None,
+    columns: (
+        str | Sequence[str] | dict[str, str | tuple[str | None, str | None]]
+    ) = None,
     p_none: float = None,
     split_id: str = None,
     media_id: str = None,
@@ -78,14 +74,12 @@ def add_table(
     table_id: str,
     index_type: str,
     *,
-    columns: Union[
-        str,
-        Sequence[str],
-        Dict[str, Union[str, Tuple[Optional[str], Optional[str]]]],
-    ] = None,
-    num_files: Union[int, Sequence[int]] = 5,
+    columns: (
+        str | Sequence[str] | dict[str, str | tuple[str | None, str | None]]
+    ) = None,
+    num_files: int | Sequence[int] = 5,
     num_segments_per_file: int = 5,
-    file_duration: Union[str, pd.Timedelta] = "5s",
+    file_duration: str | pd.Timedelta = "5s",
     file_root: str = "audio",
     p_none: float = None,
     split_id: str = None,
@@ -201,7 +195,7 @@ def create_audio_files(
     sample_generator: Callable[[float], float] = None,
     sampling_rate: int = 16000,
     channels: int = 1,
-    file_duration: Union[str, pd.Timedelta] = "60s",
+    file_duration: str | pd.Timedelta = "60s",
 ):
     r"""Create audio files for a database.
 
@@ -245,7 +239,7 @@ def create_audio_files(
 
 def create_db(
     minimal: bool = False,
-    data: Dict[str, Union[pd.Series, pd.DataFrame]] = None,
+    data: dict[str, pd.Series | pd.DataFrame] = None,
 ) -> Database:
     r"""Create test database.
 
@@ -439,13 +433,9 @@ def create_db(
 def _add_columns(
     db: Database,
     table: Table,
-    columns: Optional[
-        Union[
-            str,
-            Sequence[str],
-            Dict[str, Union[str, Tuple[Optional[str], Optional[str]]]],
-        ]
-    ],
+    columns: (
+        None | (str | Sequence[str] | dict[str, str | tuple[str | None, str | None]])
+    ),
     n_items: int,
     p_none: float,
 ):

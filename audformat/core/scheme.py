@@ -177,7 +177,7 @@ class Scheme(common.HeaderBase):
         return self.dtype in (define.DataType.INTEGER, define.DataType.FLOAT)
 
     @property
-    def labels_as_list(self) -> typing.List:
+    def labels_as_list(self) -> list:
         r"""Scheme labels as list.
 
         If scheme does not define labels
@@ -472,7 +472,7 @@ class Scheme(common.HeaderBase):
     def _labels_to_dict(
         self,
         labels: typing.Union[dict, list, str] = None,
-    ) -> typing.Dict:
+    ) -> dict:
         r"""Return actual labels as dict."""
         if labels is None:
             labels = self.labels
@@ -488,7 +488,7 @@ class Scheme(common.HeaderBase):
     def _labels_to_list(
         self,
         labels: typing.Union[dict, list, str] = None,
-    ) -> typing.List:
+    ) -> list:
         r"""Convert labels to actual labels as list."""
         return list(self._labels_to_dict(labels))
 

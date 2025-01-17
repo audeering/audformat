@@ -1,9 +1,11 @@
-from __future__ import annotations  # allow typing without string
+from __future__ import annotations
 
+from collections.abc import Callable
+from collections.abc import Sequence
 import copy
 import os
 import pickle
-import typing
+from typing import Self
 
 import pandas as pd
 import pyarrow as pa
@@ -57,7 +59,7 @@ class Base(HeaderBase):
         self._db = None
         self._id = None
 
-    def __add__(self, other: typing.Self) -> typing.Self:
+    def __add__(self, other: Self) -> Self:
         r"""Create new table by combining two tables.
 
         The new :ref:`combined table <combine-tables>`
@@ -213,7 +215,7 @@ class Base(HeaderBase):
         return self.df.index
 
     @property
-    def media(self) -> typing.Optional[Media]:
+    def media(self) -> Media | None:
         r"""Media object.
 
         Returns:
@@ -224,7 +226,7 @@ class Base(HeaderBase):
             return self.db.media[self.media_id]
 
     @property
-    def split(self) -> typing.Optional[Split]:
+    def split(self) -> Split | None:
         r"""Split object.
 
         Returns:
@@ -234,7 +236,7 @@ class Base(HeaderBase):
         if self.split_id is not None and self.db is not None:
             return self.db.splits[self.split_id]
 
-    def copy(self) -> typing.Self:
+    def copy(self) -> Self:
         r"""Copy table.
 
         Return:
@@ -259,10 +261,10 @@ class Base(HeaderBase):
 
     def drop_columns(
         self,
-        column_ids: typing.Union[str, typing.Sequence[str]],
+        column_ids: str | Sequence[str],
         *,
         inplace: bool = False,
-    ) -> typing.Self:
+    ) -> Self:
         r"""Drop columns by ID.
 
         Args:
@@ -292,7 +294,7 @@ class Base(HeaderBase):
         index: pd.Index,
         *,
         inplace: bool = False,
-    ) -> typing.Self:
+    ) -> Self:
         r"""Drop rows from index.
 
         Args:
@@ -324,9 +326,9 @@ class Base(HeaderBase):
         self,
         index: pd.Index,
         *,
-        fill_values: typing.Union[typing.Any, typing.Dict[str, typing.Any]] = None,
+        fill_values: object | dict[str, object] = None,
         inplace: bool = False,
-    ) -> typing.Self:
+    ) -> Self:
         r"""Extend table with new rows.
 
         Args:
@@ -366,7 +368,7 @@ class Base(HeaderBase):
         self,
         index: pd.Index = None,
         *,
-        map: typing.Dict[str, typing.Union[str, typing.Sequence[str]]] = None,
+        map: dict[str, str | Sequence[str]] = None,
         copy: bool = True,
     ) -> pd.DataFrame:
         r"""Get labels.
@@ -519,10 +521,10 @@ class Base(HeaderBase):
 
     def pick_columns(
         self,
-        column_ids: typing.Union[str, typing.Sequence[str]],
+        column_ids: str | Sequence[str],
         *,
         inplace: bool = False,
-    ) -> typing.Self:
+    ) -> Self:
         r"""Pick columns by ID.
 
         All other columns will be dropped.
@@ -548,7 +550,7 @@ class Base(HeaderBase):
         index: pd.Index,
         *,
         inplace: bool = False,
-    ) -> typing.Self:
+    ) -> Self:
         r"""Pick rows from index.
 
         Args:
@@ -655,10 +657,7 @@ class Base(HeaderBase):
 
     def set(
         self,
-        values: typing.Union[
-            typing.Dict[str, Values],
-            pd.DataFrame,
-        ],
+        values: (dict[str, Values] | pd.DataFrame),
         *,
         index: pd.Index = None,
     ):
@@ -687,10 +686,10 @@ class Base(HeaderBase):
 
     def update(
         self,
-        others: typing.Union[typing.Self, typing.Sequence[typing.Self]],
+        others: Self | Sequence[Self],
         *,
         overwrite: bool = False,
-    ) -> typing.Self:
+    ) -> Self:
         r"""Update table with other table(s).
 
         Table which calls ``update()``
@@ -740,15 +739,15 @@ class Base(HeaderBase):
 
         def raise_error(
             msg,
-            left: typing.Optional[HeaderDict],
-            right: typing.Optional[HeaderDict],
+            left: HeaderDict | None,
+            right: HeaderDict | None,
         ):
             raise ValueError(f"{msg}:\n" f"{left}\n" "!=\n" f"{right}")
 
         def assert_equal(
             msg: str,
-            left: typing.Optional[HeaderDict],
-            right: typing.Optional[HeaderDict],
+            left: HeaderDict | None,
+            right: HeaderDict | None,
         ):
             equal = True
             if left and right:
@@ -858,7 +857,7 @@ class Base(HeaderBase):
         raise NotImplementedError()
 
     @property
-    def _levels_and_dtypes(self) -> typing.Dict[str, str]:
+    def _levels_and_dtypes(self) -> dict[str, str]:
         r"""Levels and dtypes of index columns.
 
         Returns:
@@ -1246,7 +1245,7 @@ class Base(HeaderBase):
 
         return column
 
-    def _set_index(self, df: pd.DataFrame, columns: typing.Sequence) -> pd.DataFrame:
+    def _set_index(self, df: pd.DataFrame, columns: Sequence) -> pd.DataFrame:
         r"""Set columns as index.
 
         Setting of index columns is performed inplace!
@@ -1431,7 +1430,7 @@ class MiscTable(Base):
         return self.df.loc[index]
 
     @property
-    def _levels_and_dtypes(self) -> typing.Dict[str, str]:
+    def _levels_and_dtypes(self) -> dict[str, str]:
         r"""Levels and dtypes of index columns.
 
         Returns:
@@ -1647,11 +1646,7 @@ class Table(Base):
 
     def drop_files(
         self,
-        files: typing.Union[
-            str,
-            typing.Sequence[str],
-            typing.Callable[[str], bool],
-        ],
+        files: (str | Sequence[str] | Callable[[str], bool]),
         *,
         inplace: bool = False,
     ) -> Table:
@@ -1690,12 +1685,12 @@ class Table(Base):
         self,
         index: pd.Index = None,
         *,
-        map: typing.Dict[str, typing.Union[str, typing.Sequence[str]]] = None,
+        map: dict[str, str | Sequence[str]] = None,
         copy: bool = True,
         as_segmented: bool = False,
         allow_nat: bool = True,
         root: str = None,
-        num_workers: typing.Optional[int] = 1,
+        num_workers: int | None = 1,
         verbose: bool = False,
     ) -> pd.DataFrame:
         r"""Get labels.
@@ -1773,7 +1768,7 @@ class Table(Base):
 
     def map_files(
         self,
-        func: typing.Callable[[str], str],
+        func: Callable[[str], str],
     ):
         r"""Apply function to file names in table.
 
@@ -1789,11 +1784,7 @@ class Table(Base):
 
     def pick_files(
         self,
-        files: typing.Union[
-            str,
-            typing.Sequence[str],
-            typing.Callable[[str], bool],
-        ],
+        files: (str | Sequence[str] | Callable[[str], bool]),
         *,
         inplace: bool = False,
     ) -> Table:
@@ -1842,7 +1833,7 @@ class Table(Base):
         return result
 
     @property
-    def _levels_and_dtypes(self) -> typing.Dict[str, str]:
+    def _levels_and_dtypes(self) -> dict[str, str]:
         r"""Levels and dtypes of index columns.
 
         Returns:

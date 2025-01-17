@@ -1424,7 +1424,7 @@ class Database(HeaderBase):
         if not os.path.exists(path):
             raise FileNotFoundError(path)
 
-        with open(path, "r") as fp:
+        with open(path) as fp:
             header = yaml.load(fp, Loader=Loader)
             db = Database.load_header_from_yaml(header)
 

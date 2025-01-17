@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from collections import OrderedDict
 import inspect
 import os
@@ -267,7 +269,7 @@ class HeaderBase:
 
     def __eq__(
         self,
-        other: "HeaderBase",
+        other: HeaderBase,
     ) -> bool:
         return self.dump() == other.dump()
 
@@ -328,7 +330,7 @@ def series_to_html(self):  # pragma: no cover
     return df.to_html()
 
 
-def to_audformat_dtype(dtype: typing.Union[str, typing.Type]) -> str:
+def to_audformat_dtype(dtype: str | type) -> str:
     r"""Convert pandas to audformat dtype."""
     # bool
     if pd.api.types.is_bool_dtype(dtype):
@@ -359,7 +361,7 @@ def to_audformat_dtype(dtype: typing.Union[str, typing.Type]) -> str:
         return define.DataType.OBJECT
 
 
-def to_pandas_dtype(dtype: str) -> typing.Optional[str]:
+def to_pandas_dtype(dtype: str) -> str | None:
     r"""Convert audformat to pandas dtype.
 
     We use ``"Int64"`` instead of ``"int64"``,

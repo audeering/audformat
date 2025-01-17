@@ -980,7 +980,7 @@ def is_index_alike(
     objs = [obj if isinstance(obj, pd.Index) else obj.index for obj in objs]
 
     # check names
-    levels = set([obj.names for obj in objs])
+    levels = {obj.names for obj in objs}
     if len(levels) > 1:
         return False
 
@@ -1001,7 +1001,7 @@ def iter_by_file(
         pd.DataFrame,
     ],
 ) -> typing.Iterator[
-    typing.Tuple[
+    tuple[
         str,
         typing.Union[pd.Index, pd.Series, pd.DataFrame],
     ],
@@ -1053,8 +1053,8 @@ def iter_by_file(
 
 
 def join_labels(
-    labels: typing.Sequence[typing.Union[typing.List, typing.Dict]],
-) -> typing.Union[typing.List, typing.Dict]:
+    labels: typing.Sequence[typing.Union[list, dict]],
+) -> typing.Union[list, dict]:
     r"""Combine scheme labels.
 
     Args:
@@ -1095,13 +1095,13 @@ def join_labels(
         all([isinstance(x, list) for x in labels])
         or all([isinstance(x, dict) for x in labels])
     ):
-        raise ValueError(("All labels must be either " "of type 'list' or 'dict'."))
+        raise ValueError("All labels must be either of type 'list' or 'dict'.")
 
     if len(labels) == 1:
         return labels[0]
 
     items = audeer.flatten_list([list(x) for x in labels])
-    dtypes = sorted(list(set([str(type(x)) for x in items])))
+    dtypes = sorted(list({str(type(x)) for x in items}))
     if len(dtypes) > 1:
         raise ValueError(
             f"Elements or keys must "
@@ -1463,7 +1463,7 @@ def set_index_dtypes(
     index: pd.Index,
     dtypes: typing.Union[
         str,
-        typing.Dict[str, str],
+        dict[str, str],
     ],
 ) -> pd.Index:
     r"""Set the dtypes of an index for the given level names.
@@ -1662,7 +1662,7 @@ def to_filewise_index(
             [
                 os.path.join(
                     output_folder,
-                    "_{}.".format(str(count).zfill(width)).join(f.rsplit(".", 1)),
+                    f"_{str(count).zfill(width)}.".join(f.rsplit(".", 1)),
                 )
                 for count in range(len(group))
             ]
@@ -2070,7 +2070,7 @@ def _assert_index_alike(
     raise ValueError(msg)
 
 
-def _audformat_dtypes(index) -> typing.List[str]:
+def _audformat_dtypes(index) -> list[str]:
     r"""List of audformat data types of index.
 
     Args:
@@ -2101,7 +2101,7 @@ def _is_same_dtype(d1, d2) -> bool:
     return d1.name == d2.name
 
 
-def _levels(index) -> typing.List[str]:
+def _levels(index) -> list[str]:
     r"""List of levels of index.
 
     Args:
@@ -2199,7 +2199,7 @@ def _maybe_convert_single_level_multi_index(
     """
     indices = [obj if isinstance(obj, pd.Index) else obj.index for obj in objs]
     is_single_level = indices[0].nlevels == 1
-    is_mix = len(set(isinstance(index, pd.MultiIndex) for index in indices)) == 2
+    is_mix = len({isinstance(index, pd.MultiIndex) for index in indices}) == 2
 
     if is_single_level and is_mix:
         objs = list(objs)
@@ -2212,7 +2212,7 @@ def _maybe_convert_single_level_multi_index(
     return objs
 
 
-def _pandas_dtypes(index) -> typing.List[typing.Any]:
+def _pandas_dtypes(index) -> list[typing.Any]:
     r"""List of pandas dtypes of index.
 
     Args:
