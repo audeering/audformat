@@ -1079,7 +1079,7 @@ def join_labels(
     if not isinstance(labels, list):
         labels = list(labels)
 
-    if misc_table_ids := [x for x in labels if isinstance(x, str)]:
+    if len(misc_table_ids := [x for x in labels if isinstance(x, str)]) > 1:
         raise ValueError(
             f"The following string values were provided: '"
             f"{misc_table_ids}'. "
@@ -1098,7 +1098,8 @@ def join_labels(
         return labels[0]
 
     items = audeer.flatten_list([list(x) for x in labels])
-    if dtypes := sorted(list({str(type(x)) for x in items})):
+    dtypes = sorted(list({str(type(x)) for x in items}))
+    if len(dtypes) > 1:
         raise ValueError(
             f"Elements or keys must "
             f"have the same dtype, "
