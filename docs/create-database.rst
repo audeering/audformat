@@ -22,7 +22,7 @@ Let's assume in addition you have
 three raters annotated the files
 for the emotion anger in the range 0 to 5.
 
-.. jupyter-execute::
+.. code-block:: python
 
     import io
 
@@ -47,7 +47,7 @@ Each column has the scheme ID ``anger``
 for the defined scheme covering the emotion anger.
 
 
-.. jupyter-execute::
+.. code-block:: python
 
     import audformat
 
@@ -89,9 +89,30 @@ for the defined scheme covering the emotion anger.
 
 The resulting :class:`audformat.Database` will then contain:
 
-.. jupyter-execute::
-
-    db
+>>> db
+name: foo
+source: https://github.com/audeering/audformat/
+usage: unrestricted
+languages: []
+media:
+  microphone: {type: audio, format: wav}
+raters:
+  R1: {type: human}
+  R2: {type: human}
+  R3: {type: human}
+schemes:
+  anger: {dtype: int, minimum: 0, maximum: 5}
+splits:
+  train: {type: train}
+tables:
+  anger:
+    type: filewise
+    split_id: train
+    media_id: microphone
+    columns:
+      R1: {scheme_id: anger, rater_id: R1}
+      R2: {scheme_id: anger, rater_id: R2}
+      R3: {scheme_id: anger, rater_id: R3}
 
 For more information on how to define a database,
 have a look at the code examples in the
@@ -107,7 +128,7 @@ without creating one, you can use :mod:`audformat.testing`.
 It provides you with a command to create a database,
 containing all possible :ref:`tables types <data-tables:Tables>`:
 
-.. jupyter-execute::
+.. code-block:: python
 
     import audformat.testing
 
@@ -116,20 +137,46 @@ containing all possible :ref:`tables types <data-tables:Tables>`:
 
 Which results in the following :class:`audformat.Table` objects:
 
-.. jupyter-execute::
-
-    db.tables
+>>> db.tables
+files:
+  type: filewise
+  split_id: train
+  media_id: microphone
+  columns:
+    bool: {scheme_id: bool, rater_id: gold}
+    date: {scheme_id: date, rater_id: gold}
+    float: {scheme_id: float, rater_id: gold}
+    int: {scheme_id: int, rater_id: gold}
+    label: {scheme_id: label, rater_id: gold}
+    label_map_int: {scheme_id: label_map_int, rater_id: gold}
+    label_map_misc: {scheme_id: label_map_misc, rater_id: gold}
+    label_map_str: {scheme_id: label_map_str, rater_id: gold}
+    string: {scheme_id: string, rater_id: gold}
+    time: {scheme_id: time, rater_id: gold}
+    no_scheme: {}
+segments:
+  type: segmented
+  split_id: dev
+  media_id: microphone
+  columns:
+    bool: {scheme_id: bool, rater_id: gold}
+    date: {scheme_id: date, rater_id: gold}
+    float: {scheme_id: float, rater_id: gold}
+    int: {scheme_id: int, rater_id: gold}
+    label: {scheme_id: label, rater_id: gold}
+    label_map_int: {scheme_id: label_map_int, rater_id: gold}
+    label_map_misc: {scheme_id: label_map_misc, rater_id: gold}
+    label_map_str: {scheme_id: label_map_str, rater_id: gold}
+    string: {scheme_id: string, rater_id: gold}
+    time: {scheme_id: time, rater_id: gold}
+    no_scheme: {}
 
 Or you can create a database,
 containing only the minimum entries,
 required by the :ref:`database specification <data-header:Database>`:
 
-.. jupyter-execute::
-
-    db_minimal = audformat.testing.create_db(minimal=True)
-
-Which results in the following :class:`audformat.Database`:
-
-.. jupyter-execute::
-
-    db_minimal
+>>> audformat.testing.create_db(minimal=True)
+name: unittest
+source: internal
+usage: unrestricted
+languages: [deu, eng]

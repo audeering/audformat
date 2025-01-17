@@ -5,3 +5,4 @@ pytest
 pytest-doctestplus
 pytest-console-scripts
 pytest-cov
+sybil

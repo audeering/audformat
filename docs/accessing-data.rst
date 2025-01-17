@@ -2,24 +2,13 @@ Working with a database
 =======================
 
 
-.. Enforce HTML output for pd.Series
-.. jupyter-execute::
-    :hide-code:
-    :hide-output:
-
-    import audformat
-
-
-    audformat.core.common.format_series_as_html()
-
-
 Accessing data
 --------------
 
 Annotation labels can be accessed
 by the :meth:`audformat.Table.get` method:
 
-.. jupyter-execute::
+.. code-block:: python
 
     import audformat.testing
 
@@ -31,13 +20,16 @@ by the :meth:`audformat.Table.get` method:
 
 Which returns the following :class:`pandas.DataFrame`:
 
-.. jupyter-execute::
+>>> table.iloc[0:2, 0:2]
+               bool                    date
+file
+audio/001.wav  True 1970-01-01 00:00:00.350
+audio/002.wav  True                     NaT
 
-    table.iloc[0:2, 0:2]
 
 Or you can directly access a column with :meth:`audformat.Column.get()`:
 
-.. jupyter-execute::
+.. code-block:: python
 
     column = db["files"]["string"].get()
     # Short for:
@@ -45,9 +37,12 @@ Or you can directly access a column with :meth:`audformat.Column.get()`:
 
 Which results in the following :class:`pandas.Series`:
 
-.. jupyter-execute::
+>>> column[0:2]
+file
+audio/001.wav    19gBvYMkzf
+audio/002.wav    SamkVRP8E9
+Name: string, dtype: string
 
-    column[0:2]
 
 For more information on how to access or add data
 have a look at the code examples in the
@@ -59,7 +54,7 @@ Changing referenced files
 
 To convert to absolute file paths in all tables, do:
 
-.. jupyter-execute::
+.. code-block:: python
 
     import os
 
