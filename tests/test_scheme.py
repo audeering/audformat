@@ -280,7 +280,7 @@ def test_scheme_errors():
     # labels not list or dictionary
     error_msg = "Labels must be passed " "as a dictionary, list or ID of a misc table."
     with pytest.raises(ValueError, match=error_msg):
-        audformat.Scheme(labels=set([1, 2, 3]))
+        audformat.Scheme(labels={1, 2, 3})
 
     # labels do not have the same type
     error_msg = "All labels must be of the same data type."
