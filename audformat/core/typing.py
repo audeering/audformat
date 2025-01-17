@@ -1,27 +1,32 @@
 from __future__ import annotations
 
-from collections.abc import Sequence
+import typing
 
 import numpy as np
 import pandas as pd
 
 
-Files = str | Sequence[str] | pd.Index | pd.Series
-Timestamps = (
-    float
-    | int
-    | str
-    | pd.Timedelta
-    | Sequence[float | int | str | pd.Timedelta]
-    | pd.Index
-    | pd.Series
-)
-Values = (
-    int
-    | float
-    | str
-    | pd.Timedelta
-    | Sequence[int | float | str | pd.Timedelta]
-    | np.ndarray
-    | pd.Series
-)
+Files = typing.Union[
+    str,
+    typing.Sequence[str],
+    pd.Index,
+    pd.Series,
+]
+Timestamps = typing.Union[
+    float,
+    int,
+    str,
+    pd.Timedelta,
+    typing.Sequence[typing.Union[float, int, str, pd.Timedelta]],
+    pd.Index,
+    pd.Series,
+]
+Values = typing.Union[
+    int,
+    float,
+    str,
+    pd.Timedelta,
+    typing.Sequence[typing.Union[int, float, str, pd.Timedelta],],
+    np.ndarray,
+    pd.Series,
+]

@@ -1,4 +1,4 @@
-from __future__ import annotations
+from __future__ import annotations  # allow typing without string
 
 import typing
 import warnings
