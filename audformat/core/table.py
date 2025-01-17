@@ -5,7 +5,7 @@ from collections.abc import Sequence
 import copy
 import os
 import pickle
-from typing import Self
+import typing
 
 import pandas as pd
 import pyarrow as pa
@@ -59,7 +59,7 @@ class Base(HeaderBase):
         self._db = None
         self._id = None
 
-    def __add__(self, other: Self) -> Self:
+    def __add__(self, other: typing.Self) -> typing.Self:
         r"""Create new table by combining two tables.
 
         The new :ref:`combined table <combine-tables>`
@@ -236,7 +236,7 @@ class Base(HeaderBase):
         if self.split_id is not None and self.db is not None:
             return self.db.splits[self.split_id]
 
-    def copy(self) -> Self:
+    def copy(self) -> typing.Self:
         r"""Copy table.
 
         Return:
@@ -264,7 +264,7 @@ class Base(HeaderBase):
         column_ids: str | Sequence[str],
         *,
         inplace: bool = False,
-    ) -> Self:
+    ) -> typing.Self:
         r"""Drop columns by ID.
 
         Args:
@@ -294,7 +294,7 @@ class Base(HeaderBase):
         index: pd.Index,
         *,
         inplace: bool = False,
-    ) -> Self:
+    ) -> typing.Self:
         r"""Drop rows from index.
 
         Args:
@@ -328,7 +328,7 @@ class Base(HeaderBase):
         *,
         fill_values: object | dict[str, object] = None,
         inplace: bool = False,
-    ) -> Self:
+    ) -> typing.Self:
         r"""Extend table with new rows.
 
         Args:
@@ -524,7 +524,7 @@ class Base(HeaderBase):
         column_ids: str | Sequence[str],
         *,
         inplace: bool = False,
-    ) -> Self:
+    ) -> typing.Self:
         r"""Pick columns by ID.
 
         All other columns will be dropped.
@@ -550,7 +550,7 @@ class Base(HeaderBase):
         index: pd.Index,
         *,
         inplace: bool = False,
-    ) -> Self:
+    ) -> typing.Self:
         r"""Pick rows from index.
 
         Args:
@@ -686,10 +686,10 @@ class Base(HeaderBase):
 
     def update(
         self,
-        others: Self | Sequence[Self],
+        others: typing.Self | Sequence[typing.Self],
         *,
         overwrite: bool = False,
-    ) -> Self:
+    ) -> typing.Self:
         r"""Update table with other table(s).
 
         Table which calls ``update()``
