@@ -1079,7 +1079,7 @@ def join_labels(
     if not isinstance(labels, list):
         labels = list(labels)
 
-    if len(misc_table_ids := [x for x in labels if isinstance(x, str)]) > 1:
+    if misc_table_ids := [x for x in labels if isinstance(x, str)]:
         raise ValueError(
             f"The following string values were provided: '"
             f"{misc_table_ids}'. "
