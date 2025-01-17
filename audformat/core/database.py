@@ -1,8 +1,11 @@
+from __future__ import annotations
+
+from collections.abc import Callable
+from collections.abc import Sequence
 import datetime
 import itertools
 import os
 import shutil
-import typing
 
 import oyaml as yaml
 
@@ -146,11 +149,11 @@ class Database(HeaderBase):
         usage: str = define.Usage.UNRESTRICTED,
         *,
         expires: datetime.date = None,
-        languages: typing.Union[str, typing.Sequence[str]] = None,
+        languages: str | Sequence[str] = None,
         description: str = None,
         author: str = None,
         organization: str = None,
-        license: typing.Union[str, define.License] = None,
+        license: str | define.License = None,
         license_url: str = None,
         meta: dict = None,
     ):
@@ -264,7 +267,7 @@ class Database(HeaderBase):
         return all(is_relative_path(f) for f in self.files)
 
     @property
-    def root(self) -> typing.Optional[str]:
+    def root(self) -> str | None:
         r"""Database root directory.
 
         Returns ``None`` if database has not been stored yet.
@@ -292,12 +295,8 @@ class Database(HeaderBase):
 
     def drop_files(
         self,
-        files: typing.Union[
-            str,
-            typing.Sequence[str],
-            typing.Callable[[str], bool],
-        ],
-        num_workers: typing.Optional[int] = 1,
+        files: (str | Sequence[str] | Callable[[str], bool]),
+        num_workers: int | None = 1,
         verbose: bool = False,
     ):
         r"""Drop files from tables.
@@ -323,7 +322,7 @@ class Database(HeaderBase):
 
     def drop_tables(
         self,
-        table_ids: typing.Union[str, typing.Sequence[str]],
+        table_ids: str | Sequence[str],
     ):
         r"""Drop (miscellaneous) tables by ID.
 
@@ -363,7 +362,7 @@ class Database(HeaderBase):
 
     def files_duration(
         self,
-        files: typing.Union[str, typing.Sequence[str]],
+        files: str | Sequence[str],
         *,
         root: str = None,
     ) -> pd.Series:
@@ -438,14 +437,14 @@ class Database(HeaderBase):
     def get(
         self,
         scheme: str,
-        additional_schemes: typing.Union[str, typing.Sequence] = [],
+        additional_schemes: str | Sequence = [],
         *,
-        tables: typing.Union[str, typing.Sequence] = None,
-        splits: typing.Union[str, typing.Sequence] = None,
+        tables: str | Sequence = None,
+        splits: str | Sequence = None,
         strict: bool = False,
         map: bool = True,
         original_column_names: bool = False,
-        aggregate_function: typing.Callable[[pd.Series], typing.Any] = None,
+        aggregate_function: Callable[[pd.Series], object] = None,
         aggregate_strategy: str = "mismatch",
     ) -> pd.DataFrame:
         r"""Get labels by scheme.
@@ -882,8 +881,8 @@ class Database(HeaderBase):
 
     def map_files(
         self,
-        func: typing.Callable[[str], str],
-        num_workers: typing.Optional[int] = 1,
+        func: Callable[[str], str],
+        num_workers: int | None = 1,
         verbose: bool = False,
     ):
         r"""Apply function to file names in all tables.
@@ -914,12 +913,8 @@ class Database(HeaderBase):
 
     def pick_files(
         self,
-        files: typing.Union[
-            str,
-            typing.Sequence[str],
-            typing.Callable[[str], bool],
-        ],
-        num_workers: typing.Optional[int] = 1,
+        files: (str | Sequence[str] | Callable[[str], bool]),
+        num_workers: int | None = 1,
         verbose: bool = False,
     ):
         r"""Pick files from tables.
@@ -945,7 +940,7 @@ class Database(HeaderBase):
 
     def pick_tables(
         self,
-        table_ids: typing.Union[str, typing.Sequence[str]],
+        table_ids: str | Sequence[str],
     ):
         r"""Pick (miscellaneous) tables by ID.
 
@@ -977,7 +972,7 @@ class Database(HeaderBase):
         storage_format: str = define.TableStorageFormat.PARQUET,
         update_other_formats: bool = True,
         header_only: bool = False,
-        num_workers: typing.Optional[int] = 1,
+        num_workers: int | None = 1,
         verbose: bool = False,
     ):
         r"""Save database to disk.
@@ -1038,12 +1033,12 @@ class Database(HeaderBase):
 
     def update(
         self,
-        others: typing.Union["Database", typing.Sequence["Database"]],
+        others: Database | Sequence[Database],
         *,
         copy_attachments: bool = False,
         copy_media: bool = False,
         overwrite: bool = False,
-    ) -> "Database":
+    ) -> Database:
         r"""Update database with other database(s).
 
         In order to :ref:`update a database <update-a-database>`,
@@ -1121,7 +1116,7 @@ class Database(HeaderBase):
 
         def join_dict(
             field: str,
-            ds: typing.Sequence[dict],
+            ds: Sequence[dict],
         ):
             r"""Join list of dictionaries.
 
@@ -1148,7 +1143,7 @@ class Database(HeaderBase):
         def join_field(
             other: Database,
             field: str,
-            op: typing.Callable,
+            op: Callable,
         ):
             r"""Join two fields of db header."""
             value1 = self.__dict__[field]
@@ -1312,7 +1307,7 @@ class Database(HeaderBase):
     def __getitem__(
         self,
         table_id: str,
-    ) -> typing.Union[MiscTable, Table]:
+    ) -> MiscTable | Table:
         r"""Get (miscellaneous) table from database.
 
         Args:
@@ -1334,7 +1329,7 @@ class Database(HeaderBase):
 
     def __eq__(
         self,
-        other: "Database",
+        other: Database,
     ) -> bool:
         r"""Comparison if database equals another database."""
         if self.dump() != other.dump():
@@ -1346,15 +1341,15 @@ class Database(HeaderBase):
 
     def __iter__(
         self,
-    ) -> typing.Union[MiscTable, Table]:
+    ) -> MiscTable | Table:
         r"""Iterate over (miscellaneous) tables of database."""
         yield from sorted(list(self.tables) + list(self.misc_tables))
 
     def __setitem__(
         self,
         table_id: str,
-        table: typing.Union[MiscTable, Table],
-    ) -> typing.Union[MiscTable, Table]:
+        table: MiscTable | Table,
+    ) -> MiscTable | Table:
         r"""Add table to database.
 
         Args:
@@ -1381,9 +1376,9 @@ class Database(HeaderBase):
         *,
         name: str = "db",
         load_data: bool = False,
-        num_workers: typing.Optional[int] = 1,
+        num_workers: int | None = 1,
         verbose: bool = False,
-    ) -> "Database":
+    ) -> Database:
         r"""Load database from disk.
 
         Expects a header ``<root>/<name>.yaml``
@@ -1424,7 +1419,7 @@ class Database(HeaderBase):
         if not os.path.exists(path):
             raise FileNotFoundError(path)
 
-        with open(path, "r") as fp:
+        with open(path) as fp:
             header = yaml.load(fp, Loader=Loader)
             db = Database.load_header_from_yaml(header)
 
@@ -1467,7 +1462,7 @@ class Database(HeaderBase):
         return db
 
     @staticmethod
-    def load_header_from_yaml(header: dict) -> "Database":
+    def load_header_from_yaml(header: dict) -> Database:
         r"""Load database header from YAML.
 
         Args:
@@ -1619,8 +1614,8 @@ class Database(HeaderBase):
     def _set_table(
         self,
         table_id: str,
-        table: typing.Union[MiscTable, Table],
-    ) -> typing.Union[MiscTable, Table]:
+        table: MiscTable | Table,
+    ) -> MiscTable | Table:
         if isinstance(table, MiscTable) and table_id in self.tables:
             raise TableExistsError(self[table_id].type, table_id)
         elif isinstance(table, Table) and table_id in self.misc_tables:

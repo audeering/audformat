@@ -1,4 +1,4 @@
-import typing
+from collections.abc import Sequence
 
 from audformat.core import define
 from audformat.core.common import HeaderBase
@@ -47,7 +47,7 @@ class Media(HeaderBase):
         channels: int = None,
         bit_depth: int = None,
         video_fps: int = None,
-        video_resolution: typing.Sequence[int] = None,
+        video_resolution: Sequence[int] = None,
         video_channels: int = None,
         video_depth: int = None,
         description: str = None,

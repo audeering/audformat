@@ -1,4 +1,4 @@
-import typing
+from collections.abc import Sequence
 
 
 class BadIdError(ValueError):
@@ -30,7 +30,7 @@ class BadKeyError(KeyError):
 
     """
 
-    def __init__(self, invalid_key: str, valid_keys: typing.Sequence[str]):
+    def __init__(self, invalid_key: str, valid_keys: Sequence[str]):
         message = f"Bad key '{invalid_key}', " f"expected one of {list(valid_keys)}"
         super().__init__(message)
 
@@ -44,7 +44,7 @@ class BadTypeError(TypeError):
 
     """
 
-    def __init__(self, invalid_value: typing.Any, expected_type: type):
+    def __init__(self, invalid_value: object, expected_type: type):
         message = f"Bad type '{type(invalid_value)}', " f"expected '{expected_type}'"
         super().__init__(message)
 
@@ -58,7 +58,7 @@ class BadValueError(ValueError):
 
     """
 
-    def __init__(self, invalid_value: str, valid_values: typing.Sequence[str]):
+    def __init__(self, invalid_value: str, valid_values: Sequence[str]):
         message = (
             f"Bad value '{invalid_value}', " f"expected one of {list(valid_values)}"
         )

@@ -1,11 +1,16 @@
+from __future__ import annotations
+
 import collections
+from collections.abc import Callable
+from collections.abc import Iterator
+from collections.abc import MutableMapping
+from collections.abc import Sequence
 import errno
 import hashlib
 import os
 import platform
 import re
 import sys
-import typing as typing
 
 import iso639
 from iso639.exceptions import InvalidLanguageValue
@@ -37,12 +42,12 @@ if platform.system() in ["Windows"]:  # pragma: no cover
 
 
 def concat(
-    objs: typing.Sequence[typing.Union[pd.Series, pd.DataFrame]],
+    objs: Sequence[pd.Series | pd.DataFrame],
     *,
     overwrite: bool = False,
-    aggregate_function: typing.Callable[[pd.Series], typing.Any] = None,
+    aggregate_function: Callable[[pd.Series], object] = None,
     aggregate_strategy: str = "mismatch",
-) -> typing.Union[pd.Series, pd.DataFrame]:
+) -> pd.Series | pd.DataFrame:
     r"""Concatenate objects.
 
     If all objects are conform to
@@ -423,7 +428,7 @@ def concat(
 
 
 def difference(
-    objs: typing.Sequence[typing.Union[pd.Index]],
+    objs: Sequence[pd.Index],
 ) -> pd.Index:
     r"""Difference of index objects.
 
@@ -556,7 +561,7 @@ def difference(
 
 
 def duration(
-    obj: typing.Union[pd.Index, pd.Series, pd.DataFrame],
+    obj: pd.Index | pd.Series | pd.DataFrame,
     *,
     root: str = None,
     num_workers: int = 1,
@@ -666,7 +671,7 @@ def expand_file_path(
 
 
 def hash(
-    obj: typing.Union[pd.Index, pd.Series, pd.DataFrame],
+    obj: pd.Index | pd.Series | pd.DataFrame,
     strict: bool = False,
 ) -> str:
     r"""Create hash from object.
@@ -753,7 +758,7 @@ def hash(
 
 
 def index_has_overlap(
-    obj: typing.Union[pd.Index, pd.DataFrame, pd.Series],
+    obj: pd.Index | pd.DataFrame | pd.Series,
 ) -> bool:
     r"""Check if one or more segments in the index overlap.
 
@@ -803,7 +808,7 @@ def index_has_overlap(
 
 
 def intersect(
-    objs: typing.Sequence[typing.Union[pd.Index]],
+    objs: Sequence[pd.Index],
 ) -> pd.Index:
     r"""Intersect index objects.
 
@@ -939,7 +944,7 @@ def intersect(
 
 
 def is_index_alike(
-    objs: typing.Sequence[typing.Union[pd.Index, pd.Series, pd.DataFrame]],
+    objs: Sequence[pd.Index | pd.Series | pd.DataFrame],
 ) -> bool:
     r"""Check if index objects are alike.
 
@@ -980,7 +985,7 @@ def is_index_alike(
     objs = [obj if isinstance(obj, pd.Index) else obj.index for obj in objs]
 
     # check names
-    levels = set([obj.names for obj in objs])
+    levels = {obj.names for obj in objs}
     if len(levels) > 1:
         return False
 
@@ -995,15 +1000,11 @@ def is_index_alike(
 
 
 def iter_by_file(
-    obj: typing.Union[
-        pd.Index,
-        pd.Series,
-        pd.DataFrame,
-    ],
-) -> typing.Iterator[
-    typing.Tuple[
+    obj: (pd.Index | pd.Series | pd.DataFrame),
+) -> Iterator[
+    tuple[
         str,
-        typing.Union[pd.Index, pd.Series, pd.DataFrame],
+        pd.Index | pd.Series | pd.DataFrame,
     ],
 ]:
     r"""Iterate over object by file.
@@ -1053,8 +1054,8 @@ def iter_by_file(
 
 
 def join_labels(
-    labels: typing.Sequence[typing.Union[typing.List, typing.Dict]],
-) -> typing.Union[typing.List, typing.Dict]:
+    labels: Sequence[list | dict],
+) -> list | dict:
     r"""Combine scheme labels.
 
     Args:
@@ -1081,8 +1082,7 @@ def join_labels(
     if not isinstance(labels, list):
         labels = list(labels)
 
-    misc_table_ids = [x for x in labels if isinstance(x, str)]
-    if len(misc_table_ids) > 0:
+    if misc_table_ids := [x for x in labels if isinstance(x, str)]:
         raise ValueError(
             f"The following string values were provided: '"
             f"{misc_table_ids}'. "
@@ -1092,16 +1092,16 @@ def join_labels(
         )
 
     if not (
-        all([isinstance(x, list) for x in labels])
-        or all([isinstance(x, dict) for x in labels])
+        all(isinstance(x, list) for x in labels)
+        or all(isinstance(x, dict) for x in labels)
     ):
-        raise ValueError(("All labels must be either " "of type 'list' or 'dict'."))
+        raise ValueError("All labels must be either of type 'list' or 'dict'.")
 
     if len(labels) == 1:
         return labels[0]
 
     items = audeer.flatten_list([list(x) for x in labels])
-    dtypes = sorted(list(set([str(type(x)) for x in items])))
+    dtypes = sorted(list({str(type(x)) for x in items}))
     if len(dtypes) > 1:
         raise ValueError(
             f"Elements or keys must "
@@ -1127,7 +1127,7 @@ def join_labels(
 
 
 def join_schemes(
-    dbs: typing.Sequence[Database],
+    dbs: Sequence[Database],
     scheme_id: str,
 ):
     r"""Join and update scheme of databases.
@@ -1208,7 +1208,7 @@ def map_country(country: str) -> str:
 
 def map_file_path(
     index: pd.Index,
-    func: typing.Callable[[str], str],
+    func: Callable[[str], str],
 ) -> pd.Index:
     r"""Apply callable to file path in index.
 
@@ -1307,7 +1307,7 @@ def read_csv(
     *args,
     as_dataframe: bool = False,
     **kwargs,
-) -> typing.Union[pd.Index, pd.Series, pd.DataFrame]:
+) -> pd.Index | pd.Series | pd.DataFrame:
     r"""Read object from CSV file.
 
     Automatically detects the index type and returns an object that is
@@ -1461,10 +1461,7 @@ def replace_file_extension(
 
 def set_index_dtypes(
     index: pd.Index,
-    dtypes: typing.Union[
-        str,
-        typing.Dict[str, str],
-    ],
+    dtypes: (str | dict[str, str]),
 ) -> pd.Index:
     r"""Set the dtypes of an index for the given level names.
 
@@ -1569,13 +1566,13 @@ def set_index_dtypes(
 
 
 def to_filewise_index(
-    obj: typing.Union[pd.Index, pd.Series, pd.DataFrame],
+    obj: pd.Index | pd.Series | pd.DataFrame,
     root: str,
     output_folder: str,
     *,
     num_workers: int = 1,
     progress_bar: bool = False,
-) -> typing.Union[pd.Index, pd.Series, pd.DataFrame]:
+) -> pd.Index | pd.Series | pd.DataFrame:
     r"""Convert to filewise index.
 
     If input is segmented, each segment is saved to a separate file
@@ -1662,7 +1659,7 @@ def to_filewise_index(
             [
                 os.path.join(
                     output_folder,
-                    "_{}.".format(str(count).zfill(width)).join(f.rsplit(".", 1)),
+                    f"_{str(count).zfill(width)}.".join(f.rsplit(".", 1)),
                 )
                 for count in range(len(group))
             ]
@@ -1700,14 +1697,14 @@ def to_filewise_index(
 
 
 def to_segmented_index(
-    obj: typing.Union[pd.Index, pd.Series, pd.DataFrame],
+    obj: pd.Index | pd.Series | pd.DataFrame,
     *,
     allow_nat: bool = True,
-    files_duration: typing.MutableMapping[str, pd.Timedelta] = None,
+    files_duration: MutableMapping[str, pd.Timedelta] = None,
     root: str = None,
-    num_workers: typing.Optional[int] = 1,
+    num_workers: int | None = 1,
     verbose: bool = False,
-) -> typing.Union[pd.Index, pd.Series, pd.DataFrame]:
+) -> pd.Index | pd.Series | pd.DataFrame:
     r"""Convert to segmented index.
 
     If the input a filewise table,
@@ -1852,7 +1849,7 @@ UNION_MAX_INDEX_LEN_THRES = 500
 
 
 def union(
-    objs: typing.Sequence[pd.Index],
+    objs: Sequence[pd.Index],
 ) -> pd.Index:
     r"""Create union of index objects.
 
@@ -2010,7 +2007,7 @@ def union(
 
 def _alike_index(
     index: pd.Index,
-    data: typing.Sequence = [],
+    data: Sequence = [],
 ) -> pd.Index:
     if isinstance(index, pd.MultiIndex):
         return set_index_dtypes(
@@ -2026,7 +2023,7 @@ def _alike_index(
 
 
 def _assert_index_alike(
-    objs: typing.Sequence[typing.Union[pd.Index, pd.Series, pd.DataFrame]],
+    objs: Sequence[pd.Index | pd.Series | pd.DataFrame],
 ):
     r"""Raise if index objects are not alike.
 
@@ -2070,7 +2067,7 @@ def _assert_index_alike(
     raise ValueError(msg)
 
 
-def _audformat_dtypes(index) -> typing.List[str]:
+def _audformat_dtypes(index) -> list[str]:
     r"""List of audformat data types of index.
 
     Args:
@@ -2101,7 +2098,7 @@ def _is_same_dtype(d1, d2) -> bool:
     return d1.name == d2.name
 
 
-def _levels(index) -> typing.List[str]:
+def _levels(index) -> list[str]:
     r"""List of levels of index.
 
     Args:
@@ -2118,8 +2115,8 @@ def _levels(index) -> typing.List[str]:
 
 
 def _maybe_convert_filewise_index(
-    objs: typing.Sequence[typing.Union[pd.Index, pd.Series, pd.DataFrame]],
-) -> typing.Sequence[typing.Union[pd.Index, pd.Series, pd.DataFrame]]:
+    objs: Sequence[pd.Index | pd.Series | pd.DataFrame],
+) -> Sequence[pd.Index | pd.Series | pd.DataFrame]:
     r"""Convert filewise to segmented index.
 
     Checks if all index objects are either filewise or segmented,
@@ -2181,8 +2178,8 @@ def _maybe_convert_pandas_dtype(
 
 
 def _maybe_convert_single_level_multi_index(
-    objs: typing.Sequence[typing.Union[pd.Index, pd.Series, pd.DataFrame]],
-) -> typing.Sequence[typing.Union[pd.Index, pd.Series, pd.DataFrame]]:
+    objs: Sequence[pd.Index | pd.Series | pd.DataFrame],
+) -> Sequence[pd.Index | pd.Series | pd.DataFrame]:
     r"""Convert single-level pd.MultiIndex to pd.Index.
 
     If input is a mixture of single-level
@@ -2199,7 +2196,7 @@ def _maybe_convert_single_level_multi_index(
     """
     indices = [obj if isinstance(obj, pd.Index) else obj.index for obj in objs]
     is_single_level = indices[0].nlevels == 1
-    is_mix = len(set(isinstance(index, pd.MultiIndex) for index in indices)) == 2
+    is_mix = len({isinstance(index, pd.MultiIndex) for index in indices}) == 2
 
     if is_single_level and is_mix:
         objs = list(objs)
@@ -2212,7 +2209,7 @@ def _maybe_convert_single_level_multi_index(
     return objs
 
 
-def _pandas_dtypes(index) -> typing.List[typing.Any]:
+def _pandas_dtypes(index) -> list[object]:
     r"""List of pandas dtypes of index.
 
     Args:

@@ -1,8 +1,11 @@
+from __future__ import annotations
+
 from collections import OrderedDict
+from collections.abc import Callable
+from collections.abc import Sequence
 import inspect
 import os
 import textwrap
-import typing
 
 import oyaml as yaml
 import pandas as pd
@@ -72,8 +75,8 @@ class HeaderDict(OrderedDict):
         *args,
         sort_by_key: bool = True,
         value_type: type = None,
-        get_callback: typing.Callable = None,
-        set_callback: typing.Callable = None,
+        get_callback: Callable = None,
+        set_callback: Callable = None,
         **kwargs,
     ):
         self.sort_by_key = sort_by_key
@@ -223,7 +226,7 @@ class HeaderBase:
     def from_dict(
         self,
         d: dict,
-        ignore_keys: typing.Sequence[str] = None,
+        ignore_keys: Sequence[str] = None,
     ):
         r"""Deserialize object from dictionary.
 
@@ -267,7 +270,7 @@ class HeaderBase:
 
     def __eq__(
         self,
-        other: "HeaderBase",
+        other: HeaderBase,
     ) -> bool:
         return self.dump() == other.dump()
 
@@ -328,7 +331,7 @@ def series_to_html(self):  # pragma: no cover
     return df.to_html()
 
 
-def to_audformat_dtype(dtype: typing.Union[str, typing.Type]) -> str:
+def to_audformat_dtype(dtype: str | type) -> str:
     r"""Convert pandas to audformat dtype."""
     # bool
     if pd.api.types.is_bool_dtype(dtype):
@@ -359,7 +362,7 @@ def to_audformat_dtype(dtype: typing.Union[str, typing.Type]) -> str:
         return define.DataType.OBJECT
 
 
-def to_pandas_dtype(dtype: str) -> typing.Optional[str]:
+def to_pandas_dtype(dtype: str) -> str | None:
     r"""Convert audformat to pandas dtype.
 
     We use ``"Int64"`` instead of ``"int64"``,

@@ -879,7 +879,7 @@ def test_update(tmpdir):
         for file in db.attachments[attachment_id].files:
             assert os.path.exists(os.path.join(db.root, file))
             if file in expected_content:
-                with open(audeer.path(db.root, file), "r") as fp:
+                with open(audeer.path(db.root, file)) as fp:
                     assert fp.read() == expected_content[file]
 
     # test media files

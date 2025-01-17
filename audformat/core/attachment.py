@@ -1,5 +1,4 @@
 import os
-import typing
 
 import audeer
 
@@ -62,7 +61,7 @@ class Attachment(HeaderBase):
     @property
     def files(
         self,
-    ) -> typing.List[str]:
+    ) -> list[str]:
         r"""List all files that are part of the attachment.
 
         List recursively the relative path

@@ -1,4 +1,4 @@
-import typing
+from __future__ import annotations
 
 import numpy as np
 import pandas as pd
@@ -9,14 +9,14 @@ from audformat.core.typing import Files
 from audformat.core.typing import Timestamps
 
 
-def is_scalar(value: typing.Any) -> bool:
+def is_scalar(value: object) -> bool:
     r"""Check if value is scalar."""
     return (value is not None) and (
         isinstance(value, str) or not hasattr(value, "__len__")
     )
 
 
-def to_array(value: typing.Any) -> typing.Union[list, np.ndarray]:
+def to_array(value: object) -> list | np.ndarray:
     r"""Convert value to list or array."""
     if value is not None:
         if isinstance(value, (pd.Series, pd.DataFrame, pd.Index)):
@@ -35,7 +35,7 @@ def to_timedelta(times):
 
 
 def assert_index(
-    obj: typing.Union[pd.Index, pd.Series, pd.DataFrame],
+    obj: pd.Index | pd.Series | pd.DataFrame,
 ):
     r"""Assert object is conform to :ref:`table specifications
     <data-tables:Tables>`.
@@ -115,7 +115,7 @@ def assert_index(
 
 
 def assert_no_duplicates(
-    obj: typing.Union[pd.Index, pd.Series, pd.DataFrame],
+    obj: pd.Index | pd.Series | pd.DataFrame,
 ):
     r"""Assert object contains no duplicates in its index.
 
@@ -184,7 +184,7 @@ def filewise_index(
 
 
 def index_type(
-    obj: typing.Union[pd.Index, pd.Series, pd.DataFrame],
+    obj: pd.Index | pd.Series | pd.DataFrame,
 ) -> define.IndexType:
     r"""Derive index type.
 
@@ -221,7 +221,7 @@ def index_type(
 
 
 def is_filewise_index(
-    obj: typing.Union[pd.Index, pd.Series, pd.DataFrame],
+    obj: pd.Index | pd.Series | pd.DataFrame,
 ) -> bool:
     r"""Check if object has a filewise index.
 
@@ -248,7 +248,7 @@ def is_filewise_index(
 
 
 def is_segmented_index(
-    obj: typing.Union[pd.Index, pd.Series, pd.DataFrame],
+    obj: pd.Index | pd.Series | pd.DataFrame,
 ) -> bool:
     r"""Check if object has a segmented index.
 
