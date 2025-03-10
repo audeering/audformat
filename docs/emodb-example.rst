@@ -27,6 +27,7 @@ to the folder :file:`emodb-src`.
     # Get database source
     source = "http://emodb.bilderbar.info/download/download.zip"
     src_dir = "emodb-src"
+    audeer.rmdir(src_dir)
     if not os.path.exists(src_dir):
         urllib.request.urlretrieve(source, "emodb.zip")
         audeer.extract_archive("emodb.zip", src_dir)
