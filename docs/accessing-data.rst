@@ -11,6 +11,10 @@ by the :meth:`audformat.Table.get` method:
 .. code-block:: python
 
     import audformat.testing
+    import random
+
+
+    random.seed(1)
 
 
     db = audformat.testing.create_db()
@@ -23,8 +27,8 @@ Which returns the following :class:`pandas.DataFrame`:
 >>> table.iloc[0:2, 0:2]
                bool                    date
 file
-audio/001.wav  True 1970-01-01 00:00:00.350
-audio/002.wav  True                     NaT
+audio/001.wav  <NA>                     NaT
+audio/002.wav  True 1970-01-01 00:00:00.170
 
 
 Or you can directly access a column with :meth:`audformat.Column.get()`:
@@ -39,8 +43,8 @@ Which results in the following :class:`pandas.Series`:
 
 >>> column[0:2]
 file
-audio/001.wav    19gBvYMkzf
-audio/002.wav    SamkVRP8E9
+audio/001.wav    vv7xWJcOxL
+audio/002.wav    eF5Of2ICvG
 Name: string, dtype: string
 
 
