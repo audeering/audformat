@@ -16,7 +16,7 @@ Get source database
 First we download the source emodb_ database
 to the folder :file:`emodb-src`.
 
-.. jupyter-execute::
+.. code-block:: python
 
     import os
     import urllib.request
@@ -31,7 +31,8 @@ to the folder :file:`emodb-src`.
         urllib.request.urlretrieve(source, "emodb.zip")
         audeer.extract_archive("emodb.zip", src_dir)
 
-    os.listdir(src_dir)
+>>> os.listdir(src_dir)
+['lablaut', 'silb', 'wav', 'erklaerung.txt', 'labsilb', 'erkennung.txt']
 
 
 Gather metadata and annotations
@@ -44,9 +45,8 @@ of the database.
 
 First, have a look at the file names.
 
-.. jupyter-execute::
-
-    os.listdir(os.path.join(src_dir, "wav"))[:3]
+>>> os.listdir(os.path.join(src_dir, "wav"))[:3]
+['16a01Ec.wav', '08b01Fd.wav', '08b03Fe.wav']
 
 As described in the `emodb documentation`_
 the encoding is the following.
@@ -120,7 +120,7 @@ We will read in this file
 and use the annotations to add a confidence column
 to the emotion table.
 
-.. jupyter-execute::
+.. code-block:: python
 
     import audformat
     import pandas as pd
@@ -168,7 +168,7 @@ to the emotion table.
         os.path.join(src_dir, "erkennung.txt"),
         usecols=["Satz", "erkannt"],
         index_col="Satz",
-        sep="\s+",
+        sep=r"\s+",
         encoding="Latin-1",
         decimal=",",
         converters={"Satz": lambda x: os.path.join("wav", x)},
@@ -225,7 +225,7 @@ Create audformat database
 Now we create the database object
 and assign the information to it.
 
-.. jupyter-execute::
+.. code-block:: python
 
     db = audformat.Database(
         name="emodb",
@@ -328,9 +328,66 @@ Inspect database header
 Before storing the database,
 we can inspect its header.
 
-.. jupyter-execute::
-
-    db
+>>> db
+name: emodb
+description: Berlin Database of Emotional Speech. A German database of emotional utterances
+  spoken by actors recorded as a part of the DFG funded research project SE462/3-1
+  in 1997 and 1999. Recordings took place in the anechoic chamber of the Technical
+  University Berlin, department of Technical Acoustics. It contains about 500 utterances
+  from ten different actors expressing basic six emotions and neutral.
+source: http://emodb.bilderbar.info/download/download.zip
+usage: unrestricted
+languages: [deu]
+media:
+  microphone: {type: other, format: wav, channels: 1, sampling_rate: 16000}
+raters:
+  gold: {type: human}
+schemes:
+  age: {description: Age of speaker, dtype: int, minimum: 0}
+  confidence: {description: Confidence of emotion ratings., dtype: float, minimum: 0,
+    maximum: 1}
+  emotion:
+    description: Six basic emotions and neutral.
+    dtype: str
+    labels: [anger, boredom, disgust, fear, happiness, sadness, neutral]
+  gender:
+    description: Gender of speaker
+    dtype: str
+    labels: [female, male]
+  language: {description: Language of speaker, dtype: str}
+  speaker: {description: The actors could produce each sentence as often as they liked
+      and were asked to remember a real situation from their past when they had felt
+      this emotion., dtype: int, labels: speaker}
+  transcription:
+    description: Sentence produced by actor.
+    dtype: str
+    labels: {a01: Der Lappen liegt auf dem Eisschrank., a02: Das will sie am Mittwoch
+        abgeben., a04: Heute abend könnte ich es ihm sagen., a05: Das schwarze Stück
+        Papier befindet sich da oben neben dem Holzstück., a07: In sieben Stunden
+        wird es soweit sein., b01: 'Was sind denn das für Tüten, die da unter dem
+        Tisch stehen.', b02: Sie haben es gerade hochgetragen und jetzt gehen sie
+        wieder runter., b03: An den Wochenenden bin ich jetzt immer nach Hause gefahren
+        und habe Agnes besucht., b09: Ich will das eben wegbringen und dann mit Karl
+        was trinken gehen., b10: 'Die wird auf dem Platz sein, wo wir sie immer hinlegen.'}
+tables:
+  emotion:
+    type: filewise
+    columns:
+      emotion: {scheme_id: emotion, rater_id: gold}
+      emotion.confidence: {scheme_id: confidence, rater_id: gold}
+  files:
+    type: filewise
+    columns:
+      speaker: {scheme_id: speaker}
+      transcription: {scheme_id: transcription}
+misc_tables:
+  speaker:
+    levels: {speaker: int}
+    columns:
+      age: {scheme_id: age}
+      gender: {scheme_id: gender}
+      language: {scheme_id: language}
+pdf: http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.130.8506&rep=rep1&type=pdf
 
 
 Inspect database tables
@@ -338,23 +395,50 @@ Inspect database tables
 
 First check which tables are available.
 
-.. jupyter-execute::
-
-    list(db)
+>>> list(db)
+['emotion', 'files', 'speaker']
 
 Then list the first 10 entries of every table.
 
-.. jupyter-execute::
-
-    db["files"].get()[:10]
-
-.. jupyter-execute::
-
-    db["emotion"].get()[:10]
-
-.. jupyter-execute::
-
-    db["speaker"].get()[:10]
+>>> db["files"].get()[:10]
+                speaker transcription
+file
+wav/03a01Fa.wav       3           a01
+wav/03a01Nc.wav       3           a01
+wav/03a01Wa.wav       3           a01
+wav/03a02Fc.wav       3           a02
+wav/03a02Nc.wav       3           a02
+wav/03a02Ta.wav       3           a02
+wav/03a02Wb.wav       3           a02
+wav/03a02Wc.wav       3           a02
+wav/03a04Ad.wav       3           a04
+wav/03a04Fd.wav       3           a04
+>>> db["emotion"].get()[:10]
+                   emotion  emotion.confidence
+file
+wav/03a01Fa.wav  happiness                0.90
+wav/03a01Nc.wav    neutral                1.00
+wav/03a01Wa.wav      anger                0.95
+wav/03a02Fc.wav  happiness                0.85
+wav/03a02Nc.wav    neutral                1.00
+wav/03a02Ta.wav    sadness                0.90
+wav/03a02Wb.wav      anger                1.00
+wav/03a02Wc.wav      anger                1.00
+wav/03a04Ad.wav       fear                0.90
+wav/03a04Fd.wav  happiness                1.00
+>>> db["speaker"].get()[:10]
+         age  gender language
+speaker
+3         31    male      deu
+8         34  female      deu
+9         21  female      deu
+10        32    male      deu
+11        26    male      deu
+12        30    male      deu
+13        32  female      deu
+14        35  female      deu
+15        25    male      deu
+16        31  female      deu
 
 Columns might contain labels,
 that provide additional mappings.
@@ -363,9 +447,19 @@ with the ``map`` argument of :meth:`audformat.Table.get`,
 see :ref:`map-scheme-labels`
 for an extended documentation.
 
-.. jupyter-execute::
-
-    db["files"].get(map={"speaker": ["speaker", "age", "gender"]})[:10]
+>>> db["files"].get(map={"speaker": ["speaker", "age", "gender"]})[:10]
+                speaker transcription  age gender
+file
+wav/03a01Fa.wav       3           a01   31   male
+wav/03a01Nc.wav       3           a01   31   male
+wav/03a01Wa.wav       3           a01   31   male
+wav/03a02Fc.wav       3           a02   31   male
+wav/03a02Nc.wav       3           a02   31   male
+wav/03a02Ta.wav       3           a02   31   male
+wav/03a02Wb.wav       3           a02   31   male
+wav/03a02Wc.wav       3           a02   31   male
+wav/03a04Ad.wav       3           a04   31   male
+wav/03a04Fd.wav       3           a04   31   male
 
 
 Store database to disk
@@ -375,36 +469,26 @@ Now we store the database in the folder ``emodb``.
 Note, that we have to make sure
 that the media files are located at the correct position ourselves.
 
-.. jupyter-execute::
+.. code-block:: python
 
     import shutil
 
 
-    db_dir = audeer.mkdir("emodb")
+    db_dir = audeer.mkdir(tmpdir, "emodb")
     shutil.copytree(
         os.path.join(src_dir, "wav"),
         os.path.join(db_dir, "wav"),
     )
     db.save(db_dir)
 
-    os.listdir(db_dir)
-
+>>> os.listdir(db_dir)
+['wav', 'db.speaker.parquet', 'db.emotion.parquet', 'db.yaml', 'db.files.parquet']
 
 You can read the database from disk as well.
 
-.. jupyter-execute::
-
-    db = audformat.Database.load(db_dir)
-    db.name
-
-
-.. Clean up
-.. jupyter-execute::
-    :hide-code:
-    :hide-output:
-
-    shutil.rmtree(db_dir)
-
+>>> db = audformat.Database.load(db_dir)
+>>> db.name
+'emodb'
 
 .. _emodb: http://emodb.bilderbar.info
 .. _emodb documentation: http://emodb.bilderbar.info/index-1280.html
