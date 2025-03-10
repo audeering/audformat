@@ -121,8 +121,6 @@ audio/005.wav             0   37
 It is possible to map several columns at once
 and to map the same column to multiple fields.
 
-.. jupyter-execute::
-
 >>> map = {"transcription": "words", "speaker": ["age", "gender"]}
 >>> db["files"].get(map=map)
                  words  age  gender                                                                                                                                           file                                                                                                                                                                          audio/001.wav    hello   30  female
