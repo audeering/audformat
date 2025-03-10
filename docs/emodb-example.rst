@@ -27,7 +27,6 @@ to the folder :file:`emodb-src`.
     # Get database source
     source = "http://emodb.bilderbar.info/download/download.zip"
     src_dir = "emodb-src"
-    audeer.rmdir(src_dir)
     if not os.path.exists(src_dir):
         urllib.request.urlretrieve(source, "emodb.zip")
         audeer.extract_archive("emodb.zip", src_dir)
@@ -169,11 +168,12 @@ to the emotion table.
         os.path.join(src_dir, "erkennung.txt"),
         usecols=["Satz", "erkannt"],
         index_col="Satz",
-        sep=r"\s+",
+        sep=r"\t",
         encoding="Latin-1",
         decimal=",",
-        converters={"Satz": lambda x: os.path.join("wav", x)},
+        engine="python",
     ).squeeze("columns")
+    y.index = audformat.utils.expand_file_path(y.index, "wav/")
     y = y.loc[files]
     y = y.replace(to_replace=u"\xa0", value="", regex=True)
     y = y.replace(to_replace=",", value=".", regex=True)
