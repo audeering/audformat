@@ -40,7 +40,6 @@ extensions = [
     "sphinx.ext.intersphinx",
     "sphinx_copybutton",
     "sphinxcontrib.katex",  # has to be before jupyter_sphinx
-    "jupyter_sphinx",
     "sphinx_apipages",
 ]
 
