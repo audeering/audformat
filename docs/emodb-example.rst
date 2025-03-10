@@ -31,8 +31,8 @@ to the folder :file:`emodb-src`.
         urllib.request.urlretrieve(source, "emodb.zip")
         audeer.extract_archive("emodb.zip", src_dir)
 
->>> os.listdir(src_dir)
-['lablaut', 'silb', 'wav', 'erklaerung.txt', 'labsilb', 'erkennung.txt']
+>>> sorted(os.listdir(src_dir))
+['erkennung.txt', 'erklaerung.txt', 'lablaut', 'labsilb', 'silb', 'wav']
 
 
 Gather metadata and annotations
@@ -45,8 +45,8 @@ of the database.
 
 First, have a look at the file names.
 
->>> os.listdir(os.path.join(src_dir, "wav"))[:3]
-['16a01Ec.wav', '08b01Fd.wav', '08b03Fe.wav']
+>>> sorted(os.listdir(os.path.join(src_dir, "wav"))[:3])
+['08b01Fd.wav', '08b03Fe.wav', '16a01Ec.wav']
 
 As described in the `emodb documentation`_
 the encoding is the following.
@@ -481,8 +481,8 @@ that the media files are located at the correct position ourselves.
     )
     db.save(db_dir)
 
->>> os.listdir(db_dir)
-['wav', 'db.speaker.parquet', 'db.emotion.parquet', 'db.yaml', 'db.files.parquet']
+>>> sorted(os.listdir(db_dir))
+['db.emotion.parquet', 'db.files.parquet', 'db.speaker.parquet', 'db.yaml', 'wav']
 
 You can read the database from disk as well.
 
