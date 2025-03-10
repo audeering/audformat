@@ -173,7 +173,7 @@ to the emotion table.
         decimal=",",
         engine="python",
     ).squeeze("columns")
-    y.index = audformat.utils.expand_file_path(y.index, "wav/")
+    y.index = "wav/" + y.index
     y = y.loc[files]
     y = y.replace(to_replace=u"\xa0", value="", regex=True)
     y = y.replace(to_replace=",", value=".", regex=True)
