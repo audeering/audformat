@@ -45,8 +45,8 @@ of the database.
 
 First, have a look at the file names.
 
->>> sorted(os.listdir(os.path.join(src_dir, "wav"))[:3])
-['08b01Fd.wav', '08b03Fe.wav', '16a01Ec.wav']
+>>> sorted(os.listdir(os.path.join(src_dir, "wav")))[:3]
+['03a01Fa.wav', '03a01Nc.wav', '03a01Wa.wav']
 
 As described in the `emodb documentation`_
 the encoding is the following.
