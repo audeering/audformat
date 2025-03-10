@@ -168,7 +168,7 @@ to the emotion table.
         os.path.join(src_dir, "erkennung.txt"),
         usecols=["Satz", "erkannt"],
         index_col="Satz",
-        sep=r"\s+",
+        sep="\s+",
         encoding="Latin-1",
         decimal=",",
         converters={"Satz": lambda x: os.path.join("wav", x)},

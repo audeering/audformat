@@ -7,6 +7,7 @@ import numpy as np
 import pytest
 import sybil
 from sybil.parsers.rest import DocTestParser
+from sybil.parsers.rest import SkipParser
 
 import audiofile
 
@@ -30,6 +31,7 @@ def prepare_docstring_tests(doctest_namespace):
 
 parsers = [
     DocTestParser(optionflags=ELLIPSIS + NORMALIZE_WHITESPACE),
+    SkipParser(),
 ]
 pytest_collect_file = sybil.Sybil(
     parsers=parsers,
