@@ -7,12 +7,6 @@ from sybil.parsers.rest import PythonCodeBlockParser
 from sybil.parsers.rest import SkipParser
 
 
-# @pytest.fixture(scope="module")
-# def tmpdir(tmpdir_factory):
-#     """Provide tmpdir."""
-#     yield tmpdir_factory.mktemp("tmp")
-
-
 # Collect doctests
 #
 # We use several `sybil.Sybil` instances
@@ -28,36 +22,3 @@ pytest_collect_file = sybil.Sybil(
     pattern="*.rst",
     fixtures=["tmpdir"],
 ).pytest()
-# pytest_collect_file = sybil.sybil.SybilCollection(
-#     (
-#         sybil.Sybil(
-#             parsers=parsers,
-#             filenames=[
-#                 "authentication.rst",
-#                 "overview.rst",
-#                 "quickstart.rst",
-#                 "dependencies.rst",
-#                 "load.rst",
-#                 "audb.info.rst",
-#             ],
-#             fixtures=[
-#                 "cache",
-#                 "run_in_tmpdir",
-#                 "public_repository",
-#             ],
-#             setup=imports,
-#         ),
-#         sybil.Sybil(
-#             parsers=parsers,
-#             filenames=["publish.rst"],
-#             fixtures=["cache", "run_in_tmpdir"],
-#             setup=imports,
-#         ),
-#         sybil.Sybil(
-#             parsers=parsers,
-#             filenames=["configuration.rst", "caching.rst"],
-#             fixtures=["default_configuration"],
-#             setup=imports,
-#         ),
-#     )
-# ).pytest()
