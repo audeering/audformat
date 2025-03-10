@@ -149,7 +149,7 @@ to the emotion table.
     )
 
     files = sorted(
-        [os.path.join("wav", f) for f in os.listdir(os.path.join(src_dir, "wav"))]
+        [f"wav/{f}" for f in os.listdir(os.path.join(src_dir, "wav"))]
     )
     names = [audeer.basename_wo_ext(f) for f in files]
 
