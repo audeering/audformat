@@ -32,10 +32,10 @@ Create an index with the levels ``"file"`` and ``"other"``:
     )
 
 >>> index
-    MultiIndex([('f1', 'f2'),
-                ('f1', 'f3'),
-                ('f2', 'f3')],
-               names=['file', 'other'])
+MultiIndex([('f1', 'f2'),
+            ('f1', 'f3'),
+            ('f2', 'f3')],
+           names=['file', 'other'])
 
 Create database and add misc table with the index:
 

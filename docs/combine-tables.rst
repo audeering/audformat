@@ -166,15 +166,18 @@ gender:
 
 Next, we add a table and fill in some gender information:
 
-.. code-block:: python
-
-    audformat.testing.add_table(
-        db2,
-        table_id="gender_and_age",
-        index_type=audformat.define.IndexType.FILEWISE,
-        columns="gender",
-        num_files=[2, 3, 4],
-    ).get()
+>>> audformat.testing.add_table(
+...     db2,
+...     table_id="gender_and_age",
+...     index_type=audformat.define.IndexType.FILEWISE,
+...     columns="gender",
+...     num_files=[2, 3, 4],
+... ).get()
+              gender
+file
+audio/002.wav   male
+audio/003.wav   male
+audio/004.wav   male
 
 Now, we update the table with age values from the other database.
 

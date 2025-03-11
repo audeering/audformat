@@ -62,18 +62,13 @@ Minimal example
 audformat implementation
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. code-block:: python
-
-    import audformat
-
-
-    # Create Database
-    db = audformat.Database(
-        name="databasename",
-        source="https://gitlab.audeering.com/data/databasename",
-        usage="commercial",
-    )
-
+>>> import audformat
+>>> # Create Database
+>>> db = audformat.Database(
+...     name="databasename",
+...     source="https://gitlab.audeering.com/data/databasename",
+...     usage="commercial",
+... )
 >>> db
 name: databasename
 source: https://gitlab.audeering.com/data/databasename

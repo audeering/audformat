@@ -123,7 +123,9 @@ and to map the same column to multiple fields.
 
 >>> map = {"transcription": "words", "speaker": ["age", "gender"]}
 >>> db["files"].get(map=map)
-                 words  age  gender                                                                                                                                           file                                                                                                                                                                          audio/001.wav    hello   30  female
+                 words  age  gender
+file
+audio/001.wav    hello   30  female
 audio/002.wav  goodbye   33    male
 audio/003.wav  goodbye   33    male
 audio/004.wav    hello   33    male
