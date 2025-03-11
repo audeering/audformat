@@ -651,10 +651,15 @@ def expand_file_path(
             :ref:`table specifications <data-tables:Tables>`
 
     Examples:
+
+        .. skip: start if(sys.platform.startswith("win"))
+
         >>> expand_file_path(filewise_index(["f1", "f2"]), "/a")
         Index(['/a/f1', '/a/f2'], dtype='string', name='file')
         >>> expand_file_path(filewise_index(["f1", "f2"]), "./a")
         Index(['a/f1', 'a/f2'], dtype='string', name='file')
+
+        .. skip: end
 
     """  # noqa: E501
     if len(index) == 0:
@@ -1600,6 +1605,9 @@ def to_filewise_index(
             original data
 
     Examples:
+
+        .. skip: start if(sys.platform.startswith("win"))
+
         >>> index = segmented_index(
         ...     files=["f.wav", "f.wav"],
         ...     starts=[0, 0.5],
@@ -1607,6 +1615,8 @@ def to_filewise_index(
         ... )
         >>> to_filewise_index(index, ".", "split")
         Index(['split/f_0.wav', 'split/f_1.wav'], dtype='string', name='file')
+
+        .. skip: end
 
     """
     if is_filewise_index(obj):

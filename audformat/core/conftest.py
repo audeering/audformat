@@ -1,8 +1,13 @@
+from doctest import ELLIPSIS
+from doctest import NORMALIZE_WHITESPACE
 import os
 import tempfile
 
 import numpy as np
 import pytest
+import sybil
+from sybil.parsers.rest import DocTestParser
+from sybil.parsers.rest import SkipParser
 
 import audiofile
 
@@ -22,3 +27,14 @@ def prepare_docstring_tests(doctest_namespace):
         yield
 
         os.chdir(current_dir)
+
+
+parsers = [
+    DocTestParser(optionflags=ELLIPSIS + NORMALIZE_WHITESPACE),
+    SkipParser(),
+]
+pytest_collect_file = sybil.Sybil(
+    parsers=parsers,
+    pattern="*.py",
+    fixtures=["prepare_docstring_tests"],
+).pytest()

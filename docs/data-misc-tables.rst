@@ -1,17 +1,6 @@
 Misc Tables
 ===========
 
-.. Enforce HTML output for pd.Series
-.. jupyter-execute::
-    :hide-code:
-    :hide-output:
-
-    import audformat
-
-
-    audformat.core.common.format_series_as_html()
-
-
 A miscellaneous (misc) table links labels to an index.
 The index has no restrictions
 and can contain an arbitrary number of columns (called levels),
@@ -26,7 +15,7 @@ audformat implementation
 
 Create an index with the levels ``"file"`` and ``"other"``:
 
-.. jupyter-execute::
+.. code-block:: python
 
     import audformat
     import audformat.testing
@@ -41,45 +30,49 @@ Create an index with the levels ``"file"`` and ``"other"``:
         ],
         names=["file", "other"],
     )
-    index
+
+>>> index
+MultiIndex([('f1', 'f2'),
+            ('f1', 'f3'),
+            ('f2', 'f3')],
+           names=['file', 'other'])
 
 Create database and add misc table with the index:
 
-.. jupyter-execute::
-
-    db = audformat.testing.create_db(minimal=True)
-    db["misc"] = audformat.MiscTable(index)
-    db["misc"]["values"] = audformat.Column()
-    db.misc_tables["misc"]
+>>> db = audformat.testing.create_db(minimal=True)
+>>> db["misc"] = audformat.MiscTable(index)
+>>> db["misc"]["values"] = audformat.Column()
+>>> db.misc_tables["misc"]
+levels: {file: object, other: object}
+columns:
+  values: {}
 
 Assign labels to a table:
 
-.. jupyter-execute::
-
-    values_list = [0, 1, 0]
-    values_dict = {"values": values_list}
-    db["misc"].set(values_dict)
-
-Access labels as :class:`pandas.DataFrame`:
-
-.. jupyter-execute::
-
-    db["misc"].get()
+>>> values_list = [0, 1, 0]
+>>> values_dict = {"values": values_list}
+>>> db["misc"].set(values_dict)
+>>> db["misc"].get()
+           values
+file other
+f1   f2         0
+     f3         1
+f2   f3         0
 
 Assign labels to a column:
 
-.. jupyter-execute::
-
-    db["misc"]["values"].set(values_list)
-
-Access labels as :class:`pandas.Series`
-
-.. jupyter-execute::
-
-    db["misc"]["values"].get()
+>>> db["misc"]["values"].set(values_list)
+>>> db["misc"]["values"].get()
+file  other
+f1    f2       0
+      f3       1
+f2    f3       0
+Name: values, dtype: object
 
 Access labels from a misc table with an index:
 
-.. jupyter-execute::
-
-    db["misc"].get(index[:2])
+>>> db["misc"].get(index[:2])
+           values
+file other
+f1   f2         0
+     f3         1

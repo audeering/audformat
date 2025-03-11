@@ -1,13 +1,6 @@
 Conventions
 ===========
 
-.. jupyter-execute::
-    :hide-code:
-    :hide-output:
-
-    import audformat
-
-
 Database name
 -------------
 
@@ -18,7 +11,9 @@ If you have different versions,
 or very long names you can use ``-``
 to increase readability.
 
-.. jupyter-execute::
+.. code-block:: python
+
+    import audformat
 
     audformat.Database(name="librispeech-mfa-cseg-pho")
 
@@ -60,7 +55,7 @@ Use lower case for table and scheme names.
 If you have multiple raters,
 name each column after the name of the rater.
 
-.. jupyter-execute::
+.. code-block:: python
 
     db = audformat.Database("mydata")
 
@@ -78,7 +73,28 @@ name each column after the name of the rater.
                 rater_id=rater_id,
             )
 
-    db
+>>> db
+name: mydata
+source: ''
+usage: unrestricted
+languages: []
+raters:
+  rater1: {type: human}
+  rater2: {type: human}
+schemes:
+  arousal: {dtype: float}
+  valence: {dtype: float}
+tables:
+  arousal:
+    type: filewise
+    columns:
+      rater1: {scheme_id: arousal, rater_id: rater1}
+      rater2: {scheme_id: arousal, rater_id: rater2}
+  valence:
+    type: filewise
+    columns:
+      rater1: {scheme_id: valence, rater_id: rater1}
+      rater2: {scheme_id: valence, rater_id: rater2}
 
 
 Database splits
@@ -91,7 +107,7 @@ consists,
 consider one table per split,
 named ``scheme_id.split``.
 
-.. jupyter-execute::
+.. code-block:: python
 
     db = audformat.Database("mydata")
 
@@ -109,8 +125,22 @@ named ``scheme_id.split``.
                 split_id=split_id,
             )
 
-    db
-        
+>>> db
+name: mydata
+source: ''
+usage: unrestricted
+languages: []
+schemes:
+  arousal: {dtype: float}
+splits:
+  dev: {type: dev}
+  test: {type: test}
+  train: {type: train}
+tables:
+  arousal.dev: {type: filewise, split_id: dev}
+  arousal.test: {type: filewise, split_id: test}
+  arousal.train: {type: filewise, split_id: train}
+
 
 Gold standard annotation
 ------------------------
@@ -130,7 +160,7 @@ should be created
 and associated with the column
 holding the gold standard values.
 
-.. jupyter-execute::
+.. code-block:: python
 
     db = audformat.Database("mydata")
 
@@ -154,7 +184,27 @@ holding the gold standard values.
             rater_id="gold_standard",
         )
 
-    db
+>>> db
+name: mydata
+source: ''
+usage: unrestricted
+languages: []
+raters:
+  gold_standard: {type: vote}
+  rater1: {type: human}
+  rater2: {type: human}
+schemes:
+  arousal: {dtype: float}
+tables:
+  arousal:
+    type: filewise
+    columns:
+      rater1: {scheme_id: arousal, rater_id: rater1}
+      rater2: {scheme_id: arousal, rater_id: rater2}
+  arousal.gold_standard:
+    type: filewise
+    columns:
+      arousal: {scheme_id: arousal, rater_id: gold_standard}
 
 
 Confidence values
@@ -174,7 +224,7 @@ The confidence values should be stored in a separate table.
 Or it can be stored within the same table as a different column,
 which might be worth considering when storing the gold standard.
 
-.. jupyter-execute::
+.. code-block:: python
 
     db = audformat.Database("mydata")
 
@@ -194,7 +244,22 @@ which might be worth considering when storing the gold standard.
             rater_id="gold_standard",
         )
 
-    db
+>>> db
+name: mydata
+source: ''
+usage: unrestricted
+languages: []
+raters:
+  gold_standard: {type: vote}
+schemes:
+  arousal: {dtype: float}
+  arousal.confidence: {dtype: float, minimum: 0, maximum: 1}
+tables:
+  arousal:
+    type: filewise
+    columns:
+      arousal: {scheme_id: arousal, rater_id: gold_standard}
+      arousal.confidence: {scheme_id: arousal.confidence, rater_id: gold_standard}
 
 
 File and speaker information
@@ -213,7 +278,7 @@ like age of speaker,
 should be collected in the header
 as it can be later automatically mapped.
 
-.. jupyter-execute::
+.. code-block:: python
 
     db = audformat.Database("mydata")
 
@@ -231,21 +296,38 @@ as it can be later automatically mapped.
     db["files"]["speaker"] = audformat.Column(scheme_id="speaker")
     db["files"]["speaker"].set(["speaker1", "speaker2"])
 
-    db
-
-
-.. jupyter-execute::
-
-    db["files"].get()
+>>> db
+name: mydata
+source: ''
+usage: unrestricted
+languages: []
+schemes:
+  speaker:
+    dtype: str
+    labels:
+      speaker1: {gender: female, age: 31}
+      speaker2: {gender: male, age: 85}
+tables:
+  files:
+    type: filewise
+    columns:
+      speaker: {scheme_id: speaker}
+>>> db["files"].get()
+        speaker
+file
+a.wav  speaker1
+b.wav  speaker2
 
 You can access the additional information with the ``map`` argument
 of :meth:`audformat.Table.get`,
 see :ref:`map-scheme-labels`
 for an extended documentation.
 
-.. jupyter-execute::
-
-    db["files"].get(map={"speaker": "gender"})
+>>> db["files"].get(map={"speaker": "gender"})
+       gender
+file
+a.wav  female
+b.wav    male
 
 
 Temporal data
@@ -258,7 +340,7 @@ Temporal dates
 like time of rating
 should be stored as :class:`datetime.datetime`.
 
-.. jupyter-execute::
+.. code-block:: python
 
     import pandas as pd
 
@@ -279,4 +361,8 @@ should be stored as :class:`datetime.datetime`.
     )
     db["files"]["time"].set(pd.to_timedelta(times, unit="s"))
 
-    db["files"].get()
+>>> db["files"].get()
+                        time
+file
+a.wav 0 days 00:00:02.100000
+b.wav 0 days 00:00:00.100000
