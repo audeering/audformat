@@ -970,7 +970,8 @@ def test_update_misc_table():
 
     This addresses the particular case
     of adding a new column
-    to the table,
+    to a misc table
+    in a database having only a single table,
     which was failing as described in
     https://github.com/audeering/audformat/issues/466
 
@@ -992,10 +993,8 @@ def test_update_misc_table():
     db2["sessions"]["prompt_2"].set(["response2"])
     df2 = db2["sessions"].df.copy()
 
-    df_expected = pd.concat([df2, df1])
+    df_expected = pd.concat([df1, df2])
 
     db1.update(db2)
-    print(f'{db1["sessions"].df=}')
-    print(f'{db2["sessions"].df=}')
-    print(f"{df_expected=}")
     pd.testing.assert_frame_equal(db1["sessions"].df, df_expected)
+    pd.testing.assert_frame_equal(db2["sessions"].df, df2)
