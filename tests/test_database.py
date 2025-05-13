@@ -963,3 +963,39 @@ def test_update(tmpdir):
         db.update(other1, overwrite=True, copy_attachments=True)
     with pytest.raises(RuntimeError):
         db.update(other1, overwrite=True, copy_media=True)
+
+
+def test_update_misc_table():
+    """Tests updating databases with misc tables.
+
+    This addresses the particular case
+    of adding a new column
+    to the table,
+    which was failing as described in
+    https://github.com/audeering/audformat/issues/466
+
+    """
+    db1 = audformat.Database("mydb")
+    db1.schemes["answer1"] = audformat.Scheme("str")
+    db1["sessions"] = audformat.MiscTable(pd.Index(["a"], name="session"))
+    db1["sessions"]["prompt_1"] = audformat.Column(scheme_id="answer1")
+    db1["sessions"]["prompt_1"].set(["response1"])
+    df1 = db1["sessions"].df.copy()
+
+    db2 = audformat.Database("mydb")
+    db2.schemes["answer1"] = audformat.Scheme("str")
+    db2.schemes["answer2"] = audformat.Scheme("str")
+    db2["sessions"] = audformat.MiscTable(pd.Index(["b"], name="session"))
+    db2["sessions"]["prompt_1"] = audformat.Column(scheme_id="answer1")
+    db2["sessions"]["prompt_2"] = audformat.Column(scheme_id="answer2")
+    db2["sessions"]["prompt_1"].set(["response1"])
+    db2["sessions"]["prompt_2"].set(["response2"])
+    df2 = db2["sessions"].df.copy()
+
+    df_expected = pd.concat([df2, df1])
+
+    db1.update(db2)
+    print(f'{db1["sessions"].df=}')
+    print(f'{db2["sessions"].df=}')
+    print(f"{df_expected=}")
+    pd.testing.assert_frame_equal(db1["sessions"].df, df_expected)
