@@ -21,6 +21,7 @@ def mono_db(tmpdir):
 
     # --- Schemes
     db.schemes["age"] = audformat.Scheme("int", minimum=0)
+    db.schemes["annotated"] = audformat.Scheme("bool")
     db.schemes["height"] = audformat.Scheme("float")
     db.schemes["int"] = audformat.Scheme("int")
     db.schemes["partial"] = audformat.Scheme("str")
@@ -31,6 +32,7 @@ def mono_db(tmpdir):
         "str",
         labels=["low", "normal", "high"],
     )
+    db.schemes["status"] = audformat.Scheme("bool")
     db.schemes["winner"] = audformat.Scheme(
         "str",
         labels={
@@ -125,6 +127,16 @@ def mono_db(tmpdir):
     db["rating.test"] = audformat.Table(index, split_id="test")
     db["rating.test"]["rating"] = audformat.Column(scheme_id="rating")
     db["rating.test"]["rating"].set([1])
+
+    index = audformat.filewise_index(["f2.wav"])
+    db["single"] = audformat.Table(index)
+    db["single"]["status"] = audformat.Column(scheme_id="status")
+    db["single"]["status"].set(True)
+
+    index = audformat.filewise_index(["f3.wav"])
+    db["last"] = audformat.Table(index)
+    db["last"]["annotated"] = audformat.Column(scheme_id="annotated")
+    db["last"]["annotated"].set(True)
 
     # --- Segmented tables
     index = audformat.segmented_index(
@@ -545,6 +557,8 @@ def wrong_scheme_labels_db(tmpdir):
                 dtype="float",
             ),
         ),
+        # Segmented index with filewise additional entries
+        # https://github.com/audeering/audformat/issues/460
         (
             "mono_db",
             "regression",
@@ -603,6 +617,66 @@ def wrong_scheme_labels_db(tmpdir):
                         ),
                         dtype="string",
                         name="partial",
+                    ),
+                ],
+                axis=1,
+            ),
+        ),
+        (
+            "mono_db",
+            "regression",
+            ["status"],
+            pd.concat(
+                [
+                    pd.Series(
+                        [0.3, 0.2, 0.6, 0.4],
+                        index=audformat.segmented_index(
+                            ["f1.wav", "f1.wav", "f1.wav", "f2.wav"],
+                            [0, 0.1, 0.3, 0],
+                            [0.2, 0.2, 0.5, 0.7],
+                        ),
+                        dtype="float",
+                        name="regression",
+                    ),
+                    pd.Series(
+                        [None, None, None, True],
+                        index=audformat.segmented_index(
+                            ["f1.wav", "f1.wav", "f1.wav", "f2.wav"],
+                            [0, 0.1, 0.3, 0],
+                            [0.2, 0.2, 0.5, 0.7],
+                        ),
+                        dtype="boolean",
+                        name="status",
+                    ),
+                ],
+                axis=1,
+            ),
+        ),
+        (
+            "mono_db",
+            "regression",
+            ["annotated"],
+            pd.concat(
+                [
+                    pd.Series(
+                        [0.3, 0.2, 0.6, 0.4],
+                        index=audformat.segmented_index(
+                            ["f1.wav", "f1.wav", "f1.wav", "f2.wav"],
+                            [0, 0.1, 0.3, 0],
+                            [0.2, 0.2, 0.5, 0.7],
+                        ),
+                        dtype="float",
+                        name="regression",
+                    ),
+                    pd.Series(
+                        [None, None, None, None],
+                        index=audformat.segmented_index(
+                            ["f1.wav", "f1.wav", "f1.wav", "f2.wav"],
+                            [0, 0.1, 0.3, 0],
+                            [0.2, 0.2, 0.5, 0.7],
+                        ),
+                        dtype="boolean",
+                        name="annotated",
                     ),
                 ],
                 axis=1,
