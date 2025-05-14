@@ -1245,7 +1245,7 @@ class Database(HeaderBase):
         for other in others:
             for table_id in list(other.misc_tables) + list(other.tables):
                 table = other[table_id]
-                if table_id in self.tables:
+                if table_id in list(self):
                     self[table_id].update(table, overwrite=overwrite)
                 else:
                     self[table_id] = table.copy()
