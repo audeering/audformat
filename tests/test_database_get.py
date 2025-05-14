@@ -684,6 +684,46 @@ def wrong_scheme_labels_db(tmpdir):
         ),
         (
             "mono_db",
+            "regression",
+            ["partial", "status"],
+            pd.concat(
+                [
+                    pd.Series(
+                        [0.3, 0.2, 0.6, 0.4],
+                        index=audformat.segmented_index(
+                            ["f1.wav", "f1.wav", "f1.wav", "f2.wav"],
+                            [0, 0.1, 0.3, 0],
+                            [0.2, 0.2, 0.5, 0.7],
+                        ),
+                        dtype="float",
+                        name="regression",
+                    ),
+                    pd.Series(
+                        ["a", "a", "a", None],
+                        index=audformat.segmented_index(
+                            ["f1.wav", "f1.wav", "f1.wav", "f2.wav"],
+                            [0, 0.1, 0.3, 0],
+                            [0.2, 0.2, 0.5, 0.7],
+                        ),
+                        dtype="string",
+                        name="partial",
+                    ),
+                    pd.Series(
+                        [None, None, None, True],
+                        index=audformat.segmented_index(
+                            ["f1.wav", "f1.wav", "f1.wav", "f2.wav"],
+                            [0, 0.1, 0.3, 0],
+                            [0.2, 0.2, 0.5, 0.7],
+                        ),
+                        dtype="boolean",
+                        name="status",
+                    ),
+                ],
+                axis=1,
+            ),
+        ),
+        (
+            "mono_db",
             "selection",
             [],
             pd.DataFrame(
