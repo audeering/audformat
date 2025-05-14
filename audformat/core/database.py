@@ -873,20 +873,16 @@ class Database(HeaderBase):
                     aggregate_function=aggregate_function,
                 )
             # Expand filewise labels to segments
+            # (https://github.com/audeering/audformat/issues/460)
             if is_segmented_index(obj) and is_filewise_index(additional_obj):
-                print(f"{obj=}")
-                print(f"{obj.index.get_level_values(define.IndexField.FILE)=}")
-                common_files = obj.index.get_level_values(define.IndexField.FILE)
-                # Problem of next line:
+                # Problem of common_files:
                 # squeezes [f1, f1, f2] to [f1, f2]
                 # so we need to separate intersection from listing files
-                # common_files = utils.intersect([additional_obj.index, files])
-                print(f"{files=}")
+                files = obj.index.get_level_values(define.IndexField.FILE)
+                common_files = utils.intersect([additional_obj.index, files])
+                files = files.where(files.isin(common_files)).dropna()
                 additional_obj = additional_obj.loc[files]
-                print(f"{additional_obj=}")
-                print(f"{obj.loc[files]=}")
-                print(f"{obj.loc[files].index=}")
-                additional_obj.index = obj.loc[files].index
+                additional_obj.index = obj.loc[common_files].index
             objs.append(additional_obj)
         if len(objs) > 1:
             obj = utils.concat(objs)
