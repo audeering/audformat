@@ -875,7 +875,7 @@ class Database(HeaderBase):
             # Expand filewise labels to segments
             # (https://github.com/audeering/audformat/issues/460)
             if is_segmented_index(obj) and is_filewise_index(additional_obj):
-                # Problem of common_files:
+                # Problem of utils.intersect():
                 # squeezes [f1, f1, f2] to [f1, f2]
                 # so we need to separate intersection from listing files
                 files = obj.index.get_level_values(define.IndexField.FILE)
