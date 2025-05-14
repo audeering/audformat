@@ -872,17 +872,9 @@ class Database(HeaderBase):
                     original_column_names=original_column_names,
                     aggregate_function=aggregate_function,
                 )
-            # Expand filewise labels to segments
-            # (https://github.com/audeering/audformat/issues/460)
             if is_segmented_index(obj) and is_filewise_index(additional_obj):
-                # Problem of utils.intersect():
-                # squeezes [f1, f1, f2] to [f1, f2]
-                # so we need to separate intersection from listing files
-                files = obj.index.get_level_values(define.IndexField.FILE)
-                common_files = utils.intersect([additional_obj.index, files])
-                files = files.where(files.isin(common_files)).dropna()
-                additional_obj = additional_obj.loc[files]
-                additional_obj.index = obj.loc[common_files].index
+                # https://github.com/audeering/audformat/issues/460
+                additional_obj = self._expand_filewise_to_segmented(obj, additional_obj)
             objs.append(additional_obj)
         if len(objs) > 1:
             obj = utils.concat(objs)
@@ -1640,3 +1632,34 @@ class Database(HeaderBase):
         table._db = self
         table._id = table_id
         return table
+
+    @staticmethod
+    def _expand_filewise_to_segmented(df1: pd.DataFrame, df2: pd.DataFrame):
+        """Expand filewise dataframe to segments.
+
+        We want to add a column from ``df2`` to ``df1``.
+        As ``df1`` represents a segmented table,
+        we need to convert ``df2`` to a segmented table as well
+        mapping the filwsie labels to each segment.
+
+        Afterwards ``df1`` and ``df2`` can be easily concatenated.
+        ``df2`` is changed in place.
+
+        Args:
+            df1: dataframe representing a segmented table
+            df2: dataframe representing a filwise table
+
+        Returns:
+            dataframe ``df2`` converted to represent a segmented table
+                matching the index of ``df1``
+
+        """
+        # Problem of utils.intersect():
+        # squeezes [f1, f1, f2] to [f1, f2]
+        # so we need to separate intersection from listing files
+        files = df1.index.get_level_values(define.IndexField.FILE)
+        common_files = utils.intersect([df2.index, files])
+        files = files.where(files.isin(common_files)).dropna()
+        df2 = df2.loc[files]
+        df2.index = df1.loc[common_files].index
+        return df2
