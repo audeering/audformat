@@ -33,6 +33,7 @@ def mono_db(tmpdir):
         labels=["low", "normal", "high"],
     )
     db.schemes["status"] = audformat.Scheme("bool")
+    db.schemes["update"] = audformat.Scheme("bool")
     db.schemes["winner"] = audformat.Scheme(
         "str",
         labels={
@@ -129,9 +130,11 @@ def mono_db(tmpdir):
     db["rating.test"]["rating"].set([1])
 
     index = audformat.filewise_index(["f2.wav"])
-    db["single"] = audformat.Table(index)
-    db["single"]["status"] = audformat.Column(scheme_id="status")
-    db["single"]["status"].set(True)
+    db["status"] = audformat.Table(index)
+    db["status"]["status"] = audformat.Column(scheme_id="status")
+    db["status"]["status"].set(True)
+    db["status"]["update"] = audformat.Column(scheme_id="update")
+    db["status"]["update"].set(False)
 
     index = audformat.filewise_index(["f3.wav"])
     db["last"] = audformat.Table(index)
@@ -151,6 +154,15 @@ def mono_db(tmpdir):
     db["segments"]["winner"].set(["w1", "w1", "w1", "w1"])
     db["segments"]["regression"] = audformat.Column(scheme_id="regression")
     db["segments"]["regression"].set([0.3, 0.2, 0.6, 0.4])
+
+    index = audformat.segmented_index(
+        ["f1.wav", "f1.wav"],
+        [0, 0.3],
+        [0.2, 0.4],
+    )
+    db["segments.other"] = audformat.Table(index)
+    db["segments.other"]["update"] = audformat.Column(scheme_id="update")
+    db["segments.other"]["update"].set([True, True])
 
     db.save(path)
     audformat.testing.create_audio_files(db, channels=1, file_duration="1s")
@@ -717,6 +729,46 @@ def wrong_scheme_labels_db(tmpdir):
                         ),
                         dtype="boolean",
                         name="status",
+                    ),
+                ],
+                axis=1,
+            ),
+        ),
+        (
+            "mono_db",
+            "regression",
+            ["partial", "update"],
+            pd.concat(
+                [
+                    pd.Series(
+                        [0.3, 0.2, 0.6, 0.4],
+                        index=audformat.segmented_index(
+                            ["f1.wav", "f1.wav", "f1.wav", "f2.wav"],
+                            [0, 0.1, 0.3, 0],
+                            [0.2, 0.2, 0.5, 0.7],
+                        ),
+                        dtype="float",
+                        name="regression",
+                    ),
+                    pd.Series(
+                        ["a", "a", "a", None],
+                        index=audformat.segmented_index(
+                            ["f1.wav", "f1.wav", "f1.wav", "f2.wav"],
+                            [0, 0.1, 0.3, 0],
+                            [0.2, 0.2, 0.5, 0.7],
+                        ),
+                        dtype="string",
+                        name="partial",
+                    ),
+                    pd.Series(
+                        [True, None, None, None],
+                        index=audformat.segmented_index(
+                            ["f1.wav", "f1.wav", "f1.wav", "f2.wav"],
+                            [0, 0.1, 0.3, 0],
+                            [0.2, 0.2, 0.5, 0.7],
+                        ),
+                        dtype="boolean",
+                        name="update",
                     ),
                 ],
                 axis=1,
