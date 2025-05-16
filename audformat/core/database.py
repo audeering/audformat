@@ -30,6 +30,8 @@ from audformat.core.errors import BadIdError
 from audformat.core.errors import BadKeyError
 from audformat.core.errors import TableExistsError
 from audformat.core.index import filewise_index
+from audformat.core.index import is_filewise_index
+from audformat.core.index import is_segmented_index
 from audformat.core.media import Media
 from audformat.core.rater import Rater
 from audformat.core.scheme import Scheme
@@ -870,6 +872,9 @@ class Database(HeaderBase):
                     original_column_names=original_column_names,
                     aggregate_function=aggregate_function,
                 )
+            if is_segmented_index(obj) and is_filewise_index(additional_obj):
+                # https://github.com/audeering/audformat/issues/460
+                additional_obj = self._expand_filewise_to_segmented(obj, additional_obj)
             objs.append(additional_obj)
         if len(objs) > 1:
             obj = utils.concat(objs)
@@ -1627,3 +1632,37 @@ class Database(HeaderBase):
         table._db = self
         table._id = table_id
         return table
+
+    @staticmethod
+    def _expand_filewise_to_segmented(
+        df_segmented: pd.DataFrame, df_filewise: pd.DataFrame
+    ) -> pd.DataFrame:
+        """Expand filewise dataframe to segments.
+
+        We want to add a column from ``df_filewise`` to ``df_segmented``.
+        As ``df_segmented`` represents a segmented table,
+        we need to convert ``df_filewise`` to a segmented table as well as
+        mapping the filewise labels to each segment.
+
+        Afterwards ``df_segmented`` and ``df_filewise`` can be easily concatenated.
+        ``df_filewise`` is changed in place.
+
+        Args:
+            df_segmented: dataframe representing a segmented table
+            df_filewise: dataframe representing a filewise table
+
+        Returns:
+            dataframe ``df_filewise`` converted to represent a segmented table
+                matching the index of ``df_segmented``
+
+        """
+        # Problem of utils.intersect():
+        # squeezes [f1, f1, f2] to [f1, f2]
+        # so we need to separate intersection from listing files
+        files = df_segmented.index.get_level_values(define.IndexField.FILE)
+        common_files = utils.intersect([df_filewise.index, files])
+        files = files.where(files.isin(common_files)).dropna()
+        # Select matching labels and replace filewise with segmented index
+        df_filewise = df_filewise.loc[files]
+        df_filewise.index = df_segmented.loc[files.drop_duplicates()].index
+        return df_filewise
