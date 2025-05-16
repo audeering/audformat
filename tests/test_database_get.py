@@ -33,6 +33,7 @@ def mono_db(tmpdir):
         labels=["low", "normal", "high"],
     )
     db.schemes["status"] = audformat.Scheme("bool")
+    db.schemes["status-reversed"] = audformat.Scheme("bool")
     db.schemes["update"] = audformat.Scheme("bool")
     db.schemes["winner"] = audformat.Scheme(
         "str",
@@ -109,6 +110,13 @@ def mono_db(tmpdir):
     db["files.sub"]["numbers"].set(0)
     db["files.sub"]["partial"] = audformat.Column(scheme_id="partial")
     db["files.sub"]["partial"].set("a")
+
+    index = audformat.filewise_index(["f2.wav", "f1.wav"])
+    db["files.reversed"] = audformat.Table(index)
+    db["files.reversed"]["status-reversed"] = audformat.Column(
+        scheme_id="status-reversed"
+    )
+    db["files.reversed"]["status-reversed"].set([False, True])
 
     index = audformat.filewise_index(["f1.wav", "f3.wav"])
     db["other"] = audformat.Table(index)
@@ -776,6 +784,36 @@ def wrong_scheme_labels_db(tmpdir):
         ),
         (
             "mono_db",
+            "regression",
+            ["status-reversed"],
+            pd.concat(
+                [
+                    pd.Series(
+                        [0.3, 0.2, 0.6, 0.4],
+                        index=audformat.segmented_index(
+                            ["f1.wav", "f1.wav", "f1.wav", "f2.wav"],
+                            [0, 0.1, 0.3, 0],
+                            [0.2, 0.2, 0.5, 0.7],
+                        ),
+                        dtype="float",
+                        name="regression",
+                    ),
+                    pd.Series(
+                        [True, True, True, False],
+                        index=audformat.segmented_index(
+                            ["f1.wav", "f1.wav", "f1.wav", "f2.wav"],
+                            [0, 0.1, 0.3, 0],
+                            [0.2, 0.2, 0.5, 0.7],
+                        ),
+                        dtype="boolean",
+                        name="status-reversed",
+                    ),
+                ],
+                axis=1,
+            ),
+        ),
+        (
+            "mono_db",
             "selection",
             [],
             pd.DataFrame(
@@ -868,6 +906,12 @@ def wrong_scheme_labels_db(tmpdir):
 )
 def test_database_get(request, db, scheme, additional_schemes, expected):
     db = request.getfixturevalue(db)
+    print(f"{scheme=}")
+    print(f"{additional_schemes=}")
+    print(f"{db.get(scheme)=}")
+    if additional_schemes:
+        print(f"{db.get(additional_schemes[0])=}")
+    print(f"{expected=}")
     df = db.get(scheme, additional_schemes)
     pd.testing.assert_frame_equal(df, expected)
 
