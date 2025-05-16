@@ -1641,15 +1641,15 @@ class Database(HeaderBase):
 
         We want to add a column from ``df_filewise`` to ``df_segmented``.
         As ``df_segmented`` represents a segmented table,
-        we need to convert ``df_filewise`` to a segmented table as well
-        mapping the filwsie labels to each segment.
+        we need to convert ``df_filewise`` to a segmented table as well as
+        mapping the filewise labels to each segment.
 
         Afterwards ``df_segmented`` and ``df_filewise`` can be easily concatenated.
         ``df_filewise`` is changed in place.
 
         Args:
             df_segmented: dataframe representing a segmented table
-            df_filewise: dataframe representing a filwise table
+            df_filewise: dataframe representing a filewise table
 
         Returns:
             dataframe ``df_filewise`` converted to represent a segmented table
