@@ -912,6 +912,7 @@ def test_database_get(request, db, scheme, additional_schemes, expected):
     if additional_schemes:
         print(f"{db.get(additional_schemes[0])=}")
     print(f"{expected=}")
+    print(f"{db.get(scheme, additional_schemes)=}")
     df = db.get(scheme, additional_schemes)
     pd.testing.assert_frame_equal(df, expected)
 

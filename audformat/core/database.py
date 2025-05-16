@@ -1634,32 +1634,35 @@ class Database(HeaderBase):
         return table
 
     @staticmethod
-    def _expand_filewise_to_segmented(df1: pd.DataFrame, df2: pd.DataFrame):
+    def _expand_filewise_to_segmented(
+        df_segmented: pd.DataFrame, df_filewise: pd.DataFrame
+    ) -> pd.DataFrame:
         """Expand filewise dataframe to segments.
 
-        We want to add a column from ``df2`` to ``df1``.
-        As ``df1`` represents a segmented table,
-        we need to convert ``df2`` to a segmented table as well
+        We want to add a column from ``df_filewise`` to ``df_segmented``.
+        As ``df_segmented`` represents a segmented table,
+        we need to convert ``df_filewise`` to a segmented table as well
         mapping the filwsie labels to each segment.
 
-        Afterwards ``df1`` and ``df2`` can be easily concatenated.
-        ``df2`` is changed in place.
+        Afterwards ``df_segmented`` and ``df_filewise`` can be easily concatenated.
+        ``df_filewise`` is changed in place.
 
         Args:
-            df1: dataframe representing a segmented table
-            df2: dataframe representing a filwise table
+            df_segmented: dataframe representing a segmented table
+            df_filewise: dataframe representing a filwise table
 
         Returns:
-            dataframe ``df2`` converted to represent a segmented table
-                matching the index of ``df1``
+            dataframe ``df_filewise`` converted to represent a segmented table
+                matching the index of ``df_segmented``
 
         """
         # Problem of utils.intersect():
         # squeezes [f1, f1, f2] to [f1, f2]
         # so we need to separate intersection from listing files
-        files = df1.index.get_level_values(define.IndexField.FILE)
-        common_files = utils.intersect([df2.index, files])
+        files = df_segmented.index.get_level_values(define.IndexField.FILE)
+        common_files = utils.intersect([df_filewise.index, files])
         files = files.where(files.isin(common_files)).dropna()
-        df2 = df2.loc[files]
-        df2.index = df1.loc[common_files].index
-        return df2
+        # Select matching labels and replace filewise with segmented index
+        df_filewise = df_filewise.loc[files]
+        df_filewise.index = df_segmented.loc[files.drop_duplicates()].index
+        return df_filewise
