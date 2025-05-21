@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import itertools
 import typing
 import warnings
 
@@ -30,6 +31,7 @@ def assert_values(
 ):
     r"""Raise error if values do not match scheme."""
     bad_values = []
+    max_display = 10
 
     if (
         scheme.labels is not None
@@ -52,11 +54,23 @@ def assert_values(
                 ]
         # Get unique values and preserve order
         values = list(dict.fromkeys(values))
-        bad_values = [value for value in values if value not in scheme]
+        values = [v for v in values if v is not None and not pd.isna(v)]
+
+        if scheme.labels is not None:
+            bad_values = set(values) - set(scheme.labels_as_list)
+            # convert only `max_display` entries from set to list
+            show_bad_values = sorted(
+                [v for v in itertools.islice(bad_values, max_display)]
+            )
+        elif scheme.is_numeric:
+            if scheme.minimum is not None:
+                bad_values += [v for v in values if float(v) < scheme.minimum]
+            if scheme.maximum is not None:
+                bad_values += [v for v in values if float(v) > scheme.maximum]
+            show_bad_values = bad_values[:max_display]
 
     if len(bad_values) > 0:
-        max_display = 10
-        values = str(bad_values[:max_display])[1:-1]
+        values = str(show_bad_values)[1:-1]
         if len(bad_values) > max_display:
             values += ", ..."
         raise ValueError(

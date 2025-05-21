@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import datetime
-from functools import cached_property
 import random
 import string
 
@@ -178,7 +177,7 @@ class Scheme(common.HeaderBase):
         """
         return self.dtype in (define.DataType.INTEGER, define.DataType.FLOAT)
 
-    @cached_property
+    @property
     def labels_as_list(self) -> list:
         r"""Scheme labels as list.
 
@@ -502,7 +501,8 @@ class Scheme(common.HeaderBase):
         """
         if item is not None and not pd.isna(item):
             if self.labels is not None:
-                return item in self.labels_as_list
+                labels = self._labels_to_dict()
+                return item in labels
             if self.is_numeric:
                 item = float(item)
                 if self.minimum is not None and not item >= self.minimum:
