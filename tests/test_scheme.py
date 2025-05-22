@@ -26,33 +26,55 @@ def test_scheme_assign_values():
     assert list(db["table"]["speaker"].get(map="age")) == ages
     assert list(db["table"].get(map={"speaker": "age"})["age"]) == ages
 
-    # Set values not matching scheme
-    bad_values = ["spk4", "spk5", "spk6"]
+
+@pytest.mark.parametrize(
+    "scheme, values, error_msg_last_part",
+    [
+        (
+            audformat.Scheme("str", labels=["spk1", "spk2"]),
+            ["spk4", "spk5", "spk6"],
+            "'spk4', 'spk5', 'spk6'",
+        ),
+        (
+            audformat.Scheme("int", labels=[20, 30]),
+            [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
+            "0, 1, 2, 3, 4, 5, 6, 7, 8, 9, ...",
+        ),
+        (
+            audformat.Scheme("int", minimum=0),
+            [0, -1, -2],
+            "minimum -2 smaller than scheme minimum",
+        ),
+        (
+            audformat.Scheme("int", maximum=0),
+            [0, 1, 2],
+            "maximum 2 larger than scheme maximum",
+        ),
+        (
+            audformat.Scheme("int", minimum=-1, maximum=1),
+            [0, -2, 2],
+            (
+                "minimum -2 smaller than scheme minimum\n"
+                "maximum 2 larger than scheme maximum"
+            ),
+        ),
+    ],
+)
+def test_scheme_assign_bad_values(scheme, values, error_msg_last_part):
+    """Test setting of values not matching scheme."""
+    db = audformat.testing.create_db(minimal=True)
+    db["table"] = audformat.Table(audformat.filewise_index(["f1", "f2", "f3"]))
+    db.schemes["scheme"] = scheme
+    db["table"]["column"] = audformat.Column(scheme_id="scheme")
+
     error_msg = re.escape(
         "Some value(s) do not match scheme\n"
         f"{db.schemes['scheme']}\n"
         "with scheme ID 'scheme':\n"
-        "'spk4', 'spk5', 'spk6'"
+        f"{error_msg_last_part}\n"
     )
     with pytest.raises(ValueError, match=error_msg):
-        db["table"]["speaker"].set(bad_values)
-    bad_values = list(range(-11, 0))
-    error_msg = re.escape(
-        "Some value(s) do not match scheme\n"
-        f"{db.schemes['age']}\n"
-        "with scheme ID 'age':\n"
-        f"-11, -10, -9, -8, -7, -6, -5, -4, -3, -2, ..."
-    )
-    with pytest.raises(ValueError, match=error_msg):
-        db["misc"].extend_index(
-            pd.Index(
-                [f"spk{n}" for n in range(4, 52)],
-                name="speaker",
-                dtype="string",
-            ),
-            inplace=True,
-        )
-        db["misc"]["age"].set(bad_values)
+        db["table"]["column"].set(values)
 
 
 @pytest.mark.parametrize(
