@@ -36,6 +36,11 @@ def test_scheme_assign_values():
             "'spk4', 'spk5', 'spk6'",
         ),
         (
+            audformat.Scheme("str", labels=["spk1", "spk2"]),
+            ["spk4", "spk5", None],
+            "'spk4', 'spk5'",
+        ),
+        (
             audformat.Scheme("int", labels=[20, 30]),
             [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
             "0, 1, 2, 3, 4, 5, 6, 7, 8, 9, ...",
@@ -53,6 +58,14 @@ def test_scheme_assign_values():
         (
             audformat.Scheme("int", minimum=-1, maximum=1),
             [0, -2, 2],
+            (
+                "minimum -2 smaller than scheme minimum\n"
+                "maximum 2 larger than scheme maximum"
+            ),
+        ),
+        (
+            audformat.Scheme("int", minimum=-1, maximum=1),
+            [np.nan, -2, 2],
             (
                 "minimum -2 smaller than scheme minimum\n"
                 "maximum 2 larger than scheme maximum"
