@@ -53,7 +53,7 @@ def assert_values(
             show_bad_values = sorted(
                 [v for v in itertools.islice(bad_values, max_display)]
             )
-            error_msg = str(show_bad_values)[1:-1]
+            error_msg = ", ".join(map(str, show_bad_values))
             if len(bad_values) > max_display:
                 error_msg += ", ..."
             error_msg += "\n"
