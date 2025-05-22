@@ -45,9 +45,8 @@ def assert_values(
         elif isinstance(values, pd.Series):
             values = values.values
         values = [v for v in values if v is not None and not pd.isna(v)]
-
-    if not values:
-        return
+        if not values:
+            return
 
     if scheme.labels is not None:
         bad_values = set(values) - set(scheme.labels_as_list)
@@ -56,7 +55,7 @@ def assert_values(
             show_bad_values = sorted(
                 [v for v in itertools.islice(bad_values, max_display)]
             )
-            error_msg = ", ".join(map(str, show_bad_values))
+            error_msg = str(show_bad_values)[1:-1]
             if len(bad_values) > max_display:
                 error_msg += ", ..."
             error_msg += "\n"
