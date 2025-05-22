@@ -28,36 +28,42 @@ def test_scheme_assign_values():
 
 
 @pytest.mark.parametrize(
-    "scheme, values, error_msg_last_part",
+    "scheme, values, error, error_msg_last_part",
     [
         (
             audformat.Scheme("str", labels=["spk1", "spk2"]),
             ["spk4", "spk5", "spk6"],
+            ValueError,
             "'spk4', 'spk5', 'spk6'",
         ),
         (
             audformat.Scheme("str", labels=["spk1", "spk2"]),
             ["spk4", "spk5", None],
+            ValueError,
             "'spk4', 'spk5'",
         ),
         (
             audformat.Scheme("int", labels=[20, 30]),
             [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
+            ValueError,
             "0, 1, 2, 3, 4, 5, 6, 7, 8, 9, ...",
         ),
         (
             audformat.Scheme("int", minimum=0),
             [0, -1, -2],
+            ValueError,
             "minimum -2 smaller than scheme minimum",
         ),
         (
             audformat.Scheme("int", maximum=0),
             [0, 1, 2],
+            ValueError,
             "maximum 2 larger than scheme maximum",
         ),
         (
             audformat.Scheme("int", minimum=-1, maximum=1),
             [0, -2, 2],
+            ValueError,
             (
                 "minimum -2 smaller than scheme minimum\n"
                 "maximum 2 larger than scheme maximum"
@@ -66,14 +72,27 @@ def test_scheme_assign_values():
         (
             audformat.Scheme("int", minimum=-1, maximum=1),
             [np.nan, -2, 2],
+            ValueError,
             (
                 "minimum -2 smaller than scheme minimum\n"
                 "maximum 2 larger than scheme maximum"
             ),
         ),
+        (
+            audformat.Scheme("int", minimum=0),
+            [np.nan, np.nan, np.nan],
+            None,
+            None,
+        ),
+        (
+            audformat.Scheme("str", labels=["spk1", "spk2"]),
+            [None, None, None],
+            None,
+            None,
+        ),
     ],
 )
-def test_scheme_assign_bad_values(scheme, values, error_msg_last_part):
+def test_scheme_assign_bad_values(scheme, values, error, error_msg_last_part):
     """Test setting of values not matching scheme."""
     db = audformat.testing.create_db(minimal=True)
     db["table"] = audformat.Table(audformat.filewise_index(["f1", "f2", "f3"]))
@@ -86,8 +105,11 @@ def test_scheme_assign_bad_values(scheme, values, error_msg_last_part):
         "with scheme ID 'scheme':\n"
         f"{error_msg_last_part}\n"
     )
-    with pytest.raises(ValueError, match=error_msg):
+    if error is None:
         db["table"]["column"].set(values)
+    else:
+        with pytest.raises(error, match=error_msg):
+            db["table"]["column"].set(values)
 
 
 @pytest.mark.parametrize(

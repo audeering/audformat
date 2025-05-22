@@ -46,6 +46,9 @@ def assert_values(
             values = values.values
         values = [v for v in values if v is not None and not pd.isna(v)]
 
+    if not values:
+        return
+
     if scheme.labels is not None:
         bad_values = set(values) - set(scheme.labels_as_list)
         if len(bad_values) > 0:
