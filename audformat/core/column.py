@@ -30,9 +30,6 @@ def assert_values(
     scheme: Scheme,
 ):
     r"""Raise error if values do not match scheme."""
-    # Maximum number of bad values to show in error message
-    max_display = 10
-
     error_msg = ""
 
     if (
@@ -51,7 +48,8 @@ def assert_values(
     if scheme.labels is not None:
         bad_values = set(values) - set(scheme.labels_as_list)
         if len(bad_values) > 0:
-            # convert only `max_display` entries from set to list
+            # Convert only `max_display` entries from set to list
+            max_display = 10
             show_bad_values = sorted(
                 [v for v in itertools.islice(bad_values, max_display)]
             )
