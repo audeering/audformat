@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import itertools
 import typing
 import warnings
 
@@ -29,7 +30,7 @@ def assert_values(
     scheme: Scheme,
 ):
     r"""Raise error if values do not match scheme."""
-    bad_values = []
+    error_msg = ""
 
     if (
         scheme.labels is not None
@@ -40,29 +41,38 @@ def assert_values(
             values = [values]
         elif isinstance(values, pd.Series):
             values = values.values
-        elif isinstance(values, np.ndarray):
-            if scheme.is_numeric:
-                # Support type object with None entries,
-                # which need to be converted to NaN
-                # to support min/max
-                values = values.astype(float)
-                values = [
-                    np.nanmin(values),
-                    np.nanmax(values),
-                ]
-        # Get unique values and preserve order
-        values = list(dict.fromkeys(values))
-        bad_values = [value for value in values if value not in scheme]
+        values = [v for v in values if v is not None and not pd.isna(v)]
+        if not values:
+            return
 
-    if len(bad_values) > 0:
-        max_display = 10
-        values = str(bad_values[:max_display])[1:-1]
-        if len(bad_values) > max_display:
-            values += ", ..."
+    if scheme.labels is not None:
+        bad_values = set(values) - set(scheme.labels_as_list)
+        if len(bad_values) > 0:
+            # Convert only `max_display` entries from set to list
+            max_display = 10
+            show_bad_values = sorted(
+                [v for v in itertools.islice(bad_values, max_display)]
+            )
+            error_msg = str(show_bad_values)[1:-1]
+            if len(bad_values) > max_display:
+                error_msg += ", ..."
+            error_msg += "\n"
+
+    if scheme.is_numeric:
+        if scheme.minimum is not None:
+            min_value = min(values)
+            if float(min_value) < scheme.minimum:
+                error_msg += f"minimum {min_value} smaller than scheme minimum\n"
+        if scheme.maximum is not None:
+            max_value = max(values)
+            if float(max_value) > scheme.maximum:
+                error_msg += f"maximum {max_value} larger than scheme maximum\n"
+
+    if error_msg:
         raise ValueError(
             f"Some value(s) do not match scheme\n{scheme}\n"
             f"with scheme ID '{scheme._id}':\n"
-            f"{values}"
+            f"{error_msg}"
         )
 
 
