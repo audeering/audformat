@@ -7,6 +7,24 @@ The format is based on `Keep a Changelog`_,
 and this project adheres to `Semantic Versioning`_.
 
 
+Version 1.3.2 (2025-05-27)
+--------------------------
+
+* Added: support for Python 3.13
+* Added: support for Python 3.12
+* Fixed: ``audformat.Database.update()`` for misc tables
+* Fixed: ``audformat.Database.get()``
+  if ``scheme`` is stored in a segmented table,
+  and ``additional_schemes`` are stored in filewise tables.
+  Before,
+  values of the additional schemes were set to ``<NA>``
+* Fixed: if ``audformat.Column.set()`` assigns values
+  to a column with scheme labels
+  given by a misc table,
+  the misc table is only converted once to a dictionary
+  instead of once for each value
+
+
 Version 1.3.1 (2024-09-16)
 --------------------------
 
