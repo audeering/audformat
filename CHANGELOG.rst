@@ -15,7 +15,9 @@ Version 1.3.2 (2025-05-27)
 * Fixed: ``audformat.Database.update()`` for misc tables
 * Fixed: ``audformat.Database.get()``
   if ``scheme`` is stored in a segmented table,
-  and ``additional_schemes`` are stored in filewise tables
+  and ``additional_schemes`` are stored in filewise tables.
+  Before,
+  values of the additional schemes were set to ``<NA>``
 * Fixed: if ``audformat.Column.set()`` assigns values
   to a column with scheme labels
   given by a misc table,
