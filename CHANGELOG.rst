@@ -21,8 +21,8 @@ Version 1.3.2 (2025-05-27)
 * Fixed: if ``audformat.Column.set()`` assigns values
   to a column with scheme labels
   given by a misc table,
-  the misc table is only converted ones to a dictionary
-  instead of ones for each value
+  the misc table is only converted once to a dictionary
+  instead of once for each value
 
 
 Version 1.3.1 (2024-09-16)
