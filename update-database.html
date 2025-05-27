@@ -30,8 +30,6 @@
   <link rel="stylesheet" href="_static/css/audeering.css" type="text/css" />
   <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
   <link rel="stylesheet" href="_static/copybutton.css" type="text/css" />
-  <link rel="stylesheet" href="_static/jupyter-sphinx.css" type="text/css" />
-  <link rel="stylesheet" href="_static/thebelab.css" type="text/css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css" type="text/css" />
   <link rel="stylesheet" href="_static/katex-math.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
@@ -72,7 +70,7 @@
             
             
               <div class="version">
-                v1.3.1
+                v1.3.2
               </div>
             
           
@@ -171,10 +169,8 @@
 is the possibility to update a <a class="reference internal" href="api/audformat.Database.html#audformat.Database" title="audformat.Database"><code class="xref py py-class docutils literal notranslate"><span class="pre">audformat.Database</span></code></a>.
 For instance, consider the following database that contains
 age labels for a hundred files.</p>
-<div class="jupyter_cell jupyter_container docutils container">
-<div class="cell_input code_cell docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">audformat</span>
-<span class="kn">import</span> <span class="nn">audformat.testing</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">audformat</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">audformat.testing</span>
 
 
 <span class="n">db</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">create_db</span><span class="p">(</span><span class="n">minimal</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -190,114 +186,42 @@ age labels for a hundred files.</p>
     <span class="n">columns</span><span class="o">=</span><span class="s2">&quot;age&quot;</span><span class="p">,</span>
     <span class="n">num_files</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="n">db</span>
 </pre></div>
 </div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>name: unittest
-source: internal
-usage: unrestricted
-languages: [deu, eng]
-schemes:
-  age: {dtype: int, minimum: 20, maximum: 50}
-tables:
-  table:
-    type: filewise
-    columns:
-      age: {scheme_id: age}
-</pre></div>
-</div>
-</div>
-</div>
-<div class="jupyter_cell jupyter_container docutils container">
-<div class="cell_input code_cell docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="p">[</span><span class="s2">&quot;table&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">df</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_html"><div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">db</span>
+<span class="go">name: unittest</span>
+<span class="go">source: internal</span>
+<span class="go">usage: unrestricted</span>
+<span class="go">languages: [deu, eng]</span>
+<span class="go">schemes:</span>
+<span class="go">  age: {dtype: int, minimum: 20, maximum: 50}</span>
+<span class="go">tables:</span>
+<span class="go">  table:</span>
+<span class="go">    type: filewise</span>
+<span class="go">    columns:</span>
+<span class="go">      age: {scheme_id: age}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="p">[</span><span class="s2">&quot;table&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">df</span>
+<span class="go">               age</span>
+<span class="go">file</span>
+<span class="go">audio/001.wav   44</span>
+<span class="go">audio/002.wav   36</span>
+<span class="go">audio/003.wav   24</span>
+<span class="go">audio/004.wav   44</span>
+<span class="go">audio/005.wav   37</span>
+<span class="go">...            ...</span>
+<span class="go">audio/096.wav   23</span>
+<span class="go">audio/097.wav   42</span>
+<span class="go">audio/098.wav   35</span>
+<span class="go">audio/099.wav   27</span>
+<span class="go">audio/100.wav   39</span>
 
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>age</th>
-    </tr>
-    <tr>
-      <th>file</th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>audio/001.wav</th>
-      <td>34</td>
-    </tr>
-    <tr>
-      <th>audio/002.wav</th>
-      <td>22</td>
-    </tr>
-    <tr>
-      <th>audio/003.wav</th>
-      <td>37</td>
-    </tr>
-    <tr>
-      <th>audio/004.wav</th>
-      <td>41</td>
-    </tr>
-    <tr>
-      <th>audio/005.wav</th>
-      <td>39</td>
-    </tr>
-    <tr>
-      <th>...</th>
-      <td>...</td>
-    </tr>
-    <tr>
-      <th>audio/096.wav</th>
-      <td>29</td>
-    </tr>
-    <tr>
-      <th>audio/097.wav</th>
-      <td>21</td>
-    </tr>
-    <tr>
-      <th>audio/098.wav</th>
-      <td>31</td>
-    </tr>
-    <tr>
-      <th>audio/099.wav</th>
-      <td>22</td>
-    </tr>
-    <tr>
-      <th>audio/100.wav</th>
-      <td>36</td>
-    </tr>
-  </tbody>
-</table>
-<p>100 rows × 1 columns</p>
-</div></div></div>
+<span class="go">[100 rows x 1 columns]</span>
+</pre></div>
 </div>
 <p>Now assume we record more files to add to our original database.
 The new files are stored together with annotations in a second database,
 that is then added to the original database.</p>
-<div class="jupyter_cell jupyter_container docutils container">
-<div class="cell_input code_cell docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">db_update</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">create_db</span><span class="p">(</span><span class="n">minimal</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">db_update</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">create_db</span><span class="p">(</span><span class="n">minimal</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">db_update</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s2">&quot;age&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s2">&quot;age&quot;</span><span class="p">]</span>
 <span class="n">audformat</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">add_table</span><span class="p">(</span>
     <span class="n">db_update</span><span class="p">,</span>
@@ -307,92 +231,30 @@ that is then added to the original database.</p>
     <span class="n">num_files</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="mi">101</span><span class="p">,</span> <span class="mi">105</span><span class="p">),</span>
 <span class="p">)</span>
 <span class="n">db</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">db_update</span><span class="p">)</span>  <span class="c1"># update original database with new data</span>
-<span class="n">db</span><span class="p">[</span><span class="s2">&quot;table&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">df</span>
 </pre></div>
 </div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_html"><div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="p">[</span><span class="s2">&quot;table&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">df</span>
+<span class="go">               age</span>
+<span class="go">file</span>
+<span class="go">audio/001.wav   44</span>
+<span class="go">audio/002.wav   36</span>
+<span class="go">audio/003.wav   24</span>
+<span class="go">audio/004.wav   44</span>
+<span class="go">audio/005.wav   37</span>
+<span class="go">...            ...</span>
+<span class="go">audio/100.wav   39</span>
+<span class="go">audio/101.wav   46</span>
+<span class="go">audio/102.wav   43</span>
+<span class="go">audio/103.wav   21</span>
+<span class="go">audio/104.wav   45</span>
 
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>age</th>
-    </tr>
-    <tr>
-      <th>file</th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>audio/001.wav</th>
-      <td>34</td>
-    </tr>
-    <tr>
-      <th>audio/002.wav</th>
-      <td>22</td>
-    </tr>
-    <tr>
-      <th>audio/003.wav</th>
-      <td>37</td>
-    </tr>
-    <tr>
-      <th>audio/004.wav</th>
-      <td>41</td>
-    </tr>
-    <tr>
-      <th>audio/005.wav</th>
-      <td>39</td>
-    </tr>
-    <tr>
-      <th>...</th>
-      <td>...</td>
-    </tr>
-    <tr>
-      <th>audio/100.wav</th>
-      <td>36</td>
-    </tr>
-    <tr>
-      <th>audio/101.wav</th>
-      <td>28</td>
-    </tr>
-    <tr>
-      <th>audio/102.wav</th>
-      <td>29</td>
-    </tr>
-    <tr>
-      <th>audio/103.wav</th>
-      <td>42</td>
-    </tr>
-    <tr>
-      <th>audio/104.wav</th>
-      <td>22</td>
-    </tr>
-  </tbody>
-</table>
-<p>104 rows × 1 columns</p>
-</div></div></div>
+<span class="go">[104 rows x 1 columns]</span>
+</pre></div>
 </div>
 <p>Or we find out that some files in the original database have wrong labels.
 To update those, we again start from a fresh database containing only
 the critical files, relabel them and then update the original database.</p>
-<div class="jupyter_cell jupyter_container docutils container">
-<div class="cell_input code_cell docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">db_update</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">create_db</span><span class="p">(</span><span class="n">minimal</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">db_update</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">create_db</span><span class="p">(</span><span class="n">minimal</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">db_update</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s2">&quot;age&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s2">&quot;age&quot;</span><span class="p">]</span>
 <span class="n">audformat</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">add_table</span><span class="p">(</span>
     <span class="n">db_update</span><span class="p">,</span>
@@ -402,92 +264,30 @@ the critical files, relabel them and then update the original database.</p>
     <span class="n">num_files</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="n">db</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">db_update</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># overwrite existing labels</span>
-<span class="n">db</span><span class="p">[</span><span class="s2">&quot;table&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">df</span>
 </pre></div>
 </div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_html"><div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="p">[</span><span class="s2">&quot;table&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">df</span>
+<span class="go">               age</span>
+<span class="go">file</span>
+<span class="go">audio/001.wav   48</span>
+<span class="go">audio/002.wav   45</span>
+<span class="go">audio/003.wav   28</span>
+<span class="go">audio/004.wav   35</span>
+<span class="go">audio/005.wav   37</span>
+<span class="go">...            ...</span>
+<span class="go">audio/100.wav   39</span>
+<span class="go">audio/101.wav   46</span>
+<span class="go">audio/102.wav   43</span>
+<span class="go">audio/103.wav   21</span>
+<span class="go">audio/104.wav   45</span>
 
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>age</th>
-    </tr>
-    <tr>
-      <th>file</th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>audio/001.wav</th>
-      <td>45</td>
-    </tr>
-    <tr>
-      <th>audio/002.wav</th>
-      <td>22</td>
-    </tr>
-    <tr>
-      <th>audio/003.wav</th>
-      <td>33</td>
-    </tr>
-    <tr>
-      <th>audio/004.wav</th>
-      <td>27</td>
-    </tr>
-    <tr>
-      <th>audio/005.wav</th>
-      <td>25</td>
-    </tr>
-    <tr>
-      <th>...</th>
-      <td>...</td>
-    </tr>
-    <tr>
-      <th>audio/100.wav</th>
-      <td>36</td>
-    </tr>
-    <tr>
-      <th>audio/101.wav</th>
-      <td>28</td>
-    </tr>
-    <tr>
-      <th>audio/102.wav</th>
-      <td>29</td>
-    </tr>
-    <tr>
-      <th>audio/103.wav</th>
-      <td>42</td>
-    </tr>
-    <tr>
-      <th>audio/104.wav</th>
-      <td>22</td>
-    </tr>
-  </tbody>
-</table>
-<p>104 rows × 1 columns</p>
-</div></div></div>
+<span class="go">[104 rows x 1 columns]</span>
+</pre></div>
 </div>
 <p>Finally, we want to add gender information to the database.
 Again, it might be easier to start with a fresh database to
 collect the new labels and only later merge it into our original database.</p>
-<div class="jupyter_cell jupyter_container docutils container">
-<div class="cell_input code_cell docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">db_update</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Database</span><span class="p">(</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">db_update</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Database</span><span class="p">(</span>
     <span class="n">name</span><span class="o">=</span><span class="s2">&quot;update&quot;</span><span class="p">,</span>
     <span class="n">languages</span><span class="o">=</span><span class="n">audformat</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">map_language</span><span class="p">(</span><span class="s2">&quot;french&quot;</span><span class="p">),</span>
 <span class="p">)</span>
@@ -502,116 +302,35 @@ collect the new labels and only later merge it into our original database.</p>
     <span class="n">num_files</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">files</span><span class="p">),</span>
 <span class="p">)</span>
 <span class="n">db</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">db_update</span><span class="p">)</span>
-<span class="n">db</span><span class="p">[</span><span class="s2">&quot;table&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">df</span>
 </pre></div>
 </div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_html"><div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="p">[</span><span class="s2">&quot;table&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">df</span>
+<span class="go">               age  gender</span>
+<span class="go">file</span>
+<span class="go">audio/001.wav   48    male</span>
+<span class="go">audio/002.wav   45    male</span>
+<span class="go">audio/003.wav   28    male</span>
+<span class="go">audio/004.wav   35    male</span>
+<span class="go">audio/005.wav   37  female</span>
+<span class="go">...            ...     ...</span>
+<span class="go">audio/100.wav   39    male</span>
+<span class="go">audio/101.wav   46  female</span>
+<span class="go">audio/102.wav   43    male</span>
+<span class="go">audio/103.wav   21    male</span>
+<span class="go">audio/104.wav   45    male</span>
 
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>age</th>
-      <th>gender</th>
-    </tr>
-    <tr>
-      <th>file</th>
-      <th></th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>audio/001.wav</th>
-      <td>45</td>
-      <td>female</td>
-    </tr>
-    <tr>
-      <th>audio/002.wav</th>
-      <td>22</td>
-      <td>male</td>
-    </tr>
-    <tr>
-      <th>audio/003.wav</th>
-      <td>33</td>
-      <td>female</td>
-    </tr>
-    <tr>
-      <th>audio/004.wav</th>
-      <td>27</td>
-      <td>male</td>
-    </tr>
-    <tr>
-      <th>audio/005.wav</th>
-      <td>25</td>
-      <td>male</td>
-    </tr>
-    <tr>
-      <th>...</th>
-      <td>...</td>
-      <td>...</td>
-    </tr>
-    <tr>
-      <th>audio/100.wav</th>
-      <td>36</td>
-      <td>male</td>
-    </tr>
-    <tr>
-      <th>audio/101.wav</th>
-      <td>28</td>
-      <td>male</td>
-    </tr>
-    <tr>
-      <th>audio/102.wav</th>
-      <td>29</td>
-      <td>female</td>
-    </tr>
-    <tr>
-      <th>audio/103.wav</th>
-      <td>42</td>
-      <td>male</td>
-    </tr>
-    <tr>
-      <th>audio/104.wav</th>
-      <td>22</td>
-      <td>male</td>
-    </tr>
-  </tbody>
-</table>
-<p>104 rows × 2 columns</p>
-</div></div></div>
+<span class="go">[104 rows x 2 columns]</span>
+</pre></div>
 </div>
 <p>Note that this not only updates the table data,
 but also adds the new gender scheme:</p>
-<div class="jupyter_cell jupyter_container docutils container">
-<div class="cell_input code_cell docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="o">.</span><span class="n">schemes</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">schemes</span>
+<span class="go">age:</span>
+<span class="go">  {dtype: int, minimum: 20, maximum: 50}</span>
+<span class="go">gender:</span>
+<span class="go">  dtype: str</span>
+<span class="go">  labels: [female, male]</span>
 </pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>age:
-  {dtype: int, minimum: 20, maximum: 50}
-gender:
-  dtype: str
-  labels: [female, male]
-</pre></div>
-</div>
-</div>
 </div>
 </div>
 
@@ -638,7 +357,7 @@ gender:
         
         
         
-          Built with <a href="https://www.sphinx-doc.org">Sphinx</a> on 2024/09/16 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org">Sphinx</a> on 2025/05/27 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
@@ -646,7 +365,7 @@ gender:
   <div role="contentinfo">
     <p>
         
-      &copy; 2019-2024 audEERING GmbH
+      &copy; 2019-2025 audEERING GmbH
     </p>
   </div> 
 
@@ -678,12 +397,9 @@ gender:
         <script src="_static/sphinx_highlight.js"></script>
         <script src="_static/clipboard.min.js"></script>
         <script src="_static/copybutton.js"></script>
-        <script src="_static/thebelab-helper.js"></script>
         <script src="_static/katex.min.js"></script>
         <script src="_static/auto-render.min.js"></script>
         <script src="_static/katex_autorenderer.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
     
 
   

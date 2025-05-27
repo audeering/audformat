@@ -3,17 +3,6 @@
 Map scheme labels
 =================
 
-.. Enforce HTML output for pd.Series
-.. jupyter-execute::
-    :hide-code:
-    :hide-output:
-
-    import audformat
-
-
-    audformat.core.common.format_series_as_html()
-
-
 The ``labels`` attribute of schemes can be used to
 encode additional information about the table data.
 In the following example we have a scheme
@@ -21,8 +10,7 @@ In the following example we have a scheme
 And a scheme ``"speaker"`` that holds gender and age
 information about the speakers in the database.
 
-.. jupyter-execute::
-    :hide-output:
+.. code-block:: python
 
     import audformat.testing
 
@@ -58,67 +46,103 @@ information about the speakers in the database.
 If we request the ``transcription`` column,
 we get a :class:`pandas.Series` with the word IDs:
 
-.. jupyter-execute::
-
-    db["files"]["transcription"].get()
+>>> db["files"]["transcription"].get()
+file
+audio/001.wav    0
+audio/002.wav    1
+audio/003.wav    1                                                                                                                                                        audio/004.wav    0
+audio/005.wav    0
+Name: transcription, dtype: category
+Categories (2, int64): [0, 1]
 
 But if we are interested in the actual transcribed words,
 we can use the ``map`` argument to request them.
 
-.. jupyter-execute::
-
-    db["files"]["transcription"].get(map="transcription")
+>>> db["files"]["transcription"].get(map="transcription")
+file
+audio/001.wav      hello
+audio/002.wav    goodbye
+audio/003.wav    goodbye
+audio/004.wav      hello
+audio/005.wav      hello
+Name: transcription, dtype: string
 
 Note that we can pass any string to ``map``.
 It will be used as the name of
 the returned :class:`pandas.Series`.
 
-.. jupyter-execute::
-
-    db["files"]["transcription"].get(map="word")
+>>> db["files"]["transcription"].get(map="word")
+file
+audio/001.wav      hello
+audio/002.wav    goodbye
+audio/003.wav    goodbye
+audio/004.wav      hello
+audio/005.wav      hello
+Name: word, dtype: string
 
 Likewise, if we request the speaker column,
 a list of names is returned:
 
-.. jupyter-execute::
-
-    db["files"]["speaker"].get()
+>>> db["files"]["speaker"].get()
+file
+audio/001.wav    spk2
+audio/002.wav    spk1
+audio/003.wav    spk1
+audio/004.wav    spk1
+audio/005.wav    spk3
+Name: speaker, dtype: category
+Categories (3, object): ['spk1', 'spk2', 'spk3']
 
 If we are interested in the age of the speakers, we can do:
 
-.. jupyter-execute::
-
-    db["files"]["speaker"].get(map="age")
+>>> db["files"]["speaker"].get(map="age")
+file
+audio/001.wav    30
+audio/002.wav    33
+audio/003.wav    33
+audio/004.wav    33
+audio/005.wav    37
+Name: age, dtype: Int64
 
 This also works for tables.
 Here we pass a dictionary with column names
 as keys and scheme fields as values.
 
-.. jupyter-execute::
-
-    map = {
-        "speaker": "age",
-    }
-    db["files"].get(map=map)
+>>> map = {"speaker": "age"}
+>>> db["files"].get(map=map)
+              transcription  age
+file
+audio/001.wav             0   30
+audio/002.wav             1   33
+audio/003.wav             1   33
+audio/004.wav             0   33
+audio/005.wav             0   37
 
 It is possible to map several columns at once
 and to map the same column to multiple fields.
 
-.. jupyter-execute::
-
-    map = {
-        "transcription": "words",
-        "speaker": ["age", "gender"],
-    }
-    db["files"].get(map=map)
+>>> map = {"transcription": "words", "speaker": ["age", "gender"]}
+>>> db["files"].get(map=map)
+                 words  age  gender
+file
+audio/001.wav    hello   30  female
+audio/002.wav  goodbye   33    male
+audio/003.wav  goodbye   33    male
+audio/004.wav    hello   33    male
+audio/005.wav    hello   37    male
 
 To keep the original columns values,
 we can include the column name in the list.
 
-.. jupyter-execute::
-
-    map = {
-        "transcription": ["transcription", "words"],
-        "speaker": ["speaker", "age", "gender"],
-    }
-    db["files"].get(map=map)
+>>> map = {
+...     "transcription": ["transcription", "words"],
+...     "speaker": ["speaker", "age", "gender"],
+... }
+>>> db["files"].get(map=map)
+              speaker transcription    words  age  gender
+file
+audio/001.wav    spk2             0    hello   30  female
+audio/002.wav    spk1             1  goodbye   33    male
+audio/003.wav    spk1             1  goodbye   33    male
+audio/004.wav    spk1             0    hello   33    male
+audio/005.wav    spk3             0    hello   37    male

@@ -62,18 +62,18 @@ Minimal example
 audformat implementation
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. jupyter-execute::
-
-    import audformat
-
-
-    # Create Database
-    db = audformat.Database(
-        name="databasename",
-        source="https://gitlab.audeering.com/data/databasename",
-        usage="commercial",
-    )
-    db
+>>> import audformat
+>>> # Create Database
+>>> db = audformat.Database(
+...     name="databasename",
+...     source="https://gitlab.audeering.com/data/databasename",
+...     usage="commercial",
+... )
+>>> db
+name: databasename
+source: https://gitlab.audeering.com/data/databasename
+usage: commercial
+languages: []
 
 
 Attachment
@@ -103,16 +103,17 @@ Minimal example
 audformat implementation
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. jupyter-execute::
-
-    # Create minimal Attachment
-    attachment = audformat.Attachment("docs/setup.pdf")
-    # Add Attachment to Database
-    db.attachments["attachmentid"] = attachment
-    # Access path of Attachment
-    db.attachments["attachmentid"].path
-    # Access attachments
-    db.attachments
+>>> # Create minimal Attachment
+>>> attachment = audformat.Attachment("docs/setup.pdf")
+>>> # Add Attachment to Database
+>>> db.attachments["attachmentid"] = attachment
+>>> # Access path of Attachment
+>>> db.attachments["attachmentid"].path
+'docs/setup.pdf'
+>>> # Access attachments
+>>> db.attachments
+attachmentid:
+  {path: docs/setup.pdf}
 
 
 Rater
@@ -144,16 +145,17 @@ Minimal example
 audformat implementation
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. jupyter-execute::
-
-    # Create minimal Rater
-    rater = audformat.Rater("human")
-    # Add Rater to Database
-    db.raters["raterid"] = rater
-    # Access type of Rater
-    db.raters["raterid"].type
-    # Access raters
-    db.raters
+>>> # Create minimal Rater
+>>> rater = audformat.Rater("human")
+>>> # Add Rater to Database
+>>> db.raters["raterid"] = rater
+>>> # Access type of Rater
+>>> db.raters["raterid"].type
+'human'
+>>> # Access raters
+>>> db.raters
+raterid:
+  {type: human}
 
 
 Scheme
@@ -192,16 +194,17 @@ Minimal example
 audformat implementation
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. jupyter-execute::
-
-    # Create minimal Scheme
-    scheme = audformat.Scheme("float")
-    # Add Scheme to Database
-    db.schemes["schemeid"] = scheme
-    # Access dtype of Scheme
-    db.schemes["schemeid"].dtype
-    # Access schemes
-    db.schemes
+>>> # Create minimal Scheme
+>>> scheme = audformat.Scheme("float")
+>>> # Add Scheme to Database
+>>> db.schemes["schemeid"] = scheme
+>>> # Access dtype of Scheme
+>>> db.schemes["schemeid"].dtype
+'float'
+>>> # Access schemes
+>>> db.schemes
+schemeid:
+  {dtype: float}
 
 
 Split
@@ -233,16 +236,17 @@ Minimal example
 audformat implementation
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. jupyter-execute::
-
-    # Create minimal Split
-    split = audformat.Split("test")
-    # Add Split to Database
-    db.splits["splitid"] = split
-    # Access type of Split
-    db.splits["splitid"].type
-    # Access splits
-    db.splits
+>>> # Create minimal Split
+>>> split = audformat.Split("test")
+>>> # Add Split to Database
+>>> db.splits["splitid"] = split
+>>> # Access type of Split
+>>> db.splits["splitid"].type
+'test'
+>>> # Access splits
+>>> db.splits
+splitid:
+  {type: test}
 
 
 Media
@@ -284,16 +288,17 @@ Minimal example
 audformat implementation
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. jupyter-execute::
-
-    # Create minimal media information
-    media = audformat.Media("audio")
-    # Add media to Database
-    db.media["mediaid"] = media
-    # Access type of Media
-    db.media["mediaid"].type
-    # Access media
-    db.media
+>>> # Create minimal media information
+>>> media = audformat.Media("audio")
+>>> # Add media to Database
+>>> db.media["mediaid"] = media
+>>> # Access type of Media
+>>> db.media["mediaid"].type
+'audio'
+>>> # Access media
+>>> db.media
+mediaid:
+  {type: audio}
 
 
 Table
@@ -327,20 +332,22 @@ Minimal example
 audformat implementation
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. jupyter-execute::
-
-    # Create minimal Table
-    table = audformat.Table(audformat.filewise_index())
-    # Add Table to Database
-    db.tables["tableid"] = table
-    # Access type of Table
-    db.tables["tableid"].type
-    # Add Table to Database (short notation)
-    db["tableid"] = table
-    # Access type of Table (short notation)
-    db["tableid"].type
-    # Access tables
-    db.tables
+>>> # Create minimal Table
+>>> table = audformat.Table(audformat.filewise_index())
+>>> # Add Table to Database
+>>> db.tables["tableid"] = table
+>>> # Access type of Table
+>>> db.tables["tableid"].type
+'filewise'
+>>> # Add Table to Database (short notation)
+>>> db["tableid"] = table
+>>> # Access type of Table (short notation)
+>>> db["tableid"].type
+'filewise'
+>>> # Access tables
+>>> db.tables
+tableid:
+  {type: filewise}
 
 
 Misc Table
@@ -373,21 +380,27 @@ Minimal example
 audformat implementation
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. jupyter-execute::
-
-    # Create minimal Misc Table
-    import pandas as pd
-    misc_table = audformat.MiscTable(pd.Index([], name="idx"))
-    # Add Misc Table to Database
-    db.misc_tables["misctableid"] = misc_table
-    # Access dataframe of Misc Table
-    db.misc_tables["misctableid"].df
-    # Add Misc Table to Database (short notation)
-    db["misctableid"] = misc_table
-    # Access dataframe of Misc Table (short notation)
-    db["misctableid"].df
-    # Access misc tables
-    db.misc_tables
+>>> # Create minimal Misc Table
+>>> import pandas as pd
+>>> misc_table = audformat.MiscTable(pd.Index([], name="idx"))
+>>> # Add Misc Table to Database
+>>> db.misc_tables["misctableid"] = misc_table
+>>> # Access dataframe of Misc Table
+>>> db.misc_tables["misctableid"].df
+Empty DataFrame
+Columns: []
+Index: []
+>>> # Add Misc Table to Database (short notation)
+>>> db["misctableid"] = misc_table
+>>> # Access dataframe of Misc Table (short notation)
+>>> db["misctableid"].df
+Empty DataFrame
+Columns: []
+Index: []
+>>> # Access misc tables
+>>> db.misc_tables
+misctableid:
+  levels: {idx: object}
 
 
 Column
@@ -421,13 +434,13 @@ Minimal example
 audformat implementation
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. jupyter-execute::
-
-    # Create minimal Column
-    column = audformat.Column()
-    # Add Column to Table
-    db.tables["tableid"].columns["columnid"] = column
-    # Add Column to Table (short notation)
-    db["tableid"]["columnid"] = column
-    # Access columns
-    db["tableid"].columns
+>>> # Create minimal Column
+>>> column = audformat.Column()
+>>> # Add Column to Table
+>>> db.tables["tableid"].columns["columnid"] = column
+>>> # Add Column to Table (short notation)
+>>> db["tableid"]["columnid"] = column
+>>> # Access columns
+>>> db["tableid"].columns
+columnid:
+  {}

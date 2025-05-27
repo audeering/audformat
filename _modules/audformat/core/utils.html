@@ -30,8 +30,6 @@
   <link rel="stylesheet" href="../../../_static/css/audeering.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/graphviz.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/copybutton.css" type="text/css" />
-  <link rel="stylesheet" href="../../../_static/jupyter-sphinx.css" type="text/css" />
-  <link rel="stylesheet" href="../../../_static/thebelab.css" type="text/css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/katex-math.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
@@ -70,7 +68,7 @@
             
             
               <div class="version">
-                v1.3.1
+                v1.3.2
               </div>
             
           
@@ -164,33 +162,38 @@
            <div itemprop="articleBody">
             
   <h1>Source code for audformat.core.utils</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">collections</span>
-<span class="kn">import</span> <span class="nn">errno</span>
-<span class="kn">import</span> <span class="nn">hashlib</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">platform</span>
-<span class="kn">import</span> <span class="nn">re</span>
-<span class="kn">import</span> <span class="nn">sys</span>
-<span class="kn">import</span> <span class="nn">typing</span> <span class="k">as</span> <span class="nn">typing</span>
+<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">import</span> <span class="nn">iso639</span>
-<span class="kn">from</span> <span class="nn">iso639.exceptions</span> <span class="kn">import</span> <span class="n">InvalidLanguageValue</span>
-<span class="kn">import</span> <span class="nn">iso3166</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">import</span> <span class="nn">pyarrow</span> <span class="k">as</span> <span class="nn">pa</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">collections</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callable</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Iterator</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">MutableMapping</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sequence</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">errno</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">hashlib</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">platform</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
 
-<span class="kn">import</span> <span class="nn">audeer</span>
-<span class="kn">import</span> <span class="nn">audiofile</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">iso639</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">iso639.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">InvalidLanguageValue</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">iso3166</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pyarrow</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pa</span>
 
-<span class="kn">from</span> <span class="nn">audformat.core</span> <span class="kn">import</span> <span class="n">define</span>
-<span class="kn">from</span> <span class="nn">audformat.core.common</span> <span class="kn">import</span> <span class="n">to_audformat_dtype</span>
-<span class="kn">from</span> <span class="nn">audformat.core.database</span> <span class="kn">import</span> <span class="n">Database</span>
-<span class="kn">from</span> <span class="nn">audformat.core.index</span> <span class="kn">import</span> <span class="n">filewise_index</span>
-<span class="kn">from</span> <span class="nn">audformat.core.index</span> <span class="kn">import</span> <span class="n">is_filewise_index</span>
-<span class="kn">from</span> <span class="nn">audformat.core.index</span> <span class="kn">import</span> <span class="n">is_segmented_index</span>
-<span class="kn">from</span> <span class="nn">audformat.core.index</span> <span class="kn">import</span> <span class="n">segmented_index</span>
-<span class="kn">from</span> <span class="nn">audformat.core.scheme</span> <span class="kn">import</span> <span class="n">Scheme</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">audeer</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">audiofile</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">audformat.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">define</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">audformat.core.common</span><span class="w"> </span><span class="kn">import</span> <span class="n">to_audformat_dtype</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">audformat.core.database</span><span class="w"> </span><span class="kn">import</span> <span class="n">Database</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">audformat.core.index</span><span class="w"> </span><span class="kn">import</span> <span class="n">filewise_index</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">audformat.core.index</span><span class="w"> </span><span class="kn">import</span> <span class="n">is_filewise_index</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">audformat.core.index</span><span class="w"> </span><span class="kn">import</span> <span class="n">is_segmented_index</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">audformat.core.index</span><span class="w"> </span><span class="kn">import</span> <span class="n">segmented_index</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">audformat.core.scheme</span><span class="w"> </span><span class="kn">import</span> <span class="n">Scheme</span>
 
 
 <span class="c1"># Exclude examples that return a path containing `\`</span>
@@ -202,13 +205,13 @@
     <span class="p">]</span>
 
 
-<div class="viewcode-block" id="concat"><a class="viewcode-back" href="../../../api/audformat.utils.concat.html#audformat.utils.concat">[docs]</a><span class="k">def</span> <span class="nf">concat</span><span class="p">(</span>
-    <span class="n">objs</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">]],</span>
+<div class="viewcode-block" id="concat"><a class="viewcode-back" href="../../../api/audformat.utils.concat.html#audformat.utils.concat">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">concat</span><span class="p">(</span>
+    <span class="n">objs</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">],</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">overwrite</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-    <span class="n">aggregate_function</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Callable</span><span class="p">[[</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">],</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">aggregate_function</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">],</span> <span class="nb">object</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">aggregate_strategy</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;mismatch&quot;</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">]:</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Concatenate objects.</span>
 
 <span class="sd">    If all objects are conform to</span>
@@ -462,7 +465,7 @@
             <span class="c1"># Handle overlapping values</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">overwrite</span><span class="p">:</span>
 
-                <span class="k">def</span> <span class="nf">collect_overlap</span><span class="p">(</span><span class="n">overlapping_values</span><span class="p">,</span> <span class="n">column</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+                <span class="k">def</span><span class="w"> </span><span class="nf">collect_overlap</span><span class="p">(</span><span class="n">overlapping_values</span><span class="p">,</span> <span class="n">column</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
 <span class="w">                    </span><span class="sd">&quot;&quot;&quot;Collect overlap for aggregate function.&quot;&quot;&quot;</span>
                     <span class="k">if</span> <span class="n">column</span><span class="o">.</span><span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">overlapping_values</span><span class="p">:</span>
                         <span class="n">overlapping_values</span><span class="p">[</span><span class="n">column</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
@@ -588,8 +591,8 @@
         <span class="k">return</span> <span class="n">df</span></div>
 
 
-<div class="viewcode-block" id="difference"><a class="viewcode-back" href="../../../api/audformat.utils.difference.html#audformat.utils.difference">[docs]</a><span class="k">def</span> <span class="nf">difference</span><span class="p">(</span>
-    <span class="n">objs</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">]],</span>
+<div class="viewcode-block" id="difference"><a class="viewcode-back" href="../../../api/audformat.utils.difference.html#audformat.utils.difference">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">difference</span><span class="p">(</span>
+    <span class="n">objs</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">],</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">:</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Difference of index objects.</span>
 
@@ -721,8 +724,8 @@
     <span class="k">return</span> <span class="n">index</span></div>
 
 
-<div class="viewcode-block" id="duration"><a class="viewcode-back" href="../../../api/audformat.utils.duration.html#audformat.utils.duration">[docs]</a><span class="k">def</span> <span class="nf">duration</span><span class="p">(</span>
-    <span class="n">obj</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">],</span>
+<div class="viewcode-block" id="duration"><a class="viewcode-back" href="../../../api/audformat.utils.duration.html#audformat.utils.duration">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">duration</span><span class="p">(</span>
+    <span class="n">obj</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">root</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">num_workers</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
@@ -787,7 +790,7 @@
     <span class="k">return</span> <span class="p">(</span><span class="n">ends</span> <span class="o">-</span> <span class="n">starts</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span></div>
 
 
-<div class="viewcode-block" id="expand_file_path"><a class="viewcode-back" href="../../../api/audformat.utils.expand_file_path.html#audformat.utils.expand_file_path">[docs]</a><span class="k">def</span> <span class="nf">expand_file_path</span><span class="p">(</span>
+<div class="viewcode-block" id="expand_file_path"><a class="viewcode-back" href="../../../api/audformat.utils.expand_file_path.html#audformat.utils.expand_file_path">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">expand_file_path</span><span class="p">(</span>
     <span class="n">index</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">,</span>
     <span class="n">root</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">:</span>
@@ -812,10 +815,15 @@
 <span class="sd">            :ref:`table specifications &lt;data-tables:Tables&gt;`</span>
 
 <span class="sd">    Examples:</span>
+
+<span class="sd">        .. skip: start if(sys.platform.startswith(&quot;win&quot;))</span>
+
 <span class="sd">        &gt;&gt;&gt; expand_file_path(filewise_index([&quot;f1&quot;, &quot;f2&quot;]), &quot;/a&quot;)</span>
 <span class="sd">        Index([&#39;/a/f1&#39;, &#39;/a/f2&#39;], dtype=&#39;string&#39;, name=&#39;file&#39;)</span>
 <span class="sd">        &gt;&gt;&gt; expand_file_path(filewise_index([&quot;f1&quot;, &quot;f2&quot;]), &quot;./a&quot;)</span>
 <span class="sd">        Index([&#39;a/f1&#39;, &#39;a/f2&#39;], dtype=&#39;string&#39;, name=&#39;file&#39;)</span>
+
+<span class="sd">        .. skip: end</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>  <span class="c1"># noqa: E501</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">index</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
@@ -831,8 +839,8 @@
     <span class="k">return</span> <span class="n">index</span></div>
 
 
-<div class="viewcode-block" id="hash"><a class="viewcode-back" href="../../../api/audformat.utils.hash.html#audformat.utils.hash">[docs]</a><span class="k">def</span> <span class="nf">hash</span><span class="p">(</span>
-    <span class="n">obj</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">],</span>
+<div class="viewcode-block" id="hash"><a class="viewcode-back" href="../../../api/audformat.utils.hash.html#audformat.utils.hash">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">hash</span><span class="p">(</span>
+    <span class="n">obj</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
     <span class="n">strict</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Create hash from object.</span>
@@ -918,8 +926,8 @@
     <span class="k">return</span> <span class="n">md5</span></div>
 
 
-<div class="viewcode-block" id="index_has_overlap"><a class="viewcode-back" href="../../../api/audformat.utils.index_has_overlap.html#audformat.utils.index_has_overlap">[docs]</a><span class="k">def</span> <span class="nf">index_has_overlap</span><span class="p">(</span>
-    <span class="n">obj</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">],</span>
+<div class="viewcode-block" id="index_has_overlap"><a class="viewcode-back" href="../../../api/audformat.utils.index_has_overlap.html#audformat.utils.index_has_overlap">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">index_has_overlap</span><span class="p">(</span>
+    <span class="n">obj</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Check if one or more segments in the index overlap.</span>
 
@@ -968,8 +976,8 @@
     <span class="k">return</span> <span class="kc">False</span></div>
 
 
-<div class="viewcode-block" id="intersect"><a class="viewcode-back" href="../../../api/audformat.utils.intersect.html#audformat.utils.intersect">[docs]</a><span class="k">def</span> <span class="nf">intersect</span><span class="p">(</span>
-    <span class="n">objs</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">]],</span>
+<div class="viewcode-block" id="intersect"><a class="viewcode-back" href="../../../api/audformat.utils.intersect.html#audformat.utils.intersect">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">intersect</span><span class="p">(</span>
+    <span class="n">objs</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">],</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">:</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Intersect index objects.</span>
 
@@ -1104,8 +1112,8 @@
     <span class="k">return</span> <span class="n">index</span></div>
 
 
-<div class="viewcode-block" id="is_index_alike"><a class="viewcode-back" href="../../../api/audformat.utils.is_index_alike.html#audformat.utils.is_index_alike">[docs]</a><span class="k">def</span> <span class="nf">is_index_alike</span><span class="p">(</span>
-    <span class="n">objs</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">]],</span>
+<div class="viewcode-block" id="is_index_alike"><a class="viewcode-back" href="../../../api/audformat.utils.is_index_alike.html#audformat.utils.is_index_alike">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">is_index_alike</span><span class="p">(</span>
+    <span class="n">objs</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Index</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">],</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Check if index objects are alike.</span>
 
@@ -1146,7 +1154,7 @@
     <span class="n">objs</span> <span class="o">=</span> <span class="p">[</span><span class="n">obj</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">)</span> <span class="k">else</span> <span class="n">obj</span><span class="o">.</span><span class="n">index</span> <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">objs</span><span class="p">]</span>
 
     <span class="c1"># check names</span>
-    <span class="n">levels</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="n">obj</span><span class="o">.</span><span class="n">names</span> <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">objs</span><span class="p">])</span>
+    <span class="n">levels</span> <span class="o">=</span> <span class="p">{</span><span class="n">obj</span><span class="o">.</span><span class="n">names</span> <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">objs</span><span class="p">}</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">levels</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
         <span class="k">return</span> <span class="kc">False</span>
 
@@ -1160,16 +1168,12 @@
     <span class="k">return</span> <span class="kc">True</span></div>
 
 
-<div class="viewcode-block" id="iter_by_file"><a class="viewcode-back" href="../../../api/audformat.utils.iter_by_file.html#audformat.utils.iter_by_file">[docs]</a><span class="k">def</span> <span class="nf">iter_by_file</span><span class="p">(</span>
-    <span class="n">obj</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span>
-        <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">,</span>
-        <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span>
-        <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
-    <span class="p">],</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Iterator</span><span class="p">[</span>
-    <span class="n">typing</span><span class="o">.</span><span class="n">Tuple</span><span class="p">[</span>
+<div class="viewcode-block" id="iter_by_file"><a class="viewcode-back" href="../../../api/audformat.utils.iter_by_file.html#audformat.utils.iter_by_file">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">iter_by_file</span><span class="p">(</span>
+    <span class="n">obj</span><span class="p">:</span> <span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">Index</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">),</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span>
+    <span class="nb">tuple</span><span class="p">[</span>
         <span class="nb">str</span><span class="p">,</span>
-        <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">],</span>
+        <span class="n">pd</span><span class="o">.</span><span class="n">Index</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
     <span class="p">],</span>
 <span class="p">]:</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Iterate over object by file.</span>
@@ -1218,9 +1222,9 @@
                 <span class="k">yield</span> <span class="n">file</span><span class="p">,</span> <span class="n">sub_obj</span></div>
 
 
-<div class="viewcode-block" id="join_labels"><a class="viewcode-back" href="../../../api/audformat.utils.join_labels.html#audformat.utils.join_labels">[docs]</a><span class="k">def</span> <span class="nf">join_labels</span><span class="p">(</span>
-    <span class="n">labels</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">List</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Dict</span><span class="p">]],</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">List</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Dict</span><span class="p">]:</span>
+<div class="viewcode-block" id="join_labels"><a class="viewcode-back" href="../../../api/audformat.utils.join_labels.html#audformat.utils.join_labels">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">join_labels</span><span class="p">(</span>
+    <span class="n">labels</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">list</span> <span class="o">|</span> <span class="nb">dict</span><span class="p">],</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span> <span class="o">|</span> <span class="nb">dict</span><span class="p">:</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Combine scheme labels.</span>
 
 <span class="sd">    Args:</span>
@@ -1247,8 +1251,7 @@
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
         <span class="n">labels</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span>
 
-    <span class="n">misc_table_ids</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">labels</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">str</span><span class="p">)]</span>
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">misc_table_ids</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">misc_table_ids</span> <span class="o">:=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">labels</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">str</span><span class="p">)]:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
             <span class="sa">f</span><span class="s2">&quot;The following string values were provided: &#39;&quot;</span>
             <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">misc_table_ids</span><span class="si">}</span><span class="s2">&#39;. &quot;</span>
@@ -1258,16 +1261,16 @@
         <span class="p">)</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span>
-        <span class="nb">all</span><span class="p">([</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">labels</span><span class="p">])</span>
-        <span class="ow">or</span> <span class="nb">all</span><span class="p">([</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">labels</span><span class="p">])</span>
+        <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">labels</span><span class="p">)</span>
+        <span class="ow">or</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">labels</span><span class="p">)</span>
     <span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">((</span><span class="s2">&quot;All labels must be either &quot;</span> <span class="s2">&quot;of type &#39;list&#39; or &#39;dict&#39;.&quot;</span><span class="p">))</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;All labels must be either of type &#39;list&#39; or &#39;dict&#39;.&quot;</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">labels</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
     <span class="n">items</span> <span class="o">=</span> <span class="n">audeer</span><span class="o">.</span><span class="n">flatten_list</span><span class="p">([</span><span class="nb">list</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">labels</span><span class="p">])</span>
-    <span class="n">dtypes</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">x</span><span class="p">))</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">items</span><span class="p">])))</span>
+    <span class="n">dtypes</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">({</span><span class="nb">str</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">x</span><span class="p">))</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">items</span><span class="p">}))</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">dtypes</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
             <span class="sa">f</span><span class="s2">&quot;Elements or keys must &quot;</span>
@@ -1292,8 +1295,8 @@
     <span class="k">return</span> <span class="n">joined_labels</span></div>
 
 
-<div class="viewcode-block" id="join_schemes"><a class="viewcode-back" href="../../../api/audformat.utils.join_schemes.html#audformat.utils.join_schemes">[docs]</a><span class="k">def</span> <span class="nf">join_schemes</span><span class="p">(</span>
-    <span class="n">dbs</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">Database</span><span class="p">],</span>
+<div class="viewcode-block" id="join_schemes"><a class="viewcode-back" href="../../../api/audformat.utils.join_schemes.html#audformat.utils.join_schemes">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">join_schemes</span><span class="p">(</span>
+    <span class="n">dbs</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Database</span><span class="p">],</span>
     <span class="n">scheme_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Join and update scheme of databases.</span>
@@ -1343,7 +1346,7 @@
         <span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="n">scheme_id</span><span class="p">]</span><span class="o">.</span><span class="n">replace_labels</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="map_country"><a class="viewcode-back" href="../../../api/audformat.utils.map_country.html#audformat.utils.map_country">[docs]</a><span class="k">def</span> <span class="nf">map_country</span><span class="p">(</span><span class="n">country</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<div class="viewcode-block" id="map_country"><a class="viewcode-back" href="../../../api/audformat.utils.map_country.html#audformat.utils.map_country">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">map_country</span><span class="p">(</span><span class="n">country</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Map country to ISO 3166-1.</span>
 
 <span class="sd">    Args:</span>
@@ -1372,9 +1375,9 @@
     <span class="k">return</span> <span class="n">result</span><span class="o">.</span><span class="n">alpha3</span></div>
 
 
-<div class="viewcode-block" id="map_file_path"><a class="viewcode-back" href="../../../api/audformat.utils.map_file_path.html#audformat.utils.map_file_path">[docs]</a><span class="k">def</span> <span class="nf">map_file_path</span><span class="p">(</span>
+<div class="viewcode-block" id="map_file_path"><a class="viewcode-back" href="../../../api/audformat.utils.map_file_path.html#audformat.utils.map_file_path">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">map_file_path</span><span class="p">(</span>
     <span class="n">index</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">,</span>
-    <span class="n">func</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Callable</span><span class="p">[[</span><span class="nb">str</span><span class="p">],</span> <span class="nb">str</span><span class="p">],</span>
+    <span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">str</span><span class="p">],</span> <span class="nb">str</span><span class="p">],</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">:</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Apply callable to file path in index.</span>
 
@@ -1434,8 +1437,14 @@
     <span class="k">return</span> <span class="n">index</span></div>
 
 
-<div class="viewcode-block" id="map_language"><a class="viewcode-back" href="../../../api/audformat.utils.map_language.html#audformat.utils.map_language">[docs]</a><span class="k">def</span> <span class="nf">map_language</span><span class="p">(</span><span class="n">language</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<div class="viewcode-block" id="map_language"><a class="viewcode-back" href="../../../api/audformat.utils.map_language.html#audformat.utils.map_language">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">map_language</span><span class="p">(</span><span class="n">language</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Map language to ISO 639-3.</span>
+
+<span class="sd">    `ISO 639-3`_ is an international standard for language codes.</span>
+<span class="sd">    It defines three-letter codes for identifying languages,</span>
+<span class="sd">    with the aim to cover all known languages.</span>
+
+<span class="sd">    .. _ISO 639-3: https://iso639-3.sil.org/code_tables/639/data/</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        language: language string</span>
@@ -1463,11 +1472,11 @@
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">language</span><span class="si">}</span><span class="s2">&#39; is not supported by ISO 639-3.&quot;</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="read_csv"><a class="viewcode-back" href="../../../api/audformat.utils.read_csv.html#audformat.utils.read_csv">[docs]</a><span class="k">def</span> <span class="nf">read_csv</span><span class="p">(</span>
+<div class="viewcode-block" id="read_csv"><a class="viewcode-back" href="../../../api/audformat.utils.read_csv.html#audformat.utils.read_csv">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">read_csv</span><span class="p">(</span>
     <span class="o">*</span><span class="n">args</span><span class="p">,</span>
     <span class="n">as_dataframe</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">]:</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Read object from CSV file.</span>
 
 <span class="sd">    Automatically detects the index type and returns an object that is</span>
@@ -1561,7 +1570,7 @@
         <span class="k">return</span> <span class="n">frame</span></div>
 
 
-<div class="viewcode-block" id="replace_file_extension"><a class="viewcode-back" href="../../../api/audformat.utils.replace_file_extension.html#audformat.utils.replace_file_extension">[docs]</a><span class="k">def</span> <span class="nf">replace_file_extension</span><span class="p">(</span>
+<div class="viewcode-block" id="replace_file_extension"><a class="viewcode-back" href="../../../api/audformat.utils.replace_file_extension.html#audformat.utils.replace_file_extension">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">replace_file_extension</span><span class="p">(</span>
     <span class="n">index</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">,</span>
     <span class="n">extension</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">pattern</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -1619,12 +1628,9 @@
     <span class="k">return</span> <span class="n">index</span></div>
 
 
-<div class="viewcode-block" id="set_index_dtypes"><a class="viewcode-back" href="../../../api/audformat.utils.set_index_dtypes.html#audformat.utils.set_index_dtypes">[docs]</a><span class="k">def</span> <span class="nf">set_index_dtypes</span><span class="p">(</span>
+<div class="viewcode-block" id="set_index_dtypes"><a class="viewcode-back" href="../../../api/audformat.utils.set_index_dtypes.html#audformat.utils.set_index_dtypes">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">set_index_dtypes</span><span class="p">(</span>
     <span class="n">index</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">,</span>
-    <span class="n">dtypes</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span>
-        <span class="nb">str</span><span class="p">,</span>
-        <span class="n">typing</span><span class="o">.</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
-    <span class="p">],</span>
+    <span class="n">dtypes</span><span class="p">:</span> <span class="p">(</span><span class="nb">str</span> <span class="o">|</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]),</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">:</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Set the dtypes of an index for the given level names.</span>
 
@@ -1728,14 +1734,14 @@
     <span class="k">return</span> <span class="n">index</span></div>
 
 
-<div class="viewcode-block" id="to_filewise_index"><a class="viewcode-back" href="../../../api/audformat.utils.to_filewise_index.html#audformat.utils.to_filewise_index">[docs]</a><span class="k">def</span> <span class="nf">to_filewise_index</span><span class="p">(</span>
-    <span class="n">obj</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">],</span>
+<div class="viewcode-block" id="to_filewise_index"><a class="viewcode-back" href="../../../api/audformat.utils.to_filewise_index.html#audformat.utils.to_filewise_index">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">to_filewise_index</span><span class="p">(</span>
+    <span class="n">obj</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
     <span class="n">root</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">output_folder</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">num_workers</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
     <span class="n">progress_bar</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">]:</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Convert to filewise index.</span>
 
 <span class="sd">    If input is segmented, each segment is saved to a separate file</span>
@@ -1763,6 +1769,9 @@
 <span class="sd">            original data</span>
 
 <span class="sd">    Examples:</span>
+
+<span class="sd">        .. skip: start if(sys.platform.startswith(&quot;win&quot;))</span>
+
 <span class="sd">        &gt;&gt;&gt; index = segmented_index(</span>
 <span class="sd">        ...     files=[&quot;f.wav&quot;, &quot;f.wav&quot;],</span>
 <span class="sd">        ...     starts=[0, 0.5],</span>
@@ -1770,6 +1779,8 @@
 <span class="sd">        ... )</span>
 <span class="sd">        &gt;&gt;&gt; to_filewise_index(index, &quot;.&quot;, &quot;split&quot;)</span>
 <span class="sd">        Index([&#39;split/f_0.wav&#39;, &#39;split/f_1.wav&#39;], dtype=&#39;string&#39;, name=&#39;file&#39;)</span>
+
+<span class="sd">        .. skip: end</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">is_filewise_index</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
@@ -1822,14 +1833,14 @@
             <span class="p">[</span>
                 <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
                     <span class="n">output_folder</span><span class="p">,</span>
-                    <span class="s2">&quot;_</span><span class="si">{}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">count</span><span class="p">)</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="n">width</span><span class="p">))</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">rsplit</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)),</span>
+                    <span class="sa">f</span><span class="s2">&quot;_</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">count</span><span class="p">)</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="n">width</span><span class="p">)</span><span class="si">}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">rsplit</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)),</span>
                 <span class="p">)</span>
                 <span class="k">for</span> <span class="n">count</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">group</span><span class="p">))</span>
             <span class="p">]</span>
         <span class="p">)</span>
         <span class="n">audeer</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">new_files</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
 
-    <span class="k">def</span> <span class="nf">_split_files</span><span class="p">(</span><span class="n">original</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">segment</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_split_files</span><span class="p">(</span><span class="n">original</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">segment</span><span class="p">):</span>
         <span class="n">signal</span><span class="p">,</span> <span class="n">sr</span> <span class="o">=</span> <span class="n">audiofile</span><span class="o">.</span><span class="n">read</span><span class="p">(</span>
             <span class="n">file</span><span class="o">=</span><span class="n">original</span><span class="p">,</span>
             <span class="n">duration</span><span class="o">=</span><span class="n">end</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">(),</span>
@@ -1859,15 +1870,15 @@
     <span class="k">return</span> <span class="n">obj</span></div>
 
 
-<div class="viewcode-block" id="to_segmented_index"><a class="viewcode-back" href="../../../api/audformat.utils.to_segmented_index.html#audformat.utils.to_segmented_index">[docs]</a><span class="k">def</span> <span class="nf">to_segmented_index</span><span class="p">(</span>
-    <span class="n">obj</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">],</span>
+<div class="viewcode-block" id="to_segmented_index"><a class="viewcode-back" href="../../../api/audformat.utils.to_segmented_index.html#audformat.utils.to_segmented_index">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">to_segmented_index</span><span class="p">(</span>
+    <span class="n">obj</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">allow_nat</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-    <span class="n">files_duration</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">MutableMapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Timedelta</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">files_duration</span><span class="p">:</span> <span class="n">MutableMapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Timedelta</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">root</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">num_workers</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="n">num_workers</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
     <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">]:</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Convert to segmented index.</span>
 
 <span class="sd">    If the input a filewise table,</span>
@@ -1959,7 +1970,7 @@
             <span class="n">files</span> <span class="o">=</span> <span class="n">index</span><span class="o">.</span><span class="n">get_level_values</span><span class="p">(</span><span class="n">define</span><span class="o">.</span><span class="n">IndexField</span><span class="o">.</span><span class="n">FILE</span><span class="p">)</span>
             <span class="n">starts</span> <span class="o">=</span> <span class="n">index</span><span class="o">.</span><span class="n">get_level_values</span><span class="p">(</span><span class="n">define</span><span class="o">.</span><span class="n">IndexField</span><span class="o">.</span><span class="n">START</span><span class="p">)</span>
 
-            <span class="k">def</span> <span class="nf">job</span><span class="p">(</span><span class="n">file</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Timedelta</span><span class="p">:</span>
+            <span class="k">def</span><span class="w"> </span><span class="nf">job</span><span class="p">(</span><span class="n">file</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Timedelta</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">root</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isabs</span><span class="p">(</span><span class="n">file</span><span class="p">):</span>
                     <span class="n">file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">file</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">files_duration</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">files_duration</span><span class="p">:</span>
@@ -2011,8 +2022,8 @@
 <span class="n">UNION_MAX_INDEX_LEN_THRES</span> <span class="o">=</span> <span class="mi">500</span>
 
 
-<div class="viewcode-block" id="union"><a class="viewcode-back" href="../../../api/audformat.utils.union.html#audformat.utils.union">[docs]</a><span class="k">def</span> <span class="nf">union</span><span class="p">(</span>
-    <span class="n">objs</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">],</span>
+<div class="viewcode-block" id="union"><a class="viewcode-back" href="../../../api/audformat.utils.union.html#audformat.utils.union">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">union</span><span class="p">(</span>
+    <span class="n">objs</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">],</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">:</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Create union of index objects.</span>
 
@@ -2168,9 +2179,9 @@
     <span class="k">return</span> <span class="n">index</span></div>
 
 
-<span class="k">def</span> <span class="nf">_alike_index</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_alike_index</span><span class="p">(</span>
     <span class="n">index</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">,</span>
-    <span class="n">data</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span> <span class="o">=</span> <span class="p">[],</span>
+    <span class="n">data</span><span class="p">:</span> <span class="n">Sequence</span> <span class="o">=</span> <span class="p">[],</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">:</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">MultiIndex</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">set_index_dtypes</span><span class="p">(</span>
@@ -2185,8 +2196,8 @@
         <span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">_assert_index_alike</span><span class="p">(</span>
-    <span class="n">objs</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">]],</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_assert_index_alike</span><span class="p">(</span>
+    <span class="n">objs</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Index</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">],</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Raise if index objects are not alike.</span>
 
@@ -2230,7 +2241,7 @@
     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">_audformat_dtypes</span><span class="p">(</span><span class="n">index</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_audformat_dtypes</span><span class="p">(</span><span class="n">index</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;List of audformat data types of index.</span>
 
 <span class="sd">    Args:</span>
@@ -2244,7 +2255,7 @@
     <span class="k">return</span> <span class="p">[</span><span class="n">to_audformat_dtype</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span> <span class="k">for</span> <span class="n">dtype</span> <span class="ow">in</span> <span class="n">dtypes</span><span class="p">]</span>
 
 
-<span class="k">def</span> <span class="nf">_is_same_dtype</span><span class="p">(</span><span class="n">d1</span><span class="p">,</span> <span class="n">d2</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_is_same_dtype</span><span class="p">(</span><span class="n">d1</span><span class="p">,</span> <span class="n">d2</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Helper function to compare pandas dtype.&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">d1</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;bool&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">d2</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;bool&quot;</span><span class="p">):</span>
         <span class="c1"># match different bool types, i.e. bool and boolean</span>
@@ -2261,7 +2272,7 @@
     <span class="k">return</span> <span class="n">d1</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">d2</span><span class="o">.</span><span class="n">name</span>
 
 
-<span class="k">def</span> <span class="nf">_levels</span><span class="p">(</span><span class="n">index</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_levels</span><span class="p">(</span><span class="n">index</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;List of levels of index.</span>
 
 <span class="sd">    Args:</span>
@@ -2277,9 +2288,9 @@
         <span class="k">return</span> <span class="p">[</span><span class="n">index</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
 
 
-<span class="k">def</span> <span class="nf">_maybe_convert_filewise_index</span><span class="p">(</span>
-    <span class="n">objs</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">]],</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">]]:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_maybe_convert_filewise_index</span><span class="p">(</span>
+    <span class="n">objs</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Index</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">],</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Index</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">]:</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Convert filewise to segmented index.</span>
 
 <span class="sd">    Checks if all index objects are either filewise or segmented,</span>
@@ -2301,7 +2312,7 @@
     <span class="k">return</span> <span class="n">objs</span>
 
 
-<span class="k">def</span> <span class="nf">_maybe_convert_pandas_dtype</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_maybe_convert_pandas_dtype</span><span class="p">(</span>
     <span class="n">index</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">:</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Ensure desired pandas dtypes.</span>
@@ -2340,9 +2351,9 @@
     <span class="k">return</span> <span class="n">index</span>
 
 
-<span class="k">def</span> <span class="nf">_maybe_convert_single_level_multi_index</span><span class="p">(</span>
-    <span class="n">objs</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">]],</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">]]:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_maybe_convert_single_level_multi_index</span><span class="p">(</span>
+    <span class="n">objs</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Index</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">],</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Index</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">]:</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Convert single-level pd.MultiIndex to pd.Index.</span>
 
 <span class="sd">    If input is a mixture of single-level</span>
@@ -2359,7 +2370,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">indices</span> <span class="o">=</span> <span class="p">[</span><span class="n">obj</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">)</span> <span class="k">else</span> <span class="n">obj</span><span class="o">.</span><span class="n">index</span> <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">objs</span><span class="p">]</span>
     <span class="n">is_single_level</span> <span class="o">=</span> <span class="n">indices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">nlevels</span> <span class="o">==</span> <span class="mi">1</span>
-    <span class="n">is_mix</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">MultiIndex</span><span class="p">)</span> <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="n">indices</span><span class="p">))</span> <span class="o">==</span> <span class="mi">2</span>
+    <span class="n">is_mix</span> <span class="o">=</span> <span class="nb">len</span><span class="p">({</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">MultiIndex</span><span class="p">)</span> <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="n">indices</span><span class="p">})</span> <span class="o">==</span> <span class="mi">2</span>
 
     <span class="k">if</span> <span class="n">is_single_level</span> <span class="ow">and</span> <span class="n">is_mix</span><span class="p">:</span>
         <span class="n">objs</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">objs</span><span class="p">)</span>
@@ -2372,7 +2383,7 @@
     <span class="k">return</span> <span class="n">objs</span>
 
 
-<span class="k">def</span> <span class="nf">_pandas_dtypes</span><span class="p">(</span><span class="n">index</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">]:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_pandas_dtypes</span><span class="p">(</span><span class="n">index</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">object</span><span class="p">]:</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;List of pandas dtypes of index.</span>
 
 <span class="sd">    Args:</span>
@@ -2401,7 +2412,7 @@
         
         
         
-          Built with <a href="https://www.sphinx-doc.org">Sphinx</a> on 2024/09/16 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org">Sphinx</a> on 2025/05/27 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
@@ -2409,7 +2420,7 @@
   <div role="contentinfo">
     <p>
         
-      &copy; 2019-2024 audEERING GmbH
+      &copy; 2019-2025 audEERING GmbH
     </p>
   </div> 
 
@@ -2441,12 +2452,9 @@
         <script src="../../../_static/sphinx_highlight.js"></script>
         <script src="../../../_static/clipboard.min.js"></script>
         <script src="../../../_static/copybutton.js"></script>
-        <script src="../../../_static/thebelab-helper.js"></script>
         <script src="../../../_static/katex.min.js"></script>
         <script src="../../../_static/auto-render.min.js"></script>
         <script src="../../../_static/katex_autorenderer.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
     
 
   

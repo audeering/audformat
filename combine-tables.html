@@ -30,8 +30,6 @@
   <link rel="stylesheet" href="_static/css/audeering.css" type="text/css" />
   <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
   <link rel="stylesheet" href="_static/copybutton.css" type="text/css" />
-  <link rel="stylesheet" href="_static/jupyter-sphinx.css" type="text/css" />
-  <link rel="stylesheet" href="_static/thebelab.css" type="text/css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css" type="text/css" />
   <link rel="stylesheet" href="_static/katex-math.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
@@ -72,7 +70,7 @@
             
             
               <div class="version">
-                v1.3.1
+                v1.3.2
               </div>
             
           
@@ -171,10 +169,7 @@
 in tables of different type as some labels belong to the whole file,
 others don’t. The following examples highlights this with the labels
 for age and likability:</p>
-<div class="jupyter_cell jupyter_container docutils container">
-<div class="cell_input code_cell docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">audformat.testing</span>
-
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">audformat.testing</span>
 
 <span class="n">db</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">create_db</span><span class="p">(</span><span class="n">minimal</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s2">&quot;age&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Scheme</span><span class="p">(</span>
@@ -201,661 +196,114 @@ for age and likability:</p>
 <span class="p">)</span>
 </pre></div>
 </div>
-</div>
-<div class="cell_output docutils container">
-</div>
-</div>
-<p>Which results in the following two <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a>:</p>
-<div class="jupyter_cell jupyter_container docutils container">
-<div class="cell_input code_cell docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">display</span><span class="p">(</span>
-    <span class="n">db</span><span class="p">[</span><span class="s2">&quot;age&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span>
-    <span class="n">db</span><span class="p">[</span><span class="s2">&quot;likability&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span>
-<span class="p">)</span>
+<p>Which results in the following two <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a>:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="p">[</span><span class="s2">&quot;age&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+<span class="go">               age</span>
+<span class="go">file</span>
+<span class="go">audio/001.wav   40</span>
+<span class="go">audio/002.wav   33</span>
+<span class="go">audio/003.wav   38</span>
 </pre></div>
 </div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_html"><div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>age</th>
-    </tr>
-    <tr>
-      <th>file</th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>audio/001.wav</th>
-      <td>42</td>
-    </tr>
-    <tr>
-      <th>audio/002.wav</th>
-      <td>42</td>
-    </tr>
-    <tr>
-      <th>audio/003.wav</th>
-      <td>38</td>
-    </tr>
-  </tbody>
-</table>
-</div></div><div class="output text_html"><div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th></th>
-      <th></th>
-      <th>likability</th>
-    </tr>
-    <tr>
-      <th>file</th>
-      <th>start</th>
-      <th>end</th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th rowspan="5" valign="top">audio/001.wav</th>
-      <th>0 days 00:00:00.076266121</th>
-      <th>0 days 00:00:00.619946911</th>
-      <td>0.435226</td>
-    </tr>
-    <tr>
-      <th>0 days 00:00:01.148784506</th>
-      <th>0 days 00:00:01.521320981</th>
-      <td>0.841527</td>
-    </tr>
-    <tr>
-      <th>0 days 00:00:01.752849085</th>
-      <th>0 days 00:00:01.821368375</th>
-      <td>0.646402</td>
-    </tr>
-    <tr>
-      <th>0 days 00:00:01.992789395</th>
-      <th>0 days 00:00:02.011086746</th>
-      <td>0.329573</td>
-    </tr>
-    <tr>
-      <th>0 days 00:00:02.462067804</th>
-      <th>0 days 00:00:02.520139007</th>
-      <td>0.283158</td>
-    </tr>
-    <tr>
-      <th rowspan="5" valign="top">audio/002.wav</th>
-      <th>0 days 00:00:00.414579600</th>
-      <th>0 days 00:00:00.942075097</th>
-      <td>0.481720</td>
-    </tr>
-    <tr>
-      <th>0 days 00:00:01.852233207</th>
-      <th>0 days 00:00:02.707899678</th>
-      <td>0.260380</td>
-    </tr>
-    <tr>
-      <th>0 days 00:00:03.355573727</th>
-      <th>0 days 00:00:03.438177386</th>
-      <td>0.403139</td>
-    </tr>
-    <tr>
-      <th>0 days 00:00:03.577501107</th>
-      <th>0 days 00:00:03.703908381</th>
-      <td>0.822152</td>
-    </tr>
-    <tr>
-      <th>0 days 00:00:03.916778363</th>
-      <th>0 days 00:00:04.771936687</th>
-      <td>0.510847</td>
-    </tr>
-    <tr>
-      <th rowspan="5" valign="top">audio/003.wav</th>
-      <th>0 days 00:00:01.388510311</th>
-      <th>0 days 00:00:01.639387281</th>
-      <td>0.666027</td>
-    </tr>
-    <tr>
-      <th>0 days 00:00:02.244054817</th>
-      <th>0 days 00:00:03.013083281</th>
-      <td>0.048390</td>
-    </tr>
-    <tr>
-      <th>0 days 00:00:03.311775472</th>
-      <th>0 days 00:00:03.988677214</th>
-      <td>0.115562</td>
-    </tr>
-    <tr>
-      <th>0 days 00:00:04.399860268</th>
-      <th>0 days 00:00:04.471247023</th>
-      <td>0.313857</td>
-    </tr>
-    <tr>
-      <th>0 days 00:00:04.474487824</th>
-      <th>0 days 00:00:04.695643611</th>
-      <td>0.631005</td>
-    </tr>
-    <tr>
-      <th rowspan="5" valign="top">audio/004.wav</th>
-      <th>0 days 00:00:00.588490047</th>
-      <th>0 days 00:00:01.148163469</th>
-      <td>0.529147</td>
-    </tr>
-    <tr>
-      <th>0 days 00:00:01.406743481</th>
-      <th>0 days 00:00:02.263371657</th>
-      <td>0.038501</td>
-    </tr>
-    <tr>
-      <th>0 days 00:00:03.505024941</th>
-      <th>0 days 00:00:03.561733415</th>
-      <td>0.953864</td>
-    </tr>
-    <tr>
-      <th>0 days 00:00:03.637172321</th>
-      <th>0 days 00:00:03.896031945</th>
-      <td>0.328594</td>
-    </tr>
-    <tr>
-      <th>0 days 00:00:04.152167598</th>
-      <th>0 days 00:00:04.826367184</th>
-      <td>0.867975</td>
-    </tr>
-  </tbody>
-</table>
-</div></div></div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="p">[</span><span class="s2">&quot;likability&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+<span class="go">                                                                   likability</span>
+<span class="go">file          start                     end</span>
+<span class="go">audio/001.wav 0 days 00:00:00.063022023 0 days 00:00:00.670806417    0.310583</span>
+<span class="go">              0 days 00:00:02.176912810 0 days 00:00:02.570855787    0.047821</span>
+<span class="go">              0 days 00:00:03.254253920 0 days 00:00:03.748281529    0.288177</span>
+<span class="go">              0 days 00:00:03.959315192 0 days 00:00:04.110064420    0.848677</span>
+<span class="go">              0 days 00:00:04.541308146 0 days 00:00:04.962982764    0.787870</span>
+<span class="go">audio/002.wav 0 days 00:00:00.003443562 0 days 00:00:00.037705840    0.122311</span>
+<span class="go">              0 days 00:00:00.796582868 0 days 00:00:01.075538128    0.646814</span>
+<span class="go">              0 days 00:00:01.110602019 0 days 00:00:01.439743769    0.837227</span>
+<span class="go">              0 days 00:00:02.194859538 0 days 00:00:03.675142916    0.430492</span>
+<span class="go">              0 days 00:00:04.187563347 0 days 00:00:04.738401164    0.944455</span>
+<span class="go">audio/003.wav 0 days 00:00:00.574500931 0 days 00:00:00.929483764    0.422895</span>
+<span class="go">              0 days 00:00:01.450303730 0 days 00:00:01.953211769    0.559592</span>
+<span class="go">              0 days 00:00:02.808842477 0 days 00:00:03.099035455    0.586085</span>
+<span class="go">              0 days 00:00:03.225926686 0 days 00:00:04.007331084    0.701001</span>
+<span class="go">              0 days 00:00:04.015322811 0 days 00:00:04.430922264    0.492587</span>
+<span class="go">audio/004.wav 0 days 00:00:00.276361409 0 days 00:00:00.625730112    0.717525</span>
+<span class="go">              0 days 00:00:01.335888842 0 days 00:00:01.920178620    0.705011</span>
+<span class="go">              0 days 00:00:02.320023510 0 days 00:00:02.419307606    0.607638</span>
+<span class="go">              0 days 00:00:02.798096347 0 days 00:00:02.892323558    0.918130</span>
+<span class="go">              0 days 00:00:03.617486299 0 days 00:00:03.943024074    0.414640</span>
+</pre></div>
 </div>
 <p>You can simply combine both tables with:</p>
-<div class="jupyter_cell jupyter_container docutils container">
-<div class="cell_input code_cell docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">combined_table</span> <span class="o">=</span> <span class="n">db</span><span class="p">[</span><span class="s2">&quot;likability&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">db</span><span class="p">[</span><span class="s2">&quot;age&quot;</span><span class="p">]</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">combined_table</span> <span class="o">=</span> <span class="n">db</span><span class="p">[</span><span class="s2">&quot;likability&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">db</span><span class="p">[</span><span class="s2">&quot;age&quot;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">combined_table</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+<span class="go">                                                                   likability   age</span>
+<span class="go">file          start                     end</span>
+<span class="go">audio/001.wav 0 days 00:00:00.063022023 0 days 00:00:00.670806417    0.310583  &lt;NA&gt;</span>
+<span class="go">              0 days 00:00:02.176912810 0 days 00:00:02.570855787    0.047821  &lt;NA&gt;</span>
+<span class="go">              0 days 00:00:03.254253920 0 days 00:00:03.748281529    0.288177  &lt;NA&gt;</span>
+<span class="go">              0 days 00:00:03.959315192 0 days 00:00:04.110064420    0.848677  &lt;NA&gt;</span>
+<span class="go">              0 days 00:00:04.541308146 0 days 00:00:04.962982764    0.787870  &lt;NA&gt;</span>
+<span class="go">audio/002.wav 0 days 00:00:00.003443562 0 days 00:00:00.037705840    0.122311  &lt;NA&gt;</span>
+<span class="go">              0 days 00:00:00.796582868 0 days 00:00:01.075538128    0.646814  &lt;NA&gt;</span>
+<span class="go">              0 days 00:00:01.110602019 0 days 00:00:01.439743769    0.837227  &lt;NA&gt;</span>
+<span class="go">              0 days 00:00:02.194859538 0 days 00:00:03.675142916    0.430492  &lt;NA&gt;</span>
+<span class="go">              0 days 00:00:04.187563347 0 days 00:00:04.738401164    0.944455  &lt;NA&gt;</span>
+<span class="go">audio/003.wav 0 days 00:00:00.574500931 0 days 00:00:00.929483764    0.422895  &lt;NA&gt;</span>
+<span class="go">              0 days 00:00:01.450303730 0 days 00:00:01.953211769    0.559592  &lt;NA&gt;</span>
+<span class="go">              0 days 00:00:02.808842477 0 days 00:00:03.099035455    0.586085  &lt;NA&gt;</span>
+<span class="go">              0 days 00:00:03.225926686 0 days 00:00:04.007331084    0.701001  &lt;NA&gt;</span>
+<span class="go">              0 days 00:00:04.015322811 0 days 00:00:04.430922264    0.492587  &lt;NA&gt;</span>
+<span class="go">audio/004.wav 0 days 00:00:00.276361409 0 days 00:00:00.625730112    0.717525  &lt;NA&gt;</span>
+<span class="go">              0 days 00:00:01.335888842 0 days 00:00:01.920178620    0.705011  &lt;NA&gt;</span>
+<span class="go">              0 days 00:00:02.320023510 0 days 00:00:02.419307606    0.607638  &lt;NA&gt;</span>
+<span class="go">              0 days 00:00:02.798096347 0 days 00:00:02.892323558    0.918130  &lt;NA&gt;</span>
+<span class="go">              0 days 00:00:03.617486299 0 days 00:00:03.943024074    0.414640  &lt;NA&gt;</span>
+<span class="go">audio/001.wav 0 days 00:00:00           NaT                               NaN    40</span>
+<span class="go">audio/002.wav 0 days 00:00:00           NaT                               NaN    33</span>
+<span class="go">audio/003.wav 0 days 00:00:00           NaT                               NaN    38</span>
 </pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-</div>
-</div>
-<p>Which results in the following <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a>:</p>
-<div class="jupyter_cell jupyter_container docutils container">
-<div class="cell_input code_cell docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">combined_table</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_html"><div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th></th>
-      <th></th>
-      <th>likability</th>
-      <th>age</th>
-    </tr>
-    <tr>
-      <th>file</th>
-      <th>start</th>
-      <th>end</th>
-      <th></th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th rowspan="5" valign="top">audio/001.wav</th>
-      <th>0 days 00:00:00.076266121</th>
-      <th>0 days 00:00:00.619946911</th>
-      <td>0.435226</td>
-      <td>&lt;NA&gt;</td>
-    </tr>
-    <tr>
-      <th>0 days 00:00:01.148784506</th>
-      <th>0 days 00:00:01.521320981</th>
-      <td>0.841527</td>
-      <td>&lt;NA&gt;</td>
-    </tr>
-    <tr>
-      <th>0 days 00:00:01.752849085</th>
-      <th>0 days 00:00:01.821368375</th>
-      <td>0.646402</td>
-      <td>&lt;NA&gt;</td>
-    </tr>
-    <tr>
-      <th>0 days 00:00:01.992789395</th>
-      <th>0 days 00:00:02.011086746</th>
-      <td>0.329573</td>
-      <td>&lt;NA&gt;</td>
-    </tr>
-    <tr>
-      <th>0 days 00:00:02.462067804</th>
-      <th>0 days 00:00:02.520139007</th>
-      <td>0.283158</td>
-      <td>&lt;NA&gt;</td>
-    </tr>
-    <tr>
-      <th rowspan="5" valign="top">audio/002.wav</th>
-      <th>0 days 00:00:00.414579600</th>
-      <th>0 days 00:00:00.942075097</th>
-      <td>0.481720</td>
-      <td>&lt;NA&gt;</td>
-    </tr>
-    <tr>
-      <th>0 days 00:00:01.852233207</th>
-      <th>0 days 00:00:02.707899678</th>
-      <td>0.260380</td>
-      <td>&lt;NA&gt;</td>
-    </tr>
-    <tr>
-      <th>0 days 00:00:03.355573727</th>
-      <th>0 days 00:00:03.438177386</th>
-      <td>0.403139</td>
-      <td>&lt;NA&gt;</td>
-    </tr>
-    <tr>
-      <th>0 days 00:00:03.577501107</th>
-      <th>0 days 00:00:03.703908381</th>
-      <td>0.822152</td>
-      <td>&lt;NA&gt;</td>
-    </tr>
-    <tr>
-      <th>0 days 00:00:03.916778363</th>
-      <th>0 days 00:00:04.771936687</th>
-      <td>0.510847</td>
-      <td>&lt;NA&gt;</td>
-    </tr>
-    <tr>
-      <th rowspan="5" valign="top">audio/003.wav</th>
-      <th>0 days 00:00:01.388510311</th>
-      <th>0 days 00:00:01.639387281</th>
-      <td>0.666027</td>
-      <td>&lt;NA&gt;</td>
-    </tr>
-    <tr>
-      <th>0 days 00:00:02.244054817</th>
-      <th>0 days 00:00:03.013083281</th>
-      <td>0.048390</td>
-      <td>&lt;NA&gt;</td>
-    </tr>
-    <tr>
-      <th>0 days 00:00:03.311775472</th>
-      <th>0 days 00:00:03.988677214</th>
-      <td>0.115562</td>
-      <td>&lt;NA&gt;</td>
-    </tr>
-    <tr>
-      <th>0 days 00:00:04.399860268</th>
-      <th>0 days 00:00:04.471247023</th>
-      <td>0.313857</td>
-      <td>&lt;NA&gt;</td>
-    </tr>
-    <tr>
-      <th>0 days 00:00:04.474487824</th>
-      <th>0 days 00:00:04.695643611</th>
-      <td>0.631005</td>
-      <td>&lt;NA&gt;</td>
-    </tr>
-    <tr>
-      <th rowspan="5" valign="top">audio/004.wav</th>
-      <th>0 days 00:00:00.588490047</th>
-      <th>0 days 00:00:01.148163469</th>
-      <td>0.529147</td>
-      <td>&lt;NA&gt;</td>
-    </tr>
-    <tr>
-      <th>0 days 00:00:01.406743481</th>
-      <th>0 days 00:00:02.263371657</th>
-      <td>0.038501</td>
-      <td>&lt;NA&gt;</td>
-    </tr>
-    <tr>
-      <th>0 days 00:00:03.505024941</th>
-      <th>0 days 00:00:03.561733415</th>
-      <td>0.953864</td>
-      <td>&lt;NA&gt;</td>
-    </tr>
-    <tr>
-      <th>0 days 00:00:03.637172321</th>
-      <th>0 days 00:00:03.896031945</th>
-      <td>0.328594</td>
-      <td>&lt;NA&gt;</td>
-    </tr>
-    <tr>
-      <th>0 days 00:00:04.152167598</th>
-      <th>0 days 00:00:04.826367184</th>
-      <td>0.867975</td>
-      <td>&lt;NA&gt;</td>
-    </tr>
-    <tr>
-      <th>audio/001.wav</th>
-      <th>0 days 00:00:00</th>
-      <th>NaT</th>
-      <td>NaN</td>
-      <td>42</td>
-    </tr>
-    <tr>
-      <th>audio/002.wav</th>
-      <th>0 days 00:00:00</th>
-      <th>NaT</th>
-      <td>NaN</td>
-      <td>42</td>
-    </tr>
-    <tr>
-      <th>audio/003.wav</th>
-      <th>0 days 00:00:00</th>
-      <th>NaT</th>
-      <td>NaN</td>
-      <td>38</td>
-    </tr>
-  </tbody>
-</table>
-</div></div></div>
 </div>
 <p>Or, if you just want to have the likability information for all segments,
 for which age information is available:</p>
-<div class="jupyter_cell jupyter_container docutils container">
-<div class="cell_input code_cell docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df_likability</span> <span class="o">=</span> <span class="n">db</span><span class="p">[</span><span class="s2">&quot;likability&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
-    <span class="n">db</span><span class="p">[</span><span class="s2">&quot;age&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">files</span><span class="p">,</span>
-<span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">df_likability</span> <span class="o">=</span> <span class="n">db</span><span class="p">[</span><span class="s2">&quot;likability&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">db</span><span class="p">[</span><span class="s2">&quot;age&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">files</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">df_likability</span>
+<span class="go">                                                                   likability</span>
+<span class="go">file          start                     end</span>
+<span class="go">audio/001.wav 0 days 00:00:00.063022023 0 days 00:00:00.670806417    0.310583</span>
+<span class="go">              0 days 00:00:02.176912810 0 days 00:00:02.570855787    0.047821</span>
+<span class="go">              0 days 00:00:03.254253920 0 days 00:00:03.748281529    0.288177</span>
+<span class="go">              0 days 00:00:03.959315192 0 days 00:00:04.110064420    0.848677</span>
+<span class="go">              0 days 00:00:04.541308146 0 days 00:00:04.962982764    0.787870</span>
+<span class="go">audio/002.wav 0 days 00:00:00.003443562 0 days 00:00:00.037705840    0.122311</span>
+<span class="go">              0 days 00:00:00.796582868 0 days 00:00:01.075538128    0.646814</span>
+<span class="go">              0 days 00:00:01.110602019 0 days 00:00:01.439743769    0.837227</span>
+<span class="go">              0 days 00:00:02.194859538 0 days 00:00:03.675142916    0.430492</span>
+<span class="go">              0 days 00:00:04.187563347 0 days 00:00:04.738401164    0.944455</span>
+<span class="go">audio/003.wav 0 days 00:00:00.574500931 0 days 00:00:00.929483764    0.422895</span>
+<span class="go">              0 days 00:00:01.450303730 0 days 00:00:01.953211769    0.559592</span>
+<span class="go">              0 days 00:00:02.808842477 0 days 00:00:03.099035455    0.586085</span>
+<span class="go">              0 days 00:00:03.225926686 0 days 00:00:04.007331084    0.701001</span>
+<span class="go">              0 days 00:00:04.015322811 0 days 00:00:04.430922264    0.492587</span>
 </pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-</div>
-</div>
-<p>Which results in the following <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a>:</p>
-<div class="jupyter_cell jupyter_container docutils container">
-<div class="cell_input code_cell docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df_likability</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_html"><div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th></th>
-      <th></th>
-      <th>likability</th>
-    </tr>
-    <tr>
-      <th>file</th>
-      <th>start</th>
-      <th>end</th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th rowspan="5" valign="top">audio/001.wav</th>
-      <th>0 days 00:00:00.076266121</th>
-      <th>0 days 00:00:00.619946911</th>
-      <td>0.435226</td>
-    </tr>
-    <tr>
-      <th>0 days 00:00:01.148784506</th>
-      <th>0 days 00:00:01.521320981</th>
-      <td>0.841527</td>
-    </tr>
-    <tr>
-      <th>0 days 00:00:01.752849085</th>
-      <th>0 days 00:00:01.821368375</th>
-      <td>0.646402</td>
-    </tr>
-    <tr>
-      <th>0 days 00:00:01.992789395</th>
-      <th>0 days 00:00:02.011086746</th>
-      <td>0.329573</td>
-    </tr>
-    <tr>
-      <th>0 days 00:00:02.462067804</th>
-      <th>0 days 00:00:02.520139007</th>
-      <td>0.283158</td>
-    </tr>
-    <tr>
-      <th rowspan="5" valign="top">audio/002.wav</th>
-      <th>0 days 00:00:00.414579600</th>
-      <th>0 days 00:00:00.942075097</th>
-      <td>0.481720</td>
-    </tr>
-    <tr>
-      <th>0 days 00:00:01.852233207</th>
-      <th>0 days 00:00:02.707899678</th>
-      <td>0.260380</td>
-    </tr>
-    <tr>
-      <th>0 days 00:00:03.355573727</th>
-      <th>0 days 00:00:03.438177386</th>
-      <td>0.403139</td>
-    </tr>
-    <tr>
-      <th>0 days 00:00:03.577501107</th>
-      <th>0 days 00:00:03.703908381</th>
-      <td>0.822152</td>
-    </tr>
-    <tr>
-      <th>0 days 00:00:03.916778363</th>
-      <th>0 days 00:00:04.771936687</th>
-      <td>0.510847</td>
-    </tr>
-    <tr>
-      <th rowspan="5" valign="top">audio/003.wav</th>
-      <th>0 days 00:00:01.388510311</th>
-      <th>0 days 00:00:01.639387281</th>
-      <td>0.666027</td>
-    </tr>
-    <tr>
-      <th>0 days 00:00:02.244054817</th>
-      <th>0 days 00:00:03.013083281</th>
-      <td>0.048390</td>
-    </tr>
-    <tr>
-      <th>0 days 00:00:03.311775472</th>
-      <th>0 days 00:00:03.988677214</th>
-      <td>0.115562</td>
-    </tr>
-    <tr>
-      <th>0 days 00:00:04.399860268</th>
-      <th>0 days 00:00:04.471247023</th>
-      <td>0.313857</td>
-    </tr>
-    <tr>
-      <th>0 days 00:00:04.474487824</th>
-      <th>0 days 00:00:04.695643611</th>
-      <td>0.631005</td>
-    </tr>
-  </tbody>
-</table>
-</div></div></div>
 </div>
 <p>Or, if you want to have the age information for segments
 in the likeability table:</p>
-<div class="jupyter_cell jupyter_container docutils container">
-<div class="cell_input code_cell docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df_age</span> <span class="o">=</span> <span class="n">db</span><span class="p">[</span><span class="s2">&quot;age&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">df_likability</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="p">[</span><span class="s2">&quot;age&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">df_likability</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+<span class="go">                                                                   age</span>
+<span class="go">file          start                     end</span>
+<span class="go">audio/001.wav 0 days 00:00:00.063022023 0 days 00:00:00.670806417   40</span>
+<span class="go">              0 days 00:00:02.176912810 0 days 00:00:02.570855787   40</span>
+<span class="go">              0 days 00:00:03.254253920 0 days 00:00:03.748281529   40</span>
+<span class="go">              0 days 00:00:03.959315192 0 days 00:00:04.110064420   40</span>
+<span class="go">              0 days 00:00:04.541308146 0 days 00:00:04.962982764   40</span>
+<span class="go">audio/002.wav 0 days 00:00:00.003443562 0 days 00:00:00.037705840   33</span>
+<span class="go">              0 days 00:00:00.796582868 0 days 00:00:01.075538128   33</span>
+<span class="go">              0 days 00:00:01.110602019 0 days 00:00:01.439743769   33</span>
+<span class="go">              0 days 00:00:02.194859538 0 days 00:00:03.675142916   33</span>
+<span class="go">              0 days 00:00:04.187563347 0 days 00:00:04.738401164   33</span>
+<span class="go">audio/003.wav 0 days 00:00:00.574500931 0 days 00:00:00.929483764   38</span>
+<span class="go">              0 days 00:00:01.450303730 0 days 00:00:01.953211769   38</span>
+<span class="go">              0 days 00:00:02.808842477 0 days 00:00:03.099035455   38</span>
+<span class="go">              0 days 00:00:03.225926686 0 days 00:00:04.007331084   38</span>
+<span class="go">              0 days 00:00:04.015322811 0 days 00:00:04.430922264   38</span>
 </pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-</div>
-</div>
-<p>Which results in the following <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a>:</p>
-<div class="jupyter_cell jupyter_container docutils container">
-<div class="cell_input code_cell docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df_age</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_html"><div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th></th>
-      <th></th>
-      <th>age</th>
-    </tr>
-    <tr>
-      <th>file</th>
-      <th>start</th>
-      <th>end</th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th rowspan="5" valign="top">audio/001.wav</th>
-      <th>0 days 00:00:00.076266121</th>
-      <th>0 days 00:00:00.619946911</th>
-      <td>42</td>
-    </tr>
-    <tr>
-      <th>0 days 00:00:01.148784506</th>
-      <th>0 days 00:00:01.521320981</th>
-      <td>42</td>
-    </tr>
-    <tr>
-      <th>0 days 00:00:01.752849085</th>
-      <th>0 days 00:00:01.821368375</th>
-      <td>42</td>
-    </tr>
-    <tr>
-      <th>0 days 00:00:01.992789395</th>
-      <th>0 days 00:00:02.011086746</th>
-      <td>42</td>
-    </tr>
-    <tr>
-      <th>0 days 00:00:02.462067804</th>
-      <th>0 days 00:00:02.520139007</th>
-      <td>42</td>
-    </tr>
-    <tr>
-      <th rowspan="5" valign="top">audio/002.wav</th>
-      <th>0 days 00:00:00.414579600</th>
-      <th>0 days 00:00:00.942075097</th>
-      <td>42</td>
-    </tr>
-    <tr>
-      <th>0 days 00:00:01.852233207</th>
-      <th>0 days 00:00:02.707899678</th>
-      <td>42</td>
-    </tr>
-    <tr>
-      <th>0 days 00:00:03.355573727</th>
-      <th>0 days 00:00:03.438177386</th>
-      <td>42</td>
-    </tr>
-    <tr>
-      <th>0 days 00:00:03.577501107</th>
-      <th>0 days 00:00:03.703908381</th>
-      <td>42</td>
-    </tr>
-    <tr>
-      <th>0 days 00:00:03.916778363</th>
-      <th>0 days 00:00:04.771936687</th>
-      <td>42</td>
-    </tr>
-    <tr>
-      <th rowspan="5" valign="top">audio/003.wav</th>
-      <th>0 days 00:00:01.388510311</th>
-      <th>0 days 00:00:01.639387281</th>
-      <td>38</td>
-    </tr>
-    <tr>
-      <th>0 days 00:00:02.244054817</th>
-      <th>0 days 00:00:03.013083281</th>
-      <td>38</td>
-    </tr>
-    <tr>
-      <th>0 days 00:00:03.311775472</th>
-      <th>0 days 00:00:03.988677214</th>
-      <td>38</td>
-    </tr>
-    <tr>
-      <th>0 days 00:00:04.399860268</th>
-      <th>0 days 00:00:04.471247023</th>
-      <td>38</td>
-    </tr>
-    <tr>
-      <th>0 days 00:00:04.474487824</th>
-      <th>0 days 00:00:04.695643611</th>
-      <td>38</td>
-    </tr>
-  </tbody>
-</table>
-</div></div></div>
 </div>
 <p>So far we have combined tables using the <code class="docutils literal notranslate"><span class="pre">+</span></code> operator.
 The result is a table that is no longer attached to a database.
@@ -867,156 +315,47 @@ which also works across databases,
 as we will demonstrate with the following example.</p>
 <p>First we create a second database
 and add a gender scheme:</p>
-<div class="jupyter_cell jupyter_container docutils container">
-<div class="cell_input code_cell docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">db2</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">create_db</span><span class="p">(</span><span class="n">minimal</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">db2</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s2">&quot;gender&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Scheme</span><span class="p">(</span>
-    <span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;female&quot;</span><span class="p">,</span> <span class="s2">&quot;male&quot;</span><span class="p">],</span>
-<span class="p">)</span>
-<span class="n">db2</span><span class="o">.</span><span class="n">schemes</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">db2</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">create_db</span><span class="p">(</span><span class="n">minimal</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db2</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s2">&quot;gender&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Scheme</span><span class="p">(</span><span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;female&quot;</span><span class="p">,</span> <span class="s2">&quot;male&quot;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db2</span><span class="o">.</span><span class="n">schemes</span>
+<span class="go">gender:</span>
+<span class="go">  dtype: str</span>
+<span class="go">  labels: [female, male]</span>
 </pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>gender:
-  dtype: str
-  labels: [female, male]
-</pre></div>
-</div>
-</div>
 </div>
 <p>Next, we add a table and fill in some gender information:</p>
-<div class="jupyter_cell jupyter_container docutils container">
-<div class="cell_input code_cell docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">audformat</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">add_table</span><span class="p">(</span>
-    <span class="n">db2</span><span class="p">,</span>
-    <span class="n">table_id</span><span class="o">=</span><span class="s2">&quot;gender_and_age&quot;</span><span class="p">,</span>
-    <span class="n">index_type</span><span class="o">=</span><span class="n">audformat</span><span class="o">.</span><span class="n">define</span><span class="o">.</span><span class="n">IndexType</span><span class="o">.</span><span class="n">FILEWISE</span><span class="p">,</span>
-    <span class="n">columns</span><span class="o">=</span><span class="s2">&quot;gender&quot;</span><span class="p">,</span>
-    <span class="n">num_files</span><span class="o">=</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span>
-<span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">audformat</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">add_table</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">db2</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">table_id</span><span class="o">=</span><span class="s2">&quot;gender_and_age&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">index_type</span><span class="o">=</span><span class="n">audformat</span><span class="o">.</span><span class="n">define</span><span class="o">.</span><span class="n">IndexType</span><span class="o">.</span><span class="n">FILEWISE</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">columns</span><span class="o">=</span><span class="s2">&quot;gender&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">num_files</span><span class="o">=</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span>
+<span class="gp">... </span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+<span class="go">              gender</span>
+<span class="go">file</span>
+<span class="go">audio/002.wav   male</span>
+<span class="go">audio/003.wav   male</span>
+<span class="go">audio/004.wav   male</span>
 </pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_html"><div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>gender</th>
-    </tr>
-    <tr>
-      <th>file</th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>audio/002.wav</th>
-      <td>female</td>
-    </tr>
-    <tr>
-      <th>audio/003.wav</th>
-      <td>female</td>
-    </tr>
-    <tr>
-      <th>audio/004.wav</th>
-      <td>male</td>
-    </tr>
-  </tbody>
-</table>
-</div></div></div>
 </div>
 <p>Now, we update the table with age values from the other database.</p>
-<div class="jupyter_cell jupyter_container docutils container">
-<div class="cell_input code_cell docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">db2</span><span class="p">[</span><span class="s2">&quot;gender_and_age&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">db</span><span class="p">[</span><span class="s2">&quot;age&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">db2</span><span class="p">[</span><span class="s2">&quot;gender_and_age&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">db</span><span class="p">[</span><span class="s2">&quot;age&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+<span class="go">              gender   age</span>
+<span class="go">file</span>
+<span class="go">audio/002.wav   male    33</span>
+<span class="go">audio/003.wav   male    38</span>
+<span class="go">audio/004.wav   male  &lt;NA&gt;</span>
+<span class="go">audio/001.wav    NaN    40</span>
 </pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_html"><div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>gender</th>
-      <th>age</th>
-    </tr>
-    <tr>
-      <th>file</th>
-      <th></th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>audio/002.wav</th>
-      <td>female</td>
-      <td>42</td>
-    </tr>
-    <tr>
-      <th>audio/003.wav</th>
-      <td>female</td>
-      <td>38</td>
-    </tr>
-    <tr>
-      <th>audio/004.wav</th>
-      <td>male</td>
-      <td>&lt;NA&gt;</td>
-    </tr>
-    <tr>
-      <th>audio/001.wav</th>
-      <td>NaN</td>
-      <td>42</td>
-    </tr>
-  </tbody>
-</table>
-</div></div></div>
 </div>
 <p>And also copies the according scheme to the database:</p>
-<div class="jupyter_cell jupyter_container docutils container">
-<div class="cell_input code_cell docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">db2</span><span class="o">.</span><span class="n">schemes</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">db2</span><span class="o">.</span><span class="n">schemes</span>
+<span class="go">age:</span>
+<span class="go">  {dtype: int, minimum: 20, maximum: 50}</span>
+<span class="go">gender:</span>
+<span class="go">  dtype: str</span>
+<span class="go">  labels: [female, male]</span>
 </pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>age:
-  {dtype: int, minimum: 20, maximum: 50}
-gender:
-  dtype: str
-  labels: [female, male]
-</pre></div>
-</div>
-</div>
 </div>
 </div>
 
@@ -1043,7 +382,7 @@ gender:
         
         
         
-          Built with <a href="https://www.sphinx-doc.org">Sphinx</a> on 2024/09/16 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org">Sphinx</a> on 2025/05/27 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
@@ -1051,7 +390,7 @@ gender:
   <div role="contentinfo">
     <p>
         
-      &copy; 2019-2024 audEERING GmbH
+      &copy; 2019-2025 audEERING GmbH
     </p>
   </div> 
 
@@ -1083,12 +422,9 @@ gender:
         <script src="_static/sphinx_highlight.js"></script>
         <script src="_static/clipboard.min.js"></script>
         <script src="_static/copybutton.js"></script>
-        <script src="_static/thebelab-helper.js"></script>
         <script src="_static/katex.min.js"></script>
         <script src="_static/auto-render.min.js"></script>
         <script src="_static/katex_autorenderer.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
     
 
   

@@ -30,8 +30,6 @@
   <link rel="stylesheet" href="_static/css/audeering.css" type="text/css" />
   <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
   <link rel="stylesheet" href="_static/copybutton.css" type="text/css" />
-  <link rel="stylesheet" href="_static/jupyter-sphinx.css" type="text/css" />
-  <link rel="stylesheet" href="_static/thebelab.css" type="text/css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css" type="text/css" />
   <link rel="stylesheet" href="_static/katex-math.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
@@ -72,7 +70,7 @@
             
             
               <div class="version">
-                v1.3.1
+                v1.3.2
               </div>
             
           
@@ -336,29 +334,19 @@ one of <code class="docutils literal notranslate"><span class="pre">&quot;commer
 </div>
 <div class="section" id="audformat-implementation">
 <h3>audformat implementation<a class="headerlink" href="#audformat-implementation" title="Permalink to this heading">¶</a></h3>
-<div class="jupyter_cell jupyter_container docutils container">
-<div class="cell_input code_cell docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">audformat</span>
-
-
-<span class="c1"># Create Database</span>
-<span class="n">db</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Database</span><span class="p">(</span>
-    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;databasename&quot;</span><span class="p">,</span>
-    <span class="n">source</span><span class="o">=</span><span class="s2">&quot;https://gitlab.audeering.com/data/databasename&quot;</span><span class="p">,</span>
-    <span class="n">usage</span><span class="o">=</span><span class="s2">&quot;commercial&quot;</span><span class="p">,</span>
-<span class="p">)</span>
-<span class="n">db</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">audformat</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Create Database</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Database</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;databasename&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">source</span><span class="o">=</span><span class="s2">&quot;https://gitlab.audeering.com/data/databasename&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">usage</span><span class="o">=</span><span class="s2">&quot;commercial&quot;</span><span class="p">,</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span>
+<span class="go">name: databasename</span>
+<span class="go">source: https://gitlab.audeering.com/data/databasename</span>
+<span class="go">usage: commercial</span>
+<span class="go">languages: []</span>
 </pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>name: databasename
-source: https://gitlab.audeering.com/data/databasename
-usage: commercial
-languages: []
-</pre></div>
-</div>
-</div>
 </div>
 </div>
 </div>
@@ -410,25 +398,18 @@ languages: []
 </div>
 <div class="section" id="id2">
 <h3>audformat implementation<a class="headerlink" href="#id2" title="Permalink to this heading">¶</a></h3>
-<div class="jupyter_cell jupyter_container docutils container">
-<div class="cell_input code_cell docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create minimal Attachment</span>
-<span class="n">attachment</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Attachment</span><span class="p">(</span><span class="s2">&quot;docs/setup.pdf&quot;</span><span class="p">)</span>
-<span class="c1"># Add Attachment to Database</span>
-<span class="n">db</span><span class="o">.</span><span class="n">attachments</span><span class="p">[</span><span class="s2">&quot;attachmentid&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">attachment</span>
-<span class="c1"># Access path of Attachment</span>
-<span class="n">db</span><span class="o">.</span><span class="n">attachments</span><span class="p">[</span><span class="s2">&quot;attachmentid&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">path</span>
-<span class="c1"># Access attachments</span>
-<span class="n">db</span><span class="o">.</span><span class="n">attachments</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Create minimal Attachment</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">attachment</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Attachment</span><span class="p">(</span><span class="s2">&quot;docs/setup.pdf&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Add Attachment to Database</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">attachments</span><span class="p">[</span><span class="s2">&quot;attachmentid&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">attachment</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Access path of Attachment</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">attachments</span><span class="p">[</span><span class="s2">&quot;attachmentid&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">path</span>
+<span class="go">&#39;docs/setup.pdf&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Access attachments</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">attachments</span>
+<span class="go">attachmentid:</span>
+<span class="go">  {path: docs/setup.pdf}</span>
 </pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>attachmentid:
-  {path: docs/setup.pdf}
-</pre></div>
-</div>
-</div>
 </div>
 </div>
 </div>
@@ -485,25 +466,18 @@ languages: []
 </div>
 <div class="section" id="id4">
 <h3>audformat implementation<a class="headerlink" href="#id4" title="Permalink to this heading">¶</a></h3>
-<div class="jupyter_cell jupyter_container docutils container">
-<div class="cell_input code_cell docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create minimal Rater</span>
-<span class="n">rater</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Rater</span><span class="p">(</span><span class="s2">&quot;human&quot;</span><span class="p">)</span>
-<span class="c1"># Add Rater to Database</span>
-<span class="n">db</span><span class="o">.</span><span class="n">raters</span><span class="p">[</span><span class="s2">&quot;raterid&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rater</span>
-<span class="c1"># Access type of Rater</span>
-<span class="n">db</span><span class="o">.</span><span class="n">raters</span><span class="p">[</span><span class="s2">&quot;raterid&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">type</span>
-<span class="c1"># Access raters</span>
-<span class="n">db</span><span class="o">.</span><span class="n">raters</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Create minimal Rater</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rater</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Rater</span><span class="p">(</span><span class="s2">&quot;human&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Add Rater to Database</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">raters</span><span class="p">[</span><span class="s2">&quot;raterid&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rater</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Access type of Rater</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">raters</span><span class="p">[</span><span class="s2">&quot;raterid&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">type</span>
+<span class="go">&#39;human&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Access raters</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">raters</span>
+<span class="go">raterid:</span>
+<span class="go">  {type: human}</span>
 </pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>raterid:
-  {type: human}
-</pre></div>
-</div>
-</div>
 </div>
 </div>
 </div>
@@ -576,25 +550,18 @@ numeric)</p></td>
 </div>
 <div class="section" id="id6">
 <h3>audformat implementation<a class="headerlink" href="#id6" title="Permalink to this heading">¶</a></h3>
-<div class="jupyter_cell jupyter_container docutils container">
-<div class="cell_input code_cell docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create minimal Scheme</span>
-<span class="n">scheme</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Scheme</span><span class="p">(</span><span class="s2">&quot;float&quot;</span><span class="p">)</span>
-<span class="c1"># Add Scheme to Database</span>
-<span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s2">&quot;schemeid&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">scheme</span>
-<span class="c1"># Access dtype of Scheme</span>
-<span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s2">&quot;schemeid&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span>
-<span class="c1"># Access schemes</span>
-<span class="n">db</span><span class="o">.</span><span class="n">schemes</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Create minimal Scheme</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">scheme</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Scheme</span><span class="p">(</span><span class="s2">&quot;float&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Add Scheme to Database</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s2">&quot;schemeid&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">scheme</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Access dtype of Scheme</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s2">&quot;schemeid&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span>
+<span class="go">&#39;float&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Access schemes</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">schemes</span>
+<span class="go">schemeid:</span>
+<span class="go">  {dtype: float}</span>
 </pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>schemeid:
-  {dtype: float}
-</pre></div>
-</div>
-</div>
 </div>
 </div>
 </div>
@@ -651,25 +618,18 @@ numeric)</p></td>
 </div>
 <div class="section" id="id8">
 <h3>audformat implementation<a class="headerlink" href="#id8" title="Permalink to this heading">¶</a></h3>
-<div class="jupyter_cell jupyter_container docutils container">
-<div class="cell_input code_cell docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create minimal Split</span>
-<span class="n">split</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Split</span><span class="p">(</span><span class="s2">&quot;test&quot;</span><span class="p">)</span>
-<span class="c1"># Add Split to Database</span>
-<span class="n">db</span><span class="o">.</span><span class="n">splits</span><span class="p">[</span><span class="s2">&quot;splitid&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">split</span>
-<span class="c1"># Access type of Split</span>
-<span class="n">db</span><span class="o">.</span><span class="n">splits</span><span class="p">[</span><span class="s2">&quot;splitid&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">type</span>
-<span class="c1"># Access splits</span>
-<span class="n">db</span><span class="o">.</span><span class="n">splits</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Create minimal Split</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">split</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Split</span><span class="p">(</span><span class="s2">&quot;test&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Add Split to Database</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">splits</span><span class="p">[</span><span class="s2">&quot;splitid&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">split</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Access type of Split</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">splits</span><span class="p">[</span><span class="s2">&quot;splitid&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">type</span>
+<span class="go">&#39;test&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Access splits</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">splits</span>
+<span class="go">splitid:</span>
+<span class="go">  {type: test}</span>
 </pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>splitid:
-  {type: test}
-</pre></div>
-</div>
-</div>
 </div>
 </div>
 </div>
@@ -759,25 +719,18 @@ numeric)</p></td>
 </div>
 <div class="section" id="id10">
 <h3>audformat implementation<a class="headerlink" href="#id10" title="Permalink to this heading">¶</a></h3>
-<div class="jupyter_cell jupyter_container docutils container">
-<div class="cell_input code_cell docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create minimal media information</span>
-<span class="n">media</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Media</span><span class="p">(</span><span class="s2">&quot;audio&quot;</span><span class="p">)</span>
-<span class="c1"># Add media to Database</span>
-<span class="n">db</span><span class="o">.</span><span class="n">media</span><span class="p">[</span><span class="s2">&quot;mediaid&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">media</span>
-<span class="c1"># Access type of Media</span>
-<span class="n">db</span><span class="o">.</span><span class="n">media</span><span class="p">[</span><span class="s2">&quot;mediaid&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">type</span>
-<span class="c1"># Access media</span>
-<span class="n">db</span><span class="o">.</span><span class="n">media</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Create minimal media information</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">media</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Media</span><span class="p">(</span><span class="s2">&quot;audio&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Add media to Database</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">media</span><span class="p">[</span><span class="s2">&quot;mediaid&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">media</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Access type of Media</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">media</span><span class="p">[</span><span class="s2">&quot;mediaid&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">type</span>
+<span class="go">&#39;audio&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Access media</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">media</span>
+<span class="go">mediaid:</span>
+<span class="go">  {type: audio}</span>
 </pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>mediaid:
-  {type: audio}
-</pre></div>
-</div>
-</div>
 </div>
 </div>
 </div>
@@ -845,29 +798,23 @@ numeric)</p></td>
 </div>
 <div class="section" id="id12">
 <h3>audformat implementation<a class="headerlink" href="#id12" title="Permalink to this heading">¶</a></h3>
-<div class="jupyter_cell jupyter_container docutils container">
-<div class="cell_input code_cell docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create minimal Table</span>
-<span class="n">table</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Table</span><span class="p">(</span><span class="n">audformat</span><span class="o">.</span><span class="n">filewise_index</span><span class="p">())</span>
-<span class="c1"># Add Table to Database</span>
-<span class="n">db</span><span class="o">.</span><span class="n">tables</span><span class="p">[</span><span class="s2">&quot;tableid&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">table</span>
-<span class="c1"># Access type of Table</span>
-<span class="n">db</span><span class="o">.</span><span class="n">tables</span><span class="p">[</span><span class="s2">&quot;tableid&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">type</span>
-<span class="c1"># Add Table to Database (short notation)</span>
-<span class="n">db</span><span class="p">[</span><span class="s2">&quot;tableid&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">table</span>
-<span class="c1"># Access type of Table (short notation)</span>
-<span class="n">db</span><span class="p">[</span><span class="s2">&quot;tableid&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">type</span>
-<span class="c1"># Access tables</span>
-<span class="n">db</span><span class="o">.</span><span class="n">tables</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Create minimal Table</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">table</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Table</span><span class="p">(</span><span class="n">audformat</span><span class="o">.</span><span class="n">filewise_index</span><span class="p">())</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Add Table to Database</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">tables</span><span class="p">[</span><span class="s2">&quot;tableid&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">table</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Access type of Table</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">tables</span><span class="p">[</span><span class="s2">&quot;tableid&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">type</span>
+<span class="go">&#39;filewise&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Add Table to Database (short notation)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="p">[</span><span class="s2">&quot;tableid&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">table</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Access type of Table (short notation)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="p">[</span><span class="s2">&quot;tableid&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">type</span>
+<span class="go">&#39;filewise&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Access tables</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">tables</span>
+<span class="go">tableid:</span>
+<span class="go">  {type: filewise}</span>
 </pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>tableid:
-  {type: filewise}
-</pre></div>
-</div>
-</div>
 </div>
 </div>
 </div>
@@ -931,30 +878,28 @@ numeric)</p></td>
 </div>
 <div class="section" id="id14">
 <h3>audformat implementation<a class="headerlink" href="#id14" title="Permalink to this heading">¶</a></h3>
-<div class="jupyter_cell jupyter_container docutils container">
-<div class="cell_input code_cell docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create minimal Misc Table</span>
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="n">misc_table</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">MiscTable</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">([],</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;idx&quot;</span><span class="p">))</span>
-<span class="c1"># Add Misc Table to Database</span>
-<span class="n">db</span><span class="o">.</span><span class="n">misc_tables</span><span class="p">[</span><span class="s2">&quot;misctableid&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">misc_table</span>
-<span class="c1"># Access dataframe of Misc Table</span>
-<span class="n">db</span><span class="o">.</span><span class="n">misc_tables</span><span class="p">[</span><span class="s2">&quot;misctableid&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">df</span>
-<span class="c1"># Add Misc Table to Database (short notation)</span>
-<span class="n">db</span><span class="p">[</span><span class="s2">&quot;misctableid&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">misc_table</span>
-<span class="c1"># Access dataframe of Misc Table (short notation)</span>
-<span class="n">db</span><span class="p">[</span><span class="s2">&quot;misctableid&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">df</span>
-<span class="c1"># Access misc tables</span>
-<span class="n">db</span><span class="o">.</span><span class="n">misc_tables</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Create minimal Misc Table</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">misc_table</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">MiscTable</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">([],</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;idx&quot;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Add Misc Table to Database</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">misc_tables</span><span class="p">[</span><span class="s2">&quot;misctableid&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">misc_table</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Access dataframe of Misc Table</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">misc_tables</span><span class="p">[</span><span class="s2">&quot;misctableid&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">df</span>
+<span class="go">Empty DataFrame</span>
+<span class="go">Columns: []</span>
+<span class="go">Index: []</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Add Misc Table to Database (short notation)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="p">[</span><span class="s2">&quot;misctableid&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">misc_table</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Access dataframe of Misc Table (short notation)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="p">[</span><span class="s2">&quot;misctableid&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">df</span>
+<span class="go">Empty DataFrame</span>
+<span class="go">Columns: []</span>
+<span class="go">Index: []</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Access misc tables</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">misc_tables</span>
+<span class="go">misctableid:</span>
+<span class="go">  levels: {idx: object}</span>
 </pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>misctableid:
-  levels: {idx: object}
-</pre></div>
-</div>
-</div>
 </div>
 </div>
 </div>
@@ -1016,25 +961,17 @@ numeric)</p></td>
 </div>
 <div class="section" id="id16">
 <h3>audformat implementation<a class="headerlink" href="#id16" title="Permalink to this heading">¶</a></h3>
-<div class="jupyter_cell jupyter_container docutils container">
-<div class="cell_input code_cell docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create minimal Column</span>
-<span class="n">column</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Column</span><span class="p">()</span>
-<span class="c1"># Add Column to Table</span>
-<span class="n">db</span><span class="o">.</span><span class="n">tables</span><span class="p">[</span><span class="s2">&quot;tableid&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="s2">&quot;columnid&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">column</span>
-<span class="c1"># Add Column to Table (short notation)</span>
-<span class="n">db</span><span class="p">[</span><span class="s2">&quot;tableid&quot;</span><span class="p">][</span><span class="s2">&quot;columnid&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">column</span>
-<span class="c1"># Access columns</span>
-<span class="n">db</span><span class="p">[</span><span class="s2">&quot;tableid&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">columns</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Create minimal Column</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">column</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Column</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Add Column to Table</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">tables</span><span class="p">[</span><span class="s2">&quot;tableid&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="s2">&quot;columnid&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">column</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Add Column to Table (short notation)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="p">[</span><span class="s2">&quot;tableid&quot;</span><span class="p">][</span><span class="s2">&quot;columnid&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">column</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Access columns</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="p">[</span><span class="s2">&quot;tableid&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">columns</span>
+<span class="go">columnid:</span>
+<span class="go">  {}</span>
 </pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>columnid:
-  {}
-</pre></div>
-</div>
-</div>
 </div>
 </div>
 </div>
@@ -1063,7 +1000,7 @@ numeric)</p></td>
         
         
         
-          Built with <a href="https://www.sphinx-doc.org">Sphinx</a> on 2024/09/16 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org">Sphinx</a> on 2025/05/27 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
@@ -1071,7 +1008,7 @@ numeric)</p></td>
   <div role="contentinfo">
     <p>
         
-      &copy; 2019-2024 audEERING GmbH
+      &copy; 2019-2025 audEERING GmbH
     </p>
   </div> 
 
@@ -1103,12 +1040,9 @@ numeric)</p></td>
         <script src="_static/sphinx_highlight.js"></script>
         <script src="_static/clipboard.min.js"></script>
         <script src="_static/copybutton.js"></script>
-        <script src="_static/thebelab-helper.js"></script>
         <script src="_static/katex.min.js"></script>
         <script src="_static/auto-render.min.js"></script>
         <script src="_static/katex_autorenderer.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
     
 
   

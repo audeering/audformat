@@ -30,8 +30,6 @@
   <link rel="stylesheet" href="_static/css/audeering.css" type="text/css" />
   <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
   <link rel="stylesheet" href="_static/copybutton.css" type="text/css" />
-  <link rel="stylesheet" href="_static/jupyter-sphinx.css" type="text/css" />
-  <link rel="stylesheet" href="_static/thebelab.css" type="text/css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css" type="text/css" />
   <link rel="stylesheet" href="_static/katex-math.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
@@ -72,7 +70,7 @@
             
             
               <div class="version">
-                v1.3.1
+                v1.3.2
               </div>
             
           
@@ -177,10 +175,6 @@
             
   <div class="section" id="tables">
 <h1>Tables<a class="headerlink" href="#tables" title="Permalink to this heading">¶</a></h1>
-<div class="jupyter_cell docutils container">
-<div class="cell_output docutils container">
-</div>
-</div>
 <p>A table links labels to media files.
 It consists of one or three index columns
 followed by an arbitrary number of label columns.
@@ -213,329 +207,83 @@ An empty label means that no label has been assigned (yet).</p>
 <div class="section" id="audformat-implementation">
 <h3>audformat implementation<a class="headerlink" href="#audformat-implementation" title="Permalink to this heading">¶</a></h3>
 <p>Create a filewise index:</p>
-<div class="jupyter_cell jupyter_container docutils container">
-<div class="cell_input code_cell docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">audformat</span>
-<span class="kn">import</span> <span class="nn">audformat.testing</span>
-
-
-<span class="n">filewise_index</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">filewise_index</span><span class="p">(</span>
-    <span class="p">[</span><span class="s2">&quot;f1&quot;</span><span class="p">,</span> <span class="s2">&quot;f2&quot;</span><span class="p">,</span> <span class="s2">&quot;f3&quot;</span><span class="p">],</span>
-<span class="p">)</span>
-<span class="n">filewise_index</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">audformat</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">filewise_index</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">filewise_index</span><span class="p">([</span><span class="s2">&quot;f1&quot;</span><span class="p">,</span> <span class="s2">&quot;f2&quot;</span><span class="p">,</span> <span class="s2">&quot;f3&quot;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">filewise_index</span>
+<span class="go">Index([&#39;f1&#39;, &#39;f2&#39;, &#39;f3&#39;], dtype=&#39;string&#39;, name=&#39;file&#39;)</span>
 </pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_html"><table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-    </tr>
-    <tr>
-      <th>file</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>f1</th>
-    </tr>
-    <tr>
-      <th>f2</th>
-    </tr>
-    <tr>
-      <th>f3</th>
-    </tr>
-  </tbody>
-</table></div></div>
 </div>
 <p>Create database and add table with a filewise index:</p>
-<div class="jupyter_cell jupyter_container docutils container">
-<div class="cell_input code_cell docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">db</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">create_db</span><span class="p">(</span><span class="n">minimal</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">db</span><span class="p">[</span><span class="s2">&quot;filewise&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Table</span><span class="p">(</span><span class="n">filewise_index</span><span class="p">)</span>
-<span class="n">db</span><span class="p">[</span><span class="s2">&quot;filewise&quot;</span><span class="p">][</span><span class="s2">&quot;values&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Column</span><span class="p">()</span>
-<span class="n">db</span><span class="o">.</span><span class="n">tables</span><span class="p">[</span><span class="s2">&quot;filewise&quot;</span><span class="p">]</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">db</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Database</span><span class="p">(</span><span class="s2">&quot;mydb&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="p">[</span><span class="s2">&quot;filewise&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Table</span><span class="p">(</span><span class="n">filewise_index</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="p">[</span><span class="s2">&quot;filewise&quot;</span><span class="p">][</span><span class="s2">&quot;values&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Column</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">tables</span><span class="p">[</span><span class="s2">&quot;filewise&quot;</span><span class="p">]</span>
+<span class="go">type: filewise</span>
+<span class="go">columns:</span>
+<span class="go">  values: {}</span>
 </pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>type: filewise
-columns:
-  values: {}
-</pre></div>
-</div>
-</div>
 </div>
 <p>Assign labels to a table:</p>
-<div class="jupyter_cell jupyter_container docutils container">
-<div class="cell_input code_cell docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">values_list</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
-<span class="n">values_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;values&quot;</span><span class="p">:</span> <span class="n">values_list</span><span class="p">}</span>
-<span class="n">db</span><span class="p">[</span><span class="s2">&quot;filewise&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">values_dict</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">values_list</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">values_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;values&quot;</span><span class="p">:</span> <span class="n">values_list</span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="p">[</span><span class="s2">&quot;filewise&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">values_dict</span><span class="p">)</span>
 </pre></div>
 </div>
-</div>
-<div class="cell_output docutils container">
-</div>
-</div>
-<p>Access labels as <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a>:</p>
-<div class="jupyter_cell jupyter_container docutils container">
-<div class="cell_input code_cell docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="p">[</span><span class="s2">&quot;filewise&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+<p>Access labels as <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a>:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="p">[</span><span class="s2">&quot;filewise&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+<span class="go">     values</span>
+<span class="go">file</span>
+<span class="go">f1        1</span>
+<span class="go">f2        2</span>
+<span class="go">f3        3</span>
 </pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_html"><div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>values</th>
-    </tr>
-    <tr>
-      <th>file</th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>f1</th>
-      <td>1</td>
-    </tr>
-    <tr>
-      <th>f2</th>
-      <td>2</td>
-    </tr>
-    <tr>
-      <th>f3</th>
-      <td>3</td>
-    </tr>
-  </tbody>
-</table>
-</div></div></div>
 </div>
 <p>Assign labels to a column:</p>
-<div class="jupyter_cell jupyter_container docutils container">
-<div class="cell_input code_cell docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="p">[</span><span class="s2">&quot;filewise&quot;</span><span class="p">][</span><span class="s2">&quot;values&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">values_list</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="p">[</span><span class="s2">&quot;filewise&quot;</span><span class="p">][</span><span class="s2">&quot;values&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">values_list</span><span class="p">)</span>
 </pre></div>
 </div>
-</div>
-<div class="cell_output docutils container">
-</div>
-</div>
-<p>Access labels as <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Series.html#pandas.Series" title="(in pandas v2.2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.Series</span></code></a></p>
-<div class="jupyter_cell jupyter_container docutils container">
-<div class="cell_input code_cell docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="p">[</span><span class="s2">&quot;filewise&quot;</span><span class="p">][</span><span class="s2">&quot;values&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+<p>Access labels as <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Series.html#pandas.Series" title="(in pandas v2.2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.Series</span></code></a></p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="p">[</span><span class="s2">&quot;filewise&quot;</span><span class="p">][</span><span class="s2">&quot;values&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+<span class="go">file</span>
+<span class="go">f1    1</span>
+<span class="go">f2    2</span>
+<span class="go">f3    3</span>
+<span class="go">Name: values, dtype: object</span>
 </pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_html"><table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>values</th>
-    </tr>
-    <tr>
-      <th>file</th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>f1</th>
-      <td>1</td>
-    </tr>
-    <tr>
-      <th>f2</th>
-      <td>2</td>
-    </tr>
-    <tr>
-      <th>f3</th>
-      <td>3</td>
-    </tr>
-  </tbody>
-</table></div></div>
 </div>
 <p>Access labels and convert index to a segmented index:</p>
-<div class="jupyter_cell jupyter_container docutils container">
-<div class="cell_input code_cell docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="p">[</span><span class="s2">&quot;filewise&quot;</span><span class="p">][</span><span class="s2">&quot;values&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">as_segmented</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="p">[</span><span class="s2">&quot;filewise&quot;</span><span class="p">][</span><span class="s2">&quot;values&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">as_segmented</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="go">file  start   end</span>
+<span class="go">f1    0 days  NaT    1</span>
+<span class="go">f2    0 days  NaT    2</span>
+<span class="go">f3    0 days  NaT    3</span>
+<span class="go">Name: values, dtype: object</span>
 </pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_html"><table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th></th>
-      <th></th>
-      <th>values</th>
-    </tr>
-    <tr>
-      <th>file</th>
-      <th>start</th>
-      <th>end</th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>f1</th>
-      <th>0 days</th>
-      <th>NaT</th>
-      <td>1</td>
-    </tr>
-    <tr>
-      <th>f2</th>
-      <th>0 days</th>
-      <th>NaT</th>
-      <td>2</td>
-    </tr>
-    <tr>
-      <th>f3</th>
-      <th>0 days</th>
-      <th>NaT</th>
-      <td>3</td>
-    </tr>
-  </tbody>
-</table></div></div>
 </div>
 <p>Access labels from a filewise table with a segmented index:</p>
-<div class="jupyter_cell jupyter_container docutils container">
-<div class="cell_input code_cell docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">segmented_index</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">segmented_index</span><span class="p">(</span>
-    <span class="n">files</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;f1&quot;</span><span class="p">,</span> <span class="s2">&quot;f1&quot;</span><span class="p">,</span> <span class="s2">&quot;f1&quot;</span><span class="p">,</span> <span class="s2">&quot;f2&quot;</span><span class="p">],</span>
-    <span class="n">starts</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;0s&quot;</span><span class="p">,</span> <span class="s2">&quot;1s&quot;</span><span class="p">,</span> <span class="s2">&quot;2s&quot;</span><span class="p">,</span> <span class="s2">&quot;0s&quot;</span><span class="p">],</span>
-    <span class="n">ends</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;1s&quot;</span><span class="p">,</span> <span class="s2">&quot;2s&quot;</span><span class="p">,</span> <span class="s2">&quot;3s&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span>
-<span class="p">)</span>
-<span class="n">db</span><span class="p">[</span><span class="s2">&quot;filewise&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">segmented_index</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">segmented_index</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">segmented_index</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">files</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;f1&quot;</span><span class="p">,</span> <span class="s2">&quot;f1&quot;</span><span class="p">,</span> <span class="s2">&quot;f1&quot;</span><span class="p">,</span> <span class="s2">&quot;f2&quot;</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="n">starts</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;0s&quot;</span><span class="p">,</span> <span class="s2">&quot;1s&quot;</span><span class="p">,</span> <span class="s2">&quot;2s&quot;</span><span class="p">,</span> <span class="s2">&quot;0s&quot;</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="n">ends</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;1s&quot;</span><span class="p">,</span> <span class="s2">&quot;2s&quot;</span><span class="p">,</span> <span class="s2">&quot;3s&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="p">[</span><span class="s2">&quot;filewise&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">segmented_index</span><span class="p">)</span>
+<span class="go">                                     values</span>
+<span class="go">file start           end</span>
+<span class="go">f1   0 days 00:00:00 0 days 00:00:01      1</span>
+<span class="go">     0 days 00:00:01 0 days 00:00:02      1</span>
+<span class="go">     0 days 00:00:02 0 days 00:00:03      1</span>
+<span class="go">f2   0 days 00:00:00 NaT                  2</span>
 </pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_html"><div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th></th>
-      <th></th>
-      <th>values</th>
-    </tr>
-    <tr>
-      <th>file</th>
-      <th>start</th>
-      <th>end</th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th rowspan="3" valign="top">f1</th>
-      <th>0 days 00:00:00</th>
-      <th>0 days 00:00:01</th>
-      <td>1</td>
-    </tr>
-    <tr>
-      <th>0 days 00:00:01</th>
-      <th>0 days 00:00:02</th>
-      <td>1</td>
-    </tr>
-    <tr>
-      <th>0 days 00:00:02</th>
-      <th>0 days 00:00:03</th>
-      <td>1</td>
-    </tr>
-    <tr>
-      <th>f2</th>
-      <th>0 days 00:00:00</th>
-      <th>NaT</th>
-      <td>2</td>
-    </tr>
-  </tbody>
-</table>
-</div></div></div>
 </div>
 <p>Access labels from a filewise column with a segmented index:</p>
-<div class="jupyter_cell jupyter_container docutils container">
-<div class="cell_input code_cell docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="p">[</span><span class="s2">&quot;filewise&quot;</span><span class="p">][</span><span class="s2">&quot;values&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">segmented_index</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="p">[</span><span class="s2">&quot;filewise&quot;</span><span class="p">][</span><span class="s2">&quot;values&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">segmented_index</span><span class="p">)</span>
+<span class="go">file  start            end</span>
+<span class="go">f1   0 days 00:00:00 0 days 00:00:01      1</span>
+<span class="go">     0 days 00:00:01 0 days 00:00:02      1</span>
+<span class="go">     0 days 00:00:02 0 days 00:00:03      1</span>
+<span class="go">f2   0 days 00:00:00 NaT                  2</span>
+<span class="go">Name: values, dtype: object</span>
 </pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_html"><table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th></th>
-      <th></th>
-      <th>values</th>
-    </tr>
-    <tr>
-      <th>file</th>
-      <th>start</th>
-      <th>end</th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th rowspan="3" valign="top">f1</th>
-      <th>0 days 00:00:00</th>
-      <th>0 days 00:00:01</th>
-      <td>1</td>
-    </tr>
-    <tr>
-      <th>0 days 00:00:01</th>
-      <th>0 days 00:00:02</th>
-      <td>1</td>
-    </tr>
-    <tr>
-      <th>0 days 00:00:02</th>
-      <th>0 days 00:00:03</th>
-      <td>1</td>
-    </tr>
-    <tr>
-      <th>f2</th>
-      <th>0 days 00:00:00</th>
-      <th>NaT</th>
-      <td>2</td>
-    </tr>
-  </tbody>
-</table></div></div>
 </div>
 </div>
 </div>
@@ -568,337 +316,81 @@ columns:
 <div class="section" id="id1">
 <h3>audformat implementation<a class="headerlink" href="#id1" title="Permalink to this heading">¶</a></h3>
 <p>Create a segmented index:</p>
-<div class="jupyter_cell jupyter_container docutils container">
-<div class="cell_input code_cell docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">segmented_index</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">segmented_index</span><span class="p">(</span>
-    <span class="n">files</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;f1&quot;</span><span class="p">,</span> <span class="s2">&quot;f1&quot;</span><span class="p">,</span> <span class="s2">&quot;f1&quot;</span><span class="p">,</span> <span class="s2">&quot;f2&quot;</span><span class="p">,</span> <span class="s2">&quot;f3&quot;</span><span class="p">],</span>
-    <span class="n">starts</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;0s&quot;</span><span class="p">,</span> <span class="s2">&quot;1s&quot;</span><span class="p">,</span> <span class="s2">&quot;2s&quot;</span><span class="p">,</span> <span class="s2">&quot;0s&quot;</span><span class="p">,</span> <span class="s2">&quot;1m&quot;</span><span class="p">],</span>
-    <span class="n">ends</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;1s&quot;</span><span class="p">,</span> <span class="s2">&quot;2s&quot;</span><span class="p">,</span> <span class="s2">&quot;3s&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;1h&quot;</span><span class="p">],</span>
-<span class="p">)</span>
-<span class="n">segmented_index</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">segmented_index</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">segmented_index</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">files</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;f1&quot;</span><span class="p">,</span> <span class="s2">&quot;f1&quot;</span><span class="p">,</span> <span class="s2">&quot;f1&quot;</span><span class="p">,</span> <span class="s2">&quot;f2&quot;</span><span class="p">,</span> <span class="s2">&quot;f3&quot;</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="n">starts</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;0s&quot;</span><span class="p">,</span> <span class="s2">&quot;1s&quot;</span><span class="p">,</span> <span class="s2">&quot;2s&quot;</span><span class="p">,</span> <span class="s2">&quot;0s&quot;</span><span class="p">,</span> <span class="s2">&quot;1m&quot;</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="n">ends</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;1s&quot;</span><span class="p">,</span> <span class="s2">&quot;2s&quot;</span><span class="p">,</span> <span class="s2">&quot;3s&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;1h&quot;</span><span class="p">],</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">segmented_index</span>
+<span class="go">MultiIndex([(&#39;f1&#39;, &#39;0 days 00:00:00&#39;, &#39;0 days 00:00:01&#39;),</span>
+<span class="go">            (&#39;f1&#39;, &#39;0 days 00:00:01&#39;, &#39;0 days 00:00:02&#39;),</span>
+<span class="go">            (&#39;f1&#39;, &#39;0 days 00:00:02&#39;, &#39;0 days 00:00:03&#39;),</span>
+<span class="go">            (&#39;f2&#39;, &#39;0 days 00:00:00&#39;,               NaT),</span>
+<span class="go">            (&#39;f3&#39;, &#39;0 days 00:01:00&#39;, &#39;0 days 01:00:00&#39;)],</span>
+<span class="go">           names=[&#39;file&#39;, &#39;start&#39;, &#39;end&#39;])</span>
 </pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_html"><table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th></th>
-      <th></th>
-    </tr>
-    <tr>
-      <th>file</th>
-      <th>start</th>
-      <th>end</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th rowspan="3" valign="top">f1</th>
-      <th>0 days 00:00:00</th>
-      <th>0 days 00:00:01</th>
-    </tr>
-    <tr>
-      <th>0 days 00:00:01</th>
-      <th>0 days 00:00:02</th>
-    </tr>
-    <tr>
-      <th>0 days 00:00:02</th>
-      <th>0 days 00:00:03</th>
-    </tr>
-    <tr>
-      <th>f2</th>
-      <th>0 days 00:00:00</th>
-      <th>NaT</th>
-    </tr>
-    <tr>
-      <th>f3</th>
-      <th>0 days 00:01:00</th>
-      <th>0 days 01:00:00</th>
-    </tr>
-  </tbody>
-</table></div></div>
 </div>
 <p>Add table with a segmented index:</p>
-<div class="jupyter_cell jupyter_container docutils container">
-<div class="cell_input code_cell docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="p">[</span><span class="s2">&quot;segmented&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Table</span><span class="p">(</span><span class="n">segmented_index</span><span class="p">)</span>
-<span class="n">db</span><span class="p">[</span><span class="s2">&quot;segmented&quot;</span><span class="p">][</span><span class="s2">&quot;values&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Column</span><span class="p">()</span>
-<span class="n">db</span><span class="o">.</span><span class="n">tables</span><span class="p">[</span><span class="s2">&quot;segmented&quot;</span><span class="p">]</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="p">[</span><span class="s2">&quot;segmented&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Table</span><span class="p">(</span><span class="n">segmented_index</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="p">[</span><span class="s2">&quot;segmented&quot;</span><span class="p">][</span><span class="s2">&quot;values&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Column</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">tables</span><span class="p">[</span><span class="s2">&quot;segmented&quot;</span><span class="p">]</span>
+<span class="go">type: segmented</span>
+<span class="go">columns:</span>
+<span class="go">  values: {}</span>
 </pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-none notranslate"><div class="highlight"><pre><span></span>type: segmented
-columns:
-  values: {}
-</pre></div>
-</div>
-</div>
 </div>
 <p>Assign labels to the whole table:</p>
-<div class="jupyter_cell jupyter_container docutils container">
-<div class="cell_input code_cell docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">values_list</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span>
-<span class="n">values_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;values&quot;</span><span class="p">:</span> <span class="n">values_list</span><span class="p">}</span>
-<span class="n">db</span><span class="p">[</span><span class="s2">&quot;segmented&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">values_dict</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">values_list</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">values_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;values&quot;</span><span class="p">:</span> <span class="n">values_list</span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="p">[</span><span class="s2">&quot;segmented&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">values_dict</span><span class="p">)</span>
 </pre></div>
 </div>
-</div>
-<div class="cell_output docutils container">
-</div>
-</div>
-<p>Access all labels as <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a>:</p>
-<div class="jupyter_cell jupyter_container docutils container">
-<div class="cell_input code_cell docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="p">[</span><span class="s2">&quot;segmented&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+<p>Access all labels as <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a>:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="p">[</span><span class="s2">&quot;segmented&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+<span class="go">                                     values</span>
+<span class="go">file start           end</span>
+<span class="go">f1   0 days 00:00:00 0 days 00:00:01      1</span>
+<span class="go">     0 days 00:00:01 0 days 00:00:02      2</span>
+<span class="go">     0 days 00:00:02 0 days 00:00:03      3</span>
+<span class="go">f2   0 days 00:00:00 NaT                  4</span>
+<span class="go">f3   0 days 00:01:00 0 days 01:00:00      5</span>
 </pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_html"><div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th></th>
-      <th></th>
-      <th>values</th>
-    </tr>
-    <tr>
-      <th>file</th>
-      <th>start</th>
-      <th>end</th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th rowspan="3" valign="top">f1</th>
-      <th>0 days 00:00:00</th>
-      <th>0 days 00:00:01</th>
-      <td>1</td>
-    </tr>
-    <tr>
-      <th>0 days 00:00:01</th>
-      <th>0 days 00:00:02</th>
-      <td>2</td>
-    </tr>
-    <tr>
-      <th>0 days 00:00:02</th>
-      <th>0 days 00:00:03</th>
-      <td>3</td>
-    </tr>
-    <tr>
-      <th>f2</th>
-      <th>0 days 00:00:00</th>
-      <th>NaT</th>
-      <td>4</td>
-    </tr>
-    <tr>
-      <th>f3</th>
-      <th>0 days 00:01:00</th>
-      <th>0 days 01:00:00</th>
-      <td>5</td>
-    </tr>
-  </tbody>
-</table>
-</div></div></div>
 </div>
 <p>Assign labels to a column:</p>
-<div class="jupyter_cell jupyter_container docutils container">
-<div class="cell_input code_cell docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="p">[</span><span class="s2">&quot;segmented&quot;</span><span class="p">][</span><span class="s2">&quot;values&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">values_list</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="p">[</span><span class="s2">&quot;segmented&quot;</span><span class="p">][</span><span class="s2">&quot;values&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">values_list</span><span class="p">)</span>
 </pre></div>
 </div>
-</div>
-<div class="cell_output docutils container">
-</div>
-</div>
-<p>Access labels from a column as <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Series.html#pandas.Series" title="(in pandas v2.2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.Series</span></code></a>:</p>
-<div class="jupyter_cell jupyter_container docutils container">
-<div class="cell_input code_cell docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="p">[</span><span class="s2">&quot;segmented&quot;</span><span class="p">][</span><span class="s2">&quot;values&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+<p>Access labels from a column as <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Series.html#pandas.Series" title="(in pandas v2.2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.Series</span></code></a>:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="p">[</span><span class="s2">&quot;segmented&quot;</span><span class="p">][</span><span class="s2">&quot;values&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+<span class="go">file  start            end</span>
+<span class="go">f1    0 days 00:00:00  0 days 00:00:01    1</span>
+<span class="go">      0 days 00:00:01  0 days 00:00:02    2</span>
+<span class="go">      0 days 00:00:02  0 days 00:00:03    3</span>
+<span class="go">f2    0 days 00:00:00  NaT                4</span>
+<span class="go">f3    0 days 00:01:00  0 days 01:00:00    5</span>
+<span class="go">Name: values, dtype: object</span>
 </pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_html"><table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th></th>
-      <th></th>
-      <th>values</th>
-    </tr>
-    <tr>
-      <th>file</th>
-      <th>start</th>
-      <th>end</th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th rowspan="3" valign="top">f1</th>
-      <th>0 days 00:00:00</th>
-      <th>0 days 00:00:01</th>
-      <td>1</td>
-    </tr>
-    <tr>
-      <th>0 days 00:00:01</th>
-      <th>0 days 00:00:02</th>
-      <td>2</td>
-    </tr>
-    <tr>
-      <th>0 days 00:00:02</th>
-      <th>0 days 00:00:03</th>
-      <td>3</td>
-    </tr>
-    <tr>
-      <th>f2</th>
-      <th>0 days 00:00:00</th>
-      <th>NaT</th>
-      <td>4</td>
-    </tr>
-    <tr>
-      <th>f3</th>
-      <th>0 days 00:01:00</th>
-      <th>0 days 01:00:00</th>
-      <td>5</td>
-    </tr>
-  </tbody>
-</table></div></div>
 </div>
 <p>Access labels from a segmented table with a filewise index:</p>
-<div class="jupyter_cell jupyter_container docutils container">
-<div class="cell_input code_cell docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">filewise_index</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">filewise_index</span><span class="p">(</span>
-    <span class="p">[</span><span class="s2">&quot;f1&quot;</span><span class="p">,</span> <span class="s2">&quot;f2&quot;</span><span class="p">],</span>
-<span class="p">)</span>
-<span class="n">db</span><span class="p">[</span><span class="s2">&quot;segmented&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">filewise_index</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">filewise_index</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">filewise_index</span><span class="p">([</span><span class="s2">&quot;f1&quot;</span><span class="p">,</span> <span class="s2">&quot;f2&quot;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="p">[</span><span class="s2">&quot;segmented&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">filewise_index</span><span class="p">)</span>
+<span class="go">                                     values</span>
+<span class="go">file start           end</span>
+<span class="go">f1   0 days 00:00:00 0 days 00:00:01      1</span>
+<span class="go">     0 days 00:00:01 0 days 00:00:02      2</span>
+<span class="go">     0 days 00:00:02 0 days 00:00:03      3</span>
+<span class="go">f2   0 days 00:00:00 NaT                  4</span>
 </pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_html"><div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th></th>
-      <th></th>
-      <th>values</th>
-    </tr>
-    <tr>
-      <th>file</th>
-      <th>start</th>
-      <th>end</th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th rowspan="3" valign="top">f1</th>
-      <th>0 days 00:00:00</th>
-      <th>0 days 00:00:01</th>
-      <td>1</td>
-    </tr>
-    <tr>
-      <th>0 days 00:00:01</th>
-      <th>0 days 00:00:02</th>
-      <td>2</td>
-    </tr>
-    <tr>
-      <th>0 days 00:00:02</th>
-      <th>0 days 00:00:03</th>
-      <td>3</td>
-    </tr>
-    <tr>
-      <th>f2</th>
-      <th>0 days 00:00:00</th>
-      <th>NaT</th>
-      <td>4</td>
-    </tr>
-  </tbody>
-</table>
-</div></div></div>
 </div>
 <p>Access labels from a segmented column with a filewise index:</p>
-<div class="jupyter_cell jupyter_container docutils container">
-<div class="cell_input code_cell docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="p">[</span><span class="s2">&quot;segmented&quot;</span><span class="p">][</span><span class="s2">&quot;values&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">filewise_index</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="p">[</span><span class="s2">&quot;segmented&quot;</span><span class="p">][</span><span class="s2">&quot;values&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">filewise_index</span><span class="p">)</span>
+<span class="go">file  start            end</span>
+<span class="go">f1    0 days 00:00:00  0 days 00:00:01    1</span>
+<span class="go">      0 days 00:00:01  0 days 00:00:02    2</span>
+<span class="go">      0 days 00:00:02  0 days 00:00:03    3</span>
+<span class="go">f2    0 days 00:00:00  NaT                4</span>
+<span class="go">Name: values, dtype: object</span>
 </pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_html"><table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th></th>
-      <th></th>
-      <th>values</th>
-    </tr>
-    <tr>
-      <th>file</th>
-      <th>start</th>
-      <th>end</th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th rowspan="3" valign="top">f1</th>
-      <th>0 days 00:00:00</th>
-      <th>0 days 00:00:01</th>
-      <td>1</td>
-    </tr>
-    <tr>
-      <th>0 days 00:00:01</th>
-      <th>0 days 00:00:02</th>
-      <td>2</td>
-    </tr>
-    <tr>
-      <th>0 days 00:00:02</th>
-      <th>0 days 00:00:03</th>
-      <td>3</td>
-    </tr>
-    <tr>
-      <th>f2</th>
-      <th>0 days 00:00:00</th>
-      <th>NaT</th>
-      <td>4</td>
-    </tr>
-  </tbody>
-</table></div></div>
 </div>
 </div>
 </div>
@@ -927,7 +419,7 @@ columns:
         
         
         
-          Built with <a href="https://www.sphinx-doc.org">Sphinx</a> on 2024/09/16 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org">Sphinx</a> on 2025/05/27 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
@@ -935,7 +427,7 @@ columns:
   <div role="contentinfo">
     <p>
         
-      &copy; 2019-2024 audEERING GmbH
+      &copy; 2019-2025 audEERING GmbH
     </p>
   </div> 
 
@@ -967,12 +459,9 @@ columns:
         <script src="_static/sphinx_highlight.js"></script>
         <script src="_static/clipboard.min.js"></script>
         <script src="_static/copybutton.js"></script>
-        <script src="_static/thebelab-helper.js"></script>
         <script src="_static/katex.min.js"></script>
         <script src="_static/auto-render.min.js"></script>
         <script src="_static/katex_autorenderer.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
     
 
   
