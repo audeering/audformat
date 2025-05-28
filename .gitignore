@@ -11,3 +11,4 @@ emodb-src/
 emodb.zip
 coverage.xml
 docs/api/
+uv.lock
