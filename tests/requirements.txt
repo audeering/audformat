@@ -1,7 +1,0 @@
-audb
-audiofile >=1.1.0
-pandas >=2.0.0
-pytest
-pytest-console-scripts
-pytest-cov
-sybil
