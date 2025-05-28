@@ -37,6 +37,11 @@ jobs:
         sudo apt-get update
         sudo apt-get install --yes graphviz
 
+    - name: Sync Python environment
+      run: uv sync
+
+    - name: List installed Python packages
+      run: uv pip list
 
     - name: Test building documentation
       run: uv run python -m sphinx docs/ docs/_build/ -b html -W
