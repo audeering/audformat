@@ -1,9 +1,0 @@
-graphviz
-pyarrow  # https://github.com/pandas-dev/pandas/issues/54466
-sphinx
-sphinx-apipages >=0.1.2
-sphinx-audeering-theme >=1.2.1
-sphinx-autodoc-typehints
-sphinx-copybutton
-sphinxcontrib-katex
-toml

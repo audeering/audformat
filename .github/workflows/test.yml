@@ -30,8 +30,10 @@ jobs:
     steps:
     - uses: actions/checkout@v4
       with:
+        # Ensure audformat is assigned a version,
+        # so we can install audb as a dependency
         fetch-tags: true
-        fetch-depth: 50
+        fetch-depth: 2
 
     - name: Cache emodb
       uses: actions/cache@v4
@@ -45,18 +47,20 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
 
+    - name: Install uv
+      uses: astral-sh/setup-uv@v5
+
     - name: Prepare Ubuntu
       run: |
         sudo apt-get update
         sudo apt-get install --no-install-recommends --yes libsndfile1
       if: matrix.os == 'ubuntu-latest'
 
-    - name: Install dependencies
-      run: |
-        python -V
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
-        pip install -r tests/requirements.txt
+    - name: Sync Python environment
+      run: uv sync
+
+    - name: List installed Python packages
+      run: uv pip list
 
     - name: Downgrade to minimum dependencies
       run: |
@@ -72,8 +76,7 @@ jobs:
       if: matrix.requirements == 'minimum'
 
     - name: Test with pytest
-      run: |
-        python -m pytest
+      run: uv run pytest
 
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v4
