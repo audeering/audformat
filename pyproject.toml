@@ -232,10 +232,10 @@ convention = 'google'
 # Use setuptools_scm to get version from git
 [tool.setuptools_scm]
 
-# Fix circular dependency of audb on audformat
-# https://github.com/astral-sh/uv/issues/8148
-[tool.uv]
-override-dependencies = ["audformat"]
-
-[tool.uv.sources]
-audformat = { workspace = true }
+# # Fix circular dependency of audb on audformat
+# # https://github.com/astral-sh/uv/issues/8148
+# [tool.uv]
+# override-dependencies = ["audformat"]
+# 
+# [tool.uv.sources]
+# audformat = { workspace = true }
