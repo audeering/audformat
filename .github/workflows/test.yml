@@ -33,7 +33,7 @@ jobs:
         # Ensure audformat is assigned a version,
         # so we can install audb as a dependency
         fetch-tags: true
-        fetch-depth: 2
+        fetch-depth: 20
 
     - name: Cache emodb
       uses: actions/cache@v4
