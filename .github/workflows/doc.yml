@@ -20,6 +20,7 @@ jobs:
       with:
         # Ensure audformat is assigned a version,
         # so we can install audb as a dependency
+        # https://github.com/astral-sh/uv/issues/8148#issuecomment-2408639333
         fetch-depth: 0
         fetch-tags: true
 
