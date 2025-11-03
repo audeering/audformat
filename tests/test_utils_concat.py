@@ -1596,8 +1596,7 @@ def test_concat_overwrite_aggregate_function(
 
 
 @pytest.mark.parametrize(
-    "objs, aggregate_function, aggregate_strategy, "
-    "expected_error, expected_error_msg",
+    "objs, aggregate_function, aggregate_strategy, expected_error, expected_error_msg",
     [
         # wrong aggregate_strategy argument
         (

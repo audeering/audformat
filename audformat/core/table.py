@@ -414,7 +414,7 @@ class Base(HeaderBase):
         if map is not None:
             if self.db is None:
                 raise RuntimeError(
-                    "Cannot map schemes, " "table is not assigned to a database."
+                    "Cannot map schemes, table is not assigned to a database."
                 )
 
             if not result_is_copy:
@@ -742,7 +742,7 @@ class Base(HeaderBase):
             left: HeaderDict | None,
             right: HeaderDict | None,
         ):
-            raise ValueError(f"{msg}:\n" f"{left}\n" "!=\n" f"{right}")
+            raise ValueError(f"{msg}:\n{left}\n!=\n{right}")
 
         def assert_equal(
             msg: str,
@@ -762,13 +762,13 @@ class Base(HeaderBase):
 
         for other in others:
             assert_equal(
-                "Media of table " f"'{other._id}' " "does not match",
+                f"Media of table '{other._id}' does not match",
                 self.media,
                 other.media,
             )
 
             assert_equal(
-                "Split of table " f"'{other._id}' " "does not match",
+                f"Split of table '{other._id}' does not match",
                 self.split,
                 other.split,
             )
@@ -1859,13 +1859,7 @@ def _assert_table_index(
         input_type = index_type(index)
         if table.type != input_type:
             raise ValueError(
-                f"Cannot "
-                f"{operation} "
-                f"a "
-                f"{table.type} "
-                f"table with a "
-                f"{input_type} "
-                f"index."
+                f"Cannot {operation} a {table.type} table with a {input_type} index."
             )
     elif not utils.is_index_alike([table.index, index]):
         want = (

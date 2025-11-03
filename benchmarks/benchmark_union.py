@@ -64,7 +64,7 @@ def main():
 
     for segmented in [False, True]:
         print()
-        print(f'{"segmented" if segmented else "filewise"} index')
+        print(f"{'segmented' if segmented else 'filewise'} index")
 
         y = benchmark(
             segmented,
