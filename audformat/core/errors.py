@@ -13,10 +13,10 @@ class BadIdError(ValueError):
 
     def __init__(self, name: str, invalid_id: str, dictionary: dict):
         if not dictionary:
-            message = f"Bad {name} ID '{invalid_id}', " f"no {name} objects defined yet"
+            message = f"Bad {name} ID '{invalid_id}', no {name} objects defined yet"
         else:
             message = (
-                f"Bad {name} ID '{invalid_id}', " f"expected one of {list(dictionary)}"
+                f"Bad {name} ID '{invalid_id}', expected one of {list(dictionary)}"
             )
         super().__init__(message)
 
@@ -31,7 +31,7 @@ class BadKeyError(KeyError):
     """
 
     def __init__(self, invalid_key: str, valid_keys: Sequence[str]):
-        message = f"Bad key '{invalid_key}', " f"expected one of {list(valid_keys)}"
+        message = f"Bad key '{invalid_key}', expected one of {list(valid_keys)}"
         super().__init__(message)
 
 
@@ -45,7 +45,7 @@ class BadTypeError(TypeError):
     """
 
     def __init__(self, invalid_value: object, expected_type: type):
-        message = f"Bad type '{type(invalid_value)}', " f"expected '{expected_type}'"
+        message = f"Bad type '{type(invalid_value)}', expected '{expected_type}'"
         super().__init__(message)
 
 
@@ -59,9 +59,7 @@ class BadValueError(ValueError):
     """
 
     def __init__(self, invalid_value: str, valid_values: Sequence[str]):
-        message = (
-            f"Bad value '{invalid_value}', " f"expected one of {list(valid_values)}"
-        )
+        message = f"Bad value '{invalid_value}', expected one of {list(valid_values)}"
         super().__init__(message)
 
 
@@ -75,6 +73,4 @@ class TableExistsError(KeyError):
     """
 
     def __init__(self, table_type: str, table_id: str):
-        KeyError(
-            f"There is already a " f"{table_type} " f"table with ID " f"'{table_id}'."
-        )
+        KeyError(f"There is already a {table_type} table with ID '{table_id}'.")

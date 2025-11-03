@@ -76,7 +76,9 @@ class Scheme(common.HeaderBase):
         >>> # Use index of misc table as labels
         >>> import audformat
         >>> db = audformat.Database("mydb")
-        >>> db["speaker"] = audformat.MiscTable(pd.Index(["spk1", "spk2"], name="speaker"))
+        >>> db["speaker"] = audformat.MiscTable(
+        ...     pd.Index(["spk1", "spk2"], name="speaker")
+        ... )
         >>> Scheme("str", labels="speaker")
         {dtype: str, labels: speaker}
 
@@ -132,12 +134,11 @@ class Scheme(common.HeaderBase):
                 # Labels from misc table
                 if dtype is None:
                     raise ValueError(
-                        "'dtype' has to be provided "
-                        "when using a misc table as labels."
+                        "'dtype' has to be provided when using a misc table as labels."
                     )
                 if dtype == define.DataType.BOOL:
                     raise ValueError(
-                        "'dtype' cannot be 'bool' " "when using a misc table as labels."
+                        "'dtype' cannot be 'bool' when using a misc table as labels."
                     )
             else:
                 # Labels from list or dictionary
@@ -352,7 +353,7 @@ class Scheme(common.HeaderBase):
         """
         if self.labels is None:
             raise ValueError(
-                "Cannot replace labels when " "scheme does not define labels."
+                "Cannot replace labels when scheme does not define labels."
             )
         self._check_labels(labels)
 
@@ -391,7 +392,7 @@ class Scheme(common.HeaderBase):
         r"""Raise label related errors."""
         if not isinstance(labels, (dict, list, str)):
             raise ValueError(
-                "Labels must be passed " "as a dictionary, list or ID of a misc table."
+                "Labels must be passed as a dictionary, list or ID of a misc table."
             )
 
         if self._db is not None and isinstance(labels, str):

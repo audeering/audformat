@@ -249,7 +249,7 @@ class Column(HeaderBase):
 
             if not any(labels.values()):
                 raise ValueError(
-                    f"Scheme '{self.scheme_id}' provides no mapping " "for its labels."
+                    f"Scheme '{self.scheme_id}' provides no mapping for its labels."
                 )
 
             # Check that at least one key is available for map
@@ -261,12 +261,7 @@ class Column(HeaderBase):
             keys = sorted(list(set(keys)))
             if len(keys) > 0 and map not in keys:
                 raise ValueError(
-                    f"Cannot map "
-                    f"'{self._id}' "
-                    f"to "
-                    f"'{map}'. "
-                    f"Expected one of "
-                    f"{list(keys)}."
+                    f"Cannot map '{self._id}' to '{map}'. Expected one of {list(keys)}."
                 )
 
             mapping = {}
@@ -355,7 +350,7 @@ class Column(HeaderBase):
                 return self.set(values, index=index)
             else:
                 raise ValueError(
-                    "Cannot set values of a filewise column " "using a segmented index."
+                    "Cannot set values of a filewise column using a segmented index."
                 )
         else:
             if is_scalar(values):

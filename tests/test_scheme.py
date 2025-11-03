@@ -318,7 +318,7 @@ def test_scheme_errors():
     db = audformat.Database("test")
 
     # dtype mismatch
-    error_msg = "Data type is set to 'str', " "but data type of labels is 'int'."
+    error_msg = "Data type is set to 'str', but data type of labels is 'int'."
     with pytest.raises(ValueError, match=error_msg):
         audformat.Scheme(
             audformat.define.DataType.STRING,
@@ -335,7 +335,7 @@ def test_scheme_errors():
         audformat.Scheme("bad")
 
     # labels not list or dictionary
-    error_msg = "Labels must be passed " "as a dictionary, list or ID of a misc table."
+    error_msg = "Labels must be passed as a dictionary, list or ID of a misc table."
     with pytest.raises(ValueError, match=error_msg):
         audformat.Scheme(labels={1, 2, 3})
 
@@ -345,13 +345,13 @@ def test_scheme_errors():
         audformat.Scheme(labels=[1, "2", 3])
 
     # update labels when scheme has no label
-    error_msg = "Cannot replace labels when " "scheme does not define labels."
+    error_msg = "Cannot replace labels when scheme does not define labels."
     with pytest.raises(ValueError, match=error_msg):
         scheme = audformat.Scheme(audformat.define.DataType.INTEGER)
         scheme.replace_labels(["a", "b"])
 
     # misc table needs to define data type
-    error_msg = "'dtype' has to be provided " "when using a misc table as labels."
+    error_msg = "'dtype' has to be provided when using a misc table as labels."
     with pytest.raises(ValueError, match=error_msg):
         audformat.Scheme(labels="misc")
 
@@ -365,7 +365,7 @@ def test_scheme_errors():
         db.schemes["misc"] = scheme
 
     # filewise table used instead of misc table
-    error_msg = "The table 'table' used as scheme labels " "needs to be a misc table."
+    error_msg = "The table 'table' used as scheme labels needs to be a misc table."
     db["table"] = audformat.Table(audformat.filewise_index(["f1"]))
     scheme = audformat.Scheme(labels="table", dtype="str")
     with pytest.raises(ValueError, match=error_msg):
@@ -373,7 +373,7 @@ def test_scheme_errors():
 
     # misc table has different dtype
     error_msg = (
-        "Data type is set to 'str', " "but data type of labels in misc table is 'int'."
+        "Data type is set to 'str', but data type of labels in misc table is 'int'."
     )
     db["misc"] = audformat.MiscTable(pd.Index([0], name="misc"))
     scheme = audformat.Scheme(labels="misc", dtype="str")

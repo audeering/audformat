@@ -165,8 +165,7 @@ def test_attachment_files_errors(tmpdir):
     db = audformat.Database("db")
     db.attachments["attachment"] = attachment
     error_msg = (
-        "The database needs to be saved to disk "
-        "before attachment files can be listed."
+        "The database needs to be saved to disk before attachment files can be listed."
     )
     with pytest.raises(RuntimeError, match=error_msg):
         attachment.files

@@ -239,7 +239,7 @@ def concat(
     allowed_values = ["overlap", "mismatch"]
     if aggregate_strategy not in allowed_values:
         raise ValueError(
-            "aggregate_strategy needs to be one of: " f"{', '.join(allowed_values)}"
+            f"aggregate_strategy needs to be one of: {', '.join(allowed_values)}"
         )
 
     if not objs:
@@ -1107,10 +1107,7 @@ def join_labels(
     dtypes = sorted(list({str(type(x)) for x in items}))
     if len(dtypes) > 1:
         raise ValueError(
-            f"Elements or keys must "
-            f"have the same dtype, "
-            f"but yours have "
-            f"{dtypes}.",
+            f"Elements or keys must have the same dtype, but yours have {dtypes}.",
         )
 
     if isinstance(labels[0], dict):
@@ -1511,9 +1508,7 @@ def set_index_dtypes(
     levels = index.names if isinstance(index, pd.MultiIndex) else [index.name]
 
     if len(set(levels)) != len(levels):
-        raise ValueError(
-            f"Got index with levels " f"{levels}, " f"but names must be unique."
-        )
+        raise ValueError(f"Got index with levels {levels}, but names must be unique.")
 
     if not isinstance(dtypes, dict):
         dtypes = {level: dtypes for level in levels}
@@ -1521,11 +1516,7 @@ def set_index_dtypes(
     for name in dtypes:
         if name not in levels:
             raise ValueError(
-                f"A level with name "
-                f"'{name}' "
-                f"does not exist. "
-                f"Level names are: "
-                f"{levels}."
+                f"A level with name '{name}' does not exist. Level names are: {levels}."
             )
 
     if len(dtypes) == 0:

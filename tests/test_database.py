@@ -735,8 +735,7 @@ def test_update(tmpdir):
     other_bad = audformat.testing.create_db(minimal=True)
     other_bad.schemes["misc"] = audformat.Scheme("str")
     error_msg = (
-        "Cannot join scheme 'misc' when one "
-        "is using a misc table and the other is not."
+        "Cannot join scheme 'misc' when one is using a misc table and the other is not."
     )
     with pytest.raises(ValueError, match=error_msg):
         db.update(other_bad)

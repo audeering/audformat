@@ -736,7 +736,7 @@ def test_dtype_index(
 
 
 @pytest.mark.parametrize(
-    "index_values, index_dtype, " "expected_pandas_dtype, expected_audformat_dtype",
+    "index_values, index_dtype, expected_pandas_dtype, expected_audformat_dtype",
     [
         (
             [],
@@ -920,7 +920,7 @@ def test_dtype_multiindex(
 
 
 @pytest.mark.parametrize(
-    "index_values, index_dtype, " "expected_pandas_dtype, expected_audformat_dtype",
+    "index_values, index_dtype, expected_pandas_dtype, expected_audformat_dtype",
     [
         (
             [],

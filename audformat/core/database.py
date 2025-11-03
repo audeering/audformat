@@ -586,7 +586,9 @@ class Database(HeaderBase):
 
             Limit to a particular table or split.
 
-            >>> db.get("emotion", tables=["emotion.categories.train.gold_standard"]).head()
+            >>> db.get(
+            ...     "emotion", tables=["emotion.categories.train.gold_standard"]
+            ... ).head()
                                emotion
             file
             wav/03a01Fa.wav  happiness

@@ -135,7 +135,7 @@ class Attachment(HeaderBase):
             or other.path.startswith(self.path)
         ):
             raise RuntimeError(
-                f"Attachments '{self.path}' and '{other.path}' " "are nested."
+                f"Attachments '{self.path}' and '{other.path}' are nested."
             )
 
     def _check_path(
