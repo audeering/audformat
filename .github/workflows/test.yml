@@ -16,15 +16,13 @@ jobs:
         python-version: [ '3.10' ]
         include:
           - os: ubuntu-latest
-            python-version: '3.9'
-          - os: ubuntu-latest
             python-version: '3.11'
           - os: ubuntu-latest
             python-version: '3.12'
           - os: ubuntu-latest
             python-version: '3.13'
           - os: ubuntu-latest
-            python-version: '3.9'
+            python-version: '3.10'
             requirements: 'minimum'
 
     steps:
@@ -70,7 +68,7 @@ jobs:
         pip install "numpy<2.0.0"
         pip install "pandas==2.1.0"
         pip install "pyarrow==10.0.1"
-        pip install "pyyaml==5.4.1"
+        pip install "pyyaml==6.0.1"
         # need to use an audb version in the test,
         # that supports audeer==2.0.0
         pip install "audb==1.7.4"
