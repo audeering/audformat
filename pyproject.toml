@@ -238,5 +238,5 @@ convention = 'google'
 override-dependencies = ["audformat"]
 
 [tool.uv.sources]
-#audformat = { workspace = true }
-audformat = { path = ".", editable = true }
+audformat = { workspace = true }
+# audformat = { path = ".", editable = true }
