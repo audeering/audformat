@@ -241,5 +241,5 @@ convention = 'google'
 audformat = { workspace = true }
 # audformat = { path = ".", editable = true }
 
-[tool.uv.workspace]
-members = ["audformat"]
+# [tool.uv.workspace]
+# members = ["audformat"]
