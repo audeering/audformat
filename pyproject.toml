@@ -234,9 +234,12 @@ convention = 'google'
 
 # Fix circular dependency of audb on audformat
 # https://github.com/astral-sh/uv/issues/8148
-[tool.uv]
-override-dependencies = ["audformat"]
+#[tool.uv]
+#override-dependencies = ["audformat"]
 
 [tool.uv.sources]
 audformat = { workspace = true }
 # audformat = { path = ".", editable = true }
+
+[tool.uv.workspace]
+members = ["audformat"]
