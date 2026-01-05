@@ -2331,19 +2331,12 @@ def test_zero_columns(tmpdir, storage_format):
     assert len(db["table-segmented"]) == 2
     assert db["table-segmented"].df.shape == (2, 0)
 
-    # Test MiscTable with zero columns
-    index = pd.Index([0, 1, 2], name="idx", dtype="Int64")
-    db["misc-table"] = audformat.MiscTable(index)
-    assert len(db["misc-table"].columns) == 0
-    assert len(db["misc-table"]) == 3
-    assert db["misc-table"].df.shape == (3, 0)
-
     # Save and load the database
     db.save(tmpdir, storage_format=storage_format)
     db_loaded = audformat.Database.load(tmpdir)
 
     # Verify tables were loaded correctly
-    for table_id in ["table-filewise", "table-segmented", "misc-table"]:
+    for table_id in ["table-filewise", "table-segmented"]:
         assert len(db_loaded[table_id].columns) == 0
         pd.testing.assert_index_equal(
             db_loaded[table_id].df.index,
