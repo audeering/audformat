@@ -2297,3 +2297,56 @@ def test_update_other_formats(
         for ext in existing_formats:
             assert mtime[ext] == old_mtime[ext]
             assert mtime[storage_format] > old_mtime[ext]
+
+
+@pytest.mark.parametrize("storage_format", ["csv", "parquet", "pkl"])
+def test_zero_columns(tmpdir, storage_format):
+    r"""Test tables with zero columns.
+
+    Tables should support having only an index without any data columns.
+
+    Args:
+        tmpdir: tmpdir fixture
+        storage_format: storage format of table
+
+    """
+    # Test Table with zero columns (filewise index)
+    db = audformat.testing.create_db(minimal=True)
+    db["table-filewise"] = audformat.Table(
+        audformat.filewise_index(["f1.wav", "f2.wav"]),
+    )
+    assert len(db["table-filewise"].columns) == 0
+    assert len(db["table-filewise"]) == 2
+    assert db["table-filewise"].df.shape == (2, 0)
+
+    # Test Table with zero columns (segmented index)
+    db["table-segmented"] = audformat.Table(
+        audformat.segmented_index(
+            files=["f1.wav", "f2.wav"],
+            starts=["0s", "1s"],
+            ends=["1s", "2s"],
+        ),
+    )
+    assert len(db["table-segmented"].columns) == 0
+    assert len(db["table-segmented"]) == 2
+    assert db["table-segmented"].df.shape == (2, 0)
+
+    # Test MiscTable with zero columns
+    index = pd.Index([0, 1, 2], name="idx", dtype="Int64")
+    db["misc-table"] = audformat.MiscTable(index)
+    assert len(db["misc-table"].columns) == 0
+    assert len(db["misc-table"]) == 3
+    assert db["misc-table"].df.shape == (3, 0)
+
+    # Save and load the database
+    db.save(tmpdir, storage_format=storage_format)
+    db_loaded = audformat.Database.load(tmpdir)
+
+    # Verify tables were loaded correctly
+    for table_id in ["table-filewise", "table-segmented", "misc-table"]:
+        assert len(db_loaded[table_id].columns) == 0
+        pd.testing.assert_index_equal(
+            db_loaded[table_id].df.index,
+            db[table_id].df.index,
+        )
+        assert db_loaded[table_id].df.shape == db[table_id].df.shape
