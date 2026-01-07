@@ -500,7 +500,7 @@ class Base(HeaderBase):
         if pickled:
             try:
                 self._load_pickled(pkl_file)
-            except (AttributeError, ValueError, EOFError) as ex:
+            except Exception as ex:
                 # If exception is raised
                 # (e.g. unsupported pickle protocol)
                 # try to load from PARQUET or CSV
