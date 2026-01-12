@@ -7,6 +7,16 @@ The format is based on `Keep a Changelog`_,
 and this project adheres to `Semantic Versioning`_.
 
 
+Version 1.3.3 (2026-01-12)
+--------------------------
+
+* Added: support for Python 3.14
+* Added: document support for (misc) tables with zero columns
+  in the specification
+* Fixed: ensure cache compatibility between different ``pandas`` versions
+* Removed: support for Python 3.9
+
+
 Version 1.3.2 (2025-05-27)
 --------------------------
 
