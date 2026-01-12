@@ -5,7 +5,8 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <title>Conventions &mdash; Documentation</title>
@@ -30,7 +31,7 @@
   <link rel="stylesheet" href="_static/css/audeering.css" type="text/css" />
   <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
   <link rel="stylesheet" href="_static/copybutton.css" type="text/css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css" type="text/css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.css" type="text/css" />
   <link rel="stylesheet" href="_static/katex-math.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -70,7 +71,7 @@
             
             
               <div class="version">
-                v1.3.2
+                v1.3.3
               </div>
             
           
@@ -173,10 +174,10 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="conventions">
-<h1>Conventions<a class="headerlink" href="#conventions" title="Permalink to this heading">¶</a></h1>
-<div class="section" id="database-name">
-<h2>Database name<a class="headerlink" href="#database-name" title="Permalink to this heading">¶</a></h2>
+  <section id="conventions">
+<h1>Conventions<a class="headerlink" href="#conventions" title="Link to this heading">¶</a></h1>
+<section id="database-name">
+<h2>Database name<a class="headerlink" href="#database-name" title="Link to this heading">¶</a></h2>
 <p>The name of a database should be lowercase
 and must not contain blanks or
 special characters.
@@ -188,16 +189,12 @@ to increase readability.</p>
 <span class="n">audformat</span><span class="o">.</span><span class="n">Database</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;librispeech-mfa-cseg-pho&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="table-and-scheme-names">
-<h2>Table and scheme names<a class="headerlink" href="#table-and-scheme-names" title="Permalink to this heading">¶</a></h2>
+</section>
+<section id="table-and-scheme-names">
+<h2>Table and scheme names<a class="headerlink" href="#table-and-scheme-names" title="Link to this heading">¶</a></h2>
 <p>Use lower case for table and scheme names.</p>
 <p>Here’s a list of common scheme names:</p>
 <table class="docutils align-default">
-<colgroup>
-<col style="width: 39%" />
-<col style="width: 61%" />
-</colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>Name</p></th>
 <th class="head"><p>Content</p></th>
@@ -232,9 +229,9 @@ E.g. use <code class="docutils literal notranslate"><span class="pre">transcript
 and <code class="docutils literal notranslate"><span class="pre">transcription-phoneme</span></code>
 if a database offers word
 <em>and</em> phoneme transcriptions.</p>
-</div>
-<div class="section" id="tables-schemes-and-raters">
-<h2>Tables, schemes, and raters<a class="headerlink" href="#tables-schemes-and-raters" title="Permalink to this heading">¶</a></h2>
+</section>
+<section id="tables-schemes-and-raters">
+<h2>Tables, schemes, and raters<a class="headerlink" href="#tables-schemes-and-raters" title="Link to this heading">¶</a></h2>
 <p>Consider one table per scheme
 with the name of the scheme.
 Use lower case for table and scheme names.
@@ -281,9 +278,9 @@ name each column after the name of the rater.</p>
 <span class="go">      rater2: {scheme_id: valence, rater_id: rater2}</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="database-splits">
-<h2>Database splits<a class="headerlink" href="#database-splits" title="Permalink to this heading">¶</a></h2>
+</section>
+<section id="database-splits">
+<h2>Database splits<a class="headerlink" href="#database-splits" title="Link to this heading">¶</a></h2>
 <p>If an official split into training,
 development
 and test set
@@ -324,9 +321,9 @@ named <code class="docutils literal notranslate"><span class="pre">scheme_id.spl
 <span class="go">  arousal.train: {type: filewise, split_id: train}</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="gold-standard-annotation">
-<h2>Gold standard annotation<a class="headerlink" href="#gold-standard-annotation" title="Permalink to this heading">¶</a></h2>
+</section>
+<section id="gold-standard-annotation">
+<h2>Gold standard annotation<a class="headerlink" href="#gold-standard-annotation" title="Link to this heading">¶</a></h2>
 <p>Annotations by several raters
 belonging to the same scheme
 should be stored in a single table,
@@ -387,9 +384,9 @@ holding the gold standard values.</p>
 <span class="go">      arousal: {scheme_id: arousal, rater_id: gold_standard}</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="confidence-values">
-<h2>Confidence values<a class="headerlink" href="#confidence-values" title="Permalink to this heading">¶</a></h2>
+</section>
+<section id="confidence-values">
+<h2>Confidence values<a class="headerlink" href="#confidence-values" title="Link to this heading">¶</a></h2>
 <p>Assume you have an annotation
 that does not only provide a value,
 but also a confidence of that value.
@@ -439,9 +436,9 @@ which might be worth considering when storing the gold standard.</p>
 <span class="go">      arousal.confidence: {scheme_id: arousal.confidence, rater_id: gold_standard}</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="file-and-speaker-information">
-<h2>File and speaker information<a class="headerlink" href="#file-and-speaker-information" title="Permalink to this heading">¶</a></h2>
+</section>
+<section id="file-and-speaker-information">
+<h2>File and speaker information<a class="headerlink" href="#file-and-speaker-information" title="Link to this heading">¶</a></h2>
 <p>Meta information like speaker ID
 that is not included in another table
 should be collected in a table <code class="docutils literal notranslate"><span class="pre">files</span></code>.
@@ -504,15 +501,15 @@ for an extended documentation.</p>
 <span class="go">b.wav    male</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="temporal-data">
-<h2>Temporal data<a class="headerlink" href="#temporal-data" title="Permalink to this heading">¶</a></h2>
+</section>
+<section id="temporal-data">
+<h2>Temporal data<a class="headerlink" href="#temporal-data" title="Link to this heading">¶</a></h2>
 <p>Temporal duration data
 like response time of a rater
 should be stored as <code class="xref py py-class docutils literal notranslate"><span class="pre">pd.Timedelta</span></code>.
 Temporal dates
 like time of rating
-should be stored as <a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">datetime.datetime</span></code></a>.</p>
+should be stored as <a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">datetime.datetime</span></code></a>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 
 
@@ -540,8 +537,8 @@ should be stored as <a class="reference external" href="https://docs.python.org/
 <span class="go">b.wav 0 days 00:00:00.100000</span>
 </pre></div>
 </div>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>
@@ -566,7 +563,7 @@ should be stored as <a class="reference external" href="https://docs.python.org/
         
         
         
-          Built with <a href="https://www.sphinx-doc.org">Sphinx</a> on 2025/05/27 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org">Sphinx</a> on 2026/01/12 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
@@ -574,7 +571,7 @@ should be stored as <a class="reference external" href="https://docs.python.org/
   <div role="contentinfo">
     <p>
         
-      &copy; 2019-2025 audEERING GmbH
+      &copy; 2019-2026 audEERING GmbH
     </p>
   </div> 
 
@@ -598,17 +595,14 @@ should be stored as <a class="reference external" href="https://docs.python.org/
     
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/sphinx_highlight.js"></script>
-        <script src="_static/clipboard.min.js"></script>
-        <script src="_static/copybutton.js"></script>
-        <script src="_static/katex.min.js"></script>
-        <script src="_static/auto-render.min.js"></script>
-        <script src="_static/katex_autorenderer.js"></script>
+        <script src="_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="_static/doctools.js?v=fd6eb6e6"></script>
+        <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+        <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="_static/copybutton.js?v=e57ba844"></script>
+        <script src="_static/katex.min.js?v=5cc8ed51"></script>
+        <script src="_static/auto-render.min.js?v=af98beb9"></script>
+        <script src="_static/katex_autorenderer.js?v=bebc588a"></script>
     
 
   

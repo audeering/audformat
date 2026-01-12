@@ -5,7 +5,8 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <title>Header &mdash; Documentation</title>
@@ -30,7 +31,7 @@
   <link rel="stylesheet" href="_static/css/audeering.css" type="text/css" />
   <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
   <link rel="stylesheet" href="_static/copybutton.css" type="text/css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css" type="text/css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.css" type="text/css" />
   <link rel="stylesheet" href="_static/katex-math.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -70,7 +71,7 @@
             
             
               <div class="version">
-                v1.3.2
+                v1.3.3
               </div>
             
           
@@ -210,8 +211,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="header">
-<h1>Header<a class="headerlink" href="#header" title="Permalink to this heading">¶</a></h1>
+  <section id="header">
+<h1>Header<a class="headerlink" href="#header" title="Link to this heading">¶</a></h1>
 <p>The header of a database is organized in different parts:</p>
 <ul class="simple">
 <li><p>Core information about the database</p></li>
@@ -227,15 +228,10 @@ and have to be set explicitly.
 Optionally, every object can have an arbitrary number of <code class="docutils literal notranslate"><span class="pre">meta</span></code> fields.
 These can be used to store additional information about the database.
 Fields set to <code class="docutils literal notranslate"><span class="pre">None</span></code> can be omitted.</p>
-<div class="section" id="database">
-<h2>Database<a class="headerlink" href="#database" title="Permalink to this heading">¶</a></h2>
+<section id="database">
+<h2>Database<a class="headerlink" href="#database" title="Link to this heading">¶</a></h2>
 <p>This part of the header is represented by <a class="reference internal" href="api/audformat.Database.html#audformat.Database" title="audformat.Database"><code class="xref py py-class docutils literal notranslate"><span class="pre">audformat.Database</span></code></a>.</p>
 <table class="docutils align-default">
-<colgroup>
-<col style="width: 19%" />
-<col style="width: 12%" />
-<col style="width: 69%" />
-</colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>Field</p></th>
 <th class="head"><p>Mandatory</p></th>
@@ -324,16 +320,16 @@ one of <code class="docutils literal notranslate"><span class="pre">&quot;commer
 </tr>
 </tbody>
 </table>
-<div class="section" id="minimal-example">
-<h3>Minimal example<a class="headerlink" href="#minimal-example" title="Permalink to this heading">¶</a></h3>
+<section id="minimal-example">
+<h3>Minimal example<a class="headerlink" href="#minimal-example" title="Link to this heading">¶</a></h3>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">databasename</span>
 <span class="nt">source</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">URL</span>
 <span class="nt">usage</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">commercial</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="audformat-implementation">
-<h3>audformat implementation<a class="headerlink" href="#audformat-implementation" title="Permalink to this heading">¶</a></h3>
+</section>
+<section id="audformat-implementation">
+<h3>audformat implementation<a class="headerlink" href="#audformat-implementation" title="Link to this heading">¶</a></h3>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">audformat</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># Create Database</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">db</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Database</span><span class="p">(</span>
@@ -348,17 +344,12 @@ one of <code class="docutils literal notranslate"><span class="pre">&quot;commer
 <span class="go">languages: []</span>
 </pre></div>
 </div>
-</div>
-</div>
-<div class="section" id="attachment">
-<h2>Attachment<a class="headerlink" href="#attachment" title="Permalink to this heading">¶</a></h2>
+</section>
+</section>
+<section id="attachment">
+<h2>Attachment<a class="headerlink" href="#attachment" title="Link to this heading">¶</a></h2>
 <p>This part of the header is represented by <a class="reference internal" href="api/audformat.Attachment.html#audformat.Attachment" title="audformat.Attachment"><code class="xref py py-class docutils literal notranslate"><span class="pre">audformat.Attachment</span></code></a>.</p>
 <table class="docutils align-default">
-<colgroup>
-<col style="width: 19%" />
-<col style="width: 12%" />
-<col style="width: 69%" />
-</colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>Field</p></th>
 <th class="head"><p>Mandatory</p></th>
@@ -388,16 +379,16 @@ one of <code class="docutils literal notranslate"><span class="pre">&quot;commer
 </tr>
 </tbody>
 </table>
-<div class="section" id="id1">
-<h3>Minimal example<a class="headerlink" href="#id1" title="Permalink to this heading">¶</a></h3>
+<section id="id1">
+<h3>Minimal example<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h3>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">attachments</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">attachmentid</span><span class="p">:</span>
 <span class="w">        </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">docs/setup.pdf</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="id2">
-<h3>audformat implementation<a class="headerlink" href="#id2" title="Permalink to this heading">¶</a></h3>
+</section>
+<section id="id2">
+<h3>audformat implementation<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h3>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Create minimal Attachment</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">attachment</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Attachment</span><span class="p">(</span><span class="s2">&quot;docs/setup.pdf&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># Add Attachment to Database</span>
@@ -411,17 +402,12 @@ one of <code class="docutils literal notranslate"><span class="pre">&quot;commer
 <span class="go">  {path: docs/setup.pdf}</span>
 </pre></div>
 </div>
-</div>
-</div>
-<div class="section" id="rater">
-<h2>Rater<a class="headerlink" href="#rater" title="Permalink to this heading">¶</a></h2>
+</section>
+</section>
+<section id="rater">
+<h2>Rater<a class="headerlink" href="#rater" title="Link to this heading">¶</a></h2>
 <p>This part of the header is represented by <a class="reference internal" href="api/audformat.Rater.html#audformat.Rater" title="audformat.Rater"><code class="xref py py-class docutils literal notranslate"><span class="pre">audformat.Rater</span></code></a>.</p>
 <table class="docutils align-default">
-<colgroup>
-<col style="width: 19%" />
-<col style="width: 12%" />
-<col style="width: 69%" />
-</colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>Field</p></th>
 <th class="head"><p>Mandatory</p></th>
@@ -456,16 +442,16 @@ one of <code class="docutils literal notranslate"><span class="pre">&quot;commer
 </tr>
 </tbody>
 </table>
-<div class="section" id="id3">
-<h3>Minimal example<a class="headerlink" href="#id3" title="Permalink to this heading">¶</a></h3>
+<section id="id3">
+<h3>Minimal example<a class="headerlink" href="#id3" title="Link to this heading">¶</a></h3>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">raters</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">raterid</span><span class="p">:</span>
 <span class="w">        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">human</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="id4">
-<h3>audformat implementation<a class="headerlink" href="#id4" title="Permalink to this heading">¶</a></h3>
+</section>
+<section id="id4">
+<h3>audformat implementation<a class="headerlink" href="#id4" title="Link to this heading">¶</a></h3>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Create minimal Rater</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">rater</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Rater</span><span class="p">(</span><span class="s2">&quot;human&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># Add Rater to Database</span>
@@ -479,17 +465,12 @@ one of <code class="docutils literal notranslate"><span class="pre">&quot;commer
 <span class="go">  {type: human}</span>
 </pre></div>
 </div>
-</div>
-</div>
-<div class="section" id="scheme">
-<h2>Scheme<a class="headerlink" href="#scheme" title="Permalink to this heading">¶</a></h2>
+</section>
+</section>
+<section id="scheme">
+<h2>Scheme<a class="headerlink" href="#scheme" title="Link to this heading">¶</a></h2>
 <p>This part of the header is represented by <a class="reference internal" href="api/audformat.Scheme.html#audformat.Scheme" title="audformat.Scheme"><code class="xref py py-class docutils literal notranslate"><span class="pre">audformat.Scheme</span></code></a>.</p>
 <table class="docutils align-default">
-<colgroup>
-<col style="width: 19%" />
-<col style="width: 12%" />
-<col style="width: 69%" />
-</colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>Field</p></th>
 <th class="head"><p>Mandatory</p></th>
@@ -540,16 +521,16 @@ numeric)</p></td>
 </tr>
 </tbody>
 </table>
-<div class="section" id="id5">
-<h3>Minimal example<a class="headerlink" href="#id5" title="Permalink to this heading">¶</a></h3>
+<section id="id5">
+<h3>Minimal example<a class="headerlink" href="#id5" title="Link to this heading">¶</a></h3>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">schemes</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">schemeid</span><span class="p">:</span>
 <span class="w">        </span><span class="nt">dtype</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">float</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="id6">
-<h3>audformat implementation<a class="headerlink" href="#id6" title="Permalink to this heading">¶</a></h3>
+</section>
+<section id="id6">
+<h3>audformat implementation<a class="headerlink" href="#id6" title="Link to this heading">¶</a></h3>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Create minimal Scheme</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">scheme</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Scheme</span><span class="p">(</span><span class="s2">&quot;float&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># Add Scheme to Database</span>
@@ -563,17 +544,12 @@ numeric)</p></td>
 <span class="go">  {dtype: float}</span>
 </pre></div>
 </div>
-</div>
-</div>
-<div class="section" id="split">
-<h2>Split<a class="headerlink" href="#split" title="Permalink to this heading">¶</a></h2>
+</section>
+</section>
+<section id="split">
+<h2>Split<a class="headerlink" href="#split" title="Link to this heading">¶</a></h2>
 <p>This part of the header is represented by <a class="reference internal" href="api/audformat.Split.html#audformat.Split" title="audformat.Split"><code class="xref py py-class docutils literal notranslate"><span class="pre">audformat.Split</span></code></a>.</p>
 <table class="docutils align-default">
-<colgroup>
-<col style="width: 19%" />
-<col style="width: 12%" />
-<col style="width: 69%" />
-</colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>Field</p></th>
 <th class="head"><p>Mandatory</p></th>
@@ -608,16 +584,16 @@ numeric)</p></td>
 </tr>
 </tbody>
 </table>
-<div class="section" id="id7">
-<h3>Minimal example<a class="headerlink" href="#id7" title="Permalink to this heading">¶</a></h3>
+<section id="id7">
+<h3>Minimal example<a class="headerlink" href="#id7" title="Link to this heading">¶</a></h3>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">splits</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">splitid</span><span class="p">:</span>
 <span class="w">        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">test</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="id8">
-<h3>audformat implementation<a class="headerlink" href="#id8" title="Permalink to this heading">¶</a></h3>
+</section>
+<section id="id8">
+<h3>audformat implementation<a class="headerlink" href="#id8" title="Link to this heading">¶</a></h3>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Create minimal Split</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">split</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Split</span><span class="p">(</span><span class="s2">&quot;test&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># Add Split to Database</span>
@@ -631,18 +607,13 @@ numeric)</p></td>
 <span class="go">  {type: test}</span>
 </pre></div>
 </div>
-</div>
-</div>
-<div class="section" id="media">
-<h2>Media<a class="headerlink" href="#media" title="Permalink to this heading">¶</a></h2>
+</section>
+</section>
+<section id="media">
+<h2>Media<a class="headerlink" href="#media" title="Link to this heading">¶</a></h2>
 <p>This part of the header is represented by <a class="reference internal" href="api/audformat.Media.html#audformat.Media" title="audformat.Media"><code class="xref py py-class docutils literal notranslate"><span class="pre">audformat.Media</span></code></a>.</p>
 <p>To store media information use:</p>
 <table class="docutils align-default">
-<colgroup>
-<col style="width: 21%" />
-<col style="width: 12%" />
-<col style="width: 68%" />
-</colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>Field</p></th>
 <th class="head"><p>Mandatory</p></th>
@@ -709,16 +680,16 @@ numeric)</p></td>
 </tr>
 </tbody>
 </table>
-<div class="section" id="id9">
-<h3>Minimal example<a class="headerlink" href="#id9" title="Permalink to this heading">¶</a></h3>
+<section id="id9">
+<h3>Minimal example<a class="headerlink" href="#id9" title="Link to this heading">¶</a></h3>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">media</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">mediaid</span><span class="p">:</span>
 <span class="w">        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">audio</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="id10">
-<h3>audformat implementation<a class="headerlink" href="#id10" title="Permalink to this heading">¶</a></h3>
+</section>
+<section id="id10">
+<h3>audformat implementation<a class="headerlink" href="#id10" title="Link to this heading">¶</a></h3>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Create minimal media information</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">media</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Media</span><span class="p">(</span><span class="s2">&quot;audio&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># Add media to Database</span>
@@ -732,17 +703,12 @@ numeric)</p></td>
 <span class="go">  {type: audio}</span>
 </pre></div>
 </div>
-</div>
-</div>
-<div class="section" id="table">
-<h2>Table<a class="headerlink" href="#table" title="Permalink to this heading">¶</a></h2>
+</section>
+</section>
+<section id="table">
+<h2>Table<a class="headerlink" href="#table" title="Link to this heading">¶</a></h2>
 <p>This part of the header is represented by <a class="reference internal" href="api/audformat.Table.html#audformat.Table" title="audformat.Table"><code class="xref py py-class docutils literal notranslate"><span class="pre">audformat.Table</span></code></a></p>
 <table class="docutils align-default">
-<colgroup>
-<col style="width: 19%" />
-<col style="width: 12%" />
-<col style="width: 69%" />
-</colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>Field</p></th>
 <th class="head"><p>Mandatory</p></th>
@@ -788,16 +754,16 @@ numeric)</p></td>
 </tr>
 </tbody>
 </table>
-<div class="section" id="id11">
-<h3>Minimal example<a class="headerlink" href="#id11" title="Permalink to this heading">¶</a></h3>
+<section id="id11">
+<h3>Minimal example<a class="headerlink" href="#id11" title="Link to this heading">¶</a></h3>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">tables</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">tableid</span><span class="p">:</span>
 <span class="w">        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">filewise</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="id12">
-<h3>audformat implementation<a class="headerlink" href="#id12" title="Permalink to this heading">¶</a></h3>
+</section>
+<section id="id12">
+<h3>audformat implementation<a class="headerlink" href="#id12" title="Link to this heading">¶</a></h3>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Create minimal Table</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">table</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Table</span><span class="p">(</span><span class="n">audformat</span><span class="o">.</span><span class="n">filewise_index</span><span class="p">())</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># Add Table to Database</span>
@@ -816,17 +782,12 @@ numeric)</p></td>
 <span class="go">  {type: filewise}</span>
 </pre></div>
 </div>
-</div>
-</div>
-<div class="section" id="misc-table">
-<h2>Misc Table<a class="headerlink" href="#misc-table" title="Permalink to this heading">¶</a></h2>
+</section>
+</section>
+<section id="misc-table">
+<h2>Misc Table<a class="headerlink" href="#misc-table" title="Link to this heading">¶</a></h2>
 <p>This part of the header is represented by <a class="reference internal" href="api/audformat.MiscTable.html#audformat.MiscTable" title="audformat.MiscTable"><code class="xref py py-class docutils literal notranslate"><span class="pre">audformat.MiscTable</span></code></a>.</p>
 <table class="docutils align-default">
-<colgroup>
-<col style="width: 19%" />
-<col style="width: 12%" />
-<col style="width: 69%" />
-</colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>Field</p></th>
 <th class="head"><p>Mandatory</p></th>
@@ -868,16 +829,16 @@ numeric)</p></td>
 </tr>
 </tbody>
 </table>
-<div class="section" id="id13">
-<h3>Minimal example<a class="headerlink" href="#id13" title="Permalink to this heading">¶</a></h3>
+<section id="id13">
+<h3>Minimal example<a class="headerlink" href="#id13" title="Link to this heading">¶</a></h3>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">misc_tables</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">misctableid</span><span class="p">:</span>
 <span class="w">        </span><span class="nt">levels</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">idx</span><span class="p p-Indicator">]</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="id14">
-<h3>audformat implementation<a class="headerlink" href="#id14" title="Permalink to this heading">¶</a></h3>
+</section>
+<section id="id14">
+<h3>audformat implementation<a class="headerlink" href="#id14" title="Link to this heading">¶</a></h3>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Create minimal Misc Table</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">misc_table</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">MiscTable</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">([],</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;idx&quot;</span><span class="p">))</span>
@@ -901,17 +862,12 @@ numeric)</p></td>
 <span class="go">  levels: {idx: object}</span>
 </pre></div>
 </div>
-</div>
-</div>
-<div class="section" id="column">
-<h2>Column<a class="headerlink" href="#column" title="Permalink to this heading">¶</a></h2>
+</section>
+</section>
+<section id="column">
+<h2>Column<a class="headerlink" href="#column" title="Link to this heading">¶</a></h2>
 <p>This part of the header is represented by <a class="reference internal" href="api/audformat.Column.html#audformat.Column" title="audformat.Column"><code class="xref py py-class docutils literal notranslate"><span class="pre">audformat.Column</span></code></a></p>
 <table class="docutils align-default">
-<colgroup>
-<col style="width: 19%" />
-<col style="width: 12%" />
-<col style="width: 69%" />
-</colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>Field</p></th>
 <th class="head"><p>Mandatory</p></th>
@@ -949,8 +905,8 @@ numeric)</p></td>
 </tr>
 </tbody>
 </table>
-<div class="section" id="id15">
-<h3>Minimal example<a class="headerlink" href="#id15" title="Permalink to this heading">¶</a></h3>
+<section id="id15">
+<h3>Minimal example<a class="headerlink" href="#id15" title="Link to this heading">¶</a></h3>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">tables</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">tableid</span><span class="p">:</span>
 <span class="w">        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">filewise</span>
@@ -958,9 +914,9 @@ numeric)</p></td>
 <span class="w">            </span><span class="nt">columnid</span><span class="p">:</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="id16">
-<h3>audformat implementation<a class="headerlink" href="#id16" title="Permalink to this heading">¶</a></h3>
+</section>
+<section id="id16">
+<h3>audformat implementation<a class="headerlink" href="#id16" title="Link to this heading">¶</a></h3>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Create minimal Column</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">column</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Column</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># Add Column to Table</span>
@@ -973,9 +929,9 @@ numeric)</p></td>
 <span class="go">  {}</span>
 </pre></div>
 </div>
-</div>
-</div>
-</div>
+</section>
+</section>
+</section>
 
 
            </div>
@@ -1000,7 +956,7 @@ numeric)</p></td>
         
         
         
-          Built with <a href="https://www.sphinx-doc.org">Sphinx</a> on 2025/05/27 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org">Sphinx</a> on 2026/01/12 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
@@ -1008,7 +964,7 @@ numeric)</p></td>
   <div role="contentinfo">
     <p>
         
-      &copy; 2019-2025 audEERING GmbH
+      &copy; 2019-2026 audEERING GmbH
     </p>
   </div> 
 
@@ -1032,17 +988,14 @@ numeric)</p></td>
     
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/sphinx_highlight.js"></script>
-        <script src="_static/clipboard.min.js"></script>
-        <script src="_static/copybutton.js"></script>
-        <script src="_static/katex.min.js"></script>
-        <script src="_static/auto-render.min.js"></script>
-        <script src="_static/katex_autorenderer.js"></script>
+        <script src="_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="_static/doctools.js?v=fd6eb6e6"></script>
+        <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+        <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="_static/copybutton.js?v=e57ba844"></script>
+        <script src="_static/katex.min.js?v=5cc8ed51"></script>
+        <script src="_static/auto-render.min.js?v=af98beb9"></script>
+        <script src="_static/katex_autorenderer.js?v=bebc588a"></script>
     
 
   

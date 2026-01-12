@@ -5,7 +5,8 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <title>IndexField &mdash; Documentation</title>
@@ -30,7 +31,7 @@
   <link rel="stylesheet" href="../_static/css/audeering.css" type="text/css" />
   <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
   <link rel="stylesheet" href="../_static/copybutton.css" type="text/css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css" type="text/css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.css" type="text/css" />
   <link rel="stylesheet" href="../_static/katex-math.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -70,7 +71,7 @@
             
             
               <div class="version">
-                v1.3.2
+                v1.3.3
               </div>
             
           
@@ -182,11 +183,11 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="indexfield">
-<h1>IndexField<a class="headerlink" href="#indexfield" title="Permalink to this heading">¶</a></h1>
+  <section id="indexfield">
+<h1>IndexField<a class="headerlink" href="#indexfield" title="Link to this heading">¶</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="audformat.define.IndexField">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">audformat.define.</span></span><span class="sig-name descname"><span class="pre">IndexField</span></span><a class="reference internal" href="../_modules/audformat/core/define.html#IndexField"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.define.IndexField" title="Permalink to this definition">¶</a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">audformat.define.</span></span><span class="sig-name descname"><span class="pre">IndexField</span></span><a class="reference internal" href="../_modules/audformat/core/define.html#IndexField"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.define.IndexField" title="Link to this definition">¶</a></dt>
 <dd><p>Index fields of a table.</p>
 <p>Specifies the string values
 representing column/field names
@@ -197,52 +198,52 @@ of the <a class="reference internal" href="../data-tables.html#tables"><span cla
 and should never be changed by a user.</p>
 </dd></dl>
 
-<div class="section" id="eq">
-<h2>__eq__()<a class="headerlink" href="#eq" title="Permalink to this heading">¶</a></h2>
+<section id="eq">
+<h2>__eq__()<a class="headerlink" href="#eq" title="Link to this heading">¶</a></h2>
 <dl class="py method">
 <dt class="sig sig-object py" id="audformat.define.IndexField.__eq__">
-<span class="sig-prename descclassname"><span class="pre">IndexField.</span></span><span class="sig-name descname"><span class="pre">__eq__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#audformat.define.IndexField.__eq__" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">IndexField.</span></span><span class="sig-name descname"><span class="pre">__eq__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="positional-only-separator o"><abbr title="Positional-only parameter separator (PEP 570)"><span class="pre">/</span></abbr></span></em><span class="sig-paren">)</span><a class="headerlink" href="#audformat.define.IndexField.__eq__" title="Link to this definition">¶</a></dt>
 <dd><p>Return self==value.</p>
 </dd></dl>
 
-</div>
-<div class="section" id="end">
-<h2>END<a class="headerlink" href="#end" title="Permalink to this heading">¶</a></h2>
+</section>
+<section id="end">
+<h2>END<a class="headerlink" href="#end" title="Link to this heading">¶</a></h2>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="audformat.define.IndexField.END">
-<span class="sig-prename descclassname"><span class="pre">IndexField.</span></span><span class="sig-name descname"><span class="pre">END</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'end'</span></em><a class="headerlink" href="#audformat.define.IndexField.END" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">IndexField.</span></span><span class="sig-name descname"><span class="pre">END</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'end'</span></span><a class="headerlink" href="#audformat.define.IndexField.END" title="Link to this definition">¶</a></dt>
 <dd><p>End index field.</p>
 <p>Name of the index column
 listing end times
 in a segmented table.</p>
 </dd></dl>
 
-</div>
-<div class="section" id="file">
-<h2>FILE<a class="headerlink" href="#file" title="Permalink to this heading">¶</a></h2>
+</section>
+<section id="file">
+<h2>FILE<a class="headerlink" href="#file" title="Link to this heading">¶</a></h2>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="audformat.define.IndexField.FILE">
-<span class="sig-prename descclassname"><span class="pre">IndexField.</span></span><span class="sig-name descname"><span class="pre">FILE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'file'</span></em><a class="headerlink" href="#audformat.define.IndexField.FILE" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">IndexField.</span></span><span class="sig-name descname"><span class="pre">FILE</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'file'</span></span><a class="headerlink" href="#audformat.define.IndexField.FILE" title="Link to this definition">¶</a></dt>
 <dd><p>File index field.</p>
 <p>Name of the index column
 listing files
 in a filewise or segmented table.</p>
 </dd></dl>
 
-</div>
-<div class="section" id="start">
-<h2>START<a class="headerlink" href="#start" title="Permalink to this heading">¶</a></h2>
+</section>
+<section id="start">
+<h2>START<a class="headerlink" href="#start" title="Link to this heading">¶</a></h2>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="audformat.define.IndexField.START">
-<span class="sig-prename descclassname"><span class="pre">IndexField.</span></span><span class="sig-name descname"><span class="pre">START</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'start'</span></em><a class="headerlink" href="#audformat.define.IndexField.START" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">IndexField.</span></span><span class="sig-name descname"><span class="pre">START</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'start'</span></span><a class="headerlink" href="#audformat.define.IndexField.START" title="Link to this definition">¶</a></dt>
 <dd><p>Start index field.</p>
 <p>Name of the index column
 listing start times
 in a segmented table.</p>
 </dd></dl>
 
-</div>
-</div>
+</section>
+</section>
 
 
            </div>
@@ -267,7 +268,7 @@ in a segmented table.</p>
         
         
         
-          Built with <a href="https://www.sphinx-doc.org">Sphinx</a> on 2025/05/27 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org">Sphinx</a> on 2026/01/12 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
@@ -275,7 +276,7 @@ in a segmented table.</p>
   <div role="contentinfo">
     <p>
         
-      &copy; 2019-2025 audEERING GmbH
+      &copy; 2019-2026 audEERING GmbH
     </p>
   </div> 
 
@@ -299,17 +300,14 @@ in a segmented table.</p>
     
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="../_static/doctools.js"></script>
-        <script src="../_static/sphinx_highlight.js"></script>
-        <script src="../_static/clipboard.min.js"></script>
-        <script src="../_static/copybutton.js"></script>
-        <script src="../_static/katex.min.js"></script>
-        <script src="../_static/auto-render.min.js"></script>
-        <script src="../_static/katex_autorenderer.js"></script>
+        <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+        <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+        <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="../_static/copybutton.js?v=e57ba844"></script>
+        <script src="../_static/katex.min.js?v=5cc8ed51"></script>
+        <script src="../_static/auto-render.min.js?v=af98beb9"></script>
+        <script src="../_static/katex_autorenderer.js?v=bebc588a"></script>
     
 
   

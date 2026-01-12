@@ -5,7 +5,8 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <title>Gender &mdash; Documentation</title>
@@ -30,7 +31,7 @@
   <link rel="stylesheet" href="../_static/css/audeering.css" type="text/css" />
   <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
   <link rel="stylesheet" href="../_static/copybutton.css" type="text/css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css" type="text/css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.css" type="text/css" />
   <link rel="stylesheet" href="../_static/katex-math.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -70,7 +71,7 @@
             
             
               <div class="version">
-                v1.3.2
+                v1.3.3
               </div>
             
           
@@ -183,11 +184,11 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="gender">
-<h1>Gender<a class="headerlink" href="#gender" title="Permalink to this heading">¶</a></h1>
+  <section id="gender">
+<h1>Gender<a class="headerlink" href="#gender" title="Link to this heading">¶</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="audformat.define.Gender">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">audformat.define.</span></span><span class="sig-name descname"><span class="pre">Gender</span></span><a class="reference internal" href="../_modules/audformat/core/define.html#Gender"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.define.Gender" title="Permalink to this definition">¶</a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">audformat.define.</span></span><span class="sig-name descname"><span class="pre">Gender</span></span><a class="reference internal" href="../_modules/audformat/core/define.html#Gender"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.define.Gender" title="Link to this definition">¶</a></dt>
 <dd><p>Gender scheme definitions.</p>
 <p>Specifies string values
 representing gender labels
@@ -200,20 +201,20 @@ of the <a class="reference internal" href="../data-header.html#scheme"><span cla
 and can be changed if desired.</p>
 </dd></dl>
 
-<div class="section" id="eq">
-<h2>__eq__()<a class="headerlink" href="#eq" title="Permalink to this heading">¶</a></h2>
+<section id="eq">
+<h2>__eq__()<a class="headerlink" href="#eq" title="Link to this heading">¶</a></h2>
 <dl class="py method">
 <dt class="sig sig-object py" id="audformat.define.Gender.__eq__">
-<span class="sig-prename descclassname"><span class="pre">Gender.</span></span><span class="sig-name descname"><span class="pre">__eq__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#audformat.define.Gender.__eq__" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">Gender.</span></span><span class="sig-name descname"><span class="pre">__eq__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="positional-only-separator o"><abbr title="Positional-only parameter separator (PEP 570)"><span class="pre">/</span></abbr></span></em><span class="sig-paren">)</span><a class="headerlink" href="#audformat.define.Gender.__eq__" title="Link to this definition">¶</a></dt>
 <dd><p>Return self==value.</p>
 </dd></dl>
 
-</div>
-<div class="section" id="child">
-<h2>CHILD<a class="headerlink" href="#child" title="Permalink to this heading">¶</a></h2>
+</section>
+<section id="child">
+<h2>CHILD<a class="headerlink" href="#child" title="Link to this heading">¶</a></h2>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="audformat.define.Gender.CHILD">
-<span class="sig-prename descclassname"><span class="pre">Gender.</span></span><span class="sig-name descname"><span class="pre">CHILD</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'child'</span></em><a class="headerlink" href="#audformat.define.Gender.CHILD" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">Gender.</span></span><span class="sig-name descname"><span class="pre">CHILD</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'child'</span></span><a class="headerlink" href="#audformat.define.Gender.CHILD" title="Link to this definition">¶</a></dt>
 <dd><p>Child gender label.</p>
 <p>Female and male children
 have a voice more common to each other
@@ -222,30 +223,30 @@ Hence,
 we provide a common child label.</p>
 </dd></dl>
 
-</div>
-<div class="section" id="female">
-<h2>FEMALE<a class="headerlink" href="#female" title="Permalink to this heading">¶</a></h2>
+</section>
+<section id="female">
+<h2>FEMALE<a class="headerlink" href="#female" title="Link to this heading">¶</a></h2>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="audformat.define.Gender.FEMALE">
-<span class="sig-prename descclassname"><span class="pre">Gender.</span></span><span class="sig-name descname"><span class="pre">FEMALE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'female'</span></em><a class="headerlink" href="#audformat.define.Gender.FEMALE" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">Gender.</span></span><span class="sig-name descname"><span class="pre">FEMALE</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'female'</span></span><a class="headerlink" href="#audformat.define.Gender.FEMALE" title="Link to this definition">¶</a></dt>
 <dd><p>Female gender label.</p>
 </dd></dl>
 
-</div>
-<div class="section" id="male">
-<h2>MALE<a class="headerlink" href="#male" title="Permalink to this heading">¶</a></h2>
+</section>
+<section id="male">
+<h2>MALE<a class="headerlink" href="#male" title="Link to this heading">¶</a></h2>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="audformat.define.Gender.MALE">
-<span class="sig-prename descclassname"><span class="pre">Gender.</span></span><span class="sig-name descname"><span class="pre">MALE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'male'</span></em><a class="headerlink" href="#audformat.define.Gender.MALE" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">Gender.</span></span><span class="sig-name descname"><span class="pre">MALE</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'male'</span></span><a class="headerlink" href="#audformat.define.Gender.MALE" title="Link to this definition">¶</a></dt>
 <dd><p>Male gender label.</p>
 </dd></dl>
 
-</div>
-<div class="section" id="other">
-<h2>OTHER<a class="headerlink" href="#other" title="Permalink to this heading">¶</a></h2>
+</section>
+<section id="other">
+<h2>OTHER<a class="headerlink" href="#other" title="Link to this heading">¶</a></h2>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="audformat.define.Gender.OTHER">
-<span class="sig-prename descclassname"><span class="pre">Gender.</span></span><span class="sig-name descname"><span class="pre">OTHER</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'other'</span></em><a class="headerlink" href="#audformat.define.Gender.OTHER" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">Gender.</span></span><span class="sig-name descname"><span class="pre">OTHER</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'other'</span></span><a class="headerlink" href="#audformat.define.Gender.OTHER" title="Link to this definition">¶</a></dt>
 <dd><p>Other gender label.</p>
 <p>Should include labels
 that are not covered by
@@ -253,8 +254,8 @@ female, male, or child,
 e.g. diverse.</p>
 </dd></dl>
 
-</div>
-</div>
+</section>
+</section>
 
 
            </div>
@@ -279,7 +280,7 @@ e.g. diverse.</p>
         
         
         
-          Built with <a href="https://www.sphinx-doc.org">Sphinx</a> on 2025/05/27 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org">Sphinx</a> on 2026/01/12 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
@@ -287,7 +288,7 @@ e.g. diverse.</p>
   <div role="contentinfo">
     <p>
         
-      &copy; 2019-2025 audEERING GmbH
+      &copy; 2019-2026 audEERING GmbH
     </p>
   </div> 
 
@@ -311,17 +312,14 @@ e.g. diverse.</p>
     
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="../_static/doctools.js"></script>
-        <script src="../_static/sphinx_highlight.js"></script>
-        <script src="../_static/clipboard.min.js"></script>
-        <script src="../_static/copybutton.js"></script>
-        <script src="../_static/katex.min.js"></script>
-        <script src="../_static/auto-render.min.js"></script>
-        <script src="../_static/katex_autorenderer.js"></script>
+        <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+        <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+        <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="../_static/copybutton.js?v=e57ba844"></script>
+        <script src="../_static/katex.min.js?v=5cc8ed51"></script>
+        <script src="../_static/auto-render.min.js?v=af98beb9"></script>
+        <script src="../_static/katex_autorenderer.js?v=bebc588a"></script>
     
 
   

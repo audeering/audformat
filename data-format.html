@@ -5,7 +5,8 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <title>Database &mdash; Documentation</title>
@@ -30,7 +31,7 @@
   <link rel="stylesheet" href="_static/css/audeering.css" type="text/css" />
   <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
   <link rel="stylesheet" href="_static/copybutton.css" type="text/css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css" type="text/css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.css" type="text/css" />
   <link rel="stylesheet" href="_static/katex-math.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -70,7 +71,7 @@
             
             
               <div class="version">
-                v1.3.2
+                v1.3.3
               </div>
             
           
@@ -163,16 +164,17 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="database">
-<h1>Database<a class="headerlink" href="#database" title="Permalink to this heading">¶</a></h1>
+  <section id="database">
+<h1>Database<a class="headerlink" href="#database" title="Link to this heading">¶</a></h1>
 <p>An audformat database consists of a <strong>header</strong>,
 several <strong>tables</strong>,
 and <strong>media</strong> files.
 On hard disk all of them are stored inside a single folder.
 The header is stored as a YAML file,
-the tables contain labels stored in (possibly) multiple CSV or PARQUET files,
-and the media files are usually stored in sub-folders.
-Media files are not restricted to a particular file type.
+the tables are stored in (possibly) multiple CSV or PARQUET files,
+and might contain labels stored as columns.
+The media files are usually stored in sub-folders,
+and are not restricted to a particular file type.
 Usually, they consist of audio, video, or text files.
 Each table column is linked to a scheme and/or to a rater.
 Each table row is linked to a media file,
@@ -184,11 +186,7 @@ the table is called miscellaneous table,
 or short <strong>misc table</strong>.
 The database is implemented as <a class="reference internal" href="api/audformat.Database.html#audformat.Database" title="audformat.Database"><code class="xref py py-class docutils literal notranslate"><span class="pre">audformat.Database</span></code></a>.</p>
 <table class="docutils align-default" id="id1">
-<caption><span class="caption-text">Parts of a database stored in audformat on the hard disk.</span><a class="headerlink" href="#id1" title="Permalink to this table">¶</a></caption>
-<colgroup>
-<col style="width: 46%" />
-<col style="width: 54%" />
-</colgroup>
+<caption><span class="caption-text">Parts of a database stored in audformat on the hard disk.</span><a class="headerlink" href="#id1" title="Link to this table">¶</a></caption>
 <thead>
 <tr class="row-odd"><th class="head"><p>File</p></th>
 <th class="head"><p>Content</p></th>
@@ -213,27 +211,33 @@ and columns holding annotations</p></td>
 </table>
 <p>The connection between the header, media files and a table
 is highlighted in the following sketch:</p>
-<div class="figure align-center" id="id2">
-<div class="graphviz"><object data="_images/graphviz-f8022c826aaaa24e5e7e79de202a18cc9fb62785.svg" type="image/svg+xml" class="graphviz">
+<figure class="align-center" id="id2">
+<div class="graphviz"><object data="_images/graphviz-86e7edc92c5608d05bfe213dc67c424337c0d02c.svg" type="image/svg+xml" class="graphviz">
 <p class="warning">audformat table</p></object></div>
-<p class="caption"><span class="caption-text">Connection between header definitions and table entries.</span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
-</div>
+<figcaption>
+<p><span class="caption-text">Connection between header definitions and table entries.</span><a class="headerlink" href="#id2" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
 <p>The connection between the header and a misc table
 is highlighted in the following sketch:</p>
-<div class="figure align-center" id="id3">
-<div class="graphviz"><object data="_images/graphviz-4b804348efd5626a81825b66087f5074a9226693.svg" type="image/svg+xml" class="graphviz">
+<figure class="align-center" id="id3">
+<div class="graphviz"><object data="_images/graphviz-0307002a666dd6072bb6457a481a5e955a26a2c7.svg" type="image/svg+xml" class="graphviz">
 <p class="warning">audformat misc table</p></object></div>
-<p class="caption"><span class="caption-text">Connection between header definitions and misc table entries.</span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
-</div>
+<figcaption>
+<p><span class="caption-text">Connection between header definitions and misc table entries.</span><a class="headerlink" href="#id3" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
 <p>The annotations stored in the tables
-can be accessed as <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a>.
+can be accessed as <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.3.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a>.
 The following sketch shows an example instance of a database:</p>
-<div class="figure align-center" id="id4">
-<div class="graphviz"><object data="_images/graphviz-ead1e283fe12880d7f5b1480684a54537b38c258.svg" type="image/svg+xml" class="graphviz">
+<figure class="align-center" id="id4">
+<div class="graphviz"><object data="_images/graphviz-a1bbd77fbc2bb30deffc6e9443a2b3323b957c00.svg" type="image/svg+xml" class="graphviz">
 <p class="warning">Header and Tables</p></object></div>
-<p class="caption"><span class="caption-text">Example content of tables and there connection to the header.</span><a class="headerlink" href="#id4" title="Permalink to this image">¶</a></p>
-</div>
-</div>
+<figcaption>
+<p><span class="caption-text">Example content of tables and there connection to the header.</span><a class="headerlink" href="#id4" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</section>
 
 
            </div>
@@ -258,7 +262,7 @@ The following sketch shows an example instance of a database:</p>
         
         
         
-          Built with <a href="https://www.sphinx-doc.org">Sphinx</a> on 2025/05/27 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org">Sphinx</a> on 2026/01/12 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
@@ -266,7 +270,7 @@ The following sketch shows an example instance of a database:</p>
   <div role="contentinfo">
     <p>
         
-      &copy; 2019-2025 audEERING GmbH
+      &copy; 2019-2026 audEERING GmbH
     </p>
   </div> 
 
@@ -290,17 +294,14 @@ The following sketch shows an example instance of a database:</p>
     
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/sphinx_highlight.js"></script>
-        <script src="_static/clipboard.min.js"></script>
-        <script src="_static/copybutton.js"></script>
-        <script src="_static/katex.min.js"></script>
-        <script src="_static/auto-render.min.js"></script>
-        <script src="_static/katex_autorenderer.js"></script>
+        <script src="_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="_static/doctools.js?v=fd6eb6e6"></script>
+        <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+        <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="_static/copybutton.js?v=e57ba844"></script>
+        <script src="_static/katex.min.js?v=5cc8ed51"></script>
+        <script src="_static/auto-render.min.js?v=af98beb9"></script>
+        <script src="_static/katex_autorenderer.js?v=bebc588a"></script>
     
 
   

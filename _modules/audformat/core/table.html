@@ -30,7 +30,7 @@
   <link rel="stylesheet" href="../../../_static/css/audeering.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/graphviz.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/copybutton.css" type="text/css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css" type="text/css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/katex-math.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
@@ -68,7 +68,7 @@
             
             
               <div class="version">
-                v1.3.2
+                v1.3.3
               </div>
             
           
@@ -578,7 +578,7 @@
         <span class="k">if</span> <span class="nb">map</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-                    <span class="s2">&quot;Cannot map schemes, &quot;</span> <span class="s2">&quot;table is not assigned to a database.&quot;</span>
+                    <span class="s2">&quot;Cannot map schemes, table is not assigned to a database.&quot;</span>
                 <span class="p">)</span>
 
             <span class="k">if</span> <span class="ow">not</span> <span class="n">result_is_copy</span><span class="p">:</span>
@@ -664,7 +664,7 @@
         <span class="k">if</span> <span class="n">pickled</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_load_pickled</span><span class="p">(</span><span class="n">pkl_file</span><span class="p">)</span>
-            <span class="k">except</span> <span class="p">(</span><span class="ne">AttributeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">,</span> <span class="ne">EOFError</span><span class="p">)</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
                 <span class="c1"># If exception is raised</span>
                 <span class="c1"># (e.g. unsupported pickle protocol)</span>
                 <span class="c1"># try to load from PARQUET or CSV</span>
@@ -906,7 +906,7 @@
             <span class="n">left</span><span class="p">:</span> <span class="n">HeaderDict</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
             <span class="n">right</span><span class="p">:</span> <span class="n">HeaderDict</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
         <span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">msg</span><span class="si">}</span><span class="s2">:</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">left</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="s2">&quot;!=</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">right</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">msg</span><span class="si">}</span><span class="s2">:</span><span class="se">\n</span><span class="si">{</span><span class="n">left</span><span class="si">}</span><span class="se">\n</span><span class="s2">!=</span><span class="se">\n</span><span class="si">{</span><span class="n">right</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="k">def</span><span class="w"> </span><span class="nf">assert_equal</span><span class="p">(</span>
             <span class="n">msg</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -926,13 +926,13 @@
 
         <span class="k">for</span> <span class="n">other</span> <span class="ow">in</span> <span class="n">others</span><span class="p">:</span>
             <span class="n">assert_equal</span><span class="p">(</span>
-                <span class="s2">&quot;Media of table &quot;</span> <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">other</span><span class="o">.</span><span class="n">_id</span><span class="si">}</span><span class="s2">&#39; &quot;</span> <span class="s2">&quot;does not match&quot;</span><span class="p">,</span>
+                <span class="sa">f</span><span class="s2">&quot;Media of table &#39;</span><span class="si">{</span><span class="n">other</span><span class="o">.</span><span class="n">_id</span><span class="si">}</span><span class="s2">&#39; does not match&quot;</span><span class="p">,</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">media</span><span class="p">,</span>
                 <span class="n">other</span><span class="o">.</span><span class="n">media</span><span class="p">,</span>
             <span class="p">)</span>
 
             <span class="n">assert_equal</span><span class="p">(</span>
-                <span class="s2">&quot;Split of table &quot;</span> <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">other</span><span class="o">.</span><span class="n">_id</span><span class="si">}</span><span class="s2">&#39; &quot;</span> <span class="s2">&quot;does not match&quot;</span><span class="p">,</span>
+                <span class="sa">f</span><span class="s2">&quot;Split of table &#39;</span><span class="si">{</span><span class="n">other</span><span class="o">.</span><span class="n">_id</span><span class="si">}</span><span class="s2">&#39; does not match&quot;</span><span class="p">,</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">split</span><span class="p">,</span>
                 <span class="n">other</span><span class="o">.</span><span class="n">split</span><span class="p">,</span>
             <span class="p">)</span>
@@ -1435,7 +1435,9 @@
         <span class="k">return</span> <span class="n">df</span>
 
 
-<div class="viewcode-block" id="MiscTable"><a class="viewcode-back" href="../../../api/audformat.MiscTable.html#audformat.MiscTable">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">MiscTable</span><span class="p">(</span><span class="n">Base</span><span class="p">):</span>
+<div class="viewcode-block" id="MiscTable">
+<a class="viewcode-back" href="../../../api/audformat.MiscTable.html#audformat.MiscTable">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">MiscTable</span><span class="p">(</span><span class="n">Base</span><span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Miscellaneous table.</span>
 
 <span class="sd">    .. note:: Intended for use with tables</span>
@@ -1605,7 +1607,10 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">levels</span></div>
 
 
-<div class="viewcode-block" id="Table"><a class="viewcode-back" href="../../../api/audformat.Table.html#audformat.Table">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">Table</span><span class="p">(</span><span class="n">Base</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Table">
+<a class="viewcode-back" href="../../../api/audformat.Table.html#audformat.Table">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Table</span><span class="p">(</span><span class="n">Base</span><span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Table conform to :ref:`table specifications &lt;data-tables:Tables&gt;`.</span>
 
 <span class="sd">    Consists of a list of file names to which it assigns</span>
@@ -1808,7 +1813,9 @@
                 <span class="n">define</span><span class="o">.</span><span class="n">IndexField</span><span class="o">.</span><span class="n">START</span>
             <span class="p">)</span>
 
-<div class="viewcode-block" id="Table.drop_files"><a class="viewcode-back" href="../../../api/audformat.Table.html#audformat.Table.drop_files">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">drop_files</span><span class="p">(</span>
+<div class="viewcode-block" id="Table.drop_files">
+<a class="viewcode-back" href="../../../api/audformat.Table.html#audformat.Table.drop_files">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">drop_files</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">files</span><span class="p">:</span> <span class="p">(</span><span class="nb">str</span> <span class="o">|</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">str</span><span class="p">],</span> <span class="nb">bool</span><span class="p">]),</span>
         <span class="o">*</span><span class="p">,</span>
@@ -1845,7 +1852,10 @@
 
         <span class="k">return</span> <span class="bp">self</span></div>
 
-<div class="viewcode-block" id="Table.get"><a class="viewcode-back" href="../../../api/audformat.Table.html#audformat.Table.get">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">get</span><span class="p">(</span>
+
+<div class="viewcode-block" id="Table.get">
+<a class="viewcode-back" href="../../../api/audformat.Table.html#audformat.Table.get">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">index</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
@@ -1930,7 +1940,10 @@
 
         <span class="k">return</span> <span class="n">result</span></div>
 
-<div class="viewcode-block" id="Table.map_files"><a class="viewcode-back" href="../../../api/audformat.Table.html#audformat.Table.map_files">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">map_files</span><span class="p">(</span>
+
+<div class="viewcode-block" id="Table.map_files">
+<a class="viewcode-back" href="../../../api/audformat.Table.html#audformat.Table.map_files">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">map_files</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">str</span><span class="p">],</span> <span class="nb">str</span><span class="p">],</span>
     <span class="p">):</span>
@@ -1946,7 +1959,10 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">map_file_path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">func</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Table.pick_files"><a class="viewcode-back" href="../../../api/audformat.Table.html#audformat.Table.pick_files">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">pick_files</span><span class="p">(</span>
+
+<div class="viewcode-block" id="Table.pick_files">
+<a class="viewcode-back" href="../../../api/audformat.Table.html#audformat.Table.pick_files">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">pick_files</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">files</span><span class="p">:</span> <span class="p">(</span><span class="nb">str</span> <span class="o">|</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">str</span><span class="p">],</span> <span class="nb">bool</span><span class="p">]),</span>
         <span class="o">*</span><span class="p">,</span>
@@ -1978,6 +1994,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="bp">self</span></div>
+
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_get_by_index</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -2013,6 +2030,7 @@
         <span class="k">return</span> <span class="n">levels_and_dtypes</span></div>
 
 
+
 <span class="k">def</span><span class="w"> </span><span class="nf">_assert_table_index</span><span class="p">(</span>
     <span class="n">table</span><span class="p">:</span> <span class="n">Base</span><span class="p">,</span>
     <span class="n">index</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">,</span>
@@ -2023,13 +2041,7 @@
         <span class="n">input_type</span> <span class="o">=</span> <span class="n">index_type</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">table</span><span class="o">.</span><span class="n">type</span> <span class="o">!=</span> <span class="n">input_type</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;Cannot &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">operation</span><span class="si">}</span><span class="s2"> &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;a &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">table</span><span class="o">.</span><span class="n">type</span><span class="si">}</span><span class="s2"> &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;table with a &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">input_type</span><span class="si">}</span><span class="s2"> &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;index.&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;Cannot </span><span class="si">{</span><span class="n">operation</span><span class="si">}</span><span class="s2"> a </span><span class="si">{</span><span class="n">table</span><span class="o">.</span><span class="n">type</span><span class="si">}</span><span class="s2"> table with a </span><span class="si">{</span><span class="n">input_type</span><span class="si">}</span><span class="s2"> index.&quot;</span>
             <span class="p">)</span>
     <span class="k">elif</span> <span class="ow">not</span> <span class="n">utils</span><span class="o">.</span><span class="n">is_index_alike</span><span class="p">([</span><span class="n">table</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">index</span><span class="p">]):</span>
         <span class="n">want</span> <span class="o">=</span> <span class="p">(</span>
@@ -2094,7 +2106,7 @@
         
         
         
-          Built with <a href="https://www.sphinx-doc.org">Sphinx</a> on 2025/05/27 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org">Sphinx</a> on 2026/01/12 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
@@ -2102,7 +2114,7 @@
   <div role="contentinfo">
     <p>
         
-      &copy; 2019-2025 audEERING GmbH
+      &copy; 2019-2026 audEERING GmbH
     </p>
   </div> 
 
@@ -2126,17 +2138,14 @@
     
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/underscore.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/sphinx_highlight.js"></script>
-        <script src="../../../_static/clipboard.min.js"></script>
-        <script src="../../../_static/copybutton.js"></script>
-        <script src="../../../_static/katex.min.js"></script>
-        <script src="../../../_static/auto-render.min.js"></script>
-        <script src="../../../_static/katex_autorenderer.js"></script>
+        <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+        <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="../../../_static/copybutton.js?v=e57ba844"></script>
+        <script src="../../../_static/katex.min.js?v=5cc8ed51"></script>
+        <script src="../../../_static/auto-render.min.js?v=af98beb9"></script>
+        <script src="../../../_static/katex_autorenderer.js?v=bebc588a"></script>
     
 
   

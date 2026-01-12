@@ -5,7 +5,8 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <title>Working with a database &mdash; Documentation</title>
@@ -30,7 +31,7 @@
   <link rel="stylesheet" href="_static/css/audeering.css" type="text/css" />
   <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
   <link rel="stylesheet" href="_static/copybutton.css" type="text/css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css" type="text/css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.css" type="text/css" />
   <link rel="stylesheet" href="_static/katex-math.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -70,7 +71,7 @@
             
             
               <div class="version">
-                v1.3.2
+                v1.3.3
               </div>
             
           
@@ -167,10 +168,10 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="working-with-a-database">
-<h1>Working with a database<a class="headerlink" href="#working-with-a-database" title="Permalink to this heading">¶</a></h1>
-<div class="section" id="accessing-data">
-<h2>Accessing data<a class="headerlink" href="#accessing-data" title="Permalink to this heading">¶</a></h2>
+  <section id="working-with-a-database">
+<h1>Working with a database<a class="headerlink" href="#working-with-a-database" title="Link to this heading">¶</a></h1>
+<section id="accessing-data">
+<h2>Accessing data<a class="headerlink" href="#accessing-data" title="Link to this heading">¶</a></h2>
 <p>Annotation labels can be accessed
 by the <a class="reference internal" href="api/audformat.Table.html#audformat.Table.get" title="audformat.Table.get"><code class="xref py py-meth docutils literal notranslate"><span class="pre">audformat.Table.get()</span></code></a> method:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">audformat.testing</span>
@@ -186,7 +187,7 @@ by the <a class="reference internal" href="api/audformat.Table.html#audformat.Ta
 <span class="c1"># table = db.tables[&quot;files&quot;].get()</span>
 </pre></div>
 </div>
-<p>Which returns the following <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a>:</p>
+<p>Which returns the following <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.3.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a>:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">table</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span>
 <span class="go">               bool                    date</span>
 <span class="go">file</span>
@@ -200,7 +201,7 @@ by the <a class="reference internal" href="api/audformat.Table.html#audformat.Ta
 <span class="c1"># column = db.tables[&quot;files&quot;].columns[&quot;string&quot;].get()</span>
 </pre></div>
 </div>
-<p>Which results in the following <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Series.html#pandas.Series" title="(in pandas v2.2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.Series</span></code></a>:</p>
+<p>Which results in the following <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Series.html#pandas.Series" title="(in pandas v2.3.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.Series</span></code></a>:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">column</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span>
 <span class="go">file</span>
 <span class="go">audio/001.wav    vv7xWJcOxL</span>
@@ -211,9 +212,9 @@ by the <a class="reference internal" href="api/audformat.Table.html#audformat.Ta
 <p>For more information on how to access or add data
 have a look at the code examples in the
 <a class="reference internal" href="data-tables.html#tables"><span class="std std-ref">table specification</span></a>.</p>
-</div>
-<div class="section" id="changing-referenced-files">
-<h2>Changing referenced files<a class="headerlink" href="#changing-referenced-files" title="Permalink to this heading">¶</a></h2>
+</section>
+<section id="changing-referenced-files">
+<h2>Changing referenced files<a class="headerlink" href="#changing-referenced-files" title="Link to this heading">¶</a></h2>
 <p>To convert to absolute file paths in all tables, do:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 
@@ -221,8 +222,8 @@ have a look at the code examples in the
 <span class="n">db</span><span class="o">.</span><span class="n">map_files</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">)</span>
 </pre></div>
 </div>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>
@@ -247,7 +248,7 @@ have a look at the code examples in the
         
         
         
-          Built with <a href="https://www.sphinx-doc.org">Sphinx</a> on 2025/05/27 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org">Sphinx</a> on 2026/01/12 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
@@ -255,7 +256,7 @@ have a look at the code examples in the
   <div role="contentinfo">
     <p>
         
-      &copy; 2019-2025 audEERING GmbH
+      &copy; 2019-2026 audEERING GmbH
     </p>
   </div> 
 
@@ -279,17 +280,14 @@ have a look at the code examples in the
     
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/sphinx_highlight.js"></script>
-        <script src="_static/clipboard.min.js"></script>
-        <script src="_static/copybutton.js"></script>
-        <script src="_static/katex.min.js"></script>
-        <script src="_static/auto-render.min.js"></script>
-        <script src="_static/katex_autorenderer.js"></script>
+        <script src="_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="_static/doctools.js?v=fd6eb6e6"></script>
+        <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+        <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="_static/copybutton.js?v=e57ba844"></script>
+        <script src="_static/katex.min.js?v=5cc8ed51"></script>
+        <script src="_static/auto-render.min.js?v=af98beb9"></script>
+        <script src="_static/katex_autorenderer.js?v=bebc588a"></script>
     
 
   

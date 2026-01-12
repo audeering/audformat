@@ -30,7 +30,7 @@
   <link rel="stylesheet" href="../../../_static/css/audeering.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/graphviz.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/copybutton.css" type="text/css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css" type="text/css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/katex-math.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
@@ -68,7 +68,7 @@
             
             
               <div class="version">
-                v1.3.2
+                v1.3.3
               </div>
             
           
@@ -170,7 +170,9 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">audformat.core.common</span><span class="w"> </span><span class="kn">import</span> <span class="n">is_relative_path</span>
 
 
-<div class="viewcode-block" id="Attachment"><a class="viewcode-back" href="../../../api/audformat.Attachment.html#audformat.Attachment">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">Attachment</span><span class="p">(</span><span class="n">HeaderBase</span><span class="p">):</span>
+<div class="viewcode-block" id="Attachment">
+<a class="viewcode-back" href="../../../api/audformat.Attachment.html#audformat.Attachment">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Attachment</span><span class="p">(</span><span class="n">HeaderBase</span><span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Database attachment.</span>
 
 <span class="sd">    Adds a file or folder</span>
@@ -299,7 +301,7 @@
             <span class="ow">or</span> <span class="n">other</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
         <span class="p">):</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;Attachments &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="si">}</span><span class="s2">&#39; and &#39;</span><span class="si">{</span><span class="n">other</span><span class="o">.</span><span class="n">path</span><span class="si">}</span><span class="s2">&#39; &quot;</span> <span class="s2">&quot;are nested.&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;Attachments &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="si">}</span><span class="s2">&#39; and &#39;</span><span class="si">{</span><span class="n">other</span><span class="o">.</span><span class="n">path</span><span class="si">}</span><span class="s2">&#39; are nested.&quot;</span>
             <span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_check_path</span><span class="p">(</span>
@@ -319,6 +321,7 @@
                 <span class="sa">f</span><span class="s2">&quot;of attachment &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_id</span><span class="si">}</span><span class="s2">&#39; &quot;</span>
                 <span class="s2">&quot;must not be a symlink.&quot;</span>
             <span class="p">)</span></div>
+
 </pre></div>
 
            </div>
@@ -334,7 +337,7 @@
         
         
         
-          Built with <a href="https://www.sphinx-doc.org">Sphinx</a> on 2025/05/27 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org">Sphinx</a> on 2026/01/12 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
@@ -342,7 +345,7 @@
   <div role="contentinfo">
     <p>
         
-      &copy; 2019-2025 audEERING GmbH
+      &copy; 2019-2026 audEERING GmbH
     </p>
   </div> 
 
@@ -366,17 +369,14 @@
     
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/underscore.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/sphinx_highlight.js"></script>
-        <script src="../../../_static/clipboard.min.js"></script>
-        <script src="../../../_static/copybutton.js"></script>
-        <script src="../../../_static/katex.min.js"></script>
-        <script src="../../../_static/auto-render.min.js"></script>
-        <script src="../../../_static/katex_autorenderer.js"></script>
+        <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+        <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="../../../_static/copybutton.js?v=e57ba844"></script>
+        <script src="../../../_static/katex.min.js?v=5cc8ed51"></script>
+        <script src="../../../_static/auto-render.min.js?v=af98beb9"></script>
+        <script src="../../../_static/katex_autorenderer.js?v=bebc588a"></script>
     
 
   

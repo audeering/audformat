@@ -5,7 +5,8 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <title>join_schemes() &mdash; Documentation</title>
@@ -30,7 +31,7 @@
   <link rel="stylesheet" href="../_static/css/audeering.css" type="text/css" />
   <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
   <link rel="stylesheet" href="../_static/copybutton.css" type="text/css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css" type="text/css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.css" type="text/css" />
   <link rel="stylesheet" href="../_static/katex-math.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -70,7 +71,7 @@
             
             
               <div class="version">
-                v1.3.2
+                v1.3.3
               </div>
             
           
@@ -186,11 +187,11 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="join-schemes">
-<h1>join_schemes()<a class="headerlink" href="#join-schemes" title="Permalink to this heading">¶</a></h1>
+  <section id="join-schemes">
+<h1>join_schemes()<a class="headerlink" href="#join-schemes" title="Link to this heading">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="audformat.utils.join_schemes">
-<span class="sig-prename descclassname"><span class="pre">audformat.utils.</span></span><span class="sig-name descname"><span class="pre">join_schemes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dbs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scheme_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/audformat/core/utils.html#join_schemes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.utils.join_schemes" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">audformat.utils.</span></span><span class="sig-name descname"><span class="pre">join_schemes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dbs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scheme_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/audformat/core/utils.html#join_schemes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.utils.join_schemes" title="Link to this definition">¶</a></dt>
 <dd><p>Join and update scheme of databases.</p>
 <p>This joins the given scheme of several databases
 using <a class="reference internal" href="audformat.utils.join_labels.html#audformat.utils.join_labels" title="audformat.utils.join_labels"><code class="xref py py-func docutils literal notranslate"><span class="pre">audformat.utils.join_labels()</span></code></a>
@@ -209,15 +210,15 @@ Please use
 <a class="reference internal" href="audformat.Database.html#audformat.Database.update" title="audformat.Database.update"><code class="xref py py-meth docutils literal notranslate"><span class="pre">audformat.Database.update()</span></code></a>
 instead.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>dbs</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a>[<a class="reference internal" href="audformat.Database.html#audformat.Database" title="audformat.core.database.Database"><code class="xref py py-class docutils literal notranslate"><span class="pre">Database</span></code></a>]) – sequence of databases</p></li>
-<li><p><strong>scheme_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – scheme ID of a scheme with labels
+<li><p><strong>dbs</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a>[<a class="reference internal" href="audformat.Database.html#audformat.Database" title="audformat.core.database.Database"><code class="xref py py-class docutils literal notranslate"><span class="pre">Database</span></code></a>]</span>) – sequence of databases</p></li>
+<li><p><strong>scheme_id</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – scheme ID of a scheme with labels
 that should be joined</p></li>
 </ul>
 </dd>
-<dt class="field-even">Raises</dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.13)"><strong>ValueError</strong></a> – if scheme labels are of different dtype
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – if scheme labels are of different dtype
     or not <code class="docutils literal notranslate"><span class="pre">list</span></code> or <code class="docutils literal notranslate"><span class="pre">dict</span></code></p>
 </dd>
 </dl>
@@ -235,7 +236,7 @@ that should be joined</p></li>
 </div>
 </dd></dl>
 
-</div>
+</section>
 
 
            </div>
@@ -260,7 +261,7 @@ that should be joined</p></li>
         
         
         
-          Built with <a href="https://www.sphinx-doc.org">Sphinx</a> on 2025/05/27 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org">Sphinx</a> on 2026/01/12 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
@@ -268,7 +269,7 @@ that should be joined</p></li>
   <div role="contentinfo">
     <p>
         
-      &copy; 2019-2025 audEERING GmbH
+      &copy; 2019-2026 audEERING GmbH
     </p>
   </div> 
 
@@ -292,17 +293,14 @@ that should be joined</p></li>
     
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="../_static/doctools.js"></script>
-        <script src="../_static/sphinx_highlight.js"></script>
-        <script src="../_static/clipboard.min.js"></script>
-        <script src="../_static/copybutton.js"></script>
-        <script src="../_static/katex.min.js"></script>
-        <script src="../_static/auto-render.min.js"></script>
-        <script src="../_static/katex_autorenderer.js"></script>
+        <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+        <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+        <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="../_static/copybutton.js?v=e57ba844"></script>
+        <script src="../_static/katex.min.js?v=5cc8ed51"></script>
+        <script src="../_static/auto-render.min.js?v=af98beb9"></script>
+        <script src="../_static/katex_autorenderer.js?v=bebc588a"></script>
     
 
   

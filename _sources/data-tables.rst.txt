@@ -1,7 +1,7 @@
 Tables
 ======
 
-A table links labels to media files.
+A table is a collection of media files.
 It consists of one or three index columns
 followed by an arbitrary number of label columns.
 Labels can either refer to whole files or part of files.

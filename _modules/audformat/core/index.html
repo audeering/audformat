@@ -30,7 +30,7 @@
   <link rel="stylesheet" href="../../../_static/css/audeering.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/graphviz.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/copybutton.css" type="text/css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css" type="text/css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/katex-math.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
@@ -68,7 +68,7 @@
             
             
               <div class="version">
-                v1.3.2
+                v1.3.3
               </div>
             
           
@@ -162,9 +162,7 @@
            <div itemprop="articleBody">
             
   <h1>Source code for audformat.core.index</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
-
-<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">audformat.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">define</span>
@@ -198,7 +196,9 @@
         <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_timedelta</span><span class="p">(</span><span class="n">times</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="assert_index"><a class="viewcode-back" href="../../../api/audformat.assert_index.html#audformat.assert_index">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">assert_index</span><span class="p">(</span>
+<div class="viewcode-block" id="assert_index">
+<a class="viewcode-back" href="../../../api/audformat.assert_index.html#audformat.assert_index">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">assert_index</span><span class="p">(</span>
     <span class="n">obj</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Assert object is conform to :ref:`table specifications</span>
@@ -278,7 +278,10 @@
             <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="assert_no_duplicates"><a class="viewcode-back" href="../../../api/audformat.assert_no_duplicates.html#audformat.assert_no_duplicates">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">assert_no_duplicates</span><span class="p">(</span>
+
+<div class="viewcode-block" id="assert_no_duplicates">
+<a class="viewcode-back" href="../../../api/audformat.assert_no_duplicates.html#audformat.assert_no_duplicates">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">assert_no_duplicates</span><span class="p">(</span>
     <span class="n">obj</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Assert object contains no duplicates in its index.</span>
@@ -312,7 +315,10 @@
         <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="filewise_index"><a class="viewcode-back" href="../../../api/audformat.filewise_index.html#audformat.filewise_index">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">filewise_index</span><span class="p">(</span>
+
+<div class="viewcode-block" id="filewise_index">
+<a class="viewcode-back" href="../../../api/audformat.filewise_index.html#audformat.filewise_index">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">filewise_index</span><span class="p">(</span>
     <span class="n">files</span><span class="p">:</span> <span class="n">Files</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">:</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Creates a filewise index.</span>
@@ -347,7 +353,10 @@
     <span class="k">return</span> <span class="n">index</span></div>
 
 
-<div class="viewcode-block" id="index_type"><a class="viewcode-back" href="../../../api/audformat.index_type.html#audformat.index_type">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">index_type</span><span class="p">(</span>
+
+<div class="viewcode-block" id="index_type">
+<a class="viewcode-back" href="../../../api/audformat.index_type.html#audformat.index_type">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">index_type</span><span class="p">(</span>
     <span class="n">obj</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">define</span><span class="o">.</span><span class="n">IndexType</span><span class="p">:</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Derive index type.</span>
@@ -384,7 +393,10 @@
         <span class="k">return</span> <span class="n">define</span><span class="o">.</span><span class="n">IndexType</span><span class="o">.</span><span class="n">SEGMENTED</span></div>
 
 
-<div class="viewcode-block" id="is_filewise_index"><a class="viewcode-back" href="../../../api/audformat.is_filewise_index.html#audformat.is_filewise_index">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">is_filewise_index</span><span class="p">(</span>
+
+<div class="viewcode-block" id="is_filewise_index">
+<a class="viewcode-back" href="../../../api/audformat.is_filewise_index.html#audformat.is_filewise_index">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">is_filewise_index</span><span class="p">(</span>
     <span class="n">obj</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Check if object has a filewise index.</span>
@@ -411,7 +423,10 @@
     <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">names</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">obj</span><span class="o">.</span><span class="n">names</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">define</span><span class="o">.</span><span class="n">IndexField</span><span class="o">.</span><span class="n">FILE</span></div>
 
 
-<div class="viewcode-block" id="is_segmented_index"><a class="viewcode-back" href="../../../api/audformat.is_segmented_index.html#audformat.is_segmented_index">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">is_segmented_index</span><span class="p">(</span>
+
+<div class="viewcode-block" id="is_segmented_index">
+<a class="viewcode-back" href="../../../api/audformat.is_segmented_index.html#audformat.is_segmented_index">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">is_segmented_index</span><span class="p">(</span>
     <span class="n">obj</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Check if object has a segmented index.</span>
@@ -443,7 +458,10 @@
     <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="segmented_index"><a class="viewcode-back" href="../../../api/audformat.segmented_index.html#audformat.segmented_index">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">segmented_index</span><span class="p">(</span>
+
+<div class="viewcode-block" id="segmented_index">
+<a class="viewcode-back" href="../../../api/audformat.segmented_index.html#audformat.segmented_index">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">segmented_index</span><span class="p">(</span>
     <span class="n">files</span><span class="p">:</span> <span class="n">Files</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">starts</span><span class="p">:</span> <span class="n">Timestamps</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">ends</span><span class="p">:</span> <span class="n">Timestamps</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -531,6 +549,7 @@
     <span class="n">assert_index</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">index</span></div>
+
 </pre></div>
 
            </div>
@@ -546,7 +565,7 @@
         
         
         
-          Built with <a href="https://www.sphinx-doc.org">Sphinx</a> on 2025/05/27 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org">Sphinx</a> on 2026/01/12 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
@@ -554,7 +573,7 @@
   <div role="contentinfo">
     <p>
         
-      &copy; 2019-2025 audEERING GmbH
+      &copy; 2019-2026 audEERING GmbH
     </p>
   </div> 
 
@@ -578,17 +597,14 @@
     
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/underscore.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/sphinx_highlight.js"></script>
-        <script src="../../../_static/clipboard.min.js"></script>
-        <script src="../../../_static/copybutton.js"></script>
-        <script src="../../../_static/katex.min.js"></script>
-        <script src="../../../_static/auto-render.min.js"></script>
-        <script src="../../../_static/katex_autorenderer.js"></script>
+        <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+        <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="../../../_static/copybutton.js?v=e57ba844"></script>
+        <script src="../../../_static/katex.min.js?v=5cc8ed51"></script>
+        <script src="../../../_static/auto-render.min.js?v=af98beb9"></script>
+        <script src="../../../_static/katex_autorenderer.js?v=bebc588a"></script>
     
 
   
