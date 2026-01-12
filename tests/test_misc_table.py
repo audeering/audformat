@@ -1839,3 +1839,53 @@ def test_update(table, overwrite, others):
         for column_id, column in other.columns.items():
             assert column.scheme == table[column_id].scheme
             assert column.rater == table[column_id].rater
+
+
+@pytest.mark.parametrize("storage_format", ["csv", "parquet", "pkl"])
+def test_zero_columns(tmpdir, storage_format):
+    r"""Test misc tables with zero columns.
+
+    MiscTables should support having only an index without any data columns.
+
+    Args:
+        tmpdir: tmpdir fixture
+        storage_format: storage format of table
+
+    """
+    # Test MiscTable with zero columns (single-level index)
+    db = audformat.testing.create_db(minimal=True)
+    index = pd.Index([0, 1, 2], name="idx", dtype="Int64")
+    db["misc-single"] = audformat.MiscTable(index)
+    assert len(db["misc-single"].columns) == 0
+    assert len(db["misc-single"]) == 3
+    assert db["misc-single"].df.shape == (3, 0)
+
+    # Test MiscTable with zero columns (multi-level index)
+    index = pd.MultiIndex.from_arrays(
+        [[0, 1], ["a", "b"]],
+        names=["idx1", "idx2"],
+    )
+    index = audformat.utils.set_index_dtypes(
+        index,
+        {
+            "idx1": audformat.define.DataType.INTEGER,
+            "idx2": audformat.define.DataType.OBJECT,
+        },
+    )
+    db["misc-multi"] = audformat.MiscTable(index)
+    assert len(db["misc-multi"].columns) == 0
+    assert len(db["misc-multi"]) == 2
+    assert db["misc-multi"].df.shape == (2, 0)
+
+    # Save and load the database
+    db.save(tmpdir, storage_format=storage_format)
+    db_loaded = audformat.Database.load(tmpdir)
+
+    # Verify tables were loaded correctly
+    for table_id in ["misc-single", "misc-multi"]:
+        assert len(db_loaded[table_id].columns) == 0
+        pd.testing.assert_index_equal(
+            db_loaded[table_id].df.index,
+            db[table_id].df.index,
+        )
+        assert db_loaded[table_id].df.shape == db[table_id].df.shape
