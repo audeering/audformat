@@ -2768,6 +2768,25 @@ def test_to_filewise_index(tmpdir, obj, expected_file_names):
                 {"idx2": "Int64"},
             ),
         ),
+        # single-level timedelta index
+        # (covers timedelta precision fix for pandas 3.0.0)
+        (
+            [
+                pd.Index(
+                    pd.to_timedelta([0, 1], unit="s"),
+                    name="time",
+                ),
+                pd.Index(
+                    pd.to_timedelta([1.5, 2.5], unit="s"),
+                    name="time",
+                ),
+            ],
+            pd.Index(
+                pd.to_timedelta([0, 1, 1.5, 2.5], unit="s"),
+                dtype="timedelta64[ns]",
+                name="time",
+            ),
+        ),
         pytest.param(
             [
                 pd.Index([], name="idx1"),
