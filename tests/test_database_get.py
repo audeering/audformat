@@ -511,7 +511,7 @@ def wrong_scheme_labels_db(tmpdir):
                     ]
                 ),
                 dtype=pd.CategoricalDtype(
-                    ["w1", "w2", "w3"],
+                    pd.Index(["w1", "w2", "w3"], dtype="object"),
                     ordered=False,
                 ),
             ),
@@ -603,7 +603,7 @@ def wrong_scheme_labels_db(tmpdir):
                             [0.2, 0.2, 0.5, 0.7],
                         ),
                         dtype=pd.CategoricalDtype(
-                            ["s1", "s2", "s3"],
+                            pd.Index(["s1", "s2", "s3"], dtype="object"),
                             ordered=False,
                         ),
                         name="speaker",
@@ -1253,7 +1253,7 @@ def test_database_get_aggregate_and_modify_function(
                         ["s1"],
                         index=audformat.filewise_index(["f1.wav"]),
                         dtype=pd.CategoricalDtype(
-                            ["s1", "s2", "s3"],
+                            pd.Index(["s1", "s2", "s3"], dtype="object"),
                             ordered=False,
                         ),
                         name="speaker",
@@ -1735,7 +1735,7 @@ def test_database_get_strict(
                 "f3.wav  1.01   1.80"
             ),
         ),
-        pytest.param(
+        (
             "mono_db",
             "weight",
             [],
@@ -1745,10 +1745,6 @@ def test_database_get_strict(
             (
                 "Cannot join labels for scheme 'weight' "
                 "with different data types: int64, object"
-            ),
-            marks=pytest.mark.xfail(
-                pd.__version__ >= "3",
-                reason="pandas >= 3.0 handles mixed categorical dtypes differently",
             ),
         ),
         (

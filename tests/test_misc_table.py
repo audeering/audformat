@@ -576,12 +576,16 @@ def test_dtype_column(
             "Int64",
             audformat.define.DataType.INTEGER,
         ),
-        (
+        pytest.param(
             pd.Index,
             [],
             str,
             "object",
             audformat.define.DataType.OBJECT,
+            marks=pytest.mark.xfail(
+                pd.__version__ >= "3",
+                reason="pandas >= 3.0 infers str dtype instead of object for str",
+            ),
         ),
         (
             pd.Index,
@@ -639,12 +643,16 @@ def test_dtype_column(
             "Int64",
             audformat.define.DataType.INTEGER,
         ),
-        (
+        pytest.param(
             pd.Index,
             ["0"],
             None,
             "object",
             audformat.define.DataType.OBJECT,
+            marks=pytest.mark.xfail(
+                pd.__version__ >= "3",
+                reason="pandas >= 3.0 infers str dtype instead of object for strings",
+            ),
         ),
         (
             pd.TimedeltaIndex,
