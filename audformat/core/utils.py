@@ -745,7 +745,12 @@ def hash(
                 # for integers across different pandas versions
                 # (since pandas 2.2.x, Int64 is converted to float if it contains <NA>)
                 y = y.astype("float")
-            data_md5.update(bytes(str(y.to_numpy()), "utf-8"))
+            if pd.api.types.is_string_dtype(y.dtype):
+                # Enforce object dtype for string columns
+                # to ensure consistent hashing across Python versions
+                data_md5.update(bytes(str(y.to_numpy(dtype=object)), "utf-8"))
+            else:
+                data_md5.update(bytes(str(y.to_numpy()), "utf-8"))
         md5 = hashlib.md5()
         md5.update(schema_md5.digest())
         md5.update(data_md5.digest())
@@ -1036,7 +1041,7 @@ def iter_by_file(
         ('f1', MultiIndex([('f1', '0 days 00:00:00', '0 days 00:00:02'),
             ('f1', '0 days 00:00:01', '0 days 00:00:03')],
            names=['file', 'start', 'end']))
-        >>> obj = pd.Series(["a", "b", "b"], index)
+        >>> obj = pd.Series(["a", "b", "b"], index, dtype="object")
         >>> next(iter_by_file(obj))
         ('f1', file  start            end
         f1    0 days 00:00:00  0 days 00:00:02    a
