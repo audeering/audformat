@@ -105,12 +105,12 @@ def create_misc_table(
                 create_misc_table(
                     pd.Series(
                         [1.0],
-                        index=pd.Index(["a"], name="idx"),
+                        index=pd.Index(["a"], name="idx", dtype="str"),
                     ),
                 ),
                 create_misc_table(
                     pd.Series(
-                        index=pd.Index([], name="idx"),
+                        index=pd.Index([], name="idx", dtype="str"),
                         dtype="float",
                     ),
                 ),
@@ -118,7 +118,7 @@ def create_misc_table(
             create_misc_table(
                 pd.Series(
                     [1.0],
-                    index=pd.Index(["a"], name="idx"),
+                    index=pd.Index(["a"], name="idx", dtype="str"),
                 ),
             ),
         ),
@@ -127,21 +127,21 @@ def create_misc_table(
             [
                 create_misc_table(
                     pd.Series(
-                        index=pd.Index([], name="idx"),
+                        index=pd.Index([], name="idx", dtype="str"),
                         dtype="float",
                     )
                 ),
                 create_misc_table(
                     pd.Series(
                         [1.0],
-                        index=pd.Index(["a"], name="idx"),
+                        index=pd.Index(["a"], name="idx", dtype="str"),
                     ),
                 ),
             ],
             create_misc_table(
                 pd.Series(
                     [1.0],
-                    index=pd.Index(["a"], name="idx"),
+                    index=pd.Index(["a"], name="idx", dtype="str"),
                 ),
             ),
         ),
@@ -509,12 +509,16 @@ def test_dtype_column(
     "index_object, index_values, index_dtype, "
     "expected_pandas_dtype, expected_audformat_dtype",
     [
-        (
+        pytest.param(
             pd.Index,
             ["0"],
             None,
             "object",
             audformat.define.DataType.OBJECT,
+            marks=pytest.mark.xfail(
+                pd.__version__ >= "3",
+                reason="pandas >= 3.0 infers str dtype for string indices",
+            ),
         ),
         (
             pd.Index,

@@ -1735,7 +1735,7 @@ def test_database_get_strict(
                 "f3.wav  1.01   1.80"
             ),
         ),
-        (
+        pytest.param(
             "mono_db",
             "weight",
             [],
@@ -1745,6 +1745,10 @@ def test_database_get_strict(
             (
                 "Cannot join labels for scheme 'weight' "
                 "with different data types: int64, object"
+            ),
+            marks=pytest.mark.xfail(
+                pd.__version__ >= "3",
+                reason="pandas >= 3.0 handles mixed categorical dtypes differently",
             ),
         ),
         (
