@@ -143,7 +143,7 @@ def add_table(
 
         for file in files:
             times = [
-                pd.to_timedelta(random.random() * file_duration, unit="s")
+                random.random() * file_duration
                 for _ in range(num_segments_per_file * 2)
             ]
             times.sort()
