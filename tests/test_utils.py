@@ -2108,6 +2108,58 @@ def test_replace_file_extension(index, extension, pattern, expected_index):
             None,
             marks=pytest.mark.xfail(raises=ValueError),
         ),
+        # Ensure timedelta64[ns] is preserved when setting dtype,
+        # covering https://github.com/audeering/audformat/issues/490
+        (
+            pd.MultiIndex.from_arrays(
+                [
+                    ["f1", "f2"],
+                    [0, int(1e9)],
+                    [pd.NaT, pd.NaT],
+                ],
+                names=[
+                    define.IndexField.FILE,
+                    define.IndexField.START,
+                    define.IndexField.END,
+                ],
+            ),
+            {
+                define.IndexField.START: "timedelta64[ns]",
+            },
+            pd.MultiIndex.from_arrays(
+                [
+                    ["f1", "f2"],
+                    pd.to_timedelta([0, 1], unit="s").astype("timedelta64[ns]"),
+                    [pd.NaT, pd.NaT],
+                ],
+                names=[
+                    define.IndexField.FILE,
+                    define.IndexField.START,
+                    define.IndexField.END,
+                ],
+            ),
+        ),
+        # Ensure timedelta64[ns] is preserved when setting dtype on empty levels,
+        # covering https://github.com/audeering/audformat/issues/490
+        (
+            pd.MultiIndex.from_arrays(
+                [
+                    pd.Index([], dtype="string"),
+                    pd.Index([], dtype="int64"),
+                    pd.Index([], dtype="object"),
+                ],
+                names=[
+                    define.IndexField.FILE,
+                    define.IndexField.START,
+                    define.IndexField.END,
+                ],
+            ),
+            {
+                define.IndexField.START: "timedelta64[ns]",
+                define.IndexField.END: "timedelta64[ns]",
+            },
+            audformat.segmented_index(),
+        ),
     ],
 )
 def test_set_index_dtypes(index, dtypes, expected):
