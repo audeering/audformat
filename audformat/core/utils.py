@@ -1827,9 +1827,15 @@ def to_segmented_index(
             # Replace all NaT entries in end
             # by the collected duration values.
             # We have to convert ends to a series first
-            # in order to preserve precision of duration values
+            # in order to preserve precision of duration values.
+            # Starting with pandas 3.0.0,
+            # the default precision of timedelta is seconds,
+            # so we need to convert to nanoseconds
+            # to ensure sub-second precision is preserved
+            # when assigning duration values.
 
             ends = ends.to_series()
+            ends = ends.astype("timedelta64[ns]")
             ends.iloc[idx_nat] = durs
 
             # Create a new index
