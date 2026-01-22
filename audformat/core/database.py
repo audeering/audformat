@@ -701,7 +701,7 @@ class Database(HeaderBase):
                 for obj in objs
                 if isinstance(obj.dtype, pd.CategoricalDtype)
             ]
-            return sorted(list(set(dtypes)))
+            return sorted(list(set(dtypes)), key=str)
 
         def empty_frame(name):
             return pd.DataFrame(
@@ -823,7 +823,7 @@ class Database(HeaderBase):
                 raise TypeError(  # pragma: nocover
                     f"Cannot join labels for scheme '{requested_scheme}' "
                     "with different data types: "
-                    f"{', '.join(dtypes)}"
+                    f"{', '.join(str(d) for d in dtypes)}"
                 )
             dtype = dtypes[0]
             # Convert everything to categorical data
