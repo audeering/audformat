@@ -941,7 +941,13 @@ def intersect(
     # Ensure we have order of first object
     index = objs[0].intersection(index)
     if isinstance(index, pd.MultiIndex):
-        index = set_index_dtypes(index, objs[0].dtypes.to_dict())
+        dtypes = objs[0].dtypes.to_dict()
+        # Always use timedelta64[ns] for timedelta dtypes
+        # to ensure consistent precision across pandas versions
+        for name, dtype in dtypes.items():
+            if pd.api.types.is_timedelta64_dtype(dtype):
+                dtypes[name] = "timedelta64[ns]"
+        index = set_index_dtypes(index, dtypes)
 
     return index
 

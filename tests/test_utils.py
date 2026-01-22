@@ -1093,6 +1093,15 @@ def test_intersect(objs, expected):
         )
 
 
+def test_intersect_timedelta_dtype():
+    """Ensure intersect always returns timedelta64[ns] for segmented indices."""
+    idx1 = audformat.segmented_index(["f1", "f2"], [0.001, 0.002], [0.003, 0.004])
+    idx2 = audformat.segmented_index(["f1", "f3"], [0.001, 0.005], [0.003, 0.006])
+    result = audformat.utils.intersect([idx1, idx2])
+    assert result.get_level_values("start").dtype == "timedelta64[ns]"
+    assert result.get_level_values("end").dtype == "timedelta64[ns]"
+
+
 @pytest.mark.parametrize(
     "objs, error_msg",
     [
