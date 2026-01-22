@@ -1533,7 +1533,7 @@ def set_index_dtypes(
                     if pd.api.types.is_timedelta64_dtype(dtype):
                         # avoid: TypeError: Cannot cast DatetimeArray
                         # to dtype timedelta64[ns]
-                        df[level] = pd.to_timedelta(list(df[level]))
+                        df[level] = pd.to_timedelta(list(df[level])).astype(dtype)
                     else:
                         df[level] = df[level].astype(dtype)
             index = pd.MultiIndex.from_frame(df)
@@ -1978,11 +1978,31 @@ def union(
     if max_num_seg > UNION_MAX_INDEX_LEN_THRES:
         df = pd.concat([o.to_frame() for o in objs])
         index = df.index
+        # Starting with pandas 3.0.0,
+        # the default precision of timedelta is seconds.
+        # To avoid precision loss when combining indices
+        # with different timedelta precisions,
+        # we always use nanoseconds for timedelta dtypes.
+        if isinstance(index, pd.MultiIndex):
+            dtypes = {}
+            for name, dtype in zip(index.names, index.dtypes):
+                if pd.api.types.is_timedelta64_dtype(dtype):
+                    dtypes[name] = "timedelta64[ns]"
+            if dtypes:
+                index = set_index_dtypes(index, dtypes)
 
     elif isinstance(objs[0], pd.MultiIndex):
         names = objs[0].names
         num_levels = len(names)
         dtypes = {name: dtype for name, dtype in zip(names, objs[0].dtypes)}
+        # Starting with pandas 3.0.0,
+        # the default precision of timedelta is seconds.
+        # To avoid precision loss when combining indices
+        # with different timedelta precisions,
+        # we always use nanoseconds for timedelta dtypes.
+        for name, dtype in dtypes.items():
+            if pd.api.types.is_timedelta64_dtype(dtype):
+                dtypes[name] = "timedelta64[ns]"
         values = [[] for _ in range(num_levels)]
 
         for obj in objs:
@@ -1997,13 +2017,21 @@ def union(
 
     else:
         name = objs[0].name
+        dtype = objs[0].dtype
+        # Starting with pandas 3.0.0,
+        # the default precision of timedelta is seconds.
+        # To avoid precision loss when combining indices
+        # with different timedelta precisions,
+        # we always use nanoseconds for timedelta dtypes.
+        if pd.api.types.is_timedelta64_dtype(dtype):
+            dtype = "timedelta64[ns]"
         values = []
 
         for obj in objs:
             values.extend(obj.to_list())
 
         index = pd.Index(values, name=name)
-        index = set_index_dtypes(index, objs[0].dtype)
+        index = set_index_dtypes(index, dtype)
 
     index = index.drop_duplicates()
 
