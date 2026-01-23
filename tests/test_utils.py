@@ -1913,7 +1913,7 @@ def test_replace_file_extension(index, extension, pattern, expected_index):
     "index, dtypes, expected",
     [
         (
-            pd.Index([]),
+            pd.Index([], dtype="object"),
             "string",
             pd.Index([], dtype="string"),
         ),
@@ -1923,7 +1923,7 @@ def test_replace_file_extension(index, extension, pattern, expected_index):
             pd.Index([]),
         ),
         (
-            pd.Index(["a", "b"]),
+            pd.Index(["a", "b"], dtype="object"),
             "string",
             pd.Index(["a", "b"], dtype="string"),
         ),
@@ -1933,7 +1933,7 @@ def test_replace_file_extension(index, extension, pattern, expected_index):
             pd.Index(["a", "b"], dtype="string"),
         ),
         (
-            pd.Index(["a", "b"], name="idx"),
+            pd.Index(["a", "b"], name="idx", dtype="object"),
             {"idx": "string"},
             pd.Index(["a", "b"], name="idx", dtype="string"),
         ),
@@ -2034,7 +2034,7 @@ def test_replace_file_extension(index, extension, pattern, expected_index):
             pd.MultiIndex.from_arrays(
                 [
                     [1, 2],
-                    pd.to_timedelta([0, 1], unit="s"),
+                    pd.to_timedelta([0, 1], unit="s").astype("timedelta64[ns]"),
                 ],
                 names=["idx", "time"],
             ),
@@ -2054,7 +2054,7 @@ def test_replace_file_extension(index, extension, pattern, expected_index):
             pd.MultiIndex.from_arrays(
                 [
                     [1, 2],
-                    [pd.NaT, pd.NaT],
+                    pd.to_datetime([pd.NaT, pd.NaT]).astype("datetime64[ns]"),
                 ],
                 names=["idx", "date"],
             ),
@@ -2069,11 +2069,18 @@ def test_replace_file_extension(index, extension, pattern, expected_index):
                 names=["file", "start", "end"],
             ),
             {
-                "file": "string",
+                "file": "str",
                 "start": "timedelta64[ns]",
                 "end": "timedelta64[ns]",
             },
-            audformat.segmented_index(["f1", "f2"], [0, 1]),
+            pd.MultiIndex.from_arrays(
+                [
+                    ["f1", "f2"],
+                    pd.to_timedelta([0, int(1e9)], unit="ns").astype("timedelta64[ns]"),
+                    pd.to_timedelta([pd.NaT, pd.NaT]).astype("timedelta64[ns]"),
+                ],
+                names=["file", "start", "end"],
+            ),
         ),
         pytest.param(
             pd.MultiIndex.from_arrays(
@@ -2108,39 +2115,6 @@ def test_replace_file_extension(index, extension, pattern, expected_index):
             None,
             marks=pytest.mark.xfail(raises=ValueError),
         ),
-        # Ensure timedelta64[ns] is preserved when setting dtype,
-        # covering https://github.com/audeering/audformat/issues/490
-        (
-            pd.MultiIndex.from_arrays(
-                [
-                    ["f1", "f2"],
-                    [0, int(1e9)],
-                    [pd.NaT, pd.NaT],
-                ],
-                names=[
-                    define.IndexField.FILE,
-                    define.IndexField.START,
-                    define.IndexField.END,
-                ],
-            ),
-            {
-                define.IndexField.START: "timedelta64[ns]",
-            },
-            pd.MultiIndex.from_arrays(
-                [
-                    ["f1", "f2"],
-                    pd.to_timedelta([0, 1], unit="s").astype("timedelta64[ns]"),
-                    [pd.NaT, pd.NaT],
-                ],
-                names=[
-                    define.IndexField.FILE,
-                    define.IndexField.START,
-                    define.IndexField.END,
-                ],
-            ),
-        ),
-        # Ensure timedelta64[ns] is preserved when setting dtype on empty levels,
-        # covering https://github.com/audeering/audformat/issues/490
         (
             pd.MultiIndex.from_arrays(
                 [
@@ -2158,7 +2132,18 @@ def test_replace_file_extension(index, extension, pattern, expected_index):
                 define.IndexField.START: "timedelta64[ns]",
                 define.IndexField.END: "timedelta64[ns]",
             },
-            audformat.segmented_index(),
+            pd.MultiIndex.from_arrays(
+                [
+                    pd.Index([], dtype="string"),
+                    pd.Index([], dtype="timedelta64[ns]"),
+                    pd.Index([], dtype="timedelta64[ns]"),
+                ],
+                names=[
+                    define.IndexField.FILE,
+                    define.IndexField.START,
+                    define.IndexField.END,
+                ],
+            ),
         ),
     ],
 )
