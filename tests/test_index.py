@@ -263,6 +263,26 @@ def test_create_segmented_index(files, starts, ends):
 
 
 @pytest.mark.parametrize(
+    "files, starts, ends",
+    [
+        # normal case with sub-second values
+        (["f1.wav"], [0.001], [0.002]),
+        # NaT in ends
+        (["f1.wav"], [0], [pd.NaT]),
+        # NaT in starts and ends
+        (["f1.wav"], [pd.NaT], [pd.NaT]),
+        # empty index
+        (None, None, None),
+    ],
+)
+def test_segmented_index_timedelta_dtype(files, starts, ends):
+    """Ensure segmented_index always returns timedelta64[ns]."""
+    index = audformat.segmented_index(files, starts=starts, ends=ends)
+    assert index.get_level_values("start").dtype == "timedelta64[ns]"
+    assert index.get_level_values("end").dtype == "timedelta64[ns]"
+
+
+@pytest.mark.parametrize(
     "index, index_type",
     [
         (pytest.DB["files"].index, audformat.define.IndexType.FILEWISE),
