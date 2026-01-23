@@ -1533,7 +1533,7 @@ def set_index_dtypes(
                     if pd.api.types.is_timedelta64_dtype(dtype):
                         # avoid: TypeError: Cannot cast DatetimeArray
                         # to dtype timedelta64[ns]
-                        df[level] = pd.to_timedelta(list(df[level]))
+                        df[level] = pd.to_timedelta(list(df[level])).astype(dtype)
                     else:
                         df[level] = df[level].astype(dtype)
             index = pd.MultiIndex.from_frame(df)
