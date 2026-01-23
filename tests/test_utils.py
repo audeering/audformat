@@ -1954,10 +1954,6 @@ def test_replace_file_extension(index, extension, pattern, expected_index):
                 names=["idx1", "idx2"],
             ),
         ),
-        # NOTE: in some of the MultiIndex tests we use "str"
-        # instead of "string" to make the tests compatible
-        # between pandas 2.0 and 3.0, see
-        # https://pandas.pydata.org/docs/dev/user_guide/migration-3-strings.html#hardcoded-use-of-object-dtype
         (
             pd.MultiIndex.from_arrays(
                 [
@@ -2073,18 +2069,11 @@ def test_replace_file_extension(index, extension, pattern, expected_index):
                 names=["file", "start", "end"],
             ),
             {
-                "file": "str",
+                "file": "string",
                 "start": "timedelta64[ns]",
                 "end": "timedelta64[ns]",
             },
-            pd.MultiIndex.from_arrays(
-                [
-                    ["f1", "f2"],
-                    pd.to_timedelta([0, int(1e9)], unit="ns").astype("timedelta64[ns]"),
-                    pd.to_timedelta([pd.NaT, pd.NaT]).astype("timedelta64[ns]"),
-                ],
-                names=["file", "start", "end"],
-            ),
+            audformat.segmented_index(["f1", "f2"], [0, 1]),
         ),
         pytest.param(
             pd.MultiIndex.from_arrays(
