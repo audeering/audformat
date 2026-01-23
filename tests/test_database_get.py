@@ -511,7 +511,7 @@ def wrong_scheme_labels_db(tmpdir):
                     ]
                 ),
                 dtype=pd.CategoricalDtype(
-                    ["w1", "w2", "w3"],
+                    pd.Index(["w1", "w2", "w3"], dtype="object"),
                     ordered=False,
                 ),
             ),
@@ -603,7 +603,7 @@ def wrong_scheme_labels_db(tmpdir):
                             [0.2, 0.2, 0.5, 0.7],
                         ),
                         dtype=pd.CategoricalDtype(
-                            ["s1", "s2", "s3"],
+                            pd.Index(["s1", "s2", "s3"], dtype="str"),
                             ordered=False,
                         ),
                         name="speaker",
@@ -849,7 +849,7 @@ def wrong_scheme_labels_db(tmpdir):
                 },
                 index=audformat.filewise_index(["f1.wav", "f2.wav"]),
                 dtype=pd.CategoricalDtype(
-                    ["female", "male"],
+                    pd.Index(["female", "male"], dtype="str"),
                     ordered=False,
                 ),
             ),
