@@ -751,7 +751,8 @@ def hash(
                 schema_fields.append((col, None))
         # Build schema for columns that need explicit types
         if len(df) == 0 and any(f[1] is not None for f in schema_fields):
-            # For empty DataFrames, specify schema explicitly
+            # For empty DataFrames with index of type string/object,
+            # specify schema explicitly
             schema = pa.schema(
                 [
                     (
