@@ -729,8 +729,8 @@ def hash(
         # Normalize string columns to object dtype for consistent hashing
         # (pandas 3.0 uses "string" dtype which maps to pyarrow "large_string",
         # while "object" dtype maps to pyarrow "string")
-        ## For empty DataFrames, we also need to specify an explicit schema
-        ## because pyarrow infers "null" type for empty object columns
+        # For empty DataFrames, we also need to specify an explicit schema
+        # because pyarrow infers "null" type for empty object columns
         schema_fields = []
         for col in df.columns:
             if pd.api.types.is_string_dtype(df[col].dtype):
