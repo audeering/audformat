@@ -1913,7 +1913,7 @@ def test_replace_file_extension(index, extension, pattern, expected_index):
     "index, dtypes, expected",
     [
         (
-            pd.Index([]),
+            pd.Index([], dtype="object"),
             "string",
             pd.Index([], dtype="string"),
         ),
@@ -1923,7 +1923,7 @@ def test_replace_file_extension(index, extension, pattern, expected_index):
             pd.Index([]),
         ),
         (
-            pd.Index(["a", "b"]),
+            pd.Index(["a", "b"], dtype="object"),
             "string",
             pd.Index(["a", "b"], dtype="string"),
         ),
@@ -1933,7 +1933,7 @@ def test_replace_file_extension(index, extension, pattern, expected_index):
             pd.Index(["a", "b"], dtype="string"),
         ),
         (
-            pd.Index(["a", "b"], name="idx"),
+            pd.Index(["a", "b"], name="idx", dtype="object"),
             {"idx": "string"},
             pd.Index(["a", "b"], name="idx", dtype="string"),
         ),
@@ -2034,7 +2034,7 @@ def test_replace_file_extension(index, extension, pattern, expected_index):
             pd.MultiIndex.from_arrays(
                 [
                     [1, 2],
-                    pd.to_timedelta([0, 1], unit="s"),
+                    pd.to_timedelta([0, 1], unit="s").astype("timedelta64[ns]"),
                 ],
                 names=["idx", "time"],
             ),
@@ -2054,7 +2054,7 @@ def test_replace_file_extension(index, extension, pattern, expected_index):
             pd.MultiIndex.from_arrays(
                 [
                     [1, 2],
-                    [pd.NaT, pd.NaT],
+                    pd.to_datetime([pd.NaT, pd.NaT]).astype("datetime64[ns]"),
                 ],
                 names=["idx", "date"],
             ),
@@ -2107,6 +2107,36 @@ def test_replace_file_extension(index, extension, pattern, expected_index):
             {"bad": "string"},
             None,
             marks=pytest.mark.xfail(raises=ValueError),
+        ),
+        (
+            pd.MultiIndex.from_arrays(
+                [
+                    pd.Index([], dtype="string"),
+                    pd.Index([], dtype="int64"),
+                    pd.Index([], dtype="object"),
+                ],
+                names=[
+                    define.IndexField.FILE,
+                    define.IndexField.START,
+                    define.IndexField.END,
+                ],
+            ),
+            {
+                define.IndexField.START: "timedelta64[ns]",
+                define.IndexField.END: "timedelta64[ns]",
+            },
+            pd.MultiIndex.from_arrays(
+                [
+                    pd.Index([], dtype="string"),
+                    pd.Index([], dtype="timedelta64[ns]"),
+                    pd.Index([], dtype="timedelta64[ns]"),
+                ],
+                names=[
+                    define.IndexField.FILE,
+                    define.IndexField.START,
+                    define.IndexField.END,
+                ],
+            ),
         ),
     ],
 )
