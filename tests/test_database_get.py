@@ -603,7 +603,7 @@ def wrong_scheme_labels_db(tmpdir):
                             [0.2, 0.2, 0.5, 0.7],
                         ),
                         dtype=pd.CategoricalDtype(
-                            pd.Index(["s1", "s2", "s3"], dtype="str"),
+                            pd.Index(["s1", "s2", "s3"], dtype="object"),
                             ordered=False,
                         ),
                         name="speaker",
@@ -1253,7 +1253,7 @@ def test_database_get_aggregate_and_modify_function(
                         ["s1"],
                         index=audformat.filewise_index(["f1.wav"]),
                         dtype=pd.CategoricalDtype(
-                            ["s1", "s2", "s3"],
+                            pd.Index(["s1", "s2", "s3"], dtype="object"),
                             ordered=False,
                         ),
                         name="speaker",
@@ -1825,3 +1825,70 @@ def test_database_get_errors(
             tables=tables,
             original_column_names=original_column_names,
         )
+
+
+def test_get_mixed_str_and_object_categorical_dtype(tmpdir):
+    """Test that mixing 'str' and 'object' categorical dtypes normalizes to 'object'.
+
+    This is a regression test for pandas 3.0 compatibility where categorical columns
+    may have 'str' dtype for their categories instead of 'object'.
+    See https://github.com/audeering/audformat/issues/XXX
+    """
+    db = audformat.Database("test")
+
+    # Create scheme with string labels
+    db.schemes["label"] = audformat.Scheme(
+        "str",
+        labels=["a", "b", "c"],
+    )
+
+    # Create two tables with the same scheme
+    index1 = audformat.filewise_index(["f1.wav", "f2.wav"])
+    db["table1"] = audformat.Table(index1)
+    db["table1"]["label"] = audformat.Column(scheme_id="label")
+    db["table1"]["label"].set(["a", "b"])
+
+    index2 = audformat.filewise_index(["f3.wav", "f4.wav"])
+    db["table2"] = audformat.Table(index2)
+    db["table2"]["label"] = audformat.Column(scheme_id="label")
+    db["table2"]["label"].set(["b", "c"])
+
+    # Manually set different category dtypes to simulate pandas 3.0 behavior
+    # where one table might have 'str' categories and another has 'object'
+    df1 = db["table1"].df
+    df2 = db["table2"].df
+
+    # Convert table1's categories to use object dtype explicitly
+    df1["label"] = df1["label"].astype(
+        pd.CategoricalDtype(
+            pd.Index(["a", "b", "c"], dtype="object"),
+            ordered=False,
+        )
+    )
+    db["table1"]._df = df1
+
+    # Keep table2's categories as-is (simulating potential str dtype in pandas 3.0)
+    # or explicitly set to string dtype if available
+    try:
+        df2["label"] = df2["label"].astype(
+            pd.CategoricalDtype(
+                pd.Index(["a", "b", "c"], dtype="string"),
+                ordered=False,
+            )
+        )
+        db["table2"]._df = df2
+    except TypeError:
+        # If string dtype not supported for categories, skip this part
+        pass
+
+    # Get combined data - this should work without errors
+    result = db.get("label")
+
+    # Verify result contains all labels
+    assert list(result["label"]) == ["a", "b", "b", "c"]
+
+    # Verify the resulting categorical has object dtype for categories
+    result_dtype = result["label"].dtype
+    assert isinstance(result_dtype, pd.CategoricalDtype)
+    # Categories should be normalized to object dtype
+    assert result_dtype.categories.dtype == np.dtype("O")
