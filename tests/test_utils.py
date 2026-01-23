@@ -521,6 +521,26 @@ def test_expand_file_path(tmpdir, index, root, expected):
             "28c5f6feb0682079b127d8ce8debebe9",
         ),
         (
+            pd.Series(
+                ["a", "b"],
+                audformat.filewise_index(["f1", "f2"]),
+                dtype="object",
+            ),
+            True,
+            False,
+            "74280b0163f6ae31438c26459901adfe",
+        ),
+        (
+            pd.Series(
+                ["a", "b"],
+                audformat.filewise_index(["f1", "f2"]),
+                dtype="string",
+            ),
+            True,
+            False,
+            "74280b0163f6ae31438c26459901adfe",
+        ),
+        (
             pd.DataFrame(
                 {"a": [0, 1], "b": [2, 3]},
                 audformat.segmented_index(["f1", "f2"], [0, 0], [1, 1]),
