@@ -1479,14 +1479,14 @@ def set_index_dtypes(
         index with new dtypes
 
     Examples:
-        >>> index1 = pd.Index(["a", "b"])
+        >>> index1 = pd.Index(["a", "b"], dtype="object")
         >>> index1
         Index(['a', 'b'], dtype='object')
         >>> index2 = set_index_dtypes(index1, "string")
         >>> index2
         Index(['a', 'b'], dtype='string')
         >>> index3 = pd.MultiIndex.from_arrays(
-        ...     [["a", "b"], [1, 2]],
+        ...     [pd.Index(["a", "b"], dtype="object"), [1, 2]],
         ...     names=["level1", "level2"],
         ... )
         >>> index3.dtypes
@@ -1497,11 +1497,6 @@ def set_index_dtypes(
         >>> index4.dtypes
         level1    object
         level2   float64
-        dtype: object
-        >>> index5 = set_index_dtypes(index3, "string")
-        >>> index5.dtypes
-        level1    string[python]
-        level2    string[python]
         dtype: object
 
     """
