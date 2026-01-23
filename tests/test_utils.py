@@ -1954,6 +1954,10 @@ def test_replace_file_extension(index, extension, pattern, expected_index):
                 names=["idx1", "idx2"],
             ),
         ),
+        # NOTE: in some of the MultiIndex tests we use "str"
+        # instead of "string" to make the tests compatible
+        # between pandas 2.0 and 3.0, see
+        # https://pandas.pydata.org/docs/dev/user_guide/migration-3-strings.html#hardcoded-use-of-object-dtype
         (
             pd.MultiIndex.from_arrays(
                 [
