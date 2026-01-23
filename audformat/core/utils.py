@@ -741,7 +741,10 @@ def hash(
                 cat_dtype = df[col].dtype.categories.dtype
                 if pd.api.types.is_string_dtype(cat_dtype):
                     new_categories = df[col].dtype.categories.astype("object")
-                    df[col] = df[col].astype(pd.CategoricalDtype(new_categories))
+                    ordered = df[col].dtype.ordered
+                    df[col] = df[col].astype(
+                        pd.CategoricalDtype(new_categories, ordered=ordered)
+                    )
                 schema_fields.append((col, None))
             else:
                 # Let pyarrow infer
