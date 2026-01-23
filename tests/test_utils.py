@@ -698,6 +698,67 @@ def test_expand_file_path(tmpdir, index, root, expected):
                 reason="Changed in pandas 2.2.0",
             ),
         ),
+        # Categorical data
+        (
+            pd.DataFrame(
+                {
+                    "winner": ["w1", "w1", "w2"],
+                },
+                index=audformat.filewise_index(["f1.wav", "f2.wav", "f3.wav"]),
+                dtype=pd.CategoricalDtype(
+                    ["w1", "w2", "w3"],
+                    ordered=False,
+                ),
+            ),
+            True,
+            False,
+            "e845db6fbe98b17f24dd71d3a991094f",
+        ),
+        (
+            pd.DataFrame(
+                {
+                    "winner": ["w1", "w1", "w2"],
+                },
+                index=audformat.filewise_index(["f1.wav", "f2.wav", "f3.wav"]),
+                dtype=pd.CategoricalDtype(
+                    pd.Index(["w1", "w2", "w3"], dtype="object"),
+                    ordered=False,
+                ),
+            ),
+            True,
+            False,
+            "e845db6fbe98b17f24dd71d3a991094f",
+        ),
+        (
+            pd.DataFrame(
+                {
+                    "winner": ["w1", "w1", "w2"],
+                },
+                index=audformat.filewise_index(["f1.wav", "f2.wav", "f3.wav"]),
+                dtype=pd.CategoricalDtype(
+                    pd.Index(["w1", "w2", "w3"], dtype="string"),
+                    ordered=False,
+                ),
+            ),
+            True,
+            False,
+            "e845db6fbe98b17f24dd71d3a991094f",
+        ),
+        (
+            pd.DataFrame(
+                {
+                    "winner": [0, 0, 1],
+                },
+                index=audformat.filewise_index(["f1.wav", "f2.wav", "f3.wav"]),
+                dtype=pd.CategoricalDtype(
+                    [0, 1],
+                    ordered=True,
+                ),
+            ),
+            True,
+            False,
+            "1f6fec46a3c28c5ec3c07ef8f13fb258",
+        ),
     ],
 )
 def test_hash(obj, strict, mutable, expected):

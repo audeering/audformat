@@ -725,8 +725,43 @@ def hash(
             df = obj.to_frame().reset_index()
         else:
             df = obj.reset_index()
-        # Handle column names and dtypes
-        table = pa.Table.from_pandas(df, preserve_index=False)
+
+        # Normalize string columns to object dtype for consistent hashing
+        # (pandas 3.0 uses "string" dtype which maps to pyarrow "large_string",
+        # while "object" dtype maps to pyarrow "string")
+        ## For empty DataFrames, we also need to specify an explicit schema
+        ## because pyarrow infers "null" type for empty object columns
+        schema_fields = []
+        for col in df.columns:
+            if pd.api.types.is_string_dtype(df[col].dtype):
+                df[col] = df[col].astype("object")
+                schema_fields.append((col, pa.string()))
+            elif isinstance(df[col].dtype, pd.CategoricalDtype):
+                # Normalize categorical with string categories to object
+                cat_dtype = df[col].dtype.categories.dtype
+                if pd.api.types.is_string_dtype(cat_dtype):
+                    new_categories = df[col].dtype.categories.astype("object")
+                    df[col] = df[col].astype(pd.CategoricalDtype(new_categories))
+                schema_fields.append((col, None))
+            else:
+                # Let pyarrow infer
+                schema_fields.append((col, None))
+        # Build schema for columns that need explicit types
+        if len(df) == 0 and any(f[1] is not None for f in schema_fields):
+            # For empty DataFrames, specify schema explicitly
+            schema = pa.schema(
+                [
+                    (
+                        name,
+                        typ if typ is not None else pa.from_numpy_dtype(df[name].dtype),
+                    )
+                    for name, typ in schema_fields
+                ]
+            )
+            table = pa.Table.from_pandas(df, preserve_index=False, schema=schema)
+        else:
+            # Handle column names and dtypes
+            table = pa.Table.from_pandas(df, preserve_index=False)
         schema_str = table.schema.to_string(
             # schema.metadata contains pandas related information,
             # and the used pyarrow and pandas version,
@@ -745,7 +780,12 @@ def hash(
                 # for integers across different pandas versions
                 # (since pandas 2.2.x, Int64 is converted to float if it contains <NA>)
                 y = y.astype("float")
-            data_md5.update(bytes(str(y.to_numpy()), "utf-8"))
+            if pd.api.types.is_string_dtype(y.dtype):
+                # Enforce object dtype for string columns
+                # to ensure consistent hashing across Python versions
+                data_md5.update(bytes(str(y.to_numpy(dtype=object)), "utf-8"))
+            else:
+                data_md5.update(bytes(str(y.to_numpy()), "utf-8"))
         md5 = hashlib.md5()
         md5.update(schema_md5.digest())
         md5.update(data_md5.digest())
