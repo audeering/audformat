@@ -780,12 +780,7 @@ def hash(
                 # for integers across different pandas versions
                 # (since pandas 2.2.x, Int64 is converted to float if it contains <NA>)
                 y = y.astype("float")
-            if pd.api.types.is_string_dtype(y.dtype):
-                # Enforce object dtype for string columns
-                # to ensure consistent hashing across Python versions
-                data_md5.update(bytes(str(y.to_numpy(dtype=object)), "utf-8"))
-            else:
-                data_md5.update(bytes(str(y.to_numpy()), "utf-8"))
+            data_md5.update(bytes(str(y.to_numpy()), "utf-8"))
         md5 = hashlib.md5()
         md5.update(schema_md5.digest())
         md5.update(data_md5.digest())
