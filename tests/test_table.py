@@ -1402,9 +1402,21 @@ class TestHash:
             "files",
             "a66a22ee4158e0e5100f1d797155ad81",
         ),
-        (
+        pytest.param(
             "segments",
             "f69eb4a5d19da71e5da00a9b13beb3db",
+            marks=pytest.mark.skipif(
+                pd.__version__ >= "3",
+                reason="pandas >= 3.0 produces different hash for segments",
+            ),
+        ),
+        pytest.param(
+            "segments",
+            "3b0503bb556803deefe82fd21d205e4e",
+            marks=pytest.mark.skipif(
+                pd.__version__ < "3",
+                reason="pandas < 3.0 uses different hash for segments",
+            ),
         ),
         (
             "misc",

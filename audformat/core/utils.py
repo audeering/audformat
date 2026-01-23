@@ -725,8 +725,43 @@ def hash(
             df = obj.to_frame().reset_index()
         else:
             df = obj.reset_index()
-        # Handle column names and dtypes
-        table = pa.Table.from_pandas(df, preserve_index=False)
+        # Normalize string columns to object dtype for consistent hashing
+        # (pandas 3.0 uses "string" dtype which maps to pyarrow "large_string",
+        # while "object" dtype maps to pyarrow "string")
+        # For empty DataFrames, we also need to specify an explicit schema
+        # because pyarrow infers "null" type for empty object columns
+        schema_fields = []
+        for col in df.columns:
+            if pd.api.types.is_string_dtype(df[col].dtype):
+                df[col] = df[col].astype("object")
+                schema_fields.append((col, pa.string()))
+            elif isinstance(df[col].dtype, pd.CategoricalDtype):
+                # Normalize categorical with string categories to object
+                cat_dtype = df[col].dtype.categories.dtype
+                if str(cat_dtype) == "str" or pd.api.types.is_string_dtype(cat_dtype):
+                    new_categories = df[col].dtype.categories.astype("object")
+                    df[col] = df[col].astype(pd.CategoricalDtype(new_categories))
+                schema_fields.append((col, None))
+            elif pd.api.types.is_timedelta64_dtype(df[col].dtype):
+                schema_fields.append((col, pa.duration("ns")))
+            else:
+                schema_fields.append((col, None))  # Let pyarrow infer
+        # Build schema for columns that need explicit types
+        if len(df) == 0 and any(f[1] is not None for f in schema_fields):
+            # For empty DataFrames, specify schema explicitly
+            schema = pa.schema(
+                [
+                    (
+                        name,
+                        typ if typ is not None else pa.from_numpy_dtype(df[name].dtype),
+                    )
+                    for name, typ in schema_fields
+                ]
+            )
+            table = pa.Table.from_pandas(df, preserve_index=False, schema=schema)
+        else:
+            # Handle column names and dtypes
+            table = pa.Table.from_pandas(df, preserve_index=False)
         schema_str = table.schema.to_string(
             # schema.metadata contains pandas related information,
             # and the used pyarrow and pandas version,
@@ -745,7 +780,12 @@ def hash(
                 # for integers across different pandas versions
                 # (since pandas 2.2.x, Int64 is converted to float if it contains <NA>)
                 y = y.astype("float")
-            data_md5.update(bytes(str(y.to_numpy()), "utf-8"))
+            if pd.api.types.is_string_dtype(y.dtype):
+                # Enforce object dtype for string columns
+                # to ensure consistent hashing across Python versions
+                data_md5.update(bytes(str(y.to_numpy(dtype=object)), "utf-8"))
+            else:
+                data_md5.update(bytes(str(y.to_numpy()), "utf-8"))
         md5 = hashlib.md5()
         md5.update(schema_md5.digest())
         md5.update(data_md5.digest())
@@ -941,7 +981,13 @@ def intersect(
     # Ensure we have order of first object
     index = objs[0].intersection(index)
     if isinstance(index, pd.MultiIndex):
-        index = set_index_dtypes(index, objs[0].dtypes.to_dict())
+        dtypes = objs[0].dtypes.to_dict()
+        # Always use timedelta64[ns] for timedelta dtypes
+        # to ensure consistent precision across pandas versions
+        for name, dtype in dtypes.items():
+            if pd.api.types.is_timedelta64_dtype(dtype):
+                dtypes[name] = "timedelta64[ns]"
+        index = set_index_dtypes(index, dtypes)
 
     return index
 
@@ -1030,7 +1076,7 @@ def iter_by_file(
         ('f1', MultiIndex([('f1', '0 days 00:00:00', '0 days 00:00:02'),
             ('f1', '0 days 00:00:01', '0 days 00:00:03')],
            names=['file', 'start', 'end']))
-        >>> obj = pd.Series(["a", "b", "b"], index)
+        >>> obj = pd.Series(["a", "b", "b"], index, dtype="object")
         >>> next(iter_by_file(obj))
         ('f1', file  start            end
         f1    0 days 00:00:00  0 days 00:00:02    a
@@ -1479,14 +1525,14 @@ def set_index_dtypes(
         index with new dtypes
 
     Examples:
-        >>> index1 = pd.Index(["a", "b"])
+        >>> index1 = pd.Index(["a", "b"], dtype="object")
         >>> index1
         Index(['a', 'b'], dtype='object')
         >>> index2 = set_index_dtypes(index1, "string")
         >>> index2
         Index(['a', 'b'], dtype='string')
         >>> index3 = pd.MultiIndex.from_arrays(
-        ...     [["a", "b"], [1, 2]],
+        ...     [pd.Index(["a", "b"], dtype="object"), [1, 2]],
         ...     names=["level1", "level2"],
         ... )
         >>> index3.dtypes
@@ -1500,8 +1546,8 @@ def set_index_dtypes(
         dtype: object
         >>> index5 = set_index_dtypes(index3, "string")
         >>> index5.dtypes
-        level1    string[python]
-        level2    string[python]
+        level1    string
+        level2    string
         dtype: object
 
     """
@@ -1533,7 +1579,7 @@ def set_index_dtypes(
                     if pd.api.types.is_timedelta64_dtype(dtype):
                         # avoid: TypeError: Cannot cast DatetimeArray
                         # to dtype timedelta64[ns]
-                        df[level] = pd.to_timedelta(list(df[level]))
+                        df[level] = pd.to_timedelta(list(df[level])).astype(dtype)
                     else:
                         df[level] = df[level].astype(dtype)
             index = pd.MultiIndex.from_frame(df)
@@ -1827,9 +1873,15 @@ def to_segmented_index(
             # Replace all NaT entries in end
             # by the collected duration values.
             # We have to convert ends to a series first
-            # in order to preserve precision of duration values
+            # in order to preserve precision of duration values.
+            # Starting with pandas 3.0.0,
+            # the default precision of timedelta is seconds,
+            # so we need to convert to nanoseconds
+            # to ensure sub-second precision is preserved
+            # when assigning duration values.
 
             ends = ends.to_series()
+            ends = ends.astype("timedelta64[ns]")
             ends.iloc[idx_nat] = durs
 
             # Create a new index
@@ -1972,11 +2024,31 @@ def union(
     if max_num_seg > UNION_MAX_INDEX_LEN_THRES:
         df = pd.concat([o.to_frame() for o in objs])
         index = df.index
+        # Starting with pandas 3.0.0,
+        # the default precision of timedelta is seconds.
+        # To avoid precision loss when combining indices
+        # with different timedelta precisions,
+        # we always use nanoseconds for timedelta dtypes.
+        if isinstance(index, pd.MultiIndex):
+            dtypes = {}
+            for name, dtype in zip(index.names, index.dtypes):
+                if pd.api.types.is_timedelta64_dtype(dtype):
+                    dtypes[name] = "timedelta64[ns]"
+            if dtypes:
+                index = set_index_dtypes(index, dtypes)
 
     elif isinstance(objs[0], pd.MultiIndex):
         names = objs[0].names
         num_levels = len(names)
         dtypes = {name: dtype for name, dtype in zip(names, objs[0].dtypes)}
+        # Starting with pandas 3.0.0,
+        # the default precision of timedelta is seconds.
+        # To avoid precision loss when combining indices
+        # with different timedelta precisions,
+        # we always use nanoseconds for timedelta dtypes.
+        for name, dtype in dtypes.items():
+            if pd.api.types.is_timedelta64_dtype(dtype):
+                dtypes[name] = "timedelta64[ns]"
         values = [[] for _ in range(num_levels)]
 
         for obj in objs:
@@ -1991,13 +2063,21 @@ def union(
 
     else:
         name = objs[0].name
+        dtype = objs[0].dtype
+        # Starting with pandas 3.0.0,
+        # the default precision of timedelta is seconds.
+        # To avoid precision loss when combining indices
+        # with different timedelta precisions,
+        # we always use nanoseconds for timedelta dtypes.
+        if pd.api.types.is_timedelta64_dtype(dtype):
+            dtype = "timedelta64[ns]"
         values = []
 
         for obj in objs:
             values.extend(obj.to_list())
 
         index = pd.Index(values, name=name)
-        index = set_index_dtypes(index, objs[0].dtype)
+        index = set_index_dtypes(index, dtype)
 
     index = index.drop_duplicates()
 

@@ -1093,6 +1093,15 @@ def test_intersect(objs, expected):
         )
 
 
+def test_intersect_timedelta_dtype():
+    """Ensure intersect always returns timedelta64[ns] for segmented indices."""
+    idx1 = audformat.segmented_index(["f1", "f2"], [0.001, 0.002], [0.003, 0.004])
+    idx2 = audformat.segmented_index(["f1", "f3"], [0.001, 0.005], [0.003, 0.006])
+    result = audformat.utils.intersect([idx1, idx2])
+    assert result.get_level_values("start").dtype == "timedelta64[ns]"
+    assert result.get_level_values("end").dtype == "timedelta64[ns]"
+
+
 @pytest.mark.parametrize(
     "objs, error_msg",
     [
@@ -2344,6 +2353,52 @@ def test_to_segmented_index(obj, allow_nat, files_duration, root, expected):
             assert file in files_duration
 
 
+@pytest.mark.filterwarnings("error::FutureWarning")
+def test_to_segmented_index_timedelta_precision(tmpdir):
+    """Test to_segmented_index with sub-second precision durations.
+
+    In pandas 3.0.0, the default timedelta precision changed from
+    nanoseconds to seconds. This test ensures that high-precision
+    durations can be assigned to an index with second precision
+    without triggering a FutureWarning about incompatible dtypes.
+
+    """
+    # Create index with timedelta64[s] precision (simulating pandas 3.0.0 behavior)
+    # by explicitly setting the dtype
+    files = pd.Index(["f1.wav", "f2.wav"], name="file", dtype="string")
+    starts = pd.to_timedelta([0, 0], unit="s").astype("timedelta64[s]")
+    ends = pd.to_timedelta([pd.NaT, pd.NaT]).astype("timedelta64[s]")
+    index = pd.MultiIndex.from_arrays(
+        [files, starts, ends],
+        names=["file", "start", "end"],
+    )
+
+    # Verify the index has second precision
+    assert index.get_level_values("end").dtype == "timedelta64[s]"
+
+    # Create sub-second precision durations
+    files_duration = {
+        "f1.wav": pd.to_timedelta(1.898250, unit="s"),
+        "f2.wav": pd.to_timedelta(1.611250, unit="s"),
+    }
+
+    # This should work without raising TypeError or FutureWarning
+    result = audformat.utils.to_segmented_index(
+        index,
+        allow_nat=False,
+        files_duration=files_duration,
+    )
+
+    # Verify the result contains the correct durations
+    expected_ends = [
+        pd.to_timedelta(1.898250, unit="s"),
+        pd.to_timedelta(1.611250, unit="s"),
+    ]
+    result_ends = result.get_level_values("end")
+    for i, expected in enumerate(expected_ends):
+        assert result_ends[i] == expected, f"End at index {i} doesn't match"
+
+
 @pytest.mark.parametrize(
     "obj, expected_file_names",
     [
@@ -2720,6 +2775,25 @@ def test_to_filewise_index(tmpdir, obj, expected_file_names):
                     names=["idx1", "idx2"],
                 ),
                 {"idx2": "Int64"},
+            ),
+        ),
+        # single-level timedelta index
+        # (covers timedelta precision fix for pandas 3.0.0)
+        (
+            [
+                pd.Index(
+                    pd.to_timedelta([0, 1], unit="s"),
+                    name="time",
+                ),
+                pd.Index(
+                    pd.to_timedelta([1.5, 2.5], unit="s"),
+                    name="time",
+                ),
+            ],
+            pd.Index(
+                pd.to_timedelta([0, 1, 1.5, 2.5], unit="s"),
+                dtype="timedelta64[ns]",
+                name="time",
             ),
         ),
         pytest.param(
