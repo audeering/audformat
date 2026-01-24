@@ -31,6 +31,7 @@ Create an index with the levels ``"file"`` and ``"other"``:
         ],
         names=["file", "other"],
     )
+    index = audformat.utils.set_index_dtypes(index, "object")
 
 >>> index
 MultiIndex([('f1', 'f2'),

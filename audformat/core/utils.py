@@ -1069,7 +1069,7 @@ def iter_by_file(
         ('f1', MultiIndex([('f1', '0 days 00:00:00', '0 days 00:00:02'),
             ('f1', '0 days 00:00:01', '0 days 00:00:03')],
            names=['file', 'start', 'end']))
-        >>> obj = pd.Series(["a", "b", "b"], index)
+        >>> obj = pd.Series(["a", "b", "b"], index, dtype="object")
         >>> next(iter_by_file(obj))
         ('f1', file  start            end
         f1    0 days 00:00:00  0 days 00:00:02    a
