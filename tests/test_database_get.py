@@ -1828,11 +1828,7 @@ def test_database_get_errors(
 
 
 def test_get_mixed_str_and_object_categorical_dtype(tmpdir):
-    """Test that mixing 'str' and 'object' categorical dtypes normalizes to 'object'.
-
-    This is a regression test for pandas 3.0 compatibility where categorical columns
-    may have 'str' dtype for their categories instead of 'object'.
-    """
+    """Test that mixing 'str' and 'object' categorical dtypes normalizes to 'object'."""
     db = audformat.Database("test")
 
     # Create scheme with string labels
@@ -1852,12 +1848,10 @@ def test_get_mixed_str_and_object_categorical_dtype(tmpdir):
     db["table2"]["label"] = audformat.Column(scheme_id="label")
     db["table2"]["label"].set(["b", "c"])
 
-    # Manually set different category dtypes to simulate pandas 3.0 behavior
-    # where one table might have 'str' categories and another has 'object'
+    # Manually set different category dtypes (object + string)
+    # (even if this might not happen in reality)
     df1 = db["table1"].df
     df2 = db["table2"].df
-
-    # Convert table1's categories to use object dtype explicitly
     df1["label"] = df1["label"].astype(
         pd.CategoricalDtype(
             pd.Index(["a", "b", "c"], dtype="object"),
@@ -1865,20 +1859,13 @@ def test_get_mixed_str_and_object_categorical_dtype(tmpdir):
         )
     )
     db["table1"]._df = df1
-
-    # Keep table2's categories as-is (simulating potential str dtype in pandas 3.0)
-    # or explicitly set to string dtype if available
-    try:
-        df2["label"] = df2["label"].astype(
-            pd.CategoricalDtype(
-                pd.Index(["a", "b", "c"], dtype="string"),
-                ordered=False,
-            )
+    df2["label"] = df2["label"].astype(
+        pd.CategoricalDtype(
+            pd.Index(["a", "b", "c"], dtype="string"),
+            ordered=False,
         )
-        db["table2"]._df = df2
-    except TypeError:
-        # If string dtype not supported for categories, skip this part
-        pass
+    )
+    db["table2"]._df = df2
 
     # Get combined data - this should work without errors
     result = db.get("label")
