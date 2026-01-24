@@ -869,8 +869,6 @@ class Database(HeaderBase):
             # Normalize all string-like categorical dtypes to "object" for consistency
             # (pandas 3.0 may infer "str" or StringDtype for string categories)
             for n, y in enumerate(ys):
-                if not isinstance(y.dtype, pd.CategoricalDtype):
-                    continue
                 cat_dtype = y.dtype.categories.dtype
                 if _is_string_like_dtype(cat_dtype):
                     new_categories = y.dtype.categories.astype("object")
