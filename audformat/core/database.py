@@ -42,10 +42,7 @@ from audformat.core.table import Table
 
 
 def _is_string_like_dtype(dtype) -> bool:
-    """Check if dtype is a string-like type that should be normalized to object.
-
-    This handles pandas 3.0 compatibility where categorical columns may have
-    'str' dtype for their categories instead of 'object'.
+    """Check if dtype is a string-like dtype.
 
     Args:
         dtype: A pandas/numpy dtype to check.
@@ -56,15 +53,7 @@ def _is_string_like_dtype(dtype) -> bool:
 
     """
     # Check for pandas StringDtype (e.g., "string", "string[python]", "string[pyarrow]")
-    if isinstance(dtype, pd.StringDtype):
-        return True
-    # Check for numpy str dtype (pandas 3.0 may use this for categorical categories)
-    if hasattr(dtype, "kind") and dtype.kind in ("U", "O"):
-        # 'U' is unicode string, 'O' is object (often used for strings)
-        return False  # These don't need normalization
-    # Use pandas API for comprehensive string dtype check
-    # This catches 'str' dtype introduced in pandas 3.0
-    if pd.api.types.is_string_dtype(dtype) and not pd.api.types.is_object_dtype(dtype):
+    if isinstance(dtype, pd.StringDtype) or pd.api.types.is_string_dtype(dtype):
         return True
     return False
 
