@@ -1832,7 +1832,6 @@ def test_get_mixed_str_and_object_categorical_dtype(tmpdir):
 
     This is a regression test for pandas 3.0 compatibility where categorical columns
     may have 'str' dtype for their categories instead of 'object'.
-    See https://github.com/audeering/audformat/issues/XXX
     """
     db = audformat.Database("test")
 
