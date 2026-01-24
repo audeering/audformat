@@ -100,12 +100,12 @@ def assert_index(
                 "Index not conform to audformat. "
                 "Level 'file' must contain values of type 'string'."
             )
-        if not pd.api.types.is_timedelta64_dtype(obj.levels[1].dtype):
+        if not pd.api.types.is_timedelta64_ns_dtype(obj.levels[1].dtype):
             raise ValueError(
                 "Index not conform to audformat. "
                 "Level 'start' must contain values of type 'timedelta64[ns]'."
             )
-        if not pd.api.types.is_timedelta64_dtype(obj.levels[2].dtype):
+        if not pd.api.types.is_timedelta64_ns_dtype(obj.levels[2].dtype):
             raise ValueError(
                 "Index not conform to audformat. "
                 "Level 'end' must contain values of type 'timedelta64[ns]'."
