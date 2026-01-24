@@ -7,6 +7,7 @@ import itertools
 import os
 import shutil
 
+import numpy as np
 import oyaml as yaml
 
 
@@ -38,6 +39,23 @@ from audformat.core.scheme import Scheme
 from audformat.core.split import Split
 from audformat.core.table import MiscTable
 from audformat.core.table import Table
+
+
+def _is_string_like_dtype(dtype) -> bool:
+    """Check if dtype is a string-like dtype.
+
+    Args:
+        dtype: A pandas/numpy dtype to check.
+
+    Returns:
+        True if dtype is string-like (str, StringDtype, object with string data),
+        False otherwise.
+
+    """
+    # Check for pandas StringDtype (e.g., "string", "string[python]", "string[pyarrow]")
+    if isinstance(dtype, pd.StringDtype) or pd.api.types.is_string_dtype(dtype):
+        return True
+    return False
 
 
 class Database(HeaderBase):
@@ -696,12 +714,17 @@ class Database(HeaderBase):
                 ys.append(y)
 
         def dtypes_of_categories(objs):
-            dtypes = [
-                obj.dtype.categories.dtype
-                for obj in objs
-                if isinstance(obj.dtype, pd.CategoricalDtype)
-            ]
-            return sorted(list(set(dtypes)))
+            dtypes = []
+            for obj in objs:
+                if isinstance(obj.dtype, pd.CategoricalDtype):
+                    dtype = obj.dtype.categories.dtype
+                    # Normalize string-like dtypes to object for consistency
+                    # (pandas 3.0 may use 'str' or StringDtype for categories)
+                    if _is_string_like_dtype(dtype):
+                        dtype = np.dtype("O")
+                    dtypes.append(dtype)
+            # Deduplicate and sort for consistent ordering
+            return sorted(list(set(dtypes)), key=str)
 
         def empty_frame(name):
             return pd.DataFrame(
@@ -832,6 +855,13 @@ class Database(HeaderBase):
                     ys[n] = y.astype(
                         pd.CategoricalDtype(y.array.dropna().unique().astype(dtype))
                     )
+            # Normalize all string-like categorical dtypes to "object" for consistency
+            # (pandas 3.0 may infer "str" or StringDtype for string categories)
+            for n, y in enumerate(ys):
+                cat_dtype = y.dtype.categories.dtype
+                if _is_string_like_dtype(cat_dtype):
+                    new_categories = y.dtype.categories.astype("object")
+                    ys[n] = y.astype(pd.CategoricalDtype(new_categories))
             # Find union of categorical data
             data = [y.array for y in ys]
             try:
