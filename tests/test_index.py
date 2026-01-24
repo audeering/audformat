@@ -103,6 +103,28 @@ def to_array(value):
                 [
                     ["f1", "f2"],
                     pd.to_timedelta([0.0, 1.0], unit="s").astype("timedelta64[s]"),
+                    pd.to_timedelta([1.0, 2.0], unit="s").astype("timedelta64[ns]"),
+                ],
+                names=["file", "start", "end"],
+            ),
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
+        pytest.param(  # invalid timedelta unit
+            pd.MultiIndex.from_arrays(
+                [
+                    ["f1", "f2"],
+                    pd.to_timedelta([0.0, 1.0], unit="s").astype("timedelta64[ns]"),
+                    pd.to_timedelta([1.0, 2.0], unit="s").astype("timedelta64[s]"),
+                ],
+                names=["file", "start", "end"],
+            ),
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
+        pytest.param(  # invalid timedelta unit
+            pd.MultiIndex.from_arrays(
+                [
+                    ["f1", "f2"],
+                    pd.to_timedelta([0.0, 1.0], unit="s").astype("timedelta64[s]"),
                     pd.to_timedelta([1.0, 2.0], unit="s").astype("timedelta64[s]"),
                 ],
                 names=["file", "start", "end"],
