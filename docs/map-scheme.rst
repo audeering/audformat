@@ -91,7 +91,7 @@ audio/003.wav    spk1
 audio/004.wav    spk1
 audio/005.wav    spk3
 Name: speaker, dtype: category
-Categories (3, object): ['spk1', 'spk2', 'spk3']
+Categories (3, ...): ['spk1', 'spk2', 'spk3']
 
 If we are interested in the age of the speakers, we can do:
 
