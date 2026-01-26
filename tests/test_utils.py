@@ -3,6 +3,7 @@ import os
 import re
 
 import numpy as np
+from packaging import version
 import pandas as pd
 import pytest
 
@@ -1048,19 +1049,19 @@ def test_index_has_overlap(obj, expected):
         (
             [
                 pd.MultiIndex.from_arrays(
-                    [[0, 1], ["a", "b"]],
+                    [
+                        [0, 1],
+                        pd.Index(["a", "b"], dtype="object"),
+                    ],
                     names=["idx1", "idx2"],
                 ),
             ],
-            audformat.utils.set_index_dtypes(
-                pd.MultiIndex.from_arrays(
-                    [[], []],
-                    names=["idx1", "idx2"],
-                ),
-                {
-                    "idx1": "Int64",
-                    "idx2": "object",
-                },
+            pd.MultiIndex.from_arrays(
+                [
+                    pd.Index([], dtype="Int64"),
+                    pd.Index([], dtype="object"),
+                ],
+                names=["idx1", "idx2"],
             ),
         ),
         (
@@ -1245,8 +1246,11 @@ def test_intersect(objs, expected):
         ),
         (
             [
-                pd.Index(["a", "b", "c"], name="l"),
-                pd.MultiIndex.from_arrays([[10, 20]], names=["l"]),
+                pd.Index(["a", "b", "c"], name="l", dtype="object"),
+                pd.MultiIndex.from_arrays(
+                    [pd.Index([10, 20], dtype="int")],
+                    names=["l"],
+                ),
             ],
             "Found different level dtypes: ['object', 'int']",
         ),
@@ -1286,7 +1290,7 @@ def test_intersect(objs, expected):
             [
                 pd.MultiIndex.from_arrays(
                     [
-                        ["a", "b", "c"],
+                        pd.Index(["a", "b", "c"], dtype="object"),
                         [1, 2, 3],
                     ],
                     names=["l1", "l2"],
@@ -1294,7 +1298,7 @@ def test_intersect(objs, expected):
                 pd.MultiIndex.from_arrays(
                     [
                         [10],
-                        ["10"],
+                        pd.Index(["10"], dtype="object"),
                     ],
                     names=["l1", "l2"],
                 ),
@@ -1305,15 +1309,15 @@ def test_intersect(objs, expected):
             [
                 pd.MultiIndex.from_arrays(
                     [
-                        ["a", "b", "c"],
+                        pd.Index(["a", "b", "c"], dtype="object"),
                         [1, 2, 3],
                     ],
                     names=["l1", "l2"],
                 ),
                 pd.MultiIndex.from_arrays(
                     [
-                        [],
-                        [],
+                        pd.Index([], dtype="object"),
+                        pd.Index([], dtype="object"),
                     ],
                     names=["l1", "l2"],
                 ),
@@ -1923,6 +1927,8 @@ def test_read_csv(csv, result):
     obj = audformat.utils.read_csv(csv, as_dataframe=True)
     if isinstance(result, pd.Index):
         result = pd.DataFrame([], columns=[], index=result)
+        if version.parse(pd.__version__) >= version.parse("3.0.0"):
+            result.columns = result.columns.astype("str")
     elif isinstance(result, pd.Series):
         result = result.to_frame()
     pd.testing.assert_frame_equal(obj, result)
@@ -2143,7 +2149,7 @@ def test_replace_file_extension(index, extension, pattern, expected_index):
         (
             pd.MultiIndex.from_arrays(
                 [
-                    ["f1", "f2"],
+                    pd.Index(["f1", "f2"], dtype="object"),
                     [0, int(1e9)],
                     [pd.NaT, pd.NaT],
                 ],
