@@ -26,9 +26,13 @@ def to_array(value: object) -> list | np.ndarray:
 def to_timedelta(times):
     r"""Convert time value to pd.Timedelta."""
     try:
-        return pd.to_timedelta(times, unit="s").as_unit("ns")
+        result = pd.to_timedelta(times, unit="s")
     except ValueError:  # catches values like '1s'
-        return pd.to_timedelta(times).as_unit("ns")
+        result = pd.to_timedelta(times)
+    if isinstance(result, pd.Timedelta):
+        return result.as_unit("ns")
+    else:
+        return result.astype("timedelta64[ns]")
 
 
 def assert_index(
