@@ -981,7 +981,7 @@ class Base(HeaderBase):
                 and (self.db.schemes[column.scheme_id].dtype == define.DataType.STRING)
                 and df[column_id].dtype == "object"
             ):
-                df[column_id] = df[column_id].astype("string", copy=False)
+                df[column_id] = df[column_id].astype("string")
         # Fix index entries as well
         df.index = _maybe_convert_dtype_to_string(df.index)
 
