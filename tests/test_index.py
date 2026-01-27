@@ -69,8 +69,8 @@ def to_array(value):
             pd.MultiIndex.from_arrays(
                 [
                     [1, 2],
-                    pd.to_timedelta([0.0, 1.0], unit="s"),
-                    pd.to_timedelta([1.0, 2.0], unit="s"),
+                    pd.to_timedelta([0.0, 1.0], unit="s").astype("timedelta64[ns]"),
+                    pd.to_timedelta([1.0, 2.0], unit="s").astype("timedelta64[ns]"),
                 ],
                 names=["file", "start", "end"],
             ),
@@ -81,7 +81,7 @@ def to_array(value):
                 [
                     ["f1", "f2"],
                     [0.0, 1.0],
-                    pd.to_timedelta([1.0, 2.0], unit="s"),
+                    pd.to_timedelta([1.0, 2.0], unit="s").astype("timedelta64[ns]"),
                 ],
                 names=["file", "start", "end"],
             ),
@@ -91,8 +91,41 @@ def to_array(value):
             pd.MultiIndex.from_arrays(
                 [
                     ["f1", "f2"],
-                    pd.to_timedelta([0.0, 1.0], unit="s"),
+                    pd.to_timedelta([0.0, 1.0], unit="s").astype("timedelta64[ns]"),
                     [1.0, 2.0],
+                ],
+                names=["file", "start", "end"],
+            ),
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
+        pytest.param(  # invalid timedelta unit
+            pd.MultiIndex.from_arrays(
+                [
+                    ["f1", "f2"],
+                    pd.to_timedelta([0.0, 1.0], unit="s").astype("timedelta64[s]"),
+                    pd.to_timedelta([1.0, 2.0], unit="s").astype("timedelta64[ns]"),
+                ],
+                names=["file", "start", "end"],
+            ),
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
+        pytest.param(  # invalid timedelta unit
+            pd.MultiIndex.from_arrays(
+                [
+                    ["f1", "f2"],
+                    pd.to_timedelta([0.0, 1.0], unit="s").astype("timedelta64[ns]"),
+                    pd.to_timedelta([1.0, 2.0], unit="s").astype("timedelta64[s]"),
+                ],
+                names=["file", "start", "end"],
+            ),
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
+        pytest.param(  # invalid timedelta unit
+            pd.MultiIndex.from_arrays(
+                [
+                    ["f1", "f2"],
+                    pd.to_timedelta([0.0, 1.0], unit="s").astype("timedelta64[s]"),
+                    pd.to_timedelta([1.0, 2.0], unit="s").astype("timedelta64[s]"),
                 ],
                 names=["file", "start", "end"],
             ),
@@ -260,6 +293,26 @@ def test_create_segmented_index(files, starts, ends):
         assert index.get_level_values(audformat.define.IndexField.END).tolist() == [
             pd.NaT
         ] * len(files)
+
+
+@pytest.mark.parametrize(
+    "files, starts, ends",
+    [
+        # normal case with sub-second values
+        (["f1.wav"], [0.001], [0.002]),
+        # NaT in ends
+        (["f1.wav"], [0], [pd.NaT]),
+        # NaT in starts and ends
+        (["f1.wav"], [pd.NaT], [pd.NaT]),
+        # empty index
+        (None, None, None),
+    ],
+)
+def test_segmented_index_timedelta_dtype(files, starts, ends):
+    """Ensure segmented_index always returns timedelta64[ns]."""
+    index = audformat.segmented_index(files, starts=starts, ends=ends)
+    assert index.get_level_values("start").dtype == "timedelta64[ns]"
+    assert index.get_level_values("end").dtype == "timedelta64[ns]"
 
 
 @pytest.mark.parametrize(

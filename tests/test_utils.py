@@ -3,6 +3,7 @@ import os
 import re
 
 import numpy as np
+from packaging import version
 import pandas as pd
 import pytest
 
@@ -521,6 +522,26 @@ def test_expand_file_path(tmpdir, index, root, expected):
             "28c5f6feb0682079b127d8ce8debebe9",
         ),
         (
+            pd.Series(
+                ["a", "b"],
+                audformat.filewise_index(["f1", "f2"]),
+                dtype="object",
+            ),
+            True,
+            False,
+            "74280b0163f6ae31438c26459901adfe",
+        ),
+        (
+            pd.Series(
+                ["a", "b"],
+                audformat.filewise_index(["f1", "f2"]),
+                dtype="string",
+            ),
+            True,
+            False,
+            "74280b0163f6ae31438c26459901adfe",
+        ),
+        (
             pd.DataFrame(
                 {"a": [0, 1], "b": [2, 3]},
                 audformat.segmented_index(["f1", "f2"], [0, 0], [1, 1]),
@@ -697,6 +718,67 @@ def test_expand_file_path(tmpdir, index, root, expected):
                 pd.__version__ < "2.2.0",
                 reason="Changed in pandas 2.2.0",
             ),
+        ),
+        # Categorical data
+        (
+            pd.DataFrame(
+                {
+                    "winner": ["w1", "w1", "w2"],
+                },
+                index=audformat.filewise_index(["f1.wav", "f2.wav", "f3.wav"]),
+                dtype=pd.CategoricalDtype(
+                    ["w1", "w2", "w3"],
+                    ordered=False,
+                ),
+            ),
+            True,
+            False,
+            "e845db6fbe98b17f24dd71d3a991094f",
+        ),
+        (
+            pd.DataFrame(
+                {
+                    "winner": ["w1", "w1", "w2"],
+                },
+                index=audformat.filewise_index(["f1.wav", "f2.wav", "f3.wav"]),
+                dtype=pd.CategoricalDtype(
+                    pd.Index(["w1", "w2", "w3"], dtype="object"),
+                    ordered=False,
+                ),
+            ),
+            True,
+            False,
+            "e845db6fbe98b17f24dd71d3a991094f",
+        ),
+        (
+            pd.DataFrame(
+                {
+                    "winner": ["w1", "w1", "w2"],
+                },
+                index=audformat.filewise_index(["f1.wav", "f2.wav", "f3.wav"]),
+                dtype=pd.CategoricalDtype(
+                    pd.Index(["w1", "w2", "w3"], dtype="string"),
+                    ordered=False,
+                ),
+            ),
+            True,
+            False,
+            "e845db6fbe98b17f24dd71d3a991094f",
+        ),
+        (
+            pd.DataFrame(
+                {
+                    "winner": [0, 0, 1],
+                },
+                index=audformat.filewise_index(["f1.wav", "f2.wav", "f3.wav"]),
+                dtype=pd.CategoricalDtype(
+                    [0, 1],
+                    ordered=True,
+                ),
+            ),
+            True,
+            False,
+            "1f6fec46a3c28c5ec3c07ef8f13fb258",
         ),
     ],
 )
@@ -967,19 +1049,19 @@ def test_index_has_overlap(obj, expected):
         (
             [
                 pd.MultiIndex.from_arrays(
-                    [[0, 1], ["a", "b"]],
+                    [
+                        [0, 1],
+                        pd.Index(["a", "b"], dtype="object"),
+                    ],
                     names=["idx1", "idx2"],
                 ),
             ],
-            audformat.utils.set_index_dtypes(
-                pd.MultiIndex.from_arrays(
-                    [[], []],
-                    names=["idx1", "idx2"],
-                ),
-                {
-                    "idx1": "Int64",
-                    "idx2": "object",
-                },
+            pd.MultiIndex.from_arrays(
+                [
+                    pd.Index([], dtype="Int64"),
+                    pd.Index([], dtype="object"),
+                ],
+                names=["idx1", "idx2"],
             ),
         ),
         (
@@ -1164,8 +1246,11 @@ def test_intersect(objs, expected):
         ),
         (
             [
-                pd.Index(["a", "b", "c"], name="l"),
-                pd.MultiIndex.from_arrays([[10, 20]], names=["l"]),
+                pd.Index(["a", "b", "c"], name="l", dtype="object"),
+                pd.MultiIndex.from_arrays(
+                    [pd.Index([10, 20], dtype="int")],
+                    names=["l"],
+                ),
             ],
             "Found different level dtypes: ['object', 'int']",
         ),
@@ -1205,7 +1290,7 @@ def test_intersect(objs, expected):
             [
                 pd.MultiIndex.from_arrays(
                     [
-                        ["a", "b", "c"],
+                        pd.Index(["a", "b", "c"], dtype="object"),
                         [1, 2, 3],
                     ],
                     names=["l1", "l2"],
@@ -1213,7 +1298,7 @@ def test_intersect(objs, expected):
                 pd.MultiIndex.from_arrays(
                     [
                         [10],
-                        ["10"],
+                        pd.Index(["10"], dtype="object"),
                     ],
                     names=["l1", "l2"],
                 ),
@@ -1224,15 +1309,15 @@ def test_intersect(objs, expected):
             [
                 pd.MultiIndex.from_arrays(
                     [
-                        ["a", "b", "c"],
+                        pd.Index(["a", "b", "c"], dtype="object"),
                         [1, 2, 3],
                     ],
                     names=["l1", "l2"],
                 ),
                 pd.MultiIndex.from_arrays(
                     [
-                        [],
-                        [],
+                        pd.Index([], dtype="object"),
+                        pd.Index([], dtype="object"),
                     ],
                     names=["l1", "l2"],
                 ),
@@ -1842,6 +1927,9 @@ def test_read_csv(csv, result):
     obj = audformat.utils.read_csv(csv, as_dataframe=True)
     if isinstance(result, pd.Index):
         result = pd.DataFrame([], columns=[], index=result)
+        # Fix expected column type under pandas 3.0.0
+        if version.parse(pd.__version__) >= version.parse("3.0.0"):
+            result.columns = result.columns.astype("str")
     elif isinstance(result, pd.Series):
         result = result.to_frame()
     pd.testing.assert_frame_equal(obj, result)
@@ -1913,7 +2001,7 @@ def test_replace_file_extension(index, extension, pattern, expected_index):
     "index, dtypes, expected",
     [
         (
-            pd.Index([]),
+            pd.Index([], dtype="object"),
             "string",
             pd.Index([], dtype="string"),
         ),
@@ -1923,7 +2011,7 @@ def test_replace_file_extension(index, extension, pattern, expected_index):
             pd.Index([]),
         ),
         (
-            pd.Index(["a", "b"]),
+            pd.Index(["a", "b"], dtype="object"),
             "string",
             pd.Index(["a", "b"], dtype="string"),
         ),
@@ -1933,7 +2021,7 @@ def test_replace_file_extension(index, extension, pattern, expected_index):
             pd.Index(["a", "b"], dtype="string"),
         ),
         (
-            pd.Index(["a", "b"], name="idx"),
+            pd.Index(["a", "b"], name="idx", dtype="object"),
             {"idx": "string"},
             pd.Index(["a", "b"], name="idx", dtype="string"),
         ),
@@ -2034,7 +2122,7 @@ def test_replace_file_extension(index, extension, pattern, expected_index):
             pd.MultiIndex.from_arrays(
                 [
                     [1, 2],
-                    pd.to_timedelta([0, 1], unit="s"),
+                    pd.to_timedelta([0, 1], unit="s").astype("timedelta64[ns]"),
                 ],
                 names=["idx", "time"],
             ),
@@ -2054,7 +2142,7 @@ def test_replace_file_extension(index, extension, pattern, expected_index):
             pd.MultiIndex.from_arrays(
                 [
                     [1, 2],
-                    [pd.NaT, pd.NaT],
+                    pd.to_datetime([pd.NaT, pd.NaT]).astype("datetime64[ns]"),
                 ],
                 names=["idx", "date"],
             ),
@@ -2062,7 +2150,7 @@ def test_replace_file_extension(index, extension, pattern, expected_index):
         (
             pd.MultiIndex.from_arrays(
                 [
-                    ["f1", "f2"],
+                    pd.Index(["f1", "f2"], dtype="object"),
                     [0, int(1e9)],
                     [pd.NaT, pd.NaT],
                 ],
@@ -2107,6 +2195,36 @@ def test_replace_file_extension(index, extension, pattern, expected_index):
             {"bad": "string"},
             None,
             marks=pytest.mark.xfail(raises=ValueError),
+        ),
+        (
+            pd.MultiIndex.from_arrays(
+                [
+                    pd.Index([], dtype="string"),
+                    pd.Index([], dtype="int64"),
+                    pd.Index([], dtype="object"),
+                ],
+                names=[
+                    define.IndexField.FILE,
+                    define.IndexField.START,
+                    define.IndexField.END,
+                ],
+            ),
+            {
+                define.IndexField.START: "timedelta64[ns]",
+                define.IndexField.END: "timedelta64[ns]",
+            },
+            pd.MultiIndex.from_arrays(
+                [
+                    pd.Index([], dtype="string"),
+                    pd.Index([], dtype="timedelta64[ns]"),
+                    pd.Index([], dtype="timedelta64[ns]"),
+                ],
+                names=[
+                    define.IndexField.FILE,
+                    define.IndexField.START,
+                    define.IndexField.END,
+                ],
+            ),
         ),
     ],
 )

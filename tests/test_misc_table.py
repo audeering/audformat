@@ -105,12 +105,12 @@ def create_misc_table(
                 create_misc_table(
                     pd.Series(
                         [1.0],
-                        index=pd.Index(["a"], name="idx"),
+                        index=pd.Index(["a"], name="idx", dtype="string"),
                     ),
                 ),
                 create_misc_table(
                     pd.Series(
-                        index=pd.Index([], name="idx"),
+                        index=pd.Index([], name="idx", dtype="string"),
                         dtype="float",
                     ),
                 ),
@@ -118,7 +118,7 @@ def create_misc_table(
             create_misc_table(
                 pd.Series(
                     [1.0],
-                    index=pd.Index(["a"], name="idx"),
+                    index=pd.Index(["a"], name="idx", dtype="string"),
                 ),
             ),
         ),
@@ -127,21 +127,21 @@ def create_misc_table(
             [
                 create_misc_table(
                     pd.Series(
-                        index=pd.Index([], name="idx"),
+                        index=pd.Index([], name="idx", dtype="string"),
                         dtype="float",
                     )
                 ),
                 create_misc_table(
                     pd.Series(
                         [1.0],
-                        index=pd.Index(["a"], name="idx"),
+                        index=pd.Index(["a"], name="idx", dtype="string"),
                     ),
                 ),
             ],
             create_misc_table(
                 pd.Series(
                     [1.0],
-                    index=pd.Index(["a"], name="idx"),
+                    index=pd.Index(["a"], name="idx", dtype="string"),
                 ),
             ),
         ),
@@ -372,12 +372,6 @@ def test_copy(table):
         ),
         (
             [],
-            str,
-            "object",
-            audformat.define.DataType.OBJECT,
-        ),
-        (
-            [],
             "string",
             "string",
             audformat.define.DataType.STRING,
@@ -426,7 +420,7 @@ def test_copy(table):
         ),
         (
             ["0"],
-            None,
+            "object",
             "object",
             audformat.define.DataType.OBJECT,
         ),
@@ -512,14 +506,14 @@ def test_dtype_column(
         (
             pd.Index,
             ["0"],
-            None,
+            "object",
             "object",
             audformat.define.DataType.OBJECT,
         ),
         (
             pd.Index,
             [],
-            None,
+            "object",
             "object",
             audformat.define.DataType.OBJECT,
         ),
@@ -571,13 +565,6 @@ def test_dtype_column(
             "Int64",
             "Int64",
             audformat.define.DataType.INTEGER,
-        ),
-        (
-            pd.Index,
-            [],
-            str,
-            "object",
-            audformat.define.DataType.OBJECT,
         ),
         (
             pd.Index,
@@ -638,7 +625,7 @@ def test_dtype_column(
         (
             pd.Index,
             ["0"],
-            None,
+            "object",
             "object",
             audformat.define.DataType.OBJECT,
         ),
@@ -782,12 +769,6 @@ def test_dtype_index(
         ),
         (
             [],
-            str,
-            "object",
-            audformat.define.DataType.OBJECT,
-        ),
-        (
-            [],
             "string",
             "string",
             audformat.define.DataType.STRING,
@@ -836,7 +817,7 @@ def test_dtype_index(
         ),
         (
             ["0"],
-            None,
+            "object",
             "object",
             audformat.define.DataType.OBJECT,
         ),
@@ -966,12 +947,6 @@ def test_dtype_multiindex(
         ),
         (
             [],
-            str,
-            "object",
-            audformat.define.DataType.OBJECT,
-        ),
-        (
-            [],
             "string",
             "string",
             audformat.define.DataType.STRING,
@@ -1020,7 +995,7 @@ def test_dtype_multiindex(
         ),
         (
             ["0"],
-            None,
+            "object",
             "object",
             audformat.define.DataType.OBJECT,
         ),
@@ -1156,21 +1131,26 @@ def test_drop_extend_and_pick_index_order():
         ),
         # table empty
         (
-            create_misc_table(pd.Index([], name="idx")),
-            pd.Index(["a", "b"], name="idx"),
-            pd.Index([], name="idx"),
+            create_misc_table(pd.Index([], name="idx", dtype="object")),
+            pd.Index(["a", "b"], name="idx", dtype="object"),
+            pd.Index([], name="idx", dtype="object"),
+        ),
+        (
+            create_misc_table(pd.Index([], name="idx", dtype="string")),
+            pd.Index(["a", "b"], name="idx", dtype="string"),
+            pd.Index([], name="idx", dtype="string"),
         ),
         # index empty
         (
-            create_misc_table(pd.Index(["a", "b"], name="idx")),
-            pd.Index([], name="idx"),
-            pd.Index(["a", "b"], name="idx"),
+            create_misc_table(pd.Index(["a", "b"], name="idx", dtype="string")),
+            pd.Index([], name="idx", dtype="string"),
+            pd.Index(["a", "b"], name="idx", dtype="string"),
         ),
         # index and table identical
         (
-            create_misc_table(pd.Index(["a", "b"], name="idx")),
-            pd.Index(["b", "a"], name="idx"),
-            pd.Index([], name="idx"),
+            create_misc_table(pd.Index(["a", "b"], name="idx", dtype="string")),
+            pd.Index(["b", "a"], name="idx", dtype="string"),
+            pd.Index([], name="idx", dtype="string"),
         ),
         # index within table
         (
@@ -1180,9 +1160,9 @@ def test_drop_extend_and_pick_index_order():
         ),
         # table within index
         (
-            create_misc_table(pd.Index(["b"], name="idx")),
-            pd.Index(["a", "b"], name="idx"),
-            pd.Index([], name="idx"),
+            create_misc_table(pd.Index(["b"], name="idx", dtype="string")),
+            pd.Index(["a", "b"], name="idx", dtype="string"),
+            pd.Index([], name="idx", dtype="string"),
         ),
         # index and table overlap
         (
@@ -1220,23 +1200,23 @@ def test_extend_index():
 
     # empty and invalid
 
-    db["misc"] = audformat.MiscTable(pd.Index([], name="idx"))
-    db["misc"].extend_index(pd.Index([], name="idx"))
+    db["misc"] = audformat.MiscTable(pd.Index([], name="idx", dtype="object"))
+    db["misc"].extend_index(pd.Index([], name="idx", dtype="object"))
     assert db["misc"].get().empty
     with pytest.raises(
         ValueError,
         match="Cannot extend",
     ):
-        db["misc"].extend_index(pd.Index([], name="other"))
+        db["misc"].extend_index(pd.Index([], name="other", dtype="object"))
 
     db.drop_tables("misc")
 
     # extend with pd.Index
 
-    db["misc"] = audformat.MiscTable(pd.Index([], name="idx"))
+    db["misc"] = audformat.MiscTable(pd.Index([], name="idx", dtype="object"))
     db["misc"]["columns"] = audformat.Column(scheme_id="scheme")
     db["misc"].extend_index(
-        pd.Index(["1", "2"], name="idx"),
+        pd.Index(["1", "2"], name="idx", dtype="object"),
         fill_values="a",
         inplace=True,
     )
@@ -1244,7 +1224,7 @@ def test_extend_index():
         db["misc"]["columns"].get().values,
         np.array(["a", "a"]),
     )
-    index = pd.Index(["1", "3"], name="idx")
+    index = pd.Index(["1", "3"], name="idx", dtype="object")
     db["misc"].extend_index(
         index,
         fill_values="b",
@@ -1258,6 +1238,7 @@ def test_extend_index():
     # extend with pd.MultiIndex
 
     index = pd.MultiIndex.from_arrays([["1", "4"]], names=["idx"])
+    index = audformat.utils.set_index_dtypes(index, "object")
     db["misc"].extend_index(
         index,
         fill_values="b",
@@ -1391,15 +1372,25 @@ def test_load_old_pickle(tmpdir):
         ),
         # table empty
         (
-            create_misc_table(pd.Index([], name="idx")),
-            pd.Index(["a", "b"], name="idx"),
-            pd.Index([], name="idx"),
+            create_misc_table(pd.Index([], name="idx", dtype="object")),
+            pd.Index(["a", "b"], name="idx", dtype="object"),
+            pd.Index([], name="idx", dtype="object"),
+        ),
+        (
+            create_misc_table(pd.Index([], name="idx", dtype="string")),
+            pd.Index(["a", "b"], name="idx", dtype="string"),
+            pd.Index([], name="idx", dtype="string"),
         ),
         # index empty
         (
-            create_misc_table(pd.Index(["a", "b"], name="idx")),
-            pd.Index([], name="idx"),
-            pd.Index([], name="idx"),
+            create_misc_table(pd.Index(["a", "b"], name="idx", dtype="object")),
+            pd.Index([], name="idx", dtype="object"),
+            pd.Index([], name="idx", dtype="object"),
+        ),
+        (
+            create_misc_table(pd.Index(["a", "b"], name="idx", dtype="string")),
+            pd.Index([], name="idx", dtype="string"),
+            pd.Index([], name="idx", dtype="string"),
         ),
         # index and table identical
         (

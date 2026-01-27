@@ -1244,7 +1244,7 @@ def test_concat_aggregate_function(objs, aggregate_function, expected):
             pd.Series(
                 ["a", "a"],
                 pd.Index(["a", "b"]),
-                dtype="object",
+                dtype="str",
             ),
         ),
         (
@@ -1771,7 +1771,10 @@ def test_concat_overwrite_aggregate_function(
                 ),
                 pd.Series(  # default dtype is object
                     [2.0],
-                    pd.MultiIndex.from_arrays([["f1"]], names=["idx"]),
+                    pd.MultiIndex.from_arrays(
+                        [pd.Index(["f1"], dtype="object")],
+                        names=["idx"],
+                    ),
                 ),
             ],
             None,
