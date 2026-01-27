@@ -846,7 +846,7 @@ class Database(HeaderBase):
                 raise TypeError(  # pragma: nocover
                     f"Cannot join labels for scheme '{requested_scheme}' "
                     "with different data types: "
-                    f"{', '.join(dtypes)}"
+                    f"{', '.join(str(d) for d in dtypes)}"
                 )
             dtype = dtypes[0]
             # Convert everything to categorical data
