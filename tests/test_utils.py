@@ -1927,6 +1927,7 @@ def test_read_csv(csv, result):
     obj = audformat.utils.read_csv(csv, as_dataframe=True)
     if isinstance(result, pd.Index):
         result = pd.DataFrame([], columns=[], index=result)
+        # Fix expected column type under pandas 3.0.0
         if version.parse(pd.__version__) >= version.parse("3.0.0"):
             result.columns = result.columns.astype("str")
     elif isinstance(result, pd.Series):
