@@ -2,7 +2,6 @@ import numpy as np
 import pandas as pd
 
 from audformat.core import define
-from audformat.core import utils
 from audformat.core.typing import Files
 from audformat.core.typing import Timestamps
 
@@ -27,9 +26,13 @@ def to_array(value: object) -> list | np.ndarray:
 def to_timedelta(times):
     r"""Convert time value to pd.Timedelta."""
     try:
-        return pd.to_timedelta(times, unit="s")
+        result = pd.to_timedelta(times, unit="s")
     except ValueError:  # catches values like '1s'
-        return pd.to_timedelta(times)
+        result = pd.to_timedelta(times)
+    if isinstance(result, pd.Timedelta):
+        return result.as_unit("ns")
+    else:
+        return result.astype("timedelta64[ns]")
 
 
 def assert_index(
@@ -354,20 +357,17 @@ def segmented_index(
         )
 
     index = pd.MultiIndex.from_arrays(
-        [files, to_timedelta(starts), to_timedelta(ends)],
+        [
+            # Enforce string dtype from pandas<3.0 to get same hash values
+            pd.Index(files, dtype="string"),
+            to_timedelta(starts),
+            to_timedelta(ends),
+        ],
         names=[
             define.IndexField.FILE,
             define.IndexField.START,
             define.IndexField.END,
         ],
-    )
-    index = utils.set_index_dtypes(
-        index,
-        {
-            define.IndexField.FILE: "string",
-            define.IndexField.START: "timedelta64[ns]",
-            define.IndexField.END: "timedelta64[ns]",
-        },
     )
     assert_index(index)
 
