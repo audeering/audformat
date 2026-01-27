@@ -100,17 +100,17 @@ Filewise table as :class:`pd.DataFrame`:
 >>> db["files"].get()
                 bool                    date  ...                   time   no_scheme
 file                                          ...
-audio/001.wav  False                     NaT  ... 0 days 00:00:00.280...  nOqgBuJRkn
-audio/002.wav   <NA>                     NaT  ... 0 days 00:00:00.960...  iMKa6qC99q
-audio/003.wav  False 1970-01-01 00:00:00.640  ... 0 days 00:00:00.520...  MgqdWkARaq
-audio/004.wav  False 1970-01-01 00:00:00.090  ... 0 days 00:00:00.060...        None
-audio/005.wav  False                     NaT  ... 0 days 00:00:00.540...  l8x3NmGtNB
+audio/001.wav  False                     NaT  ... 0 days 00:00:00.280000  nOqgBuJRkn
+audio/002.wav   <NA>                     NaT  ... 0 days 00:00:00.960000  iMKa6qC99q
+audio/003.wav  False 1970-01-01 00:00:00.640  ... 0 days 00:00:00.520000  MgqdWkARaq
+audio/004.wav  False 1970-01-01 00:00:00.090  ... 0 days 00:00:00.060000        None
+audio/005.wav  False                     NaT  ... 0 days 00:00:00.540000  l8x3NmGtNB
 ...              ...                     ...  ...                    ...         ...
-audio/096.wav   True 1970-01-01 00:00:00.160  ... 0 days 00:00:00.180...  Vgv37YqafU
-audio/097.wav   <NA> 1970-01-01 00:00:00.780  ... 0 days 00:00:00.210...  Nr3hn17JSB
-audio/098.wav   True 1970-01-01 00:00:00.750  ... 0 days 00:00:00.620...  FFSFTcMjMu
-audio/099.wav  False 1970-01-01 00:00:00.470  ... 0 days 00:00:00.920...  V49rd5YUQW
-audio/100.wav   <NA> 1970-01-01 00:00:00.610  ... 0 days 00:00:00.280...  zeTXeIT7wb
+audio/096.wav   True 1970-01-01 00:00:00.160  ... 0 days 00:00:00.180000  Vgv37YqafU
+audio/097.wav   <NA> 1970-01-01 00:00:00.780  ... 0 days 00:00:00.210000  Nr3hn17JSB
+audio/098.wav   True 1970-01-01 00:00:00.750  ... 0 days 00:00:00.620000  FFSFTcMjMu
+audio/099.wav  False 1970-01-01 00:00:00.470  ... 0 days 00:00:00.920000  V49rd5YUQW
+audio/100.wav   <NA> 1970-01-01 00:00:00.610  ... 0 days 00:00:00.280000  zeTXeIT7wb
 <BLANKLINE>
 [100 rows x 11 columns]
 
@@ -119,17 +119,17 @@ Segmented table as :class:`pd.DataFrame`:
 >>> db["segments"].get()
                                                                     bool  ...   no_scheme
 file          start                     end                               ...
-audio/001.wav 0 days 00:00:00.082... 0 days 00:00:04.832...   True  ...        None
-              0 days 00:00:09.907... 0 days 00:00:13.087...   <NA>  ...        None
-              0 days 00:00:13.422... 0 days 00:00:16.376...   True  ...  ZYixPedAyB
-              0 days 00:00:19.276... 0 days 00:00:25.737...   True  ...        None
-              0 days 00:00:30.918... 0 days 00:00:35.168...   <NA>  ...  s5pS1eh4k7
-...                                                            ...  ...         ...
-audio/010.wav 0 days 00:00:18.786... 0 days 00:00:29.510...  False  ...        None
-              0 days 00:00:30.691... 0 days 00:00:33.635...  False  ...  jWjGWGeIYX
-              0 days 00:00:34.058... 0 days 00:00:34.149...  False  ...        None
-              0 days 00:00:45.930... 0 days 00:00:49.444...  False  ...  Zz7W7ZlYXJ
-              0 days 00:00:51.577... 0 days 00:00:56.646...   True  ...        None
+audio/001.wav 0 days 00:00:00.082561829 0 days 00:00:04.832983387   True  ...        None
+              0 days 00:00:09.907641513 0 days 00:00:13.087561565   <NA>  ...        None
+              0 days 00:00:13.422086186 0 days 00:00:16.376171043   True  ...  ZYixPedAyB
+              0 days 00:00:19.276700122 0 days 00:00:25.737048646   True  ...        None
+              0 days 00:00:30.918073408 0 days 00:00:35.168424756   <NA>  ...  s5pS1eh4k7
+...                                                                  ...  ...         ...
+audio/010.wav 0 days 00:00:18.786962756 0 days 00:00:29.510792049  False  ...        None
+              0 days 00:00:30.691782517 0 days 00:00:33.635262781  False  ...  jWjGWGeIYX
+              0 days 00:00:34.058263452 0 days 00:00:34.149017810  False  ...        None
+              0 days 00:00:45.930182929 0 days 00:00:49.444541600  False  ...  Zz7W7ZlYXJ
+              0 days 00:00:51.577189767 0 days 00:00:56.646463227   True  ...        None
 <BLANKLINE>
 [100 rows x 11 columns]
 
