@@ -26,9 +26,9 @@ def to_array(value: object) -> list | np.ndarray:
 def to_timedelta(times):
     r"""Convert time value to pd.Timedelta."""
     try:
-        return pd.to_timedelta(times, unit="s")
+        return pd.to_timedelta(times, unit="s").as_unit("ns")
     except ValueError:  # catches values like '1s'
-        return pd.to_timedelta(times)
+        return pd.to_timedelta(times).as_unit("ns")
 
 
 def assert_index(
@@ -356,8 +356,8 @@ def segmented_index(
         [
             # Enforce string dtype from pandas<3.0 to get same hash values
             pd.Index(files, dtype="string"),
-            pd.Index(to_timedelta(starts), dtype="timedelta64[ns]"),
-            pd.Index(to_timedelta(ends), dtype="timedelta64[ns]"),
+            to_timedelta(starts),
+            to_timedelta(ends),
         ],
         names=[
             define.IndexField.FILE,
