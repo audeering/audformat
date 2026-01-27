@@ -718,8 +718,7 @@ class Database(HeaderBase):
             for obj in objs:
                 if isinstance(obj.dtype, pd.CategoricalDtype):
                     dtype = obj.dtype.categories.dtype
-                    # Normalize string-like dtypes to object for consistency
-                    # (pandas 3.0 may use 'str' or StringDtype for categories)
+                    # Normalize string-like categorical dtypes to object
                     if _is_string_like_dtype(dtype):
                         dtype = np.dtype("O")
                     dtypes.append(dtype)
@@ -855,8 +854,7 @@ class Database(HeaderBase):
                     ys[n] = y.astype(
                         pd.CategoricalDtype(y.array.dropna().unique().astype(dtype))
                     )
-            # Normalize all string-like categorical dtypes to "object" for consistency
-            # (pandas 3.0 may infer "str" or StringDtype for string categories)
+            # Normalize string-like categorical dtypes to object
             for n, y in enumerate(ys):
                 cat_dtype = y.dtype.categories.dtype
                 if _is_string_like_dtype(cat_dtype):
