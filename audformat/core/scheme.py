@@ -287,16 +287,9 @@ class Scheme(common.HeaderBase):
         """
         if self.labels is not None:
             labels = self._labels_to_list()
-            if len(labels) > 0 and isinstance(labels[0], int):
-                # allow nullable
-                labels = pd.array(labels, dtype="int64")
-            dtype = pd.api.types.CategoricalDtype(
-                categories=labels,
-                ordered=False,
-            )
+            return common.to_categorical_dtype(labels)
         else:
-            dtype = common.to_pandas_dtype(self.dtype)
-        return dtype
+            return common.to_pandas_dtype(self.dtype)
 
     def replace_labels(
         self,

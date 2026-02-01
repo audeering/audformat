@@ -19,6 +19,7 @@ from audformat.core import utils
 from audformat.core.column import Column
 from audformat.core.common import HeaderBase
 from audformat.core.common import HeaderDict
+from audformat.core.common import to_categorical_dtype
 from audformat.core.common import to_pandas_dtype
 from audformat.core.errors import BadIdError
 from audformat.core.index import filewise_index
@@ -1074,13 +1075,7 @@ class Base(HeaderBase):
         for column in labeled_columns:
             scheme = self.db.schemes[self.columns[column].scheme_id]
             labels = scheme._labels_to_list()
-            if len(labels) > 0 and isinstance(labels[0], int):
-                # allow nullable
-                labels = pd.array(labels, dtype="int64")
-            dtype = pd.api.types.CategoricalDtype(
-                categories=labels,
-                ordered=False,
-            )
+            dtype = to_categorical_dtype(labels)
             df[column] = df[column].astype(dtype)
         return df
 
