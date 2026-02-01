@@ -365,10 +365,10 @@ def to_audformat_dtype(dtype: str | type) -> str:
 def to_categorical_dtype(labels: list[object]) -> pd.api.types.CategoricalDtype:
     """Create categorical dtype for labels."""
     if len(labels) > 0:
-        if isinstance(labels[0], int):
+        if all(isinstance(l, int) for l in labels):
             # allow nullable
             labels = pd.array(labels, dtype="int64")
-        elif isinstance(labels[0], str):
+        elif all(isinstance(l, str) for l in labels):
             # object for string categories
             labels = pd.Index(labels, dtype="object")
     return pd.api.types.CategoricalDtype(
