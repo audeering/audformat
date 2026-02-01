@@ -362,6 +362,21 @@ def to_audformat_dtype(dtype: str | type) -> str:
         return define.DataType.OBJECT
 
 
+def to_categorical_dtype(labels: list[object]) -> pd.api.types.CategoricalDtype:
+    """Create categorical dtype for labels."""
+    if len(labels) > 0:
+        if isinstance(labels[0], int):
+            # allow nullable
+            labels = pd.array(labels, dtype="int64")
+        elif isinstance(labels[0], str):
+            # object for string categories
+            labels = pd.Index(labels, dtype="object")
+    return pd.api.types.CategoricalDtype(
+        categories=labels,
+        ordered=False,
+    )
+
+
 def to_pandas_dtype(dtype: str) -> str | None:
     r"""Convert audformat to pandas dtype.
 
