@@ -1,7 +1,6 @@
 import re
 
 import numpy as np
-from packaging import version
 import pandas as pd
 import pytest
 
@@ -294,23 +293,10 @@ def test_scheme_contains():
             [1.0, 2.0, 3.0],
             "float64",
         ),
-        pytest.param(
-            audformat.define.DataType.STRING,
-            ["a", "b", "c"],
-            "string[python]",
-            marks=pytest.mark.skipif(
-                version.parse(pd.__version__) < version.parse("3.0.0"),
-                reason="Only for pandas < 3.0.0",
-            ),
-        ),
-        pytest.param(
+        (
             audformat.define.DataType.STRING,
             ["a", "b", "c"],
             "string",
-            marks=pytest.mark.skipif(
-                version.parse(pd.__version__) >= version.parse("3.0.0"),
-                reason="Only for pandas >= 3.0.0",
-            ),
         ),
         (
             audformat.define.DataType.TIME,
