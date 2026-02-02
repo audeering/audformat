@@ -444,6 +444,62 @@ def test_expand_file_path(tmpdir, index, root, expected):
     "obj, strict, mutable, expected",
     [
         (
+            pd.Index([], dtype="object"),
+            True,
+            True,
+            "cac385b69ab9f5fb1cd31283c43f759b",
+        ),
+        (
+            pd.Series([], index=pd.Index([], dtype="object"), dtype="object"),
+            True,
+            True,
+            "1f22f8c646d1472be62096643ffc96d1",
+        ),
+        (
+            pd.DataFrame([], index=pd.Index([], dtype="object"), dtype="object"),
+            True,
+            True,
+            "763684caf1f774ce4dc4e818f3e901bc",
+        ),
+        (
+            pd.Index(
+                [],
+                dtype=pd.CategoricalDtype(categories=pd.Index([], dtype="object")),
+            ),
+            True,
+            True,
+            "dfd27f8e3cd84718c6046123f8e28fb0",
+        ),
+        (
+            pd.Index(
+                [],
+                dtype=pd.CategoricalDtype(categories=pd.Index(["a"], dtype="object")),
+            ),
+            True,
+            True,
+            "d484f2c7f7232a2eca44ed431bfb982c",
+        ),
+        (
+            pd.Index(
+                [],
+                dtype=pd.CategoricalDtype(categories=pd.Index(["a"], dtype="string")),
+            ),
+            True,
+            True,
+            "d484f2c7f7232a2eca44ed431bfb982c",
+        ),
+        (
+            pd.Index(
+                [],
+                dtype=pd.CategoricalDtype(
+                    categories=pd.Index(["a"], dtype=pd.StringDtype(na_value=np.nan))
+                ),
+            ),
+            True,
+            True,
+            "d484f2c7f7232a2eca44ed431bfb982c",
+        ),
+        (
             audformat.filewise_index(),
             False,
             True,
