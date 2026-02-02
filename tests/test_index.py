@@ -308,9 +308,10 @@ def test_create_segmented_index(files, starts, ends):
         (None, None, None),
     ],
 )
-def test_segmented_index_timedelta_dtype(files, starts, ends):
-    """Ensure segmented_index always returns timedelta64[ns]."""
+def test_segmented_index_dtype(files, starts, ends):
+    """Check for correct dtypes in segmented_index."""
     index = audformat.segmented_index(files, starts=starts, ends=ends)
+    assert index.get_level_values("file").dtype == pd.StringDtype(na_value=pd.NA)
     assert index.get_level_values("start").dtype == "timedelta64[ns]"
     assert index.get_level_values("end").dtype == "timedelta64[ns]"
 
