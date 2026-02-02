@@ -358,7 +358,6 @@ def segmented_index(
 
     index = pd.MultiIndex.from_arrays(
         [
-            # Enforce string dtype from pandas<3.0 to get same hash values
             pd.Index(files, dtype="string"),
             to_timedelta(starts),
             to_timedelta(ends),
