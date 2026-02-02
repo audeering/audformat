@@ -291,12 +291,12 @@ def test_scheme_contains():
         (
             audformat.define.DataType.FLOAT,
             [1.0, 2.0, 3.0],
-            "float64",
+            "float",
         ),
         (
             audformat.define.DataType.STRING,
             ["a", "b", "c"],
-            "string",
+            pd.StringDtype(na_value=pd.NA),
         ),
         (
             audformat.define.DataType.TIME,
@@ -315,7 +315,7 @@ def test_scheme_dtypes(dtype, values, expected_dtype):
 
     column = db["table"]["labels"].get()
     assert set(column) == set(values)
-    assert str(column.dtype) == expected_dtype
+    assert column.dtype == expected_dtype
 
 
 @pytest.mark.parametrize(
