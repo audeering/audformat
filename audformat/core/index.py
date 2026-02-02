@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 
 from audformat.core import define
+from audformat.core import utils
 from audformat.core.typing import Files
 from audformat.core.typing import Timestamps
 
@@ -357,17 +358,14 @@ def segmented_index(
         )
 
     index = pd.MultiIndex.from_arrays(
-        [
-            pd.Index(files, dtype="string"),
-            to_timedelta(starts),
-            to_timedelta(ends),
-        ],
+        [files, to_timedelta(starts), to_timedelta(ends)],
         names=[
             define.IndexField.FILE,
             define.IndexField.START,
             define.IndexField.END,
         ],
     )
+    index = utils.set_index_dtypes(index, {define.IndexField.FILE: "string"})
     assert_index(index)
 
     return index
