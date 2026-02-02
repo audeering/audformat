@@ -41,23 +41,6 @@ from audformat.core.table import MiscTable
 from audformat.core.table import Table
 
 
-def _is_string_like_dtype(dtype) -> bool:
-    """Check if dtype is a string-like dtype.
-
-    Args:
-        dtype: A pandas/numpy dtype to check.
-
-    Returns:
-        True if dtype is string-like (str, StringDtype, object with string data),
-        False otherwise.
-
-    """
-    # Check for pandas StringDtype (e.g., "string", "string[python]", "string[pyarrow]")
-    if isinstance(dtype, pd.StringDtype) or pd.api.types.is_string_dtype(dtype):
-        return True
-    return False
-
-
 class Database(HeaderBase):
     r"""Database object.
 
@@ -714,16 +697,16 @@ class Database(HeaderBase):
                 ys.append(y)
 
         def dtypes_of_categories(objs):
-            dtypes = []
+            cat_dtypes = []
             for obj in objs:
                 if isinstance(obj.dtype, pd.CategoricalDtype):
-                    dtype = obj.dtype.categories.dtype
                     # Normalize string-like categorical dtypes to object
-                    if _is_string_like_dtype(dtype):
-                        dtype = np.dtype("O")
-                    dtypes.append(dtype)
+                    cat_dtype = obj.dtype.categories.dtype
+                    if isinstance(cat_dtype, pd.StringDtype):
+                        cat_dtype = np.dtype("O")
+                    cat_dtypes.append(cat_dtype)
             # Deduplicate and sort for consistent ordering
-            return sorted(list(set(dtypes)), key=str)
+            return sorted(list(set(cat_dtypes)), key=str)
 
         def empty_frame(name):
             return pd.DataFrame(
@@ -857,7 +840,7 @@ class Database(HeaderBase):
             # Normalize string-like categorical dtypes to object
             for n, y in enumerate(ys):
                 cat_dtype = y.dtype.categories.dtype
-                if _is_string_like_dtype(cat_dtype):
+                if isinstance(cat_dtype, pd.StringDtype):
                     new_categories = y.dtype.categories.astype("object")
                     ys[n] = y.astype(pd.CategoricalDtype(new_categories))
             # Find union of categorical data
