@@ -271,36 +271,72 @@ def test_scheme_contains():
 
 
 @pytest.mark.parametrize(
-    "dtype, values",
+    "dtype, values, expected_dtype",
     [
         pytest.param(  # bool not supported
             audformat.define.DataType.BOOL,
             [True, False],
+            None,
             marks=pytest.mark.xfail(raises=ValueError),
         ),
         (
             audformat.define.DataType.DATE,
             pd.to_datetime(["3/11/2000", "3/12/2000", "3/13/2000"]),
+            pd.CategoricalDtype(
+                categories=pd.Index(
+                    ["2000-03-11", "2000-03-12", "2000-03-13"],
+                    dtype="datetime64[ns]",
+                ),
+                ordered=False,
+            ),
         ),
         (
             audformat.define.DataType.INTEGER,
             [1, 2, 3],
+            pd.CategoricalDtype(
+                categories=pd.Index(
+                    [1, 2, 3],
+                    dtype="int64",
+                ),
+                ordered=False,
+            ),
         ),
         (
             audformat.define.DataType.FLOAT,
             [1.0, 2.0, 3.0],
+            pd.CategoricalDtype(
+                categories=pd.Index(
+                    [1.0, 2.0, 3.0],
+                    dtype="float",
+                ),
+                ordered=False,
+            ),
         ),
         (
             audformat.define.DataType.STRING,
             ["a", "b", "c"],
+            pd.CategoricalDtype(
+                categories=pd.Index(
+                    ["a", "b", "c"],
+                    dtype="object",
+                ),
+                ordered=False,
+            ),
         ),
         (
             audformat.define.DataType.TIME,
             pd.to_timedelta(["1s", "2s", "3s"]),
+            pd.CategoricalDtype(
+                categories=pd.Index(
+                    pd.to_timedelta([1, 2, 3], unit="s"),
+                    dtype="timedelta64[ns]",
+                ),
+                ordered=False,
+            ),
         ),
     ],
 )
-def test_scheme_dtypes(dtype, values):
+def test_scheme_dtypes(dtype, values, expected_dtype):
     db = audformat.Database("test")
     pandas_dtype = audformat.core.common.to_pandas_dtype(dtype)
     index = pd.Index(values, name="labels", dtype=pandas_dtype)
@@ -311,7 +347,9 @@ def test_scheme_dtypes(dtype, values):
     db["table"]["labels"] = audformat.Column(scheme_id="scheme")
     db["table"]["labels"].set(values)
 
-    assert set(db["table"]["labels"].get()) == set(values)
+    column = db["table"]["labels"].get()
+    assert set(column) == set(values)
+    assert column.dtype == expected_dtype
 
 
 def test_scheme_errors():
