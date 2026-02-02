@@ -1,6 +1,7 @@
 import re
 
 import numpy as np
+from packaging import version
 import pandas as pd
 import pytest
 
@@ -273,6 +274,67 @@ def test_scheme_contains():
 @pytest.mark.parametrize(
     "dtype, values, expected_dtype",
     [
+        (
+            audformat.define.DataType.BOOL,
+            [True, False],
+            "boolean",
+        ),
+        (
+            audformat.define.DataType.DATE,
+            pd.to_datetime(["3/11/2000", "3/12/2000", "3/13/2000"]),
+            "datetime64[ns]",
+        ),
+        (
+            audformat.define.DataType.INTEGER,
+            [1, 2, 3],
+            "Int64",
+        ),
+        (
+            audformat.define.DataType.FLOAT,
+            [1.0, 2.0, 3.0],
+            "float",
+        ),
+        pytest.param(
+            audformat.define.DataType.STRING,
+            ["a", "b", "c"],
+            "string[python]",
+            marks=pytest.mark.skipif(
+                version.parse(pd.__version__) < version.parse("3.0.0"),
+                reason="Only for pandas < 3.0.0",
+            ),
+        ),
+        pytest.param(
+            audformat.define.DataType.STRING,
+            ["a", "b", "c"],
+            "string",
+            marks=pytest.mark.skipif(
+                version.parse(pd.__version__) >= version.parse("3.0.0"),
+                reason="Only for pandas >= 3.0.0",
+            ),
+        ),
+        (
+            audformat.define.DataType.TIME,
+            pd.to_timedelta(["1s", "2s", "3s"]),
+            "timedelta64[ns]",
+        ),
+    ],
+)
+def test_scheme_dtypes(dtype, values, expected_dtype):
+    db = audformat.Database("test")
+    index = audformat.filewise_index([f"f{idx}" for idx in range(len(values))])
+    db.schemes["scheme"] = audformat.Scheme(dtype=dtype)
+    db["table"] = audformat.Table(index)
+    db["table"]["labels"] = audformat.Column(scheme_id="scheme")
+    db["table"]["labels"].set(values)
+
+    column = db["table"]["labels"].get()
+    assert set(column) == set(values)
+    assert column.dtype == expected_dtype
+
+
+@pytest.mark.parametrize(
+    "dtype, values, expected_dtype",
+    [
         pytest.param(  # bool not supported
             audformat.define.DataType.BOOL,
             [True, False],
@@ -336,7 +398,7 @@ def test_scheme_contains():
         ),
     ],
 )
-def test_scheme_dtypes(dtype, values, expected_dtype):
+def test_scheme_labels_dtypes(dtype, values, expected_dtype):
     db = audformat.Database("test")
     pandas_dtype = audformat.core.common.to_pandas_dtype(dtype)
     index = pd.Index(values, name="labels", dtype=pandas_dtype)
