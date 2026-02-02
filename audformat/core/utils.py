@@ -1557,6 +1557,9 @@ def set_index_dtypes(
         return index
 
     def dtypes_equal(dt1, dt2):
+        # Normalize representations to actual dtype objects
+        dt1 = pd.api.types.pandas_dtype(dt1)
+        dt2 = pd.api.types.pandas_dtype(dt2)
         if dt1 != dt2:
             return False
         # Different string dtypes should return False

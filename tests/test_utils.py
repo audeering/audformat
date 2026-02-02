@@ -2031,6 +2031,21 @@ def test_replace_file_extension(index, extension, pattern, expected_index):
             pd.Index(["a", "b"], name="idx", dtype="string"),
         ),
         (
+            pd.Index(["a", "b"], name="idx", dtype="object"),
+            {"idx": "string"},
+            pd.Index(["a", "b"], name="idx", dtype=pd.StringDtype(na_value=pd.NA)),
+        ),
+        (
+            pd.Index(["a", "b"], name="idx", dtype="object"),
+            {"idx": pd.StringDtype(na_value=pd.NA)},
+            pd.Index(["a", "b"], name="idx", dtype=pd.StringDtype(na_value=pd.NA)),
+        ),
+        (
+            pd.Index(["a", "b"], name="idx", dtype="object"),
+            {"idx": pd.StringDtype(na_value=np.nan)},
+            pd.Index(["a", "b"], name="idx", dtype=pd.StringDtype(na_value=np.nan)),
+        ),
+        (
             pd.MultiIndex.from_arrays(
                 [
                     [0, 1],
@@ -2070,8 +2085,8 @@ def test_replace_file_extension(index, extension, pattern, expected_index):
         (
             pd.MultiIndex.from_arrays(
                 [
-                    pd.Index(["0", "1"], dtype="str"),
-                    pd.Index(["2", "3"], dtype="str"),
+                    pd.Index(["0", "1"], dtype="object"),
+                    pd.Index(["2", "3"], dtype="object"),
                 ],
                 names=["idx1", "idx2"],
             ),
@@ -2083,6 +2098,146 @@ def test_replace_file_extension(index, extension, pattern, expected_index):
                 [
                     pd.Index(["0", "1"], dtype="string"),
                     pd.Index(["2", "3"], dtype="string"),
+                ],
+                names=["idx1", "idx2"],
+            ),
+        ),
+        (
+            pd.MultiIndex.from_arrays(
+                [
+                    pd.Index(["0", "1"], dtype="object"),
+                    pd.Index(["2", "3"], dtype="object"),
+                ],
+                names=["idx1", "idx2"],
+            ),
+            {
+                "idx2": "string",
+                "idx1": "string",
+            },
+            pd.MultiIndex.from_arrays(
+                [
+                    pd.Index(["0", "1"], dtype=pd.StringDtype(na_value=pd.NA)),
+                    pd.Index(["2", "3"], dtype=pd.StringDtype(na_value=pd.NA)),
+                ],
+                names=["idx1", "idx2"],
+            ),
+        ),
+        (
+            pd.MultiIndex.from_arrays(
+                [
+                    pd.Index(["0", "1"], dtype="object"),
+                    pd.Index(["2", "3"], dtype="object"),
+                ],
+                names=["idx1", "idx2"],
+            ),
+            {
+                "idx2": pd.StringDtype(na_value=pd.NA),
+                "idx1": pd.StringDtype(na_value=pd.NA),
+            },
+            pd.MultiIndex.from_arrays(
+                [
+                    pd.Index(["0", "1"], dtype=pd.StringDtype(na_value=pd.NA)),
+                    pd.Index(["2", "3"], dtype=pd.StringDtype(na_value=pd.NA)),
+                ],
+                names=["idx1", "idx2"],
+            ),
+        ),
+        (
+            pd.MultiIndex.from_arrays(
+                [
+                    pd.Index(["0", "1"], dtype="object"),
+                    pd.Index(["2", "3"], dtype="object"),
+                ],
+                names=["idx1", "idx2"],
+            ),
+            {
+                "idx1": pd.StringDtype(na_value=pd.NA),
+                "idx2": pd.StringDtype(na_value=np.nan),
+            },
+            pd.MultiIndex.from_arrays(
+                [
+                    pd.Index(["0", "1"], dtype=pd.StringDtype(na_value=pd.NA)),
+                    pd.Index(["2", "3"], dtype=pd.StringDtype(na_value=np.nan)),
+                ],
+                names=["idx1", "idx2"],
+            ),
+        ),
+        (
+            pd.MultiIndex.from_arrays(
+                [
+                    pd.Index(["0", "1"], dtype=pd.StringDtype(na_value=np.nan)),
+                    pd.Index(["2", "3"], dtype=pd.StringDtype(na_value=np.nan)),
+                ],
+                names=["idx1", "idx2"],
+            ),
+            {
+                "idx1": pd.StringDtype(na_value=pd.NA),
+                "idx2": pd.StringDtype(na_value=pd.NA),
+            },
+            pd.MultiIndex.from_arrays(
+                [
+                    pd.Index(["0", "1"], dtype=pd.StringDtype(na_value=pd.NA)),
+                    pd.Index(["2", "3"], dtype=pd.StringDtype(na_value=pd.NA)),
+                ],
+                names=["idx1", "idx2"],
+            ),
+        ),
+        (
+            pd.MultiIndex.from_arrays(
+                [
+                    pd.Index(["0", "1"], dtype=pd.StringDtype(na_value=np.nan)),
+                    pd.Index(["2", "3"], dtype=pd.StringDtype(na_value=np.nan)),
+                ],
+                names=["idx1", "idx2"],
+            ),
+            {
+                "idx1": "string",
+                "idx2": "string",
+            },
+            pd.MultiIndex.from_arrays(
+                [
+                    pd.Index(["0", "1"], dtype=pd.StringDtype(na_value=pd.NA)),
+                    pd.Index(["2", "3"], dtype=pd.StringDtype(na_value=pd.NA)),
+                ],
+                names=["idx1", "idx2"],
+            ),
+        ),
+        (
+            pd.MultiIndex.from_arrays(
+                [
+                    pd.Index(["0", "1"], dtype=pd.StringDtype(na_value=np.nan)),
+                    pd.Index(["2", "3"], dtype=pd.StringDtype(na_value=np.nan)),
+                ],
+                names=["idx1", "idx2"],
+            ),
+            {
+                "idx2": "object",
+                "idx1": "object",
+            },
+            pd.MultiIndex.from_arrays(
+                [
+                    pd.Index(["0", "1"], dtype="object"),
+                    pd.Index(["2", "3"], dtype="object"),
+                ],
+                names=["idx1", "idx2"],
+            ),
+        ),
+        (
+            pd.MultiIndex.from_arrays(
+                [
+                    pd.Index(["0", "1"], dtype=pd.StringDtype(na_value=np.nan)),
+                    pd.Index(["2", "3"], dtype=pd.StringDtype(na_value=pd.NA)),
+                ],
+                names=["idx1", "idx2"],
+            ),
+            {
+                "idx1": pd.StringDtype(na_value=pd.NA),
+                "idx2": pd.StringDtype(na_value=np.nan),
+            },
+            pd.MultiIndex.from_arrays(
+                [
+                    pd.Index(["0", "1"], dtype=pd.StringDtype(na_value=pd.NA)),
+                    pd.Index(["2", "3"], dtype=pd.StringDtype(na_value=np.nan)),
                 ],
                 names=["idx1", "idx2"],
             ),
