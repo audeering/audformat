@@ -697,16 +697,16 @@ class Database(HeaderBase):
                 ys.append(y)
 
         def dtypes_of_categories(objs):
-            dtypes = []
+            cat_dtypes = []
             for obj in objs:
                 if isinstance(obj.dtype, pd.CategoricalDtype):
-                    dtype = obj.dtype.categories.dtype
                     # Normalize string-like categorical dtypes to object
-                    if isinstance(dtype, pd.StringDtype):
-                        dtype = np.dtype("O")
-                    dtypes.append(dtype)
+                    cat_dtype = obj.dtype.categories.dtype
+                    if isinstance(cat_dtype, pd.StringDtype):
+                        cat_dtype = np.dtype("O")
+                    cat_dtypes.append(cat_dtype)
             # Deduplicate and sort for consistent ordering
-            return sorted(list(set(dtypes)), key=str)
+            return sorted(list(set(cat_dtypes)), key=str)
 
         def empty_frame(name):
             return pd.DataFrame(
