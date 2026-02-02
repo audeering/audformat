@@ -726,6 +726,10 @@ def hash(
         else:
             df = obj.reset_index()
 
+        # Ensure column names are strings for pyarrow compatibility
+        # (empty index converted to DataFrame may have integer column names)
+        df.columns = [str(c) for c in df.columns]
+
         # Normalize string columns to object dtype for consistent hashing
         # (pandas 3.0 uses "string" dtype which maps to pyarrow "large_string",
         # while "object" dtype maps to pyarrow "string")
