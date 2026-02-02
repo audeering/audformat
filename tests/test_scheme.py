@@ -292,7 +292,7 @@ def test_scheme_contains():
         (
             audformat.define.DataType.FLOAT,
             [1.0, 2.0, 3.0],
-            "float",
+            "float64",
         ),
         pytest.param(
             audformat.define.DataType.STRING,
@@ -329,7 +329,7 @@ def test_scheme_dtypes(dtype, values, expected_dtype):
 
     column = db["table"]["labels"].get()
     assert set(column) == set(values)
-    assert column.dtype == expected_dtype
+    assert str(column.dtype) == expected_dtype
 
 
 @pytest.mark.parametrize(
