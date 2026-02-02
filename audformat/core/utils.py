@@ -1556,6 +1556,14 @@ def set_index_dtypes(
     if len(dtypes) == 0:
         return index
 
+    def dtypes_equal(dt1, dt2):
+        if dt1 != dt2:
+            return False
+        # Different string dtypes should return False
+        if isinstance(dt1, pd.StringDtype):
+            return dt1.na_value is dt2.na_value
+        return dt1 == dt2
+
     if isinstance(index, pd.MultiIndex):
         # MultiIndex
         if any([len(index.levels[index.names.index(level)]) == 0 for level in dtypes]):
@@ -1563,7 +1571,7 @@ def set_index_dtypes(
             # so we convert to a dataframe instead
             df = index.to_frame()
             for level, dtype in dtypes.items():
-                if dtype != df[level].dtype:
+                if not dtypes_equal(dtype, df[level].dtype):
                     if pd.api.types.is_timedelta64_dtype(dtype):
                         # avoid: TypeError: Cannot cast DatetimeArray
                         # to dtype timedelta64[ns]
@@ -1578,7 +1586,7 @@ def set_index_dtypes(
                 # hence we access the data directly with
                 # index.levels[idx]
                 idx = index.names.index(level)
-                if dtype != index.levels[idx].dtype:
+                if not dtypes_equal(dtype, index.levels[idx].dtype):
                     index = index.set_levels(
                         index.levels[idx].astype(dtype),
                         level=level,
@@ -1587,7 +1595,7 @@ def set_index_dtypes(
     else:
         # Index
         dtype = next(iter(dtypes.values()))
-        if dtype != index.dtype:
+        if not dtypes_equal(dtype, index.dtype):
             index = index.astype(dtype)
 
     return index

@@ -2026,6 +2026,11 @@ def test_replace_file_extension(index, extension, pattern, expected_index):
             pd.Index(["a", "b"], name="idx", dtype="string"),
         ),
         (
+            pd.Index(["a", "b"], name="idx", dtype="str"),
+            {"idx": "string"},
+            pd.Index(["a", "b"], name="idx", dtype="string"),
+        ),
+        (
             pd.MultiIndex.from_arrays(
                 [
                     [0, 1],
@@ -2058,6 +2063,26 @@ def test_replace_file_extension(index, extension, pattern, expected_index):
                 [
                     ["0", "1"],
                     ["2", "3"],
+                ],
+                names=["idx1", "idx2"],
+            ),
+        ),
+        (
+            pd.MultiIndex.from_arrays(
+                [
+                    pd.Index(["0", "1"], dtype="str"),
+                    pd.Index(["2", "3"], dtype="str"),
+                ],
+                names=["idx1", "idx2"],
+            ),
+            {
+                "idx2": "string",
+                "idx1": "string",
+            },
+            pd.MultiIndex.from_arrays(
+                [
+                    pd.Index(["0", "1"], dtype="string"),
+                    pd.Index(["2", "3"], dtype="string"),
                 ],
                 names=["idx1", "idx2"],
             ),
