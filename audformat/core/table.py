@@ -1005,11 +1005,13 @@ class Base(HeaderBase):
             df: dataframe,
             convert_all: if ``False``,
                 converts all columns with
-                ``"object"`` audformat dtype,
+                ``"object"``,
+                and ``"time"``
+                audformat dtype,
                 and all columns with a scheme with labels.
                 If ``"True"``,
                 it converts additionally all columns with
-                ``"bool"``, ``"int"``, and ``"time"`` audformat dtypes
+                ``"bool"``, and ``"int"`` audformat dtypes
 
         Returns:
             dataframe with converted dtypes
@@ -1067,8 +1069,8 @@ class Base(HeaderBase):
                 df[column] = df[column].astype("boolean")
             for column in int_columns:
                 df[column] = df[column].astype("Int64")
-            for column in time_columns:
-                df[column] = df[column].astype("timedelta64[ns]")
+        for column in time_columns:
+            df[column] = df[column].astype("timedelta64[ns]")
         for column in object_columns:
             df[column] = df[column].astype("object")
             df[column] = df[column].replace(pd.NA, None)
