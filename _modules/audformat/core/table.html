@@ -68,7 +68,7 @@
             
             
               <div class="version">
-                v1.3.3
+                v1.3.4
               </div>
             
           
@@ -183,6 +183,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">audformat.core.column</span><span class="w"> </span><span class="kn">import</span> <span class="n">Column</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">audformat.core.common</span><span class="w"> </span><span class="kn">import</span> <span class="n">HeaderBase</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">audformat.core.common</span><span class="w"> </span><span class="kn">import</span> <span class="n">HeaderDict</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">audformat.core.common</span><span class="w"> </span><span class="kn">import</span> <span class="n">to_categorical_dtype</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">audformat.core.common</span><span class="w"> </span><span class="kn">import</span> <span class="n">to_pandas_dtype</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">audformat.core.errors</span><span class="w"> </span><span class="kn">import</span> <span class="n">BadIdError</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">audformat.core.index</span><span class="w"> </span><span class="kn">import</span> <span class="n">filewise_index</span>
@@ -1145,7 +1146,7 @@
                 <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="n">column</span><span class="o">.</span><span class="n">scheme_id</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span> <span class="o">==</span> <span class="n">define</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">STRING</span><span class="p">)</span>
                 <span class="ow">and</span> <span class="n">df</span><span class="p">[</span><span class="n">column_id</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span> <span class="o">==</span> <span class="s2">&quot;object&quot;</span>
             <span class="p">):</span>
-                <span class="n">df</span><span class="p">[</span><span class="n">column_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">column_id</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;string&quot;</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                <span class="n">df</span><span class="p">[</span><span class="n">column_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">column_id</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;string&quot;</span><span class="p">)</span>
         <span class="c1"># Fix index entries as well</span>
         <span class="n">df</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">_maybe_convert_dtype_to_string</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
 
@@ -1168,11 +1169,13 @@
 <span class="sd">            df: dataframe,</span>
 <span class="sd">            convert_all: if ``False``,</span>
 <span class="sd">                converts all columns with</span>
-<span class="sd">                ``&quot;object&quot;`` audformat dtype,</span>
+<span class="sd">                ``&quot;object&quot;``,</span>
+<span class="sd">                and ``&quot;time&quot;``</span>
+<span class="sd">                audformat dtype,</span>
 <span class="sd">                and all columns with a scheme with labels.</span>
 <span class="sd">                If ``&quot;True&quot;``,</span>
 <span class="sd">                it converts additionally all columns with</span>
-<span class="sd">                ``&quot;bool&quot;``, ``&quot;int&quot;``, and ``&quot;time&quot;`` audformat dtypes</span>
+<span class="sd">                ``&quot;bool&quot;``, and ``&quot;int&quot;`` audformat dtypes</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            dataframe with converted dtypes</span>
@@ -1230,21 +1233,15 @@
                 <span class="n">df</span><span class="p">[</span><span class="n">column</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">column</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;boolean&quot;</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="n">int_columns</span><span class="p">:</span>
                 <span class="n">df</span><span class="p">[</span><span class="n">column</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">column</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;Int64&quot;</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="n">time_columns</span><span class="p">:</span>
-                <span class="n">df</span><span class="p">[</span><span class="n">column</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">column</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;timedelta64[ns]&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="n">time_columns</span><span class="p">:</span>
+            <span class="n">df</span><span class="p">[</span><span class="n">column</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">column</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;timedelta64[ns]&quot;</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="n">object_columns</span><span class="p">:</span>
             <span class="n">df</span><span class="p">[</span><span class="n">column</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">column</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;object&quot;</span><span class="p">)</span>
             <span class="n">df</span><span class="p">[</span><span class="n">column</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">column</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">NA</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="n">labeled_columns</span><span class="p">:</span>
             <span class="n">scheme</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="n">column</span><span class="p">]</span><span class="o">.</span><span class="n">scheme_id</span><span class="p">]</span>
             <span class="n">labels</span> <span class="o">=</span> <span class="n">scheme</span><span class="o">.</span><span class="n">_labels_to_list</span><span class="p">()</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">labels</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">int</span><span class="p">):</span>
-                <span class="c1"># allow nullable</span>
-                <span class="n">labels</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;int64&quot;</span><span class="p">)</span>
-            <span class="n">dtype</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">CategoricalDtype</span><span class="p">(</span>
-                <span class="n">categories</span><span class="o">=</span><span class="n">labels</span><span class="p">,</span>
-                <span class="n">ordered</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-            <span class="p">)</span>
+            <span class="n">dtype</span> <span class="o">=</span> <span class="n">to_categorical_dtype</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span>
             <span class="n">df</span><span class="p">[</span><span class="n">column</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">column</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">df</span>
 
@@ -2106,7 +2103,7 @@
         
         
         
-          Built with <a href="https://www.sphinx-doc.org">Sphinx</a> on 2026/01/12 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org">Sphinx</a> on 2026/02/18 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
