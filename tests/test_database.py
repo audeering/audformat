@@ -427,7 +427,8 @@ def test_load(tmpdir):
     assert list(db.schemes) == ["misc", "scheme1", "scheme2", "scheme3"]
 
 
-def test_load_with_misc_table_as_scheme_labels(tmpdir):
+@pytest.mark.parametrize("load_data", [(True, False)])
+def test_load_with_misc_table_as_scheme_labels(tmpdir, load_data):
     """Test loading database when regular table uses scheme with misc table labels.
 
     When a scheme uses a misc table as labels (labels="misc-table-id"),
@@ -474,7 +475,7 @@ def test_load_with_misc_table_as_scheme_labels(tmpdir):
     db.save(tmpdir)
 
     # Load with load_data=True
-    db_loaded = audformat.Database.load(tmpdir, load_data=True)
+    db_loaded = audformat.Database.load(tmpdir, load_data=load_data)
 
     # Verify the categorical column has correct categories
     # (not empty, which would happen if misc table wasn't loaded first)
