@@ -725,8 +725,51 @@ def hash(
             df = obj.to_frame().reset_index()
         else:
             df = obj.reset_index()
-        # Handle column names and dtypes
-        table = pa.Table.from_pandas(df, preserve_index=False)
+
+        # Ensure column names are strings for pyarrow compatibility
+        # (empty index converted to DataFrame may have integer column names)
+        df.columns = [str(c) for c in df.columns]
+
+        # Normalize string columns to object dtype for consistent hashing
+        # (pandas 3.0 uses "string" dtype which maps to pyarrow "large_string",
+        # while "object" dtype maps to pyarrow "string")
+        # For empty DataFrames, we also need to specify an explicit schema
+        # because pyarrow infers "null" type for empty object columns
+        schema_fields = []
+        for col in df.columns:
+            if pd.api.types.is_string_dtype(df[col].dtype):
+                df[col] = df[col].astype("object")
+                schema_fields.append((col, pa.string()))
+            elif isinstance(df[col].dtype, pd.CategoricalDtype):
+                # Normalize categorical with string categories to object
+                cat_dtype = df[col].dtype.categories.dtype
+                if pd.api.types.is_string_dtype(cat_dtype):
+                    new_categories = df[col].dtype.categories.astype("object")
+                    ordered = df[col].dtype.ordered
+                    df[col] = df[col].astype(
+                        pd.CategoricalDtype(new_categories, ordered=ordered)
+                    )
+                schema_fields.append((col, None))
+            else:
+                # Let pyarrow infer
+                schema_fields.append((col, None))
+        # Build schema for columns that need explicit types
+        if len(df) == 0 and any(f[1] is not None for f in schema_fields):
+            # For empty DataFrames with index of type string/object,
+            # specify schema explicitly
+            schema = pa.schema(
+                [
+                    (
+                        name,
+                        typ if typ is not None else pa.from_numpy_dtype(df[name].dtype),
+                    )
+                    for name, typ in schema_fields
+                ]
+            )
+            table = pa.Table.from_pandas(df, preserve_index=False, schema=schema)
+        else:
+            # Handle column names and dtypes
+            table = pa.Table.from_pandas(df, preserve_index=False)
         schema_str = table.schema.to_string(
             # schema.metadata contains pandas related information,
             # and the used pyarrow and pandas version,
@@ -1030,7 +1073,7 @@ def iter_by_file(
         ('f1', MultiIndex([('f1', '0 days 00:00:00', '0 days 00:00:02'),
             ('f1', '0 days 00:00:01', '0 days 00:00:03')],
            names=['file', 'start', 'end']))
-        >>> obj = pd.Series(["a", "b", "b"], index)
+        >>> obj = pd.Series(["a", "b", "b"], index, dtype="object")
         >>> next(iter_by_file(obj))
         ('f1', file  start            end
         f1    0 days 00:00:00  0 days 00:00:02    a
@@ -1479,14 +1522,14 @@ def set_index_dtypes(
         index with new dtypes
 
     Examples:
-        >>> index1 = pd.Index(["a", "b"])
+        >>> index1 = pd.Index(["a", "b"], dtype="object")
         >>> index1
         Index(['a', 'b'], dtype='object')
         >>> index2 = set_index_dtypes(index1, "string")
         >>> index2
         Index(['a', 'b'], dtype='string')
         >>> index3 = pd.MultiIndex.from_arrays(
-        ...     [["a", "b"], [1, 2]],
+        ...     [pd.Index(["a", "b"], dtype="object"), [1, 2]],
         ...     names=["level1", "level2"],
         ... )
         >>> index3.dtypes
@@ -1497,11 +1540,6 @@ def set_index_dtypes(
         >>> index4.dtypes
         level1    object
         level2   float64
-        dtype: object
-        >>> index5 = set_index_dtypes(index3, "string")
-        >>> index5.dtypes
-        level1    string[python]
-        level2    string[python]
         dtype: object
 
     """
@@ -1522,6 +1560,17 @@ def set_index_dtypes(
     if len(dtypes) == 0:
         return index
 
+    def dtypes_equal(dt1, dt2):
+        # Normalize representations to actual dtype objects
+        dt1 = pd.api.types.pandas_dtype(dt1)
+        dt2 = pd.api.types.pandas_dtype(dt2)
+        if dt1 != dt2:
+            return False
+        # Different string dtypes should return False
+        if isinstance(dt1, pd.StringDtype):
+            return dt1.na_value is dt2.na_value
+        return dt1 == dt2
+
     if isinstance(index, pd.MultiIndex):
         # MultiIndex
         if any([len(index.levels[index.names.index(level)]) == 0 for level in dtypes]):
@@ -1529,11 +1578,11 @@ def set_index_dtypes(
             # so we convert to a dataframe instead
             df = index.to_frame()
             for level, dtype in dtypes.items():
-                if dtype != df[level].dtype:
+                if not dtypes_equal(dtype, df[level].dtype):
                     if pd.api.types.is_timedelta64_dtype(dtype):
                         # avoid: TypeError: Cannot cast DatetimeArray
                         # to dtype timedelta64[ns]
-                        df[level] = pd.to_timedelta(list(df[level]))
+                        df[level] = pd.to_timedelta(list(df[level])).astype(dtype)
                     else:
                         df[level] = df[level].astype(dtype)
             index = pd.MultiIndex.from_frame(df)
@@ -1544,7 +1593,7 @@ def set_index_dtypes(
                 # hence we access the data directly with
                 # index.levels[idx]
                 idx = index.names.index(level)
-                if dtype != index.levels[idx].dtype:
+                if not dtypes_equal(dtype, index.levels[idx].dtype):
                     index = index.set_levels(
                         index.levels[idx].astype(dtype),
                         level=level,
@@ -1553,7 +1602,7 @@ def set_index_dtypes(
     else:
         # Index
         dtype = next(iter(dtypes.values()))
-        if dtype != index.dtype:
+        if not dtypes_equal(dtype, index.dtype):
             index = index.astype(dtype)
 
     return index

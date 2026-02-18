@@ -19,6 +19,7 @@ from audformat.core import utils
 from audformat.core.column import Column
 from audformat.core.common import HeaderBase
 from audformat.core.common import HeaderDict
+from audformat.core.common import to_categorical_dtype
 from audformat.core.common import to_pandas_dtype
 from audformat.core.errors import BadIdError
 from audformat.core.index import filewise_index
@@ -981,7 +982,7 @@ class Base(HeaderBase):
                 and (self.db.schemes[column.scheme_id].dtype == define.DataType.STRING)
                 and df[column_id].dtype == "object"
             ):
-                df[column_id] = df[column_id].astype("string", copy=False)
+                df[column_id] = df[column_id].astype("string")
         # Fix index entries as well
         df.index = _maybe_convert_dtype_to_string(df.index)
 
@@ -1004,11 +1005,13 @@ class Base(HeaderBase):
             df: dataframe,
             convert_all: if ``False``,
                 converts all columns with
-                ``"object"`` audformat dtype,
+                ``"object"``,
+                and ``"time"``
+                audformat dtype,
                 and all columns with a scheme with labels.
                 If ``"True"``,
                 it converts additionally all columns with
-                ``"bool"``, ``"int"``, and ``"time"`` audformat dtypes
+                ``"bool"``, and ``"int"`` audformat dtypes
 
         Returns:
             dataframe with converted dtypes
@@ -1066,21 +1069,15 @@ class Base(HeaderBase):
                 df[column] = df[column].astype("boolean")
             for column in int_columns:
                 df[column] = df[column].astype("Int64")
-            for column in time_columns:
-                df[column] = df[column].astype("timedelta64[ns]")
+        for column in time_columns:
+            df[column] = df[column].astype("timedelta64[ns]")
         for column in object_columns:
             df[column] = df[column].astype("object")
             df[column] = df[column].replace(pd.NA, None)
         for column in labeled_columns:
             scheme = self.db.schemes[self.columns[column].scheme_id]
             labels = scheme._labels_to_list()
-            if len(labels) > 0 and isinstance(labels[0], int):
-                # allow nullable
-                labels = pd.array(labels, dtype="int64")
-            dtype = pd.api.types.CategoricalDtype(
-                categories=labels,
-                ordered=False,
-            )
+            dtype = to_categorical_dtype(labels)
             df[column] = df[column].astype(dtype)
         return df
 

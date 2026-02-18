@@ -507,7 +507,7 @@ def db_scheme_with_misc_table():
                 index=audformat.filewise_index(["f1", "f2", "f3"]),
                 name="column",
                 dtype=pd.CategoricalDtype(
-                    categories=["a", "b", "c"],
+                    categories=pd.Index(["a", "b", "c"], dtype="object"),
                     ordered=False,
                 ),
             ),
@@ -598,7 +598,7 @@ def db_scheme_with_misc_table():
                 index=audformat.filewise_index(["f1", "f2", "f3"]),
                 name="column",
                 dtype=pd.CategoricalDtype(
-                    categories=["a", "b", "c"],
+                    categories=pd.Index(["a", "b", "c"], dtype="object"),
                     ordered=False,
                 ),
             ),
@@ -621,7 +621,7 @@ def db_scheme_with_misc_table():
                 index=audformat.filewise_index(["f1", "f2", "f3"]),
                 name="str-categories",
                 dtype=pd.CategoricalDtype(
-                    categories=["female", "male"],
+                    categories=pd.Index(["female", "male"], dtype="object"),
                     ordered=False,
                 ),
             ),

@@ -17,6 +17,7 @@ from audformat.core.index import filewise_index
 from audformat.core.index import is_filewise_index
 from audformat.core.index import is_segmented_index
 from audformat.core.index import segmented_index
+from audformat.core.index import to_timedelta
 from audformat.core.media import Media
 from audformat.core.rater import Rater
 from audformat.core.scheme import Scheme
@@ -115,7 +116,7 @@ def add_table(
 
     """
     if isinstance(file_duration, str):
-        file_duration = pd.Timedelta(file_duration)
+        file_duration = to_timedelta(file_duration)
 
     audio_format = "wav"
     if media_id and db.media[media_id].format:
@@ -143,7 +144,7 @@ def add_table(
 
         for file in files:
             times = [
-                pd.to_timedelta(random.random() * file_duration, unit="s")
+                random.random() * file_duration
                 for _ in range(num_segments_per_file * 2)
             ]
             times.sort()

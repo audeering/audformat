@@ -7,6 +7,7 @@ import itertools
 import os
 import shutil
 
+import numpy as np
 import oyaml as yaml
 
 
@@ -696,12 +697,16 @@ class Database(HeaderBase):
                 ys.append(y)
 
         def dtypes_of_categories(objs):
-            dtypes = [
-                obj.dtype.categories.dtype
-                for obj in objs
-                if isinstance(obj.dtype, pd.CategoricalDtype)
-            ]
-            return sorted(list(set(dtypes)))
+            cat_dtypes = []
+            for obj in objs:
+                if isinstance(obj.dtype, pd.CategoricalDtype):
+                    # Normalize string-like categorical dtypes to object
+                    cat_dtype = obj.dtype.categories.dtype
+                    if isinstance(cat_dtype, pd.StringDtype):
+                        cat_dtype = np.dtype("O")
+                    cat_dtypes.append(cat_dtype)
+            # Deduplicate and sort for consistent ordering
+            return sorted(list(set(cat_dtypes)), key=str)
 
         def empty_frame(name):
             return pd.DataFrame(
@@ -823,7 +828,7 @@ class Database(HeaderBase):
                 raise TypeError(  # pragma: nocover
                     f"Cannot join labels for scheme '{requested_scheme}' "
                     "with different data types: "
-                    f"{', '.join(dtypes)}"
+                    f"{', '.join(str(d) for d in dtypes)}"
                 )
             dtype = dtypes[0]
             # Convert everything to categorical data
@@ -832,6 +837,12 @@ class Database(HeaderBase):
                     ys[n] = y.astype(
                         pd.CategoricalDtype(y.array.dropna().unique().astype(dtype))
                     )
+            # Normalize string-like categorical dtypes to object
+            for n, y in enumerate(ys):
+                cat_dtype = y.dtype.categories.dtype
+                if isinstance(cat_dtype, pd.StringDtype):
+                    new_categories = y.dtype.categories.astype("object")
+                    ys[n] = y.astype(pd.CategoricalDtype(new_categories))
             # Find union of categorical data
             data = [y.array for y in ys]
             try:

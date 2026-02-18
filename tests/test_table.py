@@ -944,8 +944,8 @@ def test_extend_index():
     index = pd.MultiIndex.from_arrays(
         [
             ["3.wav"],
-            [pd.Timedelta(0)],
-            [pd.Timedelta(4, unit="s")],
+            [pd.Timedelta(0).as_unit("ns")],
+            [pd.Timedelta(4, unit="s").as_unit("ns")],
         ],
         names=["file", "start", "end"],
     )
@@ -1860,6 +1860,7 @@ def test_type():
         pd.TimedeltaIndex(
             [pd.NaT],
             name=audformat.define.IndexField.END,
+            dtype="timedelta64[ns]",
         ),
     )
     pd.testing.assert_index_equal(db["files"].index, db["files"].index)
