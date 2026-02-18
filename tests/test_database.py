@@ -440,7 +440,7 @@ def test_load_with_misc_table_as_scheme_labels(tmpdir):
     but the misc table hasn't been loaded yet,
     resulting in empty categories.
 
-    See https://github.com/audeering/audformat/issues/XXX
+    See https://github.com/audeering/audformat/issues/506
 
     """
     # Create database
