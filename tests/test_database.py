@@ -480,7 +480,9 @@ def test_load_with_misc_table_as_scheme_labels(tmpdir, load_data):
     # Verify the categorical column has correct categories
     # (not empty, which would happen if misc table wasn't loaded first)
     expected_categories = ["spk1", "spk2", "spk3"]
-    loaded_categories = list(db_loaded["files"].df["speaker"].cat.categories)
+    col = db_loaded["files"].df["speaker"]
+    assert pd.api.types.is_categorical_dtype(col.dtype)
+    loaded_categories = list(col.cat.categories)
     assert loaded_categories == expected_categories, (
         f"Expected categories {expected_categories}, "
         f"but got {loaded_categories}. "
