@@ -427,6 +427,70 @@ def test_load(tmpdir):
     assert list(db.schemes) == ["misc", "scheme1", "scheme2", "scheme3"]
 
 
+def test_load_with_misc_table_as_scheme_labels(tmpdir):
+    """Test loading database when regular table uses scheme with misc table labels.
+
+    When a scheme uses a misc table as labels (labels="misc-table-id"),
+    and a regular table has a column using that scheme,
+    Database.load() with load_data=True must load the misc table
+    before loading the regular table.
+
+    Otherwise, when converting the regular table's column to categorical dtype,
+    the scheme tries to get labels from the misc table,
+    but the misc table hasn't been loaded yet,
+    resulting in empty categories.
+
+    See https://github.com/audeering/audformat/issues/XXX
+
+    """
+    # Create database
+    db = audformat.Database(
+        name="test-db",
+        source="test",
+        usage=audformat.define.Usage.UNRESTRICTED,
+    )
+
+    # 1. Create a misc table that will be used as scheme labels
+    db["speaker"] = audformat.MiscTable(
+        pd.Index(["spk1", "spk2", "spk3"], dtype="string", name="speaker")
+    )
+    db["speaker"]["age"] = audformat.Column()
+    db["speaker"].set({"age": [25, 30, 35]})
+
+    # 2. Create a scheme that references the misc table for labels
+    db.schemes["speaker"] = audformat.Scheme(
+        dtype="str",
+        labels="speaker",  # references misc table
+    )
+
+    # 3. Create a regular table with a column using this scheme
+    db["files"] = audformat.Table(
+        audformat.filewise_index(["f1.wav", "f2.wav", "f3.wav"])
+    )
+    db["files"]["speaker"] = audformat.Column(scheme_id="speaker")
+    db["files"].set({"speaker": ["spk1", "spk2", "spk1"]})
+
+    # Save
+    db.save(tmpdir)
+
+    # Load with load_data=True
+    db_loaded = audformat.Database.load(tmpdir, load_data=True)
+
+    # Verify the categorical column has correct categories
+    # (not empty, which would happen if misc table wasn't loaded first)
+    expected_categories = ["spk1", "spk2", "spk3"]
+    loaded_categories = list(db_loaded["files"].df["speaker"].cat.categories)
+    assert loaded_categories == expected_categories, (
+        f"Expected categories {expected_categories}, "
+        f"but got {loaded_categories}. "
+        "This indicates the misc table was not loaded before the regular table."
+    )
+
+    # Verify the data was loaded correctly
+    pd.testing.assert_frame_equal(db["files"].df, db_loaded["files"].df)
+    pd.testing.assert_frame_equal(db["speaker"].df, db_loaded["speaker"].df)
+
+
 @pytest.mark.parametrize(
     "num_workers",
     [
