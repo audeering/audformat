@@ -447,19 +447,19 @@ def test_expand_file_path(tmpdir, index, root, expected):
             pd.Index([], dtype="object"),
             True,
             True,
-            "cac385b69ab9f5fb1cd31283c43f759b",
+            "a42d9391a6d9a3fc829572ba58594f61",
         ),
         (
             pd.Series([], index=pd.Index([], dtype="object"), dtype="object"),
             True,
             True,
-            "1f22f8c646d1472be62096643ffc96d1",
+            "54cab50011e1ff2d42fb604920b543b6",
         ),
         (
             pd.DataFrame([], index=pd.Index([], dtype="object"), dtype="object"),
             True,
             True,
-            "763684caf1f774ce4dc4e818f3e901bc",
+            "318b60eb97bf321ab9031a44d7424cb3",
         ),
         (
             pd.Index(
@@ -468,7 +468,7 @@ def test_expand_file_path(tmpdir, index, root, expected):
             ),
             True,
             True,
-            "dfd27f8e3cd84718c6046123f8e28fb0",
+            "a1135d9fc2a157ca9cb50ec06c118e7e",
         ),
         (
             pd.Index(
@@ -477,7 +477,7 @@ def test_expand_file_path(tmpdir, index, root, expected):
             ),
             True,
             True,
-            "d484f2c7f7232a2eca44ed431bfb982c",
+            "2d07e58d0cd1048b5415462299f98040",
         ),
         (
             pd.Index(
@@ -486,7 +486,7 @@ def test_expand_file_path(tmpdir, index, root, expected):
             ),
             True,
             True,
-            "d484f2c7f7232a2eca44ed431bfb982c",
+            "2d07e58d0cd1048b5415462299f98040",
         ),
         (
             pd.Index(
@@ -497,7 +497,7 @@ def test_expand_file_path(tmpdir, index, root, expected):
             ),
             True,
             True,
-            "d484f2c7f7232a2eca44ed431bfb982c",
+            "2d07e58d0cd1048b5415462299f98040",
         ),
         (
             audformat.filewise_index(),
@@ -509,7 +509,7 @@ def test_expand_file_path(tmpdir, index, root, expected):
             audformat.filewise_index(),
             True,
             True,
-            "890fa7e5864779b7c3bd85c9ede31657",
+            "681b6903a5678cbad45d632b7abc5592",
         ),
         (
             audformat.segmented_index(),
@@ -521,7 +521,7 @@ def test_expand_file_path(tmpdir, index, root, expected):
             audformat.segmented_index(),
             True,
             True,
-            "10d5e40fca4e40c6c70ff64495916059",
+            "a93f04608afb1e22eb5781649a7e6411",
         ),
         (
             audformat.filewise_index(["f1", "f2"]),
@@ -533,7 +533,7 @@ def test_expand_file_path(tmpdir, index, root, expected):
             audformat.filewise_index(["f1", "f2"]),
             True,
             False,
-            "0741235e2250e0fcd9ab7b64972f5047",
+            "fb9a35ca0492404e5f9dba30eebb3bfb",
         ),
         (
             audformat.segmented_index(["f1", "f2"]),
@@ -545,7 +545,7 @@ def test_expand_file_path(tmpdir, index, root, expected):
             audformat.segmented_index(["f1", "f2"]),
             True,
             False,
-            "0e99d54165e6cc2dad2737982853f8c7",
+            "d04e49f8f44d2e3100e510fa66323a11",
         ),
         (
             audformat.segmented_index(["f1", "f2"]),
@@ -563,7 +563,7 @@ def test_expand_file_path(tmpdir, index, root, expected):
             audformat.segmented_index(["f1", "f2"], [0, 0], [1, 1]),
             True,
             False,
-            "396fda484a46686b2b5c41b0ae9c94bd",
+            "5269b0fa86b2d968ea679bcc72072174",
         ),
         (
             pd.Series([0, 1], audformat.filewise_index(["f1", "f2"])),
@@ -575,7 +575,7 @@ def test_expand_file_path(tmpdir, index, root, expected):
             pd.Series([0, 1], audformat.filewise_index(["f1", "f2"])),
             True,
             False,
-            "28c5f6feb0682079b127d8ce8debebe9",
+            "22b5076aca51ca10e9d5ee4f5e3d9ba6",
         ),
         (
             pd.Series(
@@ -585,7 +585,7 @@ def test_expand_file_path(tmpdir, index, root, expected):
             ),
             True,
             False,
-            "74280b0163f6ae31438c26459901adfe",
+            "da05db53b017b36b67c949ab3e98022a",
         ),
         (
             pd.Series(
@@ -595,7 +595,7 @@ def test_expand_file_path(tmpdir, index, root, expected):
             ),
             True,
             False,
-            "74280b0163f6ae31438c26459901adfe",
+            "da05db53b017b36b67c949ab3e98022a",
         ),
         (
             pd.DataFrame(
@@ -613,7 +613,7 @@ def test_expand_file_path(tmpdir, index, root, expected):
             ),
             True,
             False,
-            "69785e94447fab79f2b65b1dcb4a2122",
+            "85685f8a20437b3eb985dd2d88a66266",
         ),
         (
             pd.Index([0, 1], name="idx"),
@@ -625,7 +625,7 @@ def test_expand_file_path(tmpdir, index, root, expected):
             pd.Index([0, 1], name="idx"),
             True,
             False,
-            "a02406270880cde74e66c07278b765a0",
+            "a7bc09af0f6a0e4778e9da71a18158fa",
         ),
         (
             pd.Index([0, 1], name="name"),
@@ -637,7 +637,7 @@ def test_expand_file_path(tmpdir, index, root, expected):
             pd.Index([0, 1], name="name"),
             True,
             False,
-            "7a8303866a35ececb4ae76a4aa050209",
+            "282a342291575534cbbbb0f250579157",
         ),
         (
             pd.MultiIndex.from_arrays(
@@ -655,7 +655,7 @@ def test_expand_file_path(tmpdir, index, root, expected):
             ),
             True,
             False,
-            "be5373f6d8f801b902d8cf0e2f2a1914",
+            "f839d1da18d20c85b574fdc7ebf1af96",
         ),
         (
             pd.MultiIndex.from_arrays(
@@ -673,7 +673,7 @@ def test_expand_file_path(tmpdir, index, root, expected):
             ),
             True,
             False,
-            "3726b3c39fc2c1453bb45a0460630ff7",
+            "83ac0f141fd43427404f2458dae5fb18",
         ),
         (
             pd.Series([0, 1], name="series"),
@@ -685,7 +685,7 @@ def test_expand_file_path(tmpdir, index, root, expected):
             pd.Series([0, 1], name="series"),
             True,
             False,
-            "ad0f9900c0e2f3954bde3abb6f4a9b61",
+            "b759a9b555611f9ba6655733f75659ed",
         ),
         (
             pd.Series([0, 1], name="name"),
@@ -697,7 +697,7 @@ def test_expand_file_path(tmpdir, index, root, expected):
             pd.Series([0, 1], name="name"),
             True,
             False,
-            "648314808f0b27e5c04479ba8509fc25",
+            "39155844577f790335174bb841f433f2",
         ),
         (
             pd.DataFrame([0, 1], columns=["frame"]),
@@ -709,7 +709,7 @@ def test_expand_file_path(tmpdir, index, root, expected):
             pd.DataFrame([0, 1], columns=["frame"]),
             True,
             False,
-            "36d9779e257319ff69515af6b4ade8ad",
+            "319a38cc709fcd090b90a0246ee98681",
         ),
         (
             pd.DataFrame([0, 1], columns=["name"]),
@@ -721,7 +721,7 @@ def test_expand_file_path(tmpdir, index, root, expected):
             pd.DataFrame([0, 1], columns=["name"]),
             True,
             False,
-            "648314808f0b27e5c04479ba8509fc25",
+            "39155844577f790335174bb841f433f2",
         ),
         pytest.param(
             pd.DataFrame(
@@ -789,7 +789,7 @@ def test_expand_file_path(tmpdir, index, root, expected):
             ),
             True,
             False,
-            "e845db6fbe98b17f24dd71d3a991094f",
+            "07be2b36f16a87bc995d2725bc232483",
         ),
         (
             pd.DataFrame(
@@ -804,7 +804,7 @@ def test_expand_file_path(tmpdir, index, root, expected):
             ),
             True,
             False,
-            "e845db6fbe98b17f24dd71d3a991094f",
+            "07be2b36f16a87bc995d2725bc232483",
         ),
         (
             pd.DataFrame(
@@ -819,7 +819,7 @@ def test_expand_file_path(tmpdir, index, root, expected):
             ),
             True,
             False,
-            "e845db6fbe98b17f24dd71d3a991094f",
+            "07be2b36f16a87bc995d2725bc232483",
         ),
         (
             pd.DataFrame(
@@ -834,7 +834,7 @@ def test_expand_file_path(tmpdir, index, root, expected):
             ),
             True,
             False,
-            "1f6fec46a3c28c5ec3c07ef8f13fb258",
+            "44e83d3b5326633d2bca0cd84b725615",
         ),
     ],
 )
