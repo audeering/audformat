@@ -1154,12 +1154,29 @@ class TestLoadBrokenCsv:
 
     """
 
-    def database_with_hidden_columns(self) -> audformat.Database:
-        r"""Database with hidden columns.
+    def _save_and_load_broken_csv(
+        self,
+        db: audformat.Database,
+        tmpdir,
+    ) -> audformat.Database:
+        r"""Save database with hidden columns and load it back.
 
-        Create database with hidden columns
-        that are stored in csv,
-        but not in the header of the table.
+        Hidden columns trigger ArrowInvalid and force fallback to pd.read_csv().
+
+        Args:
+            db: database with hidden columns added to table dataframes
+            tmpdir: tmpdir fixture
+
+        Returns:
+            loaded database
+
+        """
+        build_dir = audeer.mkdir(tmpdir, "build")
+        db.save(build_dir, storage_format="csv")
+        return audformat.Database.load(build_dir, load_data=True)
+
+    def _create_database_filewise(self) -> audformat.Database:
+        r"""Create filewise database with hidden columns.
 
         Ensure:
 
@@ -1187,10 +1204,30 @@ class TestLoadBrokenCsv:
         db["table"]["no-scheme"].set(["label"])
         db["empty-table"] = audformat.Table(audformat.filewise_index())
         db["empty-table"]["column"] = audformat.Column()
-        # Add a hidden column to the table dataframes,
-        # without adding it to the table header
+        # Add hidden columns to trigger ArrowInvalid fallback
         db["table"].df["hidden"] = ["hidden"]
         db["empty-table"].df["hidden"] = []
+        return db
+
+    def _create_database_segmented(self) -> audformat.Database:
+        r"""Create segmented database with hidden columns.
+
+        Returns:
+            database
+
+        """
+        db = audformat.Database("mydb")
+        db.schemes["time"] = audformat.Scheme("time")
+        index = audformat.segmented_index(
+            files=["file.wav"],
+            starts=[pd.Timedelta("0s")],
+            ends=[pd.Timedelta("1s")],
+        )
+        db["table"] = audformat.Table(index)
+        db["table"]["time"] = audformat.Column(scheme_id="time")
+        db["table"]["time"].set([pd.Timedelta("500ms")])
+        # Add hidden column to trigger ArrowInvalid fallback
+        db["table"].df["hidden"] = ["hidden"]
         return db
 
     def test_load_broken_csv(self, tmpdir):
@@ -1205,10 +1242,8 @@ class TestLoadBrokenCsv:
             tmpdir: tmpdir fixture
 
         """
-        db = self.database_with_hidden_columns()
-        build_dir = audeer.mkdir(tmpdir, "build")
-        db.save(build_dir, storage_format="csv")
-        db_loaded = audformat.Database.load(build_dir, load_data=True)
+        db = self._create_database_filewise()
+        db_loaded = self._save_and_load_broken_csv(db, tmpdir)
         assert "table" in db_loaded
         assert "empty-table" in db_loaded
         assert "hidden" not in db_loaded["table"].df
@@ -1225,23 +1260,8 @@ class TestLoadBrokenCsv:
             tmpdir: tmpdir fixture
 
         """
-        db = audformat.Database("mydb")
-        db.schemes["time"] = audformat.Scheme("time")
-        # Create segmented index with timedelta values
-        index = audformat.segmented_index(
-            files=["file.wav"],
-            starts=[pd.Timedelta("0s")],
-            ends=[pd.Timedelta("1s")],
-        )
-        db["table"] = audformat.Table(index)
-        db["table"]["time"] = audformat.Column(scheme_id="time")
-        db["table"]["time"].set([pd.Timedelta("500ms")])
-        # Add a hidden column to trigger ArrowInvalid fallback
-        db["table"].df["hidden"] = ["hidden"]
-
-        build_dir = audeer.mkdir(tmpdir, "build")
-        db.save(build_dir, storage_format="csv")
-        db_loaded = audformat.Database.load(build_dir, load_data=True)
+        db = self._create_database_segmented()
+        db_loaded = self._save_and_load_broken_csv(db, tmpdir)
 
         assert "table" in db_loaded
         assert "hidden" not in db_loaded["table"].df
