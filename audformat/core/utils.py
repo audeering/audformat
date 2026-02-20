@@ -713,9 +713,9 @@ def hash(
         >>> hash(y)
         '5251663970176285425'
         >>> hash(index, strict=True)
-        '0741235e2250e0fcd9ab7b64972f5047'
+        'fb9a35ca0492404e5f9dba30eebb3bfb'
         >>> hash(index[::-1], strict=True)  # reversed index
-        'c6639d377897dd9353dc3e8b2968170d'
+        'b59b53388eb3ecf5a04ddd0edb89152a'
 
     """
     if strict:
