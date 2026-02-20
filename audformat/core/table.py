@@ -924,9 +924,9 @@ class Base(HeaderBase):
             dtypes_wo_converters = {}
             for column, dtype in columns_and_dtypes.items():
                 if dtype == define.DataType.DATE:
-                    converters[column] = lambda x: pd.to_datetime(x)
+                    converters[column] = pd.to_datetime
                 elif dtype == define.DataType.TIME:
-                    converters[column] = lambda x: to_timedelta(x)
+                    converters[column] = to_timedelta
                 else:
                     dtypes_wo_converters[column] = to_pandas_dtype(dtype)
 
