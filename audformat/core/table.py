@@ -1148,13 +1148,7 @@ class Base(HeaderBase):
             dataframe
 
         """
-        df = table.to_pandas(
-            deduplicate_objects=False,
-            types_mapper={
-                pa.string(): pd.StringDtype(),
-            }.get,  # we have to provide a callable, not a dict
-        )
-        # Adjust dtypes and set index
+        df = table.to_pandas(deduplicate_objects=False)
         df = self._pyarrow_convert_dtypes(df, convert_all=from_csv)
         index_columns = list(self._levels_and_dtypes.keys())
         df = self._set_index(df, index_columns)
