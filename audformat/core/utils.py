@@ -782,13 +782,17 @@ def hash(
         data_md5 = hashlib.md5()
         for _, y in df.items():
             # Convert every column to a numpy array,
-            # and hash its string representation
+            # and hash its string representation.
+            # Use threshold=np.inf to avoid truncation of large arrays,
+            # which would cause hash collisions for arrays >1000 elements
+            # that share the same boundary values.
             if y.dtype == "Int64":
                 # Enforce consistent conversion to numpy.array
                 # for integers across different pandas versions
                 # (since pandas 2.2.x, Int64 is converted to float if it contains <NA>)
                 y = y.astype("float")
-            data_md5.update(bytes(str(y.to_numpy()), "utf-8"))
+            with np.printoptions(threshold=np.inf):
+                data_md5.update(bytes(str(y.to_numpy()), "utf-8"))
         md5 = hashlib.md5()
         md5.update(schema_md5.digest())
         md5.update(data_md5.digest())
