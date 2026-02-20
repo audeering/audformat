@@ -38,6 +38,12 @@ if platform.system() in ["Windows"]:  # pragma: no cover
         "to_filewise_index",
     ]
 
+# Separator used when hashing object arrays in hash().
+# Null byte is used as it's unlikely to appear in typical data
+# (file paths, labels). Note: if data contains \x00, collisions
+# are theoretically possible - see tests for details.
+_OBJECT_ARRAY_SEPARATOR = "\x00"
+
 
 def concat(
     objs: Sequence[pd.Series | pd.DataFrame],
@@ -793,7 +799,9 @@ def hash(
             arr = y.to_numpy()
             if arr.dtype == object:
                 # Object arrays (strings, etc.) need explicit encoding
-                data_md5.update("\x00".join(str(x) for x in arr).encode("utf-8"))
+                data_md5.update(
+                    _OBJECT_ARRAY_SEPARATOR.join(str(x) for x in arr).encode("utf-8")
+                )
             else:
                 # Use platform-independent byte representation:
                 # convert to big-endian before hashing to ensure

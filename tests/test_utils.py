@@ -903,6 +903,37 @@ def test_hash_large_dataframes():
     )
 
 
+def test_hash_null_byte_collision():
+    # Document known limitation: strings containing the null byte separator
+    # can cause hash collisions. This is acceptable because null bytes
+    # are extremely rare in typical audformat data (file paths, labels),
+    # and alternative implementations are slower.
+    #
+    # The separator \x00 is used to join object array elements.
+    # If data contains \x00, the boundary between elements becomes ambiguous:
+    #   ["a\x00b", "c"] -> joined as "a\x00b\x00c"
+    #   ["a", "b\x00c"] -> joined as "a\x00b\x00c"
+    df1 = pd.DataFrame(
+        {"col": ["a\x00b", "c"]},
+        index=audformat.filewise_index(["f1.wav", "f2.wav"]),
+    )
+    df2 = pd.DataFrame(
+        {"col": ["a", "b\x00c"]},
+        index=audformat.filewise_index(["f1.wav", "f2.wav"]),
+    )
+
+    # Verify the DataFrames are actually different
+    assert list(df1["col"]) != list(df2["col"])
+
+    # Known limitation: these produce the same hash
+    hash1 = utils.hash(df1, strict=True)
+    hash2 = utils.hash(df2, strict=True)
+    assert hash1 == hash2, (
+        "If this fails, the null byte collision has been fixed! "
+        "Update this test to assert hash1 != hash2."
+    )
+
+
 @pytest.mark.parametrize(
     "obj, expected",
     [
