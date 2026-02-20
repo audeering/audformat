@@ -849,15 +849,15 @@ def test_hash(obj, strict, mutable, expected):
 
 
 def test_hash_large_dataframes():
-    # Test that DataFrames with >1000 rows produce different hashes
-    # even when they have the same boundary elements.
-    # NumPy truncates large arrays in str() representation,
-    # showing only the first 3 and last 3 elements.
-    # This test ensures the hash function handles this correctly.
+    # Test that DataFrames produce different hashes even when their
+    # numpy str() representations collide due to truncation.
+    # NumPy's str() truncates large arrays, showing only boundary elements.
+    # This test explicitly constructs arrays whose str() representations
+    # are identical, then verifies the hash function still distinguishes them.
     n_rows_1 = 2000
     n_rows_2 = 1500
 
-    # Create file indices with same first 3 and last 3 elements
+    # Create file indices with same boundary elements but different middle
     files_1 = (
         ["file-0.wav", "file-1.wav", "file-2.wav"]
         + [f"file-{i}.wav" for i in range(3, n_rows_1 - 3)]
@@ -879,13 +879,21 @@ def test_hash_large_dataframes():
         index=audformat.filewise_index(files_2),
     )
 
-    # Hashes must be different for different DataFrames
+    # Verify that naive str() conversion would cause collision
+    # (this documents the exact problem we're guarding against)
+    arr1 = df1.reset_index()["file"].astype("object").to_numpy()
+    arr2 = df2.reset_index()["file"].astype("object").to_numpy()
+    assert str(arr1) == str(arr2), (
+        "Test setup error: arrays should have identical str() representations "
+        "to properly test the truncation fix"
+    )
+
+    # Despite str() collision, hashes must be different
     hash1 = utils.hash(df1, strict=True)
     hash2 = utils.hash(df2, strict=True)
     assert hash1 != hash2, (
-        "Hash collision detected: different DataFrames with >1000 rows "
-        "produced the same hash. This may be caused by NumPy array "
-        "truncation in str() representation."
+        "Hash collision detected: different DataFrames produced the same hash "
+        "despite having different content"
     )
 
 
