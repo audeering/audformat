@@ -1400,15 +1400,15 @@ class TestHash:
     [
         (
             "files",
-            "272def77c629c0742bb7dc0b88b9405d",
+            "a67ebae3365be18b785b096d29933b58",
         ),
         (
             "segments",
-            "645af283a675b49e0aeade563fedf923",
+            "bf1632ba636bd075172b0526953376ff",
         ),
         (
             "misc",
-            "5170724fbe80037249f96c5c7dfc1841",
+            "ad2c755f2bd94b956d2862789982983e",
         ),
     ],
 )

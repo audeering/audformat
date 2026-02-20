@@ -795,6 +795,11 @@ def hash(
                 # Object arrays (strings, etc.) need explicit encoding
                 data_md5.update("\x00".join(str(x) for x in arr).encode("utf-8"))
             else:
+                # Use platform-independent byte representation:
+                # convert to big-endian before hashing to ensure
+                # consistent hashes across different architectures
+                if arr.dtype.byteorder == "=" or arr.dtype.byteorder == "<":
+                    arr = arr.astype(arr.dtype.newbyteorder(">"), copy=False)
                 data_md5.update(arr.tobytes())
         md5 = hashlib.md5()
         md5.update(schema_md5.digest())
