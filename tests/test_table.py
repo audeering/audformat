@@ -1214,6 +1214,44 @@ class TestLoadBrokenCsv:
         assert "hidden" not in db_loaded["table"].df
         assert "hidden-column" not in db_loaded["empty-table"].df
 
+    def test_load_broken_csv_segmented_index(self, tmpdir):
+        r"""Test loading a segmented table from broken csv files.
+
+        Segmented tables have start and end columns as timedelta values.
+        When falling back to pd.read_csv() due to ArrowInvalid,
+        ensure the timedelta resolution remains nanoseconds.
+
+        Args:
+            tmpdir: tmpdir fixture
+
+        """
+        db = audformat.Database("mydb")
+        db.schemes["time"] = audformat.Scheme("time")
+        # Create segmented index with timedelta values
+        index = audformat.segmented_index(
+            files=["file.wav"],
+            starts=[pd.Timedelta("0s")],
+            ends=[pd.Timedelta("1s")],
+        )
+        db["table"] = audformat.Table(index)
+        db["table"]["time"] = audformat.Column(scheme_id="time")
+        db["table"]["time"].set([pd.Timedelta("500ms")])
+        # Add a hidden column to trigger ArrowInvalid fallback
+        db["table"].df["hidden"] = ["hidden"]
+
+        build_dir = audeer.mkdir(tmpdir, "build")
+        db.save(build_dir, storage_format="csv")
+        db_loaded = audformat.Database.load(build_dir, load_data=True)
+
+        assert "table" in db_loaded
+        assert "hidden" not in db_loaded["table"].df
+        # Verify timedelta resolution is nanoseconds for index levels
+        loaded_index = db_loaded["table"].df.index
+        assert loaded_index.get_level_values("start").dtype == "timedelta64[ns]"
+        assert loaded_index.get_level_values("end").dtype == "timedelta64[ns]"
+        # Verify timedelta resolution is nanoseconds for time column
+        assert db_loaded["table"]["time"].get().dtype == "timedelta64[ns]"
+
 
 def test_load_old_pickle(tmpdir):
     # We have stored string dtype as object dtype before
