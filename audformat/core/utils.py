@@ -698,6 +698,11 @@ def hash(
         and ``strict`` is ``False``,
         the returned hash value changes with ``pandas>=2.2.0``.
 
+    .. warning::
+
+        The returned hash with ``strict`` is ``True``
+        has changed in ``audformat>=1.4.0``.
+
     Args:
         obj: object
         strict: if ``True``,
