@@ -26,6 +26,7 @@ from audformat.core.index import filewise_index
 from audformat.core.index import index_type
 from audformat.core.index import is_filewise_index
 from audformat.core.index import is_segmented_index
+from audformat.core.index import to_timedelta
 from audformat.core.media import Media
 from audformat.core.split import Split
 from audformat.core.typing import Values
@@ -923,9 +924,9 @@ class Base(HeaderBase):
             dtypes_wo_converters = {}
             for column, dtype in columns_and_dtypes.items():
                 if dtype == define.DataType.DATE:
-                    converters[column] = lambda x: pd.to_datetime(x)
+                    converters[column] = pd.to_datetime
                 elif dtype == define.DataType.TIME:
-                    converters[column] = lambda x: pd.to_timedelta(x)
+                    converters[column] = to_timedelta
                 else:
                     dtypes_wo_converters[column] = to_pandas_dtype(dtype)
 
