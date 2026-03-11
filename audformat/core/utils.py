@@ -797,10 +797,8 @@ def hash(
 
     """
     if strict:
-        # Build schema string from column/index names and normalized dtypes.
-        # This avoids creating a pyarrow table just for the schema,
-        # and avoids the DataFrame copy from reset_index().
-        schema_parts = []
+        # Collect column/index names and normalized dtypes.
+        dtypes = []
 
         # Collect index levels
         if isinstance(obj, (pd.DataFrame, pd.Series)):
@@ -812,23 +810,21 @@ def hash(
             for i in range(index.nlevels):
                 name = str(index.names[i]) if index.names[i] is not None else str(i)
                 dtype = index.get_level_values(i).dtype
-                schema_parts.append(f"{name}: {_normalize_dtype_name(dtype)}")
+                dtypes.append(f"{name}: {_normalize_dtype_name(dtype)}")
         else:
             name = str(index.name) if index.name is not None else "0"
-            schema_parts.append(f"{name}: {_normalize_dtype_name(index.dtype)}")
+            dtypes.append(f"{name}: {_normalize_dtype_name(index.dtype)}")
 
         # Collect column/value dtypes
         if isinstance(obj, pd.DataFrame):
             for col in obj.columns:
-                schema_parts.append(
-                    f"{str(col)}: {_normalize_dtype_name(obj[col].dtype)}"
-                )
+                dtypes.append(f"{str(col)}: {_normalize_dtype_name(obj[col].dtype)}")
         elif isinstance(obj, pd.Series):
             name = str(obj.name) if obj.name is not None else "0"
-            schema_parts.append(f"{name}: {_normalize_dtype_name(obj.dtype)}")
+            dtypes.append(f"{name}: {_normalize_dtype_name(obj.dtype)}")
 
-        schema_str = "\n".join(schema_parts)
-        schema_md5 = hashlib.md5(schema_str.encode())
+        dtypes_str = "\n".join(dtypes)
+        dtypes_md5 = hashlib.md5(dtypes_str.encode())
 
         # Hash data: index levels, then values
         data_md5 = hashlib.md5()
@@ -848,7 +844,7 @@ def hash(
             _hash_update_array(data_md5, obj)
 
         md5 = hashlib.md5()
-        md5.update(schema_md5.digest())
+        md5.update(dtypes_md5.digest())
         md5.update(data_md5.digest())
         md5 = md5.hexdigest()
     else:

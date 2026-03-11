@@ -1190,8 +1190,7 @@ class Base(HeaderBase):
             path: path, including file extension
 
         """
-        # Create hash before building pyarrow table
-        # to avoid double conversion
+        # Create hash of table
         table_hash = utils.hash(self.df, strict=True)
 
         table = pa.Table.from_pandas(self.df.reset_index(), preserve_index=False)
