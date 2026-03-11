@@ -685,18 +685,33 @@ def _normalize_dtype_name(dtype) -> str:
     to a single string, e.g. both ``"string"`` and ``"object"``
     dtypes map to ``"string"``.
 
+    Preserves precision for numeric types
+    (e.g. ``int32`` and ``int64`` produce different strings).
+
     """
     if isinstance(dtype, pd.CategoricalDtype):
-        return "categorical"
+        # Include category dtype to distinguish e.g.
+        # categorical-with-strings from categorical-with-ints
+        if dtype.categories is not None:
+            cat_dtype = _normalize_dtype_name(dtype.categories.dtype)
+        else:
+            cat_dtype = "empty"
+        return f"categorical[{cat_dtype}]"
     if pd.api.types.is_string_dtype(dtype):
+        # Normalize string/object/StringDtype
         return "string"
     if pd.api.types.is_bool_dtype(dtype):
+        # Normalize bool/BooleanDtype
         return "bool"
-    if pd.api.types.is_integer_dtype(dtype):
-        return "int64"
-    if pd.api.types.is_float_dtype(dtype):
-        return "float64"
-    return str(dtype)
+    # Standard numpy dtypes: preserve precise type name
+    # (int32, int64, float32, float64, timedelta64[ns], datetime64[ns], etc.)
+    try:
+        return np.dtype(dtype).name
+    except TypeError:
+        pass
+    # Nullable extension dtypes (Int8, Int64, Float32, Float64, etc.)
+    if hasattr(dtype, "numpy_dtype"):
+        return dtype.numpy_dtype.name
 
 
 def _hash_update_array(
@@ -709,10 +724,13 @@ def _hash_update_array(
     and object arrays via explicit string encoding.
 
     """
-    if hasattr(arr_like, "dtype") and arr_like.dtype == "Int64":
-        # Enforce consistent conversion to numpy.array
-        # for integers across different pandas versions
-        # (since pandas 2.2.x, Int64 is converted to float if it contains <NA>)
+    if pd.api.types.is_integer_dtype(arr_like.dtype) and hasattr(
+        arr_like.dtype, "numpy_dtype"
+    ):
+        # Nullable integer extension types (Int8, ..., Int64, UInt8, ..., UInt64)
+        # need conversion to float for consistent numpy array representation
+        # (since pandas 2.2.x, nullable integers with <NA> convert to float anyway,
+        # but older versions may produce object arrays)
         arr = arr_like.astype("float").to_numpy()
     else:
         arr = np.asarray(arr_like)

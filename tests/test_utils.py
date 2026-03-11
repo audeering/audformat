@@ -468,7 +468,7 @@ def test_expand_file_path(tmpdir, index, root, expected):
             ),
             True,
             True,
-            "8a1d32a5024ca77a28e69a56d895ebcd",
+            "99e50586d77bc58603daa1c3354409bd",
         ),
         (
             pd.Index(
@@ -477,7 +477,7 @@ def test_expand_file_path(tmpdir, index, root, expected):
             ),
             True,
             True,
-            "8a1d32a5024ca77a28e69a56d895ebcd",
+            "99e50586d77bc58603daa1c3354409bd",
         ),
         (
             pd.Index(
@@ -486,7 +486,7 @@ def test_expand_file_path(tmpdir, index, root, expected):
             ),
             True,
             True,
-            "8a1d32a5024ca77a28e69a56d895ebcd",
+            "99e50586d77bc58603daa1c3354409bd",
         ),
         (
             pd.Index(
@@ -497,7 +497,7 @@ def test_expand_file_path(tmpdir, index, root, expected):
             ),
             True,
             True,
-            "8a1d32a5024ca77a28e69a56d895ebcd",
+            "99e50586d77bc58603daa1c3354409bd",
         ),
         (
             audformat.filewise_index(),
@@ -789,7 +789,7 @@ def test_expand_file_path(tmpdir, index, root, expected):
             ),
             True,
             False,
-            "b623c7350c84938fcececc307679d2fd",
+            "a5f857585697a7d5f6cc813376517002",
         ),
         (
             pd.DataFrame(
@@ -804,7 +804,7 @@ def test_expand_file_path(tmpdir, index, root, expected):
             ),
             True,
             False,
-            "b623c7350c84938fcececc307679d2fd",
+            "a5f857585697a7d5f6cc813376517002",
         ),
         (
             pd.DataFrame(
@@ -819,7 +819,7 @@ def test_expand_file_path(tmpdir, index, root, expected):
             ),
             True,
             False,
-            "b623c7350c84938fcececc307679d2fd",
+            "a5f857585697a7d5f6cc813376517002",
         ),
         (
             pd.DataFrame(
@@ -834,7 +834,7 @@ def test_expand_file_path(tmpdir, index, root, expected):
             ),
             True,
             False,
-            "1c5d6b07067d695047d605e2fbdddc2a",
+            "4417e784fe92866bbfaedf73ca4a03c9",
         ),
     ],
 )
@@ -932,6 +932,43 @@ def test_hash_null_byte_collision():
         "If this fails, the null byte collision has been fixed! "
         "Update this test to assert hash1 != hash2."
     )
+
+
+def test_normalize_dtype_name():
+    from audformat.core.utils import _normalize_dtype_name
+
+    # Categorical with unset categories
+    dt = pd.CategoricalDtype()
+    assert _normalize_dtype_name(dt) == "categorical[empty]"
+
+    # Categorical with string categories
+    dt = pd.CategoricalDtype(["a", "b"])
+    assert _normalize_dtype_name(dt) == "categorical[string]"
+
+    # Categorical with int categories
+    dt = pd.CategoricalDtype([1, 2])
+    assert _normalize_dtype_name(dt) == "categorical[int64]"
+
+    # Nullable integer extension type
+    assert _normalize_dtype_name(pd.Int64Dtype()) == "int64"
+    assert _normalize_dtype_name(pd.Int32Dtype()) == "int32"
+
+    # Numpy types preserve precision
+    assert _normalize_dtype_name(np.dtype("int32")) == "int32"
+    assert _normalize_dtype_name(np.dtype("float32")) == "float32"
+    assert _normalize_dtype_name(np.dtype("int64")) == "int64"
+
+    # String normalization
+    assert _normalize_dtype_name(pd.StringDtype()) == "string"
+    assert _normalize_dtype_name(np.dtype("O")) == "string"
+
+    # Bool normalization
+    assert _normalize_dtype_name(pd.BooleanDtype()) == "bool"
+    assert _normalize_dtype_name(np.dtype("bool")) == "bool"
+
+    # Timedelta/datetime preserved
+    assert _normalize_dtype_name(np.dtype("timedelta64[ns]")) == "timedelta64[ns]"
+    assert _normalize_dtype_name(np.dtype("datetime64[ns]")) == "datetime64[ns]"
 
 
 @pytest.mark.parametrize(
