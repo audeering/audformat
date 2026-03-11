@@ -1073,8 +1073,7 @@ class Base(HeaderBase):
         for column in time_columns:
             df[column] = df[column].astype("timedelta64[ns]")
         for column in object_columns:
-            df[column] = df[column].astype("object")
-            df[column] = df[column].replace(pd.NA, None)
+            df[column] = df[column].astype("object").replace(pd.NA, None)
         for column in labeled_columns:
             scheme = self.db.schemes[self.columns[column].scheme_id]
             labels = scheme._labels_to_list()
