@@ -954,6 +954,13 @@ class Base(HeaderBase):
         table = parquet.read_table(path)
         df = self._pyarrow_table_to_dataframe(table)
 
+        # Read audformat version from metadata.
+        # Files written before 1.4.0 don't have this key.
+        metadata = table.schema.metadata or {}
+        self._audformat_version = (
+            metadata.get(b"audformat-version", b"").decode() or None
+        )
+
         self._df = df
 
     def _load_pickled(self, path: str):
@@ -970,22 +977,39 @@ class Base(HeaderBase):
         # but was slower.
         # The try-except statement allows backward compatibility
         try:
-            df = pd.read_pickle(path)
+            data = pd.read_pickle(path)
         except pickle.UnpicklingError:
-            df = pd.read_pickle(path, compression="xz")
+            data = pd.read_pickle(path, compression="xz")
+
+        # Since 1.4.0, pickle files store a dict
+        # with audformat version and dataframe.
+        # Older files store a bare dataframe.
+        if isinstance(data, dict):
+            version = data.get("audformat-version")
+            df = data["df"]
+        else:
+            version = None
+            df = data
+
+        self._audformat_version = version
 
         # Older versions of audformat stored columns
         # assigned to a string scheme as 'object',
-        # so we need to convert those to 'string'
-        for column_id, column in self.columns.items():
-            if (
-                column.scheme_id is not None
-                and (self.db.schemes[column.scheme_id].dtype == define.DataType.STRING)
-                and df[column_id].dtype == "object"
-            ):
-                df[column_id] = df[column_id].astype("string")
-        # Fix index entries as well
-        df.index = _maybe_convert_dtype_to_string(df.index)
+        # so we need to convert those to 'string'.
+        # This was fixed in 1.4.0.
+        if _needs_legacy_fixup(version, "1.4.0"):
+            for column_id, column in self.columns.items():
+                if (
+                    column.scheme_id is not None
+                    and (
+                        self.db.schemes[column.scheme_id].dtype
+                        == define.DataType.STRING
+                    )
+                    and df[column_id].dtype == "object"
+                ):
+                    df[column_id] = df[column_id].astype("string")
+            # Fix index entries as well
+            df.index = _maybe_convert_dtype_to_string(df.index)
 
         self._df = df
 
@@ -1197,13 +1221,22 @@ class Base(HeaderBase):
 
         # Store in metadata of file,
         # see https://stackoverflow.com/a/58978449
-        metadata = {"hash": table_hash}
+        import audformat
+
+        metadata = {"hash": table_hash, "audformat-version": audformat.__version__}
         table = table.replace_schema_metadata({**metadata, **table.schema.metadata})
 
         parquet.write_table(table, path, compression="snappy")
 
     def _save_pickled(self, path: str):
-        self.df.to_pickle(
+        import audformat
+
+        data = {
+            "audformat-version": audformat.__version__,
+            "df": self.df,
+        }
+        pd.to_pickle(
+            data,
             path,
             protocol=4,  # supported by Python >= 3.4
         )
@@ -1844,6 +1877,29 @@ class Table(Base):
             levels_and_dtypes[define.IndexField.START] = define.DataType.TIME
             levels_and_dtypes[define.IndexField.END] = define.DataType.TIME
         return levels_and_dtypes
+
+
+def _needs_legacy_fixup(version: str | None, fixed_in: str) -> bool:
+    r"""Return if a file needs a legacy fixup.
+
+    Returns ``True`` if ``version`` is ``None``
+    (file written before version tracking was added)
+    or if ``version`` is older than ``fixed_in``.
+
+    Args:
+        version: audformat version that wrote the file,
+            or ``None`` for unknown
+        fixed_in: version in which the fixup was applied
+
+    Returns:
+        ``True`` if the legacy fixup should be run
+
+    """
+    if version is None:
+        return True
+    from packaging.version import Version
+
+    return Version(version) < Version(fixed_in)
 
 
 def _assert_table_index(
