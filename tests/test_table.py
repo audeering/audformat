@@ -1338,6 +1338,23 @@ def test_save_stores_audformat_version(tmpdir, storage_format):
     assert table_loaded._audformat_version == audformat.__version__
 
 
+def test_load_invalid_pickle(tmpdir):
+    """Test that loading a pickle with unexpected structure raises error."""
+    path_pkl = os.path.join(str(tmpdir), "db.table.pkl")
+    path_no_ext = os.path.join(str(tmpdir), "db.table")
+
+    # Save a dict without a "df" entry
+    pd.to_pickle({"foo": "bar"}, path_pkl, protocol=4)
+    table = audformat.Table()
+    with pytest.raises(RuntimeError, match="Cannot load pickle file"):
+        table.load(path_no_ext)
+
+    # Save a non-DataFrame, non-dict object
+    pd.to_pickle([1, 2, 3], path_pkl, protocol=4)
+    with pytest.raises(RuntimeError, match="Cannot load pickle file"):
+        table.load(path_no_ext)
+
+
 @pytest.mark.parametrize(
     "table, map",
     [

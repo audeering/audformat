@@ -32,6 +32,12 @@ from audformat.core.split import Split
 from audformat.core.typing import Values
 
 
+# Keys used in parquet metadata and pickle wrapper dict
+_KEY_VERSION = "audformat-version"
+_KEY_DATAFRAME = "df"
+_KEY_HASH = "hash"
+
+
 class Base(HeaderBase):
     r"""Table base class."""
 
@@ -958,7 +964,7 @@ class Base(HeaderBase):
         # Files written before 1.4.0 don't have this key.
         metadata = table.schema.metadata or {}
         self._audformat_version = (
-            metadata.get(b"audformat-version", b"").decode() or None
+            metadata.get(_KEY_VERSION.encode(), b"").decode() or None
         )
 
         self._df = df
@@ -984,12 +990,20 @@ class Base(HeaderBase):
         # Since 1.4.0, pickle files store a dict
         # with audformat version and dataframe.
         # Older files store a bare dataframe.
-        if isinstance(data, dict):
-            version = data.get("audformat-version")
-            df = data["df"]
+        if isinstance(data, dict) and _KEY_DATAFRAME in data:
+            version = data.get(_KEY_VERSION)
+            df = data[_KEY_DATAFRAME]
         else:
             version = None
-            df = data
+            df = data if isinstance(data, pd.DataFrame) else None
+
+        if df is None:
+            raise RuntimeError(
+                f"Cannot load pickle file '{path}', "
+                "expected a pandas DataFrame "
+                "or a dictionary with an "
+                f"'{_KEY_DATAFRAME}' entry."
+            )
 
         self._audformat_version = version
 
@@ -1223,7 +1237,7 @@ class Base(HeaderBase):
         # see https://stackoverflow.com/a/58978449
         import audformat
 
-        metadata = {"hash": table_hash, "audformat-version": audformat.__version__}
+        metadata = {_KEY_HASH: table_hash, _KEY_VERSION: audformat.__version__}
         table = table.replace_schema_metadata({**metadata, **table.schema.metadata})
 
         parquet.write_table(table, path, compression="snappy")
@@ -1232,8 +1246,8 @@ class Base(HeaderBase):
         import audformat
 
         data = {
-            "audformat-version": audformat.__version__,
-            "df": self.df,
+            _KEY_VERSION: audformat.__version__,
+            _KEY_DATAFRAME: self.df,
         }
         pd.to_pickle(
             data,
