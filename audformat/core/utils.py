@@ -15,7 +15,6 @@ from iso639.exceptions import InvalidLanguageValue
 import iso3166
 import numpy as np
 import pandas as pd
-import pyarrow as pa
 
 import audeer
 import audiofile
@@ -679,6 +678,74 @@ def expand_file_path(
     return index
 
 
+def _normalize_dtype_name(dtype) -> str:
+    r"""Normalize a pandas dtype to a canonical string for hashing.
+
+    Maps different representations of the same logical type
+    to a single string, e.g. both ``"string"`` and ``"object"``
+    dtypes map to ``"string"``.
+
+    Preserves precision for numeric types
+    (e.g. ``int32`` and ``int64`` produce different strings).
+
+    """
+    if isinstance(dtype, pd.CategoricalDtype):
+        # Include category dtype to distinguish e.g.
+        # categorical-with-strings from categorical-with-ints
+        if dtype.categories is not None:
+            cat_dtype = _normalize_dtype_name(dtype.categories.dtype)
+        else:
+            cat_dtype = "empty"
+        return f"categorical[{cat_dtype}]"
+    if pd.api.types.is_string_dtype(dtype):
+        # Normalize string/object/StringDtype
+        return "string"
+    if pd.api.types.is_bool_dtype(dtype):
+        # Normalize bool/BooleanDtype
+        return "bool"
+    # Standard numpy dtypes: preserve precise type name
+    # (int32, int64, float32, float64, timedelta64[ns], datetime64[ns], etc.)
+    try:
+        return np.dtype(dtype).name
+    except TypeError:
+        pass
+    # Nullable extension dtypes (Int8, Int64, Float32, Float64, etc.)
+    if hasattr(dtype, "numpy_dtype"):
+        return dtype.numpy_dtype.name
+
+
+def _hash_update_array(
+    md5,
+    arr_like: pd.Index | pd.Series,
+):
+    r"""Update md5 hash with array data.
+
+    Handles numeric arrays via ``tobytes()``
+    and object arrays via explicit string encoding.
+
+    """
+    if pd.api.types.is_integer_dtype(arr_like.dtype) and hasattr(
+        arr_like.dtype, "numpy_dtype"
+    ):
+        # Nullable integer extension types (Int8, ..., Int64, UInt8, ..., UInt64)
+        # need conversion to float for consistent numpy array representation
+        # (since pandas 2.2.x, nullable integers with <NA> convert to float anyway,
+        # but older versions may produce object arrays)
+        arr = arr_like.astype("float").to_numpy()
+    else:
+        arr = np.asarray(arr_like)
+    if arr.dtype == object:
+        # Object arrays (strings, etc.) need explicit encoding
+        md5.update(_OBJECT_ARRAY_SEPARATOR.join(str(x) for x in arr).encode("utf-8"))
+    else:
+        # Use platform-independent byte representation:
+        # convert to big-endian before hashing to ensure
+        # consistent hashes across different architectures
+        if arr.dtype.byteorder in ("=", "<"):
+            arr = arr.astype(arr.dtype.newbyteorder(">"), copy=False)
+        md5.update(arr.tobytes())
+
+
 def hash(
     obj: pd.Index | pd.Series | pd.DataFrame,
     strict: bool = False,
@@ -730,92 +797,54 @@ def hash(
 
     """
     if strict:
-        if isinstance(obj, pd.Index):
-            df = obj.to_frame()
+        # Collect column/index names and normalized dtypes.
+        dtypes = []
+
+        # Collect index levels
+        if isinstance(obj, (pd.DataFrame, pd.Series)):
+            index = obj.index
+        else:
+            index = obj
+
+        if isinstance(index, pd.MultiIndex):
+            for i in range(index.nlevels):
+                name = str(index.names[i]) if index.names[i] is not None else str(i)
+                dtype = index.get_level_values(i).dtype
+                dtypes.append(f"{name}: {_normalize_dtype_name(dtype)}")
+        else:
+            name = str(index.name) if index.name is not None else "0"
+            dtypes.append(f"{name}: {_normalize_dtype_name(index.dtype)}")
+
+        # Collect column/value dtypes
+        if isinstance(obj, pd.DataFrame):
+            for col in obj.columns:
+                dtypes.append(f"{str(col)}: {_normalize_dtype_name(obj[col].dtype)}")
         elif isinstance(obj, pd.Series):
-            df = obj.to_frame().reset_index()
-        else:
-            df = obj.reset_index()
+            name = str(obj.name) if obj.name is not None else "0"
+            dtypes.append(f"{name}: {_normalize_dtype_name(obj.dtype)}")
 
-        # Ensure column names are strings for pyarrow compatibility
-        # (empty index converted to DataFrame may have integer column names)
-        df.columns = [str(c) for c in df.columns]
+        dtypes_str = "\n".join(dtypes)
+        dtypes_md5 = hashlib.md5(dtypes_str.encode())
 
-        # Normalize string columns to object dtype for consistent hashing
-        # (pandas 3.0 uses "string" dtype which maps to pyarrow "large_string",
-        # while "object" dtype maps to pyarrow "string")
-        # For empty DataFrames, we also need to specify an explicit schema
-        # because pyarrow infers "null" type for empty object columns
-        schema_fields = []
-        for col in df.columns:
-            if pd.api.types.is_string_dtype(df[col].dtype):
-                df[col] = df[col].astype("object")
-                schema_fields.append((col, pa.string()))
-            elif isinstance(df[col].dtype, pd.CategoricalDtype):
-                # Normalize categorical with string categories to object
-                cat_dtype = df[col].dtype.categories.dtype
-                if pd.api.types.is_string_dtype(cat_dtype):
-                    new_categories = df[col].dtype.categories.astype("object")
-                    ordered = df[col].dtype.ordered
-                    df[col] = df[col].astype(
-                        pd.CategoricalDtype(new_categories, ordered=ordered)
-                    )
-                schema_fields.append((col, None))
-            else:
-                # Let pyarrow infer
-                schema_fields.append((col, None))
-        # Build schema for columns that need explicit types
-        if len(df) == 0 and any(f[1] is not None for f in schema_fields):
-            # For empty DataFrames with index of type string/object,
-            # specify schema explicitly
-            schema = pa.schema(
-                [
-                    (
-                        name,
-                        typ if typ is not None else pa.from_numpy_dtype(df[name].dtype),
-                    )
-                    for name, typ in schema_fields
-                ]
-            )
-            table = pa.Table.from_pandas(df, preserve_index=False, schema=schema)
-        else:
-            # Handle column names and dtypes
-            table = pa.Table.from_pandas(df, preserve_index=False)
-        schema_str = table.schema.to_string(
-            # schema.metadata contains pandas related information,
-            # and the used pyarrow and pandas version,
-            # and needs to be excluded
-            show_field_metadata=False,
-            show_schema_metadata=False,
-        )
-        schema_md5 = hashlib.md5(schema_str.encode())
-        # Handle index, values, and row order
+        # Hash data: index levels, then values
         data_md5 = hashlib.md5()
-        for _, y in df.items():
-            # Convert every column to a numpy array and hash its bytes.
-            # Using tobytes() for numeric arrays and explicit encoding
-            # for object arrays ensures all data is included in the hash
-            # (unlike str() which truncates large arrays).
-            if y.dtype == "Int64":
-                # Enforce consistent conversion to numpy.array
-                # for integers across different pandas versions
-                # (since pandas 2.2.x, Int64 is converted to float if it contains <NA>)
-                y = y.astype("float")
-            arr = y.to_numpy()
-            if arr.dtype == object:
-                # Object arrays (strings, etc.) need explicit encoding
-                data_md5.update(
-                    _OBJECT_ARRAY_SEPARATOR.join(str(x) for x in arr).encode("utf-8")
-                )
-            else:
-                # Use platform-independent byte representation:
-                # convert to big-endian before hashing to ensure
-                # consistent hashes across different architectures
-                if arr.dtype.byteorder == "=" or arr.dtype.byteorder == "<":
-                    arr = arr.astype(arr.dtype.newbyteorder(">"), copy=False)
-                data_md5.update(arr.tobytes())
+
+        # Hash index levels
+        if isinstance(index, pd.MultiIndex):
+            for i in range(index.nlevels):
+                _hash_update_array(data_md5, index.get_level_values(i))
+        else:
+            _hash_update_array(data_md5, index)
+
+        # Hash values
+        if isinstance(obj, pd.DataFrame):
+            for _, y in obj.items():
+                _hash_update_array(data_md5, y)
+        elif isinstance(obj, pd.Series):
+            _hash_update_array(data_md5, obj)
+
         md5 = hashlib.md5()
-        md5.update(schema_md5.digest())
+        md5.update(dtypes_md5.digest())
         md5.update(data_md5.digest())
         md5 = md5.hexdigest()
     else:

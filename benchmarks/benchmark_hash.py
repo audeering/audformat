@@ -1,13 +1,10 @@
-"""Benchmark for audformat.utils.hash() with strict=True.
+"""Benchmark for hash(strict=True) and _save_parquet().
 
-This benchmark measures hash performance on DataFrames of different sizes
-and with different column types:
+Run on different branches to compare performance.
 
-1. Numeric-only DataFrame: Contains only numeric columns (float, int).
-
-2. Mixed DataFrame: Contains object dtype columns (strings).
 """
 
+import tempfile
 import time
 
 import numpy as np
@@ -17,7 +14,7 @@ import audformat
 
 
 def create_numeric_df(n_rows):
-    """Create a DataFrame with only numeric columns."""
+    """Create a DataFrame with numeric columns and filewise index."""
     files = [f"audio/file-{i}.wav" for i in range(n_rows)]
     return pd.DataFrame(
         {
@@ -29,7 +26,7 @@ def create_numeric_df(n_rows):
 
 
 def create_mixed_df(n_rows):
-    """Create a DataFrame with mixed column types including strings."""
+    """Create a DataFrame with numeric and string columns."""
     files = [f"audio/file-{i}.wav" for i in range(n_rows)]
     return pd.DataFrame(
         {
@@ -42,54 +39,79 @@ def create_mixed_df(n_rows):
     )
 
 
-def benchmark(df, n_runs=10):
-    """Run benchmark and return average time."""
-    # Warmup run
-    audformat.utils.hash(df, strict=True)
+def create_segmented_df(n_rows):
+    """Create a DataFrame with a segmented index."""
+    files = [f"audio/file-{i}.wav" for i in range(n_rows)]
+    starts = pd.to_timedelta(np.random.rand(n_rows), unit="s")
+    ends = starts + pd.to_timedelta(np.random.rand(n_rows) * 0.5, unit="s")
+    return pd.DataFrame(
+        {"value": np.random.randn(n_rows)},
+        index=audformat.segmented_index(files, starts, ends),
+    )
 
+
+def bench(func, *args, n_runs=5, **kwargs):
+    """Run benchmark and return average time in seconds."""
+    func(*args, **kwargs)  # warmup
     times = []
     for _ in range(n_runs):
         start = time.perf_counter()
-        audformat.utils.hash(df, strict=True)
+        func(*args, **kwargs)
         times.append(time.perf_counter() - start)
     return sum(times) / len(times)
 
 
+def save_parquet(df, path):
+    """Simulate Table._save_parquet() without needing a full Database."""
+    import pyarrow as pa
+    import pyarrow.parquet as parquet
+
+    table_hash = audformat.utils.hash(df, strict=True)
+    table = pa.Table.from_pandas(df.reset_index(), preserve_index=False)
+    metadata = {"hash": table_hash}
+    table = table.replace_schema_metadata({**metadata, **table.schema.metadata})
+    parquet.write_table(table, path, compression="snappy")
+
+
 def main():
+    np.random.seed(42)
+
     print("=" * 70)
-    print("Benchmark: audformat.utils.hash(df, strict=True)")
+    print("hash(strict=True)")
     print("=" * 70)
     print()
-
-    row_counts = [10_000, 100_000, 1_000_000]
-
-    # Benchmark numeric-only DataFrames
-    print("Numeric-only DataFrame")
-    print("-" * 50)
-    print(f"{'Rows':<15} {'Time':<15} {'Rows/sec':<15}")
+    print(f"{'Rows':<15} {'Type':<25} {'Time':<10}")
     print("-" * 50)
 
-    for n_rows in row_counts:
-        df = create_numeric_df(n_rows)
-        elapsed = benchmark(df)
-        rows_per_sec = n_rows / elapsed
-        print(f"{n_rows:<15,} {elapsed:<15.4f}s {rows_per_sec:<15,.0f}")
+    for n_rows in [10_000, 100_000, 1_000_000]:
+        for label, create_fn in [
+            ("numeric (filewise)", create_numeric_df),
+            ("mixed (filewise)", create_mixed_df),
+            ("numeric (segmented)", create_segmented_df),
+        ]:
+            df = create_fn(n_rows)
+            t = bench(audformat.utils.hash, df, strict=True)
+            print(f"{n_rows:<15,} {label:<25} {t:.4f}s")
+        print()
 
+    print("=" * 70)
+    print("_save_parquet() (hash + file write)")
+    print("=" * 70)
     print()
-
-    # Benchmark mixed DataFrames (with object columns)
-    print("Mixed DataFrame (includes object dtype)")
-    print("-" * 50)
-    print(f"{'Rows':<15} {'Time':<15} {'Rows/sec':<15}")
+    print(f"{'Rows':<15} {'Type':<25} {'Time':<10}")
     print("-" * 50)
 
-    for n_rows in row_counts:
-        df = create_mixed_df(n_rows)
-        elapsed = benchmark(df)
-        rows_per_sec = n_rows / elapsed
-        print(f"{n_rows:<15,} {elapsed:<15.4f}s {rows_per_sec:<15,.0f}")
-
-    print()
+    for n_rows in [10_000, 100_000, 1_000_000]:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            path = f"{tmpdir}/table.parquet"
+            for label, create_fn in [
+                ("numeric (filewise)", create_numeric_df),
+                ("mixed (filewise)", create_mixed_df),
+            ]:
+                df = create_fn(n_rows)
+                t = bench(save_parquet, df, path)
+                print(f"{n_rows:<15,} {label:<25} {t:.4f}s")
+        print()
 
 
 if __name__ == "__main__":
