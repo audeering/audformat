@@ -838,6 +838,7 @@ def test_expand_file_path(tmpdir, index, root, expected):
         ),
         # Empty DataFrame with categorical column
         # (regression test for pyarrow TypeError on CategoricalDtype)
+        # https://github.com/audeering/audformat/issues/518
         (
             pd.DataFrame(
                 {
