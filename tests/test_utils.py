@@ -836,6 +836,19 @@ def test_expand_file_path(tmpdir, index, root, expected):
             False,
             "4417e784fe92866bbfaedf73ca4a03c9",
         ),
+        # Empty DataFrame with categorical column
+        # (regression test for pyarrow TypeError on CategoricalDtype)
+        (
+            pd.DataFrame(
+                {
+                    "speaker": pd.Categorical([], categories=["spk1", "spk2", "spk3"]),
+                },
+                index=audformat.filewise_index(),
+            ),
+            True,
+            True,
+            "de0dbfe523f4665032a86c035cd33d37",
+        ),
     ],
 )
 def test_hash(obj, strict, mutable, expected):
