@@ -1991,43 +1991,29 @@ def test_read_csv(csv, result):
     pd.testing.assert_frame_equal(obj, result)
 
 
-def test_read_csv_round_trip(tmpdir):
+@pytest.mark.parametrize("save_method", ["database", "dataframe"])
+def test_read_csv_round_trip(tmp_path, save_method):
     """Test round-trip precision of segmented index through CSV save/load."""
-    db = audformat.Database("test")
-    db.schemes["float"] = audformat.Scheme("float")
-
-    # Use high-precision timedelta values
-    files = ["f1.wav", "f1.wav", "f2.wav"]
-    starts = [0.0, 1.234567, 0.0]
-    ends = [1.234567, 2.5225, 3.987650001]
-
-    index = audformat.segmented_index(files, starts=starts, ends=ends)
-    db["table"] = audformat.Table(index)
-    db["table"]["col"] = audformat.Column(scheme_id="float")
-    db["table"]["col"].set([0.1, 0.2, 0.3])
-
-    db.save(tmpdir, storage_format="csv")
-
-    csv_path = os.path.join(tmpdir, "db.table.csv")
-    result = audformat.utils.read_csv(csv_path)
-    pd.testing.assert_series_equal(result, db["table"]["col"].get())
-
-
-def test_read_csv_round_trip_dataframe(tmpdir):
-    """Test round-trip precision of segmented index via df.to_csv()."""
     files = ["f1.wav", "f1.wav", "f2.wav"]
     starts = pd.to_timedelta([0.0, 1.234567, 0.0], unit="s")
     ends = pd.to_timedelta([1.234567, 2.5225, 3.987650001], unit="s")
-
     index = audformat.segmented_index(files, starts=starts, ends=ends)
-    expected = pd.Series(
-        [0.1, 0.2, 0.3],
-        index=index,
-        name="value",
-    )
 
-    csv_path = os.path.join(str(tmpdir), "table.csv")
-    expected.to_csv(csv_path)
+    if save_method == "database":
+        db = audformat.Database("test")
+        db.schemes["float"] = audformat.Scheme("float")
+        db["table"] = audformat.Table(index)
+        db["table"]["col"] = audformat.Column(scheme_id="float")
+        db["table"]["col"].set([0.1, 0.2, 0.3])
+        db.save(tmp_path, storage_format="csv")
+        expected = db["table"]["col"].get()
+        csv_files = list(tmp_path.glob("*.csv"))
+        assert len(csv_files) == 1
+        csv_path = csv_files[0]
+    else:
+        expected = pd.Series([0.1, 0.2, 0.3], index=index, name="value")
+        csv_path = tmp_path / "table.csv"
+        expected.to_csv(csv_path)
 
     result = audformat.utils.read_csv(csv_path)
     pd.testing.assert_series_equal(result, expected)
