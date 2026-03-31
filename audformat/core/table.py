@@ -1190,12 +1190,12 @@ class Base(HeaderBase):
             path: path, including file extension
 
         """
-        table = pa.Table.from_pandas(self.df.reset_index(), preserve_index=False)
-
         # Create hash of table
         table_hash = utils.hash(self.df, strict=True)
 
-        # Store in metadata of file,
+        table = pa.Table.from_pandas(self.df.reset_index(), preserve_index=False)
+
+        # Store hash in metadata of file,
         # see https://stackoverflow.com/a/58978449
         metadata = {"hash": table_hash}
         table = table.replace_schema_metadata({**metadata, **table.schema.metadata})

@@ -447,19 +447,19 @@ def test_expand_file_path(tmpdir, index, root, expected):
             pd.Index([], dtype="object"),
             True,
             True,
-            "cac385b69ab9f5fb1cd31283c43f759b",
+            "a42d9391a6d9a3fc829572ba58594f61",
         ),
         (
             pd.Series([], index=pd.Index([], dtype="object"), dtype="object"),
             True,
             True,
-            "1f22f8c646d1472be62096643ffc96d1",
+            "ec244254e38483b433e8a73516606c04",
         ),
         (
             pd.DataFrame([], index=pd.Index([], dtype="object"), dtype="object"),
             True,
             True,
-            "763684caf1f774ce4dc4e818f3e901bc",
+            "a42d9391a6d9a3fc829572ba58594f61",
         ),
         (
             pd.Index(
@@ -468,7 +468,7 @@ def test_expand_file_path(tmpdir, index, root, expected):
             ),
             True,
             True,
-            "dfd27f8e3cd84718c6046123f8e28fb0",
+            "99e50586d77bc58603daa1c3354409bd",
         ),
         (
             pd.Index(
@@ -477,7 +477,7 @@ def test_expand_file_path(tmpdir, index, root, expected):
             ),
             True,
             True,
-            "d484f2c7f7232a2eca44ed431bfb982c",
+            "99e50586d77bc58603daa1c3354409bd",
         ),
         (
             pd.Index(
@@ -486,7 +486,7 @@ def test_expand_file_path(tmpdir, index, root, expected):
             ),
             True,
             True,
-            "d484f2c7f7232a2eca44ed431bfb982c",
+            "99e50586d77bc58603daa1c3354409bd",
         ),
         (
             pd.Index(
@@ -497,7 +497,7 @@ def test_expand_file_path(tmpdir, index, root, expected):
             ),
             True,
             True,
-            "d484f2c7f7232a2eca44ed431bfb982c",
+            "99e50586d77bc58603daa1c3354409bd",
         ),
         (
             audformat.filewise_index(),
@@ -509,7 +509,7 @@ def test_expand_file_path(tmpdir, index, root, expected):
             audformat.filewise_index(),
             True,
             True,
-            "890fa7e5864779b7c3bd85c9ede31657",
+            "681b6903a5678cbad45d632b7abc5592",
         ),
         (
             audformat.segmented_index(),
@@ -521,7 +521,7 @@ def test_expand_file_path(tmpdir, index, root, expected):
             audformat.segmented_index(),
             True,
             True,
-            "10d5e40fca4e40c6c70ff64495916059",
+            "237dfad750873ef02bad2ac19c9ac8d4",
         ),
         (
             audformat.filewise_index(["f1", "f2"]),
@@ -533,7 +533,7 @@ def test_expand_file_path(tmpdir, index, root, expected):
             audformat.filewise_index(["f1", "f2"]),
             True,
             False,
-            "0741235e2250e0fcd9ab7b64972f5047",
+            "fb9a35ca0492404e5f9dba30eebb3bfb",
         ),
         (
             audformat.segmented_index(["f1", "f2"]),
@@ -545,7 +545,7 @@ def test_expand_file_path(tmpdir, index, root, expected):
             audformat.segmented_index(["f1", "f2"]),
             True,
             False,
-            "0e99d54165e6cc2dad2737982853f8c7",
+            "01583bb7cdadd74d1f618a41ca2e2e76",
         ),
         (
             audformat.segmented_index(["f1", "f2"]),
@@ -563,7 +563,7 @@ def test_expand_file_path(tmpdir, index, root, expected):
             audformat.segmented_index(["f1", "f2"], [0, 0], [1, 1]),
             True,
             False,
-            "396fda484a46686b2b5c41b0ae9c94bd",
+            "7c38933b7bd4358aee71a0395dce8d7e",
         ),
         (
             pd.Series([0, 1], audformat.filewise_index(["f1", "f2"])),
@@ -575,7 +575,7 @@ def test_expand_file_path(tmpdir, index, root, expected):
             pd.Series([0, 1], audformat.filewise_index(["f1", "f2"])),
             True,
             False,
-            "28c5f6feb0682079b127d8ce8debebe9",
+            "c2a70af7af6c29779172d92d46786a96",
         ),
         (
             pd.Series(
@@ -585,7 +585,7 @@ def test_expand_file_path(tmpdir, index, root, expected):
             ),
             True,
             False,
-            "74280b0163f6ae31438c26459901adfe",
+            "da05db53b017b36b67c949ab3e98022a",
         ),
         (
             pd.Series(
@@ -595,7 +595,7 @@ def test_expand_file_path(tmpdir, index, root, expected):
             ),
             True,
             False,
-            "74280b0163f6ae31438c26459901adfe",
+            "da05db53b017b36b67c949ab3e98022a",
         ),
         (
             pd.DataFrame(
@@ -613,7 +613,7 @@ def test_expand_file_path(tmpdir, index, root, expected):
             ),
             True,
             False,
-            "69785e94447fab79f2b65b1dcb4a2122",
+            "7ee3a6e4924da512b4d60c4883ac51c0",
         ),
         (
             pd.Index([0, 1], name="idx"),
@@ -625,7 +625,7 @@ def test_expand_file_path(tmpdir, index, root, expected):
             pd.Index([0, 1], name="idx"),
             True,
             False,
-            "a02406270880cde74e66c07278b765a0",
+            "299a1fb81316fc6c8d969b63e5cd07bf",
         ),
         (
             pd.Index([0, 1], name="name"),
@@ -637,7 +637,7 @@ def test_expand_file_path(tmpdir, index, root, expected):
             pd.Index([0, 1], name="name"),
             True,
             False,
-            "7a8303866a35ececb4ae76a4aa050209",
+            "91f12d69916152fe6affb4cb4c0f6d92",
         ),
         (
             pd.MultiIndex.from_arrays(
@@ -655,7 +655,7 @@ def test_expand_file_path(tmpdir, index, root, expected):
             ),
             True,
             False,
-            "be5373f6d8f801b902d8cf0e2f2a1914",
+            "9c46da4e9e4d18721bfdd3ea1c3cb088",
         ),
         (
             pd.MultiIndex.from_arrays(
@@ -673,7 +673,7 @@ def test_expand_file_path(tmpdir, index, root, expected):
             ),
             True,
             False,
-            "3726b3c39fc2c1453bb45a0460630ff7",
+            "f3edcc450208eb8a9b88a2a429e9d271",
         ),
         (
             pd.Series([0, 1], name="series"),
@@ -685,7 +685,7 @@ def test_expand_file_path(tmpdir, index, root, expected):
             pd.Series([0, 1], name="series"),
             True,
             False,
-            "ad0f9900c0e2f3954bde3abb6f4a9b61",
+            "77bf03e064b90f2e9351d60106ed0d74",
         ),
         (
             pd.Series([0, 1], name="name"),
@@ -697,7 +697,7 @@ def test_expand_file_path(tmpdir, index, root, expected):
             pd.Series([0, 1], name="name"),
             True,
             False,
-            "648314808f0b27e5c04479ba8509fc25",
+            "a4beadec6025e4eff70937c14c7c5546",
         ),
         (
             pd.DataFrame([0, 1], columns=["frame"]),
@@ -709,7 +709,7 @@ def test_expand_file_path(tmpdir, index, root, expected):
             pd.DataFrame([0, 1], columns=["frame"]),
             True,
             False,
-            "36d9779e257319ff69515af6b4ade8ad",
+            "65cbc3c61e2fc584fff6dda74a4352df",
         ),
         (
             pd.DataFrame([0, 1], columns=["name"]),
@@ -721,7 +721,7 @@ def test_expand_file_path(tmpdir, index, root, expected):
             pd.DataFrame([0, 1], columns=["name"]),
             True,
             False,
-            "648314808f0b27e5c04479ba8509fc25",
+            "a4beadec6025e4eff70937c14c7c5546",
         ),
         pytest.param(
             pd.DataFrame(
@@ -789,7 +789,7 @@ def test_expand_file_path(tmpdir, index, root, expected):
             ),
             True,
             False,
-            "e845db6fbe98b17f24dd71d3a991094f",
+            "a5f857585697a7d5f6cc813376517002",
         ),
         (
             pd.DataFrame(
@@ -804,7 +804,7 @@ def test_expand_file_path(tmpdir, index, root, expected):
             ),
             True,
             False,
-            "e845db6fbe98b17f24dd71d3a991094f",
+            "a5f857585697a7d5f6cc813376517002",
         ),
         (
             pd.DataFrame(
@@ -819,7 +819,7 @@ def test_expand_file_path(tmpdir, index, root, expected):
             ),
             True,
             False,
-            "e845db6fbe98b17f24dd71d3a991094f",
+            "a5f857585697a7d5f6cc813376517002",
         ),
         (
             pd.DataFrame(
@@ -834,7 +834,21 @@ def test_expand_file_path(tmpdir, index, root, expected):
             ),
             True,
             False,
-            "1f6fec46a3c28c5ec3c07ef8f13fb258",
+            "4417e784fe92866bbfaedf73ca4a03c9",
+        ),
+        # Empty DataFrame with categorical column
+        # (regression test for pyarrow TypeError on CategoricalDtype)
+        # https://github.com/audeering/audformat/issues/518
+        (
+            pd.DataFrame(
+                {
+                    "speaker": pd.Categorical([], categories=["spk1", "spk2", "spk3"]),
+                },
+                index=audformat.filewise_index(),
+            ),
+            True,
+            True,
+            "de0dbfe523f4665032a86c035cd33d37",
         ),
     ],
 )
@@ -846,6 +860,129 @@ def test_hash(obj, strict, mutable, expected):
         assert reverse_md5 == md5
     else:
         assert reverse_md5 != md5
+
+
+def test_hash_large_dataframes():
+    # Test that DataFrames with many rows produce different hashes
+    # even when they share the same boundary elements.
+    #
+    # This guards against a previous bug where using str() on large
+    # numpy arrays caused hash collisions because numpy truncates
+    # array string representations (showing only first/last elements).
+    n_rows_1 = 2000
+    n_rows_2 = 1500
+
+    # Create file indices with same boundary elements but different middle
+    files_1 = (
+        ["file-0.wav", "file-1.wav", "file-2.wav"]
+        + [f"file-{i}.wav" for i in range(3, n_rows_1 - 3)]
+        + ["file-end-2.wav", "file-end-1.wav", "file-end-0.wav"]
+    )
+    files_2 = (
+        ["file-0.wav", "file-1.wav", "file-2.wav"]
+        + [f"other-{i}.wav" for i in range(3, n_rows_2 - 3)]
+        + ["file-end-2.wav", "file-end-1.wav", "file-end-0.wav"]
+    )
+
+    # Create DataFrames with same boundary values but different content
+    df1 = pd.DataFrame(
+        {"value": [0, 0, 0] + [1] * (n_rows_1 - 6) + [9, 9, 9]},
+        index=audformat.filewise_index(files_1),
+    )
+    df2 = pd.DataFrame(
+        {"value": [0, 0, 0] + [2] * (n_rows_2 - 6) + [9, 9, 9]},
+        index=audformat.filewise_index(files_2),
+    )
+
+    # Verify the arrays are actually different
+    arr1 = df1.reset_index()["file"].astype("object").to_numpy()
+    arr2 = df2.reset_index()["file"].astype("object").to_numpy()
+    assert len(arr1) != len(arr2), "Test setup requires arrays of different lengths"
+    assert not np.array_equal(arr1, arr2), "Test setup requires different arrays"
+
+    # Verify that naive str() would truncate these arrays
+    # (skip test if NumPy behavior changes)
+    if "..." not in str(arr1):
+        pytest.skip(
+            "NumPy is not truncating large arrays in str() representation; "
+            "this test is not applicable with current NumPy settings"
+        )
+
+    # Hashes must be different for different DataFrames
+    hash1 = utils.hash(df1, strict=True)
+    hash2 = utils.hash(df2, strict=True)
+    assert hash1 != hash2, (
+        "Hash collision detected: different DataFrames produced the same hash "
+        "despite having different content"
+    )
+
+
+def test_hash_null_byte_collision():
+    # Document known limitation: strings containing the null byte separator
+    # can cause hash collisions. This is acceptable because null bytes
+    # are extremely rare in typical audformat data (file paths, labels),
+    # and alternative implementations are slower.
+    #
+    # The separator \x00 is used to join object array elements.
+    # If data contains \x00, the boundary between elements becomes ambiguous:
+    #   ["a\x00b", "c"] -> joined as "a\x00b\x00c"
+    #   ["a", "b\x00c"] -> joined as "a\x00b\x00c"
+    df1 = pd.DataFrame(
+        {"col": ["a\x00b", "c"]},
+        index=audformat.filewise_index(["f1.wav", "f2.wav"]),
+    )
+    df2 = pd.DataFrame(
+        {"col": ["a", "b\x00c"]},
+        index=audformat.filewise_index(["f1.wav", "f2.wav"]),
+    )
+
+    # Verify the DataFrames are actually different
+    assert list(df1["col"]) != list(df2["col"])
+
+    # Known limitation: these produce the same hash
+    hash1 = utils.hash(df1, strict=True)
+    hash2 = utils.hash(df2, strict=True)
+    assert hash1 == hash2, (
+        "If this fails, the null byte collision has been fixed! "
+        "Update this test to assert hash1 != hash2."
+    )
+
+
+def test_normalize_dtype_name():
+    from audformat.core.utils import _normalize_dtype_name
+
+    # Categorical with unset categories
+    dt = pd.CategoricalDtype()
+    assert _normalize_dtype_name(dt) == "categorical[empty]"
+
+    # Categorical with string categories
+    dt = pd.CategoricalDtype(["a", "b"])
+    assert _normalize_dtype_name(dt) == "categorical[string]"
+
+    # Categorical with int categories
+    dt = pd.CategoricalDtype([1, 2])
+    assert _normalize_dtype_name(dt) == "categorical[int64]"
+
+    # Nullable integer extension type
+    assert _normalize_dtype_name(pd.Int64Dtype()) == "int64"
+    assert _normalize_dtype_name(pd.Int32Dtype()) == "int32"
+
+    # Numpy types preserve precision
+    assert _normalize_dtype_name(np.dtype("int32")) == "int32"
+    assert _normalize_dtype_name(np.dtype("float32")) == "float32"
+    assert _normalize_dtype_name(np.dtype("int64")) == "int64"
+
+    # String normalization
+    assert _normalize_dtype_name(pd.StringDtype()) == "string"
+    assert _normalize_dtype_name(np.dtype("O")) == "string"
+
+    # Bool normalization
+    assert _normalize_dtype_name(pd.BooleanDtype()) == "bool"
+    assert _normalize_dtype_name(np.dtype("bool")) == "bool"
+
+    # Timedelta/datetime preserved
+    assert _normalize_dtype_name(np.dtype("timedelta64[ns]")) == "timedelta64[ns]"
+    assert _normalize_dtype_name(np.dtype("datetime64[ns]")) == "datetime64[ns]"
 
 
 @pytest.mark.parametrize(
