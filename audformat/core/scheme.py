@@ -363,20 +363,7 @@ class Scheme(common.HeaderBase):
                 )
 
         self.labels = labels
-
-        if self._db is not None and self._id is not None:
-            labels = self._labels_to_list(labels)
-            for table in list(self._db.tables.values()) + list(
-                self._db.misc_tables.values()
-            ):
-                for column in table.columns.values():
-                    if column.scheme_id == self._id:
-                        y = column._table.df[column._id]
-                        y = y.cat.set_categories(
-                            new_categories=labels,
-                            ordered=False,
-                        )
-                        column._table.df[column._id] = y
+        self._update_column_categories(labels)
 
     def set_labels(
         self,
@@ -450,39 +437,61 @@ class Scheme(common.HeaderBase):
                     f"'{self.dtype}'."
                 )
 
-        if self._db is not None and self._id is not None:
-            labels_set = set(self._labels_to_list(labels))
-            for table in list(self._db.tables.values()) + list(
-                self._db.misc_tables.values()
-            ):
-                for column in table.columns.values():
-                    if column.scheme_id == self._id:
-                        values = set(table.df[column._id].dropna().unique())
-                        bad_values = values - labels_set
-                        if bad_values:
-                            raise ValueError(
-                                f"Column '{column._id}' "
-                                f"of table '{table._id}' "
-                                f"contains values not in labels: "
-                                f"{sorted(bad_values)}."
-                            )
+        if self._db is None or self._id is None:
+            self.labels = labels
+            return
+
+        labels_set = set(self._labels_to_list(labels))
+        for table in list(self._db.tables.values()) + list(
+            self._db.misc_tables.values()
+        ):
+            for column in table.columns.values():
+                if column.scheme_id == self._id:
+                    values = set(table.df[column._id].dropna().unique())
+                    bad_values = values - labels_set
+                    if bad_values:
+                        raise ValueError(
+                            f"Column '{column._id}' "
+                            f"of table '{table._id}' "
+                            f"contains values not in labels: "
+                            f"{sorted(bad_values)}."
+                        )
 
         self.labels = labels
+        self._update_column_categories(labels, convert_to_categorical=True)
 
-        if self._db is not None and self._id is not None:
-            labels_list = self._labels_to_list(labels)
-            dtype = self.to_pandas_dtype()
-            for table in list(self._db.tables.values()) + list(
-                self._db.misc_tables.values()
-            ):
-                for column in table.columns.values():
-                    if column.scheme_id == self._id:
-                        y = column._table.df[column._id].astype(dtype)
-                        y = y.cat.set_categories(
-                            new_categories=labels_list,
-                            ordered=False,
-                        )
-                        column._table.df[column._id] = y
+    def _update_column_categories(
+        self,
+        labels: dict | list | str,
+        *,
+        convert_to_categorical: bool = False,
+    ):
+        r"""Update categories of columns referencing this scheme.
+
+        Args:
+            labels: new labels
+            convert_to_categorical: if ``True``,
+                convert columns from plain dtype
+                to categorical first
+
+        """
+        if self._db is None or self._id is None:
+            return
+
+        labels_list = self._labels_to_list(labels)
+        for table in list(self._db.tables.values()) + list(
+            self._db.misc_tables.values()
+        ):
+            for column in table.columns.values():
+                if column.scheme_id == self._id:
+                    y = column._table.df[column._id]
+                    if convert_to_categorical:
+                        y = y.astype(self.to_pandas_dtype())
+                    y = y.cat.set_categories(
+                        new_categories=labels_list,
+                        ordered=False,
+                    )
+                    column._table.df[column._id] = y
 
     def _check_labels(
         self,
