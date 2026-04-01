@@ -932,6 +932,32 @@ def test_set_labels():
     # verify scheme was not modified
     assert db.schemes["scheme"].labels is None
 
+    # --- set labels from misc table ---
+    db = audformat.testing.create_db(minimal=True)
+    db.schemes["scheme"] = audformat.Scheme("str")
+    db["labels"] = audformat.MiscTable(
+        pd.Index(
+            ["a", "b", "c"],
+            dtype="string",
+            name="idx",
+        )
+    )
+    db["table"] = audformat.Table(
+        index=audformat.filewise_index(["f1", "f2"]),
+    )
+    db["table"]["column"] = audformat.Column(scheme_id="scheme")
+    db["table"]["column"].set(["a", "b"])
+
+    db.schemes["scheme"].set_labels("labels")
+    assert db.schemes["scheme"].labels == "labels"
+    assert db["table"]["column"].get().dtype.name == "category"
+    assert list(db["table"]["column"].get().values) == ["a", "b"]
+
+    # --- set labels as misc table string on non-attached scheme ---
+    scheme = audformat.Scheme("str")
+    scheme.set_labels("some-misc-table")
+    assert scheme.labels == "some-misc-table"
+
     # --- error: invalid labels type ---
     scheme = audformat.Scheme("str")
     with pytest.raises(ValueError, match="must be passed as"):

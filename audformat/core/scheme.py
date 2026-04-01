@@ -380,7 +380,7 @@ class Scheme(common.HeaderBase):
 
     def set_labels(
         self,
-        labels: dict | list,
+        labels: dict | list | str,
     ):
         r"""Set labels on a scheme that has none.
 
@@ -390,12 +390,22 @@ class Scheme(common.HeaderBase):
         to :class:`pandas.CategoricalDtype`.
 
         Args:
-            labels: new labels as list or dictionary
+            labels: new labels
 
         Raises:
             ValueError: if scheme already defines labels
             ValueError: if dtype of labels does not match dtype of scheme
-            ValueError: if ``labels`` is not a list or dictionary
+            ValueError: if ``labels`` is not a list, dictionary,
+                or ID of a misc table
+            ValueError: if ``labels`` is a misc table ID
+                and the scheme is already assigned to a database,
+                but the corresponding misc table is not part of the database,
+                or the given table ID is not a misc table,
+                or its index is multi-dimensional,
+                or its index contains duplicates,
+                or the misc table has a column
+                that is already assigned to a scheme
+                with labels from another misc table
             ValueError: if existing column data contains values
                 not covered by ``labels``
 
@@ -407,14 +417,17 @@ class Scheme(common.HeaderBase):
             )
         self._check_labels(labels)
 
-        dtype_labels = self._dtype_from_labels(labels)
-        if dtype_labels != self.dtype:
-            raise ValueError(
-                "Data type of labels "
-                f"'{dtype_labels}' "
-                f"does not match data type of scheme "
-                f"'{self.dtype}'."
-            )
+        if not isinstance(labels, str) or self._db is not None:
+            # Check change of data type
+            # for list, dict and assigned misc table
+            dtype_labels = self._dtype_from_labels(labels)
+            if dtype_labels != self.dtype:
+                raise ValueError(
+                    "Data type of labels "
+                    f"'{dtype_labels}' "
+                    f"does not match data type of scheme "
+                    f"'{self.dtype}'."
+                )
 
         if self._db is not None and self._id is not None:
             labels_set = set(self._labels_to_list(labels))
