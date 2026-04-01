@@ -1136,8 +1136,10 @@ def test_load(tmpdir):
         pd.testing.assert_frame_equal(table.df, table_loaded.df)
 
         # check if pickle file was recovered
-        df = pd.read_pickle(path_pkl)
-        pd.testing.assert_frame_equal(table.df, df)
+        data = pd.read_pickle(path_pkl)
+        assert isinstance(data, dict)
+        assert "audformat-version" in data
+        pd.testing.assert_frame_equal(table.df, data["df"])
 
         os.remove(f"{path_no_ext}.{ext}")
 
@@ -1277,27 +1279,80 @@ def test_load_old_pickle(tmpdir):
     # We have stored string dtype as object dtype before
     # and have to fix this when loading old PKL files from cache.
 
-    # Create PKL file containing strings as object
+    # Simulate an old PKL file (bare DataFrame, no version wrapper)
+    # containing strings as object dtype
     y = pd.Series(["c"], dtype="object", name="column")
     index = pd.Index(["f1"], dtype="object", name="file")
 
     db = audformat.testing.create_db(minimal=True)
     db["table"] = audformat.Table(index)
-    db.schemes["column"] = audformat.Scheme(audformat.define.DataType.OBJECT)
+    db.schemes["column"] = audformat.Scheme(audformat.define.DataType.STRING)
     db["table"]["column"] = audformat.Column(scheme_id="column")
     db["table"]["column"].set(y.values)
-    db_root = tmpdir.join("db")
-    db.save(db_root, storage_format="pkl")
-
-    # Change scheme dtype to string and store header again
-    db.schemes["column"] = audformat.Scheme(audformat.define.DataType.STRING)
+    db_root = str(tmpdir.join("db"))
     db.save(db_root, header_only=True)
+
+    # Write bare DataFrame pickle (simulating pre-1.4.0 format)
+    df = pd.DataFrame({"column": y}, index=index)
+    df.to_pickle(os.path.join(db_root, "db.table.pkl"), protocol=4)
 
     # Load and check that dtype is string
     db_new = audformat.Database.load(db_root)
     assert db_new.schemes["column"].dtype == audformat.define.DataType.STRING
     assert db_new["table"].df["column"].dtype == "string"
     assert db_new["table"].index.dtype == "string"
+
+
+@pytest.mark.parametrize(
+    "storage_format",
+    ["parquet", "pkl"],
+)
+def test_save_stores_audformat_version(tmpdir, storage_format):
+    """Test that audformat version is stored in parquet/pickle files."""
+    table = create_db_table(
+        pd.Series(
+            [1.0, 2.0],
+            index=audformat.filewise_index(["f1", "f2"]),
+            name="column",
+        )
+    )
+    path_no_ext = os.path.join(str(tmpdir), "db.table")
+    table.save(path_no_ext, storage_format=storage_format)
+
+    # Verify version is stored
+    if storage_format == "parquet":
+        schema = parquet.read_schema(f"{path_no_ext}.parquet")
+        version = schema.metadata[b"audformat-version"].decode()
+    else:
+        data = pd.read_pickle(f"{path_no_ext}.pkl")
+        assert isinstance(data, dict)
+        version = data["audformat-version"]
+
+    assert version == audformat.__version__
+
+    # Verify version is read back on load
+    table_loaded = audformat.Table()
+    table_loaded.columns = table.columns
+    table_loaded._db = table._db
+    table_loaded.load(path_no_ext)
+    assert table_loaded._audformat_version == audformat.__version__
+
+
+def test_load_invalid_pickle(tmpdir):
+    """Test that loading a pickle with unexpected structure raises error."""
+    path_pkl = os.path.join(str(tmpdir), "db.table.pkl")
+    path_no_ext = os.path.join(str(tmpdir), "db.table")
+
+    # Save a dict without a "df" entry
+    pd.to_pickle({"foo": "bar"}, path_pkl, protocol=4)
+    table = audformat.Table()
+    with pytest.raises(RuntimeError, match="Cannot load pickle file"):
+        table.load(path_no_ext)
+
+    # Save a non-DataFrame, non-dict object
+    pd.to_pickle([1, 2, 3], path_pkl, protocol=4)
+    with pytest.raises(RuntimeError, match="Cannot load pickle file"):
+        table.load(path_no_ext)
 
 
 @pytest.mark.parametrize(
