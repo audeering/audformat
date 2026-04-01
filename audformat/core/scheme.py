@@ -437,25 +437,23 @@ class Scheme(common.HeaderBase):
                     f"'{self.dtype}'."
                 )
 
-        if self._db is None or self._id is None:
-            self.labels = labels
-            return
-
-        labels_set = set(self._labels_to_list(labels))
-        for table in list(self._db.tables.values()) + list(
-            self._db.misc_tables.values()
-        ):
-            for column in table.columns.values():
-                if column.scheme_id == self._id:
-                    values = set(table.df[column._id].dropna().unique())
-                    bad_values = values - labels_set
-                    if bad_values:
-                        raise ValueError(
-                            f"Column '{column._id}' "
-                            f"of table '{table._id}' "
-                            f"contains values not in labels: "
-                            f"{sorted(bad_values)}."
-                        )
+        if self._db is not None and self._id is not None:
+            # Check existing data match new labels
+            labels_set = set(self._labels_to_list(labels))
+            for table in list(self._db.tables.values()) + list(
+                self._db.misc_tables.values()
+            ):
+                for column in table.columns.values():
+                    if column.scheme_id == self._id:
+                        values = set(table.df[column._id].dropna().unique())
+                        bad_values = values - labels_set
+                        if bad_values:
+                            raise ValueError(
+                                f"Column '{column._id}' "
+                                f"of table '{table._id}' "
+                                f"contains values not in labels: "
+                                f"{sorted(bad_values)}."
+                            )
 
         self.labels = labels
         self._update_column_categories(labels, convert_to_categorical=True)
