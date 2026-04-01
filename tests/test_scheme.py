@@ -837,3 +837,88 @@ def test_replace_labels_misc_table():
     )
     with pytest.raises(ValueError, match=error_msg):
         scheme.replace_labels("labels-new")
+
+
+def test_set_labels():
+    """Test setting labels on a scheme that has none."""
+    # --- set list labels on str scheme ---
+    db = audformat.testing.create_db(minimal=True)
+    db.schemes["scheme"] = audformat.Scheme("str")
+    db["table"] = audformat.Table(
+        index=audformat.filewise_index(["f1", "f2"]),
+    )
+    db["table"]["column"] = audformat.Column(scheme_id="scheme")
+    db["table"]["column"].set(["a", "b"])
+
+    assert db["table"]["column"].get().dtype.name != "category"
+
+    db.schemes["scheme"].set_labels(["a", "b", "c"])
+    assert db.schemes["scheme"].labels == ["a", "b", "c"]
+    assert db["table"]["column"].get().dtype.name == "category"
+    assert list(db["table"]["column"].get().values) == ["a", "b"]
+    assert list(db["table"]["column"].get().dtype.categories) == ["a", "b", "c"]
+
+    # --- set dict labels on str scheme ---
+    db = audformat.testing.create_db(minimal=True)
+    db.schemes["scheme"] = audformat.Scheme("str")
+    db["table"] = audformat.Table(
+        index=audformat.filewise_index(["f1", "f2"]),
+    )
+    db["table"]["column"] = audformat.Column(scheme_id="scheme")
+    db["table"]["column"].set(["a", "b"])
+
+    db.schemes["scheme"].set_labels({"a": {"info": 1}, "b": {"info": 2}})
+    assert db.schemes["scheme"].labels == {"a": {"info": 1}, "b": {"info": 2}}
+    assert db["table"]["column"].get().dtype.name == "category"
+
+    # --- set int labels on int scheme ---
+    db = audformat.testing.create_db(minimal=True)
+    db.schemes["scheme"] = audformat.Scheme("int")
+    db["table"] = audformat.Table(
+        index=audformat.filewise_index(["f1", "f2"]),
+    )
+    db["table"]["column"] = audformat.Column(scheme_id="scheme")
+    db["table"]["column"].set([1, 2])
+
+    db.schemes["scheme"].set_labels([1, 2, 3])
+    assert db.schemes["scheme"].labels == [1, 2, 3]
+    assert db["table"]["column"].get().dtype.name == "category"
+    assert list(db["table"]["column"].get().values) == [1, 2]
+
+    # --- set labels on scheme not attached to database ---
+    scheme = audformat.Scheme("str")
+    scheme.set_labels(["a", "b"])
+    assert scheme.labels == ["a", "b"]
+
+    # --- multiple tables referencing same scheme ---
+    db = audformat.testing.create_db(minimal=True)
+    db.schemes["scheme"] = audformat.Scheme("str")
+    db["table1"] = audformat.Table(
+        index=audformat.filewise_index(["f1"]),
+    )
+    db["table1"]["column"] = audformat.Column(scheme_id="scheme")
+    db["table1"]["column"].set(["a"])
+    db["table2"] = audformat.Table(
+        index=audformat.filewise_index(["f2"]),
+    )
+    db["table2"]["column"] = audformat.Column(scheme_id="scheme")
+    db["table2"]["column"].set(["b"])
+
+    db.schemes["scheme"].set_labels(["a", "b"])
+    assert db["table1"]["column"].get().dtype.name == "category"
+    assert db["table2"]["column"].get().dtype.name == "category"
+
+    # --- error: scheme already has labels ---
+    scheme = audformat.Scheme(labels=["a", "b"])
+    with pytest.raises(ValueError, match="already defines labels"):
+        scheme.set_labels(["c", "d"])
+
+    # --- error: dtype mismatch ---
+    scheme = audformat.Scheme("str")
+    with pytest.raises(ValueError, match="does not match"):
+        scheme.set_labels([1, 2])
+
+    # --- error: invalid labels type ---
+    scheme = audformat.Scheme("str")
+    with pytest.raises(ValueError, match="must be passed as"):
+        scheme.set_labels(42)

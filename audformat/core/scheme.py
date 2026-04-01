@@ -378,6 +378,59 @@ class Scheme(common.HeaderBase):
                         )
                         column._table.df[column._id] = y
 
+    def set_labels(
+        self,
+        labels: dict | list,
+    ):
+        r"""Set labels on a scheme that has none.
+
+        If scheme is part of a :class:`audformat.Database`
+        the dtype of all :class:`audformat.Column` objects
+        that reference the scheme will be converted
+        to :class:`pandas.CategoricalDtype`.
+
+        Args:
+            labels: new labels as list or dictionary
+
+        Raises:
+            ValueError: if scheme already defines labels
+            ValueError: if dtype of labels does not match dtype of scheme
+            ValueError: if ``labels`` is not a list or dictionary
+
+        """
+        if self.labels is not None:
+            raise ValueError(
+                "Cannot set labels when scheme already defines labels. "
+                "Use replace_labels() instead."
+            )
+        self._check_labels(labels)
+
+        dtype_labels = self._dtype_from_labels(labels)
+        if dtype_labels != self.dtype:
+            raise ValueError(
+                "Data type of labels "
+                f"'{dtype_labels}' "
+                f"does not match data type of scheme "
+                f"'{self.dtype}'."
+            )
+
+        self.labels = labels
+
+        if self._db is not None and self._id is not None:
+            labels_list = self._labels_to_list(labels)
+            dtype = self.to_pandas_dtype()
+            for table in list(self._db.tables.values()) + list(
+                self._db.misc_tables.values()
+            ):
+                for column in table.columns.values():
+                    if column.scheme_id == self._id:
+                        y = column._table.df[column._id].astype(dtype)
+                        y = y.cat.set_categories(
+                            new_categories=labels_list,
+                            ordered=False,
+                        )
+                        column._table.df[column._id] = y
+
     def _check_labels(
         self,
         labels: dict | list | str,
