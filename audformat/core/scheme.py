@@ -409,6 +409,27 @@ class Scheme(common.HeaderBase):
             ValueError: if existing column data contains values
                 not covered by ``labels``
 
+        Examples:
+            >>> emotion = Scheme("str")
+            >>> emotion
+            {dtype: str}
+            >>> emotion.set_labels(["happy", "sad", "angry"])
+            >>> emotion
+            dtype: str
+            labels: [happy, sad, angry]
+            >>> emotion = Scheme("int")
+            >>> emotion.set_labels(
+            ...     {
+            ...         0: {"emotion": "happy"},
+            ...         1: {"emotion": "sad"},
+            ...     }
+            ... )
+            >>> emotion
+            dtype: int
+            labels:
+              0: {emotion: happy}
+              1: {emotion: sad}
+
         """
         if self.labels is not None:
             raise ValueError(
