@@ -918,6 +918,20 @@ def test_set_labels():
     with pytest.raises(ValueError, match="does not match"):
         scheme.set_labels([1, 2])
 
+    # --- error: column data not covered by labels ---
+    db = audformat.testing.create_db(minimal=True)
+    db.schemes["scheme"] = audformat.Scheme("str")
+    db["table"] = audformat.Table(
+        index=audformat.filewise_index(["f1", "f2"]),
+    )
+    db["table"]["column"] = audformat.Column(scheme_id="scheme")
+    db["table"]["column"].set(["a", "c"])
+
+    with pytest.raises(ValueError, match="contains values not in labels"):
+        db.schemes["scheme"].set_labels(["a", "b"])
+    # verify scheme was not modified
+    assert db.schemes["scheme"].labels is None
+
     # --- error: invalid labels type ---
     scheme = audformat.Scheme("str")
     with pytest.raises(ValueError, match="must be passed as"):

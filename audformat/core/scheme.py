@@ -396,6 +396,8 @@ class Scheme(common.HeaderBase):
             ValueError: if scheme already defines labels
             ValueError: if dtype of labels does not match dtype of scheme
             ValueError: if ``labels`` is not a list or dictionary
+            ValueError: if existing column data contains values
+                not covered by ``labels``
 
         """
         if self.labels is not None:
@@ -413,6 +415,23 @@ class Scheme(common.HeaderBase):
                 f"does not match data type of scheme "
                 f"'{self.dtype}'."
             )
+
+        if self._db is not None and self._id is not None:
+            labels_set = set(self._labels_to_list(labels))
+            for table in list(self._db.tables.values()) + list(
+                self._db.misc_tables.values()
+            ):
+                for column in table.columns.values():
+                    if column.scheme_id == self._id:
+                        values = set(table.df[column._id].dropna().unique())
+                        bad_values = values - labels_set
+                        if bad_values:
+                            raise ValueError(
+                                f"Column '{column._id}' "
+                                f"of table '{table._id}' "
+                                f"contains values not in labels: "
+                                f"{sorted(bad_values)}."
+                            )
 
         self.labels = labels
 
