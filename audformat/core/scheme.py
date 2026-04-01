@@ -363,20 +363,133 @@ class Scheme(common.HeaderBase):
                 )
 
         self.labels = labels
+        self._update_column_categories(labels)
+
+    def set_labels(
+        self,
+        labels: dict | list | str,
+    ):
+        r"""Set labels on a scheme that has none.
+
+        If scheme is part of a :class:`audformat.Database`
+        the dtype of all :class:`audformat.Column` objects
+        that reference the scheme will be converted
+        to :class:`pandas.CategoricalDtype`.
+
+        Args:
+            labels: new labels
+
+        Raises:
+            ValueError: if scheme already defines labels
+            ValueError: if dtype of labels does not match dtype of scheme
+            ValueError: if ``labels`` is not a list, dictionary,
+                or ID of a misc table
+            ValueError: if ``labels`` is a misc table ID
+                and the scheme is already assigned to a database,
+                but the corresponding misc table is not part of the database,
+                or the given table ID is not a misc table,
+                or its index is multi-dimensional,
+                or its index contains duplicates,
+                or the misc table has a column
+                that is already assigned to a scheme
+                with labels from another misc table
+            ValueError: if existing column data contains values
+                not covered by ``labels``
+
+        Examples:
+            >>> emotion = Scheme("str")
+            >>> emotion
+            {dtype: str}
+            >>> emotion.set_labels(["happy", "sad", "angry"])
+            >>> emotion
+            dtype: str
+            labels: [happy, sad, angry]
+            >>> emotion = Scheme("int")
+            >>> emotion.set_labels(
+            ...     {
+            ...         0: {"emotion": "happy"},
+            ...         1: {"emotion": "sad"},
+            ...     }
+            ... )
+            >>> emotion
+            dtype: int
+            labels:
+              0: {emotion: happy}
+              1: {emotion: sad}
+
+        """
+        if self.labels is not None:
+            raise ValueError(
+                "Cannot set labels when scheme already defines labels. "
+                "Use replace_labels() instead."
+            )
+        self._check_labels(labels)
+
+        if not isinstance(labels, str) or self._db is not None:
+            # Check change of data type
+            # for list, dict and assigned misc table
+            dtype_labels = self._dtype_from_labels(labels)
+            if dtype_labels != self.dtype:
+                raise ValueError(
+                    "Data type of labels "
+                    f"'{dtype_labels}' "
+                    f"does not match data type of scheme "
+                    f"'{self.dtype}'."
+                )
 
         if self._db is not None and self._id is not None:
-            labels = self._labels_to_list(labels)
+            # Check existing data match new labels
+            labels_set = set(self._labels_to_list(labels))
             for table in list(self._db.tables.values()) + list(
                 self._db.misc_tables.values()
             ):
                 for column in table.columns.values():
                     if column.scheme_id == self._id:
-                        y = column._table.df[column._id]
-                        y = y.cat.set_categories(
-                            new_categories=labels,
-                            ordered=False,
-                        )
-                        column._table.df[column._id] = y
+                        values = set(table.df[column._id].dropna().unique())
+                        bad_values = values - labels_set
+                        if bad_values:
+                            raise ValueError(
+                                f"Column '{column._id}' "
+                                f"of table '{table._id}' "
+                                f"contains values not in labels: "
+                                f"{sorted(bad_values)}."
+                            )
+
+        self.labels = labels
+        self._update_column_categories(labels, convert_to_categorical=True)
+
+    def _update_column_categories(
+        self,
+        labels: dict | list | str,
+        *,
+        convert_to_categorical: bool = False,
+    ):
+        r"""Update categories of columns referencing this scheme.
+
+        Args:
+            labels: new labels
+            convert_to_categorical: if ``True``,
+                convert columns from plain dtype
+                to categorical first
+
+        """
+        if self._db is None or self._id is None:
+            return
+
+        labels_list = self._labels_to_list(labels)
+        for table in list(self._db.tables.values()) + list(
+            self._db.misc_tables.values()
+        ):
+            for column in table.columns.values():
+                if column.scheme_id == self._id:
+                    y = column._table.df[column._id]
+                    if convert_to_categorical:
+                        y = y.astype(self.to_pandas_dtype())
+                    y = y.cat.set_categories(
+                        new_categories=labels_list,
+                        ordered=False,
+                    )
+                    column._table.df[column._id] = y
 
     def _check_labels(
         self,
