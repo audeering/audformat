@@ -932,6 +932,19 @@ def test_set_labels():
     # verify scheme was not modified
     assert db.schemes["scheme"].labels is None
 
+    # --- set labels when column contains only NaN ---
+    db = audformat.testing.create_db(minimal=True)
+    db.schemes["scheme"] = audformat.Scheme("str")
+    db["table"] = audformat.Table(
+        index=audformat.filewise_index(["f1", "f2"]),
+    )
+    db["table"]["column"] = audformat.Column(scheme_id="scheme")
+
+    db.schemes["scheme"].set_labels(["a", "b"])
+    assert db.schemes["scheme"].labels == ["a", "b"]
+    assert db["table"]["column"].get().dtype.name == "category"
+    assert list(db["table"]["column"].get().dtype.categories) == ["a", "b"]
+
     # --- set labels from misc table ---
     db = audformat.testing.create_db(minimal=True)
     db.schemes["scheme"] = audformat.Scheme("str")
