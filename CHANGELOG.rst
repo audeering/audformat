@@ -12,7 +12,9 @@ Version 1.4.0 (2026-04-08)
 
 * Added: ``audformat.Scheme.set_labels()``
   to add labels to an existing scheme
-  that has none
+  that has none.
+  To replace labels
+  use ``audformat.Scheme.replace_labels()``
 * Added: store ``audformat`` version in table files.
   For parquet files it is stored under the ``audformat-version`` metadata key.
   Pickle files store now a dictionary with the keys
