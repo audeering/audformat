@@ -7,6 +7,31 @@ The format is based on `Keep a Changelog`_,
 and this project adheres to `Semantic Versioning`_.
 
 
+Version 1.4.0 (2026-04-08)
+--------------------------
+
+* Added: ``audformat.Scheme.set_labels()``
+  to add labels to an existing scheme
+  that has none
+* Added: store ``audformat`` version in table files.
+  For parquet files it is stored under the ``audformat-version`` metadata key.
+  Pickle files store now a dictionary with the keys
+  ``audformat-version`` and ``df``,
+  whereas ``df`` contains the table
+* Fixed: ``audformat.utils.hash()`` for large dataframes.
+  Before it resulted in the same hash
+  for large dataframes
+  that differed only in rows in their center.
+  This is a breaking change
+  and will result in different hash values.
+  When using ``audb.publish()``
+  to update a database
+  not published with ``audformat>=1.4.0``,
+  it will result in republishing all existing tables,
+  which is the desired behavior
+* Fixed: loading scheme labels from misc table
+
+
 Version 1.3.4 (2026-02-18)
 --------------------------
 
