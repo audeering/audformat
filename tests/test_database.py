@@ -1031,6 +1031,200 @@ def test_update(tmpdir):
         db.update(other1, overwrite=True, copy_media=True)
 
 
+def test_update_mixed_labels():
+    """Tests updating databases where one scheme has labels and the other does not."""
+    # --- Case 1: self has list labels, other does not ---
+    db1 = audformat.Database("mydb", license=audformat.define.License.CC0_1_0)
+    db1.schemes["emotion"] = audformat.Scheme(labels=["a", "b"])
+    db1["table"] = audformat.Table(audformat.filewise_index(["f1.wav"]))
+    db1["table"]["emotion"] = audformat.Column(scheme_id="emotion")
+    db1["table"]["emotion"].set(["a"])
+
+    db2 = audformat.Database("mydb", license=audformat.define.License.CC0_1_0)
+    db2.schemes["emotion"] = audformat.Scheme("str")
+    db2["table"] = audformat.Table(audformat.filewise_index(["f2.wav", "f3.wav"]))
+    db2["table"]["emotion"] = audformat.Column(scheme_id="emotion")
+    db2["table"]["emotion"].set(["b", "c"])
+
+    error_msg = (
+        "Cannot update database, found different value for 'db.schemes['emotion']':\n"
+        "dtype: str\n"
+        "labels: [a, b]\n"
+        "!=\n"
+        "{dtype: str}"
+    )
+    with pytest.raises(ValueError, match=re.escape(error_msg)):
+        db1.update(db2)
+
+    # --- Case 2: self has no labels, other has list labels ---
+    db1 = audformat.Database("mydb", license=audformat.define.License.CC0_1_0)
+    db1.schemes["emotion"] = audformat.Scheme("str")
+    db1["table"] = audformat.Table(audformat.filewise_index(["f1.wav"]))
+    db1["table"]["emotion"] = audformat.Column(scheme_id="emotion")
+    db1["table"]["emotion"].set(["c"])
+
+    db2 = audformat.Database("mydb", license=audformat.define.License.CC0_1_0)
+    db2.schemes["emotion"] = audformat.Scheme(labels=["a", "b"])
+    db2["table"] = audformat.Table(audformat.filewise_index(["f2.wav"]))
+    db2["table"]["emotion"] = audformat.Column(scheme_id="emotion")
+    db2["table"]["emotion"].set(["a"])
+
+    error_msg = (
+        "Cannot update database, found different value for 'db.schemes['emotion']':\n"
+        "{dtype: str}\n"
+        "!=\n"
+        "dtype: str\n"
+        "labels: [a, b]"
+    )
+    with pytest.raises(ValueError, match=re.escape(error_msg)):
+        db1.update(db2)
+
+    # --- Case 3: dict labels mixed with no-labels ---
+    db1 = audformat.Database("mydb", license=audformat.define.License.CC0_1_0)
+    db1.schemes["emotion"] = audformat.Scheme(
+        labels={"a": {"info": 1}, "b": {"info": 2}}
+    )
+    db1["table"] = audformat.Table(audformat.filewise_index(["f1.wav"]))
+    db1["table"]["emotion"] = audformat.Column(scheme_id="emotion")
+    db1["table"]["emotion"].set(["a"])
+
+    db2 = audformat.Database("mydb", license=audformat.define.License.CC0_1_0)
+    db2.schemes["emotion"] = audformat.Scheme("str")
+    db2["table"] = audformat.Table(audformat.filewise_index(["f2.wav", "f3.wav"]))
+    db2["table"]["emotion"] = audformat.Column(scheme_id="emotion")
+    db2["table"]["emotion"].set(["b", "c"])
+
+    error_msg = (
+        "Cannot update database, found different value for 'db.schemes['emotion']':\n"
+        "dtype: str\n"
+        "labels:\n"
+        "  a: {info: 1}\n"
+        "  b: {info: 2}\n"
+        "!=\n"
+        "{dtype: str}"
+    )
+    with pytest.raises(ValueError, match=re.escape(error_msg)):
+        db1.update(db2)
+
+    # --- Case 4: values already in labels (subset) ---
+    db1 = audformat.Database("mydb", license=audformat.define.License.CC0_1_0)
+    db1.schemes["emotion"] = audformat.Scheme(labels=["a", "b", "c"])
+    db1["table"] = audformat.Table(audformat.filewise_index(["f1.wav"]))
+    db1["table"]["emotion"] = audformat.Column(scheme_id="emotion")
+    db1["table"]["emotion"].set(["a"])
+
+    db2 = audformat.Database("mydb", license=audformat.define.License.CC0_1_0)
+    db2.schemes["emotion"] = audformat.Scheme("str")
+    db2["table"] = audformat.Table(audformat.filewise_index(["f2.wav"]))
+    db2["table"]["emotion"] = audformat.Column(scheme_id="emotion")
+    db2["table"]["emotion"].set(["b"])
+
+    error_msg = (
+        "Cannot update database, found different value for 'db.schemes['emotion']':\n"
+        "dtype: str\n"
+        "labels: [a, b, c]\n"
+        "!=\n"
+        "{dtype: str}"
+    )
+    with pytest.raises(ValueError, match=re.escape(error_msg)):
+        db1.update(db2)
+
+    # --- Case 5: empty column (all NaN) ---
+    db1 = audformat.Database("mydb", license=audformat.define.License.CC0_1_0)
+    db1.schemes["emotion"] = audformat.Scheme(labels=["a", "b"])
+    db1["table"] = audformat.Table(audformat.filewise_index(["f1.wav"]))
+    db1["table"]["emotion"] = audformat.Column(scheme_id="emotion")
+    db1["table"]["emotion"].set(["a"])
+
+    db2 = audformat.Database("mydb", license=audformat.define.License.CC0_1_0)
+    db2.schemes["emotion"] = audformat.Scheme("str")
+    db2["table"] = audformat.Table(audformat.filewise_index(["f2.wav"]))
+    db2["table"]["emotion"] = audformat.Column(scheme_id="emotion")
+    # leave column empty (all NaN)
+
+    error_msg = (
+        "Cannot update database, found different value for 'db.schemes['emotion']':\n"
+        "dtype: str\n"
+        "labels: [a, b]\n"
+        "!=\n"
+        "{dtype: str}"
+    )
+    with pytest.raises(ValueError, match=re.escape(error_msg)):
+        db1.update(db2)
+
+    # --- Case 6: int labels mixed with no-labels ---
+    db1 = audformat.Database("mydb", license=audformat.define.License.CC0_1_0)
+    db1.schemes["score"] = audformat.Scheme(labels=[1, 2, 3])
+    db1["table"] = audformat.Table(audformat.filewise_index(["f1.wav"]))
+    db1["table"]["score"] = audformat.Column(scheme_id="score")
+    db1["table"]["score"].set([1])
+
+    db2 = audformat.Database("mydb", license=audformat.define.License.CC0_1_0)
+    db2.schemes["score"] = audformat.Scheme("int")
+    db2["table"] = audformat.Table(audformat.filewise_index(["f2.wav"]))
+    db2["table"]["score"] = audformat.Column(scheme_id="score")
+    db2["table"]["score"].set([4])
+
+    error_msg = (
+        "Cannot update database, found different value for 'db.schemes['score']':\n"
+        "dtype: int\n"
+        "labels: [1, 2, 3]\n"
+        "!=\n"
+        "{dtype: int}"
+    )
+    with pytest.raises(ValueError, match=re.escape(error_msg)):
+        db1.update(db2)
+
+    # --- Case 7: dtype mismatch raises ValueError ---
+    db1 = audformat.Database("mydb", license=audformat.define.License.CC0_1_0)
+    db1.schemes["emotion"] = audformat.Scheme(labels=["a", "b"])
+    db1["table"] = audformat.Table(audformat.filewise_index(["f1.wav"]))
+    db1["table"]["emotion"] = audformat.Column(scheme_id="emotion")
+    db1["table"]["emotion"].set(["a"])
+
+    db2 = audformat.Database("mydb", license=audformat.define.License.CC0_1_0)
+    db2.schemes["emotion"] = audformat.Scheme("int")
+    db2["table"] = audformat.Table(audformat.filewise_index(["f2.wav"]))
+    db2["table"]["emotion"] = audformat.Column(scheme_id="emotion")
+    db2["table"]["emotion"].set([1])
+
+    error_msg = (
+        "Cannot update database, found different value for 'db.schemes['emotion']':\n"
+        "dtype: str\n"
+        "labels: [a, b]\n"
+        "!=\n"
+        "{dtype: int}"
+    )
+    with pytest.raises(ValueError, match=re.escape(error_msg)):
+        db1.update(db2)
+
+    # --- Case 8: multiple tables referencing the same scheme ---
+    db1 = audformat.Database("mydb", license=audformat.define.License.CC0_1_0)
+    db1.schemes["emotion"] = audformat.Scheme(labels=["a", "b"])
+    db1["table1"] = audformat.Table(audformat.filewise_index(["f1.wav"]))
+    db1["table1"]["emotion"] = audformat.Column(scheme_id="emotion")
+    db1["table1"]["emotion"].set(["a"])
+
+    db2 = audformat.Database("mydb", license=audformat.define.License.CC0_1_0)
+    db2.schemes["emotion"] = audformat.Scheme("str")
+    db2["table1"] = audformat.Table(audformat.filewise_index(["f2.wav"]))
+    db2["table1"]["emotion"] = audformat.Column(scheme_id="emotion")
+    db2["table1"]["emotion"].set(["c"])
+    db2["table2"] = audformat.Table(audformat.filewise_index(["f3.wav"]))
+    db2["table2"]["emotion"] = audformat.Column(scheme_id="emotion")
+    db2["table2"]["emotion"].set(["d"])
+
+    error_msg = (
+        "Cannot update database, found different value for 'db.schemes['emotion']':\n"
+        "dtype: str\n"
+        "labels: [a, b]\n"
+        "!=\n"
+        "{dtype: str}"
+    )
+    with pytest.raises(ValueError, match=re.escape(error_msg)):
+        db1.update(db2)
+
+
 def test_update_misc_table():
     """Tests updating databases with misc tables.
 
