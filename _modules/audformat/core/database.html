@@ -68,7 +68,7 @@
             
             
               <div class="version">
-                v1.3.4
+                v1.4.0
               </div>
             
           
@@ -1654,12 +1654,15 @@
             <span class="n">params</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="n">table_ids</span> <span class="o">=</span> <span class="p">[]</span>
 
-            <span class="k">if</span> <span class="s2">&quot;tables&quot;</span> <span class="ow">in</span> <span class="n">header</span> <span class="ow">and</span> <span class="n">header</span><span class="p">[</span><span class="s2">&quot;tables&quot;</span><span class="p">]:</span>
-                <span class="k">for</span> <span class="n">table_id</span> <span class="ow">in</span> <span class="n">header</span><span class="p">[</span><span class="s2">&quot;tables&quot;</span><span class="p">]:</span>
-                    <span class="n">table_ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">table_id</span><span class="p">)</span>
-
+            <span class="c1"># Load misc_tables first,</span>
+            <span class="c1"># as they might be used as scheme labels</span>
+            <span class="c1"># by regular tables</span>
             <span class="k">if</span> <span class="s2">&quot;misc_tables&quot;</span> <span class="ow">in</span> <span class="n">header</span> <span class="ow">and</span> <span class="n">header</span><span class="p">[</span><span class="s2">&quot;misc_tables&quot;</span><span class="p">]:</span>
                 <span class="k">for</span> <span class="n">table_id</span> <span class="ow">in</span> <span class="n">header</span><span class="p">[</span><span class="s2">&quot;misc_tables&quot;</span><span class="p">]:</span>
+                    <span class="n">table_ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">table_id</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="s2">&quot;tables&quot;</span> <span class="ow">in</span> <span class="n">header</span> <span class="ow">and</span> <span class="n">header</span><span class="p">[</span><span class="s2">&quot;tables&quot;</span><span class="p">]:</span>
+                <span class="k">for</span> <span class="n">table_id</span> <span class="ow">in</span> <span class="n">header</span><span class="p">[</span><span class="s2">&quot;tables&quot;</span><span class="p">]:</span>
                     <span class="n">table_ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">table_id</span><span class="p">)</span>
 
             <span class="k">for</span> <span class="n">table_id</span> <span class="ow">in</span> <span class="n">table_ids</span><span class="p">:</span>
@@ -1909,7 +1912,7 @@
         
         
         
-          Built with <a href="https://www.sphinx-doc.org">Sphinx</a> on 2026/02/18 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org">Sphinx</a> on 2026/04/08 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
@@ -1953,6 +1956,7 @@
 
   
 
+  <script type="text/javascript" src="../../../_static/js/jquery.js"></script>
   <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
   <script type="text/javascript">

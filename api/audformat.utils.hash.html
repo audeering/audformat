@@ -71,7 +71,7 @@
             
             
               <div class="version">
-                v1.3.4
+                v1.4.0
               </div>
             
           
@@ -205,10 +205,15 @@ with data type <code class="docutils literal notranslate"><span class="pre">&quo
 and <code class="docutils literal notranslate"><span class="pre">strict</span></code> is <code class="docutils literal notranslate"><span class="pre">False</span></code>,
 the returned hash value changes with <code class="docutils literal notranslate"><span class="pre">pandas&gt;=2.2.0</span></code>.</p>
 </div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The returned hash with <code class="docutils literal notranslate"><span class="pre">strict</span></code> is <code class="docutils literal notranslate"><span class="pre">True</span></code>
+has changed in <code class="docutils literal notranslate"><span class="pre">audformat&gt;=1.4.0</span></code>.</p>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>obj</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Index.html#pandas.Index" title="(in pandas v3.0.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Index</span></code></a> | <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Series.html#pandas.Series" title="(in pandas v3.0.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Series</span></code></a> | <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v3.0.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a></span>) – object</p></li>
+<li><p><strong>obj</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Index.html#pandas.Index" title="(in pandas v3.0.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Index</span></code></a> | <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Series.html#pandas.Series" title="(in pandas v3.0.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Series</span></code></a> | <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v3.0.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a></span>) – object</p></li>
 <li><p><strong>strict</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></span>) – if <code class="docutils literal notranslate"><span class="pre">True</span></code>,
 the hash takes into account
 the order of rows
@@ -233,9 +238,9 @@ or 32 characters if <code class="docutils literal notranslate"><span class="pre"
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">hash</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
 <span class="go">&#39;5251663970176285425&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">hash</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="go">&#39;0741235e2250e0fcd9ab7b64972f5047&#39;</span>
+<span class="go">&#39;fb9a35ca0492404e5f9dba30eebb3bfb&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">hash</span><span class="p">(</span><span class="n">index</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># reversed index</span>
-<span class="go">&#39;c6639d377897dd9353dc3e8b2968170d&#39;</span>
+<span class="go">&#39;b59b53388eb3ecf5a04ddd0edb89152a&#39;</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -265,7 +270,7 @@ or 32 characters if <code class="docutils literal notranslate"><span class="pre"
         
         
         
-          Built with <a href="https://www.sphinx-doc.org">Sphinx</a> on 2026/02/18 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org">Sphinx</a> on 2026/04/08 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
@@ -309,6 +314,7 @@ or 32 characters if <code class="docutils literal notranslate"><span class="pre"
 
   
 
+  <script type="text/javascript" src="../_static/js/jquery.js"></script>
   <script type="text/javascript" src="../_static/js/theme.js"></script>
 
   <script type="text/javascript">

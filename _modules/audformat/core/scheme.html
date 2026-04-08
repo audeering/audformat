@@ -68,7 +68,7 @@
             
             
               <div class="version">
-                v1.3.4
+                v1.4.0
               </div>
             
           
@@ -537,21 +537,137 @@
                 <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">labels</span> <span class="o">=</span> <span class="n">labels</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update_column_categories</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Scheme.set_labels">
+<a class="viewcode-back" href="../../../api/audformat.Scheme.html#audformat.Scheme.set_labels">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_labels</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">labels</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">|</span> <span class="nb">list</span> <span class="o">|</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Set labels on a scheme that has none.</span>
+
+<span class="sd">        If scheme is part of a :class:`audformat.Database`</span>
+<span class="sd">        the dtype of all :class:`audformat.Column` objects</span>
+<span class="sd">        that reference the scheme will be converted</span>
+<span class="sd">        to :class:`pandas.CategoricalDtype`.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            labels: new labels</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError: if scheme already defines labels</span>
+<span class="sd">            ValueError: if dtype of labels does not match dtype of scheme</span>
+<span class="sd">            ValueError: if ``labels`` is not a list, dictionary,</span>
+<span class="sd">                or ID of a misc table</span>
+<span class="sd">            ValueError: if ``labels`` is a misc table ID</span>
+<span class="sd">                and the scheme is already assigned to a database,</span>
+<span class="sd">                but the corresponding misc table is not part of the database,</span>
+<span class="sd">                or the given table ID is not a misc table,</span>
+<span class="sd">                or its index is multi-dimensional,</span>
+<span class="sd">                or its index contains duplicates,</span>
+<span class="sd">                or the misc table has a column</span>
+<span class="sd">                that is already assigned to a scheme</span>
+<span class="sd">                with labels from another misc table</span>
+<span class="sd">            ValueError: if existing column data contains values</span>
+<span class="sd">                not covered by ``labels``</span>
+
+<span class="sd">        Examples:</span>
+<span class="sd">            &gt;&gt;&gt; emotion = Scheme(&quot;str&quot;)</span>
+<span class="sd">            &gt;&gt;&gt; emotion</span>
+<span class="sd">            {dtype: str}</span>
+<span class="sd">            &gt;&gt;&gt; emotion.set_labels([&quot;happy&quot;, &quot;sad&quot;, &quot;angry&quot;])</span>
+<span class="sd">            &gt;&gt;&gt; emotion</span>
+<span class="sd">            dtype: str</span>
+<span class="sd">            labels: [happy, sad, angry]</span>
+<span class="sd">            &gt;&gt;&gt; emotion = Scheme(&quot;int&quot;)</span>
+<span class="sd">            &gt;&gt;&gt; emotion.set_labels(</span>
+<span class="sd">            ...     {</span>
+<span class="sd">            ...         0: {&quot;emotion&quot;: &quot;happy&quot;},</span>
+<span class="sd">            ...         1: {&quot;emotion&quot;: &quot;sad&quot;},</span>
+<span class="sd">            ...     }</span>
+<span class="sd">            ... )</span>
+<span class="sd">            &gt;&gt;&gt; emotion</span>
+<span class="sd">            dtype: int</span>
+<span class="sd">            labels:</span>
+<span class="sd">              0: {emotion: happy}</span>
+<span class="sd">              1: {emotion: sad}</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">labels</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Cannot set labels when scheme already defines labels. &quot;</span>
+                <span class="s2">&quot;Use replace_labels() instead.&quot;</span>
+            <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_labels</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_db</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># Check change of data type</span>
+            <span class="c1"># for list, dict and assigned misc table</span>
+            <span class="n">dtype_labels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dtype_from_labels</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">dtype_labels</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;Data type of labels &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">dtype_labels</span><span class="si">}</span><span class="s2">&#39; &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;does not match data type of scheme &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="si">}</span><span class="s2">&#39;.&quot;</span>
+                <span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_db</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">labels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_labels_to_list</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span>
+            <span class="c1"># Check existing data match new labels</span>
+            <span class="n">labels_set</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_labels_to_list</span><span class="p">(</span><span class="n">labels</span><span class="p">))</span>
             <span class="k">for</span> <span class="n">table</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_db</span><span class="o">.</span><span class="n">tables</span><span class="o">.</span><span class="n">values</span><span class="p">())</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_db</span><span class="o">.</span><span class="n">misc_tables</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
             <span class="p">):</span>
                 <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="n">table</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
                     <span class="k">if</span> <span class="n">column</span><span class="o">.</span><span class="n">scheme_id</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_id</span><span class="p">:</span>
-                        <span class="n">y</span> <span class="o">=</span> <span class="n">column</span><span class="o">.</span><span class="n">_table</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">column</span><span class="o">.</span><span class="n">_id</span><span class="p">]</span>
-                        <span class="n">y</span> <span class="o">=</span> <span class="n">y</span><span class="o">.</span><span class="n">cat</span><span class="o">.</span><span class="n">set_categories</span><span class="p">(</span>
-                            <span class="n">new_categories</span><span class="o">=</span><span class="n">labels</span><span class="p">,</span>
-                            <span class="n">ordered</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                        <span class="p">)</span>
-                        <span class="n">column</span><span class="o">.</span><span class="n">_table</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">column</span><span class="o">.</span><span class="n">_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">y</span></div>
+                        <span class="n">values</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">table</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">column</span><span class="o">.</span><span class="n">_id</span><span class="p">]</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span><span class="o">.</span><span class="n">unique</span><span class="p">())</span>
+                        <span class="n">bad_values</span> <span class="o">=</span> <span class="n">values</span> <span class="o">-</span> <span class="n">labels_set</span>
+                        <span class="k">if</span> <span class="n">bad_values</span><span class="p">:</span>
+                            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                                <span class="sa">f</span><span class="s2">&quot;Column &#39;</span><span class="si">{</span><span class="n">column</span><span class="o">.</span><span class="n">_id</span><span class="si">}</span><span class="s2">&#39; &quot;</span>
+                                <span class="sa">f</span><span class="s2">&quot;of table &#39;</span><span class="si">{</span><span class="n">table</span><span class="o">.</span><span class="n">_id</span><span class="si">}</span><span class="s2">&#39; &quot;</span>
+                                <span class="sa">f</span><span class="s2">&quot;contains values not in labels: &quot;</span>
+                                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">sorted</span><span class="p">(</span><span class="n">bad_values</span><span class="p">)</span><span class="si">}</span><span class="s2">.&quot;</span>
+                            <span class="p">)</span>
 
+        <span class="bp">self</span><span class="o">.</span><span class="n">labels</span> <span class="o">=</span> <span class="n">labels</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update_column_categories</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="n">convert_to_categorical</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_update_column_categories</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">labels</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">|</span> <span class="nb">list</span> <span class="o">|</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">convert_to_categorical</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Update categories of columns referencing this scheme.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            labels: new labels</span>
+<span class="sd">            convert_to_categorical: if ``True``,</span>
+<span class="sd">                convert columns from plain dtype</span>
+<span class="sd">                to categorical first</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_db</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="n">labels_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_labels_to_list</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">table</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_db</span><span class="o">.</span><span class="n">tables</span><span class="o">.</span><span class="n">values</span><span class="p">())</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_db</span><span class="o">.</span><span class="n">misc_tables</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+        <span class="p">):</span>
+            <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="n">table</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">column</span><span class="o">.</span><span class="n">scheme_id</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_id</span><span class="p">:</span>
+                    <span class="n">y</span> <span class="o">=</span> <span class="n">column</span><span class="o">.</span><span class="n">_table</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">column</span><span class="o">.</span><span class="n">_id</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="n">convert_to_categorical</span><span class="p">:</span>
+                        <span class="n">y</span> <span class="o">=</span> <span class="n">y</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">to_pandas_dtype</span><span class="p">())</span>
+                    <span class="n">y</span> <span class="o">=</span> <span class="n">y</span><span class="o">.</span><span class="n">cat</span><span class="o">.</span><span class="n">set_categories</span><span class="p">(</span>
+                        <span class="n">new_categories</span><span class="o">=</span><span class="n">labels_list</span><span class="p">,</span>
+                        <span class="n">ordered</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                    <span class="p">)</span>
+                    <span class="n">column</span><span class="o">.</span><span class="n">_table</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">column</span><span class="o">.</span><span class="n">_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">y</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_check_labels</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -696,7 +812,7 @@
         
         
         
-          Built with <a href="https://www.sphinx-doc.org">Sphinx</a> on 2026/02/18 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org">Sphinx</a> on 2026/04/08 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
@@ -740,6 +856,7 @@
 
   
 
+  <script type="text/javascript" src="../../../_static/js/jquery.js"></script>
   <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
   <script type="text/javascript">

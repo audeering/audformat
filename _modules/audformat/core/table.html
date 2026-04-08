@@ -68,7 +68,7 @@
             
             
               <div class="version">
-                v1.3.4
+                v1.4.0
               </div>
             
           
@@ -190,9 +190,16 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">audformat.core.index</span><span class="w"> </span><span class="kn">import</span> <span class="n">index_type</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">audformat.core.index</span><span class="w"> </span><span class="kn">import</span> <span class="n">is_filewise_index</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">audformat.core.index</span><span class="w"> </span><span class="kn">import</span> <span class="n">is_segmented_index</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">audformat.core.index</span><span class="w"> </span><span class="kn">import</span> <span class="n">to_timedelta</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">audformat.core.media</span><span class="w"> </span><span class="kn">import</span> <span class="n">Media</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">audformat.core.split</span><span class="w"> </span><span class="kn">import</span> <span class="n">Split</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">audformat.core.typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Values</span>
+
+
+<span class="c1"># Keys used in parquet metadata and pickle wrapper dict</span>
+<span class="n">_KEY_VERSION</span> <span class="o">=</span> <span class="s2">&quot;audformat-version&quot;</span>
+<span class="n">_KEY_DATAFRAME</span> <span class="o">=</span> <span class="s2">&quot;df&quot;</span>
+<span class="n">_KEY_HASH</span> <span class="o">=</span> <span class="s2">&quot;hash&quot;</span>
 
 
 <span class="k">class</span><span class="w"> </span><span class="nc">Base</span><span class="p">(</span><span class="n">HeaderBase</span><span class="p">):</span>
@@ -1087,9 +1094,9 @@
             <span class="n">dtypes_wo_converters</span> <span class="o">=</span> <span class="p">{}</span>
             <span class="k">for</span> <span class="n">column</span><span class="p">,</span> <span class="n">dtype</span> <span class="ow">in</span> <span class="n">columns_and_dtypes</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                 <span class="k">if</span> <span class="n">dtype</span> <span class="o">==</span> <span class="n">define</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">DATE</span><span class="p">:</span>
-                    <span class="n">converters</span><span class="p">[</span><span class="n">column</span><span class="p">]</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+                    <span class="n">converters</span><span class="p">[</span><span class="n">column</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span>
                 <span class="k">elif</span> <span class="n">dtype</span> <span class="o">==</span> <span class="n">define</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">TIME</span><span class="p">:</span>
-                    <span class="n">converters</span><span class="p">[</span><span class="n">column</span><span class="p">]</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_timedelta</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+                    <span class="n">converters</span><span class="p">[</span><span class="n">column</span><span class="p">]</span> <span class="o">=</span> <span class="n">to_timedelta</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">dtypes_wo_converters</span><span class="p">[</span><span class="n">column</span><span class="p">]</span> <span class="o">=</span> <span class="n">to_pandas_dtype</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span>
 
@@ -1117,6 +1124,13 @@
         <span class="n">table</span> <span class="o">=</span> <span class="n">parquet</span><span class="o">.</span><span class="n">read_table</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
         <span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pyarrow_table_to_dataframe</span><span class="p">(</span><span class="n">table</span><span class="p">)</span>
 
+        <span class="c1"># Read audformat version from metadata.</span>
+        <span class="c1"># Files written before 1.4.0 don&#39;t have this key.</span>
+        <span class="n">metadata</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">schema</span><span class="o">.</span><span class="n">metadata</span> <span class="ow">or</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_audformat_version</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">_KEY_VERSION</span><span class="o">.</span><span class="n">encode</span><span class="p">(),</span> <span class="sa">b</span><span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span> <span class="ow">or</span> <span class="kc">None</span>
+        <span class="p">)</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">_df</span> <span class="o">=</span> <span class="n">df</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_load_pickled</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
@@ -1133,22 +1147,47 @@
         <span class="c1"># but was slower.</span>
         <span class="c1"># The try-except statement allows backward compatibility</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_pickle</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_pickle</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
         <span class="k">except</span> <span class="n">pickle</span><span class="o">.</span><span class="n">UnpicklingError</span><span class="p">:</span>
-            <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_pickle</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">compression</span><span class="o">=</span><span class="s2">&quot;xz&quot;</span><span class="p">)</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_pickle</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">compression</span><span class="o">=</span><span class="s2">&quot;xz&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Since 1.4.0, pickle files store a dict</span>
+        <span class="c1"># with audformat version and dataframe.</span>
+        <span class="c1"># Older files store a bare dataframe.</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="ow">and</span> <span class="n">_KEY_DATAFRAME</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+            <span class="n">version</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">_KEY_VERSION</span><span class="p">)</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">_KEY_DATAFRAME</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">version</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="n">data</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="k">else</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="n">df</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Cannot load pickle file &#39;</span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">&#39;, &quot;</span>
+                <span class="s2">&quot;expected a pandas DataFrame &quot;</span>
+                <span class="s2">&quot;or a dictionary with an &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">_KEY_DATAFRAME</span><span class="si">}</span><span class="s2">&#39; entry.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_audformat_version</span> <span class="o">=</span> <span class="n">version</span>
 
         <span class="c1"># Older versions of audformat stored columns</span>
         <span class="c1"># assigned to a string scheme as &#39;object&#39;,</span>
-        <span class="c1"># so we need to convert those to &#39;string&#39;</span>
-        <span class="k">for</span> <span class="n">column_id</span><span class="p">,</span> <span class="n">column</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="k">if</span> <span class="p">(</span>
-                <span class="n">column</span><span class="o">.</span><span class="n">scheme_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-                <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="n">column</span><span class="o">.</span><span class="n">scheme_id</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span> <span class="o">==</span> <span class="n">define</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">STRING</span><span class="p">)</span>
-                <span class="ow">and</span> <span class="n">df</span><span class="p">[</span><span class="n">column_id</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span> <span class="o">==</span> <span class="s2">&quot;object&quot;</span>
-            <span class="p">):</span>
-                <span class="n">df</span><span class="p">[</span><span class="n">column_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">column_id</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;string&quot;</span><span class="p">)</span>
-        <span class="c1"># Fix index entries as well</span>
-        <span class="n">df</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">_maybe_convert_dtype_to_string</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+        <span class="c1"># so we need to convert those to &#39;string&#39;.</span>
+        <span class="c1"># This was fixed in 1.4.0.</span>
+        <span class="k">if</span> <span class="n">_needs_legacy_fixup</span><span class="p">(</span><span class="n">version</span><span class="p">,</span> <span class="s2">&quot;1.4.0&quot;</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">column_id</span><span class="p">,</span> <span class="n">column</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="p">(</span>
+                    <span class="n">column</span><span class="o">.</span><span class="n">scheme_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+                    <span class="ow">and</span> <span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="n">column</span><span class="o">.</span><span class="n">scheme_id</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span>
+                        <span class="o">==</span> <span class="n">define</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">STRING</span>
+                    <span class="p">)</span>
+                    <span class="ow">and</span> <span class="n">df</span><span class="p">[</span><span class="n">column_id</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span> <span class="o">==</span> <span class="s2">&quot;object&quot;</span>
+                <span class="p">):</span>
+                    <span class="n">df</span><span class="p">[</span><span class="n">column_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">column_id</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;string&quot;</span><span class="p">)</span>
+            <span class="c1"># Fix index entries as well</span>
+            <span class="n">df</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">_maybe_convert_dtype_to_string</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_df</span> <span class="o">=</span> <span class="n">df</span>
 
@@ -1236,8 +1275,7 @@
         <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="n">time_columns</span><span class="p">:</span>
             <span class="n">df</span><span class="p">[</span><span class="n">column</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">column</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;timedelta64[ns]&quot;</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="n">object_columns</span><span class="p">:</span>
-            <span class="n">df</span><span class="p">[</span><span class="n">column</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">column</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;object&quot;</span><span class="p">)</span>
-            <span class="n">df</span><span class="p">[</span><span class="n">column</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">column</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">NA</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="n">df</span><span class="p">[</span><span class="n">column</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">column</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;object&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">NA</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="n">labeled_columns</span><span class="p">:</span>
             <span class="n">scheme</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="n">column</span><span class="p">]</span><span class="o">.</span><span class="n">scheme_id</span><span class="p">]</span>
             <span class="n">labels</span> <span class="o">=</span> <span class="n">scheme</span><span class="o">.</span><span class="n">_labels_to_list</span><span class="p">()</span>
@@ -1354,20 +1392,29 @@
 <span class="sd">            path: path, including file extension</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">table</span> <span class="o">=</span> <span class="n">pa</span><span class="o">.</span><span class="n">Table</span><span class="o">.</span><span class="n">from_pandas</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(),</span> <span class="n">preserve_index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-
         <span class="c1"># Create hash of table</span>
         <span class="n">table_hash</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-        <span class="c1"># Store in metadata of file,</span>
+        <span class="n">table</span> <span class="o">=</span> <span class="n">pa</span><span class="o">.</span><span class="n">Table</span><span class="o">.</span><span class="n">from_pandas</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(),</span> <span class="n">preserve_index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="c1"># Store hash in metadata of file,</span>
         <span class="c1"># see https://stackoverflow.com/a/58978449</span>
-        <span class="n">metadata</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;hash&quot;</span><span class="p">:</span> <span class="n">table_hash</span><span class="p">}</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">audformat</span>
+
+        <span class="n">metadata</span> <span class="o">=</span> <span class="p">{</span><span class="n">_KEY_HASH</span><span class="p">:</span> <span class="n">table_hash</span><span class="p">,</span> <span class="n">_KEY_VERSION</span><span class="p">:</span> <span class="n">audformat</span><span class="o">.</span><span class="n">__version__</span><span class="p">}</span>
         <span class="n">table</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">replace_schema_metadata</span><span class="p">({</span><span class="o">**</span><span class="n">metadata</span><span class="p">,</span> <span class="o">**</span><span class="n">table</span><span class="o">.</span><span class="n">schema</span><span class="o">.</span><span class="n">metadata</span><span class="p">})</span>
 
         <span class="n">parquet</span><span class="o">.</span><span class="n">write_table</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">compression</span><span class="o">=</span><span class="s2">&quot;snappy&quot;</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_save_pickled</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">to_pickle</span><span class="p">(</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">audformat</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">_KEY_VERSION</span><span class="p">:</span> <span class="n">audformat</span><span class="o">.</span><span class="n">__version__</span><span class="p">,</span>
+            <span class="n">_KEY_DATAFRAME</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="n">pd</span><span class="o">.</span><span class="n">to_pickle</span><span class="p">(</span>
+            <span class="n">data</span><span class="p">,</span>
             <span class="n">path</span><span class="p">,</span>
             <span class="n">protocol</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>  <span class="c1"># supported by Python &gt;= 3.4</span>
         <span class="p">)</span>
@@ -2028,6 +2075,29 @@
 
 
 
+<span class="k">def</span><span class="w"> </span><span class="nf">_needs_legacy_fixup</span><span class="p">(</span><span class="n">version</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">fixed_in</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Return if a file needs a legacy fixup.</span>
+
+<span class="sd">    Returns ``True`` if ``version`` is ``None``</span>
+<span class="sd">    (file written before version tracking was added)</span>
+<span class="sd">    or if ``version`` is older than ``fixed_in``.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        version: audformat version that wrote the file,</span>
+<span class="sd">            or ``None`` for unknown</span>
+<span class="sd">        fixed_in: version in which the fixup was applied</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        ``True`` if the legacy fixup should be run</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">version</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">packaging.version</span><span class="w"> </span><span class="kn">import</span> <span class="n">Version</span>
+
+    <span class="k">return</span> <span class="n">Version</span><span class="p">(</span><span class="n">version</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">Version</span><span class="p">(</span><span class="n">fixed_in</span><span class="p">)</span>
+
+
 <span class="k">def</span><span class="w"> </span><span class="nf">_assert_table_index</span><span class="p">(</span>
     <span class="n">table</span><span class="p">:</span> <span class="n">Base</span><span class="p">,</span>
     <span class="n">index</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">,</span>
@@ -2103,7 +2173,7 @@
         
         
         
-          Built with <a href="https://www.sphinx-doc.org">Sphinx</a> on 2026/02/18 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org">Sphinx</a> on 2026/04/08 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
@@ -2147,6 +2217,7 @@
 
   
 
+  <script type="text/javascript" src="../../../_static/js/jquery.js"></script>
   <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
   <script type="text/javascript">

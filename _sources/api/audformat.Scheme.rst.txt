@@ -62,6 +62,10 @@ replace\_labels\(\)
 -------------------
 .. automethod:: Scheme.replace_labels
     
+set\_labels\(\)
+---------------
+.. automethod:: Scheme.set_labels
+    
 to\_dict\(\)
 ------------
 .. automethod:: Scheme.to_dict

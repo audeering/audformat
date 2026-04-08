@@ -68,7 +68,7 @@
             
             
               <div class="version">
-                v1.3.4
+                v1.4.0
               </div>
             
           
@@ -179,7 +179,6 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">iso3166</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">pyarrow</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pa</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">audeer</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">audiofile</span>
@@ -201,6 +200,12 @@
         <span class="s2">&quot;expand_file_path&quot;</span><span class="p">,</span>
         <span class="s2">&quot;to_filewise_index&quot;</span><span class="p">,</span>
     <span class="p">]</span>
+
+<span class="c1"># Separator used when hashing object arrays in hash().</span>
+<span class="c1"># Null byte is used as it&#39;s unlikely to appear in typical data</span>
+<span class="c1"># (file paths, labels). Note: if data contains \x00, collisions</span>
+<span class="c1"># are theoretically possible - see tests for details.</span>
+<span class="n">_OBJECT_ARRAY_SEPARATOR</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\x00</span><span class="s2">&quot;</span>
 
 
 <div class="viewcode-block" id="concat">
@@ -849,6 +854,74 @@
 
 
 
+<span class="k">def</span><span class="w"> </span><span class="nf">_normalize_dtype_name</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Normalize a pandas dtype to a canonical string for hashing.</span>
+
+<span class="sd">    Maps different representations of the same logical type</span>
+<span class="sd">    to a single string, e.g. both ``&quot;string&quot;`` and ``&quot;object&quot;``</span>
+<span class="sd">    dtypes map to ``&quot;string&quot;``.</span>
+
+<span class="sd">    Preserves precision for numeric types</span>
+<span class="sd">    (e.g. ``int32`` and ``int64`` produce different strings).</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dtype</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">CategoricalDtype</span><span class="p">):</span>
+        <span class="c1"># Include category dtype to distinguish e.g.</span>
+        <span class="c1"># categorical-with-strings from categorical-with-ints</span>
+        <span class="k">if</span> <span class="n">dtype</span><span class="o">.</span><span class="n">categories</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">cat_dtype</span> <span class="o">=</span> <span class="n">_normalize_dtype_name</span><span class="p">(</span><span class="n">dtype</span><span class="o">.</span><span class="n">categories</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">cat_dtype</span> <span class="o">=</span> <span class="s2">&quot;empty&quot;</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;categorical[</span><span class="si">{</span><span class="n">cat_dtype</span><span class="si">}</span><span class="s2">]&quot;</span>
+    <span class="k">if</span> <span class="n">pd</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">is_string_dtype</span><span class="p">(</span><span class="n">dtype</span><span class="p">):</span>
+        <span class="c1"># Normalize string/object/StringDtype</span>
+        <span class="k">return</span> <span class="s2">&quot;string&quot;</span>
+    <span class="k">if</span> <span class="n">pd</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">is_bool_dtype</span><span class="p">(</span><span class="n">dtype</span><span class="p">):</span>
+        <span class="c1"># Normalize bool/BooleanDtype</span>
+        <span class="k">return</span> <span class="s2">&quot;bool&quot;</span>
+    <span class="c1"># Standard numpy dtypes: preserve precise type name</span>
+    <span class="c1"># (int32, int64, float32, float64, timedelta64[ns], datetime64[ns], etc.)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">name</span>
+    <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+        <span class="k">pass</span>
+    <span class="c1"># Nullable extension dtypes (Int8, Int64, Float32, Float64, etc.)</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">dtype</span><span class="p">,</span> <span class="s2">&quot;numpy_dtype&quot;</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">dtype</span><span class="o">.</span><span class="n">numpy_dtype</span><span class="o">.</span><span class="n">name</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_hash_update_array</span><span class="p">(</span>
+    <span class="n">md5</span><span class="p">,</span>
+    <span class="n">arr_like</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Update md5 hash with array data.</span>
+
+<span class="sd">    Handles numeric arrays via ``tobytes()``</span>
+<span class="sd">    and object arrays via explicit string encoding.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">pd</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">is_integer_dtype</span><span class="p">(</span><span class="n">arr_like</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span>
+        <span class="n">arr_like</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="s2">&quot;numpy_dtype&quot;</span>
+    <span class="p">):</span>
+        <span class="c1"># Nullable integer extension types (Int8, ..., Int64, UInt8, ..., UInt64)</span>
+        <span class="c1"># need conversion to float for consistent numpy array representation</span>
+        <span class="c1"># (since pandas 2.2.x, nullable integers with &lt;NA&gt; convert to float anyway,</span>
+        <span class="c1"># but older versions may produce object arrays)</span>
+        <span class="n">arr</span> <span class="o">=</span> <span class="n">arr_like</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;float&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">arr_like</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">arr</span><span class="o">.</span><span class="n">dtype</span> <span class="o">==</span> <span class="nb">object</span><span class="p">:</span>
+        <span class="c1"># Object arrays (strings, etc.) need explicit encoding</span>
+        <span class="n">md5</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">_OBJECT_ARRAY_SEPARATOR</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">arr</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># Use platform-independent byte representation:</span>
+        <span class="c1"># convert to big-endian before hashing to ensure</span>
+        <span class="c1"># consistent hashes across different architectures</span>
+        <span class="k">if</span> <span class="n">arr</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">byteorder</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;=&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;&quot;</span><span class="p">):</span>
+            <span class="n">arr</span> <span class="o">=</span> <span class="n">arr</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">arr</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">newbyteorder</span><span class="p">(</span><span class="s2">&quot;&gt;&quot;</span><span class="p">),</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">md5</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">arr</span><span class="o">.</span><span class="n">tobytes</span><span class="p">())</span>
+
+
 <div class="viewcode-block" id="hash">
 <a class="viewcode-back" href="../../../api/audformat.utils.hash.html#audformat.utils.hash">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">hash</span><span class="p">(</span>
@@ -869,6 +942,11 @@
 <span class="sd">        with data type ``&quot;Int64&quot;``,</span>
 <span class="sd">        and ``strict`` is ``False``,</span>
 <span class="sd">        the returned hash value changes with ``pandas&gt;=2.2.0``.</span>
+
+<span class="sd">    .. warning::</span>
+
+<span class="sd">        The returned hash with ``strict`` is ``True``</span>
+<span class="sd">        has changed in ``audformat&gt;=1.4.0``.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        obj: object</span>
@@ -891,84 +969,60 @@
 <span class="sd">        &gt;&gt;&gt; hash(y)</span>
 <span class="sd">        &#39;5251663970176285425&#39;</span>
 <span class="sd">        &gt;&gt;&gt; hash(index, strict=True)</span>
-<span class="sd">        &#39;0741235e2250e0fcd9ab7b64972f5047&#39;</span>
+<span class="sd">        &#39;fb9a35ca0492404e5f9dba30eebb3bfb&#39;</span>
 <span class="sd">        &gt;&gt;&gt; hash(index[::-1], strict=True)  # reversed index</span>
-<span class="sd">        &#39;c6639d377897dd9353dc3e8b2968170d&#39;</span>
+<span class="sd">        &#39;b59b53388eb3ecf5a04ddd0edb89152a&#39;</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">strict</span><span class="p">:</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">):</span>
-            <span class="n">df</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">to_frame</span><span class="p">()</span>
+        <span class="c1"># Collect column/index names and normalized dtypes.</span>
+        <span class="n">dtypes</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># Collect index levels</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">)):</span>
+            <span class="n">index</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">index</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">index</span> <span class="o">=</span> <span class="n">obj</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">MultiIndex</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">index</span><span class="o">.</span><span class="n">nlevels</span><span class="p">):</span>
+                <span class="n">name</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">index</span><span class="o">.</span><span class="n">names</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="k">if</span> <span class="n">index</span><span class="o">.</span><span class="n">names</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+                <span class="n">dtype</span> <span class="o">=</span> <span class="n">index</span><span class="o">.</span><span class="n">get_level_values</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="o">.</span><span class="n">dtype</span>
+                <span class="n">dtypes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">_normalize_dtype_name</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">index</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="k">if</span> <span class="n">index</span><span class="o">.</span><span class="n">name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="s2">&quot;0&quot;</span>
+            <span class="n">dtypes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">_normalize_dtype_name</span><span class="p">(</span><span class="n">index</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Collect column/value dtypes</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">obj</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+                <span class="n">dtypes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">col</span><span class="p">)</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">_normalize_dtype_name</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">):</span>
-            <span class="n">df</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">to_frame</span><span class="p">()</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">df</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="k">if</span> <span class="n">obj</span><span class="o">.</span><span class="n">name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="s2">&quot;0&quot;</span>
+            <span class="n">dtypes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">_normalize_dtype_name</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-        <span class="c1"># Ensure column names are strings for pyarrow compatibility</span>
-        <span class="c1"># (empty index converted to DataFrame may have integer column names)</span>
-        <span class="n">df</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">]</span>
+        <span class="n">dtypes_str</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dtypes</span><span class="p">)</span>
+        <span class="n">dtypes_md5</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">md5</span><span class="p">(</span><span class="n">dtypes_str</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
 
-        <span class="c1"># Normalize string columns to object dtype for consistent hashing</span>
-        <span class="c1"># (pandas 3.0 uses &quot;string&quot; dtype which maps to pyarrow &quot;large_string&quot;,</span>
-        <span class="c1"># while &quot;object&quot; dtype maps to pyarrow &quot;string&quot;)</span>
-        <span class="c1"># For empty DataFrames, we also need to specify an explicit schema</span>
-        <span class="c1"># because pyarrow infers &quot;null&quot; type for empty object columns</span>
-        <span class="n">schema_fields</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">pd</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">is_string_dtype</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span><span class="p">):</span>
-                <span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;object&quot;</span><span class="p">)</span>
-                <span class="n">schema_fields</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">col</span><span class="p">,</span> <span class="n">pa</span><span class="o">.</span><span class="n">string</span><span class="p">()))</span>
-            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">CategoricalDtype</span><span class="p">):</span>
-                <span class="c1"># Normalize categorical with string categories to object</span>
-                <span class="n">cat_dtype</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">categories</span><span class="o">.</span><span class="n">dtype</span>
-                <span class="k">if</span> <span class="n">pd</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">is_string_dtype</span><span class="p">(</span><span class="n">cat_dtype</span><span class="p">):</span>
-                    <span class="n">new_categories</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">categories</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;object&quot;</span><span class="p">)</span>
-                    <span class="n">ordered</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">ordered</span>
-                    <span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span>
-                        <span class="n">pd</span><span class="o">.</span><span class="n">CategoricalDtype</span><span class="p">(</span><span class="n">new_categories</span><span class="p">,</span> <span class="n">ordered</span><span class="o">=</span><span class="n">ordered</span><span class="p">)</span>
-                    <span class="p">)</span>
-                <span class="n">schema_fields</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">col</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="c1"># Let pyarrow infer</span>
-                <span class="n">schema_fields</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">col</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
-        <span class="c1"># Build schema for columns that need explicit types</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="nb">any</span><span class="p">(</span><span class="n">f</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">schema_fields</span><span class="p">):</span>
-            <span class="c1"># For empty DataFrames with index of type string/object,</span>
-            <span class="c1"># specify schema explicitly</span>
-            <span class="n">schema</span> <span class="o">=</span> <span class="n">pa</span><span class="o">.</span><span class="n">schema</span><span class="p">(</span>
-                <span class="p">[</span>
-                    <span class="p">(</span>
-                        <span class="n">name</span><span class="p">,</span>
-                        <span class="n">typ</span> <span class="k">if</span> <span class="n">typ</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">pa</span><span class="o">.</span><span class="n">from_numpy_dtype</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span><span class="p">),</span>
-                    <span class="p">)</span>
-                    <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">typ</span> <span class="ow">in</span> <span class="n">schema_fields</span>
-                <span class="p">]</span>
-            <span class="p">)</span>
-            <span class="n">table</span> <span class="o">=</span> <span class="n">pa</span><span class="o">.</span><span class="n">Table</span><span class="o">.</span><span class="n">from_pandas</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">preserve_index</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">schema</span><span class="o">=</span><span class="n">schema</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="c1"># Handle column names and dtypes</span>
-            <span class="n">table</span> <span class="o">=</span> <span class="n">pa</span><span class="o">.</span><span class="n">Table</span><span class="o">.</span><span class="n">from_pandas</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">preserve_index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-        <span class="n">schema_str</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">schema</span><span class="o">.</span><span class="n">to_string</span><span class="p">(</span>
-            <span class="c1"># schema.metadata contains pandas related information,</span>
-            <span class="c1"># and the used pyarrow and pandas version,</span>
-            <span class="c1"># and needs to be excluded</span>
-            <span class="n">show_field_metadata</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-            <span class="n">show_schema_metadata</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="p">)</span>
-        <span class="n">schema_md5</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">md5</span><span class="p">(</span><span class="n">schema_str</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
-        <span class="c1"># Handle index, values, and row order</span>
+        <span class="c1"># Hash data: index levels, then values</span>
         <span class="n">data_md5</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">md5</span><span class="p">()</span>
-        <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="c1"># Convert every column to a numpy array,</span>
-            <span class="c1"># and hash its string representation</span>
-            <span class="k">if</span> <span class="n">y</span><span class="o">.</span><span class="n">dtype</span> <span class="o">==</span> <span class="s2">&quot;Int64&quot;</span><span class="p">:</span>
-                <span class="c1"># Enforce consistent conversion to numpy.array</span>
-                <span class="c1"># for integers across different pandas versions</span>
-                <span class="c1"># (since pandas 2.2.x, Int64 is converted to float if it contains &lt;NA&gt;)</span>
-                <span class="n">y</span> <span class="o">=</span> <span class="n">y</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;float&quot;</span><span class="p">)</span>
-            <span class="n">data_md5</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="nb">bytes</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()),</span> <span class="s2">&quot;utf-8&quot;</span><span class="p">))</span>
+
+        <span class="c1"># Hash index levels</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">MultiIndex</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">index</span><span class="o">.</span><span class="n">nlevels</span><span class="p">):</span>
+                <span class="n">_hash_update_array</span><span class="p">(</span><span class="n">data_md5</span><span class="p">,</span> <span class="n">index</span><span class="o">.</span><span class="n">get_level_values</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">_hash_update_array</span><span class="p">(</span><span class="n">data_md5</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span>
+
+        <span class="c1"># Hash values</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">obj</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">_hash_update_array</span><span class="p">(</span><span class="n">data_md5</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">):</span>
+            <span class="n">_hash_update_array</span><span class="p">(</span><span class="n">data_md5</span><span class="p">,</span> <span class="n">obj</span><span class="p">)</span>
+
         <span class="n">md5</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">md5</span><span class="p">()</span>
-        <span class="n">md5</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">schema_md5</span><span class="o">.</span><span class="n">digest</span><span class="p">())</span>
+        <span class="n">md5</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">dtypes_md5</span><span class="o">.</span><span class="n">digest</span><span class="p">())</span>
         <span class="n">md5</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">data_md5</span><span class="o">.</span><span class="n">digest</span><span class="p">())</span>
         <span class="n">md5</span> <span class="o">=</span> <span class="n">md5</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span>
     <span class="k">else</span><span class="p">:</span>
@@ -2510,7 +2564,7 @@
         
         
         
-          Built with <a href="https://www.sphinx-doc.org">Sphinx</a> on 2026/02/18 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org">Sphinx</a> on 2026/04/08 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
@@ -2554,6 +2608,7 @@
 
   
 
+  <script type="text/javascript" src="../../../_static/js/jquery.js"></script>
   <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
   <script type="text/javascript">

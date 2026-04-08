@@ -71,7 +71,7 @@
             
             
               <div class="version">
-                v1.3.4
+                v1.4.0
               </div>
             
           
@@ -139,6 +139,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#meta">meta</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#minimum">minimum</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#replace-labels">replace_labels()</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#set-labels">set_labels()</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#to-dict">to_dict()</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#to-pandas-dtype">to_pandas_dtype()</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#uses-table">uses_table</a></li>
@@ -529,6 +530,65 @@ Removed labels are set to <code class="docutils literal notranslate"><span class
 </dd></dl>
 
 </section>
+<section id="set-labels">
+<h2>set_labels()<a class="headerlink" href="#set-labels" title="Link to this heading">¶</a></h2>
+<dl class="py method">
+<dt class="sig sig-object py" id="audformat.Scheme.set_labels">
+<span class="sig-prename descclassname"><span class="pre">Scheme.</span></span><span class="sig-name descname"><span class="pre">set_labels</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">labels</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/audformat/core/scheme.html#Scheme.set_labels"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.Scheme.set_labels" title="Link to this definition">¶</a></dt>
+<dd><p>Set labels on a scheme that has none.</p>
+<p>If scheme is part of a <a class="reference internal" href="audformat.Database.html#audformat.Database" title="audformat.Database"><code class="xref py py-class docutils literal notranslate"><span class="pre">audformat.Database</span></code></a>
+the dtype of all <a class="reference internal" href="audformat.Column.html#audformat.Column" title="audformat.Column"><code class="xref py py-class docutils literal notranslate"><span class="pre">audformat.Column</span></code></a> objects
+that reference the scheme will be converted
+to <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.CategoricalDtype.html#pandas.CategoricalDtype" title="(in pandas v3.0.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.CategoricalDtype</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>labels</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> | <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> | <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – new labels</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – if scheme already defines labels</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – if dtype of labels does not match dtype of scheme</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – if <code class="docutils literal notranslate"><span class="pre">labels</span></code> is not a list, dictionary,
+    or ID of a misc table</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – if <code class="docutils literal notranslate"><span class="pre">labels</span></code> is a misc table ID
+    and the scheme is already assigned to a database,
+    but the corresponding misc table is not part of the database,
+    or the given table ID is not a misc table,
+    or its index is multi-dimensional,
+    or its index contains duplicates,
+    or the misc table has a column
+    that is already assigned to a scheme
+    with labels from another misc table</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – if existing column data contains values
+    not covered by <code class="docutils literal notranslate"><span class="pre">labels</span></code></p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">emotion</span> <span class="o">=</span> <span class="n">Scheme</span><span class="p">(</span><span class="s2">&quot;str&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">emotion</span>
+<span class="go">{dtype: str}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">emotion</span><span class="o">.</span><span class="n">set_labels</span><span class="p">([</span><span class="s2">&quot;happy&quot;</span><span class="p">,</span> <span class="s2">&quot;sad&quot;</span><span class="p">,</span> <span class="s2">&quot;angry&quot;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">emotion</span>
+<span class="go">dtype: str</span>
+<span class="go">labels: [happy, sad, angry]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">emotion</span> <span class="o">=</span> <span class="n">Scheme</span><span class="p">(</span><span class="s2">&quot;int&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">emotion</span><span class="o">.</span><span class="n">set_labels</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="p">{</span>
+<span class="gp">... </span>        <span class="mi">0</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;emotion&quot;</span><span class="p">:</span> <span class="s2">&quot;happy&quot;</span><span class="p">},</span>
+<span class="gp">... </span>        <span class="mi">1</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;emotion&quot;</span><span class="p">:</span> <span class="s2">&quot;sad&quot;</span><span class="p">},</span>
+<span class="gp">... </span>    <span class="p">}</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">emotion</span>
+<span class="go">dtype: int</span>
+<span class="go">labels:</span>
+<span class="go">  0: {emotion: happy}</span>
+<span class="go">  1: {emotion: sad}</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</section>
 <section id="to-dict">
 <h2>to_dict()<a class="headerlink" href="#to-dict" title="Link to this heading">¶</a></h2>
 <dl class="py method">
@@ -551,8 +611,8 @@ Removed labels are set to <code class="docutils literal notranslate"><span class
 <dl class="py method">
 <dt class="sig sig-object py" id="audformat.Scheme.to_pandas_dtype">
 <span class="sig-prename descclassname"><span class="pre">Scheme.</span></span><span class="sig-name descname"><span class="pre">to_pandas_dtype</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/audformat/core/scheme.html#Scheme.to_pandas_dtype"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audformat.Scheme.to_pandas_dtype" title="Link to this definition">¶</a></dt>
-<dd><p>Convert data type to <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/index.html#module-pandas" title="(in pandas v3.0.0)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pandas</span></code></a> data type.</p>
-<p>If <code class="docutils literal notranslate"><span class="pre">labels</span></code> is not <code class="docutils literal notranslate"><span class="pre">None</span></code>, <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.CategoricalDtype.html#pandas.CategoricalDtype" title="(in pandas v3.0.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.CategoricalDtype</span></code></a> is
+<dd><p>Convert data type to <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/index.html#module-pandas" title="(in pandas v3.0.2)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pandas</span></code></a> data type.</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">labels</span></code> is not <code class="docutils literal notranslate"><span class="pre">None</span></code>, <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.CategoricalDtype.html#pandas.CategoricalDtype" title="(in pandas v3.0.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.CategoricalDtype</span></code></a> is
 returned. Otherwise the following rules are applied:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">str</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">str</span></code></p></li>
@@ -563,10 +623,10 @@ returned. Otherwise the following rules are applied:</p>
 </ul>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> | <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.CategoricalDtype.html#pandas.CategoricalDtype" title="(in pandas v3.0.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CategoricalDtype</span></code></a></span></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> | <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.CategoricalDtype.html#pandas.CategoricalDtype" title="(in pandas v3.0.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CategoricalDtype</span></code></a></span></p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/index.html#module-pandas" title="(in pandas v3.0.0)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pandas</span></code></a> data type</p>
+<dd class="field-even"><p><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/index.html#module-pandas" title="(in pandas v3.0.2)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pandas</span></code></a> data type</p>
 </dd>
 </dl>
 </dd></dl>
@@ -617,7 +677,7 @@ values are stored.</p>
         
         
         
-          Built with <a href="https://www.sphinx-doc.org">Sphinx</a> on 2026/02/18 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org">Sphinx</a> on 2026/04/08 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
@@ -661,6 +721,7 @@ values are stored.</p>
 
   
 
+  <script type="text/javascript" src="../_static/js/jquery.js"></script>
   <script type="text/javascript" src="../_static/js/theme.js"></script>
 
   <script type="text/javascript">
