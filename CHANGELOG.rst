@@ -19,7 +19,7 @@ Version 1.4.0 (2026-04-08)
   For parquet files it is stored under the ``audformat-version`` metadata key.
   Pickle files store now a dictionary with the keys
   ``audformat-version`` and ``df``,
-  whereas ``df`` contains the table
+  whereas ``df`` contains the table data
 * Fixed: ``audformat.utils.hash()`` for large dataframes.
   Before it resulted in the same hash
   for large dataframes
@@ -31,7 +31,8 @@ Version 1.4.0 (2026-04-08)
   not published with ``audformat>=1.4.0``,
   it will result in republishing all existing tables,
   which is the desired behavior
-* Fixed: loading scheme labels from misc table
+* Fixed: loading scheme labels from misc table,
+  when using ``audformat.Database.load(..., load_data=True)``
 
 
 Version 1.3.4 (2026-02-18)
