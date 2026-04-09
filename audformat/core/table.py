@@ -461,6 +461,9 @@ class Base(HeaderBase):
         otherwise it will raise an error
         and ask to delete one of the files.
 
+        If a table column is assigned to a scheme containing labels,
+        values not matching those labels are set to ``None``.
+
         Args:
             path: file path without extension
 
@@ -1053,7 +1056,10 @@ class Base(HeaderBase):
                 ``"bool"``, and ``"int"`` audformat dtypes
 
         Returns:
-            dataframe with converted dtypes
+            dataframe with converted dtypes.
+                For columns with scheme labels,
+                values not in the scheme's labels
+                are set to NaN
 
         """
         # Collect columns with dtypes,
@@ -1116,6 +1122,11 @@ class Base(HeaderBase):
             scheme = self.db.schemes[self.columns[column].scheme_id]
             labels = scheme._labels_to_list()
             dtype = to_categorical_dtype(labels)
+            # Set values not in scheme labels to NaN
+            # https://github.com/audeering/audformat/issues/525
+            mask = df[column].notna() & ~df[column].isin(labels)
+            if mask.any():
+                df[column] = df[column].where(~mask)
             df[column] = df[column].astype(dtype)
         return df
 
