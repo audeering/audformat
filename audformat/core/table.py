@@ -1124,9 +1124,7 @@ class Base(HeaderBase):
             dtype = to_categorical_dtype(labels)
             # Set values not in scheme labels to NaN
             # https://github.com/audeering/audformat/issues/525
-            mask = df[column].notna() & ~df[column].isin(labels)
-            if mask.any():
-                df[column] = df[column].where(~mask)
+            df[column] = df[column].where(df[column].isin(labels))
             df[column] = df[column].astype(dtype)
         return df
 
