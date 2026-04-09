@@ -1831,7 +1831,8 @@ def test_save_and_load_labels_removed(tmpdir, storage_format):
     When a table is saved with labels ``["a", "b", "c"]``
     but the scheme is later changed to ``["a", "b"]``,
     loading should not raise a warning
-    about values not in the categorical dtype's categories.
+    about values not in the categorical dtype's categories,
+    but values should be replaced with ``None``.
 
     """
     db = audformat.Database("test")
@@ -1850,6 +1851,14 @@ def test_save_and_load_labels_removed(tmpdir, storage_format):
     with warnings.catch_warnings():
         warnings.simplefilter("error")
         db["table"].load(path)
+
+    # "c" was removed from labels and should now be NaN
+    categories = pd.Index(["a", "b"], dtype="object")
+    expected = pd.DataFrame(
+        {"col": pd.Categorical(["a", "b", None], categories=categories)},
+        index=audformat.filewise_index(["f1", "f2", "f3"]),
+    )
+    pd.testing.assert_frame_equal(db["table"].df, expected)
 
 
 @pytest.mark.parametrize(
