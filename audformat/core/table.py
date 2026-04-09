@@ -461,7 +461,7 @@ class Base(HeaderBase):
         otherwise it will raise an error
         and ask to delete one of the files.
 
-        If a table column is assigned to a scheme containing labels,
+        If a scheme with labels is assigned to a table column,
         values not matching those labels are set to ``None``.
 
         Args:
