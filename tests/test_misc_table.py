@@ -1,3 +1,5 @@
+import os
+
 import numpy as np
 import pandas as pd
 import pytest
@@ -1348,12 +1350,15 @@ def test_load_old_pickle(tmpdir):
     db.schemes["column"] = audformat.Scheme(audformat.define.DataType.OBJECT)
     db["misc"]["column"] = audformat.Column(scheme_id="column")
     db["misc"]["column"].set(y.values)
-    db_root = tmpdir.join("db")
-    db.save(db_root, storage_format="pkl")
+    db_root = str(tmpdir.join("db"))
 
     # Change scheme dtype to string and store header again
+    # and write bare DataFrame pickle
+    # (simulating pre-1.4.0 format without version wrapper)
     db.schemes["column"] = audformat.Scheme(audformat.define.DataType.STRING)
     db.save(db_root, header_only=True)
+    df = pd.DataFrame({"column": y}, index=index)
+    df.to_pickle(os.path.join(db_root, "db.misc.pkl"), protocol=4)
 
     # Load and check that dtype is string
     db_new = audformat.Database.load(db_root)
