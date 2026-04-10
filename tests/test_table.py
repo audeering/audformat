@@ -2,6 +2,7 @@ import os
 import random
 import re
 import time
+import warnings
 
 import numpy as np
 import pandas as pd
@@ -1821,6 +1822,43 @@ def test_save_and_load(tmpdir, storage_format):
         assert os.path.exists(path)
         db[table_id].load(path_wo_ext)
         pd.testing.assert_frame_equal(db[table_id].df, expected_df)
+
+
+@pytest.mark.parametrize("storage_format", ["csv", "parquet"])
+def test_save_and_load_labels_removed(tmpdir, storage_format):
+    r"""Test loading table after labels were removed from scheme.
+
+    When a table is saved with labels ``["a", "b", "c"]``
+    but the scheme is later changed to ``["a", "b"]``,
+    loading should not raise a warning
+    about values not in the categorical dtype's categories,
+    but values should be replaced with ``None``.
+
+    """
+    db = audformat.Database("test")
+    db.schemes["label"] = audformat.Scheme(labels=["a", "b", "c"])
+    index = audformat.filewise_index(["f1", "f2", "f3"])
+    db["table"] = audformat.Table(index)
+    db["table"]["col"] = audformat.Column(scheme_id="label")
+    db["table"]["col"].set(["a", "b", "c"])
+
+    path = os.path.join(tmpdir, "table")
+    db["table"].save(path, storage_format=storage_format)
+
+    # Remove label "c" from scheme
+    db.schemes["label"] = audformat.Scheme(labels=["a", "b"])
+
+    with warnings.catch_warnings():
+        warnings.simplefilter("error")
+        db["table"].load(path)
+
+    # "c" was removed from labels and should now be NaN
+    categories = pd.Index(["a", "b"], dtype="object")
+    expected = pd.DataFrame(
+        {"col": pd.Categorical(["a", "b", None], categories=categories)},
+        index=audformat.filewise_index(["f1", "f2", "f3"]),
+    )
+    pd.testing.assert_frame_equal(db["table"].df, expected)
 
 
 @pytest.mark.parametrize(
