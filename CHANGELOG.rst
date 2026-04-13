@@ -10,12 +10,14 @@ and this project adheres to `Semantic Versioning`_.
 Version 1.4.1 (2026-04-13)
 --------------------------
 
-* Added: include table ID in error messages of
-  ``audformat.Table.drop_index()``,
-  ``audformat.Table.extend_index()``,
-  ``audformat.Table.pick_index()``,
-  ``audformat.Table.update()``
-  if the table is assigned to a database
+* Added: include table ID in error messages in the methods
+  ``drop_index()``,
+  ``extend_index()``,
+  ``pick_index()``,
+  ``update()``
+  of ``audformat.Table``
+  and ``audformat.MiscTable``
+  if the receiving table is assigned to a database
 * Changed: black list ``pandas``
   versions 3.0.0, 3.0.1, and 3.0.2
   as those contain a serious issue in ``pd.to_timedelta()``
