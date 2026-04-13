@@ -343,6 +343,49 @@ def test_segmented_index_seconds(files, starts, ends):
 
 
 @pytest.mark.parametrize(
+    "times, expected_seconds",
+    [
+        # numeric scalars are interpreted as seconds
+        (1, 1.0),
+        (1.5, 1.5),
+        (0.01, 0.01),
+        # numeric iterables are interpreted as seconds
+        ([1.0, 2.0], [1.0, 2.0]),
+        ([1.0, 1.01], [1.0, 1.01]),  # see issue #529
+        ([1, 2], [1.0, 2.0]),
+        ((1.0, 2.0), [1.0, 2.0]),
+        (np.array([1.0, 1.01]), [1.0, 1.01]),
+        (pd.Series([1.0, 1.01]), [1.0, 1.01]),
+        (pd.Index([1.0, 1.01]), [1.0, 1.01]),
+        # string inputs use pandas unit parsing (fallback path)
+        ("1s", 1.0),
+        ("500ms", 0.5),
+        (["1s", "500ms"], [1.0, 0.5]),
+        # empty iterable
+        ([], []),
+    ],
+)
+def test_to_timedelta(times, expected_seconds):
+    """Check audformat.core.index.to_timedelta() helper.
+
+    The helper must always return ``timedelta64[ns]`` resolution
+    and treat numeric inputs as seconds.
+
+    """
+    result = audformat.core.index.to_timedelta(times)
+    if np.isscalar(expected_seconds):
+        assert isinstance(result, pd.Timedelta)
+        assert result.unit == "ns"
+        assert result.total_seconds() == pytest.approx(expected_seconds)
+    else:
+        assert result.dtype == "timedelta64[ns]"
+        np.testing.assert_almost_equal(
+            pd.Series(result).dt.total_seconds().to_numpy(),
+            np.array(expected_seconds, dtype=float),
+        )
+
+
+@pytest.mark.parametrize(
     "index, index_type",
     [
         (pytest.DB["files"].index, audformat.define.IndexType.FILEWISE),
