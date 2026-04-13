@@ -310,10 +310,7 @@ def test_create_segmented_index(files, starts, ends):
     ],
 )
 def test_segmented_index_dtype(files, starts, ends):
-    """Check for correct dtypes in segmented_index.
-
-    See https://github.com/audeering/audformat/issues/529
-    """
+    """Check for correct dtypes in segmented_index."""
     index = audformat.segmented_index(files, starts=starts, ends=ends)
     assert index.get_level_values("file").dtype == pd.StringDtype(na_value=pd.NA)
     assert index.get_level_values("start").dtype == "timedelta64[ns]"
@@ -330,7 +327,10 @@ def test_segmented_index_dtype(files, starts, ends):
     ],
 )
 def test_segmented_index_seconds(files, starts, ends):
-    """Check that the total seconds of the segmented index are correct."""
+    """Check that the total seconds of the segmented index are correct.
+
+    See https://github.com/audeering/audformat/issues/529
+    """
     index = audformat.segmented_index(files, starts=starts, ends=ends)
     np.testing.assert_almost_equal(
         index.get_level_values("start").to_series().dt.total_seconds().to_numpy(),
