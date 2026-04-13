@@ -1,3 +1,4 @@
+import numpy as np
 import pandas as pd
 import pytest
 
@@ -314,6 +315,28 @@ def test_segmented_index_dtype(files, starts, ends):
     assert index.get_level_values("file").dtype == pd.StringDtype(na_value=pd.NA)
     assert index.get_level_values("start").dtype == "timedelta64[ns]"
     assert index.get_level_values("end").dtype == "timedelta64[ns]"
+
+
+@pytest.mark.parametrize(
+    "files, starts, ends",
+    [
+        (["f1.wav"] * 2, [1.0, 2.0], [2.0, 3.0]),
+        (["f1.wav"] * 2, [1.01, 2.0], [1.02, 3.0]),
+        (["f1.wav"] * 2, [1.0, 2.01], [2.0, 3.01]),
+        (["f1.wav"] * 2, [1, 2.01], [2, 3.01]),
+    ],
+)
+def test_segmented_index_seconds(files, starts, ends):
+    """Check that the total seconds of the segmented index are correct."""
+    index = audformat.segmented_index(files, starts=starts, ends=ends)
+    np.testing.assert_almost_equal(
+        index.get_level_values("start").to_series().dt.total_seconds().to_numpy(),
+        np.array(starts),
+    )
+    np.testing.assert_almost_equal(
+        index.get_level_values("end").to_series().dt.total_seconds().to_numpy(),
+        np.array(ends),
+    )
 
 
 @pytest.mark.parametrize(
