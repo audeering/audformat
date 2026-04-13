@@ -68,7 +68,7 @@
             
             
               <div class="version">
-                v1.4.0
+                v1.4.1
               </div>
             
           
@@ -483,7 +483,7 @@
         <span class="n">table</span> <span class="o">=</span> <span class="bp">self</span> <span class="k">if</span> <span class="n">inplace</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 
         <span class="n">index</span> <span class="o">=</span> <span class="n">_maybe_convert_dtype_to_string</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
-        <span class="n">_assert_table_index</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="s2">&quot;drop rows from&quot;</span><span class="p">)</span>
+        <span class="n">_assert_table_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="s2">&quot;drop rows from&quot;</span><span class="p">)</span>
 
         <span class="n">index</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">intersect</span><span class="p">([</span><span class="n">table</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">index</span><span class="p">])</span>
         <span class="n">new_index</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">difference</span><span class="p">([</span><span class="n">table</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">index</span><span class="p">])</span>
@@ -520,7 +520,7 @@
         <span class="n">table</span> <span class="o">=</span> <span class="bp">self</span> <span class="k">if</span> <span class="n">inplace</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 
         <span class="n">index</span> <span class="o">=</span> <span class="n">_maybe_convert_dtype_to_string</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
-        <span class="n">_assert_table_index</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="s2">&quot;extend&quot;</span><span class="p">)</span>
+        <span class="n">_assert_table_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="s2">&quot;extend&quot;</span><span class="p">)</span>
 
         <span class="n">new_index</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">union</span><span class="p">([</span><span class="n">table</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">index</span><span class="p">])</span>
         <span class="n">table</span><span class="o">.</span><span class="n">_df</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">reindex</span><span class="p">(</span><span class="n">new_index</span><span class="p">)</span>
@@ -624,6 +624,9 @@
 <span class="sd">        as long as its modification date is the newest,</span>
 <span class="sd">        otherwise it will raise an error</span>
 <span class="sd">        and ask to delete one of the files.</span>
+
+<span class="sd">        If a scheme with labels is assigned to a table column,</span>
+<span class="sd">        values not matching those labels are set to ``None``.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            path: file path without extension</span>
@@ -739,7 +742,7 @@
         <span class="n">table</span> <span class="o">=</span> <span class="bp">self</span> <span class="k">if</span> <span class="n">inplace</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 
         <span class="n">index</span> <span class="o">=</span> <span class="n">_maybe_convert_dtype_to_string</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
-        <span class="n">_assert_table_index</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="s2">&quot;pick rows from&quot;</span><span class="p">)</span>
+        <span class="n">_assert_table_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="s2">&quot;pick rows from&quot;</span><span class="p">)</span>
 
         <span class="n">new_index</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">intersect</span><span class="p">([</span><span class="n">table</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">index</span><span class="p">])</span>
         <span class="n">table</span><span class="o">.</span><span class="n">_df</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">reindex</span><span class="p">(</span><span class="n">new_index</span><span class="p">)</span>
@@ -1217,7 +1220,10 @@
 <span class="sd">                ``&quot;bool&quot;``, and ``&quot;int&quot;`` audformat dtypes</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            dataframe with converted dtypes</span>
+<span class="sd">            dataframe with converted dtypes.</span>
+<span class="sd">                For columns with scheme labels,</span>
+<span class="sd">                values not in the scheme&#39;s labels</span>
+<span class="sd">                are set to NaN</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Collect columns with dtypes,</span>
@@ -1280,6 +1286,9 @@
             <span class="n">scheme</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="n">column</span><span class="p">]</span><span class="o">.</span><span class="n">scheme_id</span><span class="p">]</span>
             <span class="n">labels</span> <span class="o">=</span> <span class="n">scheme</span><span class="o">.</span><span class="n">_labels_to_list</span><span class="p">()</span>
             <span class="n">dtype</span> <span class="o">=</span> <span class="n">to_categorical_dtype</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span>
+            <span class="c1"># Set values not in scheme labels to NaN</span>
+            <span class="c1"># https://github.com/audeering/audformat/issues/525</span>
+            <span class="n">df</span><span class="p">[</span><span class="n">column</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">column</span><span class="p">]</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">column</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">labels</span><span class="p">))</span>
             <span class="n">df</span><span class="p">[</span><span class="n">column</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">column</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">df</span>
 
@@ -2104,11 +2113,14 @@
     <span class="n">operation</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Raise error if index does not match table.&quot;&quot;&quot;</span>
+    <span class="n">table_id</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="s2">&quot;_id&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="n">table_ref</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot; &#39;</span><span class="si">{</span><span class="n">table_id</span><span class="si">}</span><span class="s2">&#39;&quot;</span> <span class="k">if</span> <span class="n">table_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">Table</span><span class="p">):</span>
         <span class="n">input_type</span> <span class="o">=</span> <span class="n">index_type</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">table</span><span class="o">.</span><span class="n">type</span> <span class="o">!=</span> <span class="n">input_type</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;Cannot </span><span class="si">{</span><span class="n">operation</span><span class="si">}</span><span class="s2"> a </span><span class="si">{</span><span class="n">table</span><span class="o">.</span><span class="n">type</span><span class="si">}</span><span class="s2"> table with a </span><span class="si">{</span><span class="n">input_type</span><span class="si">}</span><span class="s2"> index.&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;Cannot </span><span class="si">{</span><span class="n">operation</span><span class="si">}</span><span class="s2"> a </span><span class="si">{</span><span class="n">table</span><span class="o">.</span><span class="n">type</span><span class="si">}</span><span class="s2"> &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;table</span><span class="si">{</span><span class="n">table_ref</span><span class="si">}</span><span class="s2"> with a </span><span class="si">{</span><span class="n">input_type</span><span class="si">}</span><span class="s2"> index.&quot;</span>
             <span class="p">)</span>
     <span class="k">elif</span> <span class="ow">not</span> <span class="n">utils</span><span class="o">.</span><span class="n">is_index_alike</span><span class="p">([</span><span class="n">table</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">index</span><span class="p">]):</span>
         <span class="n">want</span> <span class="o">=</span> <span class="p">(</span>
@@ -2128,7 +2140,7 @@
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
             <span class="sa">f</span><span class="s2">&quot;Cannot &quot;</span>
             <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">operation</span><span class="si">}</span><span class="s2"> &quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;table if input index and table index are not alike.</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;table</span><span class="si">{</span><span class="n">table_ref</span><span class="si">}</span><span class="s2"> if input index and table index are not alike.</span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="sa">f</span><span class="s2">&quot;Expected index:</span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="si">{</span><span class="n">want</span><span class="si">}</span><span class="s2">&quot;</span>
             <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">but yours is:</span><span class="se">\n</span><span class="s2">&quot;</span>
@@ -2173,7 +2185,7 @@
         
         
         
-          Built with <a href="https://www.sphinx-doc.org">Sphinx</a> on 2026/04/08 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org">Sphinx</a> on 2026/04/13 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
