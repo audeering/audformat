@@ -310,7 +310,10 @@ def test_create_segmented_index(files, starts, ends):
     ],
 )
 def test_segmented_index_dtype(files, starts, ends):
-    """Check for correct dtypes in segmented_index."""
+    """Check for correct dtypes in segmented_index.
+
+    See https://github.com/audeering/audformat/issues/529
+    """
     index = audformat.segmented_index(files, starts=starts, ends=ends)
     assert index.get_level_values("file").dtype == pd.StringDtype(na_value=pd.NA)
     assert index.get_level_values("start").dtype == "timedelta64[ns]"
