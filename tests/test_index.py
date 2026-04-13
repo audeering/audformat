@@ -334,11 +334,11 @@ def test_segmented_index_seconds(files, starts, ends):
     index = audformat.segmented_index(files, starts=starts, ends=ends)
     np.testing.assert_almost_equal(
         index.get_level_values("start").to_series().dt.total_seconds().to_numpy(),
-        np.array(starts),
+        np.array(starts, dtype=float),
     )
     np.testing.assert_almost_equal(
         index.get_level_values("end").to_series().dt.total_seconds().to_numpy(),
-        np.array(ends),
+        np.array(ends, dtype=float),
     )
 
 
