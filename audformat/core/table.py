@@ -1931,7 +1931,8 @@ def _assert_table_index(
     operation: str,
 ):
     r"""Raise error if index does not match table."""
-    table_ref = f" '{table._id}'" if table._id is not None else ""
+    table_id = getattr(table, "_id", None)
+    table_ref = f" '{table_id}'" if table_id is not None else ""
     if isinstance(table, Table):
         input_type = index_type(index)
         if table.type != input_type:
