@@ -1098,6 +1098,51 @@ def test_drop_and_pick_index():
         pytest.DB[table_id].pick_index(index).get()
 
 
+def test_index_mismatch_error_includes_table_id():
+    # See https://github.com/audeering/audformat/issues/524
+    # When the misc table is assigned to a database,
+    # the error message should reference the table id
+    # so the user can identify which table is affected.
+    db = audformat.testing.create_db(minimal=True)
+    db["misc"] = audformat.MiscTable(pd.Index([0, 1], name="id", dtype="Int64"))
+    bad_index = pd.Index(["a"], name="file", dtype="string")
+
+    # Table assigned to db: id appears in the error message
+    with pytest.raises(
+        ValueError,
+        match=r"Cannot extend table 'misc' "
+        r"if input index and table index are not alike\.",
+    ):
+        db["misc"].extend_index(bad_index)
+    with pytest.raises(
+        ValueError,
+        match=r"Cannot drop rows from table 'misc' "
+        r"if input index and table index are not alike\.",
+    ):
+        db["misc"].drop_index(bad_index)
+    with pytest.raises(
+        ValueError,
+        match=r"Cannot pick rows from table 'misc' "
+        r"if input index and table index are not alike\.",
+    ):
+        db["misc"].pick_index(bad_index)
+    db["other"] = audformat.MiscTable(bad_index)
+    with pytest.raises(
+        ValueError,
+        match=r"Cannot update table 'misc' "
+        r"if input index and table index are not alike\.",
+    ):
+        db["misc"].update(db["other"])
+
+    # Standalone table: no id reference, no spurious quotes
+    standalone = audformat.MiscTable(pd.Index([0, 1], name="id", dtype="Int64"))
+    with pytest.raises(
+        ValueError,
+        match=r"Cannot extend table if input index and table index are not alike\.",
+    ):
+        standalone.extend_index(bad_index)
+
+
 def test_drop_extend_and_pick_index_order():
     # Ensure order of index is preserved.
     index = pd.Index([4, 3, 2, 1], name="idx")
