@@ -7,6 +7,27 @@ The format is based on `Keep a Changelog`_,
 and this project adheres to `Semantic Versioning`_.
 
 
+Version 1.4.1 (2026-04-13)
+--------------------------
+
+* Added: include table ID in error messages in the methods
+  ``drop_index()``,
+  ``extend_index()``,
+  ``pick_index()``,
+  ``update()``
+  of ``audformat.Table``
+  and ``audformat.MiscTable``
+  if the receiving table is assigned to a database
+* Changed: black list ``pandas``
+  versions 3.0.0, 3.0.1, and 3.0.2
+  as those contain a serious issue in ``pd.to_timedelta()``
+  (`pandas#65150 <https://github.com/pandas-dev/pandas/issues/65150>`_)
+* Fixed: avoid warning when loading a table
+  with data points not matching scheme labels.
+  As before those points are set to ``None``.
+  This is now documented in ``audformat.Table.load()``
+
+
 Version 1.4.0 (2026-04-08)
 --------------------------
 
