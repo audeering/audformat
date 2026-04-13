@@ -555,6 +555,49 @@ def test_drop_and_pick_index():
         pytest.DB["files"].pick_index(index).get()
 
 
+def test_index_mismatch_error_includes_table_id():
+    # See https://github.com/audeering/audformat/issues/524
+    # When the table is assigned to a database,
+    # the error message should reference the table id
+    # so the user can identify which table is affected.
+    db = audformat.testing.create_db(minimal=True)
+    db["files"] = audformat.Table(audformat.filewise_index(["f1.wav"]))
+    bad_index = audformat.segmented_index(files=["f1.wav"], starts=["0s"], ends=["1s"])
+
+    # Table assigned to db: id appears in the error message
+    with pytest.raises(
+        ValueError,
+        match=r"Cannot extend a filewise table 'files' with a segmented index\.",
+    ):
+        db["files"].extend_index(bad_index)
+    with pytest.raises(
+        ValueError,
+        match=r"Cannot drop rows from a filewise table 'files' "
+        r"with a segmented index\.",
+    ):
+        db["files"].drop_index(bad_index)
+    with pytest.raises(
+        ValueError,
+        match=r"Cannot pick rows from a filewise table 'files' "
+        r"with a segmented index\.",
+    ):
+        db["files"].pick_index(bad_index)
+    db["segments"] = audformat.Table(bad_index)
+    with pytest.raises(
+        ValueError,
+        match=r"Cannot update a filewise table 'files' with a segmented index\.",
+    ):
+        db["files"].update(db["segments"])
+
+    # Standalone table: no id reference, no spurious quotes
+    standalone = audformat.Table(audformat.filewise_index(["f1.wav"]))
+    with pytest.raises(
+        ValueError,
+        match=r"Cannot extend a filewise table with a segmented index\.",
+    ):
+        standalone.extend_index(bad_index)
+
+
 def test_drop_extend_and_pick_index_order():
     # Ensure order of index is preserved.
     index = audformat.filewise_index(["f4", "f3", "f2", "f1"])

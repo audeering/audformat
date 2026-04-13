@@ -319,7 +319,7 @@ class Base(HeaderBase):
         table = self if inplace else self.copy()
 
         index = _maybe_convert_dtype_to_string(index)
-        _assert_table_index(table, index, "drop rows from")
+        _assert_table_index(self, index, "drop rows from")
 
         index = utils.intersect([table.index, index])
         new_index = utils.difference([table.index, index])
@@ -356,7 +356,7 @@ class Base(HeaderBase):
         table = self if inplace else self.copy()
 
         index = _maybe_convert_dtype_to_string(index)
-        _assert_table_index(table, index, "extend")
+        _assert_table_index(self, index, "extend")
 
         new_index = utils.union([table.index, index])
         table._df = table.df.reindex(new_index)
@@ -578,7 +578,7 @@ class Base(HeaderBase):
         table = self if inplace else self.copy()
 
         index = _maybe_convert_dtype_to_string(index)
-        _assert_table_index(table, index, "pick rows from")
+        _assert_table_index(self, index, "pick rows from")
 
         new_index = utils.intersect([table.index, index])
         table._df = table.df.reindex(new_index)
@@ -1931,11 +1931,14 @@ def _assert_table_index(
     operation: str,
 ):
     r"""Raise error if index does not match table."""
+    table_id = getattr(table, "_id", None)
+    table_ref = f" '{table_id}'" if table_id is not None else ""
     if isinstance(table, Table):
         input_type = index_type(index)
         if table.type != input_type:
             raise ValueError(
-                f"Cannot {operation} a {table.type} table with a {input_type} index."
+                f"Cannot {operation} a {table.type} "
+                f"table{table_ref} with a {input_type} index."
             )
     elif not utils.is_index_alike([table.index, index]):
         want = (
@@ -1955,7 +1958,7 @@ def _assert_table_index(
         raise ValueError(
             f"Cannot "
             f"{operation} "
-            f"table if input index and table index are not alike.\n"
+            f"table{table_ref} if input index and table index are not alike.\n"
             f"Expected index:\n"
             f"\t{want}"
             f"\nbut yours is:\n"
