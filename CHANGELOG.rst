@@ -11,7 +11,7 @@ Version 1.4.2 (2026-05-12)
 --------------------------
 
 * Changed: exclude ``tests/`` and ``docs/`` folders from the Python package
-* Fixed: ensure it works with ``pandas>=3.0.3``
+* Fixed: ensure ``pandas>=3.0.3`` works with ``audformat``
 
 
 Version 1.4.1 (2026-04-13)
