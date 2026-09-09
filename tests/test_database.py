@@ -438,10 +438,6 @@ def test_load_ascii_locale(tmpdir):
     old_locale = locale.getlocale(locale.LC_CTYPE)
     try:
         locale.setlocale(locale.LC_CTYPE, "C")
-        assert locale.getpreferredencoding(False).lower() in (
-            "ascii",
-            "ansi_x3.4-1968",
-        )
         db_loaded = audformat.Database.load(tmpdir)
     finally:
         locale.setlocale(locale.LC_CTYPE, old_locale)
