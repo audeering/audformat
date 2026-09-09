@@ -1,5 +1,6 @@
 import datetime
 import filecmp
+import locale
 import os
 import re
 
@@ -425,6 +426,23 @@ def test_load(tmpdir):
     db.save(tmpdir)
     db = audformat.Database.load(tmpdir)
     assert list(db.schemes) == ["misc", "scheme1", "scheme2", "scheme3"]
+
+
+def test_load_ascii_locale(tmpdir):
+    # Test loading a database containing a non-ascii character
+    # when not using utf-8 locale
+    db = audformat.testing.create_db(minimal=True)
+    db.description = "Non-ascii description: äöü"
+    db.save(tmpdir)
+
+    old_locale = locale.getlocale(locale.LC_CTYPE)
+    try:
+        locale.setlocale(locale.LC_CTYPE, "C")
+        db_loaded = audformat.Database.load(tmpdir)
+    finally:
+        locale.setlocale(locale.LC_CTYPE, old_locale)
+
+    assert db_loaded.description == db.description
 
 
 @pytest.mark.parametrize("load_data", [(True, False)])
