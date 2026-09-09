@@ -446,7 +446,7 @@ def test_load_ascii_locale(tmpdir):
     finally:
         locale.setlocale(locale.LC_CTYPE, old_locale)
 
-    db_loaded.description == db.description
+    assert db_loaded.description == db.description
 
 
 @pytest.mark.parametrize("load_data", [(True, False)])
