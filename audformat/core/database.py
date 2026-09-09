@@ -1024,7 +1024,7 @@ class Database(HeaderBase):
 
         ext = ".yaml"
         header_path = os.path.join(root, name + ext)
-        with open(header_path, "w") as fp:
+        with open(header_path, "w", encoding="utf-8") as fp:
             self.dump(fp, indent=indent)
 
         if not header_only:
@@ -1437,7 +1437,7 @@ class Database(HeaderBase):
         if not os.path.exists(path):
             raise FileNotFoundError(path)
 
-        with open(path) as fp:
+        with open(path, encoding="utf-8") as fp:
             header = yaml.load(fp, Loader=Loader)
             db = Database.load_header_from_yaml(header)
 
