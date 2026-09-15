@@ -1,4 +1,4 @@
-import os
+import contextlib
 import tempfile
 
 import pandas as pd
@@ -21,10 +21,7 @@ pytest.FILE_DUR = pd.to_timedelta("1s")
 def prepare_tests():
     # Prepare files used in tests
     # and set a temporary working directory
-    with tempfile.TemporaryDirectory() as tmp:
-        current_dir = os.getcwd()
-        os.chdir(tmp)
-
+    with tempfile.TemporaryDirectory() as tmp, contextlib.chdir(tmp):
         pytest.DB.save(pytest.DB_ROOT)
 
         audformat.testing.create_audio_files(
@@ -37,5 +34,3 @@ def prepare_tests():
         )
 
         yield
-
-        os.chdir(current_dir)
