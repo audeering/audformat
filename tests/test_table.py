@@ -2538,3 +2538,36 @@ def test_zero_columns(tmpdir, storage_format):
             db[table_id].df.index,
         )
         assert db_loaded[table_id].df.shape == db[table_id].df.shape
+
+
+@pytest.mark.parametrize(
+    "index, expected_index",
+    [
+        # filewise index with str dtype
+        (
+            pd.Index(["f1.wav", "f2.wav"], dtype="str", name="file"),
+            audformat.filewise_index(["f1.wav", "f2.wav"]),
+        ),
+        # segmented index with str dtype
+        (
+            audformat.utils.set_index_dtypes(
+                pd.MultiIndex.from_arrays(
+                    [
+                        ["f1.wav"],
+                        [pd.Timedelta(0).as_unit("ns")],
+                        [pd.Timedelta(4, unit="s").as_unit("ns")],
+                    ],
+                    names=["file", "start", "end"],
+                ),
+                {"file": "str"},
+            ),
+            audformat.segmented_index(files=["f1.wav"], starts=[0.0], ends=[4.0]),
+        ),
+    ],
+)
+def test_create_table_dtype(index, expected_index):
+    # Check that the index of the created table
+    # has the correct dtype
+    # https://github.com/audeering/audformat/issues/544
+    table = audformat.Table(index=index)
+    pd.testing.assert_index_equal(table.index, expected_index)
