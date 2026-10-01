@@ -1966,12 +1966,23 @@ def _assert_table_index(
         )
 
 
+def _is_correct_string_dtype(dtype) -> bool:
+    r"""Return whether the dtype matches the desired string dtype."""
+    if dtype == "string":
+        na_value = getattr(dtype, "na_value", None)
+        # If pd.StringDtype has the na_value attribute (pandas 3.x)
+        # it must be set to pd.NA
+        return na_value is None or na_value is pd.NA
+    return False
+
+
 def _maybe_convert_dtype_to_string(
     index: pd.Index,
 ) -> pd.Index:
     r"""Possibly set dtype of file level to 'string'."""
-    if (is_filewise_index(index) and index.dtype == "object") or (
-        is_segmented_index(index) and index.dtypes[define.IndexField.FILE] == "object"
+    if (is_filewise_index(index) and not _is_correct_string_dtype(index.dtype)) or (
+        is_segmented_index(index)
+        and not _is_correct_string_dtype(index.dtypes[define.IndexField.FILE])
     ):
         index = utils.set_index_dtypes(
             index,
