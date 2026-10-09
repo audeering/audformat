@@ -68,7 +68,7 @@
             
             
               <div class="version">
-                v1.4.2
+                v1.4.3
               </div>
             
           
@@ -175,16 +175,16 @@
 <div class="viewcode-block" id="Scheme">
 <a class="viewcode-back" href="../../../api/audformat.Scheme.html#audformat.Scheme">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Scheme</span><span class="p">(</span><span class="n">common</span><span class="o">.</span><span class="n">HeaderBase</span><span class="p">):</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;A scheme defines valid values of an annotation.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">"""A scheme defines valid values of an annotation.</span>
 
 <span class="sd">    Allowed values for ``dtype`` are:</span>
-<span class="sd">    ``&#39;bool&#39;``,</span>
-<span class="sd">    ``&#39;int&#39;``,</span>
-<span class="sd">    ``&#39;float&#39;``,</span>
-<span class="sd">    ``&#39;object&#39;``,</span>
-<span class="sd">    ``&#39;str&#39;``,</span>
-<span class="sd">    ``&#39;time&#39;``,</span>
-<span class="sd">    and ``&#39;date&#39;``</span>
+<span class="sd">    ``'bool'``,</span>
+<span class="sd">    ``'int'``,</span>
+<span class="sd">    ``'float'``,</span>
+<span class="sd">    ``'object'``,</span>
+<span class="sd">    ``'str'``,</span>
+<span class="sd">    ``'time'``,</span>
+<span class="sd">    and ``'date'``</span>
 <span class="sd">    (see :class:`audformat.define.DataType`).</span>
 <span class="sd">    Values can be restricted to a set of labels</span>
 <span class="sd">    provided by a list,</span>
@@ -196,7 +196,7 @@
 
 <span class="sd">    Args:</span>
 <span class="sd">        dtype: if ``None`` derived from ``labels``,</span>
-<span class="sd">            otherwise set to ``&#39;str&#39;``</span>
+<span class="sd">            otherwise set to ``'str'``</span>
 <span class="sd">        labels: list, dictionary or table ID</span>
 <span class="sd">            of a corresponding :class:`audformat.MiscTable`</span>
 <span class="sd">            containing labels as index.</span>
@@ -232,40 +232,40 @@
 <span class="sd">    Examples:</span>
 <span class="sd">        &gt;&gt;&gt; Scheme()</span>
 <span class="sd">        {dtype: str}</span>
-<span class="sd">        &gt;&gt;&gt; Scheme(labels=[&quot;a&quot;, &quot;b&quot;, &quot;c&quot;])</span>
+<span class="sd">        &gt;&gt;&gt; Scheme(labels=["a", "b", "c"])</span>
 <span class="sd">        dtype: str</span>
 <span class="sd">        labels: [a, b, c]</span>
 <span class="sd">        &gt;&gt;&gt; Scheme(define.DataType.INTEGER)</span>
 <span class="sd">        {dtype: int}</span>
-<span class="sd">        &gt;&gt;&gt; Scheme(&quot;float&quot;, minimum=0, maximum=1)</span>
+<span class="sd">        &gt;&gt;&gt; Scheme("float", minimum=0, maximum=1)</span>
 <span class="sd">        {dtype: float, minimum: 0, maximum: 1}</span>
 <span class="sd">        &gt;&gt;&gt; # Use index of misc table as labels</span>
 <span class="sd">        &gt;&gt;&gt; import audformat</span>
-<span class="sd">        &gt;&gt;&gt; db = audformat.Database(&quot;mydb&quot;)</span>
-<span class="sd">        &gt;&gt;&gt; db[&quot;speaker&quot;] = audformat.MiscTable(</span>
-<span class="sd">        ...     pd.Index([&quot;spk1&quot;, &quot;spk2&quot;], name=&quot;speaker&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; db = audformat.Database("mydb")</span>
+<span class="sd">        &gt;&gt;&gt; db["speaker"] = audformat.MiscTable(</span>
+<span class="sd">        ...     pd.Index(["spk1", "spk2"], name="speaker")</span>
 <span class="sd">        ... )</span>
-<span class="sd">        &gt;&gt;&gt; Scheme(&quot;str&quot;, labels=&quot;speaker&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; Scheme("str", labels="speaker")</span>
 <span class="sd">        {dtype: str, labels: speaker}</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>  <span class="c1"># noqa: E501</span>
+<span class="sd">    """</span>  <span class="c1"># noqa: E501</span>
 
     <span class="c1"># Mapping for dtype input argument,</span>
-    <span class="c1"># e.g. to allow `str` besides `&#39;str&#39;`.</span>
+    <span class="c1"># e.g. to allow `str` besides `'str'`.</span>
     <span class="c1"># This behavior is only for convenience</span>
     <span class="c1"># and not mentioned in the docstring</span>
     <span class="n">_dtypes</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s2">&quot;bool&quot;</span><span class="p">:</span> <span class="n">define</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">BOOL</span><span class="p">,</span>
+        <span class="s2">"bool"</span><span class="p">:</span> <span class="n">define</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">BOOL</span><span class="p">,</span>
         <span class="nb">bool</span><span class="p">:</span> <span class="n">define</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">BOOL</span><span class="p">,</span>
-        <span class="s2">&quot;str&quot;</span><span class="p">:</span> <span class="n">define</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">STRING</span><span class="p">,</span>
+        <span class="s2">"str"</span><span class="p">:</span> <span class="n">define</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">STRING</span><span class="p">,</span>
         <span class="nb">str</span><span class="p">:</span> <span class="n">define</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">STRING</span><span class="p">,</span>
-        <span class="s2">&quot;int&quot;</span><span class="p">:</span> <span class="n">define</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">INTEGER</span><span class="p">,</span>
+        <span class="s2">"int"</span><span class="p">:</span> <span class="n">define</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">INTEGER</span><span class="p">,</span>
         <span class="nb">int</span><span class="p">:</span> <span class="n">define</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">INTEGER</span><span class="p">,</span>
-        <span class="s2">&quot;float&quot;</span><span class="p">:</span> <span class="n">define</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">FLOAT</span><span class="p">,</span>
+        <span class="s2">"float"</span><span class="p">:</span> <span class="n">define</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">FLOAT</span><span class="p">,</span>
         <span class="nb">float</span><span class="p">:</span> <span class="n">define</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">FLOAT</span><span class="p">,</span>
-        <span class="s2">&quot;time&quot;</span><span class="p">:</span> <span class="n">define</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">TIME</span><span class="p">,</span>
+        <span class="s2">"time"</span><span class="p">:</span> <span class="n">define</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">TIME</span><span class="p">,</span>
         <span class="n">pd</span><span class="o">.</span><span class="n">Timedelta</span><span class="p">:</span> <span class="n">define</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">TIME</span><span class="p">,</span>
-        <span class="s2">&quot;date&quot;</span><span class="p">:</span> <span class="n">define</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">DATE</span><span class="p">,</span>
+        <span class="s2">"date"</span><span class="p">:</span> <span class="n">define</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">DATE</span><span class="p">,</span>
         <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">:</span> <span class="n">define</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">DATE</span><span class="p">,</span>
         <span class="n">pd</span><span class="o">.</span><span class="n">Timestamp</span><span class="p">:</span> <span class="n">define</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">DATE</span><span class="p">,</span>
     <span class="p">}</span>
@@ -300,51 +300,51 @@
                 <span class="c1"># Labels from misc table</span>
                 <span class="k">if</span> <span class="n">dtype</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                        <span class="s2">&quot;&#39;dtype&#39; has to be provided when using a misc table as labels.&quot;</span>
+                        <span class="s2">"'dtype' has to be provided when using a misc table as labels."</span>
                     <span class="p">)</span>
                 <span class="k">if</span> <span class="n">dtype</span> <span class="o">==</span> <span class="n">define</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">BOOL</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                        <span class="s2">&quot;&#39;dtype&#39; cannot be &#39;bool&#39; when using a misc table as labels.&quot;</span>
+                        <span class="s2">"'dtype' cannot be 'bool' when using a misc table as labels."</span>
                     <span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="c1"># Labels from list or dictionary</span>
                 <span class="n">dtype_labels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dtype_from_labels</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">dtype</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">dtype</span> <span class="o">!=</span> <span class="n">dtype_labels</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                        <span class="s2">&quot;Data type is set to &quot;</span>
-                        <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">dtype</span><span class="si">}</span><span class="s2">&#39;, &quot;</span>
-                        <span class="s2">&quot;but data type of labels is &quot;</span>
-                        <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">dtype_labels</span><span class="si">}</span><span class="s2">&#39;.&quot;</span>
+                        <span class="s2">"Data type is set to "</span>
+                        <span class="sa">f</span><span class="s2">"'</span><span class="si">{</span><span class="n">dtype</span><span class="si">}</span><span class="s2">', "</span>
+                        <span class="s2">"but data type of labels is "</span>
+                        <span class="sa">f</span><span class="s2">"'</span><span class="si">{</span><span class="n">dtype_labels</span><span class="si">}</span><span class="s2">'."</span>
                     <span class="p">)</span>
                 <span class="n">dtype</span> <span class="o">=</span> <span class="n">dtype_labels</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span> <span class="o">=</span> <span class="n">dtype</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Data type.</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">"""Data type.</span>
 
 <span class="sd">        Possible return values are given by</span>
 <span class="sd">        :class:`audformat.define.DataType`.</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">labels</span> <span class="o">=</span> <span class="n">labels</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Labels or ID of misc table holding the labels&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">"""Labels or ID of misc table holding the labels"""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">minimum</span> <span class="o">=</span> <span class="n">minimum</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_numeric</span> <span class="k">else</span> <span class="kc">None</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Minimum value&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">"""Minimum value"""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">maximum</span> <span class="o">=</span> <span class="n">maximum</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_numeric</span> <span class="k">else</span> <span class="kc">None</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Maximum value&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">"""Maximum value"""</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">is_numeric</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Data type is numeric.</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">"""Data type is numeric.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            ``True`` if data type is numeric</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span> <span class="ow">in</span> <span class="p">(</span><span class="n">define</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">INTEGER</span><span class="p">,</span> <span class="n">define</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">FLOAT</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">labels_as_list</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Scheme labels as list.</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">"""Scheme labels as list.</span>
 
 <span class="sd">        If scheme does not define labels</span>
 <span class="sd">        an empty list is returned.</span>
@@ -352,7 +352,7 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            list of labels</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">labels</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">[]</span>
         <span class="k">else</span><span class="p">:</span>
@@ -360,7 +360,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">uses_table</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Scheme has labels stored in a misc table.</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">"""Scheme has labels stored in a misc table.</span>
 
 <span class="sd">        If property is ``True``</span>
 <span class="sd">        the attribute ``labels``</span>
@@ -372,7 +372,7 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            ``True`` if scheme has labels stored in a misc table</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">labels</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Scheme.draw">
@@ -384,7 +384,7 @@
         <span class="n">str_len</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
         <span class="n">p_none</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Randomly draws values from scheme.</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">"""Randomly draws values from scheme.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            n: number of values</span>
@@ -395,14 +395,14 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            list with values</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">x</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">labels</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span> <span class="o">==</span> <span class="n">define</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">BOOL</span><span class="p">:</span>
                 <span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">([</span><span class="kc">False</span><span class="p">,</span> <span class="kc">True</span><span class="p">])</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)]</span>
             <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span> <span class="o">==</span> <span class="n">define</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">DATE</span><span class="p">:</span>
                 <span class="n">x</span> <span class="o">=</span> <span class="p">[</span>
-                    <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(),</span> <span class="mi">2</span><span class="p">),</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;s&quot;</span><span class="p">)</span>
+                    <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(),</span> <span class="mi">2</span><span class="p">),</span> <span class="n">unit</span><span class="o">=</span><span class="s2">"s"</span><span class="p">)</span>
                     <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
                 <span class="p">]</span>
             <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span> <span class="o">==</span> <span class="n">define</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">INTEGER</span><span class="p">:</span>
@@ -415,13 +415,13 @@
                 <span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">minimum</span><span class="p">,</span> <span class="n">maximum</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)]</span>
             <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span> <span class="o">==</span> <span class="n">define</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">TIME</span><span class="p">:</span>
                 <span class="n">x</span> <span class="o">=</span> <span class="p">[</span>
-                    <span class="n">pd</span><span class="o">.</span><span class="n">to_timedelta</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(),</span> <span class="mi">2</span><span class="p">),</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;s&quot;</span><span class="p">)</span>
+                    <span class="n">pd</span><span class="o">.</span><span class="n">to_timedelta</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(),</span> <span class="mi">2</span><span class="p">),</span> <span class="n">unit</span><span class="o">=</span><span class="s2">"s"</span><span class="p">)</span>
                     <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
                 <span class="p">]</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">seq</span> <span class="o">=</span> <span class="n">string</span><span class="o">.</span><span class="n">ascii_letters</span> <span class="o">+</span> <span class="n">string</span><span class="o">.</span><span class="n">digits</span>
                 <span class="n">x</span> <span class="o">=</span> <span class="p">[</span>
-                    <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">seq</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">str_len</span><span class="p">)])</span>
+                    <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">seq</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">str_len</span><span class="p">)])</span>
                     <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
                 <span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
@@ -441,7 +441,7 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">to_pandas_dtype</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">CategoricalDtype</span><span class="p">:</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Convert data type to :mod:`pandas` data type.</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">"""Convert data type to :mod:`pandas` data type.</span>
 
 <span class="sd">        If ``labels`` is not ``None``, :class:`pandas.CategoricalDtype` is</span>
 <span class="sd">        returned. Otherwise the following rules are applied:</span>
@@ -455,7 +455,7 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            :mod:`pandas` data type</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">labels</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">labels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_labels_to_list</span><span class="p">()</span>
             <span class="k">return</span> <span class="n">common</span><span class="o">.</span><span class="n">to_categorical_dtype</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span>
@@ -469,7 +469,7 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">labels</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">|</span> <span class="nb">list</span> <span class="o">|</span> <span class="nb">str</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Replace labels.</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">"""Replace labels.</span>
 
 <span class="sd">        If scheme is part of a :class:`audformat.Database`</span>
 <span class="sd">        the dtype of all :class:`audformat.Column` objects</span>
@@ -496,8 +496,8 @@
 <span class="sd">        Examples:</span>
 <span class="sd">            &gt;&gt;&gt; speaker = Scheme(</span>
 <span class="sd">            ...     labels={</span>
-<span class="sd">            ...         0: {&quot;gender&quot;: &quot;female&quot;},</span>
-<span class="sd">            ...         1: {&quot;gender&quot;: &quot;male&quot;},</span>
+<span class="sd">            ...         0: {"gender": "female"},</span>
+<span class="sd">            ...         1: {"gender": "male"},</span>
 <span class="sd">            ...     }</span>
 <span class="sd">            ... )</span>
 <span class="sd">            &gt;&gt;&gt; speaker</span>
@@ -507,8 +507,8 @@
 <span class="sd">              1: {gender: male}</span>
 <span class="sd">            &gt;&gt;&gt; speaker.replace_labels(</span>
 <span class="sd">            ...     {</span>
-<span class="sd">            ...         1: {&quot;gender&quot;: &quot;male&quot;, &quot;age&quot;: 33},</span>
-<span class="sd">            ...         2: {&quot;gender&quot;: &quot;female&quot;, &quot;age&quot;: 44},</span>
+<span class="sd">            ...         1: {"gender": "male", "age": 33},</span>
+<span class="sd">            ...         2: {"gender": "female", "age": 44},</span>
 <span class="sd">            ...     }</span>
 <span class="sd">            ... )</span>
 <span class="sd">            &gt;&gt;&gt; speaker</span>
@@ -517,10 +517,10 @@
 <span class="sd">              1: {gender: male, age: 33}</span>
 <span class="sd">              2: {gender: female, age: 44}</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">labels</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s2">&quot;Cannot replace labels when scheme does not define labels.&quot;</span>
+                <span class="s2">"Cannot replace labels when scheme does not define labels."</span>
             <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_check_labels</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span>
 
@@ -530,10 +530,10 @@
             <span class="n">dtype_labels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dtype_from_labels</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">dtype_labels</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                    <span class="s2">&quot;Data type of labels must not change: </span><span class="se">\n</span><span class="s2">&quot;</span>
-                    <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="si">}</span><span class="s2">&#39; </span><span class="se">\n</span><span class="s2">&quot;</span>
-                    <span class="sa">f</span><span class="s2">&quot;!=</span><span class="se">\n</span><span class="s2">&quot;</span>
-                    <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">dtype_labels</span><span class="si">}</span><span class="s2">&#39;&quot;</span>
+                    <span class="s2">"Data type of labels must not change: </span><span class="se">\n</span><span class="s2">"</span>
+                    <span class="sa">f</span><span class="s2">"'</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="si">}</span><span class="s2">' </span><span class="se">\n</span><span class="s2">"</span>
+                    <span class="sa">f</span><span class="s2">"!=</span><span class="se">\n</span><span class="s2">"</span>
+                    <span class="sa">f</span><span class="s2">"'</span><span class="si">{</span><span class="n">dtype_labels</span><span class="si">}</span><span class="s2">'"</span>
                 <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">labels</span> <span class="o">=</span> <span class="n">labels</span>
@@ -546,7 +546,7 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">labels</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">|</span> <span class="nb">list</span> <span class="o">|</span> <span class="nb">str</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Set labels on a scheme that has none.</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">"""Set labels on a scheme that has none.</span>
 
 <span class="sd">        If scheme is part of a :class:`audformat.Database`</span>
 <span class="sd">        the dtype of all :class:`audformat.Column` objects</span>
@@ -574,18 +574,18 @@
 <span class="sd">                not covered by ``labels``</span>
 
 <span class="sd">        Examples:</span>
-<span class="sd">            &gt;&gt;&gt; emotion = Scheme(&quot;str&quot;)</span>
+<span class="sd">            &gt;&gt;&gt; emotion = Scheme("str")</span>
 <span class="sd">            &gt;&gt;&gt; emotion</span>
 <span class="sd">            {dtype: str}</span>
-<span class="sd">            &gt;&gt;&gt; emotion.set_labels([&quot;happy&quot;, &quot;sad&quot;, &quot;angry&quot;])</span>
+<span class="sd">            &gt;&gt;&gt; emotion.set_labels(["happy", "sad", "angry"])</span>
 <span class="sd">            &gt;&gt;&gt; emotion</span>
 <span class="sd">            dtype: str</span>
 <span class="sd">            labels: [happy, sad, angry]</span>
-<span class="sd">            &gt;&gt;&gt; emotion = Scheme(&quot;int&quot;)</span>
+<span class="sd">            &gt;&gt;&gt; emotion = Scheme("int")</span>
 <span class="sd">            &gt;&gt;&gt; emotion.set_labels(</span>
 <span class="sd">            ...     {</span>
-<span class="sd">            ...         0: {&quot;emotion&quot;: &quot;happy&quot;},</span>
-<span class="sd">            ...         1: {&quot;emotion&quot;: &quot;sad&quot;},</span>
+<span class="sd">            ...         0: {"emotion": "happy"},</span>
+<span class="sd">            ...         1: {"emotion": "sad"},</span>
 <span class="sd">            ...     }</span>
 <span class="sd">            ... )</span>
 <span class="sd">            &gt;&gt;&gt; emotion</span>
@@ -594,11 +594,11 @@
 <span class="sd">              0: {emotion: happy}</span>
 <span class="sd">              1: {emotion: sad}</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">labels</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s2">&quot;Cannot set labels when scheme already defines labels. &quot;</span>
-                <span class="s2">&quot;Use replace_labels() instead.&quot;</span>
+                <span class="s2">"Cannot set labels when scheme already defines labels. "</span>
+                <span class="s2">"Use replace_labels() instead."</span>
             <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_check_labels</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span>
 
@@ -608,10 +608,10 @@
             <span class="n">dtype_labels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dtype_from_labels</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">dtype_labels</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                    <span class="s2">&quot;Data type of labels &quot;</span>
-                    <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">dtype_labels</span><span class="si">}</span><span class="s2">&#39; &quot;</span>
-                    <span class="sa">f</span><span class="s2">&quot;does not match data type of scheme &quot;</span>
-                    <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="si">}</span><span class="s2">&#39;.&quot;</span>
+                    <span class="s2">"Data type of labels "</span>
+                    <span class="sa">f</span><span class="s2">"'</span><span class="si">{</span><span class="n">dtype_labels</span><span class="si">}</span><span class="s2">' "</span>
+                    <span class="sa">f</span><span class="s2">"does not match data type of scheme "</span>
+                    <span class="sa">f</span><span class="s2">"'</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="si">}</span><span class="s2">'."</span>
                 <span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_db</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -626,10 +626,10 @@
                         <span class="n">bad_values</span> <span class="o">=</span> <span class="n">values</span> <span class="o">-</span> <span class="n">labels_set</span>
                         <span class="k">if</span> <span class="n">bad_values</span><span class="p">:</span>
                             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                                <span class="sa">f</span><span class="s2">&quot;Column &#39;</span><span class="si">{</span><span class="n">column</span><span class="o">.</span><span class="n">_id</span><span class="si">}</span><span class="s2">&#39; &quot;</span>
-                                <span class="sa">f</span><span class="s2">&quot;of table &#39;</span><span class="si">{</span><span class="n">table</span><span class="o">.</span><span class="n">_id</span><span class="si">}</span><span class="s2">&#39; &quot;</span>
-                                <span class="sa">f</span><span class="s2">&quot;contains values not in labels: &quot;</span>
-                                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">sorted</span><span class="p">(</span><span class="n">bad_values</span><span class="p">)</span><span class="si">}</span><span class="s2">.&quot;</span>
+                                <span class="sa">f</span><span class="s2">"Column '</span><span class="si">{</span><span class="n">column</span><span class="o">.</span><span class="n">_id</span><span class="si">}</span><span class="s2">' "</span>
+                                <span class="sa">f</span><span class="s2">"of table '</span><span class="si">{</span><span class="n">table</span><span class="o">.</span><span class="n">_id</span><span class="si">}</span><span class="s2">' "</span>
+                                <span class="sa">f</span><span class="s2">"contains values not in labels: "</span>
+                                <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="nb">sorted</span><span class="p">(</span><span class="n">bad_values</span><span class="p">)</span><span class="si">}</span><span class="s2">."</span>
                             <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">labels</span> <span class="o">=</span> <span class="n">labels</span>
@@ -642,7 +642,7 @@
         <span class="o">*</span><span class="p">,</span>
         <span class="n">convert_to_categorical</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Update categories of columns referencing this scheme.</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">"""Update categories of columns referencing this scheme.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            labels: new labels</span>
@@ -650,7 +650,7 @@
 <span class="sd">                convert columns from plain dtype</span>
 <span class="sd">                to categorical first</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_db</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span>
 
@@ -673,60 +673,60 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">labels</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">|</span> <span class="nb">list</span> <span class="o">|</span> <span class="nb">str</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Raise label related errors.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">"""Raise label related errors."""</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="p">(</span><span class="nb">dict</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="nb">str</span><span class="p">)):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s2">&quot;Labels must be passed as a dictionary, list or ID of a misc table.&quot;</span>
+                <span class="s2">"Labels must be passed as a dictionary, list or ID of a misc table."</span>
             <span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_db</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="n">table_id</span> <span class="o">=</span> <span class="n">labels</span>
             <span class="k">if</span> <span class="n">table_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_db</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;The misc table &#39;</span><span class="si">{</span><span class="n">table_id</span><span class="si">}</span><span class="s2">&#39; used as scheme labels &quot;</span>
-                    <span class="s2">&quot;needs to be assigned to the database.&quot;</span>
+                    <span class="sa">f</span><span class="s2">"The misc table '</span><span class="si">{</span><span class="n">table_id</span><span class="si">}</span><span class="s2">' used as scheme labels "</span>
+                    <span class="s2">"needs to be assigned to the database."</span>
                 <span class="p">)</span>
             <span class="k">if</span> <span class="n">table_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_db</span><span class="o">.</span><span class="n">misc_tables</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;The table &#39;</span><span class="si">{</span><span class="n">table_id</span><span class="si">}</span><span class="s2">&#39; used as scheme labels &quot;</span>
-                    <span class="s2">&quot;needs to be a misc table.&quot;</span>
+                    <span class="sa">f</span><span class="s2">"The table '</span><span class="si">{</span><span class="n">table_id</span><span class="si">}</span><span class="s2">' used as scheme labels "</span>
+                    <span class="s2">"needs to be a misc table."</span>
                 <span class="p">)</span>
             <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_db</span><span class="o">.</span><span class="n">misc_tables</span><span class="p">[</span><span class="n">table_id</span><span class="p">]</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
                 <span class="k">if</span> <span class="n">column</span><span class="o">.</span><span class="n">scheme_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="n">scheme</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="n">column</span><span class="o">.</span><span class="n">scheme_id</span><span class="p">]</span>
                     <span class="k">if</span> <span class="n">scheme</span><span class="o">.</span><span class="n">uses_table</span><span class="p">:</span>
                         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                            <span class="sa">f</span><span class="s2">&quot;The misc table &quot;</span>
-                            <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">table_id</span><span class="si">}</span><span class="s2">&#39; &quot;</span>
-                            <span class="sa">f</span><span class="s2">&quot;cannot be used as scheme labels &quot;</span>
-                            <span class="sa">f</span><span class="s2">&quot;when one of its columns is &quot;</span>
-                            <span class="sa">f</span><span class="s2">&quot;assigned to a scheme that &quot;</span>
-                            <span class="sa">f</span><span class="s2">&quot;uses labels from a misc table.&quot;</span>
+                            <span class="sa">f</span><span class="s2">"The misc table "</span>
+                            <span class="sa">f</span><span class="s2">"'</span><span class="si">{</span><span class="n">table_id</span><span class="si">}</span><span class="s2">' "</span>
+                            <span class="sa">f</span><span class="s2">"cannot be used as scheme labels "</span>
+                            <span class="sa">f</span><span class="s2">"when one of its columns is "</span>
+                            <span class="sa">f</span><span class="s2">"assigned to a scheme that "</span>
+                            <span class="sa">f</span><span class="s2">"uses labels from a misc table."</span>
                         <span class="p">)</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_db</span><span class="p">[</span><span class="n">table_id</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">nlevels</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;Index of misc table &#39;</span><span class="si">{</span><span class="n">table_id</span><span class="si">}</span><span class="s2">&#39; used as scheme labels &quot;</span>
-                    <span class="s2">&quot;is only allowed to have a single level.&quot;</span>
+                    <span class="sa">f</span><span class="s2">"Index of misc table '</span><span class="si">{</span><span class="n">table_id</span><span class="si">}</span><span class="s2">' used as scheme labels "</span>
+                    <span class="s2">"is only allowed to have a single level."</span>
                 <span class="p">)</span>
             <span class="k">if</span> <span class="nb">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_db</span><span class="p">[</span><span class="n">table_id</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">duplicated</span><span class="p">())</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;Index of misc table &#39;</span><span class="si">{</span><span class="n">table_id</span><span class="si">}</span><span class="s2">&#39; used as scheme labels &quot;</span>
-                    <span class="s2">&quot;is not allowed to contain duplicates.&quot;</span>
+                    <span class="sa">f</span><span class="s2">"Index of misc table '</span><span class="si">{</span><span class="n">table_id</span><span class="si">}</span><span class="s2">' used as scheme labels "</span>
+                    <span class="s2">"is not allowed to contain duplicates."</span>
                 <span class="p">)</span>
             <span class="n">dtype_labels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dtype_from_labels</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span> <span class="o">!=</span> <span class="n">dtype_labels</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                    <span class="s2">&quot;Data type is set to &quot;</span>
-                    <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="si">}</span><span class="s2">&#39;, &quot;</span>
-                    <span class="s2">&quot;but data type of labels in misc table is &quot;</span>
-                    <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">dtype_labels</span><span class="si">}</span><span class="s2">&#39;.&quot;</span>
+                    <span class="s2">"Data type is set to "</span>
+                    <span class="sa">f</span><span class="s2">"'</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="si">}</span><span class="s2">', "</span>
+                    <span class="s2">"but data type of labels in misc table is "</span>
+                    <span class="sa">f</span><span class="s2">"'</span><span class="si">{</span><span class="n">dtype_labels</span><span class="si">}</span><span class="s2">'."</span>
                 <span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_dtype_from_labels</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">labels</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">|</span> <span class="nb">list</span> <span class="o">|</span> <span class="nb">str</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Derive audformat dtype from labels.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">"""Derive audformat dtype from labels."""</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="c1"># misc table</span>
             <span class="c1"># dtype is stored in the levels dictionary</span>
@@ -742,9 +742,9 @@
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="n">dtype</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">labels</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">dtype</span> <span class="o">=</span> <span class="s2">&quot;str&quot;</span>
+                <span class="n">dtype</span> <span class="o">=</span> <span class="s2">"str"</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dtype</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">labels</span><span class="p">):</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;All labels must be of the same data type.&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"All labels must be of the same data type."</span><span class="p">)</span>
             <span class="n">dtype</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">to_audformat_dtype</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span>
         <span class="n">define</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">_assert_has_attribute_value</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span>
 
@@ -754,14 +754,14 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">labels</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">|</span> <span class="nb">list</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Return actual labels as dict.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">"""Return actual labels as dict."""</span>
         <span class="k">if</span> <span class="n">labels</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">labels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">labels</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_db</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">labels</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_db</span><span class="p">:</span>
                 <span class="n">labels</span> <span class="o">=</span> <span class="p">{}</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">labels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_db</span><span class="p">[</span><span class="n">labels</span><span class="p">]</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(</span><span class="s2">&quot;index&quot;</span><span class="p">)</span>
+                <span class="n">labels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_db</span><span class="p">[</span><span class="n">labels</span><span class="p">]</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(</span><span class="s2">"index"</span><span class="p">)</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
             <span class="n">labels</span> <span class="o">=</span> <span class="p">{</span><span class="n">label</span><span class="p">:</span> <span class="p">{}</span> <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">labels</span><span class="p">}</span>
         <span class="k">return</span> <span class="n">labels</span>
@@ -770,20 +770,20 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">labels</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">|</span> <span class="nb">list</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Convert labels to actual labels as list.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">"""Convert labels to actual labels as list."""</span>
         <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_labels_to_dict</span><span class="p">(</span><span class="n">labels</span><span class="p">))</span>
 
 <div class="viewcode-block" id="Scheme.__contains__">
 <a class="viewcode-back" href="../../../api/audformat.Scheme.html#audformat.Scheme.__contains__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__contains__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Check if scheme contains data type of item.</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">"""Check if scheme contains data type of item.</span>
 
 <span class="sd">        ``None``, ``NaT`` and ``NaN`` always match</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            ``True`` if item is covered by scheme</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="n">item</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">pd</span><span class="o">.</span><span class="n">isna</span><span class="p">(</span><span class="n">item</span><span class="p">):</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">labels</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">labels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_labels_to_dict</span><span class="p">()</span>
@@ -812,7 +812,7 @@
         
         
         
-          Built with <a href="https://www.sphinx-doc.org">Sphinx</a> on 2026/05/12 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org">Sphinx</a> on 2026/10/09 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>

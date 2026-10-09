@@ -68,7 +68,7 @@
             
             
               <div class="version">
-                v1.4.2
+                v1.4.3
               </div>
             
           
@@ -168,21 +168,21 @@
 <div class="viewcode-block" id="BadIdError">
 <a class="viewcode-back" href="../../../api/audformat.errors.BadIdError.html#audformat.errors.BadIdError">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">BadIdError</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">):</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Raised when a field identifier is unknown.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">"""Raised when a field identifier is unknown.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        name: name of the field</span>
 <span class="sd">        invalid_id: identifier causing the error</span>
 <span class="sd">        dictionary: dictionary with valid identifiers</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">invalid_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">dictionary</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">dictionary</span><span class="p">:</span>
-            <span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Bad </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> ID &#39;</span><span class="si">{</span><span class="n">invalid_id</span><span class="si">}</span><span class="s2">&#39;, no </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> objects defined yet&quot;</span>
+            <span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"Bad </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> ID '</span><span class="si">{</span><span class="n">invalid_id</span><span class="si">}</span><span class="s2">', no </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> objects defined yet"</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">message</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;Bad </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> ID &#39;</span><span class="si">{</span><span class="n">invalid_id</span><span class="si">}</span><span class="s2">&#39;, expected one of </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">dictionary</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="sa">f</span><span class="s2">"Bad </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> ID '</span><span class="si">{</span><span class="n">invalid_id</span><span class="si">}</span><span class="s2">', expected one of </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">dictionary</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span>
             <span class="p">)</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">message</span><span class="p">)</span></div>
 
@@ -191,16 +191,16 @@
 <div class="viewcode-block" id="BadKeyError">
 <a class="viewcode-back" href="../../../api/audformat.errors.BadKeyError.html#audformat.errors.BadKeyError">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">BadKeyError</span><span class="p">(</span><span class="ne">KeyError</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Raised when a key is not found.</span>
+<span class="w">    </span><span class="sd">"""Raised when a key is not found.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        invalid_key: value causing the error</span>
 <span class="sd">        valid_keys: list of valid strings</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">invalid_key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">valid_keys</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
-        <span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Bad key &#39;</span><span class="si">{</span><span class="n">invalid_key</span><span class="si">}</span><span class="s2">&#39;, expected one of </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">valid_keys</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"Bad key '</span><span class="si">{</span><span class="n">invalid_key</span><span class="si">}</span><span class="s2">', expected one of </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">valid_keys</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">message</span><span class="p">)</span></div>
 
 
@@ -208,16 +208,16 @@
 <div class="viewcode-block" id="BadTypeError">
 <a class="viewcode-back" href="../../../api/audformat.errors.BadTypeError.html#audformat.errors.BadTypeError">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">BadTypeError</span><span class="p">(</span><span class="ne">TypeError</span><span class="p">):</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Raised when a value has an unexpected type.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">"""Raised when a value has an unexpected type.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        invalid_value: value causing the error</span>
 <span class="sd">        expected_type: expected value type</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">invalid_value</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">expected_type</span><span class="p">:</span> <span class="nb">type</span><span class="p">):</span>
-        <span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Bad type &#39;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">invalid_value</span><span class="p">)</span><span class="si">}</span><span class="s2">&#39;, expected &#39;</span><span class="si">{</span><span class="n">expected_type</span><span class="si">}</span><span class="s2">&#39;&quot;</span>
+        <span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"Bad type '</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">invalid_value</span><span class="p">)</span><span class="si">}</span><span class="s2">', expected '</span><span class="si">{</span><span class="n">expected_type</span><span class="si">}</span><span class="s2">'"</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">message</span><span class="p">)</span></div>
 
 
@@ -225,16 +225,16 @@
 <div class="viewcode-block" id="BadValueError">
 <a class="viewcode-back" href="../../../api/audformat.errors.BadValueError.html#audformat.errors.BadValueError">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">BadValueError</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Raised when a value is not in a list of pre-defined strings.</span>
+<span class="w">    </span><span class="sd">"""Raised when a value is not in a list of pre-defined strings.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        invalid_value: value causing the error</span>
 <span class="sd">        valid_values: list of valid strings</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">invalid_value</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">valid_values</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
-        <span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Bad value &#39;</span><span class="si">{</span><span class="n">invalid_value</span><span class="si">}</span><span class="s2">&#39;, expected one of </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">valid_values</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"Bad value '</span><span class="si">{</span><span class="n">invalid_value</span><span class="si">}</span><span class="s2">', expected one of </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">valid_values</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">message</span><span class="p">)</span></div>
 
 
@@ -242,16 +242,16 @@
 <div class="viewcode-block" id="TableExistsError">
 <a class="viewcode-back" href="../../../api/audformat.errors.TableExistsError.html#audformat.errors.TableExistsError">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">TableExistsError</span><span class="p">(</span><span class="ne">KeyError</span><span class="p">):</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;If a table of another type with same ID exists already.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">"""If a table of another type with same ID exists already.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        table_type: table type</span>
 <span class="sd">        table_id: table identifier</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">table_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-        <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;There is already a </span><span class="si">{</span><span class="n">table_type</span><span class="si">}</span><span class="s2"> table with ID &#39;</span><span class="si">{</span><span class="n">table_id</span><span class="si">}</span><span class="s2">&#39;.&quot;</span><span class="p">)</span></div>
+        <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"There is already a </span><span class="si">{</span><span class="n">table_type</span><span class="si">}</span><span class="s2"> table with ID '</span><span class="si">{</span><span class="n">table_id</span><span class="si">}</span><span class="s2">'."</span><span class="p">)</span></div>
 
 </pre></div>
 
@@ -268,7 +268,7 @@
         
         
         
-          Built with <a href="https://www.sphinx-doc.org">Sphinx</a> on 2026/05/12 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org">Sphinx</a> on 2026/10/09 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>

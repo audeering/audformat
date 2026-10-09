@@ -71,7 +71,7 @@
             
             
               <div class="version">
-                v1.4.2
+                v1.4.3
               </div>
             
           
@@ -187,27 +187,27 @@ An empty label means that no label has been assigned (yet).</p>
 
 <span class="n">index</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">MultiIndex</span><span class="o">.</span><span class="n">from_tuples</span><span class="p">(</span>
     <span class="p">[</span>
-        <span class="p">(</span><span class="s2">&quot;f1&quot;</span><span class="p">,</span> <span class="s2">&quot;f2&quot;</span><span class="p">),</span>
-        <span class="p">(</span><span class="s2">&quot;f1&quot;</span><span class="p">,</span> <span class="s2">&quot;f3&quot;</span><span class="p">),</span>
-        <span class="p">(</span><span class="s2">&quot;f2&quot;</span><span class="p">,</span> <span class="s2">&quot;f3&quot;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">"f1"</span><span class="p">,</span> <span class="s2">"f2"</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">"f1"</span><span class="p">,</span> <span class="s2">"f3"</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">"f2"</span><span class="p">,</span> <span class="s2">"f3"</span><span class="p">),</span>
     <span class="p">],</span>
-    <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;file&quot;</span><span class="p">,</span> <span class="s2">&quot;other&quot;</span><span class="p">],</span>
+    <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s2">"file"</span><span class="p">,</span> <span class="s2">"other"</span><span class="p">],</span>
 <span class="p">)</span>
-<span class="n">index</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">set_index_dtypes</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="s2">&quot;object&quot;</span><span class="p">)</span>
+<span class="n">index</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">set_index_dtypes</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="s2">"object"</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">index</span>
-<span class="go">MultiIndex([(&#39;f1&#39;, &#39;f2&#39;),</span>
-<span class="go">            (&#39;f1&#39;, &#39;f3&#39;),</span>
-<span class="go">            (&#39;f2&#39;, &#39;f3&#39;)],</span>
-<span class="go">           names=[&#39;file&#39;, &#39;other&#39;])</span>
+<span class="go">MultiIndex([('f1', 'f2'),</span>
+<span class="go">            ('f1', 'f3'),</span>
+<span class="go">            ('f2', 'f3')],</span>
+<span class="go">           names=['file', 'other'])</span>
 </pre></div>
 </div>
 <p>Create database and add misc table with the index:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">db</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">create_db</span><span class="p">(</span><span class="n">minimal</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="p">[</span><span class="s2">&quot;misc&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">MiscTable</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="p">[</span><span class="s2">&quot;misc&quot;</span><span class="p">][</span><span class="s2">&quot;values&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Column</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">misc_tables</span><span class="p">[</span><span class="s2">&quot;misc&quot;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="p">[</span><span class="s2">"misc"</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">MiscTable</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="p">[</span><span class="s2">"misc"</span><span class="p">][</span><span class="s2">"values"</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Column</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">misc_tables</span><span class="p">[</span><span class="s2">"misc"</span><span class="p">]</span>
 <span class="go">levels: {file: object, other: object}</span>
 <span class="go">columns:</span>
 <span class="go">  values: {}</span>
@@ -215,9 +215,9 @@ An empty label means that no label has been assigned (yet).</p>
 </div>
 <p>Assign labels to a table:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">values_list</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">values_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;values&quot;</span><span class="p">:</span> <span class="n">values_list</span><span class="p">}</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="p">[</span><span class="s2">&quot;misc&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">values_dict</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="p">[</span><span class="s2">&quot;misc&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">values_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"values"</span><span class="p">:</span> <span class="n">values_list</span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="p">[</span><span class="s2">"misc"</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">values_dict</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="p">[</span><span class="s2">"misc"</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
 <span class="go">           values</span>
 <span class="go">file other</span>
 <span class="go">f1   f2         0</span>
@@ -226,8 +226,8 @@ An empty label means that no label has been assigned (yet).</p>
 </pre></div>
 </div>
 <p>Assign labels to a column:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="p">[</span><span class="s2">&quot;misc&quot;</span><span class="p">][</span><span class="s2">&quot;values&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">values_list</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="p">[</span><span class="s2">&quot;misc&quot;</span><span class="p">][</span><span class="s2">&quot;values&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="p">[</span><span class="s2">"misc"</span><span class="p">][</span><span class="s2">"values"</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">values_list</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="p">[</span><span class="s2">"misc"</span><span class="p">][</span><span class="s2">"values"</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
 <span class="go">file  other</span>
 <span class="go">f1    f2       0</span>
 <span class="go">      f3       1</span>
@@ -236,7 +236,7 @@ An empty label means that no label has been assigned (yet).</p>
 </pre></div>
 </div>
 <p>Access labels from a misc table with an index:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="p">[</span><span class="s2">&quot;misc&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">index</span><span class="p">[:</span><span class="mi">2</span><span class="p">])</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="p">[</span><span class="s2">"misc"</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">index</span><span class="p">[:</span><span class="mi">2</span><span class="p">])</span>
 <span class="go">           values</span>
 <span class="go">file other</span>
 <span class="go">f1   f2         0</span>
@@ -269,7 +269,7 @@ An empty label means that no label has been assigned (yet).</p>
         
         
         
-          Built with <a href="https://www.sphinx-doc.org">Sphinx</a> on 2026/05/12 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org">Sphinx</a> on 2026/10/09 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>

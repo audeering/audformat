@@ -71,7 +71,7 @@
             
             
               <div class="version">
-                v1.4.2
+                v1.4.3
               </div>
             
           
@@ -175,16 +175,16 @@ age labels for a hundred files.</p>
 
 
 <span class="n">db</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">create_db</span><span class="p">(</span><span class="n">minimal</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s2">&quot;age&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Scheme</span><span class="p">(</span>
+<span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s2">"age"</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Scheme</span><span class="p">(</span>
     <span class="n">audformat</span><span class="o">.</span><span class="n">define</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">INTEGER</span><span class="p">,</span>
     <span class="n">minimum</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
     <span class="n">maximum</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="n">audformat</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">add_table</span><span class="p">(</span>
     <span class="n">db</span><span class="p">,</span>
-    <span class="n">table_id</span><span class="o">=</span><span class="s2">&quot;table&quot;</span><span class="p">,</span>
+    <span class="n">table_id</span><span class="o">=</span><span class="s2">"table"</span><span class="p">,</span>
     <span class="n">index_type</span><span class="o">=</span><span class="n">audformat</span><span class="o">.</span><span class="n">define</span><span class="o">.</span><span class="n">IndexType</span><span class="o">.</span><span class="n">FILEWISE</span><span class="p">,</span>
-    <span class="n">columns</span><span class="o">=</span><span class="s2">&quot;age&quot;</span><span class="p">,</span>
+    <span class="n">columns</span><span class="o">=</span><span class="s2">"age"</span><span class="p">,</span>
     <span class="n">num_files</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
 <span class="p">)</span>
 </pre></div>
@@ -201,7 +201,7 @@ age labels for a hundred files.</p>
 <span class="go">    type: filewise</span>
 <span class="go">    columns:</span>
 <span class="go">      age: {scheme_id: age}</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="p">[</span><span class="s2">&quot;table&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">df</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="p">[</span><span class="s2">"table"</span><span class="p">]</span><span class="o">.</span><span class="n">df</span>
 <span class="go">               age</span>
 <span class="go">file</span>
 <span class="go">audio/001.wav   44</span>
@@ -223,18 +223,18 @@ age labels for a hundred files.</p>
 The new files are stored together with annotations in a second database,
 that is then added to the original database.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">db_update</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">create_db</span><span class="p">(</span><span class="n">minimal</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">db_update</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s2">&quot;age&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s2">&quot;age&quot;</span><span class="p">]</span>
+<span class="n">db_update</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s2">"age"</span><span class="p">]</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s2">"age"</span><span class="p">]</span>
 <span class="n">audformat</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">add_table</span><span class="p">(</span>
     <span class="n">db_update</span><span class="p">,</span>
-    <span class="n">table_id</span><span class="o">=</span><span class="s2">&quot;table&quot;</span><span class="p">,</span>
+    <span class="n">table_id</span><span class="o">=</span><span class="s2">"table"</span><span class="p">,</span>
     <span class="n">index_type</span><span class="o">=</span><span class="n">audformat</span><span class="o">.</span><span class="n">define</span><span class="o">.</span><span class="n">IndexType</span><span class="o">.</span><span class="n">FILEWISE</span><span class="p">,</span>
-    <span class="n">columns</span><span class="o">=</span><span class="s2">&quot;age&quot;</span><span class="p">,</span>
+    <span class="n">columns</span><span class="o">=</span><span class="s2">"age"</span><span class="p">,</span>
     <span class="n">num_files</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="mi">101</span><span class="p">,</span> <span class="mi">105</span><span class="p">),</span>
 <span class="p">)</span>
 <span class="n">db</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">db_update</span><span class="p">)</span>  <span class="c1"># update original database with new data</span>
 </pre></div>
 </div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="p">[</span><span class="s2">&quot;table&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">df</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="p">[</span><span class="s2">"table"</span><span class="p">]</span><span class="o">.</span><span class="n">df</span>
 <span class="go">               age</span>
 <span class="go">file</span>
 <span class="go">audio/001.wav   44</span>
@@ -256,18 +256,18 @@ that is then added to the original database.</p>
 To update those, we again start from a fresh database containing only
 the critical files, relabel them and then update the original database.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">db_update</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">create_db</span><span class="p">(</span><span class="n">minimal</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">db_update</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s2">&quot;age&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s2">&quot;age&quot;</span><span class="p">]</span>
+<span class="n">db_update</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s2">"age"</span><span class="p">]</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s2">"age"</span><span class="p">]</span>
 <span class="n">audformat</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">add_table</span><span class="p">(</span>
     <span class="n">db_update</span><span class="p">,</span>
-    <span class="n">table_id</span><span class="o">=</span><span class="s2">&quot;table&quot;</span><span class="p">,</span>
+    <span class="n">table_id</span><span class="o">=</span><span class="s2">"table"</span><span class="p">,</span>
     <span class="n">index_type</span><span class="o">=</span><span class="n">audformat</span><span class="o">.</span><span class="n">define</span><span class="o">.</span><span class="n">IndexType</span><span class="o">.</span><span class="n">FILEWISE</span><span class="p">,</span>
-    <span class="n">columns</span><span class="o">=</span><span class="s2">&quot;age&quot;</span><span class="p">,</span>
+    <span class="n">columns</span><span class="o">=</span><span class="s2">"age"</span><span class="p">,</span>
     <span class="n">num_files</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="n">db</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">db_update</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># overwrite existing labels</span>
 </pre></div>
 </div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="p">[</span><span class="s2">&quot;table&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">df</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="p">[</span><span class="s2">"table"</span><span class="p">]</span><span class="o">.</span><span class="n">df</span>
 <span class="go">               age</span>
 <span class="go">file</span>
 <span class="go">audio/001.wav   48</span>
@@ -289,23 +289,23 @@ the critical files, relabel them and then update the original database.</p>
 Again, it might be easier to start with a fresh database to
 collect the new labels and only later merge it into our original database.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">db_update</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Database</span><span class="p">(</span>
-    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;update&quot;</span><span class="p">,</span>
-    <span class="n">languages</span><span class="o">=</span><span class="n">audformat</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">map_language</span><span class="p">(</span><span class="s2">&quot;french&quot;</span><span class="p">),</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">"update"</span><span class="p">,</span>
+    <span class="n">languages</span><span class="o">=</span><span class="n">audformat</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">map_language</span><span class="p">(</span><span class="s2">"french"</span><span class="p">),</span>
 <span class="p">)</span>
-<span class="n">db_update</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s2">&quot;gender&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Scheme</span><span class="p">(</span>
-        <span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;female&quot;</span><span class="p">,</span> <span class="s2">&quot;male&quot;</span><span class="p">],</span>
+<span class="n">db_update</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s2">"gender"</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Scheme</span><span class="p">(</span>
+        <span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="s2">"female"</span><span class="p">,</span> <span class="s2">"male"</span><span class="p">],</span>
     <span class="p">)</span>
 <span class="n">audformat</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">add_table</span><span class="p">(</span>
     <span class="n">db_update</span><span class="p">,</span>
-    <span class="n">table_id</span><span class="o">=</span><span class="s2">&quot;table&quot;</span><span class="p">,</span>
+    <span class="n">table_id</span><span class="o">=</span><span class="s2">"table"</span><span class="p">,</span>
     <span class="n">index_type</span><span class="o">=</span><span class="n">audformat</span><span class="o">.</span><span class="n">define</span><span class="o">.</span><span class="n">IndexType</span><span class="o">.</span><span class="n">FILEWISE</span><span class="p">,</span>
-    <span class="n">columns</span><span class="o">=</span><span class="s2">&quot;gender&quot;</span><span class="p">,</span>
+    <span class="n">columns</span><span class="o">=</span><span class="s2">"gender"</span><span class="p">,</span>
     <span class="n">num_files</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">files</span><span class="p">),</span>
 <span class="p">)</span>
 <span class="n">db</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">db_update</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="p">[</span><span class="s2">&quot;table&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">df</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="p">[</span><span class="s2">"table"</span><span class="p">]</span><span class="o">.</span><span class="n">df</span>
 <span class="go">               age  gender</span>
 <span class="go">file</span>
 <span class="go">audio/001.wav   48    male</span>
@@ -358,7 +358,7 @@ but also adds the new gender scheme:</p>
         
         
         
-          Built with <a href="https://www.sphinx-doc.org">Sphinx</a> on 2026/05/12 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org">Sphinx</a> on 2026/10/09 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>

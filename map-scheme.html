@@ -71,7 +71,7 @@
             
             
               <div class="version">
-                v1.4.2
+                v1.4.3
               </div>
             
           
@@ -175,38 +175,38 @@ information about the speakers in the database.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">audformat.testing</span>
 
 <span class="n">db</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">create_db</span><span class="p">(</span><span class="n">minimal</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s2">&quot;transcription&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Scheme</span><span class="p">(</span>
+<span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s2">"transcription"</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Scheme</span><span class="p">(</span>
     <span class="n">labels</span><span class="o">=</span><span class="p">{</span>
-        <span class="mi">0</span><span class="p">:</span> <span class="s2">&quot;hello&quot;</span><span class="p">,</span>
-        <span class="mi">1</span><span class="p">:</span> <span class="s2">&quot;goodbye&quot;</span><span class="p">,</span>
+        <span class="mi">0</span><span class="p">:</span> <span class="s2">"hello"</span><span class="p">,</span>
+        <span class="mi">1</span><span class="p">:</span> <span class="s2">"goodbye"</span><span class="p">,</span>
     <span class="p">}</span>
 <span class="p">)</span>
-<span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s2">&quot;speaker&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Scheme</span><span class="p">(</span>
+<span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s2">"speaker"</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Scheme</span><span class="p">(</span>
     <span class="n">labels</span><span class="o">=</span><span class="p">{</span>
-        <span class="s2">&quot;spk1&quot;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s2">&quot;gender&quot;</span><span class="p">:</span> <span class="s2">&quot;male&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;age&quot;</span><span class="p">:</span> <span class="mi">33</span><span class="p">,</span>
+        <span class="s2">"spk1"</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">"gender"</span><span class="p">:</span> <span class="s2">"male"</span><span class="p">,</span>
+            <span class="s2">"age"</span><span class="p">:</span> <span class="mi">33</span><span class="p">,</span>
         <span class="p">},</span>
-        <span class="s2">&quot;spk2&quot;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s2">&quot;gender&quot;</span><span class="p">:</span> <span class="s2">&quot;female&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;age&quot;</span><span class="p">:</span> <span class="mi">30</span><span class="p">,</span>
+        <span class="s2">"spk2"</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">"gender"</span><span class="p">:</span> <span class="s2">"female"</span><span class="p">,</span>
+            <span class="s2">"age"</span><span class="p">:</span> <span class="mi">30</span><span class="p">,</span>
         <span class="p">},</span>
-        <span class="s2">&quot;spk3&quot;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s2">&quot;gender&quot;</span><span class="p">:</span> <span class="s2">&quot;male&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;age&quot;</span><span class="p">:</span> <span class="mi">37</span><span class="p">,</span>
+        <span class="s2">"spk3"</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">"gender"</span><span class="p">:</span> <span class="s2">"male"</span><span class="p">,</span>
+            <span class="s2">"age"</span><span class="p">:</span> <span class="mi">37</span><span class="p">,</span>
         <span class="p">},</span>
     <span class="p">}</span>
 <span class="p">)</span>
 <span class="n">audformat</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">add_table</span><span class="p">(</span>
     <span class="n">db</span><span class="p">,</span>
-    <span class="s2">&quot;files&quot;</span><span class="p">,</span>
+    <span class="s2">"files"</span><span class="p">,</span>
     <span class="n">audformat</span><span class="o">.</span><span class="n">define</span><span class="o">.</span><span class="n">IndexType</span><span class="o">.</span><span class="n">FILEWISE</span><span class="p">,</span>
 <span class="p">)</span>
 </pre></div>
 </div>
 <p>If we request the <code class="docutils literal notranslate"><span class="pre">transcription</span></code> column,
-we get a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Series.html#pandas.Series" title="(in pandas v3.0.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.Series</span></code></a> with the word IDs:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="p">[</span><span class="s2">&quot;files&quot;</span><span class="p">][</span><span class="s2">&quot;transcription&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+we get a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Series.html#pandas.Series" title="(in pandas v3.0.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.Series</span></code></a> with the word IDs:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="p">[</span><span class="s2">"files"</span><span class="p">][</span><span class="s2">"transcription"</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
 <span class="go">file</span>
 <span class="go">audio/001.wav    0</span>
 <span class="go">audio/002.wav    1</span>
@@ -218,7 +218,7 @@ we get a <a class="reference external" href="https://pandas.pydata.org/pandas-do
 </div>
 <p>But if we are interested in the actual transcribed words,
 we can use the <code class="docutils literal notranslate"><span class="pre">map</span></code> argument to request them.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="p">[</span><span class="s2">&quot;files&quot;</span><span class="p">][</span><span class="s2">&quot;transcription&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">map</span><span class="o">=</span><span class="s2">&quot;transcription&quot;</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="p">[</span><span class="s2">"files"</span><span class="p">][</span><span class="s2">"transcription"</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">map</span><span class="o">=</span><span class="s2">"transcription"</span><span class="p">)</span>
 <span class="go">file</span>
 <span class="go">audio/001.wav      hello</span>
 <span class="go">audio/002.wav    goodbye</span>
@@ -230,8 +230,8 @@ we can use the <code class="docutils literal notranslate"><span class="pre">map<
 </div>
 <p>Note that we can pass any string to <code class="docutils literal notranslate"><span class="pre">map</span></code>.
 It will be used as the name of
-the returned <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Series.html#pandas.Series" title="(in pandas v3.0.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.Series</span></code></a>.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="p">[</span><span class="s2">&quot;files&quot;</span><span class="p">][</span><span class="s2">&quot;transcription&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">map</span><span class="o">=</span><span class="s2">&quot;word&quot;</span><span class="p">)</span>
+the returned <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Series.html#pandas.Series" title="(in pandas v3.0.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.Series</span></code></a>.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="p">[</span><span class="s2">"files"</span><span class="p">][</span><span class="s2">"transcription"</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">map</span><span class="o">=</span><span class="s2">"word"</span><span class="p">)</span>
 <span class="go">file</span>
 <span class="go">audio/001.wav      hello</span>
 <span class="go">audio/002.wav    goodbye</span>
@@ -243,7 +243,7 @@ the returned <a class="reference external" href="https://pandas.pydata.org/panda
 </div>
 <p>Likewise, if we request the speaker column,
 a list of names is returned:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="p">[</span><span class="s2">&quot;files&quot;</span><span class="p">][</span><span class="s2">&quot;speaker&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="p">[</span><span class="s2">"files"</span><span class="p">][</span><span class="s2">"speaker"</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
 <span class="go">file</span>
 <span class="go">audio/001.wav    spk2</span>
 <span class="go">audio/002.wav    spk1</span>
@@ -251,11 +251,11 @@ a list of names is returned:</p>
 <span class="go">audio/004.wav    spk1</span>
 <span class="go">audio/005.wav    spk3</span>
 <span class="go">Name: speaker, dtype: category</span>
-<span class="go">Categories (3, object): [&#39;spk1&#39;, &#39;spk2&#39;, &#39;spk3&#39;]</span>
+<span class="go">Categories (3, object): ['spk1', 'spk2', 'spk3']</span>
 </pre></div>
 </div>
 <p>If we are interested in the age of the speakers, we can do:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="p">[</span><span class="s2">&quot;files&quot;</span><span class="p">][</span><span class="s2">&quot;speaker&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">map</span><span class="o">=</span><span class="s2">&quot;age&quot;</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="p">[</span><span class="s2">"files"</span><span class="p">][</span><span class="s2">"speaker"</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">map</span><span class="o">=</span><span class="s2">"age"</span><span class="p">)</span>
 <span class="go">file</span>
 <span class="go">audio/001.wav    30</span>
 <span class="go">audio/002.wav    33</span>
@@ -268,8 +268,8 @@ a list of names is returned:</p>
 <p>This also works for tables.
 Here we pass a dictionary with column names
 as keys and scheme fields as values.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">map</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;speaker&quot;</span><span class="p">:</span> <span class="s2">&quot;age&quot;</span><span class="p">}</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="p">[</span><span class="s2">&quot;files&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">map</span><span class="o">=</span><span class="nb">map</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">map</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"speaker"</span><span class="p">:</span> <span class="s2">"age"</span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="p">[</span><span class="s2">"files"</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">map</span><span class="o">=</span><span class="nb">map</span><span class="p">)</span>
 <span class="go">              transcription  age</span>
 <span class="go">file</span>
 <span class="go">audio/001.wav             0   30</span>
@@ -281,8 +281,8 @@ as keys and scheme fields as values.</p>
 </div>
 <p>It is possible to map several columns at once
 and to map the same column to multiple fields.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">map</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;transcription&quot;</span><span class="p">:</span> <span class="s2">&quot;words&quot;</span><span class="p">,</span> <span class="s2">&quot;speaker&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;age&quot;</span><span class="p">,</span> <span class="s2">&quot;gender&quot;</span><span class="p">]}</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="p">[</span><span class="s2">&quot;files&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">map</span><span class="o">=</span><span class="nb">map</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">map</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"transcription"</span><span class="p">:</span> <span class="s2">"words"</span><span class="p">,</span> <span class="s2">"speaker"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"age"</span><span class="p">,</span> <span class="s2">"gender"</span><span class="p">]}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="p">[</span><span class="s2">"files"</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">map</span><span class="o">=</span><span class="nb">map</span><span class="p">)</span>
 <span class="go">                 words  age  gender</span>
 <span class="go">file</span>
 <span class="go">audio/001.wav    hello   30  female</span>
@@ -295,10 +295,10 @@ and to map the same column to multiple fields.</p>
 <p>To keep the original columns values,
 we can include the column name in the list.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">map</span> <span class="o">=</span> <span class="p">{</span>
-<span class="gp">... </span>    <span class="s2">&quot;transcription&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;transcription&quot;</span><span class="p">,</span> <span class="s2">&quot;words&quot;</span><span class="p">],</span>
-<span class="gp">... </span>    <span class="s2">&quot;speaker&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;speaker&quot;</span><span class="p">,</span> <span class="s2">&quot;age&quot;</span><span class="p">,</span> <span class="s2">&quot;gender&quot;</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="s2">"transcription"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"transcription"</span><span class="p">,</span> <span class="s2">"words"</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="s2">"speaker"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"speaker"</span><span class="p">,</span> <span class="s2">"age"</span><span class="p">,</span> <span class="s2">"gender"</span><span class="p">],</span>
 <span class="gp">... </span><span class="p">}</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="p">[</span><span class="s2">&quot;files&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">map</span><span class="o">=</span><span class="nb">map</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="p">[</span><span class="s2">"files"</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">map</span><span class="o">=</span><span class="nb">map</span><span class="p">)</span>
 <span class="go">              speaker transcription    words  age  gender</span>
 <span class="go">file</span>
 <span class="go">audio/001.wav    spk2             0    hello   30  female</span>
@@ -333,7 +333,7 @@ we can include the column name in the list.</p>
         
         
         
-          Built with <a href="https://www.sphinx-doc.org">Sphinx</a> on 2026/05/12 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org">Sphinx</a> on 2026/10/09 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>

@@ -68,7 +68,7 @@
             
             
               <div class="version">
-                v1.4.2
+                v1.4.3
               </div>
             
           
@@ -208,7 +208,7 @@
 <div class="viewcode-block" id="Database">
 <a class="viewcode-back" href="../../../api/audformat.Database.html#audformat.Database">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Database</span><span class="p">(</span><span class="n">HeaderBase</span><span class="p">):</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Database object.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">"""Database object.</span>
 
 <span class="sd">    A database consists of a header holding raters,</span>
 <span class="sd">    schemes, splits, and other meta information.</span>
@@ -223,7 +223,7 @@
 <span class="sd">        name: name of database</span>
 <span class="sd">        source: data source (e.g. link to website)</span>
 <span class="sd">        usage: permission of usage, see :class:`audformat.define.Usage`.</span>
-<span class="sd">            Set to ``&#39;other&#39;``</span>
+<span class="sd">            Set to ``'other'``</span>
 <span class="sd">            if none of the other fields fit.</span>
 <span class="sd">        expires: expiry date</span>
 <span class="sd">        languages: list of languages.</span>
@@ -247,35 +247,35 @@
 
 <span class="sd">    Examples:</span>
 <span class="sd">        &gt;&gt;&gt; db = Database(</span>
-<span class="sd">        ...     &quot;mydb&quot;,</span>
-<span class="sd">        ...     &quot;https://www.audeering.com/&quot;,</span>
+<span class="sd">        ...     "mydb",</span>
+<span class="sd">        ...     "https://www.audeering.com/",</span>
 <span class="sd">        ...     define.Usage.COMMERCIAL,</span>
-<span class="sd">        ...     languages=[&quot;English&quot;, &quot;de&quot;],</span>
+<span class="sd">        ...     languages=["English", "de"],</span>
 <span class="sd">        ... )</span>
 <span class="sd">        &gt;&gt;&gt; db</span>
 <span class="sd">        name: mydb</span>
 <span class="sd">        source: https://www.audeering.com/</span>
 <span class="sd">        usage: commercial</span>
 <span class="sd">        languages: [eng, deu]</span>
-<span class="sd">        &gt;&gt;&gt; labels = [&quot;positive&quot;, &quot;neutral&quot;, &quot;negative&quot;]</span>
-<span class="sd">        &gt;&gt;&gt; db.schemes[&quot;emotion&quot;] = Scheme(labels=labels)</span>
-<span class="sd">        &gt;&gt;&gt; db.schemes[&quot;match&quot;] = Scheme(dtype=&quot;bool&quot;)</span>
-<span class="sd">        &gt;&gt;&gt; db.raters[&quot;rater&quot;] = Rater()</span>
-<span class="sd">        &gt;&gt;&gt; db.media[&quot;audio&quot;] = Media(</span>
+<span class="sd">        &gt;&gt;&gt; labels = ["positive", "neutral", "negative"]</span>
+<span class="sd">        &gt;&gt;&gt; db.schemes["emotion"] = Scheme(labels=labels)</span>
+<span class="sd">        &gt;&gt;&gt; db.schemes["match"] = Scheme(dtype="bool")</span>
+<span class="sd">        &gt;&gt;&gt; db.raters["rater"] = Rater()</span>
+<span class="sd">        &gt;&gt;&gt; db.media["audio"] = Media(</span>
 <span class="sd">        ...     define.MediaType.AUDIO,</span>
-<span class="sd">        ...     format=&quot;wav&quot;,</span>
+<span class="sd">        ...     format="wav",</span>
 <span class="sd">        ...     sampling_rate=16000,</span>
 <span class="sd">        ... )</span>
-<span class="sd">        &gt;&gt;&gt; index = filewise_index([&quot;f1.wav&quot;, &quot;f2.wav&quot;])</span>
-<span class="sd">        &gt;&gt;&gt; db[&quot;table&quot;] = Table(index, media_id=&quot;audio&quot;)</span>
-<span class="sd">        &gt;&gt;&gt; db[&quot;table&quot;][&quot;column&quot;] = Column(</span>
-<span class="sd">        ...     scheme_id=&quot;emotion&quot;,</span>
-<span class="sd">        ...     rater_id=&quot;rater&quot;,</span>
+<span class="sd">        &gt;&gt;&gt; index = filewise_index(["f1.wav", "f2.wav"])</span>
+<span class="sd">        &gt;&gt;&gt; db["table"] = Table(index, media_id="audio")</span>
+<span class="sd">        &gt;&gt;&gt; db["table"]["column"] = Column(</span>
+<span class="sd">        ...     scheme_id="emotion",</span>
+<span class="sd">        ...     rater_id="rater",</span>
 <span class="sd">        ... )</span>
-<span class="sd">        &gt;&gt;&gt; db[&quot;table&quot;][&quot;column&quot;].set([&quot;neutral&quot;, &quot;positive&quot;])</span>
-<span class="sd">        &gt;&gt;&gt; index = pd.Index([], dtype=&quot;string&quot;, name=&quot;idx&quot;)</span>
-<span class="sd">        &gt;&gt;&gt; db[&quot;misc-table&quot;] = MiscTable(index)</span>
-<span class="sd">        &gt;&gt;&gt; db[&quot;misc-table&quot;][&quot;column&quot;] = Column(scheme_id=&quot;match&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; db["table"]["column"].set(["neutral", "positive"])</span>
+<span class="sd">        &gt;&gt;&gt; index = pd.Index([], dtype="string", name="idx")</span>
+<span class="sd">        &gt;&gt;&gt; db["misc-table"] = MiscTable(index)</span>
+<span class="sd">        &gt;&gt;&gt; db["misc-table"]["column"] = Column(scheme_id="match")</span>
 <span class="sd">        &gt;&gt;&gt; db</span>
 <span class="sd">        name: mydb</span>
 <span class="sd">        source: https://www.audeering.com/</span>
@@ -302,19 +302,19 @@
 <span class="sd">            columns:</span>
 <span class="sd">              column: {scheme_id: match}</span>
 <span class="sd">        &gt;&gt;&gt; list(db)</span>
-<span class="sd">        [&#39;misc-table&#39;, &#39;table&#39;]</span>
-<span class="sd">        &gt;&gt;&gt; db.get(&quot;emotion&quot;)</span>
+<span class="sd">        ['misc-table', 'table']</span>
+<span class="sd">        &gt;&gt;&gt; db.get("emotion")</span>
 <span class="sd">                 emotion</span>
 <span class="sd">        file</span>
 <span class="sd">        f1.wav   neutral</span>
 <span class="sd">        f2.wav  positive</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="n">source</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="n">source</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span><span class="p">,</span>
         <span class="n">usage</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">define</span><span class="o">.</span><span class="n">Usage</span><span class="o">.</span><span class="n">UNRESTRICTED</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
         <span class="n">expires</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">date</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -335,61 +335,61 @@
             <span class="n">languages</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">map_language</span><span class="p">(</span><span class="n">languages</span><span class="p">[</span><span class="n">idx</span><span class="p">])</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Name of database&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">"""Name of database"""</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="n">description</span><span class="p">,</span> <span class="n">meta</span><span class="o">=</span><span class="n">meta</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">source</span> <span class="o">=</span> <span class="n">source</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Database source&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">"""Database source"""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">usage</span> <span class="o">=</span> <span class="n">usage</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Usage permission.</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">"""Usage permission.</span>
 
 <span class="sd">        Possible return values are given by</span>
 <span class="sd">        :class:`audformat.define.Usage`.</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">expires</span> <span class="o">=</span> <span class="n">expires</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Expiry date&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">"""Expiry date"""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">languages</span> <span class="o">=</span> <span class="n">languages</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;List of included languages&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">"""List of included languages"""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">author</span> <span class="o">=</span> <span class="n">author</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Author(s) of database&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">"""Author(s) of database"""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">organization</span> <span class="o">=</span> <span class="n">organization</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Organization that created the database&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">"""Organization that created the database"""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">license</span> <span class="o">=</span> <span class="n">license</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;License of database&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">"""License of database"""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">license_url</span> <span class="o">=</span> <span class="n">license_url</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;URL of database license&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">"""URL of database license"""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">attachments</span> <span class="o">=</span> <span class="n">HeaderDict</span><span class="p">(</span>
             <span class="n">value_type</span><span class="o">=</span><span class="n">Attachment</span><span class="p">,</span>
             <span class="n">set_callback</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_set_attachment</span><span class="p">,</span>
         <span class="p">)</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Dictionary of attachments.</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">"""Dictionary of attachments.</span>
 
 <span class="sd">        Raises:</span>
 <span class="sd">            RuntimeError: if the path of a newly assigned attachment</span>
 <span class="sd">                overlaps with the path of an existing attachment</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">media</span> <span class="o">=</span> <span class="n">HeaderDict</span><span class="p">(</span><span class="n">value_type</span><span class="o">=</span><span class="n">Media</span><span class="p">)</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Dictionary of media information&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">"""Dictionary of media information"""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">raters</span> <span class="o">=</span> <span class="n">HeaderDict</span><span class="p">(</span><span class="n">value_type</span><span class="o">=</span><span class="n">Rater</span><span class="p">)</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Dictionary of raters&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">"""Dictionary of raters"""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">schemes</span> <span class="o">=</span> <span class="n">HeaderDict</span><span class="p">(</span>
             <span class="n">value_type</span><span class="o">=</span><span class="n">Scheme</span><span class="p">,</span>
             <span class="n">set_callback</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_set_scheme</span><span class="p">,</span>
         <span class="p">)</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Dictionary of schemes&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">"""Dictionary of schemes"""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">splits</span> <span class="o">=</span> <span class="n">HeaderDict</span><span class="p">(</span><span class="n">value_type</span><span class="o">=</span><span class="n">Split</span><span class="p">)</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Dictionary of splits&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">"""Dictionary of splits"""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tables</span> <span class="o">=</span> <span class="n">HeaderDict</span><span class="p">(</span>
             <span class="n">value_type</span><span class="o">=</span><span class="n">Table</span><span class="p">,</span>
             <span class="n">set_callback</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_set_table</span><span class="p">,</span>
         <span class="p">)</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Dictionary of audformat tables&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">"""Dictionary of audformat tables"""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">misc_tables</span> <span class="o">=</span> <span class="n">HeaderDict</span><span class="p">(</span>
             <span class="n">value_type</span><span class="o">=</span><span class="n">MiscTable</span><span class="p">,</span>
             <span class="n">set_callback</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_set_table</span><span class="p">,</span>
         <span class="p">)</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Dictionary of miscellaneous tables&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">"""Dictionary of miscellaneous tables"""</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_files_duration</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="kc">None</span>
@@ -397,14 +397,14 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">files</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">:</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Files referenced in the database.</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">"""Files referenced in the database.</span>
 
 <span class="sd">        Includes files from filewise and segmented tables.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            files</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">index</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">union</span><span class="p">(</span>
             <span class="p">[</span><span class="n">table</span><span class="o">.</span><span class="n">files</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">()</span> <span class="k">for</span> <span class="n">table</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tables</span><span class="o">.</span><span class="n">values</span><span class="p">()]</span>
         <span class="p">)</span>
@@ -416,7 +416,7 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">is_portable</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Check if database can be moved to another location.</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">"""Check if database can be moved to another location.</span>
 
 <span class="sd">        To be portable,</span>
 <span class="sd">        media must not be referenced with an absolute path,</span>
@@ -430,31 +430,31 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            ``True`` if the database is portable</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">files</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">True</span>
         <span class="k">return</span> <span class="nb">all</span><span class="p">(</span><span class="n">is_relative_path</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">files</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">root</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Database root directory.</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">"""Database root directory.</span>
 
 <span class="sd">        Returns ``None`` if database has not been stored yet.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            root directory</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_root</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">segments</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">MultiIndex</span><span class="p">:</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Segments referenced in the database.</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">"""Segments referenced in the database.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            segments</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">index</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">union</span><span class="p">(</span>
             <span class="p">[</span><span class="n">table</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">index</span> <span class="k">for</span> <span class="n">table</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tables</span><span class="o">.</span><span class="n">values</span><span class="p">()</span> <span class="k">if</span> <span class="n">table</span><span class="o">.</span><span class="n">is_segmented</span><span class="p">]</span>
         <span class="p">)</span>
@@ -470,7 +470,7 @@
         <span class="n">num_workers</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
         <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Drop files from tables.</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">"""Drop files from tables.</span>
 
 <span class="sd">        Iterate through all tables and remove rows with a reference to</span>
 <span class="sd">        listed or matching files.</span>
@@ -482,13 +482,13 @@
 <span class="sd">                on the machine multiplied by 5</span>
 <span class="sd">            verbose: show progress bar</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">audeer</span><span class="o">.</span><span class="n">run_tasks</span><span class="p">(</span>
             <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">drop_files</span><span class="p">(</span><span class="n">files</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
             <span class="n">params</span><span class="o">=</span><span class="p">[([</span><span class="n">table</span><span class="p">],</span> <span class="p">{})</span> <span class="k">for</span> <span class="n">table</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tables</span><span class="o">.</span><span class="n">values</span><span class="p">()],</span>
             <span class="n">num_workers</span><span class="o">=</span><span class="n">num_workers</span><span class="p">,</span>
             <span class="n">progress_bar</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span>
-            <span class="n">task_description</span><span class="o">=</span><span class="s2">&quot;Drop files&quot;</span><span class="p">,</span>
+            <span class="n">task_description</span><span class="o">=</span><span class="s2">"Drop files"</span><span class="p">,</span>
         <span class="p">)</span></div>
 
 
@@ -498,7 +498,7 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">table_ids</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Drop (miscellaneous) tables by ID.</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">"""Drop (miscellaneous) tables by ID.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            table_ids: table IDs to drop</span>
@@ -510,7 +510,7 @@
 <span class="sd">                that is used in a scheme</span>
 <span class="sd">                would be removed</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">table_ids</span> <span class="o">=</span> <span class="n">audeer</span><span class="o">.</span><span class="n">to_list</span><span class="p">(</span><span class="n">table_ids</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">table_id</span> <span class="ow">in</span> <span class="n">table_ids</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">table_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tables</span><span class="p">:</span>
@@ -522,17 +522,17 @@
                     <span class="k">if</span> <span class="n">scheme</span><span class="o">.</span><span class="n">labels</span> <span class="o">==</span> <span class="n">table_id</span>
                 <span class="p">]</span>
                 <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">schemes</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                    <span class="n">schemes</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">scheme</span><span class="si">}</span><span class="s2">&#39;&quot;</span> <span class="k">for</span> <span class="n">scheme</span> <span class="ow">in</span> <span class="n">schemes</span><span class="p">]</span>
+                    <span class="n">schemes</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">"'</span><span class="si">{</span><span class="n">scheme</span><span class="si">}</span><span class="s2">'"</span> <span class="k">for</span> <span class="n">scheme</span> <span class="ow">in</span> <span class="n">schemes</span><span class="p">]</span>
                     <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-                        <span class="sa">f</span><span class="s2">&quot;Misc table &#39;</span><span class="si">{</span><span class="n">table_id</span><span class="si">}</span><span class="s2">&#39; is used &quot;</span>
-                        <span class="s2">&quot;as scheme(s): &quot;</span>
-                        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">schemes</span><span class="p">)</span><span class="si">}</span><span class="s2">, &quot;</span>
-                        <span class="s2">&quot;and cannot be removed.&quot;</span>
+                        <span class="sa">f</span><span class="s2">"Misc table '</span><span class="si">{</span><span class="n">table_id</span><span class="si">}</span><span class="s2">' is used "</span>
+                        <span class="s2">"as scheme(s): "</span>
+                        <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="s1">', '</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">schemes</span><span class="p">)</span><span class="si">}</span><span class="s2">, "</span>
+                        <span class="s2">"and cannot be removed."</span>
                     <span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">misc_tables</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">table_id</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">available_tables</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">tables</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">misc_tables</span><span class="p">}</span>
-                <span class="k">raise</span> <span class="n">BadIdError</span><span class="p">(</span><span class="s2">&quot;table&quot;</span><span class="p">,</span> <span class="n">table_id</span><span class="p">,</span> <span class="n">available_tables</span><span class="p">)</span></div>
+                <span class="k">raise</span> <span class="n">BadIdError</span><span class="p">(</span><span class="s2">"table"</span><span class="p">,</span> <span class="n">table_id</span><span class="p">,</span> <span class="n">available_tables</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Database.files_duration">
@@ -543,7 +543,7 @@
         <span class="o">*</span><span class="p">,</span>
         <span class="n">root</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">:</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Duration of files in the database.</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">"""Duration of files in the database.</span>
 
 <span class="sd">        Use ``db.files_duration(db.files).sum()``</span>
 <span class="sd">        to get the total duration of all files in a database.</span>
@@ -572,7 +572,7 @@
 <span class="sd">                with a database that was not saved</span>
 <span class="sd">                or loaded from disk</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">root</span> <span class="o">=</span> <span class="n">root</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">root</span>
 
         <span class="k">def</span><span class="w"> </span><span class="nf">duration</span><span class="p">(</span><span class="n">file</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Timedelta</span><span class="p">:</span>
@@ -582,11 +582,11 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">root</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                        <span class="sa">f</span><span class="s2">&quot;Found relative file name &quot;</span>
-                        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">file</span><span class="si">}</span><span class="s2">, &quot;</span>
-                        <span class="sa">f</span><span class="s2">&quot;but db.root is None. &quot;</span>
-                        <span class="sa">f</span><span class="s2">&quot;Please save database or &quot;</span>
-                        <span class="sa">f</span><span class="s2">&quot;provide a root folder.&quot;</span>
+                        <span class="sa">f</span><span class="s2">"Found relative file name "</span>
+                        <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">file</span><span class="si">}</span><span class="s2">, "</span>
+                        <span class="sa">f</span><span class="s2">"but db.root is None. "</span>
+                        <span class="sa">f</span><span class="s2">"Please save database or "</span>
+                        <span class="sa">f</span><span class="s2">"provide a root folder."</span>
                     <span class="p">)</span>
                 <span class="n">full_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">file</span><span class="p">)</span>
 
@@ -597,7 +597,7 @@
 
             <span class="c1"># calculate duration and cache it</span>
             <span class="n">dur</span> <span class="o">=</span> <span class="n">audiofile</span><span class="o">.</span><span class="n">duration</span><span class="p">(</span><span class="n">full_file</span><span class="p">)</span>
-            <span class="n">dur</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_timedelta</span><span class="p">(</span><span class="n">dur</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;s&quot;</span><span class="p">)</span>
+            <span class="n">dur</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_timedelta</span><span class="p">(</span><span class="n">dur</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">"s"</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_files_duration</span><span class="p">[</span><span class="n">full_file</span><span class="p">]</span> <span class="o">=</span> <span class="n">dur</span>
 
             <span class="k">return</span> <span class="n">dur</span>
@@ -625,9 +625,9 @@
         <span class="nb">map</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">original_column_names</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">aggregate_function</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">],</span> <span class="nb">object</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">aggregate_strategy</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;mismatch&quot;</span><span class="p">,</span>
+        <span class="n">aggregate_strategy</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"mismatch"</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Get labels by scheme.</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">"""Get labels by scheme.</span>
 
 <span class="sd">        Return all labels</span>
 <span class="sd">        from columns assigned to a</span>
@@ -679,8 +679,8 @@
 <span class="sd">                (possibly results in multiple columns).</span>
 <span class="sd">                For mapped schemes,</span>
 <span class="sd">                the column name before mapping is returned,</span>
-<span class="sd">                e.g. when requesting ``&#39;gender&#39;``</span>
-<span class="sd">                it might return a column named ``&#39;speaker&#39;``</span>
+<span class="sd">                e.g. when requesting ``'gender'``</span>
+<span class="sd">                it might return a column named ``'speaker'``</span>
 <span class="sd">            aggregate_function: callable to aggregate overlapping values.</span>
 <span class="sd">                The function gets a :class:`pandas.Series`</span>
 <span class="sd">                with overlapping values</span>
@@ -694,9 +694,9 @@
 <span class="sd">            aggregate_strategy: if ``aggregate_function`` is not ``None``,</span>
 <span class="sd">                ``aggregate_strategy`` decides</span>
 <span class="sd">                when ``aggregate_function`` is applied.</span>
-<span class="sd">                ``&#39;overlap&#39;``: apply to all samples</span>
+<span class="sd">                ``'overlap'``: apply to all samples</span>
 <span class="sd">                that have an overlapping index;</span>
-<span class="sd">                ``&#39;mismatch&#39;``: apply to all samples</span>
+<span class="sd">                ``'mismatch'``: apply to all samples</span>
 <span class="sd">                that have an overlapping index</span>
 <span class="sd">                and a different value</span>
 
@@ -720,13 +720,13 @@
 
 <span class="sd">            &gt;&gt;&gt; import audb</span>
 <span class="sd">            &gt;&gt;&gt; db = audb.load(</span>
-<span class="sd">            ...     &quot;emodb&quot;,</span>
-<span class="sd">            ...     version=&quot;1.4.1&quot;,</span>
+<span class="sd">            ...     "emodb",</span>
+<span class="sd">            ...     version="1.4.1",</span>
 <span class="sd">            ...     only_metadata=True,</span>
 <span class="sd">            ...     full_path=False,</span>
 <span class="sd">            ...     verbose=False,</span>
 <span class="sd">            ... )</span>
-<span class="sd">            &gt;&gt;&gt; db.get(&quot;emotion&quot;).head()</span>
+<span class="sd">            &gt;&gt;&gt; db.get("emotion").head()</span>
 <span class="sd">                               emotion</span>
 <span class="sd">            file</span>
 <span class="sd">            wav/03a01Fa.wav  happiness</span>
@@ -734,7 +734,7 @@
 <span class="sd">            wav/03a01Wa.wav      anger</span>
 <span class="sd">            wav/03a02Fc.wav  happiness</span>
 <span class="sd">            wav/03a02Nc.wav    neutral</span>
-<span class="sd">            &gt;&gt;&gt; db.get(&quot;transcription&quot;).head()</span>
+<span class="sd">            &gt;&gt;&gt; db.get("transcription").head()</span>
 <span class="sd">                                                    transcription</span>
 <span class="sd">            file</span>
 <span class="sd">            wav/03a01Fa.wav  Der Lappen liegt auf dem Eisschrank.</span>
@@ -742,7 +742,7 @@
 <span class="sd">            wav/03a01Wa.wav  Der Lappen liegt auf dem Eisschrank.</span>
 <span class="sd">            wav/03a02Fc.wav     Das will sie am Mittwoch abgeben.</span>
 <span class="sd">            wav/03a02Nc.wav     Das will sie am Mittwoch abgeben.</span>
-<span class="sd">            &gt;&gt;&gt; db.get(&quot;emotion&quot;, [&quot;transcription&quot;], map=False).head()</span>
+<span class="sd">            &gt;&gt;&gt; db.get("emotion", ["transcription"], map=False).head()</span>
 <span class="sd">                               emotion transcription</span>
 <span class="sd">            file</span>
 <span class="sd">            wav/03a01Fa.wav  happiness           a01</span>
@@ -753,7 +753,7 @@
 
 <span class="sd">            Non-existent schemes are ignored.</span>
 
-<span class="sd">            &gt;&gt;&gt; db.get(&quot;emotion&quot;, [&quot;non-existing&quot;]).head()</span>
+<span class="sd">            &gt;&gt;&gt; db.get("emotion", ["non-existing"]).head()</span>
 <span class="sd">                   emotion non-existing</span>
 <span class="sd">            file</span>
 <span class="sd">            wav/03a01Fa.wav  happiness          NaN</span>
@@ -765,7 +765,7 @@
 <span class="sd">            Limit to a particular table or split.</span>
 
 <span class="sd">            &gt;&gt;&gt; db.get(</span>
-<span class="sd">            ...     &quot;emotion&quot;, tables=[&quot;emotion.categories.train.gold_standard&quot;]</span>
+<span class="sd">            ...     "emotion", tables=["emotion.categories.train.gold_standard"]</span>
 <span class="sd">            ... ).head()</span>
 <span class="sd">                               emotion</span>
 <span class="sd">            file</span>
@@ -774,7 +774,7 @@
 <span class="sd">            wav/03a01Wa.wav      anger</span>
 <span class="sd">            wav/03a02Fc.wav  happiness</span>
 <span class="sd">            wav/03a02Nc.wav    neutral</span>
-<span class="sd">            &gt;&gt;&gt; db.get(&quot;emotion&quot;, splits=[&quot;test&quot;]).head()</span>
+<span class="sd">            &gt;&gt;&gt; db.get("emotion", splits=["test"]).head()</span>
 <span class="sd">                               emotion</span>
 <span class="sd">            file</span>
 <span class="sd">            wav/12a01Fb.wav  happiness</span>
@@ -785,12 +785,12 @@
 
 <span class="sd">            Return requested scheme name independent of column ID.</span>
 
-<span class="sd">            &gt;&gt;&gt; db[&quot;emotion&quot;].columns</span>
+<span class="sd">            &gt;&gt;&gt; db["emotion"].columns</span>
 <span class="sd">            emotion:</span>
 <span class="sd">              {scheme_id: emotion, rater_id: gold}</span>
 <span class="sd">            emotion.confidence:</span>
 <span class="sd">              {scheme_id: confidence, rater_id: gold}</span>
-<span class="sd">            &gt;&gt;&gt; db.get(&quot;confidence&quot;).head()</span>
+<span class="sd">            &gt;&gt;&gt; db.get("confidence").head()</span>
 <span class="sd">                             confidence</span>
 <span class="sd">            file</span>
 <span class="sd">            wav/03a01Fa.wav        0.90</span>
@@ -802,7 +802,7 @@
 <span class="sd">            If ``strict`` is ``True``</span>
 <span class="sd">            only values that have an attached scheme are returned.</span>
 
-<span class="sd">            &gt;&gt;&gt; db.get(&quot;emotion.confidence&quot;).head()</span>
+<span class="sd">            &gt;&gt;&gt; db.get("emotion.confidence").head()</span>
 <span class="sd">                             emotion.confidence</span>
 <span class="sd">            file</span>
 <span class="sd">            wav/03a01Fa.wav                0.90</span>
@@ -810,7 +810,7 @@
 <span class="sd">            wav/03a01Wa.wav                0.95</span>
 <span class="sd">            wav/03a02Fc.wav                0.85</span>
 <span class="sd">            wav/03a02Nc.wav                1.00</span>
-<span class="sd">            &gt;&gt;&gt; db.get(&quot;emotion.confidence&quot;, strict=True).head()</span>
+<span class="sd">            &gt;&gt;&gt; db.get("emotion.confidence", strict=True).head()</span>
 <span class="sd">            Empty DataFrame</span>
 <span class="sd">            Columns: [emotion.confidence]</span>
 <span class="sd">            Index: []</span>
@@ -823,14 +823,14 @@
 <span class="sd">            to combine the values.</span>
 
 <span class="sd">            &gt;&gt;&gt; # Add a shuffled version of emotion ratings as `random` column</span>
-<span class="sd">            &gt;&gt;&gt; db[&quot;emotion&quot;][&quot;random&quot;] = Column(scheme_id=&quot;emotion&quot;)</span>
-<span class="sd">            &gt;&gt;&gt; db[&quot;emotion&quot;][&quot;random&quot;].set(</span>
-<span class="sd">            ...     db[&quot;emotion&quot;][&quot;emotion&quot;].get().sample(frac=1, random_state=1)</span>
+<span class="sd">            &gt;&gt;&gt; db["emotion"]["random"] = Column(scheme_id="emotion")</span>
+<span class="sd">            &gt;&gt;&gt; db["emotion"]["random"].set(</span>
+<span class="sd">            ...     db["emotion"]["emotion"].get().sample(frac=1, random_state=1)</span>
 <span class="sd">            ... )</span>
-<span class="sd">            &gt;&gt;&gt; db.get(&quot;emotion&quot;)</span>
+<span class="sd">            &gt;&gt;&gt; db.get("emotion")</span>
 <span class="sd">            Traceback (most recent call last):</span>
 <span class="sd">                ...</span>
-<span class="sd">            ValueError: Found overlapping data in column &#39;emotion&#39;:</span>
+<span class="sd">            ValueError: Found overlapping data in column 'emotion':</span>
 <span class="sd">                                  left    right</span>
 <span class="sd">            file</span>
 <span class="sd">            wav/03a01Nc.wav    neutral  disgust</span>
@@ -844,7 +844,7 @@
 <span class="sd">            wav/03a04Wc.wav      anger  boredom</span>
 <span class="sd">            wav/03a05Aa.wav       fear  sadness</span>
 <span class="sd">            ...</span>
-<span class="sd">            &gt;&gt;&gt; db.get(&quot;emotion&quot;, aggregate_function=lambda y: y[0]).head()</span>
+<span class="sd">            &gt;&gt;&gt; db.get("emotion", aggregate_function=lambda y: y[0]).head()</span>
 <span class="sd">                               emotion</span>
 <span class="sd">            file</span>
 <span class="sd">            wav/03a01Fa.wav  happiness</span>
@@ -856,7 +856,7 @@
 <span class="sd">            Alternatively,</span>
 <span class="sd">            use ``original_column_names`` to return column IDs.</span>
 
-<span class="sd">            &gt;&gt;&gt; db.get(&quot;emotion&quot;, original_column_names=True).head()</span>
+<span class="sd">            &gt;&gt;&gt; db.get("emotion", original_column_names=True).head()</span>
 <span class="sd">                               emotion     random</span>
 <span class="sd">            file</span>
 <span class="sd">            wav/03a01Fa.wav  happiness  happiness</span>
@@ -865,7 +865,7 @@
 <span class="sd">            wav/03a02Fc.wav  happiness    neutral</span>
 <span class="sd">            wav/03a02Nc.wav    neutral    neutral</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>  <span class="c1"># noqa: E501</span>
+<span class="sd">        """</span>  <span class="c1"># noqa: E501</span>
 
         <span class="k">def</span><span class="w"> </span><span class="nf">append_series</span><span class="p">(</span><span class="n">ys</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">column_id</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">y</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -880,7 +880,7 @@
                     <span class="c1"># Normalize string-like categorical dtypes to object</span>
                     <span class="n">cat_dtype</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">categories</span><span class="o">.</span><span class="n">dtype</span>
                     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cat_dtype</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">StringDtype</span><span class="p">):</span>
-                        <span class="n">cat_dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s2">&quot;O&quot;</span><span class="p">)</span>
+                        <span class="n">cat_dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s2">"O"</span><span class="p">)</span>
                     <span class="n">cat_dtypes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cat_dtype</span><span class="p">)</span>
             <span class="c1"># Deduplicate and sort for consistent ordering</span>
             <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">cat_dtypes</span><span class="p">)),</span> <span class="n">key</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
@@ -889,13 +889,13 @@
             <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
                 <span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="p">[]},</span>
                 <span class="n">index</span><span class="o">=</span><span class="n">filewise_index</span><span class="p">(),</span>
-                <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;object&quot;</span><span class="p">,</span>
+                <span class="n">dtype</span><span class="o">=</span><span class="s2">"object"</span><span class="p">,</span>
             <span class="p">)</span>
 
         <span class="k">def</span><span class="w"> </span><span class="nf">empty_series</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span>
                 <span class="n">index</span><span class="o">=</span><span class="n">filewise_index</span><span class="p">(),</span>
-                <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;object&quot;</span><span class="p">,</span>
+                <span class="n">dtype</span><span class="o">=</span><span class="s2">"object"</span><span class="p">,</span>
                 <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
             <span class="p">)</span>
 
@@ -936,12 +936,12 @@
             <span class="k">elif</span> <span class="p">(</span>
                 <span class="ow">not</span> <span class="n">strict</span>
                 <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">scheme</span><span class="o">.</span><span class="n">labels</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span>
-                <span class="c1"># Skip simple mappings like {&#39;a0&#39;: &#39;a text&#39;}</span>
+                <span class="c1"># Skip simple mappings like {'a0': 'a text'}</span>
                 <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">scheme</span><span class="o">.</span><span class="n">labels</span><span class="o">.</span><span class="n">values</span><span class="p">())[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">dict</span><span class="p">)</span>
             <span class="p">):</span>
                 <span class="n">labels</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span>
                     <span class="n">scheme</span><span class="o">.</span><span class="n">labels</span><span class="p">,</span>
-                    <span class="n">orient</span><span class="o">=</span><span class="s2">&quot;index&quot;</span><span class="p">,</span>
+                    <span class="n">orient</span><span class="o">=</span><span class="s2">"index"</span><span class="p">,</span>
                 <span class="p">)</span>
                 <span class="k">if</span> <span class="n">requested_scheme</span> <span class="ow">in</span> <span class="n">labels</span><span class="p">:</span>
                     <span class="n">scheme_mappings</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">scheme_id</span><span class="p">,</span> <span class="n">requested_scheme</span><span class="p">))</span>
@@ -966,14 +966,14 @@
                     <span class="k">if</span> <span class="n">requested_scheme</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">schemes</span><span class="p">:</span>
                         <span class="n">labels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="n">requested_scheme</span><span class="p">]</span><span class="o">.</span><span class="n">labels</span>
                     <span class="c1"># If map=True we want to expand scheme labels like</span>
-                    <span class="c1"># {&#39;a&#39;: &#39;Full a&#39;, &#39;b&#39;: &#39;Full b&#39;},</span>
+                    <span class="c1"># {'a': 'Full a', 'b': 'Full b'},</span>
                     <span class="c1"># nut not scheme labels like</span>
-                    <span class="c1"># {&#39;a&#39;: {&#39;d&#39;: 1}, &#39;b&#39;: {&#39;d&#39;: 2}}</span>
+                    <span class="c1"># {'a': {'d': 1}, 'b': {'d': 2}}</span>
                     <span class="k">if</span> <span class="p">(</span>
                         <span class="nb">map</span> <span class="ow">is</span> <span class="kc">True</span>
                         <span class="ow">and</span> <span class="n">requested_scheme</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">schemes</span>
                         <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span>
-                        <span class="c1"># Ensure simple mappings like {&#39;a0&#39;: &#39;a text&#39;}</span>
+                        <span class="c1"># Ensure simple mappings like {'a0': 'a text'}</span>
                         <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">labels</span><span class="o">.</span><span class="n">values</span><span class="p">())[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">dict</span><span class="p">)</span>
                         <span class="c1"># map=requested_scheme can only be performed</span>
                         <span class="c1"># if scheme is assigned</span>
@@ -999,13 +999,13 @@
         <span class="n">dtypes</span> <span class="o">=</span> <span class="n">dtypes_of_categories</span><span class="p">(</span><span class="n">ys</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">dtypes</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">dtypes</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="c1"># Don&#39;t know if this can ever be triggered,</span>
+                <span class="c1"># Don't know if this can ever be triggered,</span>
                 <span class="c1"># but make sure we raise the same error as</span>
                 <span class="c1"># pd.api.types.union_categoricals</span>
                 <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>  <span class="c1"># pragma: nocover</span>
-                    <span class="sa">f</span><span class="s2">&quot;Cannot join labels for scheme &#39;</span><span class="si">{</span><span class="n">requested_scheme</span><span class="si">}</span><span class="s2">&#39; &quot;</span>
-                    <span class="s2">&quot;with different data types: &quot;</span>
-                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">d</span><span class="p">)</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">d</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">dtypes</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+                    <span class="sa">f</span><span class="s2">"Cannot join labels for scheme '</span><span class="si">{</span><span class="n">requested_scheme</span><span class="si">}</span><span class="s2">' "</span>
+                    <span class="s2">"with different data types: "</span>
+                    <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="s1">', '</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">d</span><span class="p">)</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">d</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">dtypes</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span>
                 <span class="p">)</span>
             <span class="n">dtype</span> <span class="o">=</span> <span class="n">dtypes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
             <span class="c1"># Convert everything to categorical data</span>
@@ -1018,7 +1018,7 @@
             <span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">ys</span><span class="p">):</span>
                 <span class="n">cat_dtype</span> <span class="o">=</span> <span class="n">y</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">categories</span><span class="o">.</span><span class="n">dtype</span>
                 <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cat_dtype</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">StringDtype</span><span class="p">):</span>
-                    <span class="n">new_categories</span> <span class="o">=</span> <span class="n">y</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">categories</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;object&quot;</span><span class="p">)</span>
+                    <span class="n">new_categories</span> <span class="o">=</span> <span class="n">y</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">categories</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">"object"</span><span class="p">)</span>
                     <span class="n">ys</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">y</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">CategoricalDtype</span><span class="p">(</span><span class="n">new_categories</span><span class="p">))</span>
             <span class="c1"># Find union of categorical data</span>
             <span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">y</span><span class="o">.</span><span class="n">array</span> <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">ys</span><span class="p">]</span>
@@ -1027,9 +1027,9 @@
             <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
                 <span class="n">dtypes</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span> <span class="k">for</span> <span class="n">dtype</span> <span class="ow">in</span> <span class="n">dtypes_of_categories</span><span class="p">(</span><span class="n">data</span><span class="p">)]</span>
                 <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;Cannot join labels for scheme &#39;</span><span class="si">{</span><span class="n">requested_scheme</span><span class="si">}</span><span class="s2">&#39; &quot;</span>
-                    <span class="s2">&quot;with different data types: &quot;</span>
-                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dtypes</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+                    <span class="sa">f</span><span class="s2">"Cannot join labels for scheme '</span><span class="si">{</span><span class="n">requested_scheme</span><span class="si">}</span><span class="s2">' "</span>
+                    <span class="s2">"with different data types: "</span>
+                    <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="s1">', '</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dtypes</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span>
                 <span class="p">)</span>
             <span class="n">ys</span> <span class="o">=</span> <span class="p">[</span><span class="n">y</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span> <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">ys</span><span class="p">]</span>
 
@@ -1083,7 +1083,7 @@
         <span class="n">num_workers</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
         <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Apply function to file names in all tables.</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">"""Apply function to file names in all tables.</span>
 
 <span class="sd">        If speed is crucial,</span>
 <span class="sd">        see :func:`audformat.utils.map_file_path`</span>
@@ -1096,7 +1096,7 @@
 <span class="sd">                on the machine multiplied by 5</span>
 <span class="sd">            verbose: show progress bar</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
         <span class="k">def</span><span class="w"> </span><span class="nf">job</span><span class="p">(</span><span class="n">table</span><span class="p">):</span>
             <span class="n">table</span><span class="o">.</span><span class="n">map_files</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
@@ -1106,7 +1106,7 @@
             <span class="n">params</span><span class="o">=</span><span class="p">[([</span><span class="n">table</span><span class="p">],</span> <span class="p">{})</span> <span class="k">for</span> <span class="n">table</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tables</span><span class="o">.</span><span class="n">values</span><span class="p">()],</span>
             <span class="n">num_workers</span><span class="o">=</span><span class="n">num_workers</span><span class="p">,</span>
             <span class="n">progress_bar</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span>
-            <span class="n">task_description</span><span class="o">=</span><span class="s2">&quot;Map files&quot;</span><span class="p">,</span>
+            <span class="n">task_description</span><span class="o">=</span><span class="s2">"Map files"</span><span class="p">,</span>
         <span class="p">)</span></div>
 
 
@@ -1118,7 +1118,7 @@
         <span class="n">num_workers</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
         <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Pick files from tables.</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">"""Pick files from tables.</span>
 
 <span class="sd">        Iterate through all tables and keep only rows with a reference</span>
 <span class="sd">        to listed files or matching files.</span>
@@ -1130,13 +1130,13 @@
 <span class="sd">                on the machine multiplied by 5</span>
 <span class="sd">            verbose: show progress bar</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">audeer</span><span class="o">.</span><span class="n">run_tasks</span><span class="p">(</span>
             <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">pick_files</span><span class="p">(</span><span class="n">files</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
             <span class="n">params</span><span class="o">=</span><span class="p">[([</span><span class="n">table</span><span class="p">],</span> <span class="p">{})</span> <span class="k">for</span> <span class="n">table</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tables</span><span class="o">.</span><span class="n">values</span><span class="p">()],</span>
             <span class="n">num_workers</span><span class="o">=</span><span class="n">num_workers</span><span class="p">,</span>
             <span class="n">progress_bar</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span>
-            <span class="n">task_description</span><span class="o">=</span><span class="s2">&quot;Pick files&quot;</span><span class="p">,</span>
+            <span class="n">task_description</span><span class="o">=</span><span class="s2">"Pick files"</span><span class="p">,</span>
         <span class="p">)</span></div>
 
 
@@ -1146,7 +1146,7 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">table_ids</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Pick (miscellaneous) tables by ID.</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">"""Pick (miscellaneous) tables by ID.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            table_ids: table IDs to pick</span>
@@ -1158,12 +1158,12 @@
 <span class="sd">                that is used in a scheme</span>
 <span class="sd">                would be removed</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">table_ids</span> <span class="o">=</span> <span class="n">audeer</span><span class="o">.</span><span class="n">to_list</span><span class="p">(</span><span class="n">table_ids</span><span class="p">)</span>
         <span class="n">available_tables</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">tables</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">misc_tables</span><span class="p">}</span>
         <span class="k">for</span> <span class="n">table_id</span> <span class="ow">in</span> <span class="n">table_ids</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">table_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">available_tables</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="n">BadIdError</span><span class="p">(</span><span class="s2">&quot;table&quot;</span><span class="p">,</span> <span class="n">table_id</span><span class="p">,</span> <span class="n">available_tables</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="n">BadIdError</span><span class="p">(</span><span class="s2">"table"</span><span class="p">,</span> <span class="n">table_id</span><span class="p">,</span> <span class="n">available_tables</span><span class="p">)</span>
         <span class="n">drop_ids</span> <span class="o">=</span> <span class="p">[</span><span class="n">t</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="k">if</span> <span class="n">t</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">table_ids</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">drop_tables</span><span class="p">(</span><span class="n">drop_ids</span><span class="p">)</span></div>
 
@@ -1174,7 +1174,7 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">root</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
-        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;db&quot;</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"db"</span><span class="p">,</span>
         <span class="n">indent</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
         <span class="n">storage_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">define</span><span class="o">.</span><span class="n">TableStorageFormat</span><span class="o">.</span><span class="n">PARQUET</span><span class="p">,</span>
         <span class="n">update_other_formats</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
@@ -1182,7 +1182,7 @@
         <span class="n">num_workers</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
         <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Save database to disk.</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">"""Save database to disk.</span>
 
 <span class="sd">        Creates a header ``&lt;root&gt;/&lt;name&gt;.yaml``</span>
 <span class="sd">        and for every table a file ``&lt;root&gt;/&lt;name&gt;.&lt;table-id&gt;.[csv,parquet,pkl]``.</span>
@@ -1207,19 +1207,19 @@
 <span class="sd">                on the machine multiplied by 5</span>
 <span class="sd">            verbose: show progress bar</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">root</span> <span class="o">=</span> <span class="n">audeer</span><span class="o">.</span><span class="n">path</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">follow_symlink</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">audeer</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
 
-        <span class="n">ext</span> <span class="o">=</span> <span class="s2">&quot;.yaml&quot;</span>
+        <span class="n">ext</span> <span class="o">=</span> <span class="s2">".yaml"</span>
         <span class="n">header_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">name</span> <span class="o">+</span> <span class="n">ext</span><span class="p">)</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">header_path</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">header_path</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="n">indent</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">header_only</span><span class="p">:</span>
             <span class="c1"># Store (misc) tables</span>
             <span class="k">def</span><span class="w"> </span><span class="nf">job</span><span class="p">(</span><span class="n">obj_id</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
-                <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">obj_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">obj_id</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
                 <span class="n">obj</span><span class="o">.</span><span class="n">save</span><span class="p">(</span>
                     <span class="n">path</span><span class="p">,</span>
                     <span class="n">storage_format</span><span class="o">=</span><span class="n">storage_format</span><span class="p">,</span>
@@ -1232,7 +1232,7 @@
                 <span class="n">params</span><span class="o">=</span><span class="p">[([</span><span class="n">obj_id</span><span class="p">,</span> <span class="n">obj</span><span class="p">],</span> <span class="p">{})</span> <span class="k">for</span> <span class="n">obj_id</span><span class="p">,</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">objs</span><span class="o">.</span><span class="n">items</span><span class="p">()],</span>
                 <span class="n">num_workers</span><span class="o">=</span><span class="n">num_workers</span><span class="p">,</span>
                 <span class="n">progress_bar</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span>
-                <span class="n">task_description</span><span class="o">=</span><span class="s2">&quot;Save tables&quot;</span><span class="p">,</span>
+                <span class="n">task_description</span><span class="o">=</span><span class="s2">"Save tables"</span><span class="p">,</span>
             <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
@@ -1249,7 +1249,7 @@
         <span class="n">copy_media</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">overwrite</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Database</span><span class="p">:</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Update database with other database(s).</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">"""Update database with other database(s).</span>
 
 <span class="sd">        In order to :ref:`update a database &lt;update-a-database&gt;`,</span>
 <span class="sd">        *license* and *usage* have to match.</span>
@@ -1265,15 +1265,15 @@
 <span class="sd">        ============= =====================================</span>
 <span class="sd">        **field**     **result**</span>
 <span class="sd">        ------------- -------------------------------------</span>
-<span class="sd">        author        &#39;db.author, other.author&#39;</span>
+<span class="sd">        author        'db.author, other.author'</span>
 <span class="sd">        description   db.description</span>
 <span class="sd">        expires       min(db.expires, other.expires)</span>
 <span class="sd">        languages     db.languages + other.languages</span>
 <span class="sd">        license_url   db.license_url</span>
 <span class="sd">        meta          db.meta + other.meta</span>
 <span class="sd">        name          db.name</span>
-<span class="sd">        organization  &#39;db.organization, other.organization&#39;</span>
-<span class="sd">        source        &#39;db.source, other.source&#39;</span>
+<span class="sd">        organization  'db.organization, other.organization'</span>
+<span class="sd">        source        'db.source, other.source'</span>
 <span class="sd">        ============= =====================================</span>
 
 <span class="sd">        Args:</span>
@@ -1303,7 +1303,7 @@
 <span class="sd">                (contains files but no root folder)</span>
 <span class="sd">            RuntimeError: if any involved database is not portable</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">others</span><span class="p">,</span> <span class="n">Database</span><span class="p">):</span>
             <span class="n">others</span> <span class="o">=</span> <span class="p">[</span><span class="n">others</span><span class="p">]</span>
 
@@ -1311,40 +1311,40 @@
             <span class="n">other</span><span class="p">:</span> <span class="n">Database</span><span class="p">,</span>
             <span class="n">field</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="p">):</span>
-<span class="w">            </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Assert fields are equal.&quot;&quot;&quot;</span>
+<span class="w">            </span><span class="sa">r</span><span class="sd">"""Assert fields are equal."""</span>
             <span class="n">value1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">field</span><span class="p">]</span>
             <span class="n">value2</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">field</span><span class="p">]</span>
             <span class="k">if</span> <span class="n">value1</span> <span class="o">!=</span> <span class="n">value2</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                    <span class="s2">&quot;Cannot update database, &quot;</span>
-                    <span class="s2">&quot;found different value for &quot;</span>
-                    <span class="sa">f</span><span class="s2">&quot;&#39;db.</span><span class="si">{</span><span class="n">field</span><span class="si">}</span><span class="s2">&#39;:</span><span class="se">\n</span><span class="s2">&quot;</span>
-                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">value1</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
-                    <span class="s2">&quot;!=</span><span class="se">\n</span><span class="s2">&quot;</span>
-                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">value2</span><span class="si">}</span><span class="s2">&quot;</span>
+                    <span class="s2">"Cannot update database, "</span>
+                    <span class="s2">"found different value for "</span>
+                    <span class="sa">f</span><span class="s2">"'db.</span><span class="si">{</span><span class="n">field</span><span class="si">}</span><span class="s2">':</span><span class="se">\n</span><span class="s2">"</span>
+                    <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">value1</span><span class="si">}</span><span class="se">\n</span><span class="s2">"</span>
+                    <span class="s2">"!=</span><span class="se">\n</span><span class="s2">"</span>
+                    <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">value2</span><span class="si">}</span><span class="s2">"</span>
                 <span class="p">)</span>
 
         <span class="k">def</span><span class="w"> </span><span class="nf">join_dict</span><span class="p">(</span>
             <span class="n">field</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
             <span class="n">ds</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">dict</span><span class="p">],</span>
         <span class="p">):</span>
-<span class="w">            </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Join list of dictionaries.</span>
+<span class="w">            </span><span class="sa">r</span><span class="sd">"""Join list of dictionaries.</span>
 
 <span class="sd">            Raise error if dictionaries have same key with different values.</span>
 
-<span class="sd">            &quot;&quot;&quot;</span>
+<span class="sd">            """</span>
             <span class="n">d</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
             <span class="k">for</span> <span class="n">d_other</span> <span class="ow">in</span> <span class="n">ds</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
                 <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">d_other</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                     <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">d</span><span class="p">:</span>
                         <span class="k">if</span> <span class="n">d</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">!=</span> <span class="n">value</span><span class="p">:</span>
                             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                                <span class="s2">&quot;Cannot update database, &quot;</span>
-                                <span class="s2">&quot;found different value for &quot;</span>
-                                <span class="sa">f</span><span class="s2">&quot;&#39;db.</span><span class="si">{</span><span class="n">field</span><span class="si">}</span><span class="s2">[&#39;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">&#39;]&#39;:</span><span class="se">\n</span><span class="s2">&quot;</span>
-                                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">d</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
-                                <span class="s2">&quot;!=</span><span class="se">\n</span><span class="s2">&quot;</span>
-                                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">d_other</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+                                <span class="s2">"Cannot update database, "</span>
+                                <span class="s2">"found different value for "</span>
+                                <span class="sa">f</span><span class="s2">"'db.</span><span class="si">{</span><span class="n">field</span><span class="si">}</span><span class="s2">['</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">']':</span><span class="se">\n</span><span class="s2">"</span>
+                                <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">d</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="si">}</span><span class="se">\n</span><span class="s2">"</span>
+                                <span class="s2">"!=</span><span class="se">\n</span><span class="s2">"</span>
+                                <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">d_other</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span>
                             <span class="p">)</span>
                     <span class="k">else</span><span class="p">:</span>
                         <span class="n">d</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
@@ -1355,7 +1355,7 @@
             <span class="n">field</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
             <span class="n">op</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span>
         <span class="p">):</span>
-<span class="w">            </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Join two fields of db header.&quot;&quot;&quot;</span>
+<span class="w">            </span><span class="sa">r</span><span class="sd">"""Join two fields of db header."""</span>
             <span class="n">value1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">field</span><span class="p">]</span>
             <span class="n">value2</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">field</span><span class="p">]</span>
             <span class="k">if</span> <span class="n">value1</span> <span class="o">!=</span> <span class="n">value2</span><span class="p">:</span>
@@ -1368,15 +1368,15 @@
 
         <span class="c1"># assert equal fields</span>
         <span class="k">for</span> <span class="n">other</span> <span class="ow">in</span> <span class="n">others</span><span class="p">:</span>
-            <span class="n">assert_equal</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="s2">&quot;license&quot;</span><span class="p">)</span>
-            <span class="n">assert_equal</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="s2">&quot;usage&quot;</span><span class="p">)</span>
+            <span class="n">assert_equal</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="s2">"license"</span><span class="p">)</span>
+            <span class="n">assert_equal</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="s2">"usage"</span><span class="p">)</span>
 
         <span class="c1"># can only join databases with relative paths</span>
         <span class="k">for</span> <span class="n">database</span> <span class="ow">in</span> <span class="p">[</span><span class="bp">self</span><span class="p">]</span> <span class="o">+</span> <span class="n">others</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">database</span><span class="o">.</span><span class="n">is_portable</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;You can only update with databases that are portable. &quot;</span>
-                    <span class="sa">f</span><span class="s2">&quot;The database &#39;</span><span class="si">{</span><span class="n">database</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39; is not portable.&quot;</span>
+                    <span class="sa">f</span><span class="s2">"You can only update with databases that are portable. "</span>
+                    <span class="sa">f</span><span class="s2">"The database '</span><span class="si">{</span><span class="n">database</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">' is not portable."</span>
                 <span class="p">)</span>
 
         <span class="c1"># join schemes with labels</span>
@@ -1393,21 +1393,21 @@
                     <span class="k">if</span> <span class="n">other_scheme</span><span class="o">.</span><span class="n">uses_table</span> <span class="ow">or</span> <span class="n">self_scheme</span><span class="o">.</span><span class="n">uses_table</span><span class="p">:</span>
                         <span class="k">if</span> <span class="n">other_scheme</span><span class="o">.</span><span class="n">uses_table</span> <span class="o">!=</span> <span class="n">self_scheme</span><span class="o">.</span><span class="n">uses_table</span><span class="p">:</span>
                             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                                <span class="sa">f</span><span class="s2">&quot;Cannot join scheme &quot;</span>
-                                <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">scheme_id</span><span class="si">}</span><span class="s2">&#39; &quot;</span>
-                                <span class="sa">f</span><span class="s2">&quot;when one is using a misc table &quot;</span>
-                                <span class="sa">f</span><span class="s2">&quot;and the other is not.&quot;</span>
+                                <span class="sa">f</span><span class="s2">"Cannot join scheme "</span>
+                                <span class="sa">f</span><span class="s2">"'</span><span class="si">{</span><span class="n">scheme_id</span><span class="si">}</span><span class="s2">' "</span>
+                                <span class="sa">f</span><span class="s2">"when one is using a misc table "</span>
+                                <span class="sa">f</span><span class="s2">"and the other is not."</span>
                             <span class="p">)</span>
 
                         <span class="k">if</span> <span class="n">other_scheme</span><span class="o">.</span><span class="n">labels</span> <span class="o">!=</span> <span class="n">self_scheme</span><span class="o">.</span><span class="n">labels</span><span class="p">:</span>
                             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                                <span class="sa">f</span><span class="s2">&quot;Cannot join scheme &quot;</span>
-                                <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">scheme_id</span><span class="si">}</span><span class="s2">&#39; &quot;</span>
-                                <span class="sa">f</span><span class="s2">&quot;when using misc tables &quot;</span>
-                                <span class="sa">f</span><span class="s2">&quot;with different IDs: &quot;</span>
-                                <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">self_scheme</span><span class="o">.</span><span class="n">labels</span><span class="si">}</span><span class="s2">&#39; &quot;</span>
-                                <span class="sa">f</span><span class="s2">&quot;!= &quot;</span>
-                                <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">other_scheme</span><span class="o">.</span><span class="n">labels</span><span class="si">}</span><span class="s2">&#39;.&quot;</span>
+                                <span class="sa">f</span><span class="s2">"Cannot join scheme "</span>
+                                <span class="sa">f</span><span class="s2">"'</span><span class="si">{</span><span class="n">scheme_id</span><span class="si">}</span><span class="s2">' "</span>
+                                <span class="sa">f</span><span class="s2">"when using misc tables "</span>
+                                <span class="sa">f</span><span class="s2">"with different IDs: "</span>
+                                <span class="sa">f</span><span class="s2">"'</span><span class="si">{</span><span class="n">self_scheme</span><span class="o">.</span><span class="n">labels</span><span class="si">}</span><span class="s2">' "</span>
+                                <span class="sa">f</span><span class="s2">"!= "</span>
+                                <span class="sa">f</span><span class="s2">"'</span><span class="si">{</span><span class="n">other_scheme</span><span class="o">.</span><span class="n">labels</span><span class="si">}</span><span class="s2">'."</span>
                             <span class="p">)</span>
 
                         <span class="n">other_table</span> <span class="o">=</span> <span class="n">other</span><span class="p">[</span><span class="n">other_scheme</span><span class="o">.</span><span class="n">labels</span><span class="p">]</span>
@@ -1433,22 +1433,22 @@
 
         <span class="c1"># join fields</span>
         <span class="k">for</span> <span class="n">other</span> <span class="ow">in</span> <span class="n">others</span><span class="p">:</span>
-            <span class="n">join_field</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="s2">&quot;author&quot;</span><span class="p">,</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">)</span>
-            <span class="n">join_field</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="s2">&quot;expires&quot;</span><span class="p">,</span> <span class="nb">min</span><span class="p">)</span>
-            <span class="n">join_field</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="s2">&quot;languages&quot;</span><span class="p">,</span> <span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="o">.</span><span class="n">from_iterable</span><span class="p">)</span>
+            <span class="n">join_field</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="s2">"author"</span><span class="p">,</span> <span class="s2">", "</span><span class="o">.</span><span class="n">join</span><span class="p">)</span>
+            <span class="n">join_field</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="s2">"expires"</span><span class="p">,</span> <span class="nb">min</span><span class="p">)</span>
+            <span class="n">join_field</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="s2">"languages"</span><span class="p">,</span> <span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="o">.</span><span class="n">from_iterable</span><span class="p">)</span>
             <span class="c1"># remove duplicates whilst preserving order</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">languages</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">dict</span><span class="o">.</span><span class="n">fromkeys</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">languages</span><span class="p">))</span>
-            <span class="n">join_field</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="s2">&quot;media&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">join_dict</span><span class="p">(</span><span class="s2">&quot;media&quot;</span><span class="p">,</span> <span class="n">x</span><span class="p">))</span>
-            <span class="n">join_field</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="s2">&quot;meta&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">join_dict</span><span class="p">(</span><span class="s2">&quot;meta&quot;</span><span class="p">,</span> <span class="n">x</span><span class="p">))</span>
-            <span class="n">join_field</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="s2">&quot;organization&quot;</span><span class="p">,</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">)</span>
-            <span class="n">join_field</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="s2">&quot;schemes&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">join_dict</span><span class="p">(</span><span class="s2">&quot;schemes&quot;</span><span class="p">,</span> <span class="n">x</span><span class="p">))</span>
-            <span class="n">join_field</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="s2">&quot;source&quot;</span><span class="p">,</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">)</span>
-            <span class="n">join_field</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="s2">&quot;splits&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">join_dict</span><span class="p">(</span><span class="s2">&quot;splits&quot;</span><span class="p">,</span> <span class="n">x</span><span class="p">))</span>
-            <span class="n">join_field</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="s2">&quot;raters&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">join_dict</span><span class="p">(</span><span class="s2">&quot;raters&quot;</span><span class="p">,</span> <span class="n">x</span><span class="p">))</span>
+            <span class="n">join_field</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="s2">"media"</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">join_dict</span><span class="p">(</span><span class="s2">"media"</span><span class="p">,</span> <span class="n">x</span><span class="p">))</span>
+            <span class="n">join_field</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="s2">"meta"</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">join_dict</span><span class="p">(</span><span class="s2">"meta"</span><span class="p">,</span> <span class="n">x</span><span class="p">))</span>
+            <span class="n">join_field</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="s2">"organization"</span><span class="p">,</span> <span class="s2">", "</span><span class="o">.</span><span class="n">join</span><span class="p">)</span>
+            <span class="n">join_field</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="s2">"schemes"</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">join_dict</span><span class="p">(</span><span class="s2">"schemes"</span><span class="p">,</span> <span class="n">x</span><span class="p">))</span>
+            <span class="n">join_field</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="s2">"source"</span><span class="p">,</span> <span class="s2">", "</span><span class="o">.</span><span class="n">join</span><span class="p">)</span>
+            <span class="n">join_field</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="s2">"splits"</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">join_dict</span><span class="p">(</span><span class="s2">"splits"</span><span class="p">,</span> <span class="n">x</span><span class="p">))</span>
+            <span class="n">join_field</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="s2">"raters"</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">join_dict</span><span class="p">(</span><span class="s2">"raters"</span><span class="p">,</span> <span class="n">x</span><span class="p">))</span>
             <span class="n">join_field</span><span class="p">(</span>
                 <span class="n">other</span><span class="p">,</span>
-                <span class="s2">&quot;attachments&quot;</span><span class="p">,</span>
-                <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">join_dict</span><span class="p">(</span><span class="s2">&quot;attachments&quot;</span><span class="p">,</span> <span class="n">x</span><span class="p">),</span>
+                <span class="s2">"attachments"</span><span class="p">,</span>
+                <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">join_dict</span><span class="p">(</span><span class="s2">"attachments"</span><span class="p">,</span> <span class="n">x</span><span class="p">),</span>
             <span class="p">)</span>
 
         <span class="c1"># join tables</span>
@@ -1463,8 +1463,8 @@
         <span class="k">if</span> <span class="n">copy_attachments</span> <span class="ow">or</span> <span class="n">copy_media</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">root</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;You can only update a saved database. &quot;</span>
-                    <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39; was not saved yet.&quot;</span>
+                    <span class="sa">f</span><span class="s2">"You can only update a saved database. "</span>
+                    <span class="sa">f</span><span class="s2">"'</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">' was not saved yet."</span>
                 <span class="p">)</span>
 
         <span class="c1"># copy attachment files</span>
@@ -1473,8 +1473,8 @@
             <span class="k">for</span> <span class="n">other</span> <span class="ow">in</span> <span class="n">others</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">other</span><span class="o">.</span><span class="n">root</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-                        <span class="sa">f</span><span class="s2">&quot;You can only update with saved databases. &quot;</span>
-                        <span class="sa">f</span><span class="s2">&quot;The database &#39;</span><span class="si">{</span><span class="n">other</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39; was not saved yet.&quot;</span>
+                        <span class="sa">f</span><span class="s2">"You can only update with saved databases. "</span>
+                        <span class="sa">f</span><span class="s2">"The database '</span><span class="si">{</span><span class="n">other</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">' was not saved yet."</span>
                     <span class="p">)</span>
                 <span class="k">for</span> <span class="n">attachment_id</span> <span class="ow">in</span> <span class="n">other</span><span class="o">.</span><span class="n">attachments</span><span class="p">:</span>
                     <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">other</span><span class="o">.</span><span class="n">attachments</span><span class="p">[</span><span class="n">attachment_id</span><span class="p">]</span><span class="o">.</span><span class="n">files</span><span class="p">:</span>
@@ -1490,8 +1490,8 @@
             <span class="k">for</span> <span class="n">other</span> <span class="ow">in</span> <span class="n">others</span><span class="p">:</span>
                 <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">files</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">other</span><span class="o">.</span><span class="n">root</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-                        <span class="sa">f</span><span class="s2">&quot;You can only update with saved databases. &quot;</span>
-                        <span class="sa">f</span><span class="s2">&quot;The database &#39;</span><span class="si">{</span><span class="n">other</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39; was not saved yet.&quot;</span>
+                        <span class="sa">f</span><span class="s2">"You can only update with saved databases. "</span>
+                        <span class="sa">f</span><span class="s2">"The database '</span><span class="si">{</span><span class="n">other</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">' was not saved yet."</span>
                     <span class="p">)</span>
                 <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">other</span><span class="o">.</span><span class="n">files</span><span class="p">:</span>
                     <span class="n">src_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">root</span><span class="p">,</span> <span class="n">file</span><span class="p">)</span>
@@ -1509,12 +1509,12 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">table_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Check if (miscellaneous) table exists.</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">"""Check if (miscellaneous) table exists.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            table_id: table identifier</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="n">table_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tables</span> <span class="ow">or</span> <span class="n">table_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">misc_tables</span></div>
 
 
@@ -1524,7 +1524,7 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">table_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MiscTable</span> <span class="o">|</span> <span class="n">Table</span><span class="p">:</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Get (miscellaneous) table from database.</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">"""Get (miscellaneous) table from database.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            table_id: table identifier</span>
@@ -1532,7 +1532,7 @@
 <span class="sd">        Raises:</span>
 <span class="sd">            BadKeyError: if table does not exist</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="n">table_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tables</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tables</span><span class="p">[</span><span class="n">table_id</span><span class="p">]</span>
         <span class="k">elif</span> <span class="n">table_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">misc_tables</span><span class="p">:</span>
@@ -1550,7 +1550,7 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">other</span><span class="p">:</span> <span class="n">Database</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Comparison if database equals another database.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">"""Comparison if database equals another database."""</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dump</span><span class="p">()</span> <span class="o">!=</span> <span class="n">other</span><span class="o">.</span><span class="n">dump</span><span class="p">():</span>
             <span class="k">return</span> <span class="kc">False</span>
         <span class="k">for</span> <span class="n">table_id</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tables</span><span class="p">)</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">misc_tables</span><span class="p">):</span>
@@ -1564,7 +1564,7 @@
     <span class="k">def</span><span class="w"> </span><span class="fm">__iter__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MiscTable</span> <span class="o">|</span> <span class="n">Table</span><span class="p">:</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Iterate over (miscellaneous) tables of database.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">"""Iterate over (miscellaneous) tables of database."""</span>
         <span class="k">yield from</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tables</span><span class="p">)</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">misc_tables</span><span class="p">))</span></div>
 
 
@@ -1575,7 +1575,7 @@
         <span class="n">table_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">table</span><span class="p">:</span> <span class="n">MiscTable</span> <span class="o">|</span> <span class="n">Table</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MiscTable</span> <span class="o">|</span> <span class="n">Table</span><span class="p">:</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Add table to database.</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">"""Add table to database.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            table_id: table identifier</span>
@@ -1588,7 +1588,7 @@
 <span class="sd">                when a filewise or segmented table with the same ID exists</span>
 <span class="sd">                (or vice versa)</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">MiscTable</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">misc_tables</span><span class="p">[</span><span class="n">table_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">table</span>
         <span class="k">else</span><span class="p">:</span>
@@ -1602,12 +1602,12 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">load</span><span class="p">(</span>
         <span class="n">root</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
-        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;db&quot;</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"db"</span><span class="p">,</span>
         <span class="n">load_data</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">num_workers</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
         <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Database</span><span class="p">:</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Load database from disk.</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">"""Load database from disk.</span>
 
 <span class="sd">        Expects a header ``&lt;root&gt;/&lt;name&gt;.yaml``</span>
 <span class="sd">        and for every table a file ``&lt;root&gt;/&lt;name&gt;.&lt;table-id&gt;.[csv|parquet|pkl]``</span>
@@ -1639,15 +1639,15 @@
 <span class="sd">            RuntimeError: if a CSV or PARQUET table file is newer</span>
 <span class="sd">                than the corresponding PKL file</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">ext</span> <span class="o">=</span> <span class="s2">&quot;.yaml&quot;</span>
+<span class="sd">        """</span>
+        <span class="n">ext</span> <span class="o">=</span> <span class="s2">".yaml"</span>
         <span class="n">root</span> <span class="o">=</span> <span class="n">audeer</span><span class="o">.</span><span class="n">path</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">follow_symlink</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">name</span> <span class="o">+</span> <span class="n">ext</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
 
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
             <span class="n">header</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="n">Loader</span><span class="o">=</span><span class="n">Loader</span><span class="p">)</span>
             <span class="n">db</span> <span class="o">=</span> <span class="n">Database</span><span class="o">.</span><span class="n">load_header_from_yaml</span><span class="p">(</span><span class="n">header</span><span class="p">)</span>
 
@@ -1657,18 +1657,18 @@
             <span class="c1"># Load misc_tables first,</span>
             <span class="c1"># as they might be used as scheme labels</span>
             <span class="c1"># by regular tables</span>
-            <span class="k">if</span> <span class="s2">&quot;misc_tables&quot;</span> <span class="ow">in</span> <span class="n">header</span> <span class="ow">and</span> <span class="n">header</span><span class="p">[</span><span class="s2">&quot;misc_tables&quot;</span><span class="p">]:</span>
-                <span class="k">for</span> <span class="n">table_id</span> <span class="ow">in</span> <span class="n">header</span><span class="p">[</span><span class="s2">&quot;misc_tables&quot;</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="s2">"misc_tables"</span> <span class="ow">in</span> <span class="n">header</span> <span class="ow">and</span> <span class="n">header</span><span class="p">[</span><span class="s2">"misc_tables"</span><span class="p">]:</span>
+                <span class="k">for</span> <span class="n">table_id</span> <span class="ow">in</span> <span class="n">header</span><span class="p">[</span><span class="s2">"misc_tables"</span><span class="p">]:</span>
                     <span class="n">table_ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">table_id</span><span class="p">)</span>
 
-            <span class="k">if</span> <span class="s2">&quot;tables&quot;</span> <span class="ow">in</span> <span class="n">header</span> <span class="ow">and</span> <span class="n">header</span><span class="p">[</span><span class="s2">&quot;tables&quot;</span><span class="p">]:</span>
-                <span class="k">for</span> <span class="n">table_id</span> <span class="ow">in</span> <span class="n">header</span><span class="p">[</span><span class="s2">&quot;tables&quot;</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="s2">"tables"</span> <span class="ow">in</span> <span class="n">header</span> <span class="ow">and</span> <span class="n">header</span><span class="p">[</span><span class="s2">"tables"</span><span class="p">]:</span>
+                <span class="k">for</span> <span class="n">table_id</span> <span class="ow">in</span> <span class="n">header</span><span class="p">[</span><span class="s2">"tables"</span><span class="p">]:</span>
                     <span class="n">table_ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">table_id</span><span class="p">)</span>
 
             <span class="k">for</span> <span class="n">table_id</span> <span class="ow">in</span> <span class="n">table_ids</span><span class="p">:</span>
                 <span class="n">table</span> <span class="o">=</span> <span class="n">db</span><span class="p">[</span><span class="n">table_id</span><span class="p">]</span>
                 <span class="k">if</span> <span class="n">load_data</span><span class="p">:</span>
-                    <span class="n">table_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">name</span> <span class="o">+</span> <span class="s2">&quot;.&quot;</span> <span class="o">+</span> <span class="n">table_id</span><span class="p">)</span>
+                    <span class="n">table_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">name</span> <span class="o">+</span> <span class="s2">"."</span> <span class="o">+</span> <span class="n">table_id</span><span class="p">)</span>
                     <span class="n">params</span><span class="o">.</span><span class="n">append</span><span class="p">(([</span><span class="n">table</span><span class="p">,</span> <span class="n">table_path</span><span class="p">],</span> <span class="p">{}))</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">table</span><span class="o">.</span><span class="n">_df</span> <span class="o">=</span> <span class="kc">None</span>
@@ -1684,7 +1684,7 @@
                     <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span>
                     <span class="n">num_workers</span><span class="o">=</span><span class="n">num_workers</span><span class="p">,</span>
                     <span class="n">progress_bar</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span>
-                    <span class="n">task_description</span><span class="o">=</span><span class="s2">&quot;Load tables&quot;</span><span class="p">,</span>
+                    <span class="n">task_description</span><span class="o">=</span><span class="s2">"Load tables"</span><span class="p">,</span>
                 <span class="p">)</span>
 
         <span class="n">db</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
@@ -1697,7 +1697,7 @@
 <a class="viewcode-back" href="../../../api/audformat.Database.html#audformat.Database.load_header_from_yaml">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">load_header_from_yaml</span><span class="p">(</span><span class="n">header</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Database</span><span class="p">:</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Load database header from YAML.</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">"""Load database header from YAML.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            header: YAML header definition</span>
@@ -1705,56 +1705,56 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            database object</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="c1"># for backward compatibility</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">header</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
             <span class="nb">id</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">header</span><span class="p">))</span>
             <span class="n">header</span> <span class="o">=</span> <span class="n">header</span><span class="p">[</span><span class="nb">id</span><span class="p">]</span>
-            <span class="n">header</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">id</span>
+            <span class="n">header</span><span class="p">[</span><span class="s2">"name"</span><span class="p">]</span> <span class="o">=</span> <span class="nb">id</span>
 
         <span class="n">db</span> <span class="o">=</span> <span class="n">Database</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="n">header</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">],</span>
-            <span class="n">source</span><span class="o">=</span><span class="n">header</span><span class="p">[</span><span class="s2">&quot;source&quot;</span><span class="p">],</span>
-            <span class="n">usage</span><span class="o">=</span><span class="n">header</span><span class="p">[</span><span class="s2">&quot;usage&quot;</span><span class="p">],</span>
+            <span class="n">name</span><span class="o">=</span><span class="n">header</span><span class="p">[</span><span class="s2">"name"</span><span class="p">],</span>
+            <span class="n">source</span><span class="o">=</span><span class="n">header</span><span class="p">[</span><span class="s2">"source"</span><span class="p">],</span>
+            <span class="n">usage</span><span class="o">=</span><span class="n">header</span><span class="p">[</span><span class="s2">"usage"</span><span class="p">],</span>
         <span class="p">)</span>
         <span class="n">header_dicts</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="s2">&quot;attachments&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;media&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;misc_tables&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;raters&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;schemes&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;tables&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;splits&quot;</span><span class="p">,</span>
+            <span class="s2">"attachments"</span><span class="p">,</span>
+            <span class="s2">"media"</span><span class="p">,</span>
+            <span class="s2">"misc_tables"</span><span class="p">,</span>
+            <span class="s2">"raters"</span><span class="p">,</span>
+            <span class="s2">"schemes"</span><span class="p">,</span>
+            <span class="s2">"tables"</span><span class="p">,</span>
+            <span class="s2">"splits"</span><span class="p">,</span>
         <span class="p">]</span>
         <span class="n">db</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">header</span><span class="p">,</span> <span class="n">ignore_keys</span><span class="o">=</span><span class="n">header_dicts</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="s2">&quot;attachments&quot;</span> <span class="ow">in</span> <span class="n">header</span> <span class="ow">and</span> <span class="n">header</span><span class="p">[</span><span class="s2">&quot;attachments&quot;</span><span class="p">]:</span>
-            <span class="k">for</span> <span class="n">attachment_id</span><span class="p">,</span> <span class="n">attachment_d</span> <span class="ow">in</span> <span class="n">header</span><span class="p">[</span><span class="s2">&quot;attachments&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                <span class="n">attachment</span> <span class="o">=</span> <span class="n">Attachment</span><span class="p">(</span><span class="n">attachment_d</span><span class="p">[</span><span class="s2">&quot;path&quot;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="s2">"attachments"</span> <span class="ow">in</span> <span class="n">header</span> <span class="ow">and</span> <span class="n">header</span><span class="p">[</span><span class="s2">"attachments"</span><span class="p">]:</span>
+            <span class="k">for</span> <span class="n">attachment_id</span><span class="p">,</span> <span class="n">attachment_d</span> <span class="ow">in</span> <span class="n">header</span><span class="p">[</span><span class="s2">"attachments"</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">attachment</span> <span class="o">=</span> <span class="n">Attachment</span><span class="p">(</span><span class="n">attachment_d</span><span class="p">[</span><span class="s2">"path"</span><span class="p">])</span>
                 <span class="n">attachment</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">attachment_d</span><span class="p">)</span>
                 <span class="n">db</span><span class="o">.</span><span class="n">attachments</span><span class="p">[</span><span class="n">attachment_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">attachment</span>
 
-        <span class="k">if</span> <span class="s2">&quot;media&quot;</span> <span class="ow">in</span> <span class="n">header</span> <span class="ow">and</span> <span class="n">header</span><span class="p">[</span><span class="s2">&quot;media&quot;</span><span class="p">]:</span>
-            <span class="k">for</span> <span class="n">media_id</span><span class="p">,</span> <span class="n">media_d</span> <span class="ow">in</span> <span class="n">header</span><span class="p">[</span><span class="s2">&quot;media&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">if</span> <span class="s2">"media"</span> <span class="ow">in</span> <span class="n">header</span> <span class="ow">and</span> <span class="n">header</span><span class="p">[</span><span class="s2">"media"</span><span class="p">]:</span>
+            <span class="k">for</span> <span class="n">media_id</span><span class="p">,</span> <span class="n">media_d</span> <span class="ow">in</span> <span class="n">header</span><span class="p">[</span><span class="s2">"media"</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                 <span class="n">media</span> <span class="o">=</span> <span class="n">Media</span><span class="p">()</span>
                 <span class="n">media</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">media_d</span><span class="p">)</span>
                 <span class="n">db</span><span class="o">.</span><span class="n">media</span><span class="p">[</span><span class="n">media_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">media</span>
 
-        <span class="k">if</span> <span class="s2">&quot;splits&quot;</span> <span class="ow">in</span> <span class="n">header</span> <span class="ow">and</span> <span class="n">header</span><span class="p">[</span><span class="s2">&quot;splits&quot;</span><span class="p">]:</span>
-            <span class="k">for</span> <span class="n">split_id</span><span class="p">,</span> <span class="n">split_d</span> <span class="ow">in</span> <span class="n">header</span><span class="p">[</span><span class="s2">&quot;splits&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">if</span> <span class="s2">"splits"</span> <span class="ow">in</span> <span class="n">header</span> <span class="ow">and</span> <span class="n">header</span><span class="p">[</span><span class="s2">"splits"</span><span class="p">]:</span>
+            <span class="k">for</span> <span class="n">split_id</span><span class="p">,</span> <span class="n">split_d</span> <span class="ow">in</span> <span class="n">header</span><span class="p">[</span><span class="s2">"splits"</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                 <span class="n">split</span> <span class="o">=</span> <span class="n">Split</span><span class="p">()</span>
                 <span class="n">split</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">split_d</span><span class="p">)</span>
                 <span class="n">db</span><span class="o">.</span><span class="n">splits</span><span class="p">[</span><span class="n">split_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">split</span>
 
-        <span class="k">if</span> <span class="s2">&quot;misc_tables&quot;</span> <span class="ow">in</span> <span class="n">header</span> <span class="ow">and</span> <span class="n">header</span><span class="p">[</span><span class="s2">&quot;misc_tables&quot;</span><span class="p">]:</span>
-            <span class="k">for</span> <span class="n">table_id</span><span class="p">,</span> <span class="n">table_d</span> <span class="ow">in</span> <span class="n">header</span><span class="p">[</span><span class="s2">&quot;misc_tables&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">if</span> <span class="s2">"misc_tables"</span> <span class="ow">in</span> <span class="n">header</span> <span class="ow">and</span> <span class="n">header</span><span class="p">[</span><span class="s2">"misc_tables"</span><span class="p">]:</span>
+            <span class="k">for</span> <span class="n">table_id</span><span class="p">,</span> <span class="n">table_d</span> <span class="ow">in</span> <span class="n">header</span><span class="p">[</span><span class="s2">"misc_tables"</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                 <span class="n">table</span> <span class="o">=</span> <span class="n">MiscTable</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
-                <span class="n">table</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">table_d</span><span class="p">,</span> <span class="n">ignore_keys</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;columns&quot;</span><span class="p">])</span>
+                <span class="n">table</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">table_d</span><span class="p">,</span> <span class="n">ignore_keys</span><span class="o">=</span><span class="p">[</span><span class="s2">"columns"</span><span class="p">])</span>
 
-                <span class="k">if</span> <span class="s2">&quot;columns&quot;</span> <span class="ow">in</span> <span class="n">table_d</span> <span class="ow">and</span> <span class="n">table_d</span><span class="p">[</span><span class="s2">&quot;columns&quot;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="s2">"columns"</span> <span class="ow">in</span> <span class="n">table_d</span> <span class="ow">and</span> <span class="n">table_d</span><span class="p">[</span><span class="s2">"columns"</span><span class="p">]:</span>
                     <span class="n">tmp_callback</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">set_callback</span>
                     <span class="n">table</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">set_callback</span> <span class="o">=</span> <span class="kc">None</span>
-                    <span class="k">for</span> <span class="n">column_id</span><span class="p">,</span> <span class="n">column_d</span> <span class="ow">in</span> <span class="n">table_d</span><span class="p">[</span><span class="s2">&quot;columns&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="k">for</span> <span class="n">column_id</span><span class="p">,</span> <span class="n">column_d</span> <span class="ow">in</span> <span class="n">table_d</span><span class="p">[</span><span class="s2">"columns"</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                         <span class="n">column</span> <span class="o">=</span> <span class="n">Column</span><span class="p">()</span>
                         <span class="n">column</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">column_d</span><span class="p">)</span>
                         <span class="n">column</span><span class="o">.</span><span class="n">_id</span> <span class="o">=</span> <span class="n">column_id</span>
@@ -1764,15 +1764,15 @@
 
                 <span class="n">db</span><span class="o">.</span><span class="n">misc_tables</span><span class="p">[</span><span class="n">table_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">table</span>
 
-        <span class="k">if</span> <span class="s2">&quot;raters&quot;</span> <span class="ow">in</span> <span class="n">header</span> <span class="ow">and</span> <span class="n">header</span><span class="p">[</span><span class="s2">&quot;raters&quot;</span><span class="p">]:</span>
-            <span class="k">for</span> <span class="n">rater_id</span><span class="p">,</span> <span class="n">rater_d</span> <span class="ow">in</span> <span class="n">header</span><span class="p">[</span><span class="s2">&quot;raters&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">if</span> <span class="s2">"raters"</span> <span class="ow">in</span> <span class="n">header</span> <span class="ow">and</span> <span class="n">header</span><span class="p">[</span><span class="s2">"raters"</span><span class="p">]:</span>
+            <span class="k">for</span> <span class="n">rater_id</span><span class="p">,</span> <span class="n">rater_d</span> <span class="ow">in</span> <span class="n">header</span><span class="p">[</span><span class="s2">"raters"</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                 <span class="n">rater</span> <span class="o">=</span> <span class="n">Rater</span><span class="p">()</span>
                 <span class="n">rater</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">rater_d</span><span class="p">)</span>
                 <span class="n">db</span><span class="o">.</span><span class="n">raters</span><span class="p">[</span><span class="n">rater_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">rater</span>
 
-        <span class="k">if</span> <span class="s2">&quot;schemes&quot;</span> <span class="ow">in</span> <span class="n">header</span> <span class="ow">and</span> <span class="n">header</span><span class="p">[</span><span class="s2">&quot;schemes&quot;</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="s2">"schemes"</span> <span class="ow">in</span> <span class="n">header</span> <span class="ow">and</span> <span class="n">header</span><span class="p">[</span><span class="s2">"schemes"</span><span class="p">]:</span>
             <span class="n">misc_table_schemes</span> <span class="o">=</span> <span class="p">{}</span>
-            <span class="k">for</span> <span class="n">scheme_id</span><span class="p">,</span> <span class="n">scheme_d</span> <span class="ow">in</span> <span class="n">header</span><span class="p">[</span><span class="s2">&quot;schemes&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">scheme_id</span><span class="p">,</span> <span class="n">scheme_d</span> <span class="ow">in</span> <span class="n">header</span><span class="p">[</span><span class="s2">"schemes"</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                 <span class="c1"># ensure to load first all non misc table schemes</span>
                 <span class="c1"># as they might be needed</span>
                 <span class="c1"># when checking the column schemes</span>
@@ -1786,7 +1786,7 @@
             <span class="k">for</span> <span class="n">scheme_id</span><span class="p">,</span> <span class="n">scheme</span> <span class="ow">in</span> <span class="n">misc_table_schemes</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                 <span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="n">scheme_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">scheme</span>
             <span class="c1"># restore order of scheme IDs</span>
-            <span class="n">order</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">header</span><span class="p">[</span><span class="s2">&quot;schemes&quot;</span><span class="p">])</span>
+            <span class="n">order</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">header</span><span class="p">[</span><span class="s2">"schemes"</span><span class="p">])</span>
             <span class="n">db</span><span class="o">.</span><span class="n">schemes</span> <span class="o">=</span> <span class="n">HeaderDict</span><span class="p">(</span>
                 <span class="nb">sorted</span><span class="p">(</span>
                     <span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span>
@@ -1796,27 +1796,27 @@
                 <span class="n">set_callback</span><span class="o">=</span><span class="n">db</span><span class="o">.</span><span class="n">_set_scheme</span><span class="p">,</span>
             <span class="p">)</span>
 
-        <span class="k">if</span> <span class="s2">&quot;tables&quot;</span> <span class="ow">in</span> <span class="n">header</span> <span class="ow">and</span> <span class="n">header</span><span class="p">[</span><span class="s2">&quot;tables&quot;</span><span class="p">]:</span>
-            <span class="k">for</span> <span class="n">table_id</span><span class="p">,</span> <span class="n">table_d</span> <span class="ow">in</span> <span class="n">header</span><span class="p">[</span><span class="s2">&quot;tables&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">if</span> <span class="s2">"tables"</span> <span class="ow">in</span> <span class="n">header</span> <span class="ow">and</span> <span class="n">header</span><span class="p">[</span><span class="s2">"tables"</span><span class="p">]:</span>
+            <span class="k">for</span> <span class="n">table_id</span><span class="p">,</span> <span class="n">table_d</span> <span class="ow">in</span> <span class="n">header</span><span class="p">[</span><span class="s2">"tables"</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                 <span class="n">table</span> <span class="o">=</span> <span class="n">Table</span><span class="p">()</span>
-                <span class="n">table</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">table_d</span><span class="p">,</span> <span class="n">ignore_keys</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;is_segmented&quot;</span><span class="p">,</span> <span class="s2">&quot;columns&quot;</span><span class="p">])</span>
-                <span class="k">if</span> <span class="s2">&quot;columns&quot;</span> <span class="ow">in</span> <span class="n">table_d</span> <span class="ow">and</span> <span class="n">table_d</span><span class="p">[</span><span class="s2">&quot;columns&quot;</span><span class="p">]:</span>
+                <span class="n">table</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">table_d</span><span class="p">,</span> <span class="n">ignore_keys</span><span class="o">=</span><span class="p">[</span><span class="s2">"is_segmented"</span><span class="p">,</span> <span class="s2">"columns"</span><span class="p">])</span>
+                <span class="k">if</span> <span class="s2">"columns"</span> <span class="ow">in</span> <span class="n">table_d</span> <span class="ow">and</span> <span class="n">table_d</span><span class="p">[</span><span class="s2">"columns"</span><span class="p">]:</span>
                     <span class="n">tmp_callback</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">set_callback</span>
                     <span class="n">table</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">set_callback</span> <span class="o">=</span> <span class="kc">None</span>
-                    <span class="k">for</span> <span class="n">column_id</span><span class="p">,</span> <span class="n">column_d</span> <span class="ow">in</span> <span class="n">table_d</span><span class="p">[</span><span class="s2">&quot;columns&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="k">for</span> <span class="n">column_id</span><span class="p">,</span> <span class="n">column_d</span> <span class="ow">in</span> <span class="n">table_d</span><span class="p">[</span><span class="s2">"columns"</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                         <span class="n">column</span> <span class="o">=</span> <span class="n">Column</span><span class="p">()</span>
-                        <span class="n">column</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">column_d</span><span class="p">,</span> <span class="n">ignore_keys</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;has_confidence&quot;</span><span class="p">])</span>
+                        <span class="n">column</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">column_d</span><span class="p">,</span> <span class="n">ignore_keys</span><span class="o">=</span><span class="p">[</span><span class="s2">"has_confidence"</span><span class="p">])</span>
                         <span class="n">column</span><span class="o">.</span><span class="n">_id</span> <span class="o">=</span> <span class="n">column_id</span>
                         <span class="n">column</span><span class="o">.</span><span class="n">_table</span> <span class="o">=</span> <span class="n">table</span>
                         <span class="n">table</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="n">column_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">column</span>
 
                         <span class="c1"># for backward compatibility we insert</span>
                         <span class="c1"># confidences as a regular column</span>
-                        <span class="k">if</span> <span class="s2">&quot;has_confidence&quot;</span> <span class="ow">in</span> <span class="n">column_d</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
+                        <span class="k">if</span> <span class="s2">"has_confidence"</span> <span class="ow">in</span> <span class="n">column_d</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
                             <span class="n">column</span> <span class="o">=</span> <span class="n">Column</span><span class="p">()</span>
-                            <span class="n">column</span><span class="o">.</span><span class="n">_id</span> <span class="o">=</span> <span class="s2">&quot;@&quot;</span> <span class="o">+</span> <span class="n">column_id</span>
+                            <span class="n">column</span><span class="o">.</span><span class="n">_id</span> <span class="o">=</span> <span class="s2">"@"</span> <span class="o">+</span> <span class="n">column_id</span>
                             <span class="n">column</span><span class="o">.</span><span class="n">_table</span> <span class="o">=</span> <span class="n">table</span>
-                            <span class="n">table</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="s2">&quot;@&quot;</span> <span class="o">+</span> <span class="n">column_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">column</span>
+                            <span class="n">table</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="s2">"@"</span> <span class="o">+</span> <span class="n">column_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">column</span>
 
                     <span class="n">table</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">set_callback</span> <span class="o">=</span> <span class="n">tmp_callback</span>
                 <span class="n">db</span><span class="p">[</span><span class="n">table_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">table</span>
@@ -1842,7 +1842,7 @@
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Scheme</span><span class="p">:</span>
         <span class="n">scheme</span><span class="o">.</span><span class="n">_db</span> <span class="o">=</span> <span class="bp">self</span>
         <span class="n">scheme</span><span class="o">.</span><span class="n">_id</span> <span class="o">=</span> <span class="n">scheme_id</span>
-        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">scheme</span><span class="p">,</span> <span class="s2">&quot;labels&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">scheme</span><span class="o">.</span><span class="n">labels</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">scheme</span><span class="p">,</span> <span class="s2">"labels"</span><span class="p">)</span> <span class="ow">and</span> <span class="n">scheme</span><span class="o">.</span><span class="n">labels</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">scheme</span><span class="o">.</span><span class="n">_check_labels</span><span class="p">(</span><span class="n">scheme</span><span class="o">.</span><span class="n">labels</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">scheme</span>
 
@@ -1854,11 +1854,11 @@
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">MiscTable</span><span class="p">)</span> <span class="ow">and</span> <span class="n">table_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tables</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">TableExistsError</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="n">table_id</span><span class="p">]</span><span class="o">.</span><span class="n">type</span><span class="p">,</span> <span class="n">table_id</span><span class="p">)</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">Table</span><span class="p">)</span> <span class="ow">and</span> <span class="n">table_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">misc_tables</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">TableExistsError</span><span class="p">(</span><span class="s2">&quot;miscellaneous&quot;</span><span class="p">,</span> <span class="n">table_id</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">TableExistsError</span><span class="p">(</span><span class="s2">"miscellaneous"</span><span class="p">,</span> <span class="n">table_id</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">table</span><span class="o">.</span><span class="n">split_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">table</span><span class="o">.</span><span class="n">split_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">splits</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">BadIdError</span><span class="p">(</span><span class="s2">&quot;split&quot;</span><span class="p">,</span> <span class="n">table</span><span class="o">.</span><span class="n">split_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">splits</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">BadIdError</span><span class="p">(</span><span class="s2">"split"</span><span class="p">,</span> <span class="n">table</span><span class="o">.</span><span class="n">split_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">splits</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">table</span><span class="o">.</span><span class="n">media_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">table</span><span class="o">.</span><span class="n">media_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">media</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">BadIdError</span><span class="p">(</span><span class="s2">&quot;media&quot;</span><span class="p">,</span> <span class="n">table</span><span class="o">.</span><span class="n">media_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">media</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">BadIdError</span><span class="p">(</span><span class="s2">"media"</span><span class="p">,</span> <span class="n">table</span><span class="o">.</span><span class="n">media_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">media</span><span class="p">)</span>
         <span class="n">table</span><span class="o">.</span><span class="n">_db</span> <span class="o">=</span> <span class="bp">self</span>
         <span class="n">table</span><span class="o">.</span><span class="n">_id</span> <span class="o">=</span> <span class="n">table_id</span>
         <span class="k">return</span> <span class="n">table</span>
@@ -1867,7 +1867,7 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">_expand_filewise_to_segmented</span><span class="p">(</span>
         <span class="n">df_segmented</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">df_filewise</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Expand filewise dataframe to segments.</span>
+<span class="w">        </span><span class="sd">"""Expand filewise dataframe to segments.</span>
 
 <span class="sd">        We want to add a column from ``df_filewise`` to ``df_segmented``.</span>
 <span class="sd">        As ``df_segmented`` represents a segmented table,</span>
@@ -1885,7 +1885,7 @@
 <span class="sd">            dataframe ``df_filewise`` converted to represent a segmented table</span>
 <span class="sd">                matching the index of ``df_segmented``</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="c1"># Problem of utils.intersect():</span>
         <span class="c1"># squeezes [f1, f1, f2] to [f1, f2]</span>
         <span class="c1"># so we need to separate intersection from listing files</span>
@@ -1912,7 +1912,7 @@
         
         
         
-          Built with <a href="https://www.sphinx-doc.org">Sphinx</a> on 2026/05/12 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org">Sphinx</a> on 2026/10/09 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>

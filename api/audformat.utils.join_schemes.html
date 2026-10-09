@@ -71,7 +71,7 @@
             
             
               <div class="version">
-                v1.4.2
+                v1.4.3
               </div>
             
           
@@ -213,21 +213,21 @@ instead.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>dbs</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a>[<a class="reference internal" href="audformat.Database.html#audformat.Database" title="audformat.core.database.Database"><code class="xref py py-class docutils literal notranslate"><span class="pre">Database</span></code></a>]</span>) – sequence of databases</p></li>
-<li><p><strong>scheme_id</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – scheme ID of a scheme with labels
+<li><p><strong>scheme_id</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – scheme ID of a scheme with labels
 that should be joined</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – if scheme labels are of different dtype
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – if scheme labels are of different dtype
     or not <code class="docutils literal notranslate"><span class="pre">list</span></code> or <code class="docutils literal notranslate"><span class="pre">dict</span></code></p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">db1</span> <span class="o">=</span> <span class="n">Database</span><span class="p">(</span><span class="s2">&quot;db1&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">db2</span> <span class="o">=</span> <span class="n">Database</span><span class="p">(</span><span class="s2">&quot;db2&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">db1</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s2">&quot;scheme_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Scheme</span><span class="p">(</span><span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;a&quot;</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">db2</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s2">&quot;scheme_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Scheme</span><span class="p">(</span><span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;b&quot;</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">join_schemes</span><span class="p">([</span><span class="n">db1</span><span class="p">,</span> <span class="n">db2</span><span class="p">],</span> <span class="s2">&quot;scheme_id&quot;</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">db1</span> <span class="o">=</span> <span class="n">Database</span><span class="p">(</span><span class="s2">"db1"</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db2</span> <span class="o">=</span> <span class="n">Database</span><span class="p">(</span><span class="s2">"db2"</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db1</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s2">"scheme_id"</span><span class="p">]</span> <span class="o">=</span> <span class="n">Scheme</span><span class="p">(</span><span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="s2">"a"</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db2</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s2">"scheme_id"</span><span class="p">]</span> <span class="o">=</span> <span class="n">Scheme</span><span class="p">(</span><span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="s2">"b"</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">join_schemes</span><span class="p">([</span><span class="n">db1</span><span class="p">,</span> <span class="n">db2</span><span class="p">],</span> <span class="s2">"scheme_id"</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">db1</span><span class="o">.</span><span class="n">schemes</span>
 <span class="go">scheme_id:</span>
 <span class="go">  dtype: str</span>
@@ -261,7 +261,7 @@ that should be joined</p></li>
         
         
         
-          Built with <a href="https://www.sphinx-doc.org">Sphinx</a> on 2026/05/12 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org">Sphinx</a> on 2026/10/09 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>

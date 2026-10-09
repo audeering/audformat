@@ -68,7 +68,7 @@
             
             
               <div class="version">
-                v1.4.2
+                v1.4.3
               </div>
             
           
@@ -195,17 +195,17 @@
 
 <span class="c1"># Exclude examples that return a path containing `\`</span>
 <span class="c1"># from doctest on Windows</span>
-<span class="k">if</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;Windows&quot;</span><span class="p">]:</span>  <span class="c1"># pragma: no cover</span>
+<span class="k">if</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">"Windows"</span><span class="p">]:</span>  <span class="c1"># pragma: no cover</span>
     <span class="n">__doctest_skip__</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="s2">&quot;expand_file_path&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;to_filewise_index&quot;</span><span class="p">,</span>
+        <span class="s2">"expand_file_path"</span><span class="p">,</span>
+        <span class="s2">"to_filewise_index"</span><span class="p">,</span>
     <span class="p">]</span>
 
 <span class="c1"># Separator used when hashing object arrays in hash().</span>
-<span class="c1"># Null byte is used as it&#39;s unlikely to appear in typical data</span>
+<span class="c1"># Null byte is used as it's unlikely to appear in typical data</span>
 <span class="c1"># (file paths, labels). Note: if data contains \x00, collisions</span>
 <span class="c1"># are theoretically possible - see tests for details.</span>
-<span class="n">_OBJECT_ARRAY_SEPARATOR</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\x00</span><span class="s2">&quot;</span>
+<span class="n">_OBJECT_ARRAY_SEPARATOR</span> <span class="o">=</span> <span class="s2">"</span><span class="se">\x00</span><span class="s2">"</span>
 
 
 <div class="viewcode-block" id="concat">
@@ -215,9 +215,9 @@
     <span class="o">*</span><span class="p">,</span>
     <span class="n">overwrite</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">aggregate_function</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">],</span> <span class="nb">object</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">aggregate_strategy</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;mismatch&quot;</span><span class="p">,</span>
+    <span class="n">aggregate_strategy</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"mismatch"</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Concatenate objects.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">"""Concatenate objects.</span>
 
 <span class="sd">    If all objects are conform to</span>
 <span class="sd">    :ref:`table specifications &lt;data-tables:Tables&gt;`</span>
@@ -267,9 +267,9 @@
 <span class="sd">        aggregate_strategy: if ``aggregate_function`` is not ``None``,</span>
 <span class="sd">            ``aggregate_strategy`` decides</span>
 <span class="sd">            when ``aggregate_function`` is applied.</span>
-<span class="sd">            ``&#39;overlap&#39;``: apply to all samples</span>
+<span class="sd">            ``'overlap'``: apply to all samples</span>
 <span class="sd">            that have an overlapping index;</span>
-<span class="sd">            ``&#39;mismatch&#39;``: apply to all samples</span>
+<span class="sd">            ``'mismatch'``: apply to all samples</span>
 <span class="sd">            that have an overlapping index</span>
 <span class="sd">            and a different value</span>
 
@@ -280,7 +280,7 @@
 <span class="sd">        ValueError: if level and dtypes of object indices do not match</span>
 <span class="sd">        ValueError: if columns with the same name have different dtypes</span>
 <span class="sd">        ValueError: if ``aggregate_strategy`` is not one of</span>
-<span class="sd">            ``&#39;overlap&#39;``, ``&#39;mismatch&#39;``</span>
+<span class="sd">            ``'overlap'``, ``'mismatch'``</span>
 <span class="sd">        ValueError: if ``aggregate_function`` is ``None``,</span>
 <span class="sd">            ``overwrite`` is ``False``,</span>
 <span class="sd">            and values in the same position do not match</span>
@@ -297,8 +297,8 @@
 <span class="sd">        dtype: Int64</span>
 <span class="sd">        &gt;&gt;&gt; concat(</span>
 <span class="sd">        ...     [</span>
-<span class="sd">        ...         pd.Series([0], index=pd.Index([0]), name=&quot;col1&quot;),</span>
-<span class="sd">        ...         pd.Series([1], index=pd.Index([0]), name=&quot;col2&quot;),</span>
+<span class="sd">        ...         pd.Series([0], index=pd.Index([0]), name="col1"),</span>
+<span class="sd">        ...         pd.Series([1], index=pd.Index([0]), name="col2"),</span>
 <span class="sd">        ...     ]</span>
 <span class="sd">        ... )</span>
 <span class="sd">           col1  col2</span>
@@ -329,7 +329,7 @@
 <span class="sd">        ...         pd.Series([1, 1], index=pd.Index([0, 1])),</span>
 <span class="sd">        ...     ],</span>
 <span class="sd">        ...     aggregate_function=np.sum,</span>
-<span class="sd">        ...     aggregate_strategy=&quot;overlap&quot;,</span>
+<span class="sd">        ...     aggregate_strategy="overlap",</span>
 <span class="sd">        ... )</span>
 <span class="sd">        0    2</span>
 <span class="sd">        1    2</span>
@@ -340,19 +340,19 @@
 <span class="sd">        ...             [0.0, 1.0],</span>
 <span class="sd">        ...             index=pd.Index(</span>
 <span class="sd">        ...                 [0, 1],</span>
-<span class="sd">        ...                 dtype=&quot;int&quot;,</span>
-<span class="sd">        ...                 name=&quot;idx&quot;,</span>
+<span class="sd">        ...                 dtype="int",</span>
+<span class="sd">        ...                 name="idx",</span>
 <span class="sd">        ...             ),</span>
-<span class="sd">        ...             name=&quot;float&quot;,</span>
+<span class="sd">        ...             name="float",</span>
 <span class="sd">        ...         ),</span>
 <span class="sd">        ...         pd.DataFrame(</span>
 <span class="sd">        ...             {</span>
-<span class="sd">        ...                 &quot;float&quot;: [np.nan, 2.0],</span>
-<span class="sd">        ...                 &quot;string&quot;: [&quot;a&quot;, &quot;b&quot;],</span>
+<span class="sd">        ...                 "float": [np.nan, 2.0],</span>
+<span class="sd">        ...                 "string": ["a", "b"],</span>
 <span class="sd">        ...             },</span>
 <span class="sd">        ...             index=pd.MultiIndex.from_arrays(</span>
 <span class="sd">        ...                 [[0, 2]],</span>
-<span class="sd">        ...                 names=[&quot;idx&quot;],</span>
+<span class="sd">        ...                 names=["idx"],</span>
 <span class="sd">        ...             ),</span>
 <span class="sd">        ...         ),</span>
 <span class="sd">        ...     ]</span>
@@ -366,15 +366,15 @@
 <span class="sd">        ...     [</span>
 <span class="sd">        ...         pd.Series(</span>
 <span class="sd">        ...             [0.0, 1.0],</span>
-<span class="sd">        ...             index=filewise_index([&quot;f1&quot;, &quot;f2&quot;]),</span>
-<span class="sd">        ...             name=&quot;float&quot;,</span>
+<span class="sd">        ...             index=filewise_index(["f1", "f2"]),</span>
+<span class="sd">        ...             name="float",</span>
 <span class="sd">        ...         ),</span>
 <span class="sd">        ...         pd.DataFrame(</span>
 <span class="sd">        ...             {</span>
-<span class="sd">        ...                 &quot;float&quot;: [1.0, 2.0],</span>
-<span class="sd">        ...                 &quot;string&quot;: [&quot;a&quot;, &quot;b&quot;],</span>
+<span class="sd">        ...                 "float": [1.0, 2.0],</span>
+<span class="sd">        ...                 "string": ["a", "b"],</span>
 <span class="sd">        ...             },</span>
-<span class="sd">        ...             index=segmented_index([&quot;f2&quot;, &quot;f3&quot;]),</span>
+<span class="sd">        ...             index=segmented_index(["f2", "f3"]),</span>
 <span class="sd">        ...         ),</span>
 <span class="sd">        ...     ]</span>
 <span class="sd">        ... )</span>
@@ -387,15 +387,15 @@
 <span class="sd">        ...     [</span>
 <span class="sd">        ...         pd.Series(</span>
 <span class="sd">        ...             [0.0, 0.0],</span>
-<span class="sd">        ...             index=filewise_index([&quot;f1&quot;, &quot;f2&quot;]),</span>
-<span class="sd">        ...             name=&quot;float&quot;,</span>
+<span class="sd">        ...             index=filewise_index(["f1", "f2"]),</span>
+<span class="sd">        ...             name="float",</span>
 <span class="sd">        ...         ),</span>
 <span class="sd">        ...         pd.DataFrame(</span>
 <span class="sd">        ...             {</span>
-<span class="sd">        ...                 &quot;float&quot;: [1.0, 2.0],</span>
-<span class="sd">        ...                 &quot;string&quot;: [&quot;a&quot;, &quot;b&quot;],</span>
+<span class="sd">        ...                 "float": [1.0, 2.0],</span>
+<span class="sd">        ...                 "string": ["a", "b"],</span>
 <span class="sd">        ...             },</span>
-<span class="sd">        ...             index=segmented_index([&quot;f2&quot;, &quot;f3&quot;]),</span>
+<span class="sd">        ...             index=segmented_index(["f2", "f3"]),</span>
 <span class="sd">        ...         ),</span>
 <span class="sd">        ...     ],</span>
 <span class="sd">        ...     overwrite=True,</span>
@@ -406,15 +406,15 @@
 <span class="sd">        f2   0 days NaT    1.0      a</span>
 <span class="sd">        f3   0 days NaT    2.0      b</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">allowed_values</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;overlap&quot;</span><span class="p">,</span> <span class="s2">&quot;mismatch&quot;</span><span class="p">]</span>
+<span class="sd">    """</span>
+    <span class="n">allowed_values</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"overlap"</span><span class="p">,</span> <span class="s2">"mismatch"</span><span class="p">]</span>
     <span class="k">if</span> <span class="n">aggregate_strategy</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">allowed_values</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;aggregate_strategy needs to be one of: </span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">allowed_values</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">"aggregate_strategy needs to be one of: </span><span class="si">{</span><span class="s1">', '</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">allowed_values</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span>
         <span class="p">)</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="n">objs</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">([],</span> <span class="n">index</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">([]),</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;object&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">([],</span> <span class="n">index</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">([]),</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">"object"</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">objs</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">objs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -448,30 +448,30 @@
 
             <span class="c1"># assert same dtype</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">_is_same_dtype</span><span class="p">(</span><span class="n">dtype_1</span><span class="p">,</span> <span class="n">dtype_2</span><span class="p">):</span>
-                <span class="k">if</span> <span class="n">dtype_1</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;category&quot;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">dtype_1</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">"category"</span><span class="p">:</span>
                     <span class="n">dtype_1</span> <span class="o">=</span> <span class="nb">repr</span><span class="p">(</span><span class="n">dtype_1</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">dtype_2</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;category&quot;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">dtype_2</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">"category"</span><span class="p">:</span>
                     <span class="n">dtype_2</span> <span class="o">=</span> <span class="nb">repr</span><span class="p">(</span><span class="n">dtype_2</span><span class="p">)</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                    <span class="s2">&quot;Found two columns with name &quot;</span>
-                    <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">column</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39; &quot;</span>
-                    <span class="s2">&quot;but different dtypes:</span><span class="se">\n</span><span class="s2">&quot;</span>
-                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">dtype_1</span><span class="si">}</span><span class="s2"> &quot;</span>
-                    <span class="s2">&quot;!= &quot;</span>
-                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">dtype_2</span><span class="si">}</span><span class="s2">.&quot;</span>
+                    <span class="s2">"Found two columns with name "</span>
+                    <span class="sa">f</span><span class="s2">"'</span><span class="si">{</span><span class="n">column</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">' "</span>
+                    <span class="s2">"but different dtypes:</span><span class="se">\n</span><span class="s2">"</span>
+                    <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">dtype_1</span><span class="si">}</span><span class="s2"> "</span>
+                    <span class="s2">"!= "</span>
+                    <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">dtype_2</span><span class="si">}</span><span class="s2">."</span>
                 <span class="p">)</span>
 
             <span class="c1"># Fix changed handling of float32/float64 in pandas&gt;=1.3</span>
-            <span class="k">if</span> <span class="s2">&quot;float64&quot;</span> <span class="ow">in</span> <span class="p">[</span><span class="n">dtype_1</span><span class="p">,</span> <span class="n">dtype_2</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="s2">"float64"</span> <span class="ow">in</span> <span class="p">[</span><span class="n">dtype_1</span><span class="p">,</span> <span class="n">dtype_2</span><span class="p">]:</span>
                 <span class="n">columns_reindex</span><span class="p">[</span><span class="n">column</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">columns_reindex</span><span class="p">[</span><span class="n">column</span><span class="o">.</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span>
-                    <span class="s2">&quot;float64&quot;</span>
+                    <span class="s2">"float64"</span>
                 <span class="p">)</span>
 
             <span class="c1"># Handle overlapping values</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">overwrite</span><span class="p">:</span>
 
                 <span class="k">def</span><span class="w"> </span><span class="nf">collect_overlap</span><span class="p">(</span><span class="n">overlapping_values</span><span class="p">,</span> <span class="n">column</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
-<span class="w">                    </span><span class="sd">&quot;&quot;&quot;Collect overlap for aggregate function.&quot;&quot;&quot;</span>
+<span class="w">                    </span><span class="sd">"""Collect overlap for aggregate function."""</span>
                     <span class="k">if</span> <span class="n">column</span><span class="o">.</span><span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">overlapping_values</span><span class="p">:</span>
                         <span class="n">overlapping_values</span><span class="p">[</span><span class="n">column</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
                     <span class="n">overlapping_values</span><span class="p">[</span><span class="n">column</span><span class="o">.</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">column</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">index</span><span class="p">])</span>
@@ -492,7 +492,7 @@
                     <span class="c1"># to all overlapping entries</span>
                     <span class="k">if</span> <span class="p">(</span>
                         <span class="n">aggregate_function</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-                        <span class="ow">and</span> <span class="n">aggregate_strategy</span> <span class="o">==</span> <span class="s2">&quot;overlap&quot;</span>
+                        <span class="ow">and</span> <span class="n">aggregate_strategy</span> <span class="o">==</span> <span class="s2">"overlap"</span>
                     <span class="p">):</span>
                         <span class="n">column</span><span class="p">,</span> <span class="n">overlapping_values</span> <span class="o">=</span> <span class="n">collect_overlap</span><span class="p">(</span>
                             <span class="n">overlapping_values</span><span class="p">,</span>
@@ -505,12 +505,12 @@
                     <span class="c1"># Find data that differ and cannot be joined</span>
                     <span class="n">combine</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
                         <span class="p">{</span>
-                            <span class="s2">&quot;left&quot;</span><span class="p">:</span> <span class="n">columns_reindex</span><span class="p">[</span><span class="n">column</span><span class="o">.</span><span class="n">name</span><span class="p">][</span><span class="n">intersection</span><span class="p">],</span>
-                            <span class="s2">&quot;right&quot;</span><span class="p">:</span> <span class="n">column</span><span class="p">[</span><span class="n">intersection</span><span class="p">],</span>
+                            <span class="s2">"left"</span><span class="p">:</span> <span class="n">columns_reindex</span><span class="p">[</span><span class="n">column</span><span class="o">.</span><span class="n">name</span><span class="p">][</span><span class="n">intersection</span><span class="p">],</span>
+                            <span class="s2">"right"</span><span class="p">:</span> <span class="n">column</span><span class="p">[</span><span class="n">intersection</span><span class="p">],</span>
                         <span class="p">}</span>
                     <span class="p">)</span>
                     <span class="n">combine</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-                    <span class="n">differ</span> <span class="o">=</span> <span class="n">combine</span><span class="p">[</span><span class="s2">&quot;left&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="n">combine</span><span class="p">[</span><span class="s2">&quot;right&quot;</span><span class="p">]</span>
+                    <span class="n">differ</span> <span class="o">=</span> <span class="n">combine</span><span class="p">[</span><span class="s2">"left"</span><span class="p">]</span> <span class="o">!=</span> <span class="n">combine</span><span class="p">[</span><span class="s2">"right"</span><span class="p">]</span>
 
                     <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">differ</span><span class="p">):</span>
                         <span class="c1"># Apply aggregate function</span>
@@ -518,7 +518,7 @@
                         <span class="c1"># that do not match in value</span>
                         <span class="k">if</span> <span class="p">(</span>
                             <span class="n">aggregate_function</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-                            <span class="ow">and</span> <span class="n">aggregate_strategy</span> <span class="o">==</span> <span class="s2">&quot;mismatch&quot;</span>
+                            <span class="ow">and</span> <span class="n">aggregate_strategy</span> <span class="o">==</span> <span class="s2">"mismatch"</span>
                         <span class="p">):</span>
                             <span class="n">column</span><span class="p">,</span> <span class="n">overlapping_values</span> <span class="o">=</span> <span class="n">collect_overlap</span><span class="p">(</span>
                                 <span class="n">overlapping_values</span><span class="p">,</span>
@@ -528,16 +528,16 @@
                             <span class="n">columns_reindex</span><span class="p">[</span><span class="n">column</span><span class="o">.</span><span class="n">name</span><span class="p">][</span><span class="n">column</span><span class="o">.</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">column</span>
                             <span class="k">continue</span>
 
-                        <span class="c1"># Raise error if values don&#39;t match and are not NaN</span>
+                        <span class="c1"># Raise error if values don't match and are not NaN</span>
                         <span class="k">else</span><span class="p">:</span>
                             <span class="n">max_display</span> <span class="o">=</span> <span class="mi">10</span>
                             <span class="n">overlap</span> <span class="o">=</span> <span class="n">combine</span><span class="p">[</span><span class="n">differ</span><span class="p">]</span>
                             <span class="n">msg_overlap</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">overlap</span><span class="p">[:</span><span class="n">max_display</span><span class="p">])</span>
-                            <span class="n">msg_tail</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">...&quot;</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">overlap</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">max_display</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+                            <span class="n">msg_tail</span> <span class="o">=</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">..."</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">overlap</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">max_display</span> <span class="k">else</span> <span class="s2">""</span>
                             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                                <span class="s2">&quot;Found overlapping data in column &quot;</span>
-                                <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">column</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39;:</span><span class="se">\n</span><span class="s2">&quot;</span>
-                                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">msg_overlap</span><span class="si">}{</span><span class="n">msg_tail</span><span class="si">}</span><span class="s2">&quot;</span>
+                                <span class="s2">"Found overlapping data in column "</span>
+                                <span class="sa">f</span><span class="s2">"'</span><span class="si">{</span><span class="n">column</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">':</span><span class="se">\n</span><span class="s2">"</span>
+                                <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">msg_overlap</span><span class="si">}{</span><span class="n">msg_tail</span><span class="si">}</span><span class="s2">"</span>
                             <span class="p">)</span>
 
             <span class="c1"># drop NaN to avoid overwriting values from other column</span>
@@ -545,9 +545,9 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># Adjust dtype and initialize empty column</span>
             <span class="k">if</span> <span class="n">pd</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">is_integer_dtype</span><span class="p">(</span><span class="n">column</span><span class="o">.</span><span class="n">dtype</span><span class="p">):</span>
-                <span class="n">dtype</span> <span class="o">=</span> <span class="s2">&quot;Int64&quot;</span>
+                <span class="n">dtype</span> <span class="o">=</span> <span class="s2">"Int64"</span>
             <span class="k">elif</span> <span class="n">pd</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">is_bool_dtype</span><span class="p">(</span><span class="n">column</span><span class="o">.</span><span class="n">dtype</span><span class="p">):</span>
-                <span class="n">dtype</span> <span class="o">=</span> <span class="s2">&quot;boolean&quot;</span>
+                <span class="n">dtype</span> <span class="o">=</span> <span class="s2">"boolean"</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">dtype</span> <span class="o">=</span> <span class="n">column</span><span class="o">.</span><span class="n">dtype</span>
             <span class="n">columns_reindex</span><span class="p">[</span><span class="n">column</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span>
@@ -602,7 +602,7 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">difference</span><span class="p">(</span>
     <span class="n">objs</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">],</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">:</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Difference of index objects.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">"""Difference of index objects.</span>
 
 <span class="sd">    Returns index items</span>
 <span class="sd">    that are not shared by two or more objects.</span>
@@ -617,7 +617,7 @@
 <span class="sd">    requires that levels and dtypes</span>
 <span class="sd">    of all objects match,</span>
 <span class="sd">    see :func:`audformat.utils.is_index_alike`.</span>
-<span class="sd">    Integer dtypes don&#39;t have to match,</span>
+<span class="sd">    Integer dtypes don't have to match,</span>
 <span class="sd">    but the result will always be of dtype ``Int64``.</span>
 <span class="sd">    When the symmetric difference of a</span>
 <span class="sd">    :class:`pandas.Index`</span>
@@ -648,66 +648,66 @@
 <span class="sd">    Examples:</span>
 <span class="sd">        &gt;&gt;&gt; difference(</span>
 <span class="sd">        ...     [</span>
-<span class="sd">        ...         pd.Index([1, 2, 3], name=&quot;idx&quot;),</span>
+<span class="sd">        ...         pd.Index([1, 2, 3], name="idx"),</span>
 <span class="sd">        ...     ]</span>
 <span class="sd">        ... )</span>
-<span class="sd">        Index([1, 2, 3], dtype=&#39;Int64&#39;, name=&#39;idx&#39;)</span>
+<span class="sd">        Index([1, 2, 3], dtype='Int64', name='idx')</span>
 <span class="sd">        &gt;&gt;&gt; difference(</span>
 <span class="sd">        ...     [</span>
-<span class="sd">        ...         pd.Index([0, 1], name=&quot;idx&quot;),</span>
-<span class="sd">        ...         pd.Index([1, np.nan], dtype=&quot;Int64&quot;, name=&quot;idx&quot;),</span>
+<span class="sd">        ...         pd.Index([0, 1], name="idx"),</span>
+<span class="sd">        ...         pd.Index([1, np.nan], dtype="Int64", name="idx"),</span>
 <span class="sd">        ...     ]</span>
 <span class="sd">        ... )</span>
-<span class="sd">        Index([0, &lt;NA&gt;], dtype=&#39;Int64&#39;, name=&#39;idx&#39;)</span>
+<span class="sd">        Index([0, &lt;NA&gt;], dtype='Int64', name='idx')</span>
 <span class="sd">        &gt;&gt;&gt; difference(</span>
 <span class="sd">        ...     [</span>
-<span class="sd">        ...         pd.Index([0, 1], name=&quot;idx&quot;),</span>
-<span class="sd">        ...         pd.MultiIndex.from_arrays([[1, 2]], names=[&quot;idx&quot;]),</span>
+<span class="sd">        ...         pd.Index([0, 1], name="idx"),</span>
+<span class="sd">        ...         pd.MultiIndex.from_arrays([[1, 2]], names=["idx"]),</span>
 <span class="sd">        ...     ]</span>
 <span class="sd">        ... )</span>
-<span class="sd">        Index([0, 2], dtype=&#39;Int64&#39;, name=&#39;idx&#39;)</span>
+<span class="sd">        Index([0, 2], dtype='Int64', name='idx')</span>
 <span class="sd">        &gt;&gt;&gt; difference(</span>
 <span class="sd">        ...     [</span>
 <span class="sd">        ...         pd.MultiIndex.from_arrays(</span>
-<span class="sd">        ...             [[&quot;a&quot;, &quot;b&quot;, &quot;c&quot;], [0, 1, 2]],</span>
-<span class="sd">        ...             names=[&quot;idx1&quot;, &quot;idx2&quot;],</span>
+<span class="sd">        ...             [["a", "b", "c"], [0, 1, 2]],</span>
+<span class="sd">        ...             names=["idx1", "idx2"],</span>
 <span class="sd">        ...         ),</span>
 <span class="sd">        ...         pd.MultiIndex.from_arrays(</span>
-<span class="sd">        ...             [[&quot;b&quot;, &quot;c&quot;], [1, 3]],</span>
-<span class="sd">        ...             names=[&quot;idx1&quot;, &quot;idx2&quot;],</span>
+<span class="sd">        ...             [["b", "c"], [1, 3]],</span>
+<span class="sd">        ...             names=["idx1", "idx2"],</span>
 <span class="sd">        ...         ),</span>
 <span class="sd">        ...     ]</span>
 <span class="sd">        ... )</span>
-<span class="sd">        MultiIndex([(&#39;a&#39;, 0),</span>
-<span class="sd">                    (&#39;c&#39;, 2),</span>
-<span class="sd">                    (&#39;c&#39;, 3)],</span>
-<span class="sd">                   names=[&#39;idx1&#39;, &#39;idx2&#39;])</span>
+<span class="sd">        MultiIndex([('a', 0),</span>
+<span class="sd">                    ('c', 2),</span>
+<span class="sd">                    ('c', 3)],</span>
+<span class="sd">                   names=['idx1', 'idx2'])</span>
 <span class="sd">        &gt;&gt;&gt; difference(</span>
 <span class="sd">        ...     [</span>
-<span class="sd">        ...         filewise_index([&quot;f1&quot;, &quot;f2&quot;, &quot;f3&quot;]),</span>
-<span class="sd">        ...         filewise_index([&quot;f2&quot;, &quot;f3&quot;, &quot;f4&quot;]),</span>
+<span class="sd">        ...         filewise_index(["f1", "f2", "f3"]),</span>
+<span class="sd">        ...         filewise_index(["f2", "f3", "f4"]),</span>
 <span class="sd">        ...     ]</span>
 <span class="sd">        ... )</span>
-<span class="sd">        Index([&#39;f1&#39;, &#39;f4&#39;], dtype=&#39;string&#39;, name=&#39;file&#39;)</span>
+<span class="sd">        Index(['f1', 'f4'], dtype='string', name='file')</span>
 <span class="sd">        &gt;&gt;&gt; difference(</span>
 <span class="sd">        ...     [</span>
-<span class="sd">        ...         segmented_index([&quot;f1&quot;], [0], [1]),</span>
-<span class="sd">        ...         segmented_index([&quot;f1&quot;, &quot;f2&quot;], [0, 1], [1, 2]),</span>
+<span class="sd">        ...         segmented_index(["f1"], [0], [1]),</span>
+<span class="sd">        ...         segmented_index(["f1", "f2"], [0, 1], [1, 2]),</span>
 <span class="sd">        ...     ]</span>
 <span class="sd">        ... )</span>
-<span class="sd">        MultiIndex([(&#39;f2&#39;, &#39;0 days 00:00:01&#39;, &#39;0 days 00:00:02&#39;)],</span>
-<span class="sd">                   names=[&#39;file&#39;, &#39;start&#39;, &#39;end&#39;])</span>
+<span class="sd">        MultiIndex([('f2', '0 days 00:00:01', '0 days 00:00:02')],</span>
+<span class="sd">                   names=['file', 'start', 'end'])</span>
 <span class="sd">        &gt;&gt;&gt; difference(</span>
 <span class="sd">        ...     [</span>
-<span class="sd">        ...         filewise_index([&quot;f1&quot;, &quot;f2&quot;]),</span>
-<span class="sd">        ...         segmented_index([&quot;f1&quot;, &quot;f2&quot;], [0, 0], [pd.NaT, 1]),</span>
+<span class="sd">        ...         filewise_index(["f1", "f2"]),</span>
+<span class="sd">        ...         segmented_index(["f1", "f2"], [0, 0], [pd.NaT, 1]),</span>
 <span class="sd">        ...     ]</span>
 <span class="sd">        ... )</span>
-<span class="sd">        MultiIndex([(&#39;f2&#39;, &#39;0 days&#39;,               NaT),</span>
-<span class="sd">                    (&#39;f2&#39;, &#39;0 days&#39;, &#39;0 days 00:00:01&#39;)],</span>
-<span class="sd">                   names=[&#39;file&#39;, &#39;start&#39;, &#39;end&#39;])</span>
+<span class="sd">        MultiIndex([('f2', '0 days',               NaT),</span>
+<span class="sd">                    ('f2', '0 days', '0 days 00:00:01')],</span>
+<span class="sd">                   names=['file', 'start', 'end'])</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>  <span class="c1"># noqa: E501</span>
+<span class="sd">    """</span>  <span class="c1"># noqa: E501</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">objs</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">([])</span>
 
@@ -742,7 +742,7 @@
     <span class="n">num_workers</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
     <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Timedelta</span><span class="p">:</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Total duration of all entries present in the object.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">"""Total duration of all entries present in the object.</span>
 
 <span class="sd">    The object might contain a segmented or a filewise index.</span>
 <span class="sd">    For a segmented index the duration is calculated</span>
@@ -773,14 +773,14 @@
 
 <span class="sd">    Examples:</span>
 <span class="sd">        &gt;&gt;&gt; index = segmented_index(</span>
-<span class="sd">        ...     files=[&quot;a&quot;, &quot;b&quot;, &quot;c&quot;],</span>
+<span class="sd">        ...     files=["a", "b", "c"],</span>
 <span class="sd">        ...     starts=[0, 1, 3],</span>
 <span class="sd">        ...     ends=[1, 2, 4],</span>
 <span class="sd">        ... )</span>
 <span class="sd">        &gt;&gt;&gt; duration(index)</span>
-<span class="sd">        Timedelta(&#39;0 days 00:00:03&#39;)</span>
+<span class="sd">        Timedelta('0 days 00:00:03')</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">obj</span> <span class="o">=</span> <span class="n">to_segmented_index</span><span class="p">(</span>
         <span class="n">obj</span><span class="p">,</span>
         <span class="n">allow_nat</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
@@ -794,7 +794,7 @@
 
     <span class="c1"># We use len() here as index.empty takes a very long time</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">Timedelta</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;s&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">Timedelta</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">"s"</span><span class="p">)</span>
 
     <span class="n">starts</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">get_level_values</span><span class="p">(</span><span class="n">define</span><span class="o">.</span><span class="n">IndexField</span><span class="o">.</span><span class="n">START</span><span class="p">)</span>
     <span class="n">ends</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">get_level_values</span><span class="p">(</span><span class="n">define</span><span class="o">.</span><span class="n">IndexField</span><span class="o">.</span><span class="n">END</span><span class="p">)</span>
@@ -808,7 +808,7 @@
     <span class="n">index</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">,</span>
     <span class="n">root</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">:</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Expand path in index with root.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">"""Expand path in index with root.</span>
 
 <span class="sd">    It applies :func:`os.path.normpath`</span>
 <span class="sd">    to the provided path ``root``,</span>
@@ -830,16 +830,16 @@
 
 <span class="sd">    Examples:</span>
 
-<span class="sd">        .. skip: start if(sys.platform.startswith(&quot;win&quot;))</span>
+<span class="sd">        .. skip: start if(sys.platform.startswith("win"))</span>
 
-<span class="sd">        &gt;&gt;&gt; expand_file_path(filewise_index([&quot;f1&quot;, &quot;f2&quot;]), &quot;/a&quot;)</span>
-<span class="sd">        Index([&#39;/a/f1&#39;, &#39;/a/f2&#39;], dtype=&#39;string&#39;, name=&#39;file&#39;)</span>
-<span class="sd">        &gt;&gt;&gt; expand_file_path(filewise_index([&quot;f1&quot;, &quot;f2&quot;]), &quot;./a&quot;)</span>
-<span class="sd">        Index([&#39;a/f1&#39;, &#39;a/f2&#39;], dtype=&#39;string&#39;, name=&#39;file&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; expand_file_path(filewise_index(["f1", "f2"]), "/a")</span>
+<span class="sd">        Index(['/a/f1', '/a/f2'], dtype='string', name='file')</span>
+<span class="sd">        &gt;&gt;&gt; expand_file_path(filewise_index(["f1", "f2"]), "./a")</span>
+<span class="sd">        Index(['a/f1', 'a/f2'], dtype='string', name='file')</span>
 
 <span class="sd">        .. skip: end</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>  <span class="c1"># noqa: E501</span>
+<span class="sd">    """</span>  <span class="c1"># noqa: E501</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">index</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">index</span>
 
@@ -855,30 +855,30 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_normalize_dtype_name</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Normalize a pandas dtype to a canonical string for hashing.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">"""Normalize a pandas dtype to a canonical string for hashing.</span>
 
 <span class="sd">    Maps different representations of the same logical type</span>
-<span class="sd">    to a single string, e.g. both ``&quot;string&quot;`` and ``&quot;object&quot;``</span>
-<span class="sd">    dtypes map to ``&quot;string&quot;``.</span>
+<span class="sd">    to a single string, e.g. both ``"string"`` and ``"object"``</span>
+<span class="sd">    dtypes map to ``"string"``.</span>
 
 <span class="sd">    Preserves precision for numeric types</span>
 <span class="sd">    (e.g. ``int32`` and ``int64`` produce different strings).</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dtype</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">CategoricalDtype</span><span class="p">):</span>
         <span class="c1"># Include category dtype to distinguish e.g.</span>
         <span class="c1"># categorical-with-strings from categorical-with-ints</span>
         <span class="k">if</span> <span class="n">dtype</span><span class="o">.</span><span class="n">categories</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">cat_dtype</span> <span class="o">=</span> <span class="n">_normalize_dtype_name</span><span class="p">(</span><span class="n">dtype</span><span class="o">.</span><span class="n">categories</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">cat_dtype</span> <span class="o">=</span> <span class="s2">&quot;empty&quot;</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;categorical[</span><span class="si">{</span><span class="n">cat_dtype</span><span class="si">}</span><span class="s2">]&quot;</span>
+            <span class="n">cat_dtype</span> <span class="o">=</span> <span class="s2">"empty"</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"categorical[</span><span class="si">{</span><span class="n">cat_dtype</span><span class="si">}</span><span class="s2">]"</span>
     <span class="k">if</span> <span class="n">pd</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">is_string_dtype</span><span class="p">(</span><span class="n">dtype</span><span class="p">):</span>
         <span class="c1"># Normalize string/object/StringDtype</span>
-        <span class="k">return</span> <span class="s2">&quot;string&quot;</span>
+        <span class="k">return</span> <span class="s2">"string"</span>
     <span class="k">if</span> <span class="n">pd</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">is_bool_dtype</span><span class="p">(</span><span class="n">dtype</span><span class="p">):</span>
         <span class="c1"># Normalize bool/BooleanDtype</span>
-        <span class="k">return</span> <span class="s2">&quot;bool&quot;</span>
+        <span class="k">return</span> <span class="s2">"bool"</span>
     <span class="c1"># Standard numpy dtypes: preserve precise type name</span>
     <span class="c1"># (int32, int64, float32, float64, timedelta64[ns], datetime64[ns], etc.)</span>
     <span class="k">try</span><span class="p">:</span>
@@ -886,7 +886,7 @@
     <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
         <span class="k">pass</span>
     <span class="c1"># Nullable extension dtypes (Int8, Int64, Float32, Float64, etc.)</span>
-    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">dtype</span><span class="p">,</span> <span class="s2">&quot;numpy_dtype&quot;</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">dtype</span><span class="p">,</span> <span class="s2">"numpy_dtype"</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">dtype</span><span class="o">.</span><span class="n">numpy_dtype</span><span class="o">.</span><span class="n">name</span>
 
 
@@ -894,31 +894,31 @@
     <span class="n">md5</span><span class="p">,</span>
     <span class="n">arr_like</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span>
 <span class="p">):</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Update md5 hash with array data.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">"""Update md5 hash with array data.</span>
 
 <span class="sd">    Handles numeric arrays via ``tobytes()``</span>
 <span class="sd">    and object arrays via explicit string encoding.</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">if</span> <span class="n">pd</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">is_integer_dtype</span><span class="p">(</span><span class="n">arr_like</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span>
-        <span class="n">arr_like</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="s2">&quot;numpy_dtype&quot;</span>
+        <span class="n">arr_like</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="s2">"numpy_dtype"</span>
     <span class="p">):</span>
         <span class="c1"># Nullable integer extension types (Int8, ..., Int64, UInt8, ..., UInt64)</span>
         <span class="c1"># need conversion to float for consistent numpy array representation</span>
         <span class="c1"># (since pandas 2.2.x, nullable integers with &lt;NA&gt; convert to float anyway,</span>
         <span class="c1"># but older versions may produce object arrays)</span>
-        <span class="n">arr</span> <span class="o">=</span> <span class="n">arr_like</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;float&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+        <span class="n">arr</span> <span class="o">=</span> <span class="n">arr_like</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">"float"</span><span class="p">)</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">arr_like</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">arr</span><span class="o">.</span><span class="n">dtype</span> <span class="o">==</span> <span class="nb">object</span><span class="p">:</span>
         <span class="c1"># Object arrays (strings, etc.) need explicit encoding</span>
-        <span class="n">md5</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">_OBJECT_ARRAY_SEPARATOR</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">arr</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">))</span>
+        <span class="n">md5</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">_OBJECT_ARRAY_SEPARATOR</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">arr</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">"utf-8"</span><span class="p">))</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="c1"># Use platform-independent byte representation:</span>
         <span class="c1"># convert to big-endian before hashing to ensure</span>
         <span class="c1"># consistent hashes across different architectures</span>
-        <span class="k">if</span> <span class="n">arr</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">byteorder</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;=&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;&quot;</span><span class="p">):</span>
-            <span class="n">arr</span> <span class="o">=</span> <span class="n">arr</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">arr</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">newbyteorder</span><span class="p">(</span><span class="s2">&quot;&gt;&quot;</span><span class="p">),</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">arr</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">byteorder</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"="</span><span class="p">,</span> <span class="s2">"&lt;"</span><span class="p">):</span>
+            <span class="n">arr</span> <span class="o">=</span> <span class="n">arr</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">arr</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">newbyteorder</span><span class="p">(</span><span class="s2">"&gt;"</span><span class="p">),</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="n">md5</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">arr</span><span class="o">.</span><span class="n">tobytes</span><span class="p">())</span>
 
 
@@ -928,7 +928,7 @@
     <span class="n">obj</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
     <span class="n">strict</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Create hash from object.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">"""Create hash from object.</span>
 
 <span class="sd">    If ``strict`` is ``False``,</span>
 <span class="sd">    objects with the same elements</span>
@@ -939,7 +939,7 @@
 <span class="sd">    .. warning::</span>
 
 <span class="sd">        If ``obj`` is a dataframe or series</span>
-<span class="sd">        with data type ``&quot;Int64&quot;``,</span>
+<span class="sd">        with data type ``"Int64"``,</span>
 <span class="sd">        and ``strict`` is ``False``,</span>
 <span class="sd">        the returned hash value changes with ``pandas&gt;=2.2.0``.</span>
 
@@ -960,20 +960,20 @@
 <span class="sd">        or 32 characters if ``strict`` is ``True``</span>
 
 <span class="sd">    Examples:</span>
-<span class="sd">        &gt;&gt;&gt; index = filewise_index([&quot;f1&quot;, &quot;f2&quot;])</span>
+<span class="sd">        &gt;&gt;&gt; index = filewise_index(["f1", "f2"])</span>
 <span class="sd">        &gt;&gt;&gt; hash(index)</span>
-<span class="sd">        &#39;-4231615416436839963&#39;</span>
+<span class="sd">        '-4231615416436839963'</span>
 <span class="sd">        &gt;&gt;&gt; hash(index[::-1])  # reversed index</span>
-<span class="sd">        &#39;-4231615416436839963&#39;</span>
+<span class="sd">        '-4231615416436839963'</span>
 <span class="sd">        &gt;&gt;&gt; y = pd.Series(0, index)</span>
 <span class="sd">        &gt;&gt;&gt; hash(y)</span>
-<span class="sd">        &#39;5251663970176285425&#39;</span>
+<span class="sd">        '5251663970176285425'</span>
 <span class="sd">        &gt;&gt;&gt; hash(index, strict=True)</span>
-<span class="sd">        &#39;fb9a35ca0492404e5f9dba30eebb3bfb&#39;</span>
+<span class="sd">        'fb9a35ca0492404e5f9dba30eebb3bfb'</span>
 <span class="sd">        &gt;&gt;&gt; hash(index[::-1], strict=True)  # reversed index</span>
-<span class="sd">        &#39;b59b53388eb3ecf5a04ddd0edb89152a&#39;</span>
+<span class="sd">        'b59b53388eb3ecf5a04ddd0edb89152a'</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">if</span> <span class="n">strict</span><span class="p">:</span>
         <span class="c1"># Collect column/index names and normalized dtypes.</span>
         <span class="n">dtypes</span> <span class="o">=</span> <span class="p">[]</span>
@@ -988,20 +988,20 @@
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">index</span><span class="o">.</span><span class="n">nlevels</span><span class="p">):</span>
                 <span class="n">name</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">index</span><span class="o">.</span><span class="n">names</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="k">if</span> <span class="n">index</span><span class="o">.</span><span class="n">names</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
                 <span class="n">dtype</span> <span class="o">=</span> <span class="n">index</span><span class="o">.</span><span class="n">get_level_values</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="o">.</span><span class="n">dtype</span>
-                <span class="n">dtypes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">_normalize_dtype_name</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">dtypes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">_normalize_dtype_name</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">name</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">index</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="k">if</span> <span class="n">index</span><span class="o">.</span><span class="n">name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="s2">&quot;0&quot;</span>
-            <span class="n">dtypes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">_normalize_dtype_name</span><span class="p">(</span><span class="n">index</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">index</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="k">if</span> <span class="n">index</span><span class="o">.</span><span class="n">name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="s2">"0"</span>
+            <span class="n">dtypes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">_normalize_dtype_name</span><span class="p">(</span><span class="n">index</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
         <span class="c1"># Collect column/value dtypes</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
             <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">obj</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
-                <span class="n">dtypes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">col</span><span class="p">)</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">_normalize_dtype_name</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">dtypes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">col</span><span class="p">)</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">_normalize_dtype_name</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">):</span>
-            <span class="n">name</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="k">if</span> <span class="n">obj</span><span class="o">.</span><span class="n">name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="s2">&quot;0&quot;</span>
-            <span class="n">dtypes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">_normalize_dtype_name</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="k">if</span> <span class="n">obj</span><span class="o">.</span><span class="n">name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="s2">"0"</span>
+            <span class="n">dtypes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">_normalize_dtype_name</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
-        <span class="n">dtypes_str</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dtypes</span><span class="p">)</span>
+        <span class="n">dtypes_str</span> <span class="o">=</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dtypes</span><span class="p">)</span>
         <span class="n">dtypes_md5</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">md5</span><span class="p">(</span><span class="n">dtypes_str</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
 
         <span class="c1"># Hash data: index levels, then values</span>
@@ -1031,7 +1031,7 @@
         <span class="c1"># across different pandas versions,</span>
         <span class="c1"># see</span>
         <span class="c1"># https://github.com/pandas-dev/pandas/issues/55452</span>
-        <span class="n">md5</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">hash_pandas_object</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;int64&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
+        <span class="n">md5</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">hash_pandas_object</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">"int64"</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
     <span class="k">return</span> <span class="n">md5</span></div>
 
 
@@ -1041,7 +1041,7 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">index_has_overlap</span><span class="p">(</span>
     <span class="n">obj</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Check if one or more segments in the index overlap.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">"""Check if one or more segments in the index overlap.</span>
 
 <span class="sd">    If the index is filewise, the result will always be ``False``.</span>
 
@@ -1053,25 +1053,25 @@
 <span class="sd">        ``True`` if overlap is detected, otherwise ``False``</span>
 
 <span class="sd">    Examples:</span>
-<span class="sd">        &gt;&gt;&gt; index = filewise_index([&quot;f1&quot;, &quot;f2&quot;])</span>
+<span class="sd">        &gt;&gt;&gt; index = filewise_index(["f1", "f2"])</span>
 <span class="sd">        &gt;&gt;&gt; index_has_overlap(index)</span>
 <span class="sd">        False</span>
 <span class="sd">        &gt;&gt;&gt; index = segmented_index(</span>
-<span class="sd">        ...     [&quot;f1&quot;, &quot;f2&quot;],</span>
+<span class="sd">        ...     ["f1", "f2"],</span>
 <span class="sd">        ...     [0, 1],</span>
 <span class="sd">        ...     [2, 3],</span>
 <span class="sd">        ... )</span>
 <span class="sd">        &gt;&gt;&gt; index_has_overlap(index)</span>
 <span class="sd">        False</span>
 <span class="sd">        &gt;&gt;&gt; index = segmented_index(</span>
-<span class="sd">        ...     [&quot;f1&quot;] * 2,</span>
+<span class="sd">        ...     ["f1"] * 2,</span>
 <span class="sd">        ...     [0, 1],</span>
 <span class="sd">        ...     [2, 3],</span>
 <span class="sd">        ... )</span>
 <span class="sd">        &gt;&gt;&gt; index_has_overlap(index)</span>
 <span class="sd">        True</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">index</span> <span class="o">=</span> <span class="n">obj</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">)</span> <span class="k">else</span> <span class="n">obj</span><span class="o">.</span><span class="n">index</span>
 
     <span class="k">if</span> <span class="n">is_filewise_index</span><span class="p">(</span><span class="n">index</span><span class="p">):</span>
@@ -1094,7 +1094,7 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">intersect</span><span class="p">(</span>
     <span class="n">objs</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">],</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">:</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Intersect index objects.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">"""Intersect index objects.</span>
 
 <span class="sd">    If all index objects are conform to</span>
 <span class="sd">    :ref:`table specifications &lt;data-tables:Tables&gt;`</span>
@@ -1104,7 +1104,7 @@
 <span class="sd">    requires that levels and dtypes</span>
 <span class="sd">    of all objects match,</span>
 <span class="sd">    see :func:`audformat.utils.is_index_alike`.</span>
-<span class="sd">    Integer dtypes don&#39;t have to match,</span>
+<span class="sd">    Integer dtypes don't have to match,</span>
 <span class="sd">    but the result will always be of dtype ``Int64``.</span>
 <span class="sd">    When a :class:`pandas.Index`</span>
 <span class="sd">    is intersected with a single-level</span>
@@ -1133,63 +1133,63 @@
 <span class="sd">    Examples:</span>
 <span class="sd">        &gt;&gt;&gt; intersect(</span>
 <span class="sd">        ...     [</span>
-<span class="sd">        ...         pd.Index([1, 2, 3], name=&quot;idx&quot;),</span>
+<span class="sd">        ...         pd.Index([1, 2, 3], name="idx"),</span>
 <span class="sd">        ...     ]</span>
 <span class="sd">        ... )</span>
-<span class="sd">        Index([], dtype=&#39;Int64&#39;, name=&#39;idx&#39;)</span>
+<span class="sd">        Index([], dtype='Int64', name='idx')</span>
 <span class="sd">        &gt;&gt;&gt; intersect(</span>
 <span class="sd">        ...     [</span>
-<span class="sd">        ...         pd.Index([1, np.nan], dtype=&quot;Int64&quot;, name=&quot;idx&quot;),</span>
-<span class="sd">        ...         pd.Index([1, 2, 3], name=&quot;idx&quot;),</span>
+<span class="sd">        ...         pd.Index([1, np.nan], dtype="Int64", name="idx"),</span>
+<span class="sd">        ...         pd.Index([1, 2, 3], name="idx"),</span>
 <span class="sd">        ...     ]</span>
 <span class="sd">        ... )</span>
-<span class="sd">        Index([1], dtype=&#39;Int64&#39;, name=&#39;idx&#39;)</span>
+<span class="sd">        Index([1], dtype='Int64', name='idx')</span>
 <span class="sd">        &gt;&gt;&gt; intersect(</span>
 <span class="sd">        ...     [</span>
-<span class="sd">        ...         pd.Index([0, 1], name=&quot;idx&quot;),</span>
-<span class="sd">        ...         pd.MultiIndex.from_arrays([[1, 2]], names=[&quot;idx&quot;]),</span>
+<span class="sd">        ...         pd.Index([0, 1], name="idx"),</span>
+<span class="sd">        ...         pd.MultiIndex.from_arrays([[1, 2]], names=["idx"]),</span>
 <span class="sd">        ...     ]</span>
 <span class="sd">        ... )</span>
-<span class="sd">        Index([1], dtype=&#39;Int64&#39;, name=&#39;idx&#39;)</span>
+<span class="sd">        Index([1], dtype='Int64', name='idx')</span>
 <span class="sd">        &gt;&gt;&gt; intersect(</span>
 <span class="sd">        ...     [</span>
 <span class="sd">        ...         pd.MultiIndex.from_arrays(</span>
-<span class="sd">        ...             [[&quot;a&quot;, &quot;b&quot;, &quot;c&quot;], [0, 1, 2]],</span>
-<span class="sd">        ...             names=[&quot;idx1&quot;, &quot;idx2&quot;],</span>
+<span class="sd">        ...             [["a", "b", "c"], [0, 1, 2]],</span>
+<span class="sd">        ...             names=["idx1", "idx2"],</span>
 <span class="sd">        ...         ),</span>
 <span class="sd">        ...         pd.MultiIndex.from_arrays(</span>
-<span class="sd">        ...             [[&quot;b&quot;, &quot;c&quot;], [1, 3]],</span>
-<span class="sd">        ...             names=[&quot;idx1&quot;, &quot;idx2&quot;],</span>
+<span class="sd">        ...             [["b", "c"], [1, 3]],</span>
+<span class="sd">        ...             names=["idx1", "idx2"],</span>
 <span class="sd">        ...         ),</span>
 <span class="sd">        ...     ]</span>
 <span class="sd">        ... )</span>
-<span class="sd">        MultiIndex([(&#39;b&#39;, 1)],</span>
-<span class="sd">                   names=[&#39;idx1&#39;, &#39;idx2&#39;])</span>
+<span class="sd">        MultiIndex([('b', 1)],</span>
+<span class="sd">                   names=['idx1', 'idx2'])</span>
 <span class="sd">        &gt;&gt;&gt; intersect(</span>
 <span class="sd">        ...     [</span>
-<span class="sd">        ...         filewise_index([&quot;f1&quot;, &quot;f2&quot;, &quot;f3&quot;]),</span>
-<span class="sd">        ...         filewise_index([&quot;f2&quot;, &quot;f3&quot;, &quot;f4&quot;]),</span>
+<span class="sd">        ...         filewise_index(["f1", "f2", "f3"]),</span>
+<span class="sd">        ...         filewise_index(["f2", "f3", "f4"]),</span>
 <span class="sd">        ...     ]</span>
 <span class="sd">        ... )</span>
-<span class="sd">        Index([&#39;f2&#39;, &#39;f3&#39;], dtype=&#39;string&#39;, name=&#39;file&#39;)</span>
+<span class="sd">        Index(['f2', 'f3'], dtype='string', name='file')</span>
 <span class="sd">        &gt;&gt;&gt; intersect(</span>
 <span class="sd">        ...     [</span>
-<span class="sd">        ...         segmented_index([&quot;f1&quot;], [0], [1]),</span>
-<span class="sd">        ...         segmented_index([&quot;f1&quot;, &quot;f2&quot;], [0, 1], [1, 2]),</span>
+<span class="sd">        ...         segmented_index(["f1"], [0], [1]),</span>
+<span class="sd">        ...         segmented_index(["f1", "f2"], [0, 1], [1, 2]),</span>
 <span class="sd">        ...     ]</span>
 <span class="sd">        ... )</span>
-<span class="sd">        MultiIndex([(&#39;f1&#39;, &#39;0 days&#39;, &#39;0 days 00:00:01&#39;)],</span>
-<span class="sd">                   names=[&#39;file&#39;, &#39;start&#39;, &#39;end&#39;])</span>
+<span class="sd">        MultiIndex([('f1', '0 days', '0 days 00:00:01')],</span>
+<span class="sd">                   names=['file', 'start', 'end'])</span>
 <span class="sd">        &gt;&gt;&gt; intersect(</span>
 <span class="sd">        ...     [</span>
-<span class="sd">        ...         filewise_index([&quot;f1&quot;, &quot;f2&quot;]),</span>
-<span class="sd">        ...         segmented_index([&quot;f1&quot;, &quot;f2&quot;], [0, 0], [pd.NaT, 1]),</span>
+<span class="sd">        ...         filewise_index(["f1", "f2"]),</span>
+<span class="sd">        ...         segmented_index(["f1", "f2"], [0, 0], [pd.NaT, 1]),</span>
 <span class="sd">        ...     ]</span>
 <span class="sd">        ... )</span>
-<span class="sd">        MultiIndex([(&#39;f1&#39;, &#39;0 days&#39;, NaT)],</span>
-<span class="sd">                   names=[&#39;file&#39;, &#39;start&#39;, &#39;end&#39;])</span>
+<span class="sd">        MultiIndex([('f1', '0 days', NaT)],</span>
+<span class="sd">                   names=['file', 'start', 'end'])</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">objs</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">([])</span>
 
@@ -1233,7 +1233,7 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">is_index_alike</span><span class="p">(</span>
     <span class="n">objs</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Index</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">],</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Check if index objects are alike.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">"""Check if index objects are alike.</span>
 
 <span class="sd">    Two index objects are alike</span>
 <span class="sd">    if they have the same number of levels</span>
@@ -1249,26 +1249,26 @@
 <span class="sd">        ``True`` if index objects are alike, otherwise ``False``</span>
 
 <span class="sd">    Examples:</span>
-<span class="sd">        &gt;&gt;&gt; index1 = pd.Index([1, 2, 3], dtype=&quot;Int64&quot;, name=&quot;l&quot;)</span>
-<span class="sd">        &gt;&gt;&gt; index2 = pd.MultiIndex.from_arrays([[10, 20]], names=[&quot;l&quot;])</span>
+<span class="sd">        &gt;&gt;&gt; index1 = pd.Index([1, 2, 3], dtype="Int64", name="l")</span>
+<span class="sd">        &gt;&gt;&gt; index2 = pd.MultiIndex.from_arrays([[10, 20]], names=["l"])</span>
 <span class="sd">        &gt;&gt;&gt; is_index_alike([index1, index2])</span>
 <span class="sd">        True</span>
-<span class="sd">        &gt;&gt;&gt; is_index_alike([index1, pd.Series([&quot;a&quot;, &quot;b&quot;], index=index2)])</span>
+<span class="sd">        &gt;&gt;&gt; is_index_alike([index1, pd.Series(["a", "b"], index=index2)])</span>
 <span class="sd">        True</span>
-<span class="sd">        &gt;&gt;&gt; index3 = index2.set_names([&quot;L&quot;])</span>
+<span class="sd">        &gt;&gt;&gt; index3 = index2.set_names(["L"])</span>
 <span class="sd">        &gt;&gt;&gt; is_index_alike([index2, index3])</span>
 <span class="sd">        False</span>
-<span class="sd">        &gt;&gt;&gt; index4 = index2.set_levels([[&quot;10&quot;, &quot;20&quot;]])</span>
+<span class="sd">        &gt;&gt;&gt; index4 = index2.set_levels([["10", "20"]])</span>
 <span class="sd">        &gt;&gt;&gt; is_index_alike([index2, index4])</span>
 <span class="sd">        False</span>
-<span class="sd">        &gt;&gt;&gt; index5 = pd.MultiIndex.from_arrays([[1], [&quot;a&quot;]], names=[&quot;l1&quot;, &quot;l2&quot;])</span>
+<span class="sd">        &gt;&gt;&gt; index5 = pd.MultiIndex.from_arrays([[1], ["a"]], names=["l1", "l2"])</span>
 <span class="sd">        &gt;&gt;&gt; is_index_alike([index2, index5])</span>
 <span class="sd">        False</span>
-<span class="sd">        &gt;&gt;&gt; index6 = pd.MultiIndex.from_arrays([[&quot;a&quot;], [1]], names=[&quot;l2&quot;, &quot;l1&quot;])</span>
+<span class="sd">        &gt;&gt;&gt; index6 = pd.MultiIndex.from_arrays([["a"], [1]], names=["l2", "l1"])</span>
 <span class="sd">        &gt;&gt;&gt; is_index_alike([index5, index6])</span>
 <span class="sd">        False</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>  <span class="c1"># noqa: E501</span>
+<span class="sd">    """</span>  <span class="c1"># noqa: E501</span>
     <span class="n">objs</span> <span class="o">=</span> <span class="p">[</span><span class="n">obj</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">)</span> <span class="k">else</span> <span class="n">obj</span><span class="o">.</span><span class="n">index</span> <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">objs</span><span class="p">]</span>
 
     <span class="c1"># check names</span>
@@ -1297,7 +1297,7 @@
         <span class="n">pd</span><span class="o">.</span><span class="n">Index</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
     <span class="p">],</span>
 <span class="p">]:</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Iterate over object by file.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">"""Iterate over object by file.</span>
 
 <span class="sd">    Each iteration returns a file and the according sub-object.</span>
 
@@ -1309,28 +1309,28 @@
 <span class="sd">        iterator in form of (file, sub_obj)</span>
 
 <span class="sd">    Examples:</span>
-<span class="sd">        &gt;&gt;&gt; index = filewise_index([&quot;f1&quot;, &quot;f1&quot;, &quot;f2&quot;])</span>
+<span class="sd">        &gt;&gt;&gt; index = filewise_index(["f1", "f1", "f2"])</span>
 <span class="sd">        &gt;&gt;&gt; next(iter_by_file(index))</span>
-<span class="sd">        (&#39;f1&#39;, Index([&#39;f1&#39;], dtype=&#39;string&#39;, name=&#39;file&#39;))</span>
-<span class="sd">        &gt;&gt;&gt; index = segmented_index([&quot;f1&quot;, &quot;f1&quot;, &quot;f2&quot;], [0, 1, 0], [2, 3, 1])</span>
+<span class="sd">        ('f1', Index(['f1'], dtype='string', name='file'))</span>
+<span class="sd">        &gt;&gt;&gt; index = segmented_index(["f1", "f1", "f2"], [0, 1, 0], [2, 3, 1])</span>
 <span class="sd">        &gt;&gt;&gt; next(iter_by_file(index))</span>
-<span class="sd">        (&#39;f1&#39;, MultiIndex([(&#39;f1&#39;, &#39;0 days 00:00:00&#39;, &#39;0 days 00:00:02&#39;),</span>
-<span class="sd">            (&#39;f1&#39;, &#39;0 days 00:00:01&#39;, &#39;0 days 00:00:03&#39;)],</span>
-<span class="sd">           names=[&#39;file&#39;, &#39;start&#39;, &#39;end&#39;]))</span>
-<span class="sd">        &gt;&gt;&gt; obj = pd.Series([&quot;a&quot;, &quot;b&quot;, &quot;b&quot;], index, dtype=&quot;object&quot;)</span>
+<span class="sd">        ('f1', MultiIndex([('f1', '0 days 00:00:00', '0 days 00:00:02'),</span>
+<span class="sd">            ('f1', '0 days 00:00:01', '0 days 00:00:03')],</span>
+<span class="sd">           names=['file', 'start', 'end']))</span>
+<span class="sd">        &gt;&gt;&gt; obj = pd.Series(["a", "b", "b"], index, dtype="object")</span>
 <span class="sd">        &gt;&gt;&gt; next(iter_by_file(obj))</span>
-<span class="sd">        (&#39;f1&#39;, file  start            end</span>
+<span class="sd">        ('f1', file  start            end</span>
 <span class="sd">        f1    0 days 00:00:00  0 days 00:00:02    a</span>
 <span class="sd">              0 days 00:00:01  0 days 00:00:03    b</span>
 <span class="sd">        dtype: object)</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">is_index</span> <span class="o">=</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">)</span>
     <span class="n">index</span> <span class="o">=</span> <span class="n">obj</span> <span class="k">if</span> <span class="n">is_index</span> <span class="k">else</span> <span class="n">obj</span><span class="o">.</span><span class="n">index</span>
 
     <span class="c1"># We use len() here as index.empty takes a very long time</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">index</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">files</span> <span class="o">=</span> <span class="n">index</span><span class="o">.</span><span class="n">get_level_values</span><span class="p">(</span><span class="s2">&quot;file&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">()</span>
+        <span class="n">files</span> <span class="o">=</span> <span class="n">index</span><span class="o">.</span><span class="n">get_level_values</span><span class="p">(</span><span class="s2">"file"</span><span class="p">)</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">is_filewise_index</span><span class="p">(</span><span class="n">index</span><span class="p">):</span>
             <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
                 <span class="n">sub_index</span> <span class="o">=</span> <span class="n">filewise_index</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
@@ -1349,7 +1349,7 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">join_labels</span><span class="p">(</span>
     <span class="n">labels</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">list</span> <span class="o">|</span> <span class="nb">dict</span><span class="p">],</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span> <span class="o">|</span> <span class="nb">dict</span><span class="p">:</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Combine scheme labels.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">"""Combine scheme labels.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        labels: sequence of labels to join.</span>
@@ -1365,10 +1365,10 @@
 <span class="sd">            or not ``list`` or ``dict``</span>
 
 <span class="sd">    Examples:</span>
-<span class="sd">        &gt;&gt;&gt; join_labels([{&quot;a&quot;: 0, &quot;b&quot;: 1}, {&quot;b&quot;: 2, &quot;c&quot;: 2}])</span>
-<span class="sd">        {&#39;a&#39;: 0, &#39;b&#39;: 2, &#39;c&#39;: 2}</span>
+<span class="sd">        &gt;&gt;&gt; join_labels([{"a": 0, "b": 1}, {"b": 2, "c": 2}])</span>
+<span class="sd">        {'a': 0, 'b': 2, 'c': 2}</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">return</span> <span class="p">[]</span>
 
@@ -1377,18 +1377,18 @@
 
     <span class="k">if</span> <span class="n">misc_table_ids</span> <span class="o">:=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">labels</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">str</span><span class="p">)]:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;The following string values were provided: &#39;&quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">misc_table_ids</span><span class="si">}</span><span class="s2">&#39;. &quot;</span>
-            <span class="s2">&quot;This assumes that labels are defined &quot;</span>
-            <span class="s2">&quot;in misc tables with according IDs, &quot;</span>
-            <span class="s2">&quot;which is not supported by &#39;join_labels()&#39;.&quot;</span>
+            <span class="sa">f</span><span class="s2">"The following string values were provided: '"</span>
+            <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">misc_table_ids</span><span class="si">}</span><span class="s2">'. "</span>
+            <span class="s2">"This assumes that labels are defined "</span>
+            <span class="s2">"in misc tables with according IDs, "</span>
+            <span class="s2">"which is not supported by 'join_labels()'."</span>
         <span class="p">)</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span>
         <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">labels</span><span class="p">)</span>
         <span class="ow">or</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">labels</span><span class="p">)</span>
     <span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;All labels must be either of type &#39;list&#39; or &#39;dict&#39;.&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"All labels must be either of type 'list' or 'dict'."</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">labels</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -1397,7 +1397,7 @@
     <span class="n">dtypes</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">({</span><span class="nb">str</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">x</span><span class="p">))</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">items</span><span class="p">}))</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">dtypes</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;Elements or keys must have the same dtype, but yours have </span><span class="si">{</span><span class="n">dtypes</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">"Elements or keys must have the same dtype, but yours have </span><span class="si">{</span><span class="n">dtypes</span><span class="si">}</span><span class="s2">."</span><span class="p">,</span>
         <span class="p">)</span>
 
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">labels</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">dict</span><span class="p">):</span>
@@ -1410,7 +1410,7 @@
         <span class="n">joined_labels</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">items</span><span class="p">)))</span>
 
     <span class="c1"># Check if joined labels have a valid format,</span>
-    <span class="c1"># e.g. {0: {&#39;age&#39;: 20}, &#39;0&#39;: {&#39;age&#39;: 30}} is not allowed</span>
+    <span class="c1"># e.g. {0: {'age': 20}, '0': {'age': 30}} is not allowed</span>
     <span class="n">Scheme</span><span class="p">(</span><span class="n">labels</span><span class="o">=</span><span class="n">joined_labels</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">joined_labels</span></div>
@@ -1423,7 +1423,7 @@
     <span class="n">dbs</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Database</span><span class="p">],</span>
     <span class="n">scheme_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
 <span class="p">):</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Join and update scheme of databases.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">"""Join and update scheme of databases.</span>
 
 <span class="sd">    This joins the given scheme of several databases</span>
 <span class="sd">    using :func:`audformat.utils.join_labels`</span>
@@ -1454,17 +1454,17 @@
 <span class="sd">            or not ``list`` or ``dict``</span>
 
 <span class="sd">    Examples:</span>
-<span class="sd">        &gt;&gt;&gt; db1 = Database(&quot;db1&quot;)</span>
-<span class="sd">        &gt;&gt;&gt; db2 = Database(&quot;db2&quot;)</span>
-<span class="sd">        &gt;&gt;&gt; db1.schemes[&quot;scheme_id&quot;] = Scheme(labels=[&quot;a&quot;])</span>
-<span class="sd">        &gt;&gt;&gt; db2.schemes[&quot;scheme_id&quot;] = Scheme(labels=[&quot;b&quot;])</span>
-<span class="sd">        &gt;&gt;&gt; join_schemes([db1, db2], &quot;scheme_id&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; db1 = Database("db1")</span>
+<span class="sd">        &gt;&gt;&gt; db2 = Database("db2")</span>
+<span class="sd">        &gt;&gt;&gt; db1.schemes["scheme_id"] = Scheme(labels=["a"])</span>
+<span class="sd">        &gt;&gt;&gt; db2.schemes["scheme_id"] = Scheme(labels=["b"])</span>
+<span class="sd">        &gt;&gt;&gt; join_schemes([db1, db2], "scheme_id")</span>
 <span class="sd">        &gt;&gt;&gt; db1.schemes</span>
 <span class="sd">        scheme_id:</span>
 <span class="sd">          dtype: str</span>
 <span class="sd">          labels: [a, b]</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">labels</span> <span class="o">=</span> <span class="n">join_labels</span><span class="p">([</span><span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="n">scheme_id</span><span class="p">]</span><span class="o">.</span><span class="n">labels</span> <span class="k">for</span> <span class="n">db</span> <span class="ow">in</span> <span class="n">dbs</span><span class="p">])</span>
     <span class="k">for</span> <span class="n">db</span> <span class="ow">in</span> <span class="n">dbs</span><span class="p">:</span>
         <span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="n">scheme_id</span><span class="p">]</span><span class="o">.</span><span class="n">replace_labels</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span></div>
@@ -1474,7 +1474,7 @@
 <div class="viewcode-block" id="map_country">
 <a class="viewcode-back" href="../../../api/audformat.utils.map_country.html#audformat.utils.map_country">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">map_country</span><span class="p">(</span><span class="n">country</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Map country to ISO 3166-1.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">"""Map country to ISO 3166-1.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        country: country string</span>
@@ -1486,18 +1486,18 @@
 <span class="sd">        ValueError: if country is not supported</span>
 
 <span class="sd">    Examples:</span>
-<span class="sd">        &gt;&gt;&gt; map_country(&quot;gb&quot;)</span>
-<span class="sd">        &#39;GBR&#39;</span>
-<span class="sd">        &gt;&gt;&gt; map_country(&quot;gbr&quot;)</span>
-<span class="sd">        &#39;GBR&#39;</span>
-<span class="sd">        &gt;&gt;&gt; map_country(&quot;United Kingdom of Great Britain and Northern Ireland&quot;)</span>
-<span class="sd">        &#39;GBR&#39;</span>
+<span class="sd">        &gt;&gt;&gt; map_country("gb")</span>
+<span class="sd">        'GBR'</span>
+<span class="sd">        &gt;&gt;&gt; map_country("gbr")</span>
+<span class="sd">        'GBR'</span>
+<span class="sd">        &gt;&gt;&gt; map_country("United Kingdom of Great Britain and Northern Ireland")</span>
+<span class="sd">        'GBR'</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">result</span> <span class="o">=</span> <span class="n">iso3166</span><span class="o">.</span><span class="n">countries</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">country</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span>
     <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">country</span><span class="si">}</span><span class="s2">&#39; is not supported by ISO 3166-1.&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"'</span><span class="si">{</span><span class="n">country</span><span class="si">}</span><span class="s2">' is not supported by ISO 3166-1."</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">result</span><span class="o">.</span><span class="n">alpha3</span></div>
 
@@ -1509,7 +1509,7 @@
     <span class="n">index</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">,</span>
     <span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">str</span><span class="p">],</span> <span class="nb">str</span><span class="p">],</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">:</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Apply callable to file path in index.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">"""Apply callable to file path in index.</span>
 
 <span class="sd">    Relies on :meth:`pandas.Index.map`,</span>
 <span class="sd">    which can be slow.</span>
@@ -1522,8 +1522,8 @@
 
 <span class="sd">    .. code-block:: python</span>
 
-<span class="sd">        root = &quot;/root/&quot;</span>
-<span class="sd">        ext = &quot;.new&quot;</span>
+<span class="sd">        root = "/root/"</span>
+<span class="sd">        ext = ".new"</span>
 <span class="sd">        if table.is_filewise:</span>
 <span class="sd">            table.df.index = root + table.df.index + ext</span>
 <span class="sd">            table.df.index.name = audformat.define.IndexField.FILE</span>
@@ -1546,13 +1546,13 @@
 <span class="sd">            :ref:`table specifications &lt;data-tables:Tables&gt;`</span>
 
 <span class="sd">    Examples:</span>
-<span class="sd">        &gt;&gt;&gt; index = filewise_index([&quot;a/f1&quot;, &quot;a/f2&quot;])</span>
+<span class="sd">        &gt;&gt;&gt; index = filewise_index(["a/f1", "a/f2"])</span>
 <span class="sd">        &gt;&gt;&gt; index</span>
-<span class="sd">        Index([&#39;a/f1&#39;, &#39;a/f2&#39;], dtype=&#39;string&#39;, name=&#39;file&#39;)</span>
-<span class="sd">        &gt;&gt;&gt; map_file_path(index, lambda x: x.replace(&quot;a&quot;, &quot;b&quot;))</span>
-<span class="sd">        Index([&#39;b/f1&#39;, &#39;b/f2&#39;], dtype=&#39;string&#39;, name=&#39;file&#39;)</span>
+<span class="sd">        Index(['a/f1', 'a/f2'], dtype='string', name='file')</span>
+<span class="sd">        &gt;&gt;&gt; map_file_path(index, lambda x: x.replace("a", "b"))</span>
+<span class="sd">        Index(['b/f1', 'b/f2'], dtype='string', name='file')</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">index</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">index</span>
 
@@ -1571,7 +1571,7 @@
 <div class="viewcode-block" id="map_language">
 <a class="viewcode-back" href="../../../api/audformat.utils.map_language.html#audformat.utils.map_language">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">map_language</span><span class="p">(</span><span class="n">language</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Map language to ISO 639-3.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">"""Map language to ISO 639-3.</span>
 
 <span class="sd">    `ISO 639-3`_ is an international standard for language codes.</span>
 <span class="sd">    It defines three-letter codes for identifying languages,</span>
@@ -1589,20 +1589,20 @@
 <span class="sd">        ValueError: if language is not supported</span>
 
 <span class="sd">    Examples:</span>
-<span class="sd">        &gt;&gt;&gt; map_language(&quot;en&quot;)</span>
-<span class="sd">        &#39;eng&#39;</span>
-<span class="sd">        &gt;&gt;&gt; map_language(&quot;eng&quot;)</span>
-<span class="sd">        &#39;eng&#39;</span>
-<span class="sd">        &gt;&gt;&gt; map_language(&quot;English&quot;)</span>
-<span class="sd">        &#39;eng&#39;</span>
+<span class="sd">        &gt;&gt;&gt; map_language("en")</span>
+<span class="sd">        'eng'</span>
+<span class="sd">        &gt;&gt;&gt; map_language("eng")</span>
+<span class="sd">        'eng'</span>
+<span class="sd">        &gt;&gt;&gt; map_language("English")</span>
+<span class="sd">        'eng'</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">iso639</span><span class="o">.</span><span class="n">Lang</span><span class="p">(</span>
             <span class="n">language</span><span class="o">.</span><span class="n">title</span><span class="p">()</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">language</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">3</span> <span class="k">else</span> <span class="n">language</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
         <span class="p">)</span><span class="o">.</span><span class="n">pt3</span>
     <span class="k">except</span> <span class="n">InvalidLanguageValue</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">language</span><span class="si">}</span><span class="s2">&#39; is not supported by ISO 639-3.&quot;</span><span class="p">)</span></div>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"'</span><span class="si">{</span><span class="n">language</span><span class="si">}</span><span class="s2">' is not supported by ISO 639-3."</span><span class="p">)</span></div>
 
 
 
@@ -1613,7 +1613,7 @@
     <span class="n">as_dataframe</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Read object from CSV file.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">"""Read object from CSV file.</span>
 
 <span class="sd">    Automatically detects the index type and returns an object that is</span>
 <span class="sd">    conform to :ref:`table specifications &lt;data-tables:Tables&gt;`.</span>
@@ -1640,45 +1640,45 @@
 <span class="sd">            :ref:`table specifications &lt;data-tables:Tables&gt;`</span>
 
 <span class="sd">    Examples:</span>
-<span class="sd">        &gt;&gt;&gt; string = &#39;&#39;&#39;file,start,end,value</span>
+<span class="sd">        &gt;&gt;&gt; string = '''file,start,end,value</span>
 <span class="sd">        ... f1,00:00:00,00:00:01,0.0</span>
 <span class="sd">        ... f1,00:00:01,00:00:02,1.0</span>
-<span class="sd">        ... f2,00:00:02,00:00:03,2.0&#39;&#39;&#39;</span>
-<span class="sd">        &gt;&gt;&gt; with open(&quot;file.csv&quot;, &quot;w&quot;) as file:</span>
+<span class="sd">        ... f2,00:00:02,00:00:03,2.0'''</span>
+<span class="sd">        &gt;&gt;&gt; with open("file.csv", "w") as file:</span>
 <span class="sd">        ...     _ = file.write(string)</span>
-<span class="sd">        &gt;&gt;&gt; read_csv(&quot;file.csv&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; read_csv("file.csv")</span>
 <span class="sd">        file  start            end</span>
 <span class="sd">        f1    0 days 00:00:00  0 days 00:00:01    0.0</span>
 <span class="sd">              0 days 00:00:01  0 days 00:00:02    1.0</span>
 <span class="sd">        f2    0 days 00:00:02  0 days 00:00:03    2.0</span>
 <span class="sd">        Name: value, dtype: float64</span>
-<span class="sd">        &gt;&gt;&gt; string = &#39;&#39;&#39;file,start,end,value</span>
+<span class="sd">        &gt;&gt;&gt; string = '''file,start,end,value</span>
 <span class="sd">        ... f1,0,1,0.0</span>
 <span class="sd">        ... f1,1,2,1.0</span>
-<span class="sd">        ... f2,2,3,2.0&#39;&#39;&#39;</span>
-<span class="sd">        &gt;&gt;&gt; with open(&quot;file.csv&quot;, &quot;w&quot;) as file:</span>
+<span class="sd">        ... f2,2,3,2.0'''</span>
+<span class="sd">        &gt;&gt;&gt; with open("file.csv", "w") as file:</span>
 <span class="sd">        ...     _ = file.write(string)</span>
-<span class="sd">        &gt;&gt;&gt; read_csv(&quot;file.csv&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; read_csv("file.csv")</span>
 <span class="sd">        file  start            end</span>
 <span class="sd">        f1    0 days 00:00:00  0 days 00:00:01    0.0</span>
 <span class="sd">              0 days 00:00:01  0 days 00:00:02    1.0</span>
 <span class="sd">        f2    0 days 00:00:02  0 days 00:00:03    2.0</span>
 <span class="sd">        Name: value, dtype: float64</span>
-<span class="sd">        &gt;&gt;&gt; read_csv(&quot;file.csv&quot;, as_dataframe=True)</span>
+<span class="sd">        &gt;&gt;&gt; read_csv("file.csv", as_dataframe=True)</span>
 <span class="sd">                                              value</span>
 <span class="sd">        file start           end</span>
 <span class="sd">        f1   0 days 00:00:00 0 days 00:00:01    0.0</span>
 <span class="sd">             0 days 00:00:01 0 days 00:00:02    1.0</span>
 <span class="sd">        f2   0 days 00:00:02 0 days 00:00:03    2.0</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">frame</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="n">drop</span> <span class="o">=</span> <span class="p">[</span><span class="n">define</span><span class="o">.</span><span class="n">IndexField</span><span class="o">.</span><span class="n">FILE</span><span class="p">]</span>
     <span class="k">if</span> <span class="n">define</span><span class="o">.</span><span class="n">IndexField</span><span class="o">.</span><span class="n">FILE</span> <span class="ow">in</span> <span class="n">frame</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
-        <span class="n">files</span> <span class="o">=</span> <span class="n">frame</span><span class="p">[</span><span class="n">define</span><span class="o">.</span><span class="n">IndexField</span><span class="o">.</span><span class="n">FILE</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;string&quot;</span><span class="p">)</span>
+        <span class="n">files</span> <span class="o">=</span> <span class="n">frame</span><span class="p">[</span><span class="n">define</span><span class="o">.</span><span class="n">IndexField</span><span class="o">.</span><span class="n">FILE</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">"string"</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Index not conform to audformat.&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Index not conform to audformat."</span><span class="p">)</span>
 
     <span class="n">starts</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="k">if</span> <span class="n">define</span><span class="o">.</span><span class="n">IndexField</span><span class="o">.</span><span class="n">START</span> <span class="ow">in</span> <span class="n">frame</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
@@ -1694,7 +1694,7 @@
         <span class="n">index</span> <span class="o">=</span> <span class="n">filewise_index</span><span class="p">(</span><span class="n">files</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">index</span> <span class="o">=</span> <span class="n">segmented_index</span><span class="p">(</span><span class="n">files</span><span class="p">,</span> <span class="n">starts</span><span class="o">=</span><span class="n">starts</span><span class="p">,</span> <span class="n">ends</span><span class="o">=</span><span class="n">ends</span><span class="p">)</span>
-    <span class="n">frame</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">drop</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="s2">&quot;columns&quot;</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">frame</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">drop</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="s2">"columns"</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">frame</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">as_dataframe</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">index</span>
@@ -1714,7 +1714,7 @@
     <span class="n">extension</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">pattern</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">:</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Change the file extension of index entries.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">"""Change the file extension of index entries.</span>
 
 <span class="sd">    It replaces all existing file extensions</span>
 <span class="sd">    in the index file path</span>
@@ -1723,43 +1723,43 @@
 <span class="sd">    Args:</span>
 <span class="sd">        index: index with file path</span>
 <span class="sd">            conform to :ref:`table specifications &lt;data-tables:Tables&gt;`</span>
-<span class="sd">        extension: new file extension without ``&#39;.&#39;``.</span>
-<span class="sd">            If set to ``&#39;&#39;``,</span>
+<span class="sd">        extension: new file extension without ``'.'``.</span>
+<span class="sd">            If set to ``''``,</span>
 <span class="sd">            the current file extension is removed</span>
 <span class="sd">        pattern: regexp pattern to match current extensions.</span>
 <span class="sd">            In contrast to ``extension``,</span>
-<span class="sd">            you have to include ``&#39;.&#39;``.</span>
-<span class="sd">            If ``None`` the default of ``r&#39;\.[a-zA-Z0-9]+$&#39;`` is used</span>
+<span class="sd">            you have to include ``'.'``.</span>
+<span class="sd">            If ``None`` the default of ``r'\.[a-zA-Z0-9]+$'`` is used</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        updated index</span>
 
 <span class="sd">    Examples:</span>
-<span class="sd">        &gt;&gt;&gt; index = filewise_index([&quot;f1.wav&quot;, &quot;f2.flac&quot;])</span>
-<span class="sd">        &gt;&gt;&gt; replace_file_extension(index, &quot;mp3&quot;)</span>
-<span class="sd">        Index([&#39;f1.mp3&#39;, &#39;f2.mp3&#39;], dtype=&#39;string&#39;, name=&#39;file&#39;)</span>
-<span class="sd">        &gt;&gt;&gt; index = filewise_index([&quot;f1.wav.gz&quot;, &quot;f2.wav.gz&quot;])</span>
-<span class="sd">        &gt;&gt;&gt; replace_file_extension(index, &quot;&quot;)</span>
-<span class="sd">        Index([&#39;f1.wav&#39;, &#39;f2.wav&#39;], dtype=&#39;string&#39;, name=&#39;file&#39;)</span>
-<span class="sd">        &gt;&gt;&gt; replace_file_extension(index, &quot;flac&quot;, pattern=r&quot;\.wav\.gz$&quot;)</span>
-<span class="sd">        Index([&#39;f1.flac&#39;, &#39;f2.flac&#39;], dtype=&#39;string&#39;, name=&#39;file&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; index = filewise_index(["f1.wav", "f2.flac"])</span>
+<span class="sd">        &gt;&gt;&gt; replace_file_extension(index, "mp3")</span>
+<span class="sd">        Index(['f1.mp3', 'f2.mp3'], dtype='string', name='file')</span>
+<span class="sd">        &gt;&gt;&gt; index = filewise_index(["f1.wav.gz", "f2.wav.gz"])</span>
+<span class="sd">        &gt;&gt;&gt; replace_file_extension(index, "")</span>
+<span class="sd">        Index(['f1.wav', 'f2.wav'], dtype='string', name='file')</span>
+<span class="sd">        &gt;&gt;&gt; replace_file_extension(index, "flac", pattern=r"\.wav\.gz$")</span>
+<span class="sd">        Index(['f1.flac', 'f2.flac'], dtype='string', name='file')</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">index</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">index</span>
 
     <span class="k">if</span> <span class="n">pattern</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">pattern</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;\.[a-zA-Z0-9]+$&quot;</span>
+        <span class="n">pattern</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">"\.[a-zA-Z0-9]+$"</span>
     <span class="n">cur_ext</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">pattern</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">extension</span><span class="p">:</span>
-        <span class="n">new_ext</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;.</span><span class="si">{</span><span class="n">extension</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">new_ext</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">".</span><span class="si">{</span><span class="n">extension</span><span class="si">}</span><span class="s2">"</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">new_ext</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="n">new_ext</span> <span class="o">=</span> <span class="s2">""</span>
 
     <span class="k">if</span> <span class="n">is_segmented_index</span><span class="p">(</span><span class="n">index</span><span class="p">):</span>
         <span class="n">index</span> <span class="o">=</span> <span class="n">index</span><span class="o">.</span><span class="n">set_levels</span><span class="p">(</span>
             <span class="n">index</span><span class="o">.</span><span class="n">levels</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">cur_ext</span><span class="p">,</span> <span class="n">new_ext</span><span class="p">,</span> <span class="n">regex</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
-            <span class="n">level</span><span class="o">=</span><span class="s2">&quot;file&quot;</span><span class="p">,</span>
+            <span class="n">level</span><span class="o">=</span><span class="s2">"file"</span><span class="p">,</span>
         <span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">index</span> <span class="o">=</span> <span class="n">index</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">cur_ext</span><span class="p">,</span> <span class="n">new_ext</span><span class="p">,</span> <span class="n">regex</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -1774,7 +1774,7 @@
     <span class="n">index</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">,</span>
     <span class="n">dtypes</span><span class="p">:</span> <span class="p">(</span><span class="nb">str</span> <span class="o">|</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]),</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">:</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Set the dtypes of an index for the given level names.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">"""Set the dtypes of an index for the given level names.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        index: index object</span>
@@ -1790,31 +1790,31 @@
 <span class="sd">        index with new dtypes</span>
 
 <span class="sd">    Examples:</span>
-<span class="sd">        &gt;&gt;&gt; index1 = pd.Index([&quot;a&quot;, &quot;b&quot;], dtype=&quot;object&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; index1 = pd.Index(["a", "b"], dtype="object")</span>
 <span class="sd">        &gt;&gt;&gt; index1</span>
-<span class="sd">        Index([&#39;a&#39;, &#39;b&#39;], dtype=&#39;object&#39;)</span>
-<span class="sd">        &gt;&gt;&gt; index2 = set_index_dtypes(index1, &quot;string&quot;)</span>
+<span class="sd">        Index(['a', 'b'], dtype='object')</span>
+<span class="sd">        &gt;&gt;&gt; index2 = set_index_dtypes(index1, "string")</span>
 <span class="sd">        &gt;&gt;&gt; index2</span>
-<span class="sd">        Index([&#39;a&#39;, &#39;b&#39;], dtype=&#39;string&#39;)</span>
+<span class="sd">        Index(['a', 'b'], dtype='string')</span>
 <span class="sd">        &gt;&gt;&gt; index3 = pd.MultiIndex.from_arrays(</span>
-<span class="sd">        ...     [pd.Index([&quot;a&quot;, &quot;b&quot;], dtype=&quot;object&quot;), [1, 2]],</span>
-<span class="sd">        ...     names=[&quot;level1&quot;, &quot;level2&quot;],</span>
+<span class="sd">        ...     [pd.Index(["a", "b"], dtype="object"), [1, 2]],</span>
+<span class="sd">        ...     names=["level1", "level2"],</span>
 <span class="sd">        ... )</span>
 <span class="sd">        &gt;&gt;&gt; index3.dtypes</span>
 <span class="sd">        level1    object</span>
 <span class="sd">        level2     int64</span>
 <span class="sd">        dtype: object</span>
-<span class="sd">        &gt;&gt;&gt; index4 = set_index_dtypes(index3, {&quot;level2&quot;: &quot;float&quot;})</span>
+<span class="sd">        &gt;&gt;&gt; index4 = set_index_dtypes(index3, {"level2": "float"})</span>
 <span class="sd">        &gt;&gt;&gt; index4.dtypes</span>
 <span class="sd">        level1    object</span>
 <span class="sd">        level2   float64</span>
 <span class="sd">        dtype: object</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">levels</span> <span class="o">=</span> <span class="n">index</span><span class="o">.</span><span class="n">names</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">MultiIndex</span><span class="p">)</span> <span class="k">else</span> <span class="p">[</span><span class="n">index</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
 
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">levels</span><span class="p">))</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">levels</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Got index with levels </span><span class="si">{</span><span class="n">levels</span><span class="si">}</span><span class="s2">, but names must be unique.&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Got index with levels </span><span class="si">{</span><span class="n">levels</span><span class="si">}</span><span class="s2">, but names must be unique."</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dtypes</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
         <span class="n">dtypes</span> <span class="o">=</span> <span class="p">{</span><span class="n">level</span><span class="p">:</span> <span class="n">dtypes</span> <span class="k">for</span> <span class="n">level</span> <span class="ow">in</span> <span class="n">levels</span><span class="p">}</span>
@@ -1822,7 +1822,7 @@
     <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">dtypes</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">levels</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;A level with name &#39;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39; does not exist. Level names are: </span><span class="si">{</span><span class="n">levels</span><span class="si">}</span><span class="s2">.&quot;</span>
+                <span class="sa">f</span><span class="s2">"A level with name '</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">' does not exist. Level names are: </span><span class="si">{</span><span class="n">levels</span><span class="si">}</span><span class="s2">."</span>
             <span class="p">)</span>
 
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">dtypes</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
@@ -1887,7 +1887,7 @@
     <span class="n">num_workers</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
     <span class="n">progress_bar</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Convert to filewise index.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">"""Convert to filewise index.</span>
 
 <span class="sd">    If input is segmented, each segment is saved to a separate file</span>
 <span class="sd">    in ``output_folder``. The directory structure of the original data is</span>
@@ -1901,7 +1901,7 @@
 <span class="sd">            are absolute, this argument is needed in order to reconstruct</span>
 <span class="sd">            the directory structure of the original data</span>
 <span class="sd">        output_folder: path to folder of the created audio segments.</span>
-<span class="sd">            If it&#39;s relative (absolute), then the file paths of the returned</span>
+<span class="sd">            If it's relative (absolute), then the file paths of the returned</span>
 <span class="sd">            data frame are also relative (absolute)</span>
 <span class="sd">        num_workers: number of threads to spawn</span>
 <span class="sd">        progress_bar: show progress bar</span>
@@ -1915,19 +1915,19 @@
 
 <span class="sd">    Examples:</span>
 
-<span class="sd">        .. skip: start if(sys.platform.startswith(&quot;win&quot;))</span>
+<span class="sd">        .. skip: start if(sys.platform.startswith("win"))</span>
 
 <span class="sd">        &gt;&gt;&gt; index = segmented_index(</span>
-<span class="sd">        ...     files=[&quot;f.wav&quot;, &quot;f.wav&quot;],</span>
+<span class="sd">        ...     files=["f.wav", "f.wav"],</span>
 <span class="sd">        ...     starts=[0, 0.5],</span>
 <span class="sd">        ...     ends=[0.5, 1],</span>
 <span class="sd">        ... )</span>
-<span class="sd">        &gt;&gt;&gt; to_filewise_index(index, &quot;.&quot;, &quot;split&quot;)</span>
-<span class="sd">        Index([&#39;split/f_0.wav&#39;, &#39;split/f_1.wav&#39;], dtype=&#39;string&#39;, name=&#39;file&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; to_filewise_index(index, ".", "split")</span>
+<span class="sd">        Index(['split/f_0.wav', 'split/f_1.wav'], dtype='string', name='file')</span>
 
 <span class="sd">        .. skip: end</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">if</span> <span class="n">is_filewise_index</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">obj</span>
 
@@ -1946,11 +1946,11 @@
     <span class="n">is_abs</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isabs</span><span class="p">(</span><span class="n">test_path</span><span class="p">)</span>
     <span class="n">test_path</span> <span class="o">=</span> <span class="n">audeer</span><span class="o">.</span><span class="n">path</span><span class="p">(</span><span class="n">test_path</span><span class="p">)</span>
 
-    <span class="c1"># keep ``output_folder`` relative if it&#39;s relative</span>
+    <span class="c1"># keep ``output_folder`` relative if it's relative</span>
     <span class="k">if</span> <span class="n">test_path</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">audeer</span><span class="o">.</span><span class="n">path</span><span class="p">(</span><span class="n">output_folder</span><span class="p">)):</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;``output_folder`` may not be contained in path to files of &quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;original data: </span><span class="si">{</span><span class="n">audeer</span><span class="o">.</span><span class="n">path</span><span class="p">(</span><span class="n">output_folder</span><span class="p">)</span><span class="si">}</span><span class="s2"> != </span><span class="si">{</span><span class="n">test_path</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">"``output_folder`` may not be contained in path to files of "</span>
+            <span class="sa">f</span><span class="s2">"original data: </span><span class="si">{</span><span class="n">audeer</span><span class="o">.</span><span class="n">path</span><span class="p">(</span><span class="n">output_folder</span><span class="p">)</span><span class="si">}</span><span class="s2"> != </span><span class="si">{</span><span class="n">test_path</span><span class="si">}</span><span class="s2">"</span>
         <span class="p">)</span>
 
     <span class="n">original_files</span> <span class="o">=</span> <span class="n">index</span><span class="o">.</span><span class="n">get_level_values</span><span class="p">(</span><span class="n">define</span><span class="o">.</span><span class="n">IndexField</span><span class="o">.</span><span class="n">FILE</span><span class="p">)</span>
@@ -1960,9 +1960,9 @@
     <span class="n">ends</span> <span class="o">=</span> <span class="n">index</span><span class="o">.</span><span class="n">get_level_values</span><span class="p">(</span><span class="n">define</span><span class="o">.</span><span class="n">IndexField</span><span class="o">.</span><span class="n">END</span><span class="p">)</span>
 
     <span class="c1"># order of rows within group is preserved:</span>
-    <span class="c1"># &quot;https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.groupby.html&quot;  # noqa</span>
+    <span class="c1"># "https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.groupby.html"  # noqa</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">):</span>
-        <span class="n">groups</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">obj</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;object&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span>
+        <span class="n">groups</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">obj</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">"object"</span><span class="p">)</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span>
             <span class="n">define</span><span class="o">.</span><span class="n">IndexField</span><span class="o">.</span><span class="n">FILE</span><span class="p">,</span>
             <span class="n">sort</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="p">)</span>
@@ -1978,7 +1978,7 @@
             <span class="p">[</span>
                 <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
                     <span class="n">output_folder</span><span class="p">,</span>
-                    <span class="sa">f</span><span class="s2">&quot;_</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">count</span><span class="p">)</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="n">width</span><span class="p">)</span><span class="si">}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">rsplit</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)),</span>
+                    <span class="sa">f</span><span class="s2">"_</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">count</span><span class="p">)</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="n">width</span><span class="p">)</span><span class="si">}</span><span class="s2">."</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">rsplit</span><span class="p">(</span><span class="s2">"."</span><span class="p">,</span> <span class="mi">1</span><span class="p">)),</span>
                 <span class="p">)</span>
                 <span class="k">for</span> <span class="n">count</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">group</span><span class="p">))</span>
             <span class="p">]</span>
@@ -2001,7 +2001,7 @@
     <span class="n">audeer</span><span class="o">.</span><span class="n">run_tasks</span><span class="p">(</span>
         <span class="n">task_func</span><span class="o">=</span><span class="n">_split_files</span><span class="p">,</span>
         <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span>
-        <span class="n">task_description</span><span class="o">=</span><span class="s2">&quot;To filewise index&quot;</span><span class="p">,</span>
+        <span class="n">task_description</span><span class="o">=</span><span class="s2">"To filewise index"</span><span class="p">,</span>
         <span class="n">num_workers</span><span class="o">=</span><span class="n">num_workers</span><span class="p">,</span>
         <span class="n">progress_bar</span><span class="o">=</span><span class="n">progress_bar</span><span class="p">,</span>
     <span class="p">)</span>
@@ -2027,7 +2027,7 @@
     <span class="n">num_workers</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
     <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Convert to segmented index.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">"""Convert to segmented index.</span>
 
 <span class="sd">    If the input a filewise table,</span>
 <span class="sd">    ``start`` and ``end`` will be added as new levels to the index.</span>
@@ -2071,24 +2071,24 @@
 <span class="sd">        FileNotFoundError: if file is not found</span>
 
 <span class="sd">    Examples:</span>
-<span class="sd">        &gt;&gt;&gt; index = filewise_index([&quot;f1&quot;, &quot;f2&quot;])</span>
+<span class="sd">        &gt;&gt;&gt; index = filewise_index(["f1", "f2"])</span>
 <span class="sd">        &gt;&gt;&gt; to_segmented_index(index)</span>
-<span class="sd">        MultiIndex([(&#39;f1&#39;, &#39;0 days&#39;, NaT),</span>
-<span class="sd">                    (&#39;f2&#39;, &#39;0 days&#39;, NaT)],</span>
-<span class="sd">                   names=[&#39;file&#39;, &#39;start&#39;, &#39;end&#39;])</span>
+<span class="sd">        MultiIndex([('f1', '0 days', NaT),</span>
+<span class="sd">                    ('f2', '0 days', NaT)],</span>
+<span class="sd">                   names=['file', 'start', 'end'])</span>
 <span class="sd">        &gt;&gt;&gt; to_segmented_index(</span>
 <span class="sd">        ...     index,</span>
 <span class="sd">        ...     allow_nat=False,</span>
 <span class="sd">        ...     files_duration={</span>
-<span class="sd">        ...         &quot;f1&quot;: pd.to_timedelta(1.1, unit=&quot;s&quot;),</span>
-<span class="sd">        ...         &quot;f2&quot;: pd.to_timedelta(2.2, unit=&quot;s&quot;),</span>
+<span class="sd">        ...         "f1": pd.to_timedelta(1.1, unit="s"),</span>
+<span class="sd">        ...         "f2": pd.to_timedelta(2.2, unit="s"),</span>
 <span class="sd">        ...     },</span>
 <span class="sd">        ... )</span>
-<span class="sd">        MultiIndex([(&#39;f1&#39;, &#39;0 days&#39;, &#39;0 days 00:00:01.100000&#39;),</span>
-<span class="sd">                    (&#39;f2&#39;, &#39;0 days&#39;, &#39;0 days 00:00:02.200000&#39;)],</span>
-<span class="sd">                   names=[&#39;file&#39;, &#39;start&#39;, &#39;end&#39;])</span>
+<span class="sd">        MultiIndex([('f1', '0 days', '0 days 00:00:01.100000'),</span>
+<span class="sd">                    ('f2', '0 days', '0 days 00:00:02.200000')],</span>
+<span class="sd">                   names=['file', 'start', 'end'])</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">is_segmented</span> <span class="o">=</span> <span class="n">is_segmented_index</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">is_segmented</span> <span class="ow">and</span> <span class="n">allow_nat</span><span class="p">:</span>
@@ -2131,7 +2131,7 @@
                         <span class="n">file</span><span class="p">,</span>
                     <span class="p">)</span>
                 <span class="n">dur</span> <span class="o">=</span> <span class="n">audiofile</span><span class="o">.</span><span class="n">duration</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
-                <span class="n">dur</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_timedelta</span><span class="p">(</span><span class="n">dur</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;s&quot;</span><span class="p">)</span>
+                <span class="n">dur</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_timedelta</span><span class="p">(</span><span class="n">dur</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">"s"</span><span class="p">)</span>
 
                 <span class="k">if</span> <span class="n">files_duration</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="n">files_duration</span><span class="p">[</span><span class="n">file</span><span class="p">]</span> <span class="o">=</span> <span class="n">dur</span>
@@ -2144,7 +2144,7 @@
                 <span class="n">params</span><span class="p">,</span>
                 <span class="n">num_workers</span><span class="o">=</span><span class="n">num_workers</span><span class="p">,</span>
                 <span class="n">progress_bar</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span>
-                <span class="n">task_description</span><span class="o">=</span><span class="s2">&quot;Read duration&quot;</span><span class="p">,</span>
+                <span class="n">task_description</span><span class="o">=</span><span class="s2">"Read duration"</span><span class="p">,</span>
             <span class="p">)</span>
 
             <span class="c1"># Replace all NaT entries in end</span>
@@ -2176,7 +2176,7 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">union</span><span class="p">(</span>
     <span class="n">objs</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">],</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">:</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Create union of index objects.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">"""Create union of index objects.</span>
 
 <span class="sd">    If all index objects are conform to</span>
 <span class="sd">    :ref:`table specifications &lt;data-tables:Tables&gt;`</span>
@@ -2186,7 +2186,7 @@
 <span class="sd">    requires that levels and dtypes</span>
 <span class="sd">    of all objects match,</span>
 <span class="sd">    see :func:`audformat.utils.is_index_alike`.</span>
-<span class="sd">    Integer dtypes don&#39;t have to match,</span>
+<span class="sd">    Integer dtypes don't have to match,</span>
 <span class="sd">    but the result will always be of dtype ``Int64``.</span>
 <span class="sd">    When a :class:`pandas.Index`</span>
 <span class="sd">    is combined with a single-level</span>
@@ -2214,65 +2214,65 @@
 <span class="sd">    Examples:</span>
 <span class="sd">        &gt;&gt;&gt; union(</span>
 <span class="sd">        ...     [</span>
-<span class="sd">        ...         pd.Index([0, 1], name=&quot;idx&quot;),</span>
-<span class="sd">        ...         pd.Index([1, 2], dtype=&quot;Int64&quot;, name=&quot;idx&quot;),</span>
+<span class="sd">        ...         pd.Index([0, 1], name="idx"),</span>
+<span class="sd">        ...         pd.Index([1, 2], dtype="Int64", name="idx"),</span>
 <span class="sd">        ...     ]</span>
 <span class="sd">        ... )</span>
-<span class="sd">        Index([0, 1, 2], dtype=&#39;Int64&#39;, name=&#39;idx&#39;)</span>
+<span class="sd">        Index([0, 1, 2], dtype='Int64', name='idx')</span>
 <span class="sd">        &gt;&gt;&gt; union(</span>
 <span class="sd">        ...     [</span>
-<span class="sd">        ...         pd.Index([0, 1], name=&quot;idx&quot;),</span>
-<span class="sd">        ...         pd.MultiIndex.from_arrays([[1, 2]], names=[&quot;idx&quot;]),</span>
+<span class="sd">        ...         pd.Index([0, 1], name="idx"),</span>
+<span class="sd">        ...         pd.MultiIndex.from_arrays([[1, 2]], names=["idx"]),</span>
 <span class="sd">        ...     ]</span>
 <span class="sd">        ... )</span>
-<span class="sd">        Index([0, 1, 2], dtype=&#39;Int64&#39;, name=&#39;idx&#39;)</span>
+<span class="sd">        Index([0, 1, 2], dtype='Int64', name='idx')</span>
 <span class="sd">        &gt;&gt;&gt; union(</span>
 <span class="sd">        ...     [</span>
 <span class="sd">        ...         pd.MultiIndex.from_arrays(</span>
-<span class="sd">        ...             [[&quot;a&quot;, &quot;b&quot;, &quot;c&quot;], [0, 1, 2]],</span>
-<span class="sd">        ...             names=[&quot;idx1&quot;, &quot;idx2&quot;],</span>
+<span class="sd">        ...             [["a", "b", "c"], [0, 1, 2]],</span>
+<span class="sd">        ...             names=["idx1", "idx2"],</span>
 <span class="sd">        ...         ),</span>
 <span class="sd">        ...         pd.MultiIndex.from_arrays(</span>
-<span class="sd">        ...             [[&quot;b&quot;, &quot;c&quot;], [1, 3]],</span>
-<span class="sd">        ...             names=[&quot;idx1&quot;, &quot;idx2&quot;],</span>
+<span class="sd">        ...             [["b", "c"], [1, 3]],</span>
+<span class="sd">        ...             names=["idx1", "idx2"],</span>
 <span class="sd">        ...         ),</span>
 <span class="sd">        ...     ]</span>
 <span class="sd">        ... )</span>
-<span class="sd">        MultiIndex([(&#39;a&#39;, 0),</span>
-<span class="sd">                    (&#39;b&#39;, 1),</span>
-<span class="sd">                    (&#39;c&#39;, 2),</span>
-<span class="sd">                    (&#39;c&#39;, 3)],</span>
-<span class="sd">                   names=[&#39;idx1&#39;, &#39;idx2&#39;])</span>
+<span class="sd">        MultiIndex([('a', 0),</span>
+<span class="sd">                    ('b', 1),</span>
+<span class="sd">                    ('c', 2),</span>
+<span class="sd">                    ('c', 3)],</span>
+<span class="sd">                   names=['idx1', 'idx2'])</span>
 <span class="sd">        &gt;&gt;&gt; union(</span>
 <span class="sd">        ...     [</span>
-<span class="sd">        ...         filewise_index([&quot;f1&quot;, &quot;f2&quot;, &quot;f3&quot;]),</span>
-<span class="sd">        ...         filewise_index([&quot;f2&quot;, &quot;f3&quot;, &quot;f4&quot;]),</span>
+<span class="sd">        ...         filewise_index(["f1", "f2", "f3"]),</span>
+<span class="sd">        ...         filewise_index(["f2", "f3", "f4"]),</span>
 <span class="sd">        ...     ]</span>
 <span class="sd">        ... )</span>
-<span class="sd">        Index([&#39;f1&#39;, &#39;f2&#39;, &#39;f3&#39;, &#39;f4&#39;], dtype=&#39;string&#39;, name=&#39;file&#39;)</span>
+<span class="sd">        Index(['f1', 'f2', 'f3', 'f4'], dtype='string', name='file')</span>
 <span class="sd">        &gt;&gt;&gt; union(</span>
 <span class="sd">        ...     [</span>
-<span class="sd">        ...         segmented_index([&quot;f2&quot;], [0], [1]),</span>
-<span class="sd">        ...         segmented_index([&quot;f1&quot;, &quot;f2&quot;], [0, 1], [1, 2]),</span>
+<span class="sd">        ...         segmented_index(["f2"], [0], [1]),</span>
+<span class="sd">        ...         segmented_index(["f1", "f2"], [0, 1], [1, 2]),</span>
 <span class="sd">        ...     ]</span>
 <span class="sd">        ... )</span>
-<span class="sd">        MultiIndex([(&#39;f2&#39;, &#39;0 days 00:00:00&#39;, &#39;0 days 00:00:01&#39;),</span>
-<span class="sd">                    (&#39;f1&#39;, &#39;0 days 00:00:00&#39;, &#39;0 days 00:00:01&#39;),</span>
-<span class="sd">                    (&#39;f2&#39;, &#39;0 days 00:00:01&#39;, &#39;0 days 00:00:02&#39;)],</span>
-<span class="sd">                   names=[&#39;file&#39;, &#39;start&#39;, &#39;end&#39;])</span>
+<span class="sd">        MultiIndex([('f2', '0 days 00:00:00', '0 days 00:00:01'),</span>
+<span class="sd">                    ('f1', '0 days 00:00:00', '0 days 00:00:01'),</span>
+<span class="sd">                    ('f2', '0 days 00:00:01', '0 days 00:00:02')],</span>
+<span class="sd">                   names=['file', 'start', 'end'])</span>
 <span class="sd">        &gt;&gt;&gt; union(</span>
 <span class="sd">        ...     [</span>
-<span class="sd">        ...         filewise_index([&quot;f1&quot;, &quot;f2&quot;]),</span>
-<span class="sd">        ...         segmented_index([&quot;f1&quot;, &quot;f2&quot;], [0, 0], [1, 1]),</span>
+<span class="sd">        ...         filewise_index(["f1", "f2"]),</span>
+<span class="sd">        ...         segmented_index(["f1", "f2"], [0, 0], [1, 1]),</span>
 <span class="sd">        ...     ]</span>
 <span class="sd">        ... )</span>
-<span class="sd">        MultiIndex([(&#39;f1&#39;, &#39;0 days&#39;,               NaT),</span>
-<span class="sd">                    (&#39;f2&#39;, &#39;0 days&#39;,               NaT),</span>
-<span class="sd">                    (&#39;f1&#39;, &#39;0 days&#39;, &#39;0 days 00:00:01&#39;),</span>
-<span class="sd">                    (&#39;f2&#39;, &#39;0 days&#39;, &#39;0 days 00:00:01&#39;)],</span>
-<span class="sd">                   names=[&#39;file&#39;, &#39;start&#39;, &#39;end&#39;])</span>
+<span class="sd">        MultiIndex([('f1', '0 days',               NaT),</span>
+<span class="sd">                    ('f2', '0 days',               NaT),</span>
+<span class="sd">                    ('f1', '0 days', '0 days 00:00:01'),</span>
+<span class="sd">                    ('f2', '0 days', '0 days 00:00:01')],</span>
+<span class="sd">                   names=['file', 'start', 'end'])</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">objs</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">([])</span>
 
@@ -2351,7 +2351,7 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">_assert_index_alike</span><span class="p">(</span>
     <span class="n">objs</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Index</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">],</span>
 <span class="p">):</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Raise if index objects are not alike.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">"""Raise if index objects are not alike.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        objs: objects</span>
@@ -2359,16 +2359,16 @@
 <span class="sd">    Raises:</span>
 <span class="sd">        ValueError: if index objects are not alike</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">if</span> <span class="n">is_index_alike</span><span class="p">(</span><span class="n">objs</span><span class="p">):</span>
         <span class="k">return</span>
 
     <span class="n">objs</span> <span class="o">=</span> <span class="p">[</span><span class="n">obj</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">)</span> <span class="k">else</span> <span class="n">obj</span><span class="o">.</span><span class="n">index</span> <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">objs</span><span class="p">]</span>
-    <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;Levels and dtypes of all objects must match.&quot;</span>
+    <span class="n">msg</span> <span class="o">=</span> <span class="s2">"Levels and dtypes of all objects must match."</span>
 
     <span class="n">dims</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">dict</span><span class="o">.</span><span class="n">fromkeys</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">nlevels</span> <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">objs</span><span class="p">))</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">dims</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="n">msg</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot; Found different number of levels: </span><span class="si">{</span><span class="n">dims</span><span class="si">}</span><span class="s2">.&quot;</span>
+        <span class="n">msg</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">" Found different number of levels: </span><span class="si">{</span><span class="n">dims</span><span class="si">}</span><span class="s2">."</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
 
     <span class="n">names</span> <span class="o">=</span> <span class="p">[]</span>
@@ -2379,7 +2379,7 @@
             <span class="n">names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">names</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
     <span class="n">names</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">dict</span><span class="o">.</span><span class="n">fromkeys</span><span class="p">(</span><span class="n">names</span><span class="p">))</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">names</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="n">msg</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot; Found different level names: </span><span class="si">{</span><span class="n">names</span><span class="si">}</span><span class="s2">.&quot;</span>
+        <span class="n">msg</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">" Found different level names: </span><span class="si">{</span><span class="n">names</span><span class="si">}</span><span class="s2">."</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
 
     <span class="n">dtypes</span> <span class="o">=</span> <span class="p">[]</span>
@@ -2388,13 +2388,13 @@
         <span class="n">dtypes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="n">ds</span><span class="p">)</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ds</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="n">ds</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
     <span class="n">dtypes</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">dict</span><span class="o">.</span><span class="n">fromkeys</span><span class="p">(</span><span class="n">dtypes</span><span class="p">))</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">dtypes</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="n">msg</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot; Found different level dtypes: </span><span class="si">{</span><span class="n">dtypes</span><span class="si">}</span><span class="s2">.&quot;</span>
+        <span class="n">msg</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">" Found different level dtypes: </span><span class="si">{</span><span class="n">dtypes</span><span class="si">}</span><span class="s2">."</span>
 
     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_audformat_dtypes</span><span class="p">(</span><span class="n">index</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;List of audformat data types of index.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">"""List of audformat data types of index.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        index: index</span>
@@ -2402,30 +2402,30 @@
 <span class="sd">    Returns:</span>
 <span class="sd">        audformat data types of index</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">dtypes</span> <span class="o">=</span> <span class="n">_pandas_dtypes</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
     <span class="k">return</span> <span class="p">[</span><span class="n">to_audformat_dtype</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span> <span class="k">for</span> <span class="n">dtype</span> <span class="ow">in</span> <span class="n">dtypes</span><span class="p">]</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_is_same_dtype</span><span class="p">(</span><span class="n">d1</span><span class="p">,</span> <span class="n">d2</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Helper function to compare pandas dtype.&quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">d1</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;bool&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">d2</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;bool&quot;</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">"""Helper function to compare pandas dtype."""</span>
+    <span class="k">if</span> <span class="n">d1</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"bool"</span><span class="p">)</span> <span class="ow">and</span> <span class="n">d2</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"bool"</span><span class="p">):</span>
         <span class="c1"># match different bool types, i.e. bool and boolean</span>
         <span class="k">return</span> <span class="kc">True</span>
-    <span class="k">if</span> <span class="n">d1</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;int&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">d2</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;int&quot;</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">d1</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"int"</span><span class="p">)</span> <span class="ow">and</span> <span class="n">d2</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"int"</span><span class="p">):</span>
         <span class="c1"># match different int types, e.g. int64 and Int64</span>
         <span class="k">return</span> <span class="kc">True</span>
-    <span class="k">if</span> <span class="n">d1</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;float&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">d2</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;float&quot;</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">d1</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"float"</span><span class="p">)</span> <span class="ow">and</span> <span class="n">d2</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"float"</span><span class="p">):</span>
         <span class="c1"># match different float types, e.g. float32 and float64</span>
         <span class="k">return</span> <span class="kc">True</span>
-    <span class="k">if</span> <span class="n">d1</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;category&quot;</span> <span class="ow">and</span> <span class="n">d2</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;category&quot;</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">d1</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">"category"</span> <span class="ow">and</span> <span class="n">d2</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">"category"</span><span class="p">:</span>
         <span class="c1"># match only if categories are the same</span>
         <span class="k">return</span> <span class="n">d1</span> <span class="o">==</span> <span class="n">d2</span>
     <span class="k">return</span> <span class="n">d1</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">d2</span><span class="o">.</span><span class="n">name</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_levels</span><span class="p">(</span><span class="n">index</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;List of levels of index.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">"""List of levels of index.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        index: index</span>
@@ -2433,7 +2433,7 @@
 <span class="sd">    Returns:</span>
 <span class="sd">        index levels</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">MultiIndex</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">index</span><span class="o">.</span><span class="n">names</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
@@ -2443,7 +2443,7 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">_maybe_convert_filewise_index</span><span class="p">(</span>
     <span class="n">objs</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Index</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">],</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Index</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">]:</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Convert filewise to segmented index.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">"""Convert filewise to segmented index.</span>
 
 <span class="sd">    Checks if all index objects are either filewise or segmented,</span>
 <span class="sd">    if this is the case possibly convert filewise to segmented indices</span>
@@ -2454,7 +2454,7 @@
 <span class="sd">    Returns:</span>
 <span class="sd">        list with possibly converted index objects</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">filewise</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">is_filewise_index</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span> <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">objs</span><span class="p">])</span>
     <span class="n">segmented</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">is_segmented_index</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span> <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">objs</span><span class="p">])</span>
     <span class="k">if</span> <span class="p">(</span><span class="n">filewise</span> <span class="o">|</span> <span class="n">segmented</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
@@ -2467,7 +2467,7 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">_maybe_convert_pandas_dtype</span><span class="p">(</span>
     <span class="n">index</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">:</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Ensure desired pandas dtypes.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">"""Ensure desired pandas dtypes.</span>
 
 <span class="sd">    Applies the following conversions:</span>
 
@@ -2480,19 +2480,19 @@
 <span class="sd">    Returns:</span>
 <span class="sd">        index object</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">levels</span> <span class="o">=</span> <span class="n">_levels</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
     <span class="n">dtypes</span> <span class="o">=</span> <span class="n">_pandas_dtypes</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
 
     <span class="c1"># Ensure integers are stored as Int64</span>
     <span class="n">int_dtypes</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="n">level</span><span class="p">:</span> <span class="s2">&quot;Int64&quot;</span>
+        <span class="n">level</span><span class="p">:</span> <span class="s2">"Int64"</span>
         <span class="k">for</span> <span class="n">level</span><span class="p">,</span> <span class="n">dtype</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">levels</span><span class="p">,</span> <span class="n">dtypes</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">pd</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">is_integer_dtype</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span>
     <span class="p">}</span>
     <span class="c1"># Ensure bool values are stored as boolean</span>
     <span class="n">bool_dtypes</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="n">level</span><span class="p">:</span> <span class="s2">&quot;boolean&quot;</span>
+        <span class="n">level</span><span class="p">:</span> <span class="s2">"boolean"</span>
         <span class="k">for</span> <span class="n">level</span><span class="p">,</span> <span class="n">dtype</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">levels</span><span class="p">,</span> <span class="n">dtypes</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">pd</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">is_bool_dtype</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span>
     <span class="p">}</span>
@@ -2506,7 +2506,7 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">_maybe_convert_single_level_multi_index</span><span class="p">(</span>
     <span class="n">objs</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Index</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">],</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Index</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">]:</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Convert single-level pd.MultiIndex to pd.Index.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">"""Convert single-level pd.MultiIndex to pd.Index.</span>
 
 <span class="sd">    If input is a mixture of single-level</span>
 <span class="sd">    pd.MultiIndex and pd.Index objects,</span>
@@ -2519,7 +2519,7 @@
 <span class="sd">    Returns:</span>
 <span class="sd">        list with possibly converted objects</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">indices</span> <span class="o">=</span> <span class="p">[</span><span class="n">obj</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">)</span> <span class="k">else</span> <span class="n">obj</span><span class="o">.</span><span class="n">index</span> <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">objs</span><span class="p">]</span>
     <span class="n">is_single_level</span> <span class="o">=</span> <span class="n">indices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">nlevels</span> <span class="o">==</span> <span class="mi">1</span>
     <span class="n">is_mix</span> <span class="o">=</span> <span class="nb">len</span><span class="p">({</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">MultiIndex</span><span class="p">)</span> <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="n">indices</span><span class="p">})</span> <span class="o">==</span> <span class="mi">2</span>
@@ -2536,7 +2536,7 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_pandas_dtypes</span><span class="p">(</span><span class="n">index</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">object</span><span class="p">]:</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;List of pandas dtypes of index.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">"""List of pandas dtypes of index.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        index: index</span>
@@ -2544,7 +2544,7 @@
 <span class="sd">    Returns:</span>
 <span class="sd">        pandas data types of index</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">MultiIndex</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">index</span><span class="o">.</span><span class="n">dtypes</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
@@ -2564,7 +2564,7 @@
         
         
         
-          Built with <a href="https://www.sphinx-doc.org">Sphinx</a> on 2026/05/12 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org">Sphinx</a> on 2026/10/09 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>

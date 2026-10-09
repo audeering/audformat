@@ -68,7 +68,7 @@
             
             
               <div class="version">
-                v1.4.2
+                v1.4.3
               </div>
             
           
@@ -172,14 +172,14 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">is_scalar</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Check if value is scalar.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">"""Check if value is scalar."""</span>
     <span class="k">return</span> <span class="p">(</span><span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span>
-        <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="s2">&quot;__len__&quot;</span><span class="p">)</span>
+        <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="s2">"__len__"</span><span class="p">)</span>
     <span class="p">)</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">to_array</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Convert value to list or array.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">"""Convert value to list or array."""</span>
     <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">)):</span>
             <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
@@ -189,15 +189,15 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">to_timedelta</span><span class="p">(</span><span class="n">times</span><span class="p">):</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Convert time value to pd.Timedelta.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">"""Convert time value to pd.Timedelta."""</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">result</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_timedelta</span><span class="p">(</span><span class="n">times</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;s&quot;</span><span class="p">)</span>
-    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>  <span class="c1"># catches values like &#39;1s&#39;</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_timedelta</span><span class="p">(</span><span class="n">times</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">"s"</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>  <span class="c1"># catches values like '1s'</span>
         <span class="n">result</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_timedelta</span><span class="p">(</span><span class="n">times</span><span class="p">)</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Timedelta</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">result</span><span class="o">.</span><span class="n">as_unit</span><span class="p">(</span><span class="s2">&quot;ns&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">result</span><span class="o">.</span><span class="n">as_unit</span><span class="p">(</span><span class="s2">"ns"</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">result</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;timedelta64[ns]&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">result</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">"timedelta64[ns]"</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="assert_index">
@@ -205,7 +205,7 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">assert_index</span><span class="p">(</span>
     <span class="n">obj</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
 <span class="p">):</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Assert object is conform to :ref:`table specifications</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">"""Assert object is conform to :ref:`table specifications</span>
 <span class="sd">    &lt;data-tables:Tables&gt;`.</span>
 
 <span class="sd">    This does not check for duplicates in the index.</span>
@@ -219,7 +219,7 @@
 <span class="sd">        ValueError: if not conform to</span>
 <span class="sd">            :ref:`table specifications &lt;data-tables:Tables&gt;`</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>  <span class="c1"># noqa: D205</span>
+<span class="sd">    """</span>  <span class="c1"># noqa: D205</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)):</span>
         <span class="n">obj</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">index</span>
 
@@ -227,25 +227,25 @@
 
     <span class="k">if</span> <span class="n">num</span> <span class="o">!=</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">num</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-            <span class="s2">&quot;Index not conform to audformat. &quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;Found &quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">num</span><span class="si">}</span><span class="s2"> &quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;levels, but expected 1 or 3 levels.&quot;</span>
+            <span class="s2">"Index not conform to audformat. "</span>
+            <span class="sa">f</span><span class="s2">"Found "</span>
+            <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">num</span><span class="si">}</span><span class="s2"> "</span>
+            <span class="sa">f</span><span class="s2">"levels, but expected 1 or 3 levels."</span>
         <span class="p">)</span>
 
     <span class="k">if</span> <span class="n">num</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">obj</span><span class="o">.</span><span class="n">names</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">define</span><span class="o">.</span><span class="n">IndexField</span><span class="o">.</span><span class="n">FILE</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s2">&quot;Index not conform to audformat. &quot;</span>
-                <span class="s2">&quot;Found single level with name &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">obj</span><span class="o">.</span><span class="n">names</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">, &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;but expected name &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">define</span><span class="o">.</span><span class="n">IndexField</span><span class="o">.</span><span class="n">FILE</span><span class="si">}</span><span class="s2">&#39;.&quot;</span>
+                <span class="s2">"Index not conform to audformat. "</span>
+                <span class="s2">"Found single level with name "</span>
+                <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">obj</span><span class="o">.</span><span class="n">names</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">, "</span>
+                <span class="sa">f</span><span class="s2">"but expected name "</span>
+                <span class="sa">f</span><span class="s2">"'</span><span class="si">{</span><span class="n">define</span><span class="o">.</span><span class="n">IndexField</span><span class="o">.</span><span class="n">FILE</span><span class="si">}</span><span class="s2">'."</span>
             <span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">pd</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">is_string_dtype</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">dtype</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s2">&quot;Index not conform to audformat. &quot;</span>
-                <span class="s2">&quot;Level &#39;file&#39; must contain values of type &#39;string&#39;.&quot;</span>
+                <span class="s2">"Index not conform to audformat. "</span>
+                <span class="s2">"Level 'file' must contain values of type 'string'."</span>
             <span class="p">)</span>
     <span class="k">elif</span> <span class="n">num</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span>
@@ -259,26 +259,26 @@
                 <span class="n">define</span><span class="o">.</span><span class="n">IndexField</span><span class="o">.</span><span class="n">END</span><span class="p">,</span>
             <span class="p">]</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s2">&quot;Index not conform to audformat. &quot;</span>
-                <span class="s2">&quot;Found three levels with names &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">obj</span><span class="o">.</span><span class="n">names</span><span class="si">}</span><span class="s2">, &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;but expected names &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">expected_names</span><span class="si">}</span><span class="s2">.&quot;</span>
+                <span class="s2">"Index not conform to audformat. "</span>
+                <span class="s2">"Found three levels with names "</span>
+                <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">obj</span><span class="o">.</span><span class="n">names</span><span class="si">}</span><span class="s2">, "</span>
+                <span class="sa">f</span><span class="s2">"but expected names "</span>
+                <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">expected_names</span><span class="si">}</span><span class="s2">."</span>
             <span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">pd</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">is_string_dtype</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">levels</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s2">&quot;Index not conform to audformat. &quot;</span>
-                <span class="s2">&quot;Level &#39;file&#39; must contain values of type &#39;string&#39;.&quot;</span>
+                <span class="s2">"Index not conform to audformat. "</span>
+                <span class="s2">"Level 'file' must contain values of type 'string'."</span>
             <span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">pd</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">is_timedelta64_ns_dtype</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">levels</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s2">&quot;Index not conform to audformat. &quot;</span>
-                <span class="s2">&quot;Level &#39;start&#39; must contain values of type &#39;timedelta64[ns]&#39;.&quot;</span>
+                <span class="s2">"Index not conform to audformat. "</span>
+                <span class="s2">"Level 'start' must contain values of type 'timedelta64[ns]'."</span>
             <span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">pd</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">is_timedelta64_ns_dtype</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">levels</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s2">&quot;Index not conform to audformat. &quot;</span>
-                <span class="s2">&quot;Level &#39;end&#39; must contain values of type &#39;timedelta64[ns]&#39;.&quot;</span>
+                <span class="s2">"Index not conform to audformat. "</span>
+                <span class="s2">"Level 'end' must contain values of type 'timedelta64[ns]'."</span>
             <span class="p">)</span></div>
 
 
@@ -288,7 +288,7 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">assert_no_duplicates</span><span class="p">(</span>
     <span class="n">obj</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
 <span class="p">):</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Assert object contains no duplicates in its index.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">"""Assert object contains no duplicates in its index.</span>
 
 <span class="sd">    The :ref:`table specifications &lt;data-tables:Tables&gt;`</span>
 <span class="sd">    allow no duplicated index entries.</span>
@@ -301,21 +301,21 @@
 <span class="sd">    Raises:</span>
 <span class="sd">        ValueError: if duplicates are found</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)):</span>
         <span class="n">obj</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">index</span>
 
     <span class="k">if</span> <span class="n">obj</span><span class="o">.</span><span class="n">has_duplicates</span><span class="p">:</span>
         <span class="n">max_display</span> <span class="o">=</span> <span class="mi">10</span>
         <span class="n">duplicates</span> <span class="o">=</span> <span class="n">obj</span><span class="p">[</span><span class="n">obj</span><span class="o">.</span><span class="n">duplicated</span><span class="p">()]</span>
-        <span class="n">msg_tail</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">...&quot;</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">duplicates</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">max_display</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
-        <span class="n">msg_duplicates</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+        <span class="n">msg_tail</span> <span class="o">=</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">..."</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">duplicates</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">max_display</span> <span class="k">else</span> <span class="s2">""</span>
+        <span class="n">msg_duplicates</span> <span class="o">=</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
             <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">duplicate</span><span class="p">)</span> <span class="k">for</span> <span class="n">duplicate</span> <span class="ow">in</span> <span class="n">duplicates</span><span class="p">[:</span><span class="n">max_display</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()]</span>
         <span class="p">)</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-            <span class="s2">&quot;Index not conform to audformat. &quot;</span>
-            <span class="s2">&quot;Found duplicates:</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">msg_duplicates</span><span class="si">}{</span><span class="n">msg_tail</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="s2">"Index not conform to audformat. "</span>
+            <span class="s2">"Found duplicates:</span><span class="se">\n</span><span class="s2">"</span>
+            <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">msg_duplicates</span><span class="si">}{</span><span class="n">msg_tail</span><span class="si">}</span><span class="s2">"</span>
         <span class="p">)</span></div>
 
 
@@ -325,7 +325,7 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">filewise_index</span><span class="p">(</span>
     <span class="n">files</span><span class="p">:</span> <span class="n">Files</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">:</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Creates a filewise index.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">"""Creates a filewise index.</span>
 
 <span class="sd">    Index is conform to :ref:`table specifications &lt;data-tables:Tables&gt;`.</span>
 
@@ -339,10 +339,10 @@
 <span class="sd">        ValueError: if created index contains duplicates</span>
 
 <span class="sd">    Examples:</span>
-<span class="sd">        &gt;&gt;&gt; filewise_index([&quot;a.wav&quot;, &quot;b.wav&quot;])</span>
-<span class="sd">        Index([&#39;a.wav&#39;, &#39;b.wav&#39;], dtype=&#39;string&#39;, name=&#39;file&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; filewise_index(["a.wav", "b.wav"])</span>
+<span class="sd">        Index(['a.wav', 'b.wav'], dtype='string', name='file')</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">if</span> <span class="n">files</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">files</span> <span class="o">=</span> <span class="p">[]</span>
 
@@ -350,7 +350,7 @@
     <span class="n">index</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">(</span>
         <span class="n">files</span><span class="p">,</span>
         <span class="n">name</span><span class="o">=</span><span class="n">define</span><span class="o">.</span><span class="n">IndexField</span><span class="o">.</span><span class="n">FILE</span><span class="p">,</span>
-        <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;string&quot;</span><span class="p">,</span>
+        <span class="n">dtype</span><span class="o">=</span><span class="s2">"string"</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">assert_index</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
 
@@ -363,7 +363,7 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">index_type</span><span class="p">(</span>
     <span class="n">obj</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">define</span><span class="o">.</span><span class="n">IndexType</span><span class="p">:</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Derive index type.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">"""Derive index type.</span>
 
 <span class="sd">    Possible return values are given by</span>
 <span class="sd">    :class:`audformat.define.IndexType`.</span>
@@ -381,11 +381,11 @@
 
 <span class="sd">    Examples:</span>
 <span class="sd">        &gt;&gt;&gt; index_type(filewise_index())</span>
-<span class="sd">        &#39;filewise&#39;</span>
+<span class="sd">        'filewise'</span>
 <span class="sd">        &gt;&gt;&gt; index_type(segmented_index())</span>
-<span class="sd">        &#39;segmented&#39;</span>
+<span class="sd">        'segmented'</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)):</span>
         <span class="n">obj</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">index</span>
 
@@ -403,7 +403,7 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">is_filewise_index</span><span class="p">(</span>
     <span class="n">obj</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Check if object has a filewise index.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">"""Check if object has a filewise index.</span>
 
 <span class="sd">    Returns ``True`` if index is a filewise index conform to</span>
 <span class="sd">    :ref:`table specifications &lt;data-tables:Tables&gt;`.</span>
@@ -420,7 +420,7 @@
 <span class="sd">        &gt;&gt;&gt; is_filewise_index(pd.Index([]))</span>
 <span class="sd">        False</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">):</span>
         <span class="n">obj</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">index</span>
 
@@ -433,7 +433,7 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">is_segmented_index</span><span class="p">(</span>
     <span class="n">obj</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Check if object has a segmented index.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">"""Check if object has a segmented index.</span>
 
 <span class="sd">    Returns ``True`` if index is a segmented index conform to</span>
 <span class="sd">    :ref:`table specifications &lt;data-tables:Tables&gt;`.</span>
@@ -450,7 +450,7 @@
 <span class="sd">        &gt;&gt;&gt; is_segmented_index(pd.Index([]))</span>
 <span class="sd">        False</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">):</span>
         <span class="n">obj</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">index</span>
 
@@ -470,7 +470,7 @@
     <span class="n">starts</span><span class="p">:</span> <span class="n">Timestamps</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">ends</span><span class="p">:</span> <span class="n">Timestamps</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">:</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Create segmented index.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">"""Create segmented index.</span>
 
 <span class="sd">    Index is conform to :ref:`table specifications &lt;data-tables:Tables&gt;`.</span>
 
@@ -496,30 +496,30 @@
 <span class="sd">        ValueError: if ``files``, ``start`` and ``ends`` differ in size</span>
 
 <span class="sd">    Examples:</span>
-<span class="sd">        &gt;&gt;&gt; segmented_index(&quot;a.wav&quot;, 0, 1.1)</span>
-<span class="sd">        MultiIndex([(&#39;a.wav&#39;, &#39;0 days&#39;, &#39;0 days 00:00:01.100000&#39;)],</span>
-<span class="sd">                   names=[&#39;file&#39;, &#39;start&#39;, &#39;end&#39;])</span>
-<span class="sd">        &gt;&gt;&gt; segmented_index(&quot;a.wav&quot;, &quot;0ms&quot;, &quot;1ms&quot;)</span>
-<span class="sd">        MultiIndex([(&#39;a.wav&#39;, &#39;0 days&#39;, &#39;0 days 00:00:00.001000&#39;)],</span>
-<span class="sd">                   names=[&#39;file&#39;, &#39;start&#39;, &#39;end&#39;])</span>
-<span class="sd">        &gt;&gt;&gt; segmented_index([&quot;a.wav&quot;, &quot;b.wav&quot;])</span>
-<span class="sd">        MultiIndex([(&#39;a.wav&#39;, &#39;0 days&#39;, NaT),</span>
-<span class="sd">                    (&#39;b.wav&#39;, &#39;0 days&#39;, NaT)],</span>
-<span class="sd">                   names=[&#39;file&#39;, &#39;start&#39;, &#39;end&#39;])</span>
-<span class="sd">        &gt;&gt;&gt; segmented_index([&quot;a.wav&quot;, &quot;b.wav&quot;], [None, 1], [1, None])</span>
-<span class="sd">        MultiIndex([(&#39;a.wav&#39;,               NaT, &#39;0 days 00:00:01&#39;),</span>
-<span class="sd">                    (&#39;b.wav&#39;, &#39;0 days 00:00:01&#39;,               NaT)],</span>
-<span class="sd">                   names=[&#39;file&#39;, &#39;start&#39;, &#39;end&#39;])</span>
+<span class="sd">        &gt;&gt;&gt; segmented_index("a.wav", 0, 1.1)</span>
+<span class="sd">        MultiIndex([('a.wav', '0 days', '0 days 00:00:01.100000')],</span>
+<span class="sd">                   names=['file', 'start', 'end'])</span>
+<span class="sd">        &gt;&gt;&gt; segmented_index("a.wav", "0ms", "1ms")</span>
+<span class="sd">        MultiIndex([('a.wav', '0 days', '0 days 00:00:00.001000')],</span>
+<span class="sd">                   names=['file', 'start', 'end'])</span>
+<span class="sd">        &gt;&gt;&gt; segmented_index(["a.wav", "b.wav"])</span>
+<span class="sd">        MultiIndex([('a.wav', '0 days', NaT),</span>
+<span class="sd">                    ('b.wav', '0 days', NaT)],</span>
+<span class="sd">                   names=['file', 'start', 'end'])</span>
+<span class="sd">        &gt;&gt;&gt; segmented_index(["a.wav", "b.wav"], [None, 1], [1, None])</span>
+<span class="sd">        MultiIndex([('a.wav',               NaT, '0 days 00:00:01'),</span>
+<span class="sd">                    ('b.wav', '0 days 00:00:01',               NaT)],</span>
+<span class="sd">                   names=['file', 'start', 'end'])</span>
 <span class="sd">        &gt;&gt;&gt; segmented_index(</span>
-<span class="sd">        ...     files=[&quot;a.wav&quot;, &quot;a.wav&quot;],</span>
+<span class="sd">        ...     files=["a.wav", "a.wav"],</span>
 <span class="sd">        ...     starts=[0, 1],</span>
-<span class="sd">        ...     ends=pd.to_timedelta([1000, 2000], unit=&quot;ms&quot;),</span>
+<span class="sd">        ...     ends=pd.to_timedelta([1000, 2000], unit="ms"),</span>
 <span class="sd">        ... )</span>
-<span class="sd">        MultiIndex([(&#39;a.wav&#39;, &#39;0 days 00:00:00&#39;, &#39;0 days 00:00:01&#39;),</span>
-<span class="sd">                    (&#39;a.wav&#39;, &#39;0 days 00:00:01&#39;, &#39;0 days 00:00:02&#39;)],</span>
-<span class="sd">                   names=[&#39;file&#39;, &#39;start&#39;, &#39;end&#39;])</span>
+<span class="sd">        MultiIndex([('a.wav', '0 days 00:00:00', '0 days 00:00:01'),</span>
+<span class="sd">                    ('a.wav', '0 days 00:00:01', '0 days 00:00:02')],</span>
+<span class="sd">                   names=['file', 'start', 'end'])</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">files</span> <span class="o">=</span> <span class="n">to_array</span><span class="p">(</span><span class="n">files</span><span class="p">)</span>
     <span class="n">starts</span> <span class="o">=</span> <span class="n">to_array</span><span class="p">(</span><span class="n">starts</span><span class="p">)</span>
     <span class="n">ends</span> <span class="o">=</span> <span class="n">to_array</span><span class="p">(</span><span class="n">ends</span><span class="p">)</span>
@@ -537,8 +537,8 @@
 
     <span class="k">if</span> <span class="n">num_files</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">starts</span><span class="p">)</span> <span class="ow">or</span> <span class="n">num_files</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ends</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-            <span class="s2">&quot;Cannot create segmented table if &#39;files&#39;, &quot;</span>
-            <span class="s2">&quot;&#39;starts&#39;, and &#39;ends&#39; differ in size&quot;</span><span class="p">,</span>
+            <span class="s2">"Cannot create segmented table if 'files', "</span>
+            <span class="s2">"'starts', and 'ends' differ in size"</span><span class="p">,</span>
         <span class="p">)</span>
 
     <span class="n">index</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">MultiIndex</span><span class="o">.</span><span class="n">from_arrays</span><span class="p">(</span>
@@ -549,7 +549,7 @@
             <span class="n">define</span><span class="o">.</span><span class="n">IndexField</span><span class="o">.</span><span class="n">END</span><span class="p">,</span>
         <span class="p">],</span>
     <span class="p">)</span>
-    <span class="n">index</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">set_index_dtypes</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="p">{</span><span class="n">define</span><span class="o">.</span><span class="n">IndexField</span><span class="o">.</span><span class="n">FILE</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span><span class="p">})</span>
+    <span class="n">index</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">set_index_dtypes</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="p">{</span><span class="n">define</span><span class="o">.</span><span class="n">IndexField</span><span class="o">.</span><span class="n">FILE</span><span class="p">:</span> <span class="s2">"string"</span><span class="p">})</span>
     <span class="n">assert_index</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">index</span></div>
@@ -569,7 +569,7 @@
         
         
         
-          Built with <a href="https://www.sphinx-doc.org">Sphinx</a> on 2026/05/12 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org">Sphinx</a> on 2026/10/09 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>

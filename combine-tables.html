@@ -71,7 +71,7 @@
             
             
               <div class="version">
-                v1.4.2
+                v1.4.3
               </div>
             
           
@@ -173,32 +173,32 @@ for age and likability:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">audformat.testing</span>
 
 <span class="n">db</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">create_db</span><span class="p">(</span><span class="n">minimal</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s2">&quot;age&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Scheme</span><span class="p">(</span>
+<span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s2">"age"</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Scheme</span><span class="p">(</span>
     <span class="n">audformat</span><span class="o">.</span><span class="n">define</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">INTEGER</span><span class="p">,</span>
     <span class="n">minimum</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
     <span class="n">maximum</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s2">&quot;likability&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Scheme</span><span class="p">(</span>
+<span class="n">db</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s2">"likability"</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Scheme</span><span class="p">(</span>
     <span class="n">audformat</span><span class="o">.</span><span class="n">define</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">FLOAT</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="n">audformat</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">add_table</span><span class="p">(</span>
     <span class="n">db</span><span class="p">,</span>
-    <span class="n">table_id</span><span class="o">=</span><span class="s2">&quot;age&quot;</span><span class="p">,</span>
+    <span class="n">table_id</span><span class="o">=</span><span class="s2">"age"</span><span class="p">,</span>
     <span class="n">index_type</span><span class="o">=</span><span class="n">audformat</span><span class="o">.</span><span class="n">define</span><span class="o">.</span><span class="n">IndexType</span><span class="o">.</span><span class="n">FILEWISE</span><span class="p">,</span>
-    <span class="n">columns</span><span class="o">=</span><span class="s2">&quot;age&quot;</span><span class="p">,</span>
+    <span class="n">columns</span><span class="o">=</span><span class="s2">"age"</span><span class="p">,</span>
     <span class="n">num_files</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="n">audformat</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">add_table</span><span class="p">(</span>
     <span class="n">db</span><span class="p">,</span>
-    <span class="n">table_id</span><span class="o">=</span><span class="s2">&quot;likability&quot;</span><span class="p">,</span>
+    <span class="n">table_id</span><span class="o">=</span><span class="s2">"likability"</span><span class="p">,</span>
     <span class="n">index_type</span><span class="o">=</span><span class="n">audformat</span><span class="o">.</span><span class="n">define</span><span class="o">.</span><span class="n">IndexType</span><span class="o">.</span><span class="n">SEGMENTED</span><span class="p">,</span>
-    <span class="n">columns</span><span class="o">=</span><span class="s2">&quot;likability&quot;</span><span class="p">,</span>
+    <span class="n">columns</span><span class="o">=</span><span class="s2">"likability"</span><span class="p">,</span>
     <span class="n">num_files</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
 <span class="p">)</span>
 </pre></div>
 </div>
-<p>Which results in the following two <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v3.0.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a>:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="p">[</span><span class="s2">&quot;age&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+<p>Which results in the following two <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v3.0.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a>:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="p">[</span><span class="s2">"age"</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
 <span class="go">               age</span>
 <span class="go">file</span>
 <span class="go">audio/001.wav   40</span>
@@ -206,7 +206,7 @@ for age and likability:</p>
 <span class="go">audio/003.wav   38</span>
 </pre></div>
 </div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="p">[</span><span class="s2">&quot;likability&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="p">[</span><span class="s2">"likability"</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
 <span class="go">                                                                   likability</span>
 <span class="go">file          start                     end</span>
 <span class="go">audio/001.wav 0 days 00:00:00.063022023 0 days 00:00:00.670806417    0.310583</span>
@@ -232,7 +232,7 @@ for age and likability:</p>
 </pre></div>
 </div>
 <p>You can simply combine both tables with:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">combined_table</span> <span class="o">=</span> <span class="n">db</span><span class="p">[</span><span class="s2">&quot;likability&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">db</span><span class="p">[</span><span class="s2">&quot;age&quot;</span><span class="p">]</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">combined_table</span> <span class="o">=</span> <span class="n">db</span><span class="p">[</span><span class="s2">"likability"</span><span class="p">]</span> <span class="o">+</span> <span class="n">db</span><span class="p">[</span><span class="s2">"age"</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">combined_table</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
 <span class="go">                                                                   likability   age</span>
 <span class="go">file          start                     end</span>
@@ -263,7 +263,7 @@ for age and likability:</p>
 </div>
 <p>Or, if you just want to have the likability information for all segments,
 for which age information is available:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">df_likability</span> <span class="o">=</span> <span class="n">db</span><span class="p">[</span><span class="s2">&quot;likability&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">db</span><span class="p">[</span><span class="s2">&quot;age&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">files</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">df_likability</span> <span class="o">=</span> <span class="n">db</span><span class="p">[</span><span class="s2">"likability"</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">db</span><span class="p">[</span><span class="s2">"age"</span><span class="p">]</span><span class="o">.</span><span class="n">files</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">df_likability</span>
 <span class="go">                                                                   likability</span>
 <span class="go">file          start                     end</span>
@@ -286,7 +286,7 @@ for which age information is available:</p>
 </div>
 <p>Or, if you want to have the age information for segments
 in the likeability table:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="p">[</span><span class="s2">&quot;age&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">df_likability</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="p">[</span><span class="s2">"age"</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">df_likability</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
 <span class="go">                                                                   age</span>
 <span class="go">file          start                     end</span>
 <span class="go">audio/001.wav 0 days 00:00:00.063022023 0 days 00:00:00.670806417   40</span>
@@ -317,7 +317,7 @@ as we will demonstrate with the following example.</p>
 <p>First we create a second database
 and add a gender scheme:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">db2</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">create_db</span><span class="p">(</span><span class="n">minimal</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">db2</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s2">&quot;gender&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Scheme</span><span class="p">(</span><span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;female&quot;</span><span class="p">,</span> <span class="s2">&quot;male&quot;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db2</span><span class="o">.</span><span class="n">schemes</span><span class="p">[</span><span class="s2">"gender"</span><span class="p">]</span> <span class="o">=</span> <span class="n">audformat</span><span class="o">.</span><span class="n">Scheme</span><span class="p">(</span><span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="s2">"female"</span><span class="p">,</span> <span class="s2">"male"</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">db2</span><span class="o">.</span><span class="n">schemes</span>
 <span class="go">gender:</span>
 <span class="go">  dtype: str</span>
@@ -327,9 +327,9 @@ and add a gender scheme:</p>
 <p>Next, we add a table and fill in some gender information:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">audformat</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">add_table</span><span class="p">(</span>
 <span class="gp">... </span>    <span class="n">db2</span><span class="p">,</span>
-<span class="gp">... </span>    <span class="n">table_id</span><span class="o">=</span><span class="s2">&quot;gender_and_age&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">table_id</span><span class="o">=</span><span class="s2">"gender_and_age"</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="n">index_type</span><span class="o">=</span><span class="n">audformat</span><span class="o">.</span><span class="n">define</span><span class="o">.</span><span class="n">IndexType</span><span class="o">.</span><span class="n">FILEWISE</span><span class="p">,</span>
-<span class="gp">... </span>    <span class="n">columns</span><span class="o">=</span><span class="s2">&quot;gender&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">columns</span><span class="o">=</span><span class="s2">"gender"</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="n">num_files</span><span class="o">=</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span>
 <span class="gp">... </span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
 <span class="go">              gender</span>
@@ -340,7 +340,7 @@ and add a gender scheme:</p>
 </pre></div>
 </div>
 <p>Now, we update the table with age values from the other database.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">db2</span><span class="p">[</span><span class="s2">&quot;gender_and_age&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">db</span><span class="p">[</span><span class="s2">&quot;age&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">db2</span><span class="p">[</span><span class="s2">"gender_and_age"</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">db</span><span class="p">[</span><span class="s2">"age"</span><span class="p">])</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
 <span class="go">              gender   age</span>
 <span class="go">file</span>
 <span class="go">audio/002.wav   male    33</span>
@@ -383,7 +383,7 @@ and add a gender scheme:</p>
         
         
         
-          Built with <a href="https://www.sphinx-doc.org">Sphinx</a> on 2026/05/12 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org">Sphinx</a> on 2026/10/09 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>

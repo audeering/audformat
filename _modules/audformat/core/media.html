@@ -68,7 +68,7 @@
             
             
               <div class="version">
-                v1.4.2
+                v1.4.3
               </div>
             
           
@@ -171,7 +171,7 @@
 <div class="viewcode-block" id="Media">
 <a class="viewcode-back" href="../../../api/audformat.Media.html#audformat.Media">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Media</span><span class="p">(</span><span class="n">HeaderBase</span><span class="p">):</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Media information.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">"""Media information.</span>
 
 <span class="sd">    File ``format`` is always converted to lower case.</span>
 
@@ -179,7 +179,7 @@
 <span class="sd">        type: media type,</span>
 <span class="sd">            see :class:`audformat.define.MediaType`</span>
 <span class="sd">            for available media types</span>
-<span class="sd">        format: file format (e.g. &#39;wav&#39;, &#39;flac&#39;, &#39;mp4&#39;)</span>
+<span class="sd">        format: file format (e.g. 'wav', 'flac', 'mp4')</span>
 <span class="sd">        sampling_rate: audio sampling rate in Hz</span>
 <span class="sd">        channels: number of audio channels</span>
 <span class="sd">        bit_depth: audio bit depth</span>
@@ -196,13 +196,13 @@
 <span class="sd">    Examples:</span>
 <span class="sd">        &gt;&gt;&gt; Media(</span>
 <span class="sd">        ...     type=define.MediaType.AUDIO,</span>
-<span class="sd">        ...     format=&quot;wav&quot;,</span>
+<span class="sd">        ...     format="wav",</span>
 <span class="sd">        ...     sampling_rate=16000,</span>
 <span class="sd">        ...     channels=2,</span>
 <span class="sd">        ... )</span>
 <span class="sd">        {type: audio, format: wav, channels: 2, sampling_rate: 16000}</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -223,27 +223,27 @@
         <span class="n">define</span><span class="o">.</span><span class="n">MediaType</span><span class="o">.</span><span class="n">_assert_has_attribute_value</span><span class="p">(</span><span class="nb">type</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="nb">type</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Media type&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">"""Media type"""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">format</span> <span class="o">=</span> <span class="kc">None</span> <span class="k">if</span> <span class="nb">format</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="nb">str</span><span class="p">(</span><span class="nb">format</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;File format&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">"""File format"""</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">channels</span> <span class="o">=</span> <span class="n">channels</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Audio channels&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">"""Audio channels"""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">bit_depth</span> <span class="o">=</span> <span class="n">bit_depth</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Audio bit depth&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">"""Audio bit depth"""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sampling_rate</span> <span class="o">=</span> <span class="n">sampling_rate</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Audio sampling rate in Hz&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">"""Audio sampling rate in Hz"""</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">video_fps</span> <span class="o">=</span> <span class="n">video_fps</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Video frames per second&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">"""Video frames per second"""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">video_resolution</span> <span class="o">=</span> <span class="p">(</span>
             <span class="kc">None</span> <span class="k">if</span> <span class="n">video_resolution</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="nb">list</span><span class="p">(</span><span class="n">video_resolution</span><span class="p">)</span>
         <span class="p">)</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Video resolution&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">"""Video resolution"""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">video_channels</span> <span class="o">=</span> <span class="n">video_channels</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Video channels per pixel&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">"""Video channels per pixel"""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">video_depth</span> <span class="o">=</span> <span class="n">video_depth</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Video bit depth&quot;&quot;&quot;</span></div>
+<span class="w">        </span><span class="sa">r</span><span class="sd">"""Video bit depth"""</span></div>
 
 </pre></div>
 
@@ -260,7 +260,7 @@
         
         
         
-          Built with <a href="https://www.sphinx-doc.org">Sphinx</a> on 2026/05/12 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org">Sphinx</a> on 2026/10/09 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>

@@ -71,7 +71,7 @@
             
             
               <div class="version">
-                v1.4.2
+                v1.4.3
               </div>
             
           
@@ -235,38 +235,38 @@ When adding a column,
 the column ID must be different
 from the index level names.
 When initialized with a single-level
-<a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.MultiIndex.html#pandas.MultiIndex" title="(in pandas v3.0.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.MultiIndex</span></code></a>,
+<a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.MultiIndex.html#pandas.MultiIndex" title="(in pandas v3.0.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.MultiIndex</span></code></a>,
 the index will be converted to a
-<a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Index.html#pandas.Index" title="(in pandas v3.0.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.Index</span></code></a>.</p>
+<a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Index.html#pandas.Index" title="(in pandas v3.0.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.Index</span></code></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>index</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Index.html#pandas.Index" title="(in pandas v3.0.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Index</span></code></a></span>) – table index with non-empty and unique level names</p></li>
-<li><p><strong>split_id</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – split identifier (must exist)</p></li>
-<li><p><strong>media_id</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – media identifier (must exist)</p></li>
-<li><p><strong>description</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – database description</p></li>
-<li><p><strong>meta</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a></span>) – additional meta fields</p></li>
+<li><p><strong>index</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Index.html#pandas.Index" title="(in pandas v3.0.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Index</span></code></a></span>) – table index with non-empty and unique level names</p></li>
+<li><p><strong>split_id</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – split identifier (must exist)</p></li>
+<li><p><strong>media_id</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – media identifier (must exist)</p></li>
+<li><p><strong>description</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – database description</p></li>
+<li><p><strong>meta</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a></span>) – additional meta fields</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – if level names of index are empty or not unique</p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – if level names of index are empty or not unique</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">index</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">MultiIndex</span><span class="o">.</span><span class="n">from_tuples</span><span class="p">(</span>
 <span class="gp">... </span>    <span class="p">[</span>
-<span class="gp">... </span>        <span class="p">(</span><span class="s2">&quot;f1&quot;</span><span class="p">,</span> <span class="s2">&quot;f2&quot;</span><span class="p">),</span>
-<span class="gp">... </span>        <span class="p">(</span><span class="s2">&quot;f1&quot;</span><span class="p">,</span> <span class="s2">&quot;f3&quot;</span><span class="p">),</span>
-<span class="gp">... </span>        <span class="p">(</span><span class="s2">&quot;f2&quot;</span><span class="p">,</span> <span class="s2">&quot;f3&quot;</span><span class="p">),</span>
+<span class="gp">... </span>        <span class="p">(</span><span class="s2">"f1"</span><span class="p">,</span> <span class="s2">"f2"</span><span class="p">),</span>
+<span class="gp">... </span>        <span class="p">(</span><span class="s2">"f1"</span><span class="p">,</span> <span class="s2">"f3"</span><span class="p">),</span>
+<span class="gp">... </span>        <span class="p">(</span><span class="s2">"f2"</span><span class="p">,</span> <span class="s2">"f3"</span><span class="p">),</span>
 <span class="gp">... </span>    <span class="p">],</span>
-<span class="gp">... </span>    <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;file&quot;</span><span class="p">,</span> <span class="s2">&quot;other&quot;</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s2">"file"</span><span class="p">,</span> <span class="s2">"other"</span><span class="p">],</span>
 <span class="gp">... </span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">index</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">set_index_dtypes</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="s2">&quot;string&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">index</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">set_index_dtypes</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="s2">"string"</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">table</span> <span class="o">=</span> <span class="n">MiscTable</span><span class="p">(</span>
 <span class="gp">... </span>    <span class="n">index</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="n">split_id</span><span class="o">=</span><span class="n">define</span><span class="o">.</span><span class="n">SplitType</span><span class="o">.</span><span class="n">TEST</span><span class="p">,</span>
 <span class="gp">... </span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">table</span><span class="p">[</span><span class="s2">&quot;match&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Column</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">table</span><span class="p">[</span><span class="s2">"match"</span><span class="p">]</span> <span class="o">=</span> <span class="n">Column</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">table</span>
 <span class="go">levels: {file: str, other: str}</span>
 <span class="go">split_id: test</span>
@@ -278,7 +278,7 @@ the index will be converted to a
 <span class="go">f1   f2      NaN</span>
 <span class="go">     f3      NaN</span>
 <span class="go">f2   f3      NaN</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">table</span><span class="o">.</span><span class="n">set</span><span class="p">({</span><span class="s2">&quot;match&quot;</span><span class="p">:</span> <span class="p">[</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">True</span><span class="p">]})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">table</span><span class="o">.</span><span class="n">set</span><span class="p">({</span><span class="s2">"match"</span><span class="p">:</span> <span class="p">[</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">True</span><span class="p">]})</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">table</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
 <span class="go">           match</span>
 <span class="go">file other</span>
@@ -292,11 +292,11 @@ the index will be converted to a
 <span class="go">     f3    False</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">index_new</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">MultiIndex</span><span class="o">.</span><span class="n">from_tuples</span><span class="p">(</span>
 <span class="gp">... </span>    <span class="p">[</span>
-<span class="gp">... </span>        <span class="p">(</span><span class="s2">&quot;f4&quot;</span><span class="p">,</span> <span class="s2">&quot;f1&quot;</span><span class="p">),</span>
+<span class="gp">... </span>        <span class="p">(</span><span class="s2">"f4"</span><span class="p">,</span> <span class="s2">"f1"</span><span class="p">),</span>
 <span class="gp">... </span>    <span class="p">],</span>
-<span class="gp">... </span>    <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;file&quot;</span><span class="p">,</span> <span class="s2">&quot;other&quot;</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s2">"file"</span><span class="p">,</span> <span class="s2">"other"</span><span class="p">],</span>
 <span class="gp">... </span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">index_new</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">set_index_dtypes</span><span class="p">(</span><span class="n">index_new</span><span class="p">,</span> <span class="s2">&quot;string&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">index_new</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">set_index_dtypes</span><span class="p">(</span><span class="n">index_new</span><span class="p">,</span> <span class="s2">"string"</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">table_ex</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">extend_index</span><span class="p">(</span>
 <span class="gp">... </span>    <span class="n">index_new</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
@@ -309,7 +309,7 @@ the index will be converted to a
 <span class="go">f2   f3      True</span>
 <span class="go">f4   f1       NaN</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">table_ex</span><span class="o">.</span><span class="n">set</span><span class="p">(</span>
-<span class="gp">... </span>    <span class="p">{</span><span class="s2">&quot;match&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">},</span>
+<span class="gp">... </span>    <span class="p">{</span><span class="s2">"match"</span><span class="p">:</span> <span class="kc">True</span><span class="p">},</span>
 <span class="gp">... </span>    <span class="n">index</span><span class="o">=</span><span class="n">index_new</span><span class="p">,</span>
 <span class="gp">... </span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">table_ex</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
@@ -320,8 +320,8 @@ the index will be converted to a
 <span class="go">f2   f3      True</span>
 <span class="go">f4   f1      True</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">table_str</span> <span class="o">=</span> <span class="n">MiscTable</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">table_str</span><span class="p">[</span><span class="s2">&quot;strings&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Column</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">table_str</span><span class="o">.</span><span class="n">set</span><span class="p">({</span><span class="s2">&quot;strings&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="s2">&quot;c&quot;</span><span class="p">]})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">table_str</span><span class="p">[</span><span class="s2">"strings"</span><span class="p">]</span> <span class="o">=</span> <span class="n">Column</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">table_str</span><span class="o">.</span><span class="n">set</span><span class="p">({</span><span class="s2">"strings"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"a"</span><span class="p">,</span> <span class="s2">"b"</span><span class="p">,</span> <span class="s2">"c"</span><span class="p">]})</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="p">(</span><span class="n">table</span> <span class="o">+</span> <span class="n">table_str</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
 <span class="go">            match strings</span>
 <span class="go">file other</span>
@@ -370,9 +370,9 @@ use <code class="docutils literal notranslate"><span class="pre">update()</span>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – if columns with the same name have different dtypes</p></li>
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – if values in the same position do not match</p></li>
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – if level and dtypes of indices do not match</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – if columns with the same name have different dtypes</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – if values in the same position do not match</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – if level and dtypes of indices do not match</p></li>
 </ul>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
@@ -390,7 +390,7 @@ use <code class="docutils literal notranslate"><span class="pre">update()</span>
 <dd><p>Compare if table equals other table.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></span></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -404,7 +404,7 @@ use <code class="docutils literal notranslate"><span class="pre">update()</span>
 <dd><p>Return view to a column.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>column_id</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – column identifier</p>
+<dd class="field-odd"><p><strong>column_id</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – column identifier</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="audformat.Column.html#audformat.Column" title="audformat.core.column.Column"><code class="xref py py-class docutils literal notranslate"><span class="pre">Column</span></code></a></span></p>
@@ -421,7 +421,7 @@ use <code class="docutils literal notranslate"><span class="pre">update()</span>
 <dd><p>Number of rows in table.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -436,7 +436,7 @@ use <code class="docutils literal notranslate"><span class="pre">update()</span>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>column_id</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – column identifier</p></li>
+<li><p><strong>column_id</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – column identifier</p></li>
 <li><p><strong>column</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="audformat.Column.html#audformat.Column" title="audformat.core.column.Column"><code class="xref py py-class docutils literal notranslate"><span class="pre">Column</span></code></a></span>) – column</p></li>
 </ul>
 </dd>
@@ -444,8 +444,8 @@ use <code class="docutils literal notranslate"><span class="pre">update()</span>
 <dd class="field-even"><ul class="simple">
 <li><p><a class="reference internal" href="audformat.errors.BadIdError.html#audformat.errors.BadIdError" title="audformat.errors.BadIdError"><strong>BadIdError</strong></a> – if a column with a <code class="docutils literal notranslate"><span class="pre">scheme_id</span></code> or <code class="docutils literal notranslate"><span class="pre">rater_id</span></code> is
     added that does not exist</p></li>
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – if column ID is not different from level names</p></li>
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – if the column is linked to a scheme
+<li><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – if column ID is not different from level names</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – if the column is linked to a scheme
     that is using labels from a misc table,
     but the misc table the column is assigned to
     is already used by the same or another scheme</p></li>
@@ -530,8 +530,8 @@ use <code class="docutils literal notranslate"><span class="pre">update()</span>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>column_ids</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> | <a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]</span>) – column IDs</p></li>
-<li><p><strong>inplace</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></span>) – drop columns in place</p></li>
+<li><p><strong>column_ids</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> | <a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a>[<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]</span>) – column IDs</p></li>
+<li><p><strong>inplace</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></span>) – drop columns in place</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -553,8 +553,8 @@ use <code class="docutils literal notranslate"><span class="pre">update()</span>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>index</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Index.html#pandas.Index" title="(in pandas v3.0.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Index</span></code></a></span>) – index object</p></li>
-<li><p><strong>inplace</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></span>) – drop index in place</p></li>
+<li><p><strong>index</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Index.html#pandas.Index" title="(in pandas v3.0.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Index</span></code></a></span>) – index object</p></li>
+<li><p><strong>inplace</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></span>) – drop index in place</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -564,7 +564,7 @@ use <code class="docutils literal notranslate"><span class="pre">update()</span>
 <dd class="field-odd"><p>new object if <code class="docutils literal notranslate"><span class="pre">inplace=False</span></code>, otherwise <code class="docutils literal notranslate"><span class="pre">self</span></code></p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – if level and dtypes of index does not match table index</p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – if level and dtypes of index does not match table index</p>
 </dd>
 </dl>
 </dd></dl>
@@ -580,11 +580,11 @@ use <code class="docutils literal notranslate"><span class="pre">update()</span>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>stream</strong> – file-like object. If <code class="docutils literal notranslate"><span class="pre">None</span></code> serializes to string</p></li>
-<li><p><strong>indent</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – indent</p></li>
+<li><p><strong>indent</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – indent</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span></p>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span></p>
 </dd>
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>YAML string</p>
@@ -602,11 +602,11 @@ use <code class="docutils literal notranslate"><span class="pre">update()</span>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>index</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Index.html#pandas.Index" title="(in pandas v3.0.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Index</span></code></a></span>) – index object</p></li>
-<li><p><strong>fill_values</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a> | <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a>]</span>) – replace NaN with these values (either a scalar
+<li><p><strong>index</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Index.html#pandas.Index" title="(in pandas v3.0.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Index</span></code></a></span>) – index object</p></li>
+<li><p><strong>fill_values</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#object" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a> | <a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/builtins/functions.html#object" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a>]</span>) – replace NaN with these values (either a scalar
 applied to all columns or a dictionary with column name as
 key)</p></li>
-<li><p><strong>inplace</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></span>) – extend index in place</p></li>
+<li><p><strong>inplace</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></span>) – extend index in place</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -616,7 +616,7 @@ key)</p></li>
 <dd class="field-odd"><p>new object if <code class="docutils literal notranslate"><span class="pre">inplace=False</span></code>, otherwise <code class="docutils literal notranslate"><span class="pre">self</span></code></p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – if level and dtypes of index does not match table index</p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – if level and dtypes of index does not match table index</p>
 </dd>
 </dl>
 </dd></dl>
@@ -631,8 +631,8 @@ key)</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>d</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a></span>) – dictionary of class variables to assign</p></li>
-<li><p><strong>ignore_keys</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]</span>) – variables listed here will be ignored</p></li>
+<li><p><strong>d</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a></span>) – dictionary of class variables to assign</p></li>
+<li><p><strong>ignore_keys</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a>[<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]</span>) – variables listed here will be ignored</p></li>
 </ul>
 </dd>
 </dl>
@@ -653,9 +653,9 @@ and for <code class="docutils literal notranslate"><span class="pre">map</span><
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>index</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Index.html#pandas.Index" title="(in pandas v3.0.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Index</span></code></a></span>) – index</p></li>
-<li><p><strong>copy</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></span>) – return a copy of the labels</p></li>
-<li><p><strong>map</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> | <a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]]</span>) – map scheme or scheme fields to column values.
+<li><p><strong>index</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Index.html#pandas.Index" title="(in pandas v3.0.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Index</span></code></a></span>) – index</p></li>
+<li><p><strong>copy</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></span>) – return a copy of the labels</p></li>
+<li><p><strong>map</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> | <a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a>[<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]]</span>) – map scheme or scheme fields to column values.
 For example if your table holds a column <code class="docutils literal notranslate"><span class="pre">speaker</span></code> with
 speaker IDs, which is assigned to a scheme that contains a
 dict mapping speaker IDs to age and gender entries,
@@ -667,18 +667,18 @@ To also keep the original column with speaker IDS, you can do
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v3.0.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a></span></p>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v3.0.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a></span></p>
 </dd>
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>labels</p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#FileNotFoundError" title="(in Python v3.14)"><strong>FileNotFoundError</strong></a> – if file is not found</p></li>
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.14)"><strong>RuntimeError</strong></a> – if table is not assign to a database</p></li>
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – if trying to map without a scheme</p></li>
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – if trying to map from a scheme that has no labels</p></li>
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – if trying to map to a non-existing field</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#FileNotFoundError" title="(in Python v3.14)"><strong>FileNotFoundError</strong></a> – if file is not found</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#RuntimeError" title="(in Python v3.14)"><strong>RuntimeError</strong></a> – if table is not assign to a database</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – if trying to map without a scheme</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – if trying to map from a scheme that has no labels</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – if trying to map to a non-existing field</p></li>
 </ul>
 </dd>
 </dl>
@@ -724,12 +724,12 @@ and ask to delete one of the files.</p>
 values not matching those labels are set to <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>path</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – file path without extension</p>
+<dd class="field-odd"><p><strong>path</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – file path without extension</p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.14)"><strong>RuntimeError</strong></a> – if table file(s) are missing</p></li>
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.14)"><strong>RuntimeError</strong></a> – if CSV or PARQUET file is newer than PKL file</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#RuntimeError" title="(in Python v3.14)"><strong>RuntimeError</strong></a> – if table file(s) are missing</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#RuntimeError" title="(in Python v3.14)"><strong>RuntimeError</strong></a> – if CSV or PARQUET file is newer than PKL file</p></li>
 </ul>
 </dd>
 </dl>
@@ -778,8 +778,8 @@ values not matching those labels are set to <code class="docutils literal notran
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>column_ids</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> | <a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]</span>) – column IDs</p></li>
-<li><p><strong>inplace</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></span>) – pick columns in place</p></li>
+<li><p><strong>column_ids</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> | <a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a>[<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]</span>) – column IDs</p></li>
+<li><p><strong>inplace</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></span>) – pick columns in place</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -801,8 +801,8 @@ values not matching those labels are set to <code class="docutils literal notran
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>index</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Index.html#pandas.Index" title="(in pandas v3.0.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Index</span></code></a></span>) – index object</p></li>
-<li><p><strong>inplace</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></span>) – pick index in place</p></li>
+<li><p><strong>index</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Index.html#pandas.Index" title="(in pandas v3.0.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Index</span></code></a></span>) – index object</p></li>
+<li><p><strong>inplace</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></span>) – pick index in place</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -812,7 +812,7 @@ values not matching those labels are set to <code class="docutils literal notran
 <dd class="field-odd"><p>new object if <code class="docutils literal notranslate"><span class="pre">inplace=False</span></code>, otherwise <code class="docutils literal notranslate"><span class="pre">self</span></code></p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – if level and dtypes of index does not match table index</p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – if level and dtypes of index does not match table index</p>
 </dd>
 </dl>
 </dd></dl>
@@ -839,7 +839,7 @@ that wrote the parquet file,
 the chosen compression codec
 and metadata written by the library.</p>
 <p>The hash can be accessed with <code class="docutils literal notranslate"><span class="pre">pyarrow</span></code> by:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pyarrow</span><span class="o">.</span><span class="n">parquet</span><span class="o">.</span><span class="n">read_schema</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">.parquet&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="sa">b</span><span class="s2">&quot;hash&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pyarrow</span><span class="o">.</span><span class="n">parquet</span><span class="o">.</span><span class="n">read_schema</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">.parquet"</span><span class="p">)</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="sa">b</span><span class="s2">"hash"</span><span class="p">]</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>The hash is used by <code class="xref py py-mod docutils literal notranslate"><span class="pre">audb</span></code>
@@ -848,11 +848,11 @@ to track changes of database files.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>path</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – file path without extension</p></li>
-<li><p><strong>storage_format</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – storage format of table.
+<li><p><strong>path</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – file path without extension</p></li>
+<li><p><strong>storage_format</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – storage format of table.
 See <a class="reference internal" href="audformat.define.TableStorageFormat.html#audformat.define.TableStorageFormat" title="audformat.define.TableStorageFormat"><code class="xref py py-class docutils literal notranslate"><span class="pre">audformat.define.TableStorageFormat</span></code></a>
 for available formats</p></li>
-<li><p><strong>update_other_formats</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></span>) – if <code class="docutils literal notranslate"><span class="pre">True</span></code> it will not only save
+<li><p><strong>update_other_formats</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></span>) – if <code class="docutils literal notranslate"><span class="pre">True</span></code> it will not only save
 to the given <code class="docutils literal notranslate"><span class="pre">storage_format</span></code>,
 but update all files stored in other storage formats as well</p></li>
 </ul>
@@ -877,12 +877,12 @@ to match its dtype.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>values</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Timedelta.html#pandas.Timedelta" title="(in pandas v3.0.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timedelta</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Timedelta.html#pandas.Timedelta" title="(in pandas v3.0.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timedelta</span></code></a>]], <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>, <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Series.html#pandas.Series" title="(in pandas v3.0.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Series</span></code></a>]] | <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v3.0.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a></span>) – dictionary of values with <code class="docutils literal notranslate"><span class="pre">column_id</span></code> as key</p></li>
-<li><p><strong>index</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Index.html#pandas.Index" title="(in pandas v3.0.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Index</span></code></a></span>) – index</p></li>
+<li><p><strong>values</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, <a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Timedelta.html#pandas.Timedelta" title="(in pandas v3.0.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timedelta</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, <a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Timedelta.html#pandas.Timedelta" title="(in pandas v3.0.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timedelta</span></code></a>]], <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>, <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Series.html#pandas.Series" title="(in pandas v3.0.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Series</span></code></a>]] | <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v3.0.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a></span>) – dictionary of values with <code class="docutils literal notranslate"><span class="pre">column_id</span></code> as key</p></li>
+<li><p><strong>index</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Index.html#pandas.Index" title="(in pandas v3.0.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Index</span></code></a></span>) – index</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – if values cannot be converted
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – if values cannot be converted
     to match the schemes dtype</p>
 </dd>
 </dl>
@@ -920,7 +920,7 @@ to match its dtype.</p>
 <dd><p>Serialize object to dictionary.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a></span></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a></span></p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>dictionary with attributes</p>
@@ -954,7 +954,7 @@ the value of the last table in the list is kept.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>others</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Self</span></code>, <a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Self</span></code>]]</span>) – table object(s)</p></li>
-<li><p><strong>overwrite</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></span>) – overwrite values where indices overlap</p></li>
+<li><p><strong>overwrite</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></span>) – overwrite values where indices overlap</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -965,14 +965,14 @@ the value of the last table in the list is kept.</p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.14)"><strong>RuntimeError</strong></a> – if table is not assign to a database</p></li>
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – if split or media does not match</p></li>
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – if overlapping columns reference different schemes
+<li><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#RuntimeError" title="(in Python v3.14)"><strong>RuntimeError</strong></a> – if table is not assign to a database</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – if split or media does not match</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – if overlapping columns reference different schemes
     or raters</p></li>
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – if a missing scheme or rater cannot be copied
+<li><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – if a missing scheme or rater cannot be copied
     because a different object with the same ID exists</p></li>
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – if values in same position overlap</p></li>
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – if level and dtypes of table indices do not match</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – if values in same position overlap</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – if level and dtypes of table indices do not match</p></li>
 </ul>
 </dd>
 </dl>
@@ -1004,7 +1004,7 @@ the value of the last table in the list is kept.</p>
         
         
         
-          Built with <a href="https://www.sphinx-doc.org">Sphinx</a> on 2026/05/12 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org">Sphinx</a> on 2026/10/09 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>

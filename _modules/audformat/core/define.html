@@ -68,7 +68,7 @@
             
             
               <div class="version">
-                v1.4.2
+                v1.4.3
               </div>
             
           
@@ -168,7 +168,7 @@
 <div class="viewcode-block" id="DataType">
 <a class="viewcode-back" href="../../../api/audformat.define.DataType.html#audformat.define.DataType">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">DataType</span><span class="p">(</span><span class="n">DefineBase</span><span class="p">):</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Data types of column content.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">"""Data types of column content.</span>
 
 <span class="sd">    Specifies string values</span>
 <span class="sd">    representing data types</span>
@@ -190,67 +190,67 @@
 <span class="sd">    Use ``TIME``</span>
 <span class="sd">    to handle duration values.</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="n">BOOL</span> <span class="o">=</span> <span class="s2">&quot;bool&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Bool data type.&quot;&quot;&quot;</span>
+    <span class="n">BOOL</span> <span class="o">=</span> <span class="s2">"bool"</span>
+<span class="w">    </span><span class="sd">"""Bool data type."""</span>
 
-    <span class="n">DATE</span> <span class="o">=</span> <span class="s2">&quot;date&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Date data type.</span>
+    <span class="n">DATE</span> <span class="o">=</span> <span class="s2">"date"</span>
+<span class="w">    </span><span class="sd">"""Date data type.</span>
 
 <span class="sd">    Data type to store date information,</span>
 <span class="sd">    e.g. as provided by :class:`datetime.datetime`.</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="n">INTEGER</span> <span class="o">=</span> <span class="s2">&quot;int&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Integer data type.&quot;&quot;&quot;</span>
+    <span class="n">INTEGER</span> <span class="o">=</span> <span class="s2">"int"</span>
+<span class="w">    </span><span class="sd">"""Integer data type."""</span>
 
-    <span class="n">FLOAT</span> <span class="o">=</span> <span class="s2">&quot;float&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Float data type.&quot;&quot;&quot;</span>
+    <span class="n">FLOAT</span> <span class="o">=</span> <span class="s2">"float"</span>
+<span class="w">    </span><span class="sd">"""Float data type."""</span>
 
-    <span class="n">OBJECT</span> <span class="o">=</span> <span class="s2">&quot;object&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Object data type.</span>
+    <span class="n">OBJECT</span> <span class="o">=</span> <span class="s2">"object"</span>
+<span class="w">    </span><span class="sd">"""Object data type.</span>
 
 <span class="sd">    This should be used if no other data type fits.</span>
 <span class="sd">    Inside :mod:`pandas` it is stored</span>
 <span class="sd">    as the ``object`` data type,</span>
 <span class="sd">    compare :attr:`pandas.DataFrame.dtypes`.</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="n">STRING</span> <span class="o">=</span> <span class="s2">&quot;str&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;String data type.&quot;&quot;&quot;</span>
+    <span class="n">STRING</span> <span class="o">=</span> <span class="s2">"str"</span>
+<span class="w">    </span><span class="sd">"""String data type."""</span>
 
-    <span class="n">TIME</span> <span class="o">=</span> <span class="s2">&quot;time&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Time data type.</span>
+    <span class="n">TIME</span> <span class="o">=</span> <span class="s2">"time"</span>
+<span class="w">    </span><span class="sd">"""Time data type.</span>
 
 <span class="sd">    Data type to store durations,</span>
 <span class="sd">    e.g. as provided by :class:`pandas.Timedelta`.</span>
 
-<span class="sd">    &quot;&quot;&quot;</span></div>
+<span class="sd">    """</span></div>
 
 
 
 <div class="viewcode-block" id="Gender">
 <a class="viewcode-back" href="../../../api/audformat.define.Gender.html#audformat.define.Gender">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Gender</span><span class="p">(</span><span class="n">DefineBase</span><span class="p">):</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Gender scheme definitions.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">"""Gender scheme definitions.</span>
 
 <span class="sd">    Specifies string values</span>
 <span class="sd">    representing gender labels</span>
 <span class="sd">    that are recommended to use with a scheme</span>
 <span class="sd">    that contains gender labels,</span>
 <span class="sd">    e.g.</span>
-<span class="sd">    ``audformat.Scheme(&#39;str&#39;, labels=[&#39;female&#39;, &#39;male&#39;])``.</span>
+<span class="sd">    ``audformat.Scheme('str', labels=['female', 'male'])``.</span>
 <span class="sd">    The exact string values are not part</span>
 <span class="sd">    of the :ref:`scheme specifications &lt;data-header:Scheme&gt;`,</span>
 <span class="sd">    and can be changed if desired.</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="n">CHILD</span> <span class="o">=</span> <span class="s2">&quot;child&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Child gender label.</span>
+    <span class="n">CHILD</span> <span class="o">=</span> <span class="s2">"child"</span>
+<span class="w">    </span><span class="sd">"""Child gender label.</span>
 
 <span class="sd">    Female and male children</span>
 <span class="sd">    have a voice more common to each other</span>
@@ -258,30 +258,30 @@
 <span class="sd">    Hence,</span>
 <span class="sd">    we provide a common child label.</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="n">FEMALE</span> <span class="o">=</span> <span class="s2">&quot;female&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Female gender label.&quot;&quot;&quot;</span>
+    <span class="n">FEMALE</span> <span class="o">=</span> <span class="s2">"female"</span>
+<span class="w">    </span><span class="sd">"""Female gender label."""</span>
 
-    <span class="n">MALE</span> <span class="o">=</span> <span class="s2">&quot;male&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Male gender label.&quot;&quot;&quot;</span>
+    <span class="n">MALE</span> <span class="o">=</span> <span class="s2">"male"</span>
+<span class="w">    </span><span class="sd">"""Male gender label."""</span>
 
-    <span class="n">OTHER</span> <span class="o">=</span> <span class="s2">&quot;other&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Other gender label.</span>
+    <span class="n">OTHER</span> <span class="o">=</span> <span class="s2">"other"</span>
+<span class="w">    </span><span class="sd">"""Other gender label.</span>
 
 <span class="sd">    Should include labels</span>
 <span class="sd">    that are not covered by</span>
 <span class="sd">    female, male, or child,</span>
 <span class="sd">    e.g. diverse.</span>
 
-<span class="sd">    &quot;&quot;&quot;</span></div>
+<span class="sd">    """</span></div>
 
 
 
 <div class="viewcode-block" id="IndexField">
 <a class="viewcode-back" href="../../../api/audformat.define.IndexField.html#audformat.define.IndexField">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">IndexField</span><span class="p">(</span><span class="n">DefineBase</span><span class="p">):</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Index fields of a table.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">"""Index fields of a table.</span>
 
 <span class="sd">    Specifies the string values</span>
 <span class="sd">    representing column/field names</span>
@@ -291,41 +291,41 @@
 <span class="sd">    of the :ref:`table specifications &lt;data-tables:Tables&gt;`,</span>
 <span class="sd">    and should never be changed by a user.</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="n">FILE</span> <span class="o">=</span> <span class="s2">&quot;file&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;File index field.</span>
+    <span class="n">FILE</span> <span class="o">=</span> <span class="s2">"file"</span>
+<span class="w">    </span><span class="sd">"""File index field.</span>
 
 <span class="sd">    Name of the index column</span>
 <span class="sd">    listing files</span>
 <span class="sd">    in a filewise or segmented table.</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="n">START</span> <span class="o">=</span> <span class="s2">&quot;start&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Start index field.</span>
+    <span class="n">START</span> <span class="o">=</span> <span class="s2">"start"</span>
+<span class="w">    </span><span class="sd">"""Start index field.</span>
 
 <span class="sd">    Name of the index column</span>
 <span class="sd">    listing start times</span>
 <span class="sd">    in a segmented table.</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="n">END</span> <span class="o">=</span> <span class="s2">&quot;end&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;End index field.</span>
+    <span class="n">END</span> <span class="o">=</span> <span class="s2">"end"</span>
+<span class="w">    </span><span class="sd">"""End index field.</span>
 
 <span class="sd">    Name of the index column</span>
 <span class="sd">    listing end times</span>
 <span class="sd">    in a segmented table.</span>
 
-<span class="sd">    &quot;&quot;&quot;</span></div>
+<span class="sd">    """</span></div>
 
 
 
 <div class="viewcode-block" id="IndexType">
 <a class="viewcode-back" href="../../../api/audformat.define.IndexType.html#audformat.define.IndexType">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">IndexType</span><span class="p">(</span><span class="n">DefineBase</span><span class="p">):</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Index types of a table.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">"""Index types of a table.</span>
 
 <span class="sd">    Specifies the string values</span>
 <span class="sd">    representing a filewise or segmented index.</span>
@@ -336,20 +336,20 @@
 <span class="sd">    of the :ref:`table specifications &lt;data-tables:Tables&gt;`,</span>
 <span class="sd">    and should never be changed by a user.</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="n">FILEWISE</span> <span class="o">=</span> <span class="s2">&quot;filewise&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Filewise index type.&quot;&quot;&quot;</span>
+    <span class="n">FILEWISE</span> <span class="o">=</span> <span class="s2">"filewise"</span>
+<span class="w">    </span><span class="sd">"""Filewise index type."""</span>
 
-    <span class="n">SEGMENTED</span> <span class="o">=</span> <span class="s2">&quot;segmented&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Segmented index type.&quot;&quot;&quot;</span></div>
+    <span class="n">SEGMENTED</span> <span class="o">=</span> <span class="s2">"segmented"</span>
+<span class="w">    </span><span class="sd">"""Segmented index type."""</span></div>
 
 
 
 <div class="viewcode-block" id="License">
 <a class="viewcode-back" href="../../../api/audformat.define.License.html#audformat.define.License">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">License</span><span class="p">(</span><span class="n">DefineBase</span><span class="p">):</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Common public licenses recommended to use with your data.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">"""Common public licenses recommended to use with your data.</span>
 
 <span class="sd">    Specifies string values</span>
 <span class="sd">    representing public licences</span>
@@ -366,38 +366,38 @@
 <span class="sd">    of the :ref:`database specifications &lt;data-header:Database&gt;`,</span>
 <span class="sd">    and can be changed if desired.</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="n">CC0_1_0</span> <span class="o">=</span> <span class="s2">&quot;CC0-1.0&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Creative Commons 1.0 Universal.&quot;&quot;&quot;</span>
+    <span class="n">CC0_1_0</span> <span class="o">=</span> <span class="s2">"CC0-1.0"</span>
+<span class="w">    </span><span class="sd">"""Creative Commons 1.0 Universal."""</span>
 
-    <span class="n">CC_BY_4_0</span> <span class="o">=</span> <span class="s2">&quot;CC-BY-4.0&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Creative Commons Attribution 4.0.&quot;&quot;&quot;</span>
+    <span class="n">CC_BY_4_0</span> <span class="o">=</span> <span class="s2">"CC-BY-4.0"</span>
+<span class="w">    </span><span class="sd">"""Creative Commons Attribution 4.0."""</span>
 
-    <span class="n">CC_BY_NC_4_0</span> <span class="o">=</span> <span class="s2">&quot;CC-BY-NC-4.0&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Creative Commons Attribution-NonCommercial 4.0.&quot;&quot;&quot;</span>
+    <span class="n">CC_BY_NC_4_0</span> <span class="o">=</span> <span class="s2">"CC-BY-NC-4.0"</span>
+<span class="w">    </span><span class="sd">"""Creative Commons Attribution-NonCommercial 4.0."""</span>
 
-    <span class="n">CC_BY_NC_SA_4_0</span> <span class="o">=</span> <span class="s2">&quot;CC-BY-NC-SA-4.0&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Creative Commons Attribution-NonCommercial-ShareAlike 4.0.&quot;&quot;&quot;</span>
+    <span class="n">CC_BY_NC_SA_4_0</span> <span class="o">=</span> <span class="s2">"CC-BY-NC-SA-4.0"</span>
+<span class="w">    </span><span class="sd">"""Creative Commons Attribution-NonCommercial-ShareAlike 4.0."""</span>
 
-    <span class="n">CC_BY_SA_4_0</span> <span class="o">=</span> <span class="s2">&quot;CC-BY-SA-4.0&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Creative Commons Attribution-ShareAlike 4.0.&quot;&quot;&quot;</span></div>
+    <span class="n">CC_BY_SA_4_0</span> <span class="o">=</span> <span class="s2">"CC-BY-SA-4.0"</span>
+<span class="w">    </span><span class="sd">"""Creative Commons Attribution-ShareAlike 4.0."""</span></div>
 
 
 
 <span class="n">LICENSE_URLS</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="n">License</span><span class="o">.</span><span class="n">CC0_1_0</span><span class="p">:</span> <span class="s2">&quot;https://creativecommons.org/publicdomain/zero/1.0/&quot;</span><span class="p">,</span>
-    <span class="n">License</span><span class="o">.</span><span class="n">CC_BY_4_0</span><span class="p">:</span> <span class="s2">&quot;https://creativecommons.org/licenses/by/4.0/&quot;</span><span class="p">,</span>
-    <span class="n">License</span><span class="o">.</span><span class="n">CC_BY_NC_4_0</span><span class="p">:</span> <span class="s2">&quot;https://creativecommons.org/licenses/by-nc/4.0/&quot;</span><span class="p">,</span>
-    <span class="n">License</span><span class="o">.</span><span class="n">CC_BY_NC_SA_4_0</span><span class="p">:</span> <span class="s2">&quot;https://creativecommons.org/licenses/by-nc-sa/4.0/&quot;</span><span class="p">,</span>
-    <span class="n">License</span><span class="o">.</span><span class="n">CC_BY_SA_4_0</span><span class="p">:</span> <span class="s2">&quot;https://creativecommons.org/licenses/by-sa/4.0/&quot;</span><span class="p">,</span>
+    <span class="n">License</span><span class="o">.</span><span class="n">CC0_1_0</span><span class="p">:</span> <span class="s2">"https://creativecommons.org/publicdomain/zero/1.0/"</span><span class="p">,</span>
+    <span class="n">License</span><span class="o">.</span><span class="n">CC_BY_4_0</span><span class="p">:</span> <span class="s2">"https://creativecommons.org/licenses/by/4.0/"</span><span class="p">,</span>
+    <span class="n">License</span><span class="o">.</span><span class="n">CC_BY_NC_4_0</span><span class="p">:</span> <span class="s2">"https://creativecommons.org/licenses/by-nc/4.0/"</span><span class="p">,</span>
+    <span class="n">License</span><span class="o">.</span><span class="n">CC_BY_NC_SA_4_0</span><span class="p">:</span> <span class="s2">"https://creativecommons.org/licenses/by-nc-sa/4.0/"</span><span class="p">,</span>
+    <span class="n">License</span><span class="o">.</span><span class="n">CC_BY_SA_4_0</span><span class="p">:</span> <span class="s2">"https://creativecommons.org/licenses/by-sa/4.0/"</span><span class="p">,</span>
 <span class="p">}</span>
 
 
 <div class="viewcode-block" id="MediaType">
 <a class="viewcode-back" href="../../../api/audformat.define.MediaType.html#audformat.define.MediaType">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">MediaType</span><span class="p">(</span><span class="n">DefineBase</span><span class="p">):</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Media type of table.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">"""Media type of table.</span>
 
 <span class="sd">    Specifies string values</span>
 <span class="sd">    representing media types</span>
@@ -411,23 +411,23 @@
 <span class="sd">    of the :ref:`media specifications &lt;data-header:Media&gt;`,</span>
 <span class="sd">    and should never be changed by a user.</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="n">AUDIO</span> <span class="o">=</span> <span class="s2">&quot;audio&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Audio media type.&quot;&quot;&quot;</span>
+    <span class="n">AUDIO</span> <span class="o">=</span> <span class="s2">"audio"</span>
+<span class="w">    </span><span class="sd">"""Audio media type."""</span>
 
-    <span class="n">OTHER</span> <span class="o">=</span> <span class="s2">&quot;other&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Other media type.&quot;&quot;&quot;</span>
+    <span class="n">OTHER</span> <span class="o">=</span> <span class="s2">"other"</span>
+<span class="w">    </span><span class="sd">"""Other media type."""</span>
 
-    <span class="n">VIDEO</span> <span class="o">=</span> <span class="s2">&quot;video&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Video media type.&quot;&quot;&quot;</span></div>
+    <span class="n">VIDEO</span> <span class="o">=</span> <span class="s2">"video"</span>
+<span class="w">    </span><span class="sd">"""Video media type."""</span></div>
 
 
 
 <div class="viewcode-block" id="RaterType">
 <a class="viewcode-back" href="../../../api/audformat.define.RaterType.html#audformat.define.RaterType">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">RaterType</span><span class="p">(</span><span class="n">DefineBase</span><span class="p">):</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Rater type of column.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">"""Rater type of column.</span>
 
 <span class="sd">    Specifies string values</span>
 <span class="sd">    representing rater types</span>
@@ -441,29 +441,29 @@
 <span class="sd">    of the :ref:`rater specifications &lt;data-header:Rater&gt;`,</span>
 <span class="sd">    and should never be changed by a user.</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="n">HUMAN</span> <span class="o">=</span> <span class="s2">&quot;human&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Human rater type.&quot;&quot;&quot;</span>
+    <span class="n">HUMAN</span> <span class="o">=</span> <span class="s2">"human"</span>
+<span class="w">    </span><span class="sd">"""Human rater type."""</span>
 
-    <span class="n">MACHINE</span> <span class="o">=</span> <span class="s2">&quot;machine&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Machine rater type.&quot;&quot;&quot;</span>
+    <span class="n">MACHINE</span> <span class="o">=</span> <span class="s2">"machine"</span>
+<span class="w">    </span><span class="sd">"""Machine rater type."""</span>
 
-    <span class="n">OTHER</span> <span class="o">=</span> <span class="s2">&quot;other&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Other rater type.&quot;&quot;&quot;</span>
+    <span class="n">OTHER</span> <span class="o">=</span> <span class="s2">"other"</span>
+<span class="w">    </span><span class="sd">"""Other rater type."""</span>
 
-    <span class="n">TRUTH</span> <span class="o">=</span> <span class="s2">&quot;ground truth&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Ground truth rater type.&quot;&quot;&quot;</span>
+    <span class="n">TRUTH</span> <span class="o">=</span> <span class="s2">"ground truth"</span>
+<span class="w">    </span><span class="sd">"""Ground truth rater type."""</span>
 
-    <span class="n">VOTE</span> <span class="o">=</span> <span class="s2">&quot;vote&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Vote rater type.&quot;&quot;&quot;</span></div>
+    <span class="n">VOTE</span> <span class="o">=</span> <span class="s2">"vote"</span>
+<span class="w">    </span><span class="sd">"""Vote rater type."""</span></div>
 
 
 
 <div class="viewcode-block" id="SplitType">
 <a class="viewcode-back" href="../../../api/audformat.define.SplitType.html#audformat.define.SplitType">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">SplitType</span><span class="p">(</span><span class="n">DefineBase</span><span class="p">):</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Split type of table.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">"""Split type of table.</span>
 
 <span class="sd">    Specifies string values</span>
 <span class="sd">    representing split types</span>
@@ -477,26 +477,26 @@
 <span class="sd">    of the :ref:`split specifications &lt;data-header:Split&gt;`,</span>
 <span class="sd">    and should never be changed by a user.</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="n">TRAIN</span> <span class="o">=</span> <span class="s2">&quot;train&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Train split type.&quot;&quot;&quot;</span>
+    <span class="n">TRAIN</span> <span class="o">=</span> <span class="s2">"train"</span>
+<span class="w">    </span><span class="sd">"""Train split type."""</span>
 
-    <span class="n">DEVELOP</span> <span class="o">=</span> <span class="s2">&quot;dev&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Dev split type.&quot;&quot;&quot;</span>
+    <span class="n">DEVELOP</span> <span class="o">=</span> <span class="s2">"dev"</span>
+<span class="w">    </span><span class="sd">"""Dev split type."""</span>
 
-    <span class="n">OTHER</span> <span class="o">=</span> <span class="s2">&quot;other&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Other split type.&quot;&quot;&quot;</span>
+    <span class="n">OTHER</span> <span class="o">=</span> <span class="s2">"other"</span>
+<span class="w">    </span><span class="sd">"""Other split type."""</span>
 
-    <span class="n">TEST</span> <span class="o">=</span> <span class="s2">&quot;test&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Test split type.&quot;&quot;&quot;</span></div>
+    <span class="n">TEST</span> <span class="o">=</span> <span class="s2">"test"</span>
+<span class="w">    </span><span class="sd">"""Test split type."""</span></div>
 
 
 
 <div class="viewcode-block" id="TableStorageFormat">
 <a class="viewcode-back" href="../../../api/audformat.define.TableStorageFormat.html#audformat.define.TableStorageFormat">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">TableStorageFormat</span><span class="p">(</span><span class="n">DefineBase</span><span class="p">):</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Storage format of tables.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">"""Storage format of tables.</span>
 
 <span class="sd">    Specifies string values</span>
 <span class="sd">    used as file extensions</span>
@@ -522,23 +522,23 @@
 <span class="sd">    of the :ref:`audformat specifications &lt;data-format:Database&gt;`,</span>
 <span class="sd">    and should never be changed by a user.</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="n">CSV</span> <span class="o">=</span> <span class="s2">&quot;csv&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;File extension for tables stored in CSV format.&quot;&quot;&quot;</span>
+    <span class="n">CSV</span> <span class="o">=</span> <span class="s2">"csv"</span>
+<span class="w">    </span><span class="sd">"""File extension for tables stored in CSV format."""</span>
 
-    <span class="n">PARQUET</span> <span class="o">=</span> <span class="s2">&quot;parquet&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;File extension for tables stored in PARQUET format.&quot;&quot;&quot;</span>
+    <span class="n">PARQUET</span> <span class="o">=</span> <span class="s2">"parquet"</span>
+<span class="w">    </span><span class="sd">"""File extension for tables stored in PARQUET format."""</span>
 
-    <span class="n">PICKLE</span> <span class="o">=</span> <span class="s2">&quot;pkl&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;File extension for tables stored in PKL format.&quot;&quot;&quot;</span></div>
+    <span class="n">PICKLE</span> <span class="o">=</span> <span class="s2">"pkl"</span>
+<span class="w">    </span><span class="sd">"""File extension for tables stored in PKL format."""</span></div>
 
 
 
 <div class="viewcode-block" id="Usage">
 <a class="viewcode-back" href="../../../api/audformat.define.Usage.html#audformat.define.Usage">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Usage</span><span class="p">(</span><span class="n">DefineBase</span><span class="p">):</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Usage permission of database.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">"""Usage permission of database.</span>
 
 <span class="sd">    Specifies string values</span>
 <span class="sd">    representing usage</span>
@@ -553,22 +553,22 @@
 <span class="sd">    of the :ref:`database specifications &lt;data-header:Database&gt;`,</span>
 <span class="sd">    and should never be changed by a user.</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="n">COMMERCIAL</span> <span class="o">=</span> <span class="s2">&quot;commercial&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Commercial usage.&quot;&quot;&quot;</span>
+    <span class="n">COMMERCIAL</span> <span class="o">=</span> <span class="s2">"commercial"</span>
+<span class="w">    </span><span class="sd">"""Commercial usage."""</span>
 
-    <span class="n">OTHER</span> <span class="o">=</span> <span class="s2">&quot;other&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Other usage.&quot;&quot;&quot;</span>
+    <span class="n">OTHER</span> <span class="o">=</span> <span class="s2">"other"</span>
+<span class="w">    </span><span class="sd">"""Other usage."""</span>
 
-    <span class="n">RESEARCH</span> <span class="o">=</span> <span class="s2">&quot;research&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Research only usage.&quot;&quot;&quot;</span>
+    <span class="n">RESEARCH</span> <span class="o">=</span> <span class="s2">"research"</span>
+<span class="w">    </span><span class="sd">"""Research only usage."""</span>
 
-    <span class="n">RESTRICTED</span> <span class="o">=</span> <span class="s2">&quot;restricted&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Restricted usage.&quot;&quot;&quot;</span>
+    <span class="n">RESTRICTED</span> <span class="o">=</span> <span class="s2">"restricted"</span>
+<span class="w">    </span><span class="sd">"""Restricted usage."""</span>
 
-    <span class="n">UNRESTRICTED</span> <span class="o">=</span> <span class="s2">&quot;unrestricted&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Unrestricted usage.&quot;&quot;&quot;</span></div>
+    <span class="n">UNRESTRICTED</span> <span class="o">=</span> <span class="s2">"unrestricted"</span>
+<span class="w">    </span><span class="sd">"""Unrestricted usage."""</span></div>
 
 </pre></div>
 
@@ -585,7 +585,7 @@
         
         
         
-          Built with <a href="https://www.sphinx-doc.org">Sphinx</a> on 2026/05/12 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org">Sphinx</a> on 2026/10/09 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>

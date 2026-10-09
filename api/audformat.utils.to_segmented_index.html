@@ -71,7 +71,7 @@
             
             
               <div class="version">
-                v1.4.2
+                v1.4.3
               </div>
             
           
@@ -207,11 +207,11 @@ the location where the files are stored.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>obj</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Index.html#pandas.Index" title="(in pandas v3.0.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Index</span></code></a> | <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Series.html#pandas.Series" title="(in pandas v3.0.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Series</span></code></a> | <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v3.0.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a></span>) – object conform to
+<li><p><strong>obj</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Index.html#pandas.Index" title="(in pandas v3.0.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Index</span></code></a> | <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Series.html#pandas.Series" title="(in pandas v3.0.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Series</span></code></a> | <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v3.0.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a></span>) – object conform to
 <a class="reference internal" href="../data-tables.html#tables"><span class="std std-ref">table specifications</span></a></p></li>
-<li><p><strong>allow_nat</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></span>) – if set to <code class="docutils literal notranslate"><span class="pre">False</span></code>, <code class="docutils literal notranslate"><span class="pre">end=NaT</span></code> is replaced with file
+<li><p><strong>allow_nat</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></span>) – if set to <code class="docutils literal notranslate"><span class="pre">False</span></code>, <code class="docutils literal notranslate"><span class="pre">end=NaT</span></code> is replaced with file
 duration</p></li>
-<li><p><strong>files_duration</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.MutableMapping" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">MutableMapping</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Timedelta.html#pandas.Timedelta" title="(in pandas v3.0.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timedelta</span></code></a>]</span>) – mapping from file to duration.
+<li><p><strong>files_duration</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.MutableMapping" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">MutableMapping</span></code></a>[<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Timedelta.html#pandas.Timedelta" title="(in pandas v3.0.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timedelta</span></code></a>]</span>) – mapping from file to duration.
 If not <code class="docutils literal notranslate"><span class="pre">None</span></code>,
 used to look up durations.
 If no entry is found for a file,
@@ -219,45 +219,45 @@ it is added to the mapping.
 Expects absolute file names
 and durations as <code class="xref py py-class docutils literal notranslate"><span class="pre">pd.Timedelta</span></code> objects.
 Only relevant if <code class="docutils literal notranslate"><span class="pre">allow_nat</span></code> is set to <code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
-<li><p><strong>root</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – root directory under which the files referenced in the index
+<li><p><strong>root</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – root directory under which the files referenced in the index
 are stored</p></li>
-<li><p><strong>num_workers</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a> | <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span>) – number of parallel jobs.
+<li><p><strong>num_workers</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a> | <a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span>) – number of parallel jobs.
 If <code class="docutils literal notranslate"><span class="pre">None</span></code> will be set to the number of processors
 on the machine multiplied by 5</p></li>
-<li><p><strong>verbose</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></span>) – show progress bar</p></li>
+<li><p><strong>verbose</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></span>) – show progress bar</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Index.html#pandas.Index" title="(in pandas v3.0.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Index</span></code></a> | <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Series.html#pandas.Series" title="(in pandas v3.0.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Series</span></code></a> | <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v3.0.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a></span></p>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Index.html#pandas.Index" title="(in pandas v3.0.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Index</span></code></a> | <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Series.html#pandas.Series" title="(in pandas v3.0.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Series</span></code></a> | <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v3.0.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a></span></p>
 </dd>
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>object with segmented index</p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – if object not conform to
+<li><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – if object not conform to
     <a class="reference internal" href="../data-tables.html#tables"><span class="std std-ref">table specifications</span></a></p></li>
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#FileNotFoundError" title="(in Python v3.14)"><strong>FileNotFoundError</strong></a> – if file is not found</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#FileNotFoundError" title="(in Python v3.14)"><strong>FileNotFoundError</strong></a> – if file is not found</p></li>
 </ul>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">index</span> <span class="o">=</span> <span class="n">filewise_index</span><span class="p">([</span><span class="s2">&quot;f1&quot;</span><span class="p">,</span> <span class="s2">&quot;f2&quot;</span><span class="p">])</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">index</span> <span class="o">=</span> <span class="n">filewise_index</span><span class="p">([</span><span class="s2">"f1"</span><span class="p">,</span> <span class="s2">"f2"</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">to_segmented_index</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
-<span class="go">MultiIndex([(&#39;f1&#39;, &#39;0 days&#39;, NaT),</span>
-<span class="go">            (&#39;f2&#39;, &#39;0 days&#39;, NaT)],</span>
-<span class="go">           names=[&#39;file&#39;, &#39;start&#39;, &#39;end&#39;])</span>
+<span class="go">MultiIndex([('f1', '0 days', NaT),</span>
+<span class="go">            ('f2', '0 days', NaT)],</span>
+<span class="go">           names=['file', 'start', 'end'])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">to_segmented_index</span><span class="p">(</span>
 <span class="gp">... </span>    <span class="n">index</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="n">allow_nat</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="n">files_duration</span><span class="o">=</span><span class="p">{</span>
-<span class="gp">... </span>        <span class="s2">&quot;f1&quot;</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_timedelta</span><span class="p">(</span><span class="mf">1.1</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;s&quot;</span><span class="p">),</span>
-<span class="gp">... </span>        <span class="s2">&quot;f2&quot;</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_timedelta</span><span class="p">(</span><span class="mf">2.2</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;s&quot;</span><span class="p">),</span>
+<span class="gp">... </span>        <span class="s2">"f1"</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_timedelta</span><span class="p">(</span><span class="mf">1.1</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">"s"</span><span class="p">),</span>
+<span class="gp">... </span>        <span class="s2">"f2"</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_timedelta</span><span class="p">(</span><span class="mf">2.2</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">"s"</span><span class="p">),</span>
 <span class="gp">... </span>    <span class="p">},</span>
 <span class="gp">... </span><span class="p">)</span>
-<span class="go">MultiIndex([(&#39;f1&#39;, &#39;0 days&#39;, &#39;0 days 00:00:01.100000&#39;),</span>
-<span class="go">            (&#39;f2&#39;, &#39;0 days&#39;, &#39;0 days 00:00:02.200000&#39;)],</span>
-<span class="go">           names=[&#39;file&#39;, &#39;start&#39;, &#39;end&#39;])</span>
+<span class="go">MultiIndex([('f1', '0 days', '0 days 00:00:01.100000'),</span>
+<span class="go">            ('f2', '0 days', '0 days 00:00:02.200000')],</span>
+<span class="go">           names=['file', 'start', 'end'])</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -287,7 +287,7 @@ on the machine multiplied by 5</p></li>
         
         
         
-          Built with <a href="https://www.sphinx-doc.org">Sphinx</a> on 2026/05/12 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+          Built with <a href="https://www.sphinx-doc.org">Sphinx</a> on 2026/10/09 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
         
     </p>
   </div>
