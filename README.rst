@@ -6,8 +6,6 @@ audformat
 
 Specification and reference implementation of **audformat**.
 
-PLACEHOLDER
-
 audformat stores media data,
 such as audio, video, or text
 together with corresponding annotations
