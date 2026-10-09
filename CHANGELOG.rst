@@ -7,6 +7,16 @@ The format is based on `Keep a Changelog`_,
 and this project adheres to `Semantic Versioning`_.
 
 
+Version 1.4.3 (2026-10-09)
+--------------------------
+
+* Added: support for Python 3.15
+* Changed: load and save header YAML files always with UTF-8
+* Removed: support for Python 3.10
+* Fixed: ensure correct index dtype for ``file`` column
+  when creating a table in pandas 3.x
+
+
 Version 1.4.2 (2026-05-12)
 --------------------------
 
